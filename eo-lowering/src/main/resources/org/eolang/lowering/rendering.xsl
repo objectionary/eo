@@ -34,8 +34,8 @@
   <xsl:param name="locator" as="xs:string" select="''"/>
   <!-- The locator of the top object of the source the formation is in. -->
   <xsl:param name="top" as="xs:string" select="''"/>
-  <!-- The package of that source, empty when it has none. -->
-  <xsl:param name="package" as="xs:string" select="''"/>
+  <!-- The XMIR of that source, as a URI. -->
+  <xsl:param name="source" as="xs:string" select="''"/>
   <!-- The table of voids the planting wrote, as a URI. -->
   <xsl:param name="voids" as="xs:string" select="''"/>
   <xsl:variable name="eo:alpha" select="'α'"/>
@@ -95,31 +95,27 @@
     <xsl:param name="why" as="xs:string"/>
     <xsl:sequence select="error(QName('https://www.eolang.org', 'eo:taint'), $why)"/>
   </xsl:function>
-  <!-- The steps of the locator below its top object. -->
-  <xsl:function name="eo:steps" as="xs:string*">
-    <xsl:variable name="steps" select="tokenize(substring-after($locator, concat($top, '.')), '\.')"/>
-    <xsl:choose>
-      <xsl:when test="$locator = $top">
-        <xsl:sequence select="()"/>
-      </xsl:when>
-      <xsl:when test="not(starts-with($locator, concat($top, '.')))">
-        <xsl:sequence select="eo:taint(concat('The locator ', $locator, ' is not inside ', $top))"/>
-      </xsl:when>
-      <xsl:when test="some $s in $steps satisfies ($s = ('φ', 'ρ') or starts-with($s, 'α'))">
-        <xsl:sequence select="eo:taint(concat('The formation ', $locator, ' is inside an application, which has no name of its own'))"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:sequence select="$steps"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:function>
   <!-- The Java package of the atom. -->
   <xsl:function name="eo:package" as="xs:string">
+    <xsl:variable name="package" select="string-join(doc($source)/object/metas/meta[head = 'package']/tail/text(), '')"/>
     <xsl:sequence select="if ($package = '') then 'org.eolang' else concat('org.eolang.', eo:package-name($package))"/>
   </xsl:function>
-  <!-- The names from the top object down to the atom, which is the φ of the entry. -->
+  <!--
+  The names from the top object down to the atom, which is the φ of the entry.
+  The transpiler makes a class of its own of every formation with no name,
+  which is an argument of some application, and names the atom inside it
+  after the top object and the formations below that argument only: the atom
+  of "Φ.true.φ.α0" is "true.φ", and the atom of a formation "inner" inside
+  that argument is "true.inner.φ".
+  -->
   <xsl:function name="eo:names" as="xs:string*">
-    <xsl:sequence select="(tokenize($top, '\.')[last()], eo:steps(), 'φ')"/>
+    <xsl:variable name="formation" select="doc($source)//o[@loc = $locator][1]"/>
+    <xsl:if test="empty($formation)">
+      <xsl:sequence select="eo:taint(concat('The formation ', $locator, ' is not inside ', $top))"/>
+    </xsl:if>
+    <xsl:variable name="argument" select="$formation/ancestor-or-self::o[not(@name)][1]"/>
+    <xsl:variable name="named" select="$formation/ancestor-or-self::o[empty($argument) or ancestor::o[. is $argument]]"/>
+    <xsl:sequence select="(tokenize($top, '\.')[last()][exists($argument)], $named/@name ! string(.), 'φ')"/>
   </xsl:function>
   <!-- The simple name of the class of the atom. -->
   <xsl:function name="eo:class" as="xs:string">
@@ -429,11 +425,15 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-  <!-- Unicode escape of a character Java forbids in an identifier -->
+  <!--
+  Unicode escape of a character Java forbids in an identifier. Six digits,
+  not four: four dropped everything above the sixteenth bit of a code point,
+  so U+1F600 and U+F600 both read as "$uF600" (#9047).
+  -->
   <xsl:function name="eo:escape-char" as="xs:string">
     <xsl:param name="c" as="xs:string"/>
     <xsl:variable name="code" select="string-to-codepoints($c)[1]"/>
-    <xsl:value-of select="concat('$u', string-join(for $w in (4096, 256, 16, 1) return substring('0123456789ABCDEF', ($code idiv $w) mod 16 + 1, 1), ''))"/>
+    <xsl:value-of select="concat('$u', string-join(for $w in (1048576, 65536, 4096, 256, 16, 1) return substring('0123456789ABCDEF', ($code idiv $w) mod 16 + 1, 1), ''))"/>
   </xsl:function>
   <!-- Turn a name into a Java identifier, escaping every character Java forbids there -->
   <xsl:function name="eo:identifier" as="xs:string">
@@ -455,10 +455,15 @@
     <xsl:param name="n" as="xs:string"/>
     <xsl:value-of select="replace(replace($n, '\\', '\\\\'), '&quot;', '\\&quot;')"/>
   </xsl:function>
-  <!-- Get clean escaped object name -->
+  <!--
+  Get clean escaped object name. The "-" becomes "_" and the "_" an escape of
+  its own, which no "-" can produce: mapping "_" to "__" beside them made
+  "a-_b" and "a_-b" one name (#9047). The dollar is escaped ahead of them, so
+  that the escape is never read as a dollar the name itself carried.
+  -->
   <xsl:function name="eo:clean" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
-    <xsl:value-of select="concat('EO', eo:identifier(replace(replace(translate(translate(replace($n, '_', '__'), '-', '_'), '@', $eo:phi), $eo:alpha, '_'), '\$', '\$EO')))"/>
+    <xsl:value-of select="concat('EO', eo:identifier(replace(translate(translate(string-join(tokenize(replace($n, '\$', '\$EO'), '_'), eo:escape-char('_')), '-', '_'), '@', $eo:phi), $eo:alpha, '_')))"/>
   </xsl:function>
   <!--
   A deterministic digit fingerprint of a name, computed purely from the name's own
@@ -542,10 +547,10 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-  <!-- Get clean escaped package segment, prefixed to never clash with an object class -->
+  <!-- Get clean escaped package segment, prefixed to never clash with an object class, mapped the way "eo:clean" maps a name -->
   <xsl:function name="eo:clean-package" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
-    <xsl:value-of select="concat('EO_', eo:identifier(replace(replace(translate(translate(replace($n, '_', '__'), '-', '_'), '@', $eo:phi), $eo:alpha, '_'), '\$', '\$EO')))"/>
+    <xsl:value-of select="concat('EO_', eo:identifier(replace(translate(translate(string-join(tokenize(replace($n, '\$', '\$EO'), '_'), eo:escape-char('_')), '-', '_'), '@', $eo:phi), $eo:alpha, '_')))"/>
   </xsl:function>
   <!-- Get Java package name for the EO package, one clean-package per segment -->
   <xsl:function name="eo:package-name" as="xs:string">

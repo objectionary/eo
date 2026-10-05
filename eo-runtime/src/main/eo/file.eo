@@ -10,14 +10,14 @@
   path > @
   @. > as-path
     Q.path path
-  or. > [^] > exists
+  or. > [^entry] > exists
     eq.
       os.is-windows.if
-        win32.access ^.path 0
-        posix.access ^.path 0
+        win32.access entry.path 0
+        posix.access entry.path 0
       0
-    ^.is-symlink false
-  [^ cant-check] > is-directory
+    entry.is-symlink false
+  [^entry cant-check] > is-directory
     if. > @
       info.code.eq 0
       eq.
@@ -27,9 +27,9 @@
       cant-check
     called. > info
       os.is-windows.if
-        win32.stat64 ^.path
-        posix.stat ^.path
-  [^ cant-check] > is-symlink
+        win32.stat64 entry.path
+        posix.stat entry.path
+  [^entry cant-check] > is-symlink
     os.is-windows.if > @
       if.
         attributes.eq win32.invalid
@@ -45,22 +45,22 @@
             info.mode.div 4096
           10
         cant-check
-    win32.get-file-attributes ^.path > attributes
+    win32.get-file-attributes entry.path > attributes
     called. > info
-      posix.lstat ^.path
-  [^ mode scope cant-open] > open
+      posix.lstat entry.path
+  [^entry mode scope cant-open] > open
     known.not.if > @
       T
         "Wrong access mode. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
       if.
-        existing.and ^.exists.not
+        existing.and entry.exists.not
         cant-open
           "File must exist for given access mode: '%s'".printf
             *
               mode >> access!
         seq *
           open-file
-          ^
+          entry
     or. > appending
       as-bool.
         access.eq "a"
@@ -95,22 +95,18 @@
           descriptor.eq -1
           ^.^.cant-open
             "Couldn't open file '%s': %s".printf
-              * ^.^.^.path opened.message
+              * ^.^.entry.path opened.message
           if.
             recovered
-              seq *
-                ^.^.scope
-                  stream descriptor
-                true
+              seq
+                * scoped true
               false
             seq *
               syscall.close descriptor
               true
             seq *
               syscall.close descriptor
-              ^.^.cant-open
-                "The scope given to '%s'.open() failed; the descriptor was closed before propagating the failure".printf
-                  * ^.^.^.path
+              scoped
         ^.^.appending.if syscall.append 0 > append
         ^.^.existing.not.if syscall.creat 0 > creat
         opened.code > descriptor
@@ -124,7 +120,9 @@
             trunc
           append
         called. > opened
-          syscall.open ^.^.^.path flags syscall.mode
+          syscall.open ^.^.entry.path flags syscall.mode
+        ^.^.scope > scoped!
+          stream descriptor
         [^ descriptor] > stream
           [^ size] > read
             read. > @

@@ -153,8 +153,8 @@ public final class MjRegister extends MjSafe {
     private void removeOldFiles() {
         final File[] files = {
             this.foreign,
-            new Subdir(this.target, "pull").path().toFile(),
-            new Subdir(this.target, "resolve").path().toFile(),
+            new Subdir(this.target, "pull").found().toFile(),
+            new Subdir(this.target, "resolve").found().toFile(),
         };
         for (final File file : files) {
             if (file.exists() && !new Deleted(file).get() && file.exists()) {

@@ -19,9 +19,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
+      # Full history of `master` only: `fetch-depth: 0` would also pull
+      # `gh-pages`, about three gigabytes of site snapshots, and the job
+      # would time out before scanning a single commit.
+      - name: Fetch history of master
+        run: git fetch --unshallow --no-tags origin +refs/heads/master:refs/remotes/origin/master
       - name: Secret Scanning
-        uses: trufflesecurity/trufflehog@d5ef0f38cf3906dd098cea12457153c7887c1877 # main
+        uses: trufflesecurity/trufflehog@59e3b04e820c4cad30462696ac497853a5f7679c # main
         with:
           extra_args: --only-verified
