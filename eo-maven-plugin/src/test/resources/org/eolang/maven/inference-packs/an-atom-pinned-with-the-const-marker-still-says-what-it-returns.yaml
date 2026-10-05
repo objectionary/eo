@@ -1,0 +1,41 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An applied atom runs its lambda on every read, so a caller that reads the
+# answer more than once pins it with the const marker. That marker is not a
+# no-op for a reader of the tables: `x!` is `(dataized x).as-bytes`, so what
+# the caller goes on to compare is no longer the number the atom returns but
+# the bytes it was dataized into, and the number comes back only through
+# `as-number`.
+#
+# The walk has to survive both steps and still land on `Φ.number.eq`.
+eo:
+  posix.eo: |
+    [name args] > posix
+      [] > @ /Q.posix.return
+        ? > ^
+      [^ code output] > return
+        output > @
+      [] > listen /Q.number
+        ? > descriptor /Q.number
+        ? > backlog /Q.number
+  app.eo: |
+    [] > app
+      [] > sys
+        posix.listen > listen
+      as-number. > listened
+        sys.listen 3 2048 >>!
+      listened.eq -1 > @
+  dataized.eo: |
+    [x] > dataized
+      x > @
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+      [] > eq
+  bytes.eo: |
+    [b] > bytes
+      b > @
+      [] > as-number /Q.number
+links:
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.number.eq']"

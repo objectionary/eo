@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A `.method` dispatch takes the attribute and leaves a method on the stack, and
+# a method is not among the kinds a pipe may attach to (R-3.14.4), so the pipe
+# below has no formation left in hand.
+sheets: []
+asserts:
+  - /object/errors/error[@severity='error']
+  - /object/errors/error[contains(text(),'pipe')]
+input: |
+  [] > app
+    I > foo
+    .neg > y
+    | 5 > z

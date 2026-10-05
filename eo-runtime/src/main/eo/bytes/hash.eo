@@ -7,24 +7,24 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package bytes
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^] > hash
-  ^.as-bytes >> b!
-  [^ acc index] >> rec-hash-code
-    if. > @
-      index.eq b.size!
-      acc.as-number
-      ^.rec-hash-code
-        plus.
-          31.as-i64.times acc
-          as-i64.
-            00-00-00-00-00-00-00.concat
-              b.slice index 1
-        as-number.
-          index.plus 1
+[^data] > hash
+  size. >> length!
+    data.as-bytes >> b!
+  if. > [^ acc index] >> rec-hash-code
+    index.eq length
+    acc.as-number
+    ^.rec-hash-code
+      plus.
+        31.as-i64.times acc
+        as-i64.
+          00-00-00-00-00-00-00.concat
+            b.slice index 1
+      as-number.
+        index.plus 1
   | > @
     0
     0

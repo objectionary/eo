@@ -13,9 +13,9 @@ sheets:
 asserts:
   - /object[not(errors)]
   - /object/class/java[contains(text(), 'private static class EOΦ$main$a_b$φ$α0 extends PhDefault')]
-  - /object/class/java[contains(text(), 'private static class EOΦ$main$a__b$φ$α0 extends PhDefault')]
+  - /object/class/java[contains(text(), 'private static class EOΦ$main$a$u00005Fb$φ$α0 extends PhDefault')]
   - /object/class/java[contains(text(), 'new EOΦ$main$a_b$φ$α0();')]
-  - /object/class/java[contains(text(), 'new EOΦ$main$a__b$φ$α0();')]
+  - /object/class/java[contains(text(), 'new EOΦ$main$a$u00005Fb$φ$α0();')]
 input: |
   [] > main
     [] > a-b

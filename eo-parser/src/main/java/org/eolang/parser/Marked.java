@@ -12,7 +12,7 @@ package org.eolang.parser;
  * the shape: the line decides what object is emitted, the suffix decides what
  * is written on it.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 final class Marked {
 
@@ -28,6 +28,7 @@ final class Marked {
 
     /**
      * Ctor.
+     *
      * @param target The emitter
      * @param tail The suffix of the line
      */

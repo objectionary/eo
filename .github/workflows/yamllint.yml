@@ -7,9 +7,17 @@ name: yamllint
   push:
     branches:
       - master
+    paths:
+      - '**.yml'
+      - '**.yaml'
   pull_request:
     branches:
       - master
+    paths:
+      - '**.yml'
+      - '**.yaml'
+permissions:
+  contents: read
 concurrency:
   group: yamllint-${{ github.ref }}
   cancel-in-progress: true

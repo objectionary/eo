@@ -8,55 +8,55 @@
 # so a `mkdir` coming back with `EEXIST` over a directory is taken for the
 # directory it names rather than for a failure. `EOdirectoryEOmadeRaceTest`
 # holds the interleaving that reaches that branch.
+#
+# The walk up the tree ends at a path whose parent is the path itself, such
+# as a drive root with no drive behind it or the root of an unreachable UNC
+# share. Such a path has no level above it to create, so the computation
+# terminates there instead of asking for the same parent forever.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package directory
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^] > made
-  ^.exists.if > @
-    ^.is-directory.if
-      ^
+[^folder] > made
+  folder.exists.if > @
+    folder.is-directory.if
+      folder
       T
         "Cant make the directory '%s': a file already occupies that path".printf
-          * ^.path
+          * folder.path
     seq *
-      made.
-        directory
-          file ^.as-path.dirname
+      if.
+        folder.path.eq above.path
+        T
+          "Cant make the directory '%s': it has no parent".printf
+            * folder.path
+        made.
+          directory above
       if.
         or.
           created.code.eq 0
           and.
             errno.eq eexist
-            ^.is-directory
-        ^
+            folder.is-directory
+        folder
         T
           "Cant make the directory '%s': %s".printf
-            * ^.path created.output
+            * folder.path created.message
+  file folder.as-path.dirname > above
   called. > created
     os.is-windows.if
-      win32 *1
-        "_mkdir"
-        ^.path
-      posix *1
-        "mkdir"
-        ^.path
-        posix.permissions
+      win32.mkdir folder.path
+      posix.mkdir folder.path posix.permissions
   os.is-windows.if > eexist
     win32.eexist
     posix.eexist
-  code. > errno
-    os.is-windows.if
-      win32
-        "_errno"
-        *
-      posix
-        "errno"
-        *
+  os.is-windows.if > errno
+    win32.errno
+    posix.errno
 
   ++> can-make-a-directory-and-return-the-same-path
     dir.made.path.eq dir.path > @
@@ -91,7 +91,7 @@
     dir.exists.and dir.is-directory > @
     made. > dir
       as-dir.
-        parent.resolved "foo-inner/foo-deepest"
+        parent.as-path.resolved "foo-inner/foo-deepest"
     made. > parent
       as-dir.
         mktemp.tmpfile.deleted.as-path.resolved "foo-partial"

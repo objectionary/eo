@@ -51,6 +51,7 @@ final class Starred {
 
     /**
      * Ctor.
+     *
      * @param source The application to compact
      */
     Starred(final Node source) {
@@ -59,6 +60,7 @@ final class Starred {
 
     /**
      * Render the compacted application at the given indentation level.
+     *
      * @param style The style to lay out in
      * @param indent The indentation level
      * @return The rendered block, or empty if the trailing-star form doesn't apply

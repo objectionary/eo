@@ -14,7 +14,6 @@ import java.util.Objects;
 import java.util.function.UnaryOperator;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
-import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -26,6 +25,7 @@ import org.xembly.Xembler;
  * walks the source with the {@link Eo} spec-driven parser (see
  * {@code PARSER_SPEC.md}), then applies the canonical XSL chain to
  * normalise the output.
+ *
  * @since 0.1
  */
 public final class EoSyntax implements Syntax {
@@ -42,6 +42,7 @@ public final class EoSyntax implements Syntax {
 
     /**
      * Ctor.
+     *
      * @param ipt The EO program to parse
      */
     public EoSyntax(final String ipt) {
@@ -50,6 +51,7 @@ public final class EoSyntax implements Syntax {
 
     /**
      * Ctor.
+     *
      * @param ipt The EO program to parse
      * @param transform Transform XMIR after parsing
      */
@@ -75,6 +77,7 @@ public final class EoSyntax implements Syntax {
 
     /**
      * Ctor for testing.
+     *
      * @param ipt The EO program to parse
      * @param transform Transform XMIR after parsing train
      */
@@ -89,6 +92,7 @@ public final class EoSyntax implements Syntax {
 
     /**
      * Ctor.
+     *
      * @param ipt The EO program to parse
      * @param transform Transform XMIR after parsing function
      */
@@ -98,6 +102,7 @@ public final class EoSyntax implements Syntax {
 
     /**
      * Ctor.
+     *
      * @param transform Transform XMIR after parsing function
      * @param ipt The EO program to parse
      */
@@ -109,7 +114,7 @@ public final class EoSyntax implements Syntax {
     @Override
     public XML parsed() throws IOException {
         final long start = System.nanoTime();
-        final String text = new UncheckedText(new TextOf(this.input)).asString();
+        final String text = new UncheckedText(new Unmarked(this.input)).asString();
         return this.transform.apply(
             new XMLDocument(
                 new Xembler(

@@ -61,17 +61,34 @@ import java.util.stream.Collectors;
  * {@code [] > div /Q.number} says that a {@code div} is a {@code Φ.number}
  * once it has run, and the parser carries that annotation into the XMIR, so
  * the row keeps it and whoever reads the table can ask a {@code number} what
- * the atom itself cannot answer. An annotation that names no object is
- * skipped: {@code [] > recovered /A} comes back with whatever the caller put
- * in, and that is a variable, which nothing here understands yet.</p>
+ * the atom itself cannot answer.</p>
  *
- * <p>What a void says it will hold is written down for the same reason, and
- * skipped for the same one. {@code ? > code /Q.number} is how a formation that
- * only Java ever copies says what goes into its voids, since it has no caller
- * in the program to say it for it, and {@code /A} names no object and is
- * passed over. {@link Provided} walks through such a void the way it walks
- * behind a delegation, so a name asked of it is answered once and for all
- * rather than left to a caller.</p>
+ * <p>An annotation may name a variable rather than an object, and then it
+ * names the void that carries the same letter. {@code [] > recovered /A} over
+ * {@code ? > value /A?} and {@code ? > alternative /A} says that what comes
+ * back is what was put in, so the row keeps the {@code value}, and a caller
+ * who put a {@code number} there is answered with a {@code number} rather
+ * than with nothing (#8348). The letter stands on both voids, which is the
+ * source saying the two are one type; where a caller makes them two, the
+ * first is what the table has to go on. A mark of termination is dropped as
+ * {@link Held} drops it, since a termination answers to every name.</p>
+ *
+ * <p>What a void says it will hold is written down for the same reason as an
+ * atom's annotation, and only when it names an object. {@code ? > code
+ * /Q.number} is how a formation that only Java ever copies says what goes into
+ * its voids, since it has no caller in the program to say it for it, while a
+ * letter says nothing about what goes in and is read only by the atom above
+ * it. {@link Provided} walks through a void that says what it holds the way it
+ * walks behind a delegation, so a name asked of it is answered once and for
+ * all rather than left to a caller.</p>
+ *
+ * <p>A void may also say what will be handed to whatever goes into it.
+ * {@code ? > scope /{Q.chunk}} in {@code malloc.of} says that the atom calls
+ * its {@code scope} with a chunk, which is what {@code EOmalloc$EOof} then
+ * does, and the row keeps that list as it stands. Nobody else in the program
+ * says it: the formation {@code malloc.for} hands in is copied by Java alone,
+ * so without the annotation its void is filled by nobody and looks empty to
+ * every reader (#8380). {@link Handed} is where the list is spent.</p>
  *
  * <p>Not every attribute is written inside the formation it belongs to:
  * {@code minus} in the package {@code number} is {@code Φ.number.minus} and
@@ -86,6 +103,12 @@ import java.util.stream.Collectors;
  * outright what it is dispatched on, and one that says nothing has no
  * {@code ρ} at all for anybody to name.</p>
  *
+ * <p>What goes into the {@code ρ} a formation does declare is written down,
+ * which is a different claim and {@link Received}'s: an attribute of an
+ * {@code oak} is reached by taking it off an {@code oak}, so the void holds
+ * one. Only a formation that asked for a receiver is told what it gets, and
+ * the row was already there for the asking.</p>
+ *
  * @since 0.67.0
  */
 final class Provides implements Clue {
@@ -99,6 +122,7 @@ final class Provides implements Clue {
                 Provides.fill(rows, new Xnav(formation.inner()));
             }
             new Members(made, world.roots()).fill(rows);
+            new Received(made).fill(rows);
             Files.createDirectories(tables);
             Files.write(
                 tables.resolve("provides.xml"),
@@ -126,6 +150,10 @@ final class Provides implements Clue {
                 final String held = attr.says("type");
                 if (held.startsWith("Φ.")) {
                     row.set("holds", held);
+                }
+                final String args = attr.says("args");
+                if (!args.isEmpty()) {
+                    row.set("args", args);
                 }
             }
         }
@@ -159,10 +187,33 @@ final class Provides implements Clue {
         for (final Xnav kid : kids) {
             final Noted attr = new Noted(kid);
             if ("λ".equals(attr.says("name"))) {
-                final String back = attr.says("atom");
-                if (back.startsWith("Φ.")) {
+                final String back = Provides.locator(attr.says("atom"), kids);
+                if (!back.isEmpty()) {
                     found.add(back);
                 }
+            }
+        }
+        return found;
+    }
+
+    private static String locator(final String annotation, final Collection<Xnav> kids) {
+        String found = "";
+        if (annotation.startsWith("Φ.")) {
+            found = annotation;
+        } else if (!annotation.isEmpty()) {
+            found = Provides.carrying(kids, annotation);
+        }
+        return found;
+    }
+
+    private static String carrying(final Collection<Xnav> kids, final String letter) {
+        String found = "";
+        for (final Xnav kid : kids) {
+            final Noted attr = new Noted(kid);
+            if ("∅".equals(attr.says("base"))
+                && letter.equals(attr.says("type").replace("?", ""))) {
+                found = attr.says("loc");
+                break;
             }
         }
         return found;

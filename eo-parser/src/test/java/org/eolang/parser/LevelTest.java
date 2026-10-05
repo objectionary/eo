@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Level}.
+ *
  * @since 0.1
  */
 final class LevelTest {
@@ -69,6 +70,20 @@ final class LevelTest {
             "named() must report true once name() has been called",
             level.named(),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    void dropsNamedFlagOnSeal() {
+        final Level level = new Level(
+            2, 5, Kind.VMETHOD, Openness.OPEN, Kind.BARE_FORMATION, false
+        );
+        level.name("intermediate", false);
+        level.sealed();
+        MatcherAssert.assertThat(
+            "sealed() must forget the name the replaced chain link carried",
+            level.named(),
+            Matchers.is(false)
         );
     }
 

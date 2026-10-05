@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
  * Test case verifying {@link Expect}-based error messages
  * raised by {@link EOchunk$EOsize} when its {@code id} attribute
  * is invalid.
+ *
  * @since 0.51
  */
 final class EOchunkEOsizeTest {

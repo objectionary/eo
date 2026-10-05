@@ -7,18 +7,18 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^] > trimmed-left
+[^text] > trimmed-left
   if. > @
     0.eq
       b.size >> len!
-    ^
+    text
     string
       slice.
-        ^ >> b!
+        text >> b!
         first-non-ws-index 0 >> idx!
         minus.
           number len

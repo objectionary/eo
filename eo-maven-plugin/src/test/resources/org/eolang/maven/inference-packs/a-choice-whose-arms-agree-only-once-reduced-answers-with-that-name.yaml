@@ -1,0 +1,49 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A call on a void answers what its fillings hand back, and both arms of a
+# choice hand back an argument of the call, so the call is one of its own
+# arguments and it does not matter which — as long as the two arguments say
+# the same thing. They seldom say it outright. The `and` of a `bool` picks
+# between what `FF-.eq x` comes back with and a `false`, which are two names
+# until each is reduced to the one thing it stands for, and only then do the
+# arms agree that the answer is a `Φ.bool`. So the reduced name has to be in
+# the tables the passes read again, not painted on at the end for the page.
+# The arms counted are the ones the choices themselves were given: the same
+# argument is relayed to every formation that could take it, and a relay that
+# lands anywhere else is enough to make the arms look as though they
+# disagree.
+eo:
+  bool.eo: |
+    [if] > bool
+      if > @
+        FF-
+        00-
+      ^.if > [^ x] > and
+        FF-.eq x
+        false
+  true.eo: |
+    [^] > true
+      bool > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  false.eo: |
+    [^] > false
+      bool > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  bytes.eo: |
+    [@] > bytes
+      [] > eq /Q.bool
+        ? > ^
+        ? > b
+provides:
+  - "/provides/type[@id='Φ.bytes.eq' and @reduced='Φ.bool']"
+  - "/provides/type[@id='Φ.false' and @reduced='Φ.bool']"
+  - "/provides/type[@id='Φ.bool.and' and @reduced='Φ.bool']"
+links:
+  - "/links/type[@id='Φ.bool.and.φ']/ref[@loc='Φ.bool']"

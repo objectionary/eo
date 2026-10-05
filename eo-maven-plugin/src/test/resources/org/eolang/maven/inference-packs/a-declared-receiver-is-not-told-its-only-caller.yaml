@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An `ends` is taken off a `rope` and off nothing else, so the `^` it declares
+# holds a `rope`, and the source says so for every caller there will ever be.
+# The one caller this program happens to have takes it off a `knot`, which
+# makes the `knot` the whole census of that `^`. The census is the poorer fact
+# of the two, so the row that reads `^` says the `rope` the void declares,
+# without calling it witnessed, and is never told that every `ends` hangs off
+# a `knot` (#8960, #8979).
+eo:
+  rope.eo: |
+    [] > rope
+  ends.eo: |
+    +package rope
+
+    [^ tail] > ends
+      tail.eq > @
+        ^ >> me
+  knot.eo: |
+    [] > knot
+      rope > @
+  app.eo: |
+    [] > app
+      knot.ends 42 > @
+provides:
+  - "/provides/type[@id='Φ.rope.ends']/attr[@name='ρ' and @holds='Φ.rope']"
+links:
+  - "/links/type[starts-with(@id,
+    'Φ.rope.ends.')]/ref[@loc='Φ.rope'][not(@witnessed)]"
+  - "/links[not(type[starts-with(@id, 'Φ.rope.ends.')]/ref[@loc='Φ.knot'])]"

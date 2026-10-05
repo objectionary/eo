@@ -10,6 +10,7 @@ import org.apache.maven.plugin.AbstractMojo;
 
 /**
  * Resolve all eo dependencies.
+ *
  * @since 0.29.0
  */
 final class PpResolve implements Iterable<Class<? extends AbstractMojo>> {

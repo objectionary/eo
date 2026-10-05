@@ -6,6 +6,7 @@ package org.eolang.maven;
 
 /**
  * A commit hash in its short form ({@link ChNarrow}), read once ({@link ChCached}).
+ *
  * @since 0.73.3
  */
 final class ChBrief implements CommitHash {
@@ -17,6 +18,7 @@ final class ChBrief implements CommitHash {
 
     /**
      * Ctor.
+     *
      * @param tag The Git tag in objectionary to take the hash of
      */
     ChBrief(final String tag) {
@@ -25,6 +27,7 @@ final class ChBrief implements CommitHash {
 
     /**
      * Ctor.
+     *
      * @param full The hash to shorten
      */
     ChBrief(final CommitHash full) {

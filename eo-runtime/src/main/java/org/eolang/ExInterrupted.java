@@ -18,7 +18,7 @@ package org.eolang;
  * lookup fails the same way and no {@code try} can resurrect the
  * computation.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 public final class ExInterrupted extends ExAbstract {
 
@@ -29,6 +29,7 @@ public final class ExInterrupted extends ExAbstract {
 
     /**
      * Ctor.
+     *
      * @param cause Exception cause
      */
     public ExInterrupted(final String cause) {
