@@ -5,11 +5,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^ delimiter cant-split] > split
+[^text delimiter cant-split] > split
   if. > @
     delimiter.size.eq 0
     cant-split
@@ -17,7 +17,7 @@
     if.
       eq.
         size. >> len!
-          ^ >> bts!
+          text >> bts!
         0
       * ""
       [^ accum start current] >> rec-split

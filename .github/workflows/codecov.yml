@@ -7,6 +7,8 @@ name: codecov
   push:
     branches:
       - master
+permissions:
+  contents: read
 concurrency:
   group: codecov-${{ github.ref }}
   cancel-in-progress: true
@@ -21,29 +23,33 @@ jobs:
       - uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
-          java-version: 21
+          java-version: 21.0.12+101.0.LTS
       - uses: actions/cache@v6
         with:
           path: ~/.m2/repository
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             maven-
+      # The `lower` goal needs the exact phino version pinned in the plugin,
+      # and this job is the one that always builds with lowering on.
+      # The binary is copied into a folder of its own, because cabal keeps
+      # its files under `~/.local` and only symlinks the executable there,
+      # so a cache of `~/.cabal` would save nothing and rebuild phino each run.
       - uses: actions/cache@v6
         with:
-          path: ~/.cabal
+          path: ~/.phino
           key: phino-${{ hashFiles('eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt') }}
       - run: |
           ver=$(tr -d '[:space:]' < eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt)
-          if ! "$HOME/.cabal/bin/phino" --version 2>/dev/null | grep -qx "${ver}"; then
+          if ! "$HOME/.phino/phino" --version 2>/dev/null | grep -qx "${ver}"; then
             cabal update
-            cabal install "phino-${ver}" --overwrite-policy=always
+            cabal install "phino-${ver}" --installdir="$HOME/.phino" --install-method=copy --overwrite-policy=always
           fi
-          echo "$HOME/.cabal/bin" >> "$GITHUB_PATH"
-      - run: mvn install '-Deo.coverageTracking=true' '-Deo.loweringRequired=true'
-      # Lowering must not only have run, it must have folded something:
-      # a build where no fragment folds at all means the selection or the
-      # phino dialect silently broke.
-      - run: ls eo-runtime/target/eo/4-lower/*.xmir
+          echo "$HOME/.phino" >> "$GITHUB_PATH"
+      - run: mvn install '-Deo.coverageTracking=true' '-Deo.lowering=true'
+      # The goal must have run, and a missing folder is how a silently
+      # disabled lowering would look.
+      - run: test -n "$(find eo-runtime/target/eo -maxdepth 1 -type d -name '[0-9][0-9]-lowering')"
       - uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -53,70 +59,11 @@ jobs:
   telegram:
     needs: codecov
     runs-on: ubuntu-24.04
-    if: ${{ failure() }}
+    if: ${{ always() }}
     permissions:
       actions: read
     steps:
-      - id: elapsed
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -e
-          seconds=$(gh api "/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" \
-            --jq '[ .jobs[] | select(.completed_at) ]
-              | (map(.completed_at | fromdate) | max) - (map(.started_at | fromdate) | min)
-              | [ ., 0 ] | max')
-          echo "This run took ${seconds} seconds"
-          echo "seconds=${seconds}" >> "${GITHUB_OUTPUT}"
-      - uses: appleboy/telegram-action@master
+      - uses: yegor256/terald-action@0.1.0
         with:
-          to: -1004371404002
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: "⚠️ Code coverage of `${{ github.repository }}` just [failed](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) in ${{ steps.elapsed.outputs.seconds }}s."
-          disable_web_page_preview: true
-          format: markdown
-  recovered:
-    needs: codecov
-    runs-on: ubuntu-24.04
-    if: ${{ success() }}
-    permissions:
-      actions: read
-    steps:
-      - id: elapsed
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -e
-          seconds=$(gh api "/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs" \
-            --jq '[ .jobs[] | select(.completed_at) ]
-              | (map(.completed_at | fromdate) | max) - (map(.started_at | fromdate) | min)
-              | [ ., 0 ] | max')
-          echo "This run took ${seconds} seconds"
-          echo "seconds=${seconds}" >> "${GITHUB_OUTPUT}"
-      - id: previous
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -e
-          for _ in 1 2 3 4 5 6; do
-            state=$(gh api "/repos/${{ github.repository }}/actions/workflows/codecov.yml/runs?branch=${{ github.ref_name }}&per_page=100" \
-              --jq 'if any(.workflow_runs[]; .id == ${{ github.run_id }})
-                then [ .workflow_runs[]
-                  | select(.id < ${{ github.run_id }})
-                  | select(.conclusion == "failure" or .conclusion == "success") ][0].conclusion // "none"
-                else "stale" end')
-            [ "${state}" = 'stale' ] || break
-            sleep 10
-          done
-          echo "The previous run of this workflow: ${state}"
-          if [ "${state}" = 'failure' ]; then
-            echo 'broken=yes' >> "${GITHUB_OUTPUT}"
-          fi
-      - if: ${{ steps.previous.outputs.broken == 'yes' }}
-        uses: appleboy/telegram-action@master
-        with:
-          to: -1004371404002
-          token: ${{ secrets.TELEGRAM_TOKEN }}
-          message: "🍓 Code coverage of `${{ github.repository }}` just [recovered](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) in ${{ steps.elapsed.outputs.seconds }}s. The report is [here](https://app.codecov.io/gh/objectionary/eo)."
-          disable_web_page_preview: true
-          format: markdown
+          chat: ${{ secrets.TELEGRAM_CHAT }}

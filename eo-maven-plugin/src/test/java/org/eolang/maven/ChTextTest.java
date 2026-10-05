@@ -11,6 +11,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.io.ResourceOf;
+import org.eolang.cache.Saved;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -21,6 +22,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link ChText}.
+ *
  * @since 0.28.11
  */
 @ExtendWith(MktmpResolver.class)

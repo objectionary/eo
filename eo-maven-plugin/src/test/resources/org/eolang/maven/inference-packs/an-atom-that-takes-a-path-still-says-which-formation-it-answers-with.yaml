@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# `stat` takes the path of a file and comes back with three numbers at once,
+# so it answers with an object of its package rather than with a number.
+#
+# Binding the path must not hide that. The application of `stat` to a path is
+# still a copy of `stat`, so the walk reads what `stat` says it hands back,
+# goes to `stat-return`, and lands on the `called` the caller asked for, the
+# same as it does for a call that takes nothing.
+eo:
+  posix.eo: |
+    [name args] > posix
+      [] > @ /Q.posix.return
+        ? > ^
+      [^ code output] > return
+        output > @
+      [code mode size] > stat-return
+        posix.stat-return > called
+          code
+          mode
+          size
+      [] > stat /Q.posix.stat-return
+        ? > path /Q.string
+  app.eo: |
+    [] > app
+      (posix.stat "/tmp/весы").called > @
+links:
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.posix.stat-return.called']"

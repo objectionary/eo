@@ -11,7 +11,7 @@ package org.eolang.parser;
  * <p>Every line-shape parser (application, reversed, compact-tuple,
  * inline-phi, …) replays the same prologue when it owns the cursor:
  * if the new line is deeper-indent it pushes a fresh {@link Level}
- * after checking the indent step (R-5.1.3) and the parent's openness
+ * after checking the indent step (R-5.2.7) and the parent's openness
  * (R-5.2.4); otherwise it replaces the level on top at the same
  * indent. Either way, if the new line carries a naming suffix the
  * level is flagged as named (R-5.3.1). This class is the single
@@ -33,6 +33,7 @@ final class Transition {
 
     /**
      * Ctor.
+     *
      * @param stk The indent stack
      * @param src The line span being adopted
      */
@@ -45,6 +46,7 @@ final class Transition {
      * Push a fresh level (when stepping deeper) or replace the level
      * on top (when staying at the same indent), and mark it named if
      * {@code admission} carries a label.
+     *
      * @param kind Outer kind for the level
      * @param openness Openness for the level
      * @param admission The line's naming suffix and atom-body permission

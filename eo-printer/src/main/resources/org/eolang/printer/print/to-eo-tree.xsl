@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="to-eo-tree" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="to-eo-tree" version="3.0">
   <!-- An EO-source printer; its tree templates form one cohesive module. -->
   <!-- xslint-disable-file too-many-templates -->
   <!--
@@ -165,10 +165,12 @@
   which a bracket param cannot express (#5614); and every void of an
   atom, whose head must stay empty (R-3.4.10) so a typed void may be
   followed by an untyped one without the two swapping places (#6082).
+  The handle of a receiver is not one of them: "^s" is a bracket param,
+  and the only spelling the receiver's handle has (R-3.4.13, #8227).
   -->
   <xsl:function name="eo:vertical-void" as="xs:boolean">
     <xsl:param name="o" as="element()"/>
-    <xsl:sequence select="eo:void($o) and (exists($o/@local) or exists($o/@type) or exists($o/@args) or eo:atom($o/..))"/>
+    <xsl:sequence select="eo:void($o) and ((exists($o/@local) and not($o/@name = $eo:rho)) or exists($o/@type) or exists($o/@args) or eo:atom($o/..))"/>
   </xsl:function>
   <!--
   A void's type tail (R-3.4.8): " /type" for its own forma, " /{type …}"
@@ -204,11 +206,13 @@
   children: a third one is an argument applied to the formation, and the
   glyph leaves nowhere to put it, so such an object must keep the long
   layout. And the φ base rooted at "ξ": an unrooted name denotes some
-  other object entirely, not the void beside it.
+  other object entirely, not the void beside it. A receiver void is no
+  identity either: "[^] (^ > @)" hands its owner back, while "I" spells
+  "[x] (x > @)", a formation waiting for an argument nobody passes.
   -->
   <xsl:function name="eo:identity" as="xs:boolean">
     <xsl:param name="o" as="element()"/>
-    <xsl:sequence select="eo:abstract($o) and not(eo:has-data($o)) and count($o/o) = 2 and eo:void($o/o[1]) and empty($o/o[1]/(@local, @type, @args)) and $o/o[2]/@name = $eo:phi and empty($o/o[2]/o) and empty($o/o[2]/@const) and $o/o[2]/@base = concat($eo:xi-prefix, $o/o[1]/@name)"/>
+    <xsl:sequence select="eo:abstract($o) and not(eo:has-data($o)) and count($o/o) = 2 and eo:void($o/o[1]) and $o/o[1]/@name != $eo:rho and empty($o/o[1]/(@local, @type, @args)) and $o/o[2]/@name = $eo:phi and empty($o/o[2]/o) and empty($o/o[2]/@const) and $o/o[2]/@base = concat($eo:xi-prefix, $o/o[1]/@name)"/>
   </xsl:function>
   <!-- PROGRAM -->
   <xsl:template match="object">
@@ -314,7 +318,8 @@
       way (idempotent, diff-friendly output — #5706). The ordering is:
       vertical void body lines first, then the decoratee (@name = φ),
       then every other bound attribute alphabetically by name, and test
-      attributes last (also alphabetically). Two kinds of body keep
+      attributes last, truthy before throwing and each run alphabetical
+      by the name under its marker (#8566). Two kinds of body keep
       their source order untouched: application arguments (positional,
       so their order carries meaning) and any body carrying a pipe
       continuation ("| args", §3.14), whose "|" line must stay directly
@@ -332,8 +337,8 @@
       -->
       <xsl:variable name="sortable" select="eo:abstract(.) and empty(o[@pipe])"/>
       <xsl:apply-templates select="o[not(eo:void(.)) or eo:vertical-void(.)]" mode="tree">
-        <xsl:sort data-type="number" select="if (not($sortable)) then 0 else if (eo:void(.)) then 1 else if (@name = $eo:phi) then 2 else if (eo:test-attr(.)) then 4 else 3"/>
-        <xsl:sort select="if (not($sortable) or eo:void(.) or @name = $eo:phi) then '' else if (eo:continuation-receiver(.) != '') then concat(eo:continuation-receiver(.), '~') else string((@local, @name)[1])"/>
+        <xsl:sort data-type="number" select="if (not($sortable)) then 0 else if (eo:void(.)) then 1 else if (@name = $eo:phi) then 2 else if (starts-with(@name, $eo:positive)) then 4 else if (starts-with(@name, $eo:negative)) then 5 else 3"/>
+        <xsl:sort select="if (not($sortable) or eo:void(.) or @name = $eo:phi) then '' else if (eo:continuation-receiver(.) != '') then concat(eo:continuation-receiver(.), '~') else eo:unmarked(string((@local, @name)[1]))"/>
       </xsl:apply-templates>
     </line>
   </xsl:template>
@@ -542,7 +547,7 @@
             <xsl:value-of select="'@'"/>
           </xsl:when>
           <xsl:when test="@name = $eo:rho">
-            <xsl:value-of select="'^'"/>
+            <xsl:value-of select="concat('^', @local)"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="@name"/>
@@ -565,7 +570,7 @@
     which is itself the argument the label belongs to, not a separate
     definition.
     -->
-    <xsl:if test="@as and (not(@name) or starts-with(@name, $eo:cactus-name))">
+    <xsl:if test="@as and @as != $eo:phi and (not(@name) or starts-with(@name, $eo:cactus-name))">
       <xsl:text>:</xsl:text>
       <xsl:choose>
         <xsl:when test="starts-with(@as, $eo:alpha)">
@@ -580,12 +585,12 @@
       <xsl:choose>
         <xsl:when test="eo:test-attr(.)">
           <!--
-          The marker char is a plus for a truthy test (`+name`) or a
-          minus for a throwing test (`-name`); it doubles into the
+          The marker char is a plus for a truthy test (`p🌵name`) or a
+          minus for a throwing test (`n🌵name`); it doubles into the
           head-of-line shorthand and stays single for the mid-line
           suffix.
           -->
-          <xsl:variable name="marker" select="substring(@name, 1, 1)"/>
+          <xsl:variable name="marker" select="if (starts-with(@name, $eo:positive)) then '+' else '-'"/>
           <xsl:choose>
             <!--
             An abstract formation with no void params: collapse its
@@ -607,7 +612,7 @@
               <xsl:text>&gt; </xsl:text>
             </xsl:otherwise>
           </xsl:choose>
-          <xsl:value-of select="substring(@name, 2)"/>
+          <xsl:value-of select="eo:unmarked(@name)"/>
         </xsl:when>
         <xsl:when test="@local">
           <!--

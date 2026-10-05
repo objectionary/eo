@@ -9,11 +9,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^] > ln
+[^num] > ln
   n.is-nan.if > @
     nan
     if.
@@ -69,8 +69,10 @@
       if. > @
         level.eq 0
         e
-        prev.times prev
-      ^.epow > prev
+        times.
+          number prev
+          number prev
+      ^.epow > prev!
         level.minus 1
     [m] > series
       2.times > @
@@ -95,10 +97,12 @@
       if. > @
         level.eq 0
         1
-        prev.plus prev
-      ^.step > prev
+        plus.
+          number prev
+          number prev
+      ^.step > prev!
         level.minus 1
-  number ^.as-bytes > n
+  number num.as-bytes > n
 
   -2.2.ln.is-nan ++> can-return-nan-for-a-logarithm-of-a-negative-float
 

@@ -36,6 +36,7 @@ final class Vertical {
 
     /**
      * Ctor.
+     *
      * @param line The rendered head
      * @param children The children, in order
      */
@@ -46,6 +47,7 @@ final class Vertical {
 
     /**
      * Render the block at the given indentation level.
+     *
      * @param style The style to lay out in
      * @param indent The indentation level
      * @return The rendered block

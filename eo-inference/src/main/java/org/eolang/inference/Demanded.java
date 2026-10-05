@@ -36,6 +36,12 @@ import org.xembly.Xembler;
  * already in, because a demand is a fact about a void, and a second table
  * saying things about voids would only invite the two to disagree.</p>
  *
+ * <p>A name is one of two things the program asks of a void, and the other is
+ * a call: {@code ^.body index} applies whatever fills {@code body} rather than
+ * asking it for a name. {@link Needs} keeps no row for that, since it gathers
+ * dispatches, so the calls are read off the applications of the program here
+ * and written on the same rows by {@link Applies} (#8158).</p>
+ *
  * @since 0.69.0
  */
 public final class Demanded implements Clue {
@@ -47,6 +53,7 @@ public final class Demanded implements Clue {
 
     /**
      * Ctor.
+     *
      * @param clues The clues to follow before the voids are asked of
      */
     public Demanded(final Clue clues) {
@@ -58,22 +65,31 @@ public final class Demanded implements Clue {
         this.origin.follow(xmirs, tables);
         final Path table = tables.resolve("provides.xml");
         final XML given = new XMLDocument(table);
-        final Pairs links = new Pairs(new XMLDocument(tables.resolve("links.xml")));
+        final Said links = new Said(new Pairs(new XMLDocument(tables.resolve("links.xml"))));
         final Map<String, String> names = new Ends(links.all()).names();
-        final Collection<String> voids = given.xpath("//attr[@void='true']/@type");
+        final Collection<String> voids = new Hollows(given).all();
         final Map<String, Collection<String>> into = Demanded.into(links.puts(), names, voids);
+        final Provided provided = new Provided(given, names, voids);
         final Map<String, Map<String, String>> asked = new Asked(
             new XMLDocument(tables.resolve("needs.xml")),
             names,
-            new Provided(given, names, voids)
+            provided,
+            new Rooted(new Relayed(provided, links.puts(), names).all())
+        ).all();
+        final Collection<Call> calls = new Calls(
+            new Xmirs(xmirs).applications(), links, given
         ).all();
         for (final XML hollow : given.nodes("//attr[@void='true']")) {
-            final Demands demands = new Demands(
-                asked,
+            final Rooted rooted = new Rooted(
                 Demanded.roots(new Noted(hollow).says("type"), into)
             );
+            final Demands demands = new Demands(asked, rooted);
             if (demands.any()) {
                 new Xembler(demands.directives()).applyQuietly(hollow.inner());
+            }
+            final Applies applies = new Applies(calls, rooted);
+            if (applies.any()) {
+                new Xembler(applies.directives()).applyQuietly(hollow.inner());
             }
         }
         Files.write(table, given.toString().getBytes(StandardCharsets.UTF_8));

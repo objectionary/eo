@@ -16,7 +16,7 @@ import java.util.Set;
  * verbatim into a base by `expand-aliases.xsl`, where it names nothing at
  * all, which is why it is caught while the line is still being read.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 final class Dotted {
 
@@ -37,6 +37,7 @@ final class Dotted {
 
     /**
      * Ctor.
+     *
      * @param text The path, as the source wrote it
      */
     Dotted(final String text) {
@@ -45,6 +46,7 @@ final class Dotted {
 
     /**
      * Whether the path names a segment that is not there.
+     *
      * @return True if a dot of it introduces nothing
      */
     boolean broken() {

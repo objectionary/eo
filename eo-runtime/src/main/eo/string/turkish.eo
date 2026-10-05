@@ -15,22 +15,22 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^] > turkish
-  ^ > @
+[^text] > turkish
+  text > @
   lower. > [^] > lower
     english.
       replaced.
-        ^.^.replaced "/I/".regex "ı"
+        ^.text.replaced "/I/".regex "ı"
         "/İ/".regex
         "i"
   upper. > [^] > upper
     english.
       replaced.
-        ^.^.replaced "/i/".regex "İ"
+        ^.text.replaced "/i/".regex "İ"
         "/ı/".regex
         "I"
 

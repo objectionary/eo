@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link Diff}.
+ *
  * @since 0.57.0
  */
 final class DiffTest {

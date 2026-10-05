@@ -7,7 +7,8 @@ package org.eolang;
 
 /**
  * DATAIZED.
- * @since 0.74.0
+ *
+ * @since 0.64.0
  */
 @XmirObject(oname = "dataized")
 public final class EOdataized extends PhDefault implements Atom {

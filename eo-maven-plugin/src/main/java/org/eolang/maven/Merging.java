@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import org.eolang.cache.Saved;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -43,6 +44,13 @@ import org.w3c.dom.NodeList;
  * places of the voids, and with them the meaning of applying the object to
  * arguments, stay as they were.</p>
  *
+ * <p>Merging twice does nothing the second time: a member that has already
+ * moved is marked as merged in the tojos and is not standalone any more, so
+ * the package it came from is no longer a package with members and nothing
+ * is spliced into the object again. That is what lets {@link MjTranspile}
+ * merge on its own without asking whether the {@link MjMerge} goal has
+ * already run.</p>
+ *
  * <p>The tests a member declares do not travel with it. A test is legal only
  * as a direct child of the top-level object of a file, which is what the
  * parser demands and what the transpiler reads when it writes the test class,
@@ -56,28 +64,24 @@ import org.w3c.dom.NodeList;
 final class Merging implements Step {
 
     /**
-     * The directory for the merged XMIR.
-     */
-    static final String DIR = "4-merge";
-
-    /**
      * The tojos of everything this build compiles.
      */
     private final TjsForeign tojos;
 
     /**
-     * The directory to write the merged XMIR to.
+     * Target directory.
      */
-    private final Path dir;
+    private final Path target;
 
     /**
      * Ctor.
+     *
      * @param foreign The tojos of everything this build compiles
-     * @param target The directory for the merged XMIR
+     * @param tgt Target directory
      */
-    Merging(final TjsForeign foreign, final Path target) {
+    Merging(final TjsForeign foreign, final Path tgt) {
         this.tojos = foreign;
-        this.dir = target;
+        this.target = tgt;
     }
 
     @Override
@@ -88,10 +92,18 @@ final class Merging implements Step {
         for (final String pkg : found) {
             done = done + this.spliced(pkg, all);
         }
-        Logger.info(
-            this, "Put %d member(s) into %d package object(s), XMIR is in %[file]s",
-            done, found.size(), this.dir
-        );
+        if (done == 0) {
+            Logger.debug(this, "No package member to put inside its object");
+        } else {
+            Logger.info(
+                this, "Put %d member(s) into %d package object(s), XMIR is in %[file]s",
+                done, found.size(), this.dir()
+            );
+        }
+    }
+
+    private Path dir() {
+        return new Subdir(this.target, "merge").path();
     }
 
     private static Collection<String> deepest(final Map<String, TjForeign> all) {
@@ -112,7 +124,7 @@ final class Merging implements Step {
 
     private Map<String, TjForeign> indexed() {
         final Map<String, TjForeign> all = new HashMap<>(0);
-        for (final TjForeign tojo : this.tojos.withXmir()) {
+        for (final TjForeign tojo : this.tojos.standalone()) {
             all.put(tojo.identifier(), tojo);
         }
         return all;
@@ -143,18 +155,18 @@ final class Merging implements Step {
                 formation.appendChild(top.removeChild(test));
             }
         }
-        final Path target = new Place(pkg).make(this.dir, MjAssemble.XMIR);
+        final Path dest = new Place(pkg).make(this.dir(), MjAssemble.XMIR);
         final String merged = new XMLDocument(formation.getOwnerDocument()).toString();
-        if (!Files.exists(target) || !new Diff(Files.readString(target), merged).same()) {
-            new Saved(merged, target).value();
+        if (!Files.exists(dest) || !new Diff(Files.readString(dest), merged).same()) {
+            new Saved(merged, dest).value();
         }
-        object.withXmir(target);
+        object.withXmir(dest);
         for (final TjForeign member : members.values()) {
             member.withMerged(pkg);
         }
         Logger.debug(
             this, "Put %d member(s) of '%s' into %[file]s",
-            members.size(), pkg, target
+            members.size(), pkg, dest
         );
         return members.size();
     }
@@ -179,7 +191,7 @@ final class Merging implements Step {
         for (int idx = 0; idx < kids.getLength(); ++idx) {
             final Node kid = kids.item(idx);
             final String name = Merging.named(kid);
-            if (name.startsWith("+") || name.startsWith("-")) {
+            if (name.startsWith("p🌵") || name.startsWith("n🌵")) {
                 found.add(kid);
             }
         }

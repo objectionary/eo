@@ -14,6 +14,7 @@ import java.util.logging.Level;
 
 /**
  * Train full of logging and checking.
+ *
  * @since 0.51
  */
 public final class TrFull extends TrEnvelope {
@@ -27,6 +28,7 @@ public final class TrFull extends TrEnvelope {
 
     /**
      * Ctor.
+     *
      * @param train Original
      */
     public TrFull(final Train<Shift> train) {

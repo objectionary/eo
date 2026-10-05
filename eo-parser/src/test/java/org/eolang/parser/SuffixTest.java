@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Suffix}.
+ *
  * @since 0.1
  */
 final class SuffixTest {
@@ -133,11 +134,11 @@ final class SuffixTest {
     }
 
     @Test
-    void marksMinusGreaterAttributeWithMinusPrefix() {
+    void marksMinusGreaterAttributeWithThrowingPrefix() {
         MatcherAssert.assertThat(
-            "a throwing test's XMIR name must carry the `-` marker prefix",
+            "a throwing test's XMIR name must carry the `n🌵` marker prefix",
             new Suffix(" -> on-add", new Span("[] -> on-add", 1), 2).attribute(1, 2),
-            Matchers.equalTo("-on-add")
+            Matchers.equalTo("n🌵on-add")
         );
     }
 
@@ -469,6 +470,32 @@ final class SuffixTest {
     }
 
     @Test
+    void clampsColumnWhenNamedSuffixHasNoNameAtLineEnd() {
+        MatcherAssert.assertThat(
+            "the reported column must stay on the last character of the line, not past it",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new Suffix(" >", new Span("[] >", 1), 2),
+                "`>` with nothing after it at line end must be rejected"
+            ).pos(),
+            Matchers.equalTo(3)
+        );
+    }
+
+    @Test
+    void clampsColumnWhenPlusGreaterSuffixHasNoNameAtLineEnd() {
+        MatcherAssert.assertThat(
+            "the reported column must stay on the last character of the line, not past it",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new Suffix("+>", new Span("[] +>", 1), 3),
+                "`+>` with nothing after it at line end must be rejected"
+            ).pos(),
+            Matchers.equalTo(4)
+        );
+    }
+
+    @Test
     void reportsAutoFlagOnDoubleArrow() {
         MatcherAssert.assertThat(
             "auto() must report true for `>>` suffix",
@@ -507,7 +534,7 @@ final class SuffixTest {
     @Test
     void mapsAtAttributeNameToPhi() {
         MatcherAssert.assertThat(
-            "an explicit `> @` suffix must surface as the φ attribute per R-9.3.1",
+            "an explicit `> @` suffix must surface as the φ attribute per the suffix grammar",
             new Suffix(" > @", new Span("foo > @", 1), 3).attribute(1, 0),
             Matchers.equalTo("φ")
         );
@@ -526,9 +553,9 @@ final class SuffixTest {
     @Test
     void prefixesPlusFormAttribute() {
         MatcherAssert.assertThat(
-            "a `+> name` test suffix must surface as `+name` in the attribute",
+            "a `+> name` test suffix must surface as `p🌵name` in the attribute",
             new Suffix(" +> ready", new Span("[] +> ready", 1), 2).attribute(1, 0),
-            Matchers.equalTo("+ready")
+            Matchers.equalTo("p🌵ready")
         );
     }
 

@@ -11,6 +11,6 @@ asserts:
 input: |
   [] > main
     foo > app
-    .bar
+    .bar > baz
       a:x
       b:y

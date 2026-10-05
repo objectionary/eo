@@ -10,9 +10,19 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Millis}.
+ *
  * @since 0.73.4
  */
 final class MillisTest {
+
+    @Test
+    void roundsZeroSpanUpToOne() {
+        MatcherAssert.assertThat(
+            "a zero span is not printed as one millisecond",
+            new Millis(0L).asString(),
+            Matchers.equalTo("1")
+        );
+    }
 
     @Test
     void roundsSubMillisecondSpanUpToOne() {

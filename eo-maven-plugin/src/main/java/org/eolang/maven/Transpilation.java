@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import org.eolang.cache.CachePath;
+import org.eolang.cache.Caching;
 import org.eolang.parser.TrFull;
 
 /**
@@ -39,7 +41,7 @@ final class Transpilation {
      * The XSL steps of the transpile train, in order, ending with
      * {@code purify.xsl} and {@code to-java.xsl}, the two that take
      * parameters. Kept as a single list so both the train in
-     * {@link #compiled(boolean, boolean, String, Path)} and the cache-key
+     * {@link #compiled(boolean, boolean, String, long, String, Path)} and the cache-key
      * fingerprint in {@link #version()} are derived from the same source.
      */
     static final String[] XSLS = {
@@ -65,7 +67,7 @@ final class Transpilation {
      * as editing a top-level stylesheet does, but leaves {@link #XSLS}
      * itself unchanged (see #6032). Not part of {@link #XSLS} itself
      * because that array is also used verbatim to build the actual XSL
-     * train in {@link #compiled(boolean, boolean, String, Path)}, where its
+     * train in {@link #compiled(boolean, boolean, String, long, String, Path)}, where its
      * last two elements are special-cased as {@code purify.xsl} and
      * {@code to-java.xsl}.
      */
@@ -73,6 +75,7 @@ final class Transpilation {
         "/org/eolang/parser/_funcs.xsl",
         "/org/eolang/parser/_specials.xsl",
         "/org/eolang/maven/transpile/_recursion.xsl",
+        "/org/eolang/maven/transpile/_java-names.xsl",
     };
 
     /**
@@ -108,6 +111,17 @@ final class Transpilation {
     private final String superclass;
 
     /**
+     * How many seconds a single generated test may run.
+     */
+    private final long deadline;
+
+    /**
+     * How much memory a single generated test may allocate, the way
+     * {@code -Xmx} writes it.
+     */
+    private final String memory;
+
+    /**
      * File where XSL measurements are stored.
      */
     private final Path measures;
@@ -132,45 +146,42 @@ final class Transpilation {
     private final Rows rows;
 
     /**
-     * What {@link MjLower} left in its marker file, or the empty string
-     * when it skipped or was disabled, so that a build whose XMIR was
-     * folded never shares a cache slot with one whose XMIR was not.
-     */
-    private final String lowering;
-
-    /**
      * Ctor.
+     *
      * @param diagnostics Which diagnostic artifacts to emit while transpiling
      * @param cvrg Whether located objects are wrapped into {@code PhCoverage}
      * @param base The class that a generated class extends instead of {@code PhDefault}
+     * @param seconds How many seconds a single generated test may run
+     * @param size How much memory a single generated test may allocate
      * @param measures Path to the file where XSL measurements are stored
      * @param dir The target directory of the build
      * @param tables The directory with the tables of {@link MjInference}
-     * @param lowered What {@link MjLower} left in its marker file, or the empty string
      */
     Transpilation(
         final Tracking diagnostics,
         final boolean cvrg,
         final String base,
+        final long seconds,
+        final String size,
         final Path measures,
         final Path dir,
-        final Path tables,
-        final String lowered
+        final Path tables
     ) {
         this.tracking = diagnostics;
         this.coverage = cvrg;
         this.superclass = base;
+        this.deadline = seconds;
+        this.memory = size;
         this.measures = measures;
         this.target = dir;
         this.inference = tables;
         this.rows = new Rows(tables);
-        this.lowering = lowered;
     }
 
     /**
      * Cache-key version segment: a fingerprint of the bundled transpile
      * XSLs and the libraries they {@code xsl:import}, plus the {@code trackLocations}/
-     * {@code trackSteps}/{@code coverageTracking} flags. The plugin version
+     * {@code tracking}/{@code coverageTracking} flags. The plugin version
      * is not part of it: {@link Caching} already folds that into the key of
      * every cache it makes. Folding the XSL content in means
      * that a change in the transformation logic invalidates the global
@@ -178,29 +189,28 @@ final class Transpilation {
      * constant {@code -SNAPSHOT} during development), see #5578; folding
      * the imported libraries in too closes the gap where editing one of
      * them changed the actual output without changing anything in
-     * {@link #XSLS} itself, see #6032. Folding the three flags and the name
-     * of the base class in means changing any of them also invalidates the
-     * cache, since all of them change what a build of the same source
-     * produces: the first two and the base class change what
-     * {@code to-java.xsl} emits (see #6031 and #5955), and
-     * {@code trackSteps} decides whether the XMIRs of the train are written
+     * {@link #XSLS} itself, see #6032. Folding the three flags, the name
+     * of the base class, and the limits of a test in means changing any of
+     * them also invalidates the cache, since all of them change what a build
+     * of the same source produces: the first two, the base class, and the
+     * limits change what {@code to-java.xsl} emits (see #6031, #5955, and
+     * #9074), and
+     * {@code tracking} decides whether the XMIRs of the train are written
      * at all, which a cache hit would otherwise skip (see #7628).
-     * Folding the marker of {@link MjLower} in means a build whose XMIR
-     * was folded through phino and a build whose XMIR was not never share
-     * a slot, since the same git hash then means different Java.
      * The tables belong to {@link #version(Collection)} instead.
+     *
      * @return The version segment shared by every source
      */
     String version() {
         return String.format(
-            "%s-%b-%b-%b-%s-%s",
+            "%s-%b-%b-%b-%s-%d-%s",
             new Fingerprint(
                 Stream.concat(
                     Arrays.stream(Transpilation.XSLS), Arrays.stream(Transpilation.IMPORTS)
                 ).toArray(String[]::new)
             ).get(),
             this.tracking.locations(), this.tracking.steps(), this.coverage, this.superclass,
-            this.lowering
+            this.deadline, this.memory
         );
     }
 
@@ -209,14 +219,14 @@ final class Transpilation {
      *
      * <p>{@code purify.xsl} reads the tables and stamps {@code @pure}, which
      * {@code to-java.xsl} turns into {@code new PhSticky(...)}, so a source
-     * with different rows is different Java (#7627, #7945).</p>
+     * with different rows is different Java (#7627, #7945). The Java files
+     * of that source are keyed by the same segment: {@code Transpiling}
+     * derives the cache of one tojo from this and hands it to
+     * {@code JavaFiles}, so a class never comes back from a slot the rows
+     * of another build filled (#8001).</p>
      *
      * @param locators The locators of the objects the file holds
      * @return The version segment for {@link CachePath}
-     * @todo #7945:40min Key the Java files by the rows as well.
-     *  `Transpiling` still pools them in one directory made from
-     *  {@link #version()}, which knows nothing about the tables. Hand
-     *  `JavaFiles.total` the directory of the tojo, made here.
      */
     String version(final Collection<String> locators) {
         return String.format("%s-%s", this.version(), this.rows.digest(locators));
@@ -239,6 +249,7 @@ final class Transpilation {
      * Build XSL transformation function for a source file.
      * If transformation steps are tracked - creates a new {@link Xsline}
      * for every XMIR in purpose of thread safety.
+     *
      * @param name Name of the object the source XMIR holds
      * @return XSL transformation function
      */
@@ -246,7 +257,9 @@ final class Transpilation {
         final Train<Shift> measured = this.measured(this.train());
         final Function<XML, XML> func;
         if (this.tracking.steps()) {
-            final Path dir = new Place(name).make(this.target.resolve(Transpiling.PRE), "");
+            final Path dir = new Place(name).make(
+                new Subdir(this.target, "pre-transpile").path(), ""
+            );
             func = xml -> new Xsline(new TrSpy(measured, dir)).pass(xml);
         } else {
             func = new Xsline(measured)::pass;
@@ -286,15 +299,18 @@ final class Transpilation {
         final boolean track = this.tracking.locations();
         final boolean instrument = this.coverage;
         final String base = this.superclass;
+        final long seconds = this.deadline;
+        final String size = this.memory;
         final Path tables = this.inference;
         return Transpilation.TRAINS.get().computeIfAbsent(
-            String.format("%b|%b|%s|%s", track, instrument, base, tables),
-            ignored -> Transpilation.compiled(track, instrument, base, tables)
+            String.format("%b|%b|%s|%d|%s|%s", track, instrument, base, seconds, size, tables),
+            ignored -> Transpilation.compiled(track, instrument, base, seconds, size, tables)
         );
     }
 
     private static Train<Shift> compiled(
-        final boolean track, final boolean instrument, final String base, final Path tables
+        final boolean track, final boolean instrument, final String base,
+        final long seconds, final String size, final Path tables
     ) {
         final int last = Transpilation.XSLS.length - 1;
         return new TrFull(
@@ -309,7 +325,9 @@ final class Transpilation {
                         String.format("disclaimer %s", new Disclaimer()),
                         String.format("trackLocations %b", track),
                         String.format("coverage %b", instrument),
-                        String.format("phiDefaultClass %s", base)
+                        String.format("phiDefaultClass %s", base),
+                        String.format("deadline %d", seconds),
+                        String.format("maxmem %s", size)
                     )
                 )
             )

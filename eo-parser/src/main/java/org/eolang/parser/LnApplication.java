@@ -49,6 +49,7 @@ final class LnApplication implements Line {
 
     /**
      * Ctor.
+     *
      * @param source The source span
      */
     LnApplication(final Span source) {
@@ -117,7 +118,7 @@ final class LnApplication implements Line {
             final int start = tokens.cursor();
             tokens.seek(start + 1);
             label = tokens.readBinding();
-            if (!tokens.atEnd() && tokens.current() == '.') {
+            if (!tokens.atEnd() && tokens.dispatchAhead()) {
                 throw new ParseError(
                     span.line(), span.indent() + start,
                     "inline binding allowed only on the last method in a chain"
@@ -181,7 +182,7 @@ final class LnApplication implements Line {
         final Stack stack, final Suffix suffix, final Kind kind, final Openness openness
     ) {
         new Transition(stack, this.span).apply(
-            kind, openness, new Admission(suffix.named(), suffix.test())
+            kind, openness, new Admission(suffix.named(), suffix.test(), suffix.test())
         );
     }
 

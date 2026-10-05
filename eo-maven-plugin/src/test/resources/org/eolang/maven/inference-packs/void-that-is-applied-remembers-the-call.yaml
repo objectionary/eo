@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Applying a void asks something of it that no name taken off it can say: that
+# whatever fills it takes an argument at all, and that an `oak` is what turns
+# up in the first place of it. The call goes on the void's own row, beside the
+# names the program asks of it, since both are demands upon the same void.
+eo:
+  as-ascii.eo: |
+    [^ cant-read] > as-ascii
+      cant-read oak > @
+  oak.eo: |
+    [] > oak
+provides:
+  - "//attr[@name='cant-read']/apply[@of='Φ.as-ascii.cant-read'][@place='0']/ref[@loc='Φ.oak']"

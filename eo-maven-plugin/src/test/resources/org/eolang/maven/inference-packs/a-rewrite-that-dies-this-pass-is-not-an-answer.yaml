@@ -1,0 +1,40 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# `app` asks `m` of what `hold` hands back, which is whatever went into its
+# `value`, and a `step` went in. So the question becomes the `m` of a `step`,
+# and a `step` hands back a `pick`, whose `m` is the answer. The two passes
+# that takes are the whole point: on the first one nobody has settled what a
+# `step` is worth yet, so the rewritten question has no answer and the walk
+# dies. The unrewritten name is not what the site is, it is what the site
+# looks like before anyone has done the work, and writing it down is what
+# kept the answer from ever improving: `Φ.pick.m` is rooted at a void too, so
+# a pair already rooted at `Φ.hold.value` would not give way to it. Two
+# fillings keep `hold`'s void from being worth one name, so the rewrite at the
+# call site is the only way through.
+eo:
+  pick.eo: |
+    [m] > pick
+      m > @
+  maker.eo: |
+    [] > maker
+      pick 7 > pass
+  hold.eo: |
+    [] > hold /A
+      ? > value /A?
+      ? > alternative /A
+  step.eo: |
+    [] > step
+      hold > inner
+        maker
+        0
+      inner.pass > @
+  app.eo: |
+    [] > app
+      hold > held
+        step
+        0
+      held.m > @
+links:
+  - "/links/type[@id='Φ.step.φ']/ref[@loc='Φ.maker.pass']"
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.pick.m']"

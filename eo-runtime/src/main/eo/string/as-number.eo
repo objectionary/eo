@@ -10,18 +10,19 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^ cant-parse] > as-number
+[^text cant-parse] > as-number
   if. > @
     not.
-      "/^[+-]?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$/".regex.compiled.matches ^
+      "/^[+-]?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$/".regex.compiled.matches text
     cant-parse
       "Can't convert text %s to number".printf
-        * ^
-    head. ("%f".scanf ^).at.^
+        * text
+    head.
+      "%f".scanf text
 
   1000.eq "1e3".as-number ++> can-convert-exponent-text
 

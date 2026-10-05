@@ -7,11 +7,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^] > arc-sine
+[^num] > arc-sine
   if. > @
     arg.as-bytes.eq 80-00-00-00-00-00-00-00
     arg
@@ -49,7 +49,7 @@
               | ((1.minus arg.abs).div 2).sqrt
           series arg.abs
       base
-  number ^.as-bytes > arg
+  number num.as-bytes > arg
 
   lt. ++> can-behave-as-an-odd-function-when-taking-arc-sine
     abs.
