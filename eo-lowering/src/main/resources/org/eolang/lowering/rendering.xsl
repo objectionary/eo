@@ -304,13 +304,18 @@
     </xsl:if>
     <xsl:sequence select="$op"/>
   </xsl:function>
-  <!-- The Java type of a symbol. -->
+  <!--
+  The Java type of a symbol. A void that holds a number is bytes, like a
+  void of any carrier but a bool, since a number may hold any bytes and a
+  double holds exactly eight. The bytes are read as a double only where an
+  operation wants one, which is where EO reads them as a number too.
+  -->
   <xsl:function name="eo:type" as="xs:string">
     <xsl:param name="symbol" as="xs:string"/>
     <xsl:variable name="joined" select="key('eo:joined', $symbol, $eo:doc)[1]"/>
     <xsl:choose>
       <xsl:when test="map:contains($eo:voids, $symbol)">
-        <xsl:sequence select="(map {'number': 'double', 'bool': 'boolean'}($eo:voids($symbol)[2]), 'byte[]')[1]"/>
+        <xsl:sequence select="(map {'bool': 'boolean'}($eo:voids($symbol)[2]), 'byte[]')[1]"/>
       </xsl:when>
       <xsl:when test="exists($joined)">
         <xsl:variable name="branches" select="(eo:branch($joined, 1), eo:branch($joined, 2))"/>
@@ -411,7 +416,7 @@
     <xsl:variable name="joined" select="key('eo:joined', $symbol, $eo:doc)[1]"/>
     <xsl:choose>
       <xsl:when test="map:contains($eo:voids, $symbol)">
-        <xsl:sequence select="concat($indent, 'final ', $type, ' ', $local, ' = new Dataized(', eo:object($symbol), ').', (map {'double': 'asNumber()', 'boolean': 'asBool()'}($type), 'take()')[1], ';&#10;')"/>
+        <xsl:sequence select="concat($indent, 'final ', $type, ' ', $local, ' = new Dataized(', eo:object($symbol), ').', (map {'boolean': 'asBool()'}($type), 'take()')[1], ';&#10;')"/>
       </xsl:when>
       <xsl:when test="exists($joined)">
         <xsl:variable name="place" select="$at($symbol)"/>
