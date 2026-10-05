@@ -1357,12 +1357,27 @@
               index.plus 1
               opened
               bits
-            yes
-              r.at
-              opened
-              bits
-              plain bits r.text
-              r.text
+            if.
+              and.
+                r.text.eq --
+                or.
+                  eq. (byte r.at) 2A-
+                  or.
+                    eq. (byte r.at) 2B-
+                    eq. (byte r.at) 3F-
+              no
+                index
+                string
+                  concat.
+                    "Dangling meta character '".as-bytes.concat
+                      byte r.at
+                    "'".as-bytes
+              yes
+                r.at
+                opened
+                bits
+                plain bits r.text
+                r.text
           r
       scanned > r
         index
@@ -2199,6 +2214,10 @@
         "Dangling meta character '*'"
       offset.eq 2
 
+  matches. ++> can-bind-a-quantifier-across-an-empty-quote
+    "/^x\\Q\\E*$/".regex.compiled
+    "xxx"
+
   matches. ++> can-bind-a-quantifier-to-the-last-character-of-a-run
     "/xab*/".regex.compiled
     "xa"
@@ -2598,6 +2617,10 @@
   eq. ++> can-refuse-a-nested-character-class
     "/[a[b]]/".regex.compile I
     "regex syntax is invalid: Nested character classes are not supported at offset 2 of the pattern"
+
+  eq. ++> can-refuse-a-quantifier-after-an-empty-quote
+    "/\\Q\\E*/".regex.compile I
+    "regex syntax is invalid: Dangling meta character '*' at offset 0 of the pattern"
 
   eq. ++> can-refuse-a-unicode-escape
     "/\\u0041/".regex.compile I
