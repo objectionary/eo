@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The body of `flipped` is a copy of `Φ.bool.not`, which is itself a copy
+# and not a formation, so the link of the body arrives at a name that is no
+# number, no string and no bool. But `flipped` binds nothing but its body,
+# and `eo:inference` has chased that body through all its copies and written
+# what `flipped` behaves as into the `reduced` cell of its row.
+eo:
+  flipped.eo: |
+    [x] > flipped
+      x.not > @
+provides: |
+  <provides>
+    <type complete="false" id="Φ.flipped" reduced="Φ.bool">
+      <attr name="x" type="Φ.flipped.x" void="true"/>
+      <attr name="φ" type="Φ.flipped.φ"/>
+    </type>
+  </provides>
+links: |
+  <links>
+    <type id="Φ.flipped.φ">
+      <ref loc="Φ.bool.not"/>
+    </type>
+  </links>
+entries:
+  - "1\tΦ.flipped"

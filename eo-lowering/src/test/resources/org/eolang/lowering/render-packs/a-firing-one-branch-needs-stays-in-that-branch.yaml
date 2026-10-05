@@ -71,17 +71,17 @@ java: |
 
       @Override
       public Phi lambda() {
-          final double s1 = new Dataized(this.take("ρ").take("t")).asNumber();
-          final boolean s2 = s1 > Double.longBitsToDouble(0x0000000000000000L);
+          final byte[] s1 = new Dataized(this.take("ρ").take("t")).take();
+          final boolean s2 = (double) new BytesOf(s1).asNumber() > Double.longBitsToDouble(0x0000000000000000L);
           final double s5;
           if (s2) {
-              final double s3 = s1 + Double.longBitsToDouble(0x3FF0000000000000L);
+              final double s3 = (double) new BytesOf(s1).asNumber() + Double.longBitsToDouble(0x3FF0000000000000L);
               s5 = s3;
           } else {
-              final double s4 = s1 + Double.longBitsToDouble(0x4000000000000000L);
+              final double s4 = (double) new BytesOf(s1).asNumber() + Double.longBitsToDouble(0x4000000000000000L);
               s5 = s4;
           }
-          final double s6 = s1 + Double.longBitsToDouble(0x3FF0000000000000L);
+          final double s6 = (double) new BytesOf(s1).asNumber() + Double.longBitsToDouble(0x3FF0000000000000L);
           final double s7 = s5 + s6;
           return new Data.ToPhi(s7);
       }
