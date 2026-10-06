@@ -47,12 +47,6 @@ import java.util.List;
 final class LnPipe implements Line {
 
     /**
-     * What a pipe line declaring a test attribute is told, whichever of
-     * the three test markers it carries.
-     */
-    private static final String TESTED = "a pipe application cannot declare a test attribute";
-
-    /**
      * The line's source span.
      */
     private final Span span;
@@ -70,7 +64,10 @@ final class LnPipe implements Line {
     public void into(final Stack stack, final Globals globals, final Emit emit) {
         Blanks.checkPlain(this.span, globals, emit);
         this.precheck(stack);
-        this.rejectCompactTest();
+        this.rejectTest(
+            Eo.topLevelPlusPlusArrowIndex(this.span.body()) >= 0
+                || Eo.topLevelMinusMinusArrowIndex(this.span.body()) >= 0
+        );
         final Tokens tokens = this.piped();
         final List<Value> args = tokens.readArgs();
         Bindings.checkAllOrNothing(args, this.span);
@@ -78,9 +75,7 @@ final class LnPipe implements Line {
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
         suffix.rejectAtomOutsideFormation(this.span);
-        if (suffix.test()) {
-            throw new ParseError(this.span.line(), this.span.indent(), LnPipe.TESTED);
-        }
+        this.rejectTest(suffix.test());
         globals.seal(emit, this.span);
         final Openness openness;
         if (args.isEmpty()) {
@@ -109,11 +104,12 @@ final class LnPipe implements Line {
         }
     }
 
-    private void rejectCompactTest() {
-        final String body = this.span.body();
-        if (Eo.topLevelPlusPlusArrowIndex(body) >= 0
-            || Eo.topLevelMinusMinusArrowIndex(body) >= 0) {
-            throw new ParseError(this.span.line(), this.span.indent(), LnPipe.TESTED);
+    private void rejectTest(final boolean tested) {
+        if (tested) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "a pipe application cannot declare a test attribute"
+            );
         }
     }
 
