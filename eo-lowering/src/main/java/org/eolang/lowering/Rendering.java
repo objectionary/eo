@@ -68,16 +68,31 @@ import org.cactoos.text.TextOf;
  * the top object only, so two entries may ask for one class. Each of them
  * is a taint then, since javac would find only one of the two.</p>
  *
- * <p>The atom gives back the result of the body as the object it is when
- * that result is a copy of another object, and as plain data when the atom
- * computed it. Plain data has no object around it, so an {@code i16}, for
+ * <p>The atom gives back the result of the body inside the object the
+ * protocol names around it, when the answer of the run for the body is an
+ * object of the world applied to its {@code φ} alone: a string, for
+ * example, is {@code Φ.string} applied to its bytes again. Otherwise the
+ * atom gives the result back as the object it is when that result is a
+ * copy of another object, and as plain data when the atom computed it.
+ * Plain data has no object around it, so a string or an {@code i16}, for
  * example, would lose every attribute of its own. This is why, when the
- * result is plain data, this stage asks the tables of {@code eo:inference}
- * what the body gives, and an entry whose body is not a number, a string,
- * a bool or bytes is a taint. The tables must be there before the stage
- * starts, even though most entries never ask them.</p>
+ * result is plain data the protocol names no object around, this stage
+ * asks the tables of {@code eo:inference} what the body gives, and an
+ * entry whose body is not a number, a bool or bytes is a taint. The tables
+ * must be there before the stage starts, even though most entries never
+ * ask them.</p>
  *
  * @since 0.64.0
+ * @todo #9248:45min Put the object around a root that comes out of an
+ *  {@code if} or a dispatch. The protocol names the object around the root
+ *  only when the answer of the run for the body is that object applied to
+ *  its {@code φ}. The body of {@code Φ.bytes.as-i8} is an {@code if} whose
+ *  branch is {@code i8} applied to the void {@code data}, so its atom
+ *  returns the void bare, as bytes, and the {@code i8} around it is lost.
+ *  A body that copies a decorator of a string, like {@code separator.joined
+ *  parts}, is a taint now for the same reason. Once phino names, in the
+ *  formations of {@code L_root}, the object each root reduced to, read the
+ *  object around the root there as well.
  * @todo #8548:30min Write an atom for an entry whose result is always the
  *  same. When the result of the body is known bytes, like an object that
  *  always returns {@code 42}, the entry is a taint now. But its atom could

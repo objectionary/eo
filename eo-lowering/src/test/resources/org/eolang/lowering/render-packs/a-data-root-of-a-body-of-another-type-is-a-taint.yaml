@@ -2,13 +2,14 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# The root is data the atom computed, and inference says the body may be an
-# "i64", which is no number, string, bool or bytes. The atom would return the
-# bytes of that "i64" bare, without the object around them, so the entry
-# stays in EO.
+# The root is data the atom computed, the protocol does not name the object
+# around it, and inference says the body may be a string or an "i64", which
+# is no number, bool or bytes. The atom would return the bytes of that
+# string or "i64" bare, without the object around them, so the entry stays
+# in EO.
 locator: Φ.pick
 number: 1
-taint: The root 𝜎4 of the entry 1 is bare data, while inference says Φ.pick returns Φ.i64, and bare data would lose the object around it
+taint: The root 𝜎4 of the entry 1 is bare data, while inference says Φ.pick returns Φ.string and Φ.i64, and bare data would lose the object around it
 eo:
   pick.eo: |
     [c] > pick
