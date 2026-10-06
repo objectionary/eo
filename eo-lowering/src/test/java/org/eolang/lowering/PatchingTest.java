@@ -7,6 +7,7 @@ package org.eolang.lowering;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -152,7 +153,7 @@ final class PatchingTest {
             final Path patched = this.patched();
             final Map<?, ?> demands = (Map<?, ?>) this.story.map().get("patched");
             for (final Path file : this.files(patched)) {
-                if (!demands.containsKey(file.toString())) {
+                if (!demands.containsKey(file.toString().replace(File.separatorChar, '/'))) {
                     failed.add(String.format("%s is patched, while it must not be", file));
                 }
             }
