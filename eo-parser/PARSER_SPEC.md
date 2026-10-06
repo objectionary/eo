@@ -138,6 +138,7 @@ R-2.2.2. Between two consecutive non-blank lines, indent may **increase by at mo
 R-2.2.3. Indent may decrease by any amount.
 R-2.2.4. Tabs in leading whitespace are rejected.
 R-2.2.5. A non-blank line whose last character is a space or a tab is rejected: `trailing whitespace at end of line`. This applies to every line, including a text-block body line (§3.11), which bypasses the ordinary line dispatch but is checked the same way. A whitespace-only (blank) line is exempt.
+R-2.2.6. The leading whitespace of a line runs to its first character that is neither a whitespace nor a Unicode space separator, so a no-break space (U+00A0) and its kin count towards the indent although Java does not call them whitespace. Anything there other than a space or a tab is rejected: `invalid character in leading whitespace`. A line copied from a web page or a chat often carries such a space where the editor shows a plain one, and the message names what the author cannot see.
 
 Example:
 
@@ -1378,7 +1379,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Indent jump > 1 level | `indent increased by more than one level` |
 | Nesting past 256 levels, by indentation (R-5.2.7a) or by a dispatch chain (R-3.5.3c) | `object nested deeper than 256 levels` |
 | Tab in leading whitespace | `tab character in leading whitespace` |
-| Leading whitespace other than a space or a tab (R-2.2.1) | `invalid character in leading whitespace` |
+| Leading whitespace other than a space or a tab, a no-break space among them (R-2.2.6) | `invalid character in leading whitespace` |
 | Carriage return that no line feed follows (R-2.1.2) | `standalone carriage return is not a line ending` |
 | Trailing space or tab at end of a non-blank line | `trailing whitespace at end of line` |
 | Deeper-indent under horizontally-completed line | `unexpected deeper-indent line — previous expression is closed for children` |

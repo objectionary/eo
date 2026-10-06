@@ -224,6 +224,33 @@ final class SpanTest {
     }
 
     @Test
+    void countsNoBreakSpacesInIndent() {
+        MatcherAssert.assertThat(
+            "a no-break space in front of the line must count towards the indent",
+            new Span(String.format("%1$s%1$sfoo", Character.toString(0xA0)), 1).indent(),
+            Matchers.equalTo(2)
+        );
+    }
+
+    @Test
+    void detectsNoBreakSpaceInLeadingWhitespace() {
+        MatcherAssert.assertThat(
+            "a no-break space inside the leading-whitespace region must be reported",
+            new Span(String.format("  %sfoo", Character.toString(0xA0)), 1).alien(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void ignoresNoBreakSpaceAfterFirstNonSpace() {
+        MatcherAssert.assertThat(
+            "a no-break space past the line head says nothing about the indent",
+            new Span(String.format("  foo%sbar", Character.toString(0xA0)), 1).alien(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void ignoresTabAfterFirstNonSpace() {
         MatcherAssert.assertThat(
             "a tab past the first non-space character is irrelevant for the indent error",
