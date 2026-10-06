@@ -629,6 +629,19 @@ final class Tokens {
         return idx;
     }
 
+    private ParseError malformed(final int start) {
+        return new ParseError(
+            this.span.line(), this.span.indent() + start, "invalid number literal"
+        );
+    }
+
+    private ParseError exponential(final int start) {
+        return new ParseError(
+            this.span.line(), this.span.indent() + start,
+            "invalid number literal, a float needs a dot before the exponent, as in 1.0e5"
+        );
+    }
+
     private Value readDigits() {
         final int start = this.cursor;
         int idx = start;
@@ -642,16 +655,13 @@ final class Tokens {
             idx = idx + 1;
         }
         if (Tokens.letterAt(this.body, idx)) {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + start,
-                Tokens.malformed(this.body.charAt(idx))
-            );
+            if (this.body.charAt(idx) == 'e' || this.body.charAt(idx) == 'E') {
+                throw this.exponential(start);
+            }
+            throw this.malformed(start);
         }
         if (idx == from) {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + start,
-                "invalid number literal"
-            );
+            throw this.malformed(start);
         }
         this.cursor = idx;
         return new Value(
@@ -727,16 +737,6 @@ final class Tokens {
 
     private static boolean hexDigit(final char glyph) {
         return Tokens.byteDigit(glyph) || glyph >= 'a' && glyph <= 'f';
-    }
-
-    private static String malformed(final char glyph) {
-        final String reason;
-        if (glyph == 'e' || glyph == 'E') {
-            reason = "invalid number literal, a float needs a dot before the exponent, as in 1.0e5";
-        } else {
-            reason = "invalid number literal";
-        }
-        return reason;
     }
 
     private static boolean letterAt(final String body, final int idx) {
@@ -880,10 +880,7 @@ final class Tokens {
             this.cursor = this.cursor + 1;
         }
         if (this.skipDigits() == 0) {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + start,
-                "invalid number literal"
-            );
+            throw this.malformed(start);
         }
     }
 
