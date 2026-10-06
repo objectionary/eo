@@ -66,6 +66,41 @@ final class XmirTest {
     }
 
     @Test
+    void inlinesSimpleArgumentsWhenTheLineFits() throws IOException {
+        for (final String pack : List.of(
+            "pipe-single-object-arguments-inline.yaml",
+            "if-single-object-arguments-inline.yaml"
+        )) {
+            final Xtory xtory = new XtSticky(
+                new XtYaml(
+                    new UncheckedText(
+                        new ResourceOf(
+                            String.join(
+                                "/", "org/eolang/printer/print-packs/yaml", pack
+                            ),
+                            XmirTest.class
+                        )
+                    ).asString()
+                )
+            );
+            final String expected = this.printed(xtory);
+            final Map<PenaltyKey, Integer> config = this.weights(xtory);
+            MatcherAssert.assertThat(
+                "Atomic arguments should use their fitting horizontal form",
+                this.asXmir(
+                    (String) xtory.map().get("origin"), config
+                ).toEO(),
+                Matchers.equalTo(expected)
+            );
+            MatcherAssert.assertThat(
+                "The horizontal form should parse and print the same way",
+                this.asXmir(expected, config).toEO(),
+                Matchers.equalTo(expected)
+            );
+        }
+    }
+
+    @Test
     void printsATreeThatCarriesTwoPackageMetas() {
         MatcherAssert.assertThat(
             "a tree with a second package meta comes from outside the parser, and the first meta alone must build the prefix of a self-reference (#7448)",

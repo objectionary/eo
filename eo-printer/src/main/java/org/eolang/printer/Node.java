@@ -448,6 +448,11 @@ final class Node {
             final Optional<String> flat = this.horizontal(style, indent);
             if (flat.isPresent()
                 && (this.forced() || this.labelled()
+                || (!this.abstractt && !this.test && !"*".equals(this.base)
+                && (this.tail.isEmpty() || this.tail.startsWith(" > "))
+                && this.children.size() > 1
+                && this.children.stream().allMatch(Node::single)
+                && style.fitsWidth(flat.get()))
                 || style.points(flat.get()) <= style.points(best))) {
                 best = flat.get();
             }
@@ -555,6 +560,17 @@ final class Node {
     private boolean nameless() {
         return (this.tail.isEmpty() || " > @".equals(this.tail))
             && this.anonymous();
+    }
+
+    /**
+     * Whether this node is a single literal or name, without a nested
+     * application or formation.
+     *
+     * @return True when this node has no children or suffix of its own
+     */
+    private boolean single() {
+        return !this.abstractt && !this.reversed && this.children.isEmpty()
+            && this.tail.isEmpty();
     }
 
     private boolean marked() {

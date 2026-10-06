@@ -49,27 +49,19 @@
 
   eq. ++> can-format-the-error-message-of-a-fractional-index-in-bounds
     "Index must be an integer, but was 1.500000"
-    "some".at
-      1.5
-      I
+    "some".at 1.5 I
 
   eq. ++> can-format-the-error-message-of-a-negatively-infinite-index
     "Given index -infinity is out of text bounds"
-    "some".at
-      ninf
-      I
+    "some".at ninf I
 
   eq. ++> can-format-the-error-message-of-a-non-finite-index
     "Index must be an integer, but was nan"
-    "some".at
-      nan
-      I
+    "some".at nan I
 
   eq. ++> can-format-the-error-message-of-a-positively-infinite-index
     "Given index infinity is out of text bounds"
-    "some".at
-      pinf
-      I
+    "some".at pinf I
 
   eq. ++> can-recover-from-a-fractional-index-in-bounds
     "recovered"

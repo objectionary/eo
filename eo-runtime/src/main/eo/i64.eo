@@ -168,10 +168,7 @@
           acc
         a.left 1
         bits.right 1
-    | > @
-      00-00-00-00-00-00-00-00
-      num.as-bytes
-      b.as-bytes
+    | 00-00-00-00-00-00-00-00 num.as-bytes b.as-bytes > @
 
   eq. ++> can-add-mixed-signs
     -100.as-i64.plus 42.as-i64

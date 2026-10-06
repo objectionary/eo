@@ -18,9 +18,7 @@ origin: |
 
 printed: |
   [] > shapes
-    rectangle > area
-      3
-      4
+    rectangle 3 4 > area
     width.times height > [width height] > rectangle
     plus. > total
       rectangle 3 4
