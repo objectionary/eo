@@ -112,7 +112,7 @@ final class Tokens {
         }
         final Value value;
         final char first = this.current();
-        if (Tokens.bytesStart(this.body, this.cursor)) {
+        if (new Bytes(this.body, this.cursor, this.span).opens()) {
             value = this.readBytes();
         } else if (first == '"') {
             value = this.readString();
@@ -137,16 +137,11 @@ final class Tokens {
      */
     Value readBytes() {
         final int start = this.cursor;
-        final String raw;
-        if (this.cursor + 1 < this.body.length()
-            && this.body.charAt(this.cursor) == '-'
-            && this.body.charAt(this.cursor + 1) == '-') {
-            this.cursor = this.cursor + 2;
-            raw = "--";
-        } else {
-            raw = this.readPairs(start);
-        }
-        return new Value(Value.Kind.BYTES, raw, this.span.indent() + start);
+        this.cursor = new Bytes(this.body, start, this.span).end();
+        return new Value(
+            Value.Kind.BYTES, this.body.substring(start, this.cursor),
+            this.span.indent() + start
+        );
     }
 
     /**
@@ -629,6 +624,18 @@ final class Tokens {
         return idx;
     }
 
+    /**
+     * Whether the glyph ends the token a reader is on. Shared with
+     * {@link Bytes}, so a BYTES literal owns exactly the characters
+     * every other reader of this class would leave to it.
+     *
+     * @param glyph The character to weigh
+     * @return Terminator flag
+     */
+    static boolean terminates(final char glyph) {
+        return " \t,.|':;!?[]{}()".indexOf(glyph) >= 0;
+    }
+
     private Value readDigits() {
         final int start = this.cursor;
         int idx = start;
@@ -713,30 +720,14 @@ final class Tokens {
         return idx + 1 < body.length() && body.charAt(idx) == '?' && body.charAt(idx + 1) == '.';
     }
 
-    private static boolean bytesStart(final String body, final int idx) {
-        return idx + 1 < body.length()
-            && body.charAt(idx) == '-'
-            && body.charAt(idx + 1) == '-'
-            || Tokens.byteChunk(body, idx);
-    }
-
-    private static boolean byteChunk(final String body, final int idx) {
-        return idx + 2 < body.length() && Tokens.byteDigit(body.charAt(idx))
-            && Tokens.byteDigit(body.charAt(idx + 1)) && body.charAt(idx + 2) == '-';
-    }
-
     private static boolean hexDigit(final char glyph) {
-        return Tokens.byteDigit(glyph) || glyph >= 'a' && glyph <= 'f';
+        return Character.digit(glyph, 16) >= 0;
     }
 
     private static boolean letterAt(final String body, final int idx) {
         return idx < body.length()
             && body.charAt(idx) < 128
             && Character.isLetter(body.charAt(idx));
-    }
-
-    private static boolean byteDigit(final char glyph) {
-        return Tokens.digit(glyph) || glyph >= 'A' && glyph <= 'F';
     }
 
     private static boolean rootStart(final char glyph) {
@@ -774,10 +765,6 @@ final class Tokens {
 
     private static boolean sign(final char glyph) {
         return glyph == '+' || glyph == '-';
-    }
-
-    private static boolean terminates(final char glyph) {
-        return " \t,.|':;!?[]{}()".indexOf(glyph) >= 0;
     }
 
     private static boolean cactus(final String text) {
@@ -895,7 +882,7 @@ final class Tokens {
                 "horizontal formation not allowed as argument"
             );
         }
-        if (this.oddHexRun()) {
+        if (new Bytes(this.body, this.cursor, this.span).odd()) {
             throw new ParseError(
                 this.span.line(), this.span.indent() + this.cursor,
                 "invalid bytes literal"
@@ -922,47 +909,6 @@ final class Tokens {
     private Value reserved(final Value.Kind kind, final String raw) {
         this.cursor = this.cursor + 1;
         return new Value(kind, raw, this.span.indent() + this.cursor - 1);
-    }
-
-    private String readPairs(final int start) {
-        if (!this.bytePair(this.cursor)) {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + start,
-                "invalid bytes literal"
-            );
-        }
-        this.cursor = this.cursor + 2;
-        while (this.cursor < this.body.length()
-            && this.body.charAt(this.cursor) == '-'
-            && this.bytePair(this.cursor + 1)) {
-            this.cursor = this.cursor + 3;
-        }
-        if (this.cursor < this.body.length() && this.body.charAt(this.cursor) == '-') {
-            if (this.cursor - start > 2) {
-                throw new ParseError(
-                    this.span.line(), this.span.indent() + this.cursor,
-                    "bytes literal ends with a dangling continuation dash"
-                );
-            }
-            this.cursor = this.cursor + 1;
-        }
-        return this.body.substring(start, this.cursor);
-    }
-
-    private boolean oddHexRun() {
-        int idx = this.cursor;
-        while (idx < this.body.length() && Tokens.byteDigit(this.body.charAt(idx))) {
-            idx = idx + 1;
-        }
-        return idx > this.cursor
-            && idx < this.body.length()
-            && this.body.charAt(idx) == '-';
-    }
-
-    private boolean bytePair(final int idx) {
-        return idx + 1 < this.body.length()
-            && Tokens.byteDigit(this.body.charAt(idx))
-            && Tokens.byteDigit(this.body.charAt(idx + 1));
     }
 
     private boolean plusArrow() {

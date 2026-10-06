@@ -1,0 +1,42 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The root is data the atom computed, and inference says the body may be an
+# "i64", which is no number, string, bool or bytes. The atom would return the
+# bytes of that "i64" bare, without the object around them, so the entry
+# stays in EO.
+locator: Φ.pick
+number: 1
+taint: The root 𝜎4 of the entry 1 is bare data, while inference says Φ.pick returns Φ.i64, and bare data would lose the object around it
+eo:
+  pick.eo: |
+    [c] > pick
+      c.if "yes" 5 > @
+voids:
+  - "𝜎1\t1\tc\tbool"
+links: |
+  <links>
+    <type id="Φ.pick.φ">
+      <ref loc="Φ.string"/>
+      <ref loc="Φ.i64"/>
+    </type>
+  </links>
+protocol: |
+  <protocol>
+    <morph at="Φ.l🌵.e1">
+      <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e1"/>
+      <evaluate λ="L_root" by="morph" at="Φ.l🌵.e1">
+        <evaluate λ="L_fork" by="dataize" at="Φ.a🌵1">
+          <dataize meta="𝛿1.2">𝜎1:λ</dataize>
+          <known symbol="𝜎2">79-65-73</known>
+          <known symbol="𝜎3">40-14-00-00-00-00-00-00</known>
+          <joined symbol="𝜎4">𝜎2 𝜎3</joined>
+        </evaluate>
+        <dataize meta="𝛿1.3">𝜎4:λ</dataize>
+      </evaluate>
+    </morph>
+    <msec>100</msec>
+    <firings>3</firings>
+    <fps>30</fps>
+  </protocol>

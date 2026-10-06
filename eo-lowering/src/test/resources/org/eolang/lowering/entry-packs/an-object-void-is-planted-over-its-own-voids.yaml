@@ -21,12 +21,6 @@ provides: |
         holds="Φ.tuple"/>
     </type>
   </provides>
-links: |
-  <links>
-    <type id="Φ.uses.φ">
-      <ref loc="Φ.string"/>
-    </type>
-  </links>
 xmir:
   - "//o[@name='e1']/o[@as='v']/o[@as='p' and @base='Φ.string.printf']"
   - "//o[@as='p']/o[@as='fmt' and @base='Φ.string']/o[@as='φ']/o[@as='φ']\

@@ -11,6 +11,12 @@ eo:
     [] > number
       [] > neg
         ^.times -1 > @
+links: |
+  <links>
+    <type id="Φ.number.neg.φ">
+      <ref loc="Φ.number"/>
+    </type>
+  </links>
 protocol: |
   <protocol>
     <morph at="Φ.l🌵.e217">

@@ -17,12 +17,6 @@ provides: |
       <attr name="next" type="Φ.node.next" void="true" holds="Φ.node"/>
     </type>
   </provides>
-links: |
-  <links>
-    <type id="Φ.uses.φ">
-      <ref loc="Φ.number"/>
-    </type>
-  </links>
 xmir:
   - "//o[@name='e1']/o[@as='v']/o[@as='p' and @base='Φ.node']\
     /o[@as='v' and @base='Φ.number']"

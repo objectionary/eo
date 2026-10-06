@@ -10,12 +10,6 @@ eo:
   gap.eo: |
     [a b] > gap
       a.plus b > @
-links: |
-  <links>
-    <type id="Φ.gap.φ">
-      <ref loc="Φ.number"/>
-    </type>
-  </links>
 xmir:
   - "/object/o[@name='l🌵']/o[@name='mark']/o[@name='λ' and text()='L_entry']"
   - "/object/o[@name='l🌵']/o[@name='root']/o[@name='λ' and text()='L_root']"
