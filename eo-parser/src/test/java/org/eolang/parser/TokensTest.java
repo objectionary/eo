@@ -67,7 +67,7 @@ final class TokensTest {
             "readInt must not take an unsigned digit run glued to a letter for a number",
             Assertions.assertThrows(
                 ParseError.class,
-                () -> new Tokens("1foo", new Span("1foo", 1)).readInt()
+                new Tokens("1foo", new Span("1foo", 1))::readInt
             ).getMessage(),
             Matchers.containsString("invalid number literal")
         );
@@ -79,7 +79,7 @@ final class TokensTest {
             "readInt must tell that a float needs a dot before its exponent",
             Assertions.assertThrows(
                 ParseError.class,
-                () -> new Tokens("1e5", new Span("1e5", 1)).readInt()
+                new Tokens("1e5", new Span("1e5", 1))::readInt
             ).getMessage(),
             Matchers.containsString("a float needs a dot before the exponent, as in 1.0e5")
         );
@@ -91,7 +91,7 @@ final class TokensTest {
             "readNumber must blame the number itself when the exponent is empty",
             Assertions.assertThrows(
                 ParseError.class,
-                () -> new Tokens("1.5e", new Span("1.5e", 1)).readNumber()
+                new Tokens("1.5e", new Span("1.5e", 1))::readNumber
             ).getMessage(),
             Matchers.containsString("invalid number literal")
         );
