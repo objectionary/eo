@@ -236,7 +236,7 @@ final class SpanTest {
     void detectsNoBreakSpaceInLeadingWhitespace() {
         MatcherAssert.assertThat(
             "a no-break space inside the leading-whitespace region must be reported",
-            new Span(String.format("  %sfoo", Character.toString(0xA0)), 1).alien(),
+            new Span("  ".concat(Character.toString(0xA0)).concat("foo"), 1).alien(),
             Matchers.is(true)
         );
     }
@@ -245,7 +245,7 @@ final class SpanTest {
     void ignoresNoBreakSpaceAfterFirstNonSpace() {
         MatcherAssert.assertThat(
             "a no-break space past the line head says nothing about the indent",
-            new Span(String.format("  foo%sbar", Character.toString(0xA0)), 1).alien(),
+            new Span("  foo".concat(Character.toString(0xA0)).concat("bar"), 1).alien(),
             Matchers.is(false)
         );
     }
