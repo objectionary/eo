@@ -54,8 +54,12 @@
             right
             index.plus 1
           ^.smaller one two 7
-    left.slice index 1 > one
-    right.slice index 1 > two
+    left.slice > one
+      index
+      1
+    right.slice > two
+      index
+      1
   eq. > closed
     os.is-windows.if
       win32.find-close opened.code
@@ -83,7 +87,10 @@
     rest.length.eq 0
     * item
     if.
-      ^.ahead item.as-bytes rest.head.as-bytes 0
+      ^.ahead
+        item.as-bytes
+        rest.head.as-bytes
+        0
       with.
         ^.inserted rest.tail item
         rest.head

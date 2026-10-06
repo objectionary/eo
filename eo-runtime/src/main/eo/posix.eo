@@ -19,7 +19,9 @@
   [] > access /Q.number
     ? > path /Q.string
     ? > mode /Q.number
-  os.is-macos.if 8 1024 > append
+  os.is-macos.if > append
+    8
+    1024
   [] > bind /Q.number
     ? > descriptor /Q.number
     ? > sockaddr /Q.posix.sockaddr-in
@@ -32,18 +34,26 @@
     ? > descriptor /Q.number
     ? > sockaddr /Q.posix.sockaddr-in
     ? > length /Q.number
-  os.is-macos.if 512 64 > creat
+  os.is-macos.if > creat
+    512
+    64
   [code name] > dir-return
-    posix.dir-return code name > called
+    posix.dir-return > called
+      code
+      name
   17 > eexist
   22 > einval
   2 > enoent
   [] > errno /Q.number
-  os.is-macos.if 2048 128 > exclusive
+  os.is-macos.if > exclusive
+    2048
+    128
   [] > getenv /Q.posix.getenv-return
     ? > name /Q.string
   [code value] > getenv-return
-    posix.getenv-return code value > called
+    posix.getenv-return > called
+      code
+      value
   [] > getpid /Q.number
   [] > gettimeofday /Q.posix.time-return
   2 > inet
@@ -74,7 +84,9 @@
     ? > size /Q.number
   [code data] > read-return
     data > @
-    posix.read-return code data > called
+    posix.read-return > called
+      code
+      data
   [] > readdir /Q.posix.dir-return
     ? > dirp /Q.number
   [] > recv /Q.posix.read-return
@@ -105,9 +117,14 @@
   [] > stat /Q.posix.stat-return
     ? > path /Q.string
   [code mode size] > stat-return
-    posix.stat-return code mode size > called
+    posix.stat-return > called
+      code
+      mode
+      size
   [code message] > status-return
-    posix.status-return code message > called
+    posix.status-return > called
+      code
+      message
   2 > stderr
   0 > stdin
   1 > stdout
@@ -119,8 +136,13 @@
     ? > path /Q.string
   6 > tcp
   [code seconds micros] > time-return
-    posix.time-return code seconds micros > called
-  os.is-macos.if 1024 512 > trunc
+    posix.time-return > called
+      code
+      seconds
+      micros
+  os.is-macos.if > trunc
+    1024
+    512
   [] > unlink /Q.posix.status-return
     ? > path /Q.string
   4294967295 > unresolved
@@ -146,7 +168,10 @@
 
   ++> can-compute-the-size-of-a-sockaddr-in
     addr.size.eq 16 > @
-    posix.sockaddr-in 00-00 00-00 00-00-00-00 > addr
+    posix.sockaddr-in > addr
+      00-00
+      00-00
+      00-00-00-00
 
   os.is-windows.or ++> can-convert-the-limited-broadcast-address-without-an-error
     seq *
@@ -202,7 +227,10 @@
         posix.close fd
         fd.gt -1
     code. > fd
-      posix.open "/dev/null" 0 0
+      posix.open
+        "/dev/null"
+        0
+        0
 
   os.is-windows.or ++> can-report-an-address-it-cannot-convert-as-invalid
     seq *
@@ -236,7 +264,9 @@
       posix.unresolved
 
   eq. ++> can-stand-for-the-bytes-a-read-returned
-    posix.read-return 3 D0-B6-21
+    posix.read-return
+      3
+      D0-B6-21
     D0-B6-21
 
   ++> can-stat-the-size-of-dev-null
@@ -246,7 +276,10 @@
 
   ++> can-store-seconds-in-a-time-return
     tv.seconds.eq 5 > @
-    posix.time-return 0 5 100 > tv
+    posix.time-return > tv
+      0
+      5
+      100
 
   posix.send --> stops-on-send-size-exceeding-buffer-length
     0
@@ -258,16 +291,28 @@
     os.is-windows.if > @
       1.div 0
       seq *
-        posix.write fd "ab" -1
+        posix.write
+          fd
+          "ab"
+          -1
         true
     code. > fd
-      posix.open "/dev/null" posix.wronly 0
+      posix.open
+        "/dev/null"
+        posix.wronly
+        0
 
   --> stops-on-write-size-exceeding-buffer-length
     os.is-windows.if > @
       1.div 0
       seq *
-        posix.write fd "ab" 4096
+        posix.write
+          fd
+          "ab"
+          4096
         true
     code. > fd
-      posix.open "/dev/null" posix.wronly 0
+      posix.open
+        "/dev/null"
+        posix.wronly
+        0

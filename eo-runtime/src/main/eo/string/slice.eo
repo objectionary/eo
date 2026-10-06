@@ -230,47 +230,69 @@
     "Ф"
 
   eq. ++> can-slice-an-empty-string
-    "".slice 0 0
+    "".slice
+      0
+      0
     ""
 
   eq. ++> can-slice-at-the-end-with-a-zero-length
-    "hello".slice 5 0
+    "hello".slice
+      5
+      0
     ""
 
   eq. ++> can-slice-foreign-literals
-    "hello, 大家!".slice 7 1
+    "hello, 大家!".slice
+      7
+      1
     "大"
 
   eq. ++> can-slice-four-byte-characters
-    "One 😀 and 😀 another".slice 3 8
+    "One 😀 and 😀 another".slice
+      3
+      8
     " 😀 and 😀"
 
   eq. ++> can-slice-from-the-end
-    "hello".slice 4 1
+    "hello".slice
+      4
+      1
     "o"
 
   eq. ++> can-slice-from-the-start
-    "hello".slice 0 1
+    "hello".slice
+      0
+      1
     "h"
 
   eq. ++> can-slice-in-the-middle
-    "hello".slice 2 3
+    "hello".slice
+      2
+      3
     "llo"
 
   eq. ++> can-slice-nothing
-    "no slice".slice 0 0
+    "no slice".slice
+      0
+      0
     ""
 
   eq. ++> can-slice-the-origin-string
-    "Hello, world!".slice 7 5
+    "Hello, world!".slice
+      7
+      5
     "world"
 
   eq. ++> can-slice-three-byte-characters
-    "The अ is अ".slice 1 6
+    "The अ is अ".slice
+      1
+      6
     "he अ i"
 
   eq. ++> can-slice-two-byte-characters
-    "привет".slice 1 2
+    "привет".slice
+      1
+      2
     "ри"
 
   slice. --> rejects-a-non-continuation-after-a-three-byte-lead-when-slicing

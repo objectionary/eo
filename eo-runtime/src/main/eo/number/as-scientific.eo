@@ -52,7 +52,9 @@
   carried.as-bool.if > normalized!
     "-1.000000".as-bytes
     "1.000000".as-bytes
-  rec-exponent scaled.abs 0 > raw!
+  rec-exponent > raw!
+    scaled.abs
+    0
   if. > [^ m count] >> rec-exponent
     or.
       m.eq 0
@@ -73,7 +75,9 @@
   tiny.as-bool.if > scaled
     num.times boost
     num
-  tiny.as-bool.if 300 0 > shift!
+  tiny.as-bool.if > shift!
+    300
+    0
   and. > tiny!
     num.abs.lt
       1.div boost

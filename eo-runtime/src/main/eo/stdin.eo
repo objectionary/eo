@@ -58,7 +58,10 @@
                 buffer.concat eol!
                 scan.line
             false
-    | stream.line-or-eof "" true > @
+    | > @
+      stream.line-or-eof
+      ""
+      true
   [] > line-or-eof
     first.as-bytes.size.eq 0 > eof
     @. > first

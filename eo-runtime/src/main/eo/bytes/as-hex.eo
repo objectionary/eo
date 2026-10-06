@@ -39,7 +39,9 @@
             digit
               byte.and 0F-
       acc
-  | 0 -- > @
+  | > @
+    0
+    --
 
   eq. ++> can-write-a-single-byte
     "41"

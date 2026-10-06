@@ -213,7 +213,9 @@
     00-00-00-00-00-00-00-00
 
   eq. ++> can-take-a-part-of-bytes
-    20-1F-EE-B5-90.slice 1 3
+    20-1F-EE-B5-90.slice
+      1
+      3
     1F-EE-B5
 
   eq. ++> can-turn-bytes-into-a-string
