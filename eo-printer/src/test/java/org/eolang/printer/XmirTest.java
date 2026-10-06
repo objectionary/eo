@@ -67,6 +67,8 @@ final class XmirTest {
 
     @Test
     void inlinesSimpleArgumentsWhenTheLineFits() throws IOException {
+        final List<String> actual = new ArrayList<>(4);
+        final List<String> expected = new ArrayList<>(4);
         for (final String pack : List.of(
             "pipe-single-object-arguments-inline.yaml",
             "if-single-object-arguments-inline.yaml"
@@ -83,21 +85,24 @@ final class XmirTest {
                     ).asString()
                 )
             );
-            final String expected = this.printed(xtory);
+            final String printed = this.printed(xtory);
             final Map<PenaltyKey, Integer> config = this.weights(xtory);
-            MatcherAssert.assertThat(
-                "Atomic arguments should use their fitting horizontal form",
+            expected.add(printed);
+            actual.add(
                 this.asXmir(
                     (String) xtory.map().get("origin"), config
-                ).toEO(),
-                Matchers.equalTo(expected)
+                ).toEO()
             );
-            MatcherAssert.assertThat(
-                "The horizontal form should parse and print the same way",
-                this.asXmir(expected, config).toEO(),
-                Matchers.equalTo(expected)
+            expected.add(printed);
+            actual.add(
+                this.asXmir(printed, config).toEO()
             );
         }
+        MatcherAssert.assertThat(
+            "Atomic arguments should fit one line and print stably",
+            actual,
+            Matchers.equalTo(expected)
+        );
     }
 
     @Test
