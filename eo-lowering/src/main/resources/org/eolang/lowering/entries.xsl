@@ -86,17 +86,18 @@
   goes by its place is out too: "eo:dealpha" found no void to name that
   argument after, and the calculus has no step to a place, so there is no
   path to walk to the formation. The last two reasons are about the type
-  of the body, which must be a number, a string or a bool, as
+  of the body, which must be a number, a string, a bool or bytes, as
   "eo:returns" reads it off the tables. The Java atom of an entry gives
   back the data of the body, and nothing else, so for a body of any other
   type, an "i16" for example, the atom would lose the object around that
-  data. A body the tables say nothing about is left out as well, for the
-  same reason.
+  data. Bytes lose nothing, since the atom gives its data back as bytes. A
+  body the tables say nothing about is left out as well, for the same
+  reason.
   -->
   <xsl:function name="eo:reason" as="xs:string">
     <xsl:param name="o" as="element(o)"/>
     <xsl:variable name="types" as="xs:string*" select="eo:returns(string($o/@loc))"/>
-    <xsl:sequence select="if (exists($o/o[@name = 'λ'])) then 'atom' else if (empty($o/o[@name = 'φ'][not(@base = '∅')])) then 'bodiless' else if (not(eo:walkable(eo:path($o)))) then 'placed' else if (empty($types)) then 'untyped' else if (some $t in $types satisfies not($t = ('Φ.number', 'Φ.string', 'Φ.bool', 'Φ.true', 'Φ.false'))) then 'typed' else ''"/>
+    <xsl:sequence select="if (exists($o/o[@name = 'λ'])) then 'atom' else if (empty($o/o[@name = 'φ'][not(@base = '∅')])) then 'bodiless' else if (not(eo:walkable(eo:path($o)))) then 'placed' else if (empty($types)) then 'untyped' else if (some $t in $types satisfies not($t = ('Φ.number', 'Φ.string', 'Φ.bool', 'Φ.true', 'Φ.false', 'Φ.bytes'))) then 'typed' else ''"/>
   </xsl:function>
   <!--
   The path the calculus walks to reach an object, one step per ancestor: the
