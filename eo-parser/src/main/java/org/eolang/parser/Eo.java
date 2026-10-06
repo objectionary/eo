@@ -42,6 +42,14 @@ final class Eo implements Iterable<Directive> {
     static final String ALIEN = "invalid character in leading whitespace";
 
     /**
+     * What an only-phi line with nothing in front of its arrow is told,
+     * whether the line reaches {@link LnOnlyPhi} or is turned away by the
+     * classifier before that.
+     */
+    static final String HEADLESS =
+        "only-phi formation requires a non-empty body before `> [` or `++>`";
+
+    /**
      * What a line with a space at its end is told, wherever it is written.
      */
     private static final String TRAILING = "trailing whitespace at end of line";
@@ -468,6 +476,8 @@ final class Eo implements Iterable<Directive> {
             reason = "cactus emoji is reserved for auto-names; not allowed as a line head";
         } else if (Eo.bytesAttempt(span)) {
             reason = "invalid bytes literal";
+        } else if (Eo.topLevelGreaterBracketIndex(span.body()) == 0) {
+            reason = Eo.HEADLESS;
         } else {
             reason = "line head does not start any known object shape";
         }

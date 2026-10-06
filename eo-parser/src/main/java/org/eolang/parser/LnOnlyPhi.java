@@ -136,7 +136,7 @@ final class LnOnlyPhi implements Line {
         if (lhs.isEmpty()) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
-                "only-phi formation requires a non-empty body before `> [` or `++>`"
+                Eo.HEADLESS
             );
         }
         if (suffix.atom()) {
