@@ -621,6 +621,10 @@
       <xsl:with-param name="indent" select="$indent"/>
       <xsl:with-param name="rho" select="$rho"/>
     </xsl:apply-templates>
+    <xsl:apply-templates select="." mode="literal">
+      <xsl:with-param name="name" select="$name"/>
+      <xsl:with-param name="indent" select="$indent"/>
+    </xsl:apply-templates>
     <xsl:apply-templates select="." mode="again">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
@@ -629,6 +633,29 @@
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent"/>
     </xsl:apply-templates>
+  </xsl:template>
+  <!-- Shortcut only an exact literal shape whose bytes are already known. -->
+  <xsl:template match="*" mode="literal">
+    <xsl:param name="indent"/>
+    <xsl:param name="name"/>
+    <xsl:variable name="direct">
+      <xsl:value-of select="$phiDefaultClass='PhDefault' and not(@level) and @base='Φ.bytes' and not(o) and count(value)=1"/>
+    </xsl:variable>
+    <xsl:variable name="nested">
+      <xsl:value-of select="$phiDefaultClass='PhDefault' and not(@level) and not(value) and (@base='Φ.number' or @base='Φ.string') and count(o)=1 and o[1][not(@level) and @base='Φ.bytes' and not(o) and count(value)=1 and (not(@as) or @as='α0' or @as='φ')]"/>
+    </xsl:variable>
+    <xsl:if test="$direct='true' or $nested='true'">
+      <xsl:value-of select="eo:eol($indent)"/>
+      <xsl:value-of select="$name"/>
+      <xsl:text> = new PhLiteral(</xsl:text>
+      <xsl:value-of select="$name"/>
+      <xsl:text>, </xsl:text>
+      <xsl:choose>
+        <xsl:when test="$direct='true'"><xsl:value-of select="value/text()"/></xsl:when>
+        <xsl:otherwise><xsl:value-of select="o[1]/value/text()"/></xsl:otherwise>
+      </xsl:choose>
+      <xsl:text>);</xsl:text>
+    </xsl:if>
   </xsl:template>
   <!-- Attribute body: method object (starts with .) -->
   <xsl:template match="o[starts-with(@base, '.') and *]" mode="object">

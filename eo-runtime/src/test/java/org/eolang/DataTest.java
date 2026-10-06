@@ -4,6 +4,7 @@
  */
 package org.eolang;
 
+import java.nio.charset.StandardCharsets;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link Data}.
@@ -62,6 +64,84 @@ final class DataTest {
             "Fractional number must render with its decimals in φ-term, but it didnt",
             new Data.ToPhi(2.5d).φTerm(),
             Matchers.equalTo("2.5")
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(doubles = {42.0, 0.0, -0.0})
+    void dataizesFiniteNumbersToTheirOriginalBytes(final double value) {
+        Assertions.assertArrayEquals(
+            new BytesOf(value).take(), new Dataized(new Data.ToPhi(value)).take(),
+            "finite number bytes must remain unchanged"
+        );
+    }
+
+    @Test
+    void dataizesUnicodeString() {
+        final String text = "雪だるま ☃";
+        Assertions.assertArrayEquals(
+            text.getBytes(StandardCharsets.UTF_8),
+            new Dataized(new Data.ToPhi(text)).take(),
+            "Unicode string bytes must remain UTF-8"
+        );
+    }
+
+    @Test
+    void isolatesByteArrayInputAndOutput() {
+        final byte[] source = {1, 2, 3};
+        final Phi data = new Data.ToPhi(source);
+        source[0] = 9;
+        final byte[] first = new Dataized(data).take();
+        first[1] = 9;
+        Assertions.assertArrayEquals(
+            new byte[] {1, 2, 3}, new Dataized(data).take(),
+            "Data.ToPhi must isolate both input and returned arrays"
+        );
+    }
+
+    @Test
+    void keepsSpecialNumberObjectsOnNamedRoots() {
+        MatcherAssert.assertThat(
+            "special numbers must retain their named roots",
+            Stream.of(
+                Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY
+            ).map(number -> new Data.ToPhi(number).φTerm()).toList(),
+            Matchers.contains("nan", "pinf", "ninf")
+        );
+    }
+
+    @Test
+    void exposesLiteralWrapperOnlyForFiniteData() {
+        MatcherAssert.assertThat(
+            "only finite scalar data must expose the literal wrapper",
+            Stream.of(
+                new Data.ToPhi(42L),
+                new Data.ToPhi("text"),
+                new Data.ToPhi(new byte[] {1}),
+                new Data.ToPhi(true),
+                new Data.ToPhi(Double.NaN)
+            ).map(Phi::copy).map(PhLiteral.class::isInstance).toList(),
+            Matchers.contains(true, true, true, false, false)
+        );
+    }
+
+    @Test
+    void keepsNumberObjectOperationsAfterCopying() {
+        final Phi original = new Data.ToPhi(42L);
+        final Phi copy = original.copy();
+        MatcherAssert.assertThat(
+            "a copied number must preserve its delegated object operations",
+            Stream.<Object>of(
+                copy.forma(), copy.needsRho(), copy.φTerm(),
+                copy.take("as-decimal").φTerm(), copy.normalized().φTerm()
+            ).toList(),
+            Matchers.equalTo(
+                Stream.<Object>of(
+                    original.forma(), original.needsRho(), original.φTerm(),
+                    original.take("as-decimal").φTerm(),
+                    original.normalized().φTerm()
+                ).toList()
+            )
         );
     }
 
