@@ -1,27 +1,27 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# The root reads a symbol no firing minted and no void is, so there is no
-# Java to compute it with.
+# yamllint disable rule:line-length
+# The root is a number the atom computed, which the atom would return bare,
+# and inference does not say what the body is. Were it an "i16", the bare
+# number would lose the object around it, so the entry stays in EO.
 locator: Φ.number.neg
 number: 217
-taint: The symbol 𝜎200 of the entry 217 is read, while nothing defines it
+taint: The root 𝜎752 of the entry 217 is bare data, while inference does not say what Φ.number.neg returns
 eo:
   number.eo: |
     [] > number
       [] > neg
         ^.times -1 > @
-links: |
-  <links>
-    <type id="Φ.number.neg.φ">
-      <ref loc="Φ.number"/>
-    </type>
-  </links>
+voids:
+  - "𝜎200\t217\tρ\tnumber"
 protocol: |
   <protocol>
     <morph at="Φ.l🌵.e217">
       <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e217">
         <evaluate λ="L_number_times" by="morph" at="Φ.a🌵1">
+          <dataize meta="𝛿1.2">𝜎200:λ</dataize>
+          <bind meta="𝛿2.2">BF-F0-00-00-00-00-00-00</bind>
           <minted symbol="𝜎752">𝜎200 BF-F0-00-00-00-00-00-00</minted>
         </evaluate>
       </evaluate>
@@ -29,7 +29,7 @@ protocol: |
         <dataize meta="𝛿1.3">𝜎752:λ</dataize>
       </evaluate>
     </morph>
-    <msec>103</msec>
+    <msec>113</msec>
     <firings>3</firings>
-    <fps>29</fps>
+    <fps>26</fps>
   </protocol>

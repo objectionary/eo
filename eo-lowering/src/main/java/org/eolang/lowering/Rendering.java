@@ -21,6 +21,7 @@ import org.cactoos.Proc;
 import org.cactoos.Text;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.list.ListOf;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
 
@@ -67,6 +68,15 @@ import org.cactoos.text.TextOf;
  * the top object only, so two entries may ask for one class. Each of them
  * is a taint then, since javac would find only one of the two.</p>
  *
+ * <p>The atom gives back the result of the body as the object it is when
+ * that result is a copy of another object, and as plain data when the atom
+ * computed it. Plain data has no object around it, so an {@code i16}, for
+ * example, would lose every attribute of its own. This is why, when the
+ * result is plain data, this stage asks the tables of {@code eo:inference}
+ * what the body gives, and an entry whose body is not a number, a string,
+ * a bool or bytes is a taint. The tables must be there before the stage
+ * starts, even though most entries never ask them.</p>
+ *
  * @since 0.64.0
  * @todo #8548:30min Write an atom for an entry whose result is always the
  *  same. When the result of the body is known bytes, like an object that
@@ -82,7 +92,7 @@ final class Rendering implements Proc<Path> {
 
     /**
      * The directory with the tables of {@code eo:inference}, which say what
-     * an object copied by a deferred symbol returns.
+     * the body of an entry gives.
      */
     private final Path tables;
 
@@ -99,6 +109,16 @@ final class Rendering implements Proc<Path> {
 
     @Override
     public void exec(final Path home) throws IOException {
+        for (final String table : new ListOf<>("provides.xml", "links.xml", "atoms.xml")) {
+            if (!Files.exists(this.tables.resolve(table))) {
+                throw new IllegalStateException(
+                    String.format(
+                        "There is no '%s' in '%s', while rendering needs the tables of eo:inference to say what a body gives",
+                        table, this.tables
+                    )
+                );
+            }
+        }
         final Path entries = home.resolve("entries.tsv");
         if (!Files.exists(entries)) {
             throw new IllegalStateException(

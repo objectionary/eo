@@ -14,6 +14,12 @@ eo:
         (^.eq FF-).if true false > @
 voids:
   - "𝜎10\t8\tρ\tbytes"
+provides: |
+  <provides>
+    <type complete="false" id="Φ.bytes.as-bool" reduced="Φ.bool">
+      <attr name="φ" type="Φ.bytes.as-bool.φ"/>
+    </type>
+  </provides>
 protocol: |
   <protocol>
     <morph at="Φ.l🌵.e8">

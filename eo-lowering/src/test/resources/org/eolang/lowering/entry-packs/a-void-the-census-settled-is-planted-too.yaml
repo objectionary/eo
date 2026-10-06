@@ -15,12 +15,6 @@ provides: |
       <attr name="a" type="Φ.gap.a" void="true" settled="Φ.number"/>
     </type>
   </provides>
-links: |
-  <links>
-    <type id="Φ.gap.φ">
-      <ref loc="Φ.number"/>
-    </type>
-  </links>
 xmir:
   - "//o[@name='e1']/o[@as='v']/o[@as='a' and @base='Φ.number']\
     /o[@as='φ' and @base='Φ.bytes']/o[@as='φ']/o[@name='λ' and text()='𝜎1']"
