@@ -51,3 +51,8 @@
     "some"
     "-".joined
       * "some"
+
+  ++> can-use-a-joined-string-as-a-string
+    4.eq joined.length > @
+    "-".joined > joined
+      * "some"

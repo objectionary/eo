@@ -78,6 +78,6 @@ java: |
       public Phi lambda() {
           final byte[] s2 = new Dataized(this.take("ρ").take("parts").take("head")).take();
           final byte[] s4 = java.nio.ByteBuffer.allocate(s2.length + new byte[] {(byte) 0x2F}.length).put(s2).put(new byte[] {(byte) 0x2F}).array();
-          return new Data.ToPhi(s4);
+          return new Data.ToPhi(new String(s4, java.nio.charset.StandardCharsets.UTF_8));
       }
   }

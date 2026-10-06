@@ -248,7 +248,10 @@
           <xsl:value-of select="concat('        return ', eo:object($root), ';&#10;')"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="concat(eo:block($at, (), 2), '        return ', eo:value($root, 'Phi'), ';&#10;')"/>
+          <xsl:variable name="body-types" select="eo:returns($locator)"/>
+          <xsl:variable name="returns-string" select="exists($body-types) and (every $type in $body-types satisfies $type = 'Φ.string')"/>
+          <xsl:variable name="answer" select="if (eo:type($root) = 'byte[]' and $returns-string) then concat('new Data.ToPhi(new String(', eo:value($root, 'byte[]'), ', java.nio.charset.StandardCharsets.UTF_8))') else eo:value($root, 'Phi')"/>
+          <xsl:value-of select="concat(eo:block($at, (), 2), '        return ', $answer, ';&#10;')"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
