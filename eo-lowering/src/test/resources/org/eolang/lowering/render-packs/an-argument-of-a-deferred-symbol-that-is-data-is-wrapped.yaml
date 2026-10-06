@@ -3,9 +3,7 @@
 ---
 # yamllint disable rule:line-length
 # An argument of the copy that the atom computes, and not a void, is data,
-# so it is wrapped back into an object before the copy takes it. The copy
-# returns what the atom "Φ.number.plus" gives, which inference says is a
-# number.
+# so it is wrapped back into an object before the copy takes it.
 locator: Φ.joined
 number: 54
 eo:
@@ -23,14 +21,10 @@ voids:
   - "𝜎55\t54\titems.tail\ttuple"
 links: |
   <links>
-    <type id="Φ.joined.with-delimiter.φ">
-      <ref loc="Φ.number.plus"/>
+    <type id="Φ.joined.φ">
+      <ref loc="Φ.string"/>
     </type>
   </links>
-atoms: |
-  <atoms>
-    <atom forma="Φ.number" loc="Φ.number.plus"/>
-  </atoms>
 protocol: |
   <protocol>
     <morph at="Φ.l🌵.e54">
@@ -78,13 +72,13 @@ java: |
       public Phi lambda() {
           final byte[] s53 = new Dataized(this.take("ρ").take("items").take("length")).take();
           final boolean s133 = java.util.Arrays.equals(s53, new byte[] {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00});
-          final byte[] s136;
+          final Phi s136;
           if (s133) {
-              s136 = new byte[0];
+              s136 = new Data.ToPhi(new byte[0]);
           } else {
               final Phi s134 = new PhApplication(this.take("ρ").take("with-delimiter"), new Bind("acc", new Data.ToPhi(s133)), new Bind("tup", this.take("ρ").take("items").take("tail")));
-              s136 = new Dataized(s134).take();
+              s136 = s134;
           }
-          return new Data.ToPhi(s136);
+          return s136;
       }
   }

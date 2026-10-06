@@ -15,6 +15,12 @@ eo:
         ^.as-bytes.size > @
 voids:
   - "𝜎27\t46\tρ\tnumber"
+links: |
+  <links>
+    <type id="Φ.number.width.φ">
+      <ref loc="Φ.number"/>
+    </type>
+  </links>
 protocol: |
   <protocol>
     <morph at="Φ.l🌵.e46">

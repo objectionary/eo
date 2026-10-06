@@ -17,16 +17,20 @@
   assigns, and a deferred one is the copy of an object of the entry with
   its arguments bound, which phino left for the run to work out. A looped
   one, which phino answered when it cut a loop, is the same. The copy is
-  made where phino defers it, and dataized only where it is read as data:
-  in a join, in an operand of a λ, or as the root. A copy is allowed only
-  when the tables of "eo:inference" say that the object returns a number, a
-  string, a bool or bytes, since dataizing any other object may do what EO
-  never does there. A statement is placed as deep inside the branches as
-  all of its readers let it, so that what one branch alone needs is
-  computed in that branch alone. The symbols are walked from the highest
-  number down, since phino mints a symbol only after the symbols it is made
-  of, so by the time a symbol is reached every symbol that reads it has
-  already said where it is read.
+  made where phino defers it, and dataized only where a λ reads it as an
+  operand, since phino read it as data right there. A join with a copy in
+  one branch holds the object of the branch taken, and the data of the
+  other branch is wrapped back into an object. The root is returned as the
+  object it is when it is a void or a copy, and bare when it is data the
+  atom computed. Bare data loses the object around it, so then the tables
+  of "eo:inference" are asked what the body returns, and an entry whose
+  body is not a number, a string, a bool or bytes is a taint: an "i16",
+  for example, would lose every attribute of its own. A statement is
+  placed as deep inside the branches as all of its readers let it, so that
+  what one branch alone needs is computed in that branch alone. The
+  symbols are walked from the highest number down, since phino mints a
+  symbol only after the symbols it is made of, so by the time a symbol is
+  reached every symbol that reads it has already said where it is read.
   An entry whose protocol defines one symbol twice is a taint, since phino
   promises to mint every symbol once and the atom could not tell which of
   the two values a reader of the symbol means.
@@ -51,8 +55,8 @@
   <xsl:param name="voids" as="xs:string" select="''"/>
   <!--
   The directory with the tables of "eo:inference", as a URI. The tables are
-  opened only when an entry has a deferred symbol, since the table of
-  eo-runtime is large and most entries have none.
+  opened only when the root of an entry is data, since the table of
+  eo-runtime is large and nothing else asks about the body.
   -->
   <xsl:param name="inference" as="xs:string" select="''"/>
   <xsl:variable name="eo:tables" as="xs:string" select="if (ends-with($inference, '/')) then $inference else concat($inference, '/')"/>
@@ -202,7 +206,32 @@
     <xsl:if test="exists(key('eo:known', $symbol, $eo:doc))">
       <xsl:sequence select="eo:taint(concat('The root ', $symbol, ' of the entry ', $number, ' is a constant'))"/>
     </xsl:if>
+    <xsl:if test="not(map:contains($eo:voids, $symbol)) and not(eo:type($symbol) = 'Phi')">
+      <xsl:sequence select="eo:bare($symbol)"/>
+    </xsl:if>
     <xsl:sequence select="$symbol"/>
+  </xsl:function>
+  <!--
+  Stop the rendering of an entry whose root is data the atom would return
+  bare, unless the tables of "eo:inference" say that the body is a number,
+  a string, a bool or bytes. Bare data loses the object around it, so the
+  atom of a body of any other type, an "i16" for example, would lose every
+  attribute of its own. Bytes lose nothing, since the atom gives its data
+  back as bytes. A body the tables say nothing about may be anything, so
+  its entry is a taint as well.
+  -->
+  <xsl:function name="eo:bare">
+    <xsl:param name="symbol" as="xs:string"/>
+    <xsl:variable name="types" as="xs:string*" select="eo:returns($locator)"/>
+    <xsl:variable name="others" as="xs:string*" select="$types[not(. = ('Φ.number', 'Φ.string', 'Φ.bool', 'Φ.true', 'Φ.false', 'Φ.bytes'))]"/>
+    <xsl:choose>
+      <xsl:when test="empty($types)">
+        <xsl:sequence select="eo:taint(concat('The root ', $symbol, ' of the entry ', $number, ' is bare data, while inference does not say what ', $locator, ' returns'))"/>
+      </xsl:when>
+      <xsl:when test="exists($others)">
+        <xsl:sequence select="eo:taint(concat('The root ', $symbol, ' of the entry ', $number, ' is bare data, while inference says ', $locator, ' returns ', string-join($others, ' and '), ', and bare data would lose the object around it'))"/>
+      </xsl:when>
+    </xsl:choose>
   </xsl:function>
   <!-- The object a void is, as a chain of takes off the atom. -->
   <xsl:function name="eo:object" as="xs:string">
@@ -219,7 +248,7 @@
           <xsl:value-of select="concat('        return ', eo:object($root), ';&#10;')"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="concat(eo:block($at, (), 2), '        return new Data.ToPhi(', if (eo:type($root) = 'Phi') then eo:cast(eo:local($root), 'Phi', 'byte[]') else eo:local($root), ');&#10;')"/>
+          <xsl:value-of select="concat(eo:block($at, (), 2), '        return ', eo:value($root, 'Phi'), ';&#10;')"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
@@ -361,31 +390,18 @@
       <xsl:when test="$names[1] = 'φ'">
         <xsl:sequence select="eo:taint(concat('The deferred symbol ', $deferred/@symbol, ' of the entry ', $number, ' copies ', $of, ', which the atom replaces'))"/>
       </xsl:when>
-      <xsl:when test="not(eo:data($of))">
-        <xsl:sequence select="eo:taint(concat('The deferred symbol ', $deferred/@symbol, ' of the entry ', $number, ' copies ', $of, ', which inference does not say returns a number, a string, a bool or bytes'))"/>
-      </xsl:when>
       <xsl:otherwise>
         <xsl:sequence select="string-join(('this.take(&quot;ρ&quot;)', $names ! concat('.take(&quot;', eo:literal(.), '&quot;)')), '')"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
   <!--
-  An object returns data when every type its body may be, as "eo:returns"
-  reads it off the tables of "eo:inference", is a number, a string, a bool
-  or bytes.
-  -->
-  <xsl:function name="eo:data" as="xs:boolean">
-    <xsl:param name="loc" as="xs:string"/>
-    <xsl:variable name="types" as="xs:string*" select="eo:returns($loc)"/>
-    <xsl:sequence select="exists($types) and (every $t in $types satisfies $t = ('Φ.number', 'Φ.string', 'Φ.bool', 'Φ.true', 'Φ.false', 'Φ.bytes'))"/>
-  </xsl:function>
-  <!--
   The Java of a symbol as an object a copy takes: a void and a copy as they
-  are, anything else as data.
+  are, anything else wrapped back into an object.
   -->
   <xsl:function name="eo:argument" as="xs:string">
     <xsl:param name="symbol" as="xs:string"/>
-    <xsl:sequence select="if (map:contains($eo:voids, $symbol)) then eo:object($symbol) else if (not(eo:constant($symbol)) and eo:type($symbol) = 'Phi') then eo:local($symbol) else concat('new Data.ToPhi(', if (eo:constant($symbol)) then eo:literal-of(eo:bytes($symbol), 'byte[]') else eo:local($symbol), ')')"/>
+    <xsl:sequence select="if (map:contains($eo:voids, $symbol)) then eo:object($symbol) else eo:value($symbol, 'Phi')"/>
   </xsl:function>
   <!-- The operation a minted symbol was minted by. -->
   <xsl:function name="eo:operation" as="element()">
@@ -401,7 +417,9 @@
   The Java type of a symbol. A void that holds a number is bytes, like a
   void of any carrier but a bool, since a number may hold any bytes and a
   double holds exactly eight. The bytes are read as a double only where an
-  operation wants one, which is where EO reads them as a number too.
+  operation wants one, which is where EO reads them as a number too. A
+  copy is an object, and so is a join with a copy in one of its branches,
+  since the join holds the object of the branch taken.
   -->
   <xsl:function name="eo:type" as="xs:string">
     <xsl:param name="symbol" as="xs:string"/>
@@ -415,8 +433,11 @@
       </xsl:when>
       <xsl:when test="exists($joined)">
         <xsl:variable name="branches" select="(eo:branch($joined, 1), eo:branch($joined, 2))"/>
-        <xsl:variable name="types" select="distinct-values($branches[not(eo:constant(.))] ! eo:type(.) ! (if (. = 'Phi') then 'byte[]' else .))"/>
+        <xsl:variable name="types" select="distinct-values($branches[not(eo:constant(.))] ! eo:type(.))"/>
         <xsl:choose>
+          <xsl:when test="$types = 'Phi'">
+            <xsl:sequence select="'Phi'"/>
+          </xsl:when>
           <xsl:when test="count($types) = 1">
             <xsl:sequence select="$types"/>
           </xsl:when>
@@ -451,6 +472,9 @@
       <xsl:when test="not(matches($bytes, '^(--|([0-9A-Fa-f]{2}-)+|[0-9A-Fa-f]{2}(-[0-9A-Fa-f]{2})+)$'))">
         <xsl:sequence select="eo:taint(concat('The constant ', $bytes, ' of the entry ', $number, ' is not bytes'))"/>
       </xsl:when>
+      <xsl:when test="$want = 'Phi'">
+        <xsl:sequence select="concat('new Data.ToPhi(', eo:literal-of($bytes, 'byte[]'), ')')"/>
+      </xsl:when>
       <xsl:when test="$want = 'double' and count($octets) = 8">
         <xsl:sequence select="concat('Double.longBitsToDouble(0x', upper-case(string-join($octets, '')), 'L)')"/>
       </xsl:when>
@@ -476,6 +500,9 @@
     <xsl:choose>
       <xsl:when test="$from = $to">
         <xsl:sequence select="$java"/>
+      </xsl:when>
+      <xsl:when test="$to = 'Phi'">
+        <xsl:sequence select="concat('new Data.ToPhi(', $java, ')')"/>
       </xsl:when>
       <xsl:when test="$from = 'Phi'">
         <xsl:sequence select="concat('new Dataized(', $java, ').', map {'byte[]': 'take()', 'double': 'asNumber()', 'boolean': 'asBool()'}($to))"/>

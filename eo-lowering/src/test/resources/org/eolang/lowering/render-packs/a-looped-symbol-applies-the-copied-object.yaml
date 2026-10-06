@@ -4,8 +4,9 @@
 # yamllint disable rule:line-length
 # The cut of --acyclic stopped the copy of a sibling formation over the head
 # and the tail of a tuple, which only a run can tell, and answered it with a
-# fresh symbol, so that symbol is the dataized application of that formation
-# to its arguments, just like a deferred one.
+# fresh symbol, so that symbol is the application of that formation to its
+# arguments, just like a deferred one, and the join holds it as the object
+# it is.
 locator: Φ.joined
 number: 54
 eo:
@@ -23,7 +24,7 @@ voids:
   - "𝜎55\t54\titems.tail\ttuple"
 links: |
   <links>
-    <type id="Φ.joined.with-delimiter.φ">
+    <type id="Φ.joined.φ">
       <ref loc="Φ.string"/>
     </type>
   </links>
@@ -74,13 +75,13 @@ java: |
       public Phi lambda() {
           final byte[] s53 = new Dataized(this.take("ρ").take("items").take("length")).take();
           final boolean s133 = java.util.Arrays.equals(s53, new byte[] {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00});
-          final byte[] s136;
+          final Phi s136;
           if (s133) {
-              s136 = new byte[0];
+              s136 = new Data.ToPhi(new byte[0]);
           } else {
               final Phi s134 = new PhApplication(this.take("ρ").take("with-delimiter"), new Bind("acc", this.take("ρ").take("items").take("head")), new Bind("tup", this.take("ρ").take("items").take("tail")));
-              s136 = new Dataized(s134).take();
+              s136 = s134;
           }
-          return new Data.ToPhi(s136);
+          return s136;
       }
   }

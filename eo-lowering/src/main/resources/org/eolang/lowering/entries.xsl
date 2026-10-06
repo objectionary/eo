@@ -38,26 +38,32 @@
   renamed its "as" after the void it lands in, and a name is a step the
   calculus can take where an index is not. The tables are still asked by the
   locator, since that is what their rows are keyed on.
-  A formation gets an entry only when its body is a number, a string or a
-  bool, as the tables of "eo:inference" say, and every formation left out
-  is counted by the reason it is left out for.
+  What the body of a formation returns is not asked here. A formation gets
+  an entry whatever its body is, since the atom may return the root as the
+  object it is, a copy of another object for example, and only the
+  rendering, when the root turns out to be bare data, asks the tables
+  about the body. Every formation left out is counted by the reason it is
+  left out for.
   The "ρ" of a nested formation is a void like the others, but it cannot be
   bound by name: XMIR has no "as" of "ρ". So a formation whose "ρ" is filled
   is written as a dispatch off the planted object, "⟨𝜎5⟩.minus(…)" rather than
   "Φ.number.minus(…)", which binds the same thing the way the calculus does.
   -->
-  <xsl:include href="/org/eolang/lowering/_returns.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <!--
   The directory with the tables of "eo:inference", as a URI. The stage that
-  runs this stylesheet has made sure the tables are there, so the table is
-  opened and never asked about.
+  runs this stylesheet has made sure "provides.xml" is there, so the table
+  is opened and never asked about.
   -->
   <xsl:param name="inference" as="xs:string" select="''"/>
   <xsl:variable name="eo:tables" as="xs:string" select="if (ends-with($inference, '/')) then $inference else concat($inference, '/')"/>
   <xsl:variable name="eo:provides" as="document-node()" select="document(concat($eo:tables, 'provides.xml'))"/>
-  <xsl:variable name="eo:links" as="document-node()" select="document(concat($eo:tables, 'links.xml'))"/>
-  <xsl:variable name="eo:atoms" as="document-node()" select="document(concat($eo:tables, 'atoms.xml'))"/>
+  <!--
+  The rows of the table, by the type each one is about. Without the index
+  every question about a void walks the whole table, and the table of
+  eo-runtime holds tens of thousands of rows.
+  -->
+  <xsl:key name="eo:type" match="type" use="@id"/>
   <!-- The objects of a source, by locator, for the path behind a type the tables name. -->
   <xsl:key name="eo:loc" match="o[@loc]" use="@loc"/>
   <!-- The sources of the build, in the order of the manifest. -->
@@ -85,19 +91,11 @@
   neither has a body to compute. A formation under an argument that still
   goes by its place is out too: "eo:dealpha" found no void to name that
   argument after, and the calculus has no step to a place, so there is no
-  path to walk to the formation. The last two reasons are about the type
-  of the body, which must be a number, a string, a bool or bytes, as
-  "eo:returns" reads it off the tables. The Java atom of an entry gives
-  back the data of the body, and nothing else, so for a body of any other
-  type, an "i16" for example, the atom would lose the object around that
-  data. Bytes lose nothing, since the atom gives its data back as bytes. A
-  body the tables say nothing about is left out as well, for the same
-  reason.
+  path to walk to the formation.
   -->
   <xsl:function name="eo:reason" as="xs:string">
     <xsl:param name="o" as="element(o)"/>
-    <xsl:variable name="types" as="xs:string*" select="eo:returns(string($o/@loc))"/>
-    <xsl:sequence select="if (exists($o/o[@name = 'λ'])) then 'atom' else if (empty($o/o[@name = 'φ'][not(@base = '∅')])) then 'bodiless' else if (not(eo:walkable(eo:path($o)))) then 'placed' else if (empty($types)) then 'untyped' else if (some $t in $types satisfies not($t = ('Φ.number', 'Φ.string', 'Φ.bool', 'Φ.true', 'Φ.false', 'Φ.bytes'))) then 'typed' else ''"/>
+    <xsl:sequence select="if (exists($o/o[@name = 'λ'])) then 'atom' else if (empty($o/o[@name = 'φ'][not(@base = '∅')])) then 'bodiless' else if (not(eo:walkable(eo:path($o)))) then 'placed' else ''"/>
   </xsl:function>
   <!--
   The path the calculus walks to reach an object, one step per ancestor: the
@@ -286,7 +284,7 @@
   and the table of the formations behind the numbers.
   -->
   <xsl:template match="/">
-    <planted entries="{count($eo:plan/entry)}" symbols="{count($eo:plan//sym)}" unfilled="{count($eo:plan//hole)}" atom="{count($eo:reasons[. = 'atom'])}" bodiless="{count($eo:reasons[. = 'bodiless'])}" placed="{count($eo:reasons[. = 'placed'])}" untyped="{count($eo:reasons[. = 'untyped'])}" typed="{count($eo:reasons[. = 'typed'])}">
+    <planted entries="{count($eo:plan/entry)}" symbols="{count($eo:plan//sym)}" unfilled="{count($eo:plan//hole)}" atom="{count($eo:reasons[. = 'atom'])}" bodiless="{count($eo:reasons[. = 'bodiless'])}" placed="{count($eo:reasons[. = 'placed'])}">
       <object author="eo-lowering">
         <o name="l🌵">
           <o name="mark">

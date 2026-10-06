@@ -2,36 +2,43 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# A copy given to another copy as its argument is given as the object it
-# is, and never dataized, and neither is the copy at the root, which the
-# atom returns as it is.
+# plus reads the copy of first as a number, so the copy is dataized where
+# plus takes it, as phino says it was, and the tables are not asked what
+# first returns: the run reads the copy as data there just the same.
 locator: Φ.joined
 number: 54
 eo:
   joined.eo: |
     [items] > joined
-      with-delimiter (first items.head) items.tail > @
+      (first items.head).plus 1 > @
       [x] > first
         x > @
-      [acc tup] > with-delimiter
-        acc > @
 voids:
   - "𝜎54\t54\titems.head\tobject"
-  - "𝜎55\t54\titems.tail\ttuple"
+links: |
+  <links>
+    <type id="Φ.joined.φ">
+      <ref loc="Φ.number"/>
+    </type>
+  </links>
 protocol: |
   <protocol>
     <morph at="Φ.l🌵.e54">
       <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e54">
-        <deferred symbol="𝜎134" by="morph" at="Φ.l🌵.e54.φ.acc" of="Φ.joined.first"><with><attr name="x">𝜎54</attr></with><e>⟦ φ ↦ x, +1 ⟧</e></deferred>
-        <deferred symbol="𝜎135" by="morph" at="Φ.l🌵.e54.φ" of="Φ.joined.with-delimiter"><with><attr name="acc">𝜎134</attr><attr name="tup">𝜎55</attr></with><e>⟦ φ ↦ acc, +2 ⟧</e></deferred>
+        <deferred symbol="𝜎134" by="morph" at="Φ.l🌵.e54.φ.ρ" of="Φ.joined.first"><with><attr name="x">𝜎54</attr></with><e>⟦ φ ↦ x, +1 ⟧</e></deferred>
+        <evaluate λ="L_number_plus" by="morph" at="Φ.a🌵1">
+          <dataize meta="𝛿1.2">𝜎134:λ</dataize>
+          <bind meta="𝛿2.2">3F-F0-00-00-00-00-00-00</bind>
+          <minted symbol="𝜎135">𝜎134 3F-F0-00-00-00-00-00-00</minted>
+        </evaluate>
       </evaluate>
       <evaluate λ="L_root" by="morph" at="Φ.l🌵.e54">
-        <dataize meta="𝛿1.5">𝜎135:λ</dataize>
+        <dataize meta="𝛿1.3">𝜎135:λ</dataize>
       </evaluate>
     </morph>
     <msec>400</msec>
-    <firings>3</firings>
-    <fps>7</fps>
+    <firings>4</firings>
+    <fps>10</fps>
   </protocol>
 file: org/eolang/EOjoined$EOφ.java
 java: |
@@ -55,7 +62,7 @@ java: |
       @Override
       public Phi lambda() {
           final Phi s134 = new PhApplication(this.take("ρ").take("first"), new Bind("x", this.take("ρ").take("items").take("head")));
-          final Phi s135 = new PhApplication(this.take("ρ").take("with-delimiter"), new Bind("acc", s134), new Bind("tup", this.take("ρ").take("items").take("tail")));
-          return s135;
+          final double s135 = new Dataized(s134).asNumber() + Double.longBitsToDouble(0x3FF0000000000000L);
+          return new Data.ToPhi(s135);
       }
   }

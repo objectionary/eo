@@ -17,12 +17,6 @@ provides: |
       <attr name="ρ" type="Φ.holder.twice.ρ" void="true" holds="Φ.number"/>
     </type>
   </provides>
-links: |
-  <links>
-    <type id="Φ.holder.twice.φ">
-      <ref loc="Φ.number"/>
-    </type>
-  </links>
 xmir:
   - "//o[@name='e1']/o[@as='v' and @base='.twice']"
   - "//o[@name='e1']/o[@as='v']/o[1][@base='Φ.number' and not(@as)]/\

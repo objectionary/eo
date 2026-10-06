@@ -30,6 +30,7 @@ import org.eolang.xax.XtYaml;
 import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Isolated;
@@ -154,6 +155,21 @@ final class RenderingTest {
                     Matchers.containsString("has no protocol")
                 )
             )
+        );
+    }
+
+    @Test
+    void failsNamingTheTableOfTheBodiesItCannotFind(@Mktmp final Path temp) throws IOException {
+        final Path tables = Files.createDirectories(temp.resolve("tables"));
+        Files.write(tables.resolve("provides.xml"), "<provides/>".getBytes(StandardCharsets.UTF_8));
+        MatcherAssert.assertThat(
+            "the failure must name the table of the bodies that is missing, but it doesnt",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> new Rendering(temp.resolve("atoms"), tables).exec(temp),
+                "tables without the types of the bodies must fail the rendering"
+            ).getMessage(),
+            Matchers.containsString("links.xml")
         );
     }
 

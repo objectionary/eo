@@ -13,6 +13,12 @@ eo:
       x.slice 1 2 > @
 voids:
   - "𝜎1\t6\tx\tbytes"
+links: |
+  <links>
+    <type id="Φ.head.φ">
+      <ref loc="Φ.bytes"/>
+    </type>
+  </links>
 protocol: |
   <protocol>
     <morph at="Φ.l🌵.e6">

@@ -13,6 +13,12 @@ eo:
         ^.at > @
 voids:
   - "𝜎1\t9\tρ\tobject"
+links: |
+  <links>
+    <type id="Φ.clock.now.φ">
+      <ref loc="Φ.number"/>
+    </type>
+  </links>
 protocol: |
   <protocol>
     <morph at="Φ.l🌵.e9">

@@ -18,6 +18,12 @@ eo:
         t.plus 1
 voids:
   - "𝜎1\t1\tt\tnumber"
+links: |
+  <links>
+    <type id="Φ.twice.φ">
+      <ref loc="Φ.number"/>
+    </type>
+  </links>
 protocol: |
   <protocol>
     <morph at="Φ.l🌵.e1">

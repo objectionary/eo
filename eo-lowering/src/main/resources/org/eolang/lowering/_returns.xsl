@@ -6,10 +6,11 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="_returns" version="3.0">
   <!--
   Here we say what the body of an object returns, as the tables of
-  "eo:inference" say it, so that the planting and the rendering ask the
-  tables one and the same way. A stylesheet that includes this one opens
-  the tables itself, as the variables "eo:provides", "eo:links" and
-  "eo:atoms".
+  "eo:inference" say it. The rendering asks this once, when the root of an
+  entry is data the atom would return bare, and the question is kept apart
+  from the rest of the rendering, since it is all about how the tables are
+  laid out. A stylesheet that includes this one opens the tables itself,
+  as the variables "eo:provides", "eo:links" and "eo:atoms".
   -->
   <!--
   The rows of the table, by the type each one is about. Without the index
