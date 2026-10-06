@@ -22,7 +22,7 @@ links: |
     </type>
   </links>
 xmir:
-  - "/object/o[@name='l🌵'][count(o[starts-with(@name, 'e')]) = 1]"
+  - "/object/o[@name='l/'][count(o[starts-with(@name, 'e')]) = 1]"
   - "//o[@name='e1']/o[@as='v' and @base='Φ.true']"
 entries:
   - "1\tΦ.true"

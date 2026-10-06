@@ -116,7 +116,7 @@ final class Phino {
      * Ask phino to compute one entry of the world, with symbols as inputs.
      *
      * <p>This is called "morphing". The stage {@link Planting} put every
-     * entry into an object named {@code l🌵}, under the name {@code e} plus
+     * entry into an object named {@code l/}, under the name {@code e} plus
      * the number of the entry, and this method asks phino to work on
      * exactly that one. When phino meets an atom whose work is listed in
      * the table of operations, such as adding two numbers, it does not run
@@ -158,7 +158,7 @@ final class Phino {
                     "--hide-rho",
                     "--abridged",
                     String.format("--symbolic=%s", atoms),
-                    String.format("--locator=Q.l🌵.e%d", entry),
+                    String.format("--locator=Q.l/.e%d", entry),
                     String.format("--protocol=%s", protocol),
                     String.format("--max-steps=%d", steps),
                     String.format(

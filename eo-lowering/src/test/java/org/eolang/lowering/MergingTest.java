@@ -137,7 +137,7 @@ final class MergingTest {
             new String(
                 Files.readAllBytes(temp.resolve("world.phi")), StandardCharsets.UTF_8
             ),
-            Matchers.stringContainsInOrder("gap", "l🌵", "L_entry")
+            Matchers.stringContainsInOrder("gap", "l/", "L_entry")
         );
     }
 

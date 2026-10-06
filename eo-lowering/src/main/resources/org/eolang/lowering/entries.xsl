@@ -5,10 +5,12 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="entries" version="3.0">
   <!--
-  Here we write the entries of the whole build: one object, "l🌵", holding an
+  Here we write the entries of the whole build: one object, "l/", holding an
   application of every formation that has a body to a symbol for each of its
   voids, so that one run of the calculus over that object folds every
-  formation of the world.
+  formation of the world. The name has a slash, which no EO name can have,
+  so it never meets an object of the program, and it is ASCII only, since
+  phino gets it on the command line, which Java encodes with the locale.
   The input of this stylesheet is not a program but a manifest, a list of the
   XMIR files of the build as URIs, and every one of them is opened here
   through "document()". The entries are numbered across the whole world and
@@ -288,7 +290,7 @@
   <xsl:template match="/">
     <planted entries="{count($eo:plan/entry)}" symbols="{count($eo:plan//sym)}" unfilled="{count($eo:plan//hole)}" atom="{count($eo:reasons[. = 'atom'])}" bodiless="{count($eo:reasons[. = 'bodiless'])}" placed="{count($eo:reasons[. = 'placed'])}" untyped="{count($eo:reasons[. = 'untyped'])}" typed="{count($eo:reasons[. = 'typed'])}">
       <object author="eo-lowering">
-        <o name="l🌵">
+        <o name="l/">
           <o name="mark">
             <o base="∅" name="n"/>
             <o base="∅" name="v"/>
@@ -315,7 +317,7 @@
   </xsl:template>
   <!-- One entry: the formation, applied to what was planted, wrapped in the mark. -->
   <xsl:template match="entry" mode="eo:xmir">
-    <o base="Φ.l🌵.mark" name="e{@n}">
+    <o base="Φ.l/.mark" name="e{@n}">
       <o as="n" base="Φ.number">
         <o as="α0" base="Φ.bytes">
           <o as="α0">

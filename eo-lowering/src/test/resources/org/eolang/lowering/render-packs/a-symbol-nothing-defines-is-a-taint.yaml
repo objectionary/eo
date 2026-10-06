@@ -13,13 +13,13 @@ eo:
         ^.times -1 > @
 protocol: |
   <protocol>
-    <morph at="Φ.l🌵.e217">
-      <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e217">
+    <morph at="Φ.l/.e217">
+      <evaluate λ="L_entry" by="morph" at="Φ.l/.e217">
         <evaluate λ="L_number_times" by="morph" at="Φ.a🌵1">
           <minted symbol="𝜎752">𝜎200 BF-F0-00-00-00-00-00-00</minted>
         </evaluate>
       </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l🌵.e217">
+      <evaluate λ="L_root" by="morph" at="Φ.l/.e217">
         <dataize meta="𝛿1.3">𝜎752:λ</dataize>
       </evaluate>
     </morph>

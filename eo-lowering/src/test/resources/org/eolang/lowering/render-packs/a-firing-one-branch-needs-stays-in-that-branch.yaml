@@ -20,8 +20,8 @@ voids:
   - "𝜎1\t1\tt\tnumber"
 protocol: |
   <protocol>
-    <morph at="Φ.l🌵.e1">
-      <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e1">
+    <morph at="Φ.l/.e1">
+      <evaluate λ="L_entry" by="morph" at="Φ.l/.e1">
         <evaluate λ="L_number_gt" by="morph" at="Φ.a🌵1">
           <minted symbol="𝜎2">𝜎1 00-00-00-00-00-00-00-00</minted>
         </evaluate>
@@ -42,7 +42,7 @@ protocol: |
           <minted symbol="𝜎7">𝜎5 𝜎6</minted>
         </evaluate>
       </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l🌵.e1">
+      <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
         <dataize meta="𝛿1.8">𝜎7:λ</dataize>
       </evaluate>
     </morph>
