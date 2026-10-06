@@ -207,14 +207,12 @@ final class Span {
 
     private static int leading(final String body) {
         int count = 0;
-        while (count < body.length() && Span.spacing(body.charAt(count))) {
+        while (count < body.length()
+            && (Character.isWhitespace(body.charAt(count))
+                || Character.isSpaceChar(body.charAt(count)))) {
             count = count + 1;
         }
         return count;
-    }
-
-    private static boolean spacing(final char glyph) {
-        return Character.isWhitespace(glyph) || Character.isSpaceChar(glyph);
     }
 
     private static boolean tabbed(final String body, final int leading) {
