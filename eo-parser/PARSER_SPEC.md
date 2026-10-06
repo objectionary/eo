@@ -599,6 +599,10 @@ R-3.13.1. A BYTES token has one of three forms:
 
 R-3.13.1a. A continuation chunk may lead with `-`, written `-BB(-BB)*`, and that dash joins it to the chunk above instead of doubling the separator: `44-` over `-43-FE` is the literal `44-43-FE`. Only the dashed form lets a one-byte chunk open or carry a multi-line literal, so a one-byte line stands alone whenever the line under it does not lead with `-`, and the two forms may be mixed within one literal.
 
+R-3.13.1b. `BB` is two **uppercase** hex digits: `0A-` is a byte, `0a-` is not. R-9.8.3 reads `HEX` either way, and bytes do not, so that the one spelling a program may carry is the one the printer writes.
+
+R-3.13.1c. A token that opens with a hex digit and holds a `-` is read as a BYTES literal, and nothing of it may be left over: an odd hex run, a lowercase digit, a doubled dash, or any tail the forms above do not cover is `invalid bytes literal`, reported at the column where the token starts rather than at the character the reader stopped on. A dash with nothing after it ends the literal, so it is a dangling continuation dash only when the token ends there; `0A-0B--0C` goes on for two more digits and is malformed instead.
+
 R-3.13.2. The continuation indent of the second and subsequent chunks must be at least as deep as the indent of *the line that began the BYTES token* (the first chunk's line, not the enclosing expression). Lower indent terminates the literal and is an error.
 
 R-3.13.2a. **Position attribute for multi-line BYTES.** The emitted `<o>` for a multi-line BYTES literal records `@line` and `@pos` from the **first chunk's line** (the line where the token starts), not from the continuation line. The token spans multiple source lines but is positioned at its opening.
@@ -1402,8 +1406,8 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | `+` followed by digit but the digit-run forms an invalid `INT`/`FLOAT` (R-3.2.5, e.g., `+1foo`) | `invalid signed-number literal` |
 | Nested atom inside another atom (R-6.3.4 (b)) | `atom may not contain a nested atom` |
 | `[x]` as a bare argument (horizontal anonym in arg position) | `horizontal formation not allowed as argument` |
-| Malformed BYTES literal (R-3.13.1 — invalid byte form, e.g., `Z9-`, single trailing dash without prefix, odd hex run) | `invalid bytes literal` |
-| Multi-byte BYTES literal ending in a continuation dash with no following chunk (R-3.13.1) | `bytes literal ends with a dangling continuation dash` |
+| Malformed BYTES literal (R-3.13.1, R-3.13.1b, R-3.13.1c — invalid byte form, e.g., `Z9-`, `A-`, `0AB-`, `0A-B`, `0a-`, `0A--`, `0A-0B--0C`) | `invalid bytes literal` |
+| Multi-byte BYTES literal whose token ends in a continuation dash with no following chunk (R-3.13.1, R-3.13.1c) | `bytes literal ends with a dangling continuation dash` |
 | Meta after first non-meta object | `meta directive must precede all other objects` |
 | Meta at indent other than 0 (R-3.2.1) | `meta directive must sit at indent 0, found indent <n>` (indent substituted) |
 | Plain child without name in formation | `object inside formation must have a name` |
