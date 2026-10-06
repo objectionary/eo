@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An object whose body is bytes gets an entry, just as one whose body is a
+# number, a string or a bool. The atom gives back its data as bytes, and
+# bytes are all the object around that data was.
+eo:
+  wrap.eo: |
+    [q] > wrap
+      q.as-bytes > @
+links: |
+  <links>
+    <type id="Φ.wrap.φ">
+      <ref loc="Φ.bytes"/>
+    </type>
+  </links>
+entries:
+  - "1\tΦ.wrap"

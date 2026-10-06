@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 ---
 # An object whose body may be one of several types gets an entry only when
-# every one of them is a number, a string or a bool.
+# every one of them is a number, a string, a bool or bytes.
 eo:
   pick.eo: |
     [c] > pick

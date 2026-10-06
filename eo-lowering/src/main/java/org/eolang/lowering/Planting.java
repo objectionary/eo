@@ -41,9 +41,9 @@ import org.xembly.Xembler;
  * turned into Java, and the next stages simply leave it alone.</p>
  *
  * <p>Not every object gets an entry. The object must give a number, a
- * string or a bool, as {@code eo:inference} says. The Java atom gives back
- * only the data that the object computes. If the object gives, for
- * example, an {@code i16}, the atom would give plain bytes, and every
+ * string, a bool or bytes, as {@code eo:inference} says. The Java atom
+ * gives back only the data that the object computes. If the object gives,
+ * for example, an {@code i16}, the atom would give plain bytes, and every
  * attribute of the {@code i16} would be lost. So such an object stays in
  * EO, and so does an object whose type {@code eo:inference} does not
  * know.</p>
@@ -110,7 +110,7 @@ final class Planting implements Proc<Path> {
                 "Planted %s entries of %d files with %s symbols, %s voids left unfilled, ",
                 "into %[file]s, and left out %s atoms, %s formations without a body, ",
                 "%s formations under an argument without a name, %s of unknown type, ",
-                "and %s of other types than a number, a string or a bool"
+                "and %s of other types than a number, a string, a bool or bytes"
             ),
             planted.xpath("/planted/@entries").get(0),
             sources.size(),
