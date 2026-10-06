@@ -246,7 +246,7 @@ R-3.2.1. Legal only at indent 0.
 R-3.2.2. Legal only **before** any non-meta object has been emitted.
 R-3.2.3. Each space-separated token after the `+name` becomes a `<part>` element. A leading `Q` in any part is promoted to `Φ`.
 R-3.2.4. At most one space between parts.
-R-3.2.5. `+` followed by a digit is **not** a meta (see §3.6 — it's a signed-number literal). If the digits do not form a valid `INT` or `FLOAT` token per §9.8 (e.g., `+1foo` where the digit-run is followed by an identifier-letter with no intervening separator), the lexer rejects with a lexical error; **the parser does not silently fall back to interpreting the line as a meta**.
+R-3.2.5. `+` followed by a digit is **not** a meta (see §3.6 — it's a signed-number literal). If the digits do not form a valid `INT` or `FLOAT` token per §9.8, the lexer rejects with the error R-9.8.4 defines; **the parser does not silently fall back to interpreting the line as a meta**.
 
 ```
 +architect yegor256@gmail.com         ← meta, legal at top
@@ -1365,12 +1365,13 @@ Any other backslash sequence is a lexical error.
 R-9.8.1. `INT`: optional sign (`+` or `-`), then either `0` alone (the literal zero) or a digit in `[1-9]` followed by any number of digits in `[0-9]`. **Any leading zero on a multi-digit literal is forbidden** — `07`, `007`, `+07`, and `-07` are all lexical errors. The new parser narrows the underlying grammar here: the grammar (`INT : (PLUS | MINUS)? (ZERO | ZERO?[1-9][0-9]*)`) permits one optional leading zero before a non-zero digit-run; the new parser does not. Implementations must check explicitly after lexing.
 R-9.8.2. `FLOAT`: optional sign, one or more digits, `.`, one or more digits, optional exponent `(e|E)(+|-)?digits`.
 R-9.8.3. `HEX`: literal `0x` (lowercase only) followed by one or more hex digits (case-insensitive).
+R-9.8.4. A digit-run glued to an identifier-letter with no intervening separator is a lexical error, whatever its sign, reported at the column where the digit-run starts. When the letter is `e` or `E`, the error says that a float needs a dot before the exponent, since `1e5` is written `1.0e5` in EO.
 
 ### 9.9 Error messages — canonical texts
 
 Two parsers should report the same condition with identical message strings for deterministic golden-file testing.
 
-R-9.9.1. Every error condition in this spec has a single canonical text — **including lexical and indent-related errors** (e.g., `unexpected odd indent`, `tab character in leading whitespace`, `invalid signed-number literal`), not only parse-phase errors. The table below assigns one to each. Implementations must use the exact string (with the position prefix as the only variable part).
+R-9.9.1. Every error condition in this spec has a single canonical text — **including lexical and indent-related errors** (e.g., `unexpected odd indent`, `tab character in leading whitespace`, `invalid number literal`), not only parse-phase errors. The table below assigns one to each. Implementations must use the exact string (with the position prefix as the only variable part).
 
 | Condition | Canonical message |
 | --- | --- |
@@ -1399,7 +1400,8 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Test attribute name is `@` (PHI) instead of NAME (R-6.3.5) | `test attribute name must be an identifier, not @` |
 | Leading-zero in integer literal (R-9.8.1, e.g., `007`) | `integer literal must not have leading zeros` |
 | Decimal `INT`/`FLOAT` literal whose exact decimal value differs from the IEEE-754 double it parses to (dead digits; e.g., `2.7182818284590452354`). Alternate spellings of the same value (`+42`, `1.50`) are accepted. | `<literal> is over-precise, write <canonical> instead` (literal and canonical substituted) |
-| `+` followed by digit but the digit-run forms an invalid `INT`/`FLOAT` (R-3.2.5, e.g., `+1foo`) | `invalid signed-number literal` |
+| A digit-run that forms an invalid `INT`/`FLOAT`, signed or not (R-3.2.5, R-9.8.4, e.g., `+1foo`, `1foo`, `0X1F`, `1.5e`) | `invalid number literal` |
+| A digit-run glued to an exponent with no dot in front of it (R-9.8.4, e.g., `1e5`) | `invalid number literal, a float needs a dot before the exponent, as in 1.0e5` |
 | Nested atom inside another atom (R-6.3.4 (b)) | `atom may not contain a nested atom` |
 | `[x]` as a bare argument (horizontal anonym in arg position) | `horizontal formation not allowed as argument` |
 | Malformed BYTES literal (R-3.13.1 — invalid byte form, e.g., `Z9-`, single trailing dash without prefix, odd hex run) | `invalid bytes literal` |

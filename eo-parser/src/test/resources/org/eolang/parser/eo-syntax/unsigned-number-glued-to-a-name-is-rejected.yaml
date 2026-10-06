@@ -6,4 +6,4 @@ sheets: []
 asserts:
   - /object/errors/error[contains(text(),'invalid number literal') and @pos='0']
 input: |
-  +1foo
+  1foo

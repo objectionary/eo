@@ -2,8 +2,10 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-sheets: []
-asserts:
-  - /object/errors/error[contains(text(),'invalid number literal') and @pos='0']
+line: 1
+message: |-
+  [1:0] error: 'invalid number literal, a float needs a dot before the exponent, as in 1.0e5'
+  5e3
+  ^
 input: |
-  +1foo
+  5e3

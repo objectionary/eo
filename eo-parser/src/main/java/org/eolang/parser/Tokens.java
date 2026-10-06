@@ -641,16 +641,16 @@ final class Tokens {
         while (Tokens.digitAt(this.body, idx)) {
             idx = idx + 1;
         }
-        if (sign && Tokens.letterAt(this.body, idx)) {
+        if (Tokens.letterAt(this.body, idx)) {
             throw new ParseError(
                 this.span.line(), this.span.indent() + start,
-                "invalid signed-number literal"
+                Tokens.malformed(this.body.charAt(idx))
             );
         }
         if (idx == from) {
             throw new ParseError(
                 this.span.line(), this.span.indent() + start,
-                "invalid signed-number literal"
+                "invalid number literal"
             );
         }
         this.cursor = idx;
@@ -727,6 +727,16 @@ final class Tokens {
 
     private static boolean hexDigit(final char glyph) {
         return Tokens.byteDigit(glyph) || glyph >= 'a' && glyph <= 'f';
+    }
+
+    private static String malformed(final char glyph) {
+        final String reason;
+        if (glyph == 'e' || glyph == 'E') {
+            reason = "invalid number literal, a float needs a dot before the exponent, as in 1.0e5";
+        } else {
+            reason = "invalid number literal";
+        }
+        return reason;
     }
 
     private static boolean letterAt(final String body, final int idx) {
@@ -872,7 +882,7 @@ final class Tokens {
         if (this.skipDigits() == 0) {
             throw new ParseError(
                 this.span.line(), this.span.indent() + start,
-                "invalid signed-number literal"
+                "invalid number literal"
             );
         }
     }
