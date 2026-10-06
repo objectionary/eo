@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A void root is data too. Its bytes cannot stand in for the i64 object that
+# the body promises to return, so the lowering leaves this entry in EO.
+locator: Φ.wrap
+number: 1
+taint: The root 𝜎1 of the entry 1 is bare data, while inference says Φ.wrap returns Φ.i64, and bare data would lose the object around it
+eo:
+  wrap.eo: |
+    [data] > wrap
+      i64 data > @
+voids:
+  - "𝜎1\t1\tdata\tbytes"
+links: |
+  <links>
+    <type id="Φ.wrap.φ">
+      <ref loc="Φ.i64"/>
+    </type>
+  </links>
+protocol: |
+  <protocol>
+    <morph at="Φ.l🌵.e1">
+      <evaluate λ="L_root" by="morph" at="Φ.l🌵.e1">
+        <dataize meta="𝛿1.2">𝜎1:λ</dataize>
+      </evaluate>
+    </morph>
+    <msec>100</msec>
+    <firings>2</firings>
+    <fps>20</fps>
+  </protocol>
