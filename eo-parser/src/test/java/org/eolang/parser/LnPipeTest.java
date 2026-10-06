@@ -32,6 +32,36 @@ final class LnPipeTest {
     }
 
     @Test
+    void rejectsPlusPlusArrowSuffix() {
+        final Stack stack = new Stack();
+        new LnFormation(new Span("[] > foo", 1)).into(stack, new Globals(), new Emit());
+        MatcherAssert.assertThat(
+            "a pipe carrying a `++>` suffix must be rejected the way `+>` is",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnPipe(new Span("| 5 ++> t", 2))
+                    .into(stack, new Globals(), new Emit())
+            ).getMessage(),
+            Matchers.equalTo("a pipe application cannot declare a test attribute")
+        );
+    }
+
+    @Test
+    void rejectsMinusMinusArrowSuffix() {
+        final Stack stack = new Stack();
+        new LnFormation(new Span("[] > foo", 1)).into(stack, new Globals(), new Emit());
+        MatcherAssert.assertThat(
+            "a pipe carrying a `-->` suffix must be rejected instead of reading `--` as bytes",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> new LnPipe(new Span("| 5 --> t", 2))
+                    .into(stack, new Globals(), new Emit())
+            ).getMessage(),
+            Matchers.equalTo("a pipe application cannot declare a test attribute")
+        );
+    }
+
+    @Test
     void rejectsPipeUnderAtomFormation() {
         final Stack stack = new Stack();
         new LnFormation(new Span("[] > foo /number", 1)).into(stack, new Globals(), new Emit());

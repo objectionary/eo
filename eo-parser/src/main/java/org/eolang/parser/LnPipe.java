@@ -47,6 +47,12 @@ import java.util.List;
 final class LnPipe implements Line {
 
     /**
+     * What a pipe line declaring a test attribute is told, whichever of
+     * the three test markers it carries.
+     */
+    private static final String TESTED = "a pipe application cannot declare a test attribute";
+
+    /**
      * The line's source span.
      */
     private final Span span;
@@ -64,6 +70,7 @@ final class LnPipe implements Line {
     public void into(final Stack stack, final Globals globals, final Emit emit) {
         Blanks.checkPlain(this.span, globals, emit);
         this.precheck(stack);
+        this.rejectCompactTest();
         final Tokens tokens = this.piped();
         final List<Value> args = tokens.readArgs();
         Bindings.checkAllOrNothing(args, this.span);
@@ -72,10 +79,7 @@ final class LnPipe implements Line {
         );
         suffix.rejectAtomOutsideFormation(this.span);
         if (suffix.test()) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "a pipe application cannot declare a test attribute"
-            );
+            throw new ParseError(this.span.line(), this.span.indent(), LnPipe.TESTED);
         }
         globals.seal(emit, this.span);
         final Openness openness;
@@ -102,6 +106,14 @@ final class LnPipe implements Line {
         }
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, this.span.line());
+        }
+    }
+
+    private void rejectCompactTest() {
+        final String body = this.span.body();
+        if (Eo.topLevelPlusPlusArrowIndex(body) >= 0
+            || Eo.topLevelMinusMinusArrowIndex(body) >= 0) {
+            throw new ParseError(this.span.line(), this.span.indent(), LnPipe.TESTED);
         }
     }
 
