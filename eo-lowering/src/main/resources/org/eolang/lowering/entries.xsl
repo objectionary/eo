@@ -46,6 +46,7 @@
   is written as a dispatch off the planted object, "⟨𝜎5⟩.minus(…)" rather than
   "Φ.number.minus(…)", which binds the same thing the way the calculus does.
   -->
+  <xsl:include href="/org/eolang/lowering/_returns.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <!--
   The directory with the tables of "eo:inference", as a URI. The stage that
@@ -57,14 +58,6 @@
   <xsl:variable name="eo:provides" as="document-node()" select="document(concat($eo:tables, 'provides.xml'))"/>
   <xsl:variable name="eo:links" as="document-node()" select="document(concat($eo:tables, 'links.xml'))"/>
   <xsl:variable name="eo:atoms" as="document-node()" select="document(concat($eo:tables, 'atoms.xml'))"/>
-  <!--
-  The rows of the table, by the type each one is about. Without the index
-  every question about a formation walks the whole table, and the table of
-  eo-runtime holds tens of thousands of rows.
-  -->
-  <xsl:key name="eo:type" match="type" use="@id"/>
-  <!-- The atoms the tables know, by locator, for the type an atom gives. -->
-  <xsl:key name="eo:atom" match="atom" use="@loc"/>
   <!-- The objects of a source, by locator, for the path behind a type the tables name. -->
   <xsl:key name="eo:loc" match="o[@loc]" use="@loc"/>
   <!-- The sources of the build, in the order of the manifest. -->
@@ -104,23 +97,6 @@
     <xsl:param name="o" as="element(o)"/>
     <xsl:variable name="types" as="xs:string*" select="eo:returns(string($o/@loc))"/>
     <xsl:sequence select="if (exists($o/o[@name = 'λ'])) then 'atom' else if (empty($o/o[@name = 'φ'][not(@base = '∅')])) then 'bodiless' else if (not(eo:walkable(eo:path($o)))) then 'placed' else if (empty($types)) then 'untyped' else if (some $t in $types satisfies not($t = ('Φ.number', 'Φ.string', 'Φ.bool', 'Φ.true', 'Φ.false'))) then 'typed' else ''"/>
-  </xsl:function>
-  <!--
-  The types the body of the object with this locator may be, as the tables
-  of "eo:inference" say, or none where they say nothing. An object that
-  binds nothing but its body behaves as that body, and "eo:inference"
-  writes what it behaves as into the "reduced" cell of its row in
-  "provides.xml", after chasing the body through all its copies, so that
-  cell answers first. A body that is a formation has no row in "links.xml"
-  but a row of its own in "provides.xml", so its "reduced" cell answers
-  next. Otherwise every link of the body arrives at one type. Whatever the
-  answer, an atom counts as the type "atoms.xml" says it gives, and a
-  formation counts as the type its "reduced" cell names, if it has one.
-  -->
-  <xsl:function name="eo:returns" as="xs:string*">
-    <xsl:param name="loc" as="xs:string"/>
-    <xsl:variable name="reduced" as="xs:string?" select="(key('eo:type', $loc, $eo:provides)[1]/@reduced, key('eo:type', concat($loc, '.φ'), $eo:provides)[1]/@reduced)[1]"/>
-    <xsl:sequence select="for $t in (if (exists($reduced)) then $reduced else key('eo:type', concat($loc, '.φ'), $eo:links)/ref/@loc) return string((key('eo:atom', $t, $eo:atoms)/@forma, key('eo:type', $t, $eo:provides)[1]/@reduced, $t)[1])"/>
   </xsl:function>
   <!--
   The path the calculus walks to reach an object, one step per ancestor: the

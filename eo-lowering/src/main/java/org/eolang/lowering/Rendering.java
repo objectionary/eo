@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import javax.xml.transform.stream.StreamSource;
 import org.cactoos.Proc;
 import org.cactoos.Text;
 import org.cactoos.iterable.Filtered;
@@ -82,12 +81,20 @@ final class Rendering implements Proc<Path> {
     private final Path atoms;
 
     /**
+     * The directory with the tables of {@code eo:inference}, which say what
+     * an object copied by a deferred symbol returns.
+     */
+    private final Path tables;
+
+    /**
      * Ctor.
      *
      * @param dir The directory where the Java atoms are written
+     * @param tbls The directory with the tables of {@code eo:inference}
      */
-    Rendering(final Path dir) {
+    Rendering(final Path dir, final Path tbls) {
         this.atoms = dir;
+        this.tables = tbls;
     }
 
     @Override
@@ -108,8 +115,9 @@ final class Rendering implements Proc<Path> {
         final XSL sheet = new XSLDocument(
             Rendering.class.getResource("/org/eolang/lowering/rendering.xsl"),
             "/org/eolang/lowering/rendering.xsl"
-        ).with((href, base) -> new StreamSource(href))
-            .with("voids", home.resolve("voids.tsv").toUri().toString());
+        ).with(new Hrefs())
+            .with("voids", home.resolve("voids.tsv").toUri().toString())
+            .with("inference", this.tables.toUri().toString());
         final Collection<String> rendered = new ArrayList<>(0);
         final Map<String, Collection<String>> claims = new HashMap<>(0);
         int tainted = 0;
