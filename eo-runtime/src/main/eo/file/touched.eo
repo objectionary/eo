@@ -37,22 +37,12 @@
         "Cant touch the file '%s': %s".printf
           * entry.path opened.message
   os.is-windows.if > accessible
-    win32.access
-      entry.path
-      0
-    posix.access
-      entry.path
-      0
+    win32.access entry.path 0
+    posix.access entry.path 0
   opened.code > descriptor
-  os.is-windows.if > eexist
-    win32.eexist
-    posix.eexist
-  os.is-windows.if > errno
-    win32.errno
-    posix.errno
-  linked.not.if > exclusive
-    posix.exclusive
-    0
+  os.is-windows.if win32.eexist posix.eexist > eexist
+  os.is-windows.if win32.errno posix.errno > errno
+  linked.not.if posix.exclusive 0 > exclusive
   entry.is-symlink false > linked
   called. > opened
     os.is-windows.if

@@ -42,9 +42,7 @@
           target
           data
         block.write target data
-  read > get
-    0
-    size
+  read 0 size > get
   if. > [^block object] > put
     and.
       block.size.gt 0

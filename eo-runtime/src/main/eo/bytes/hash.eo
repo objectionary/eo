@@ -25,9 +25,7 @@
             b.slice index 1
       as-number.
         index.plus 1
-  | > @
-    0
-    0
+  | 0 0 > @
 
   and. ++> can-hash-a-bool-into-a-number
     true.hash.as-bytes.size.eq 8
