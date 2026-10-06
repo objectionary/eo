@@ -112,7 +112,7 @@ final class Tokens {
         }
         final Value value;
         final char first = this.current();
-        if (new Bytes(this.body, this.cursor).opens()) {
+        if (new Bytes(this.body, this.cursor, this.span).opens()) {
             value = this.readBytes();
         } else if (first == '"') {
             value = this.readString();
@@ -137,7 +137,7 @@ final class Tokens {
      */
     Value readBytes() {
         final int start = this.cursor;
-        this.cursor = new Bytes(this.body, start).end(this.span);
+        this.cursor = new Bytes(this.body, start, this.span).end();
         return new Value(
             Value.Kind.BYTES, this.body.substring(start, this.cursor),
             this.span.indent() + start
@@ -882,7 +882,7 @@ final class Tokens {
                 "horizontal formation not allowed as argument"
             );
         }
-        if (new Bytes(this.body, this.cursor).odd()) {
+        if (new Bytes(this.body, this.cursor, this.span).odd()) {
             throw new ParseError(
                 this.span.line(), this.span.indent() + this.cursor,
                 "invalid bytes literal"

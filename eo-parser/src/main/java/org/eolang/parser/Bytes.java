@@ -33,14 +33,21 @@ final class Bytes {
     private final int from;
 
     /**
+     * The line the literal sits on, which an error is reported against.
+     */
+    private final Span line;
+
+    /**
      * Ctor.
      *
      * @param body Line body
      * @param start Index of the first character of the literal
+     * @param span The line the body belongs to
      */
-    Bytes(final String body, final int start) {
+    Bytes(final String body, final int start, final Span span) {
         this.text = body;
         this.from = start;
+        this.line = span;
     }
 
     /**
@@ -72,22 +79,21 @@ final class Bytes {
     /**
      * The index just past the literal, which is also its end.
      *
-     * @param span The line, for the position of an error
      * @return Index past the last character of the literal
      */
-    int end(final Span span) {
+    int end() {
         final int end;
         if (this.empty()) {
             end = this.from + 2;
         } else {
-            end = this.pairs(span);
+            end = this.pairs();
         }
         return end;
     }
 
-    private int pairs(final Span span) {
+    private int pairs() {
         if (!this.pair(this.from)) {
-            throw this.malformed(span);
+            throw this.malformed();
         }
         int idx = this.from + 2;
         while (idx < this.text.length()
@@ -98,21 +104,21 @@ final class Bytes {
         if (idx < this.text.length() && this.text.charAt(idx) == '-') {
             if (idx - this.from > 2 && this.closes(idx + 1)) {
                 throw new ParseError(
-                    span.line(), span.indent() + idx,
+                    this.line.line(), this.line.indent() + idx,
                     "bytes literal ends with a dangling continuation dash"
                 );
             }
             idx = idx + 1;
         }
         if (!this.closes(idx)) {
-            throw this.malformed(span);
+            throw this.malformed();
         }
         return idx;
     }
 
-    private ParseError malformed(final Span span) {
+    private ParseError malformed() {
         return new ParseError(
-            span.line(), span.indent() + this.from, "invalid bytes literal"
+            this.line.line(), this.line.indent() + this.from, "invalid bytes literal"
         );
     }
 
