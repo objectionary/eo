@@ -35,6 +35,13 @@ import org.cactoos.text.UncheckedText;
  * the log should not be worried by lines that do not matter.</p>
  *
  * @since 0.64.0
+ * @todo #9155:30min Rename the holder of the entries in the render packs.
+ *  The packs in render-packs still carry the protocols phino wrote when the
+ *  holder was named {@code l🌵}, so their locators read {@code Φ.l🌵.e6}
+ *  while {@link Planting} now names it {@code l/}. The rendering reads the
+ *  locator from the protocol, so the packs still pass, but they no longer
+ *  show what phino gives today. Replace {@code l🌵} with {@code l/} in every
+ *  pack there, and run RenderingTest to see them pass.
  */
 final class Phino {
 

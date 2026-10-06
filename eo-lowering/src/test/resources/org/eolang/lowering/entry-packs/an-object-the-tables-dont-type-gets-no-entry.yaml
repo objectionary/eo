@@ -8,4 +8,4 @@ eo:
     [k] > vague
       k.plus 7 > @
 xmir:
-  - "/object/o[@name='l🌵'][not(o[starts-with(@name, 'e')])]"
+  - "/object/o[@name='l/'][not(o[starts-with(@name, 'e')])]"

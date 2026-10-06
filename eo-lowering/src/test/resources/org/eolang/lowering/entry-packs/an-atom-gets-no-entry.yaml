@@ -10,5 +10,5 @@ eo:
       ? > ^
       ? > x
 xmir:
-  - "/object/o[@name='l🌵'][not(o[starts-with(@name, 'e')])]"
-  - "/object/o[@name='l🌵'][count(o) = 2]"
+  - "/object/o[@name='l/'][not(o[starts-with(@name, 'e')])]"
+  - "/object/o[@name='l/'][count(o) = 2]"
