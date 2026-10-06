@@ -5,7 +5,9 @@
 # the body promises to return, so the lowering leaves this entry in EO.
 locator: Φ.wrap
 number: 1
-taint: The root 𝜎1 of the entry 1 is bare data, while inference says Φ.wrap returns Φ.i64, and bare data would lose the object around it
+taint: >-
+  The root 𝜎1 of the entry 1 is bare data, while inference says
+  Φ.wrap returns Φ.i64, and bare data would lose the object around it
 eo:
   wrap.eo: |
     [data] > wrap
