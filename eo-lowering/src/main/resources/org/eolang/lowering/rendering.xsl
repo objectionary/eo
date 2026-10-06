@@ -27,6 +27,9 @@
   number down, since phino mints a symbol only after the symbols it is made
   of, so by the time a symbol is reached every symbol that reads it has
   already said where it is read.
+  An entry whose protocol defines one symbol twice is a taint, since phino
+  promises to mint every symbol once and the atom could not tell which of
+  the two values a reader of the symbol means.
   A taint is raised as an error and caught once, at the top, since there is
   no half of an atom worth writing.
   The class is named the way "_java-names.xsl" of the transpiler names every
@@ -186,6 +189,11 @@
     <xsl:if test="exists($timeout)">
       <xsl:sequence select="eo:taint(concat('The entry ', $number, ' ran out of ', $timeout/@limit, ' seconds at ', $timeout/@at))"/>
     </xsl:if>
+    <xsl:for-each-group select="$eo:doc//(minted | joined | known | deferred | looped)/@symbol" group-by=".">
+      <xsl:if test="count(current-group()) &gt; 1">
+        <xsl:sequence select="eo:taint(concat('The symbol ', current-grouping-key(), ' of the entry ', $number, ' is defined ', count(current-group()), ' times, while phino mints every symbol once'))"/>
+      </xsl:if>
+    </xsl:for-each-group>
     <xsl:variable name="root" select="$eo:doc/protocol/morph/evaluate[@λ = 'L_root']/dataize[starts-with(@meta, '𝛿1.')][last()]"/>
     <xsl:if test="empty($root)">
       <xsl:sequence select="eo:rootless()"/>
