@@ -645,10 +645,7 @@
       <xsl:text> = new PhApplication(</xsl:text>
       <xsl:value-of select="$name"/>
       <xsl:text>, </xsl:text>
-      <xsl:choose>
-        <xsl:when test="$direct"><xsl:value-of select="value/text()"/></xsl:when>
-        <xsl:otherwise><xsl:value-of select="o[1]/value/text()"/></xsl:otherwise>
-      </xsl:choose>
+      <xsl:value-of select="(value|o[1]/value)/text()"/>
       <xsl:text>);</xsl:text>
     </xsl:if>
   </xsl:template>
