@@ -505,6 +505,24 @@ final class TokensTest {
     }
 
     @Test
+    void rejectsHexWithFullwidthLetters() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Tokens("0xＦＦ", new Span("0xＦＦ", 1)).readHex(),
+            "a HEX literal spelled with fullwidth letters must be rejected"
+        );
+    }
+
+    @Test
+    void rejectsHexWithFullwidthDigits() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new Tokens("0x１２", new Span("0x１２", 1)).readHex(),
+            "a HEX literal spelled with fullwidth digits must be rejected"
+        );
+    }
+
+    @Test
     void readsArgumentWithBinding() {
         final Tokens tokens = new Tokens("foo a:y > x", new Span("foo a:y > x", 1));
         tokens.readName();
