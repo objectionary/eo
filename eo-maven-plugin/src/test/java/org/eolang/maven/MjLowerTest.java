@@ -200,6 +200,27 @@ final class MjLowerTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void savesTheTextProtocolOfEveryEntryWhenAsked(@Mktmp final Path temp)
+        throws IOException {
+        new FakeMaven(temp)
+            .withProgram(String.format("[x y] > gist%n  x.times y > @%n"))
+            .execute(MjParse.class)
+            .with("lowering", true)
+            .with("texts", true)
+            .with("binary", MjLowerTest.binary(temp))
+            .with("tables", MjLowerTest.tables(temp).toFile())
+            .execute(MjLower.class);
+        MatcherAssert.assertThat(
+            "the goal must save the text protocol of an entry when asked, but it didnt",
+            new Subdir(temp.resolve("target"), "lowering").path()
+                .resolve("2-protocols-txt/gist.txt")
+                .toFile(),
+            FileMatchers.anExistingFile()
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void morphsNoEntryTheFilterOfTheIncludedDoesntMatch(@Mktmp final Path temp)
         throws IOException {
         new FakeMaven(temp)

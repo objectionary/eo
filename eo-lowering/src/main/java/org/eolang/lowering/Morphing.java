@@ -96,6 +96,15 @@ import org.eolang.cache.GlobalCache;
  * an entry that is not in the world any more leaves no protocol
  * behind.</p>
  *
+ * <p>When asked, this stage runs phino on every entry a second time, with
+ * the same arguments, and writes the protocol of that run as indented text
+ * into {@code 2-protocols-txt}, beside {@code 2-protocols}, so the protocol
+ * of {@code Φ.bytes.as-hex} is also {@code bytes/as-hex.txt} there. phino
+ * writes text when the name of the protocol does not end with
+ * {@code .xml}. These texts are only for a reader to study: nothing
+ * reads them, and they are never kept in the cache, so phino makes them
+ * again in every build that asks for them.</p>
+ *
  * @since 0.64.0
  */
 final class Morphing implements Proc<Path> {
@@ -126,6 +135,11 @@ final class Morphing implements Proc<Path> {
     private final Duration budget;
 
     /**
+     * Whether every entry gets a protocol in text too.
+     */
+    private final boolean text;
+
+    /**
      * Ctor.
      *
      * @param exe The phino program, which does the morphing
@@ -138,11 +152,29 @@ final class Morphing implements Proc<Path> {
         final Phino exe, final GlobalCache store, final Scope range, final int ceiling,
         final Duration span
     ) {
+        this(exe, store, range, ceiling, span, false);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param exe The phino program, which does the morphing
+     * @param store The cache, where the protocols are kept between builds
+     * @param range The entries that phino is allowed to run on
+     * @param ceiling The largest number of steps inside one another
+     * @param span The time that one run may take before it is stopped
+     * @param texts Whether every entry gets a protocol in text too
+     */
+    Morphing(
+        final Phino exe, final GlobalCache store, final Scope range, final int ceiling,
+        final Duration span, final boolean texts
+    ) {
         this.phino = exe;
         this.cache = store;
         this.scope = range;
         this.steps = ceiling;
         this.budget = span;
+        this.text = texts;
     }
 
     @Override
@@ -171,14 +203,10 @@ final class Morphing implements Proc<Path> {
                 () -> new BytesOf(new ResourceOf("org/eolang/lowering/atoms.yaml")).asBytes()
             ).value()
         );
-        final Path protocols = home.resolve("2-protocols");
-        if (Files.exists(protocols)) {
-            for (final Path stale
-                : new Sorted<>(Comparator.reverseOrder(), new Directory(protocols))) {
-                Files.delete(stale);
-            }
-        }
-        Files.createDirectories(protocols);
+        final Path protocols = Files.createDirectories(
+            Morphing.dropped(home.resolve("2-protocols"))
+        );
+        final Path texts = Morphing.dropped(home.resolve("2-protocols-txt"));
         final GlobalCache store = this.cache
             .with(this.phino.pin())
             .with(new UncheckedText(new HexOf(new Sha256DigestOf(new InputOf(atoms)))).asString())
@@ -213,7 +241,7 @@ final class Morphing implements Proc<Path> {
                             Runtime.getRuntime().availableProcessors(),
                             new Mapped<Scalar<Path>>(
                                 row -> () -> this.morph(
-                                    world, atoms, protocols, row, progress, store, uses
+                                    world, atoms, protocols, texts, row, progress, store, uses
                                 ),
                                 rows
                             )
@@ -232,8 +260,8 @@ final class Morphing implements Proc<Path> {
     }
 
     private Path morph(
-        final Path world, final Path atoms, final Path protocols, final String row,
-        final Progress progress, final GlobalCache store, final Uses uses
+        final Path world, final Path atoms, final Path protocols, final Path texts,
+        final String row, final Progress progress, final GlobalCache store, final Uses uses
     ) throws IOException {
         final long start = System.currentTimeMillis();
         final String[] cells = row.split("\t", -1);
@@ -276,6 +304,38 @@ final class Morphing implements Proc<Path> {
                 cells[1], this.budget.toMillis(), protocol
             );
         }
+        if (this.text) {
+            this.write(world, atoms, texts.resolve(tail), number, cells[1]);
+        }
         return protocol;
+    }
+
+    private void write(
+        final Path world, final Path atoms, final Path xml, final int number,
+        final String locator
+    ) throws IOException {
+        final Path txt = xml.resolveSibling(
+            xml.getFileName().toString().replaceFirst("\\.xml$", ".txt")
+        );
+        Files.createDirectories(txt.getParent());
+        try {
+            this.phino.morph(world, atoms, number, txt, this.steps, this.budget);
+        } catch (final KilledException ex) {
+            Logger.warn(
+                this,
+                "Lowering of %s ran out of time budget (%[ms]s), its text protocol kept in %[file]s for study",
+                locator, this.budget.toMillis(), txt
+            );
+        }
+    }
+
+    private static Path dropped(final Path dir) throws IOException {
+        if (Files.exists(dir)) {
+            for (final Path stale
+                : new Sorted<>(Comparator.reverseOrder(), new Directory(dir))) {
+                Files.delete(stale);
+            }
+        }
+        return dir;
     }
 }

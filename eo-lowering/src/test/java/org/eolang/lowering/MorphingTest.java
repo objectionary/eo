@@ -59,6 +59,85 @@ final class MorphingTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void writesATextProtocolBesideTheXmlOneWhenAsked(@Mktmp final Path temp)
+        throws IOException {
+        MorphingTest.merged(temp, 8);
+        new Morphing(
+            MorphingTest.recording(temp), new GlobalCache.GcFresh(),
+            new Scope(".*", "(?!)"), 16, Duration.ofMinutes(1L), true
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "the text protocol must be written by phino into its own directory, but it isnt",
+            MorphingTest.text(temp.resolve("2-protocols-txt/e8.txt")),
+            Matchers.containsString(
+                String.format("--protocol=%s", temp.resolve("2-protocols-txt/e8.txt"))
+            )
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void writesNoTextProtocolsUnlessAsked(@Mktmp final Path temp) throws IOException {
+        MorphingTest.merged(temp, 6);
+        new Morphing(
+            MorphingTest.recording(temp), new GlobalCache.GcFresh(),
+            new Scope(".*", "(?!)"), 16, Duration.ofMinutes(1L)
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "no text protocol must be written unless asked, but the directory is there",
+            temp.resolve("2-protocols-txt").toFile(),
+            Matchers.not(FileMatchers.anExistingFileOrDirectory())
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void writesTheTextProtocolOfAnEntryTheCacheAnswers(@Mktmp final Path temp)
+        throws IOException {
+        MorphingTest.merged(temp, 9);
+        final Phino phino = MorphingTest.counting(temp);
+        new Morphing(
+            phino, new GcShared(temp.resolve("cache"), "0.3.1"),
+            new Scope(".*", "(?!)"), 16, Duration.ofMinutes(1L)
+        ).exec(temp);
+        new Morphing(
+            phino, new GcShared(temp.resolve("cache"), "0.3.1"),
+            new Scope(".*", "(?!)"), 16, Duration.ofMinutes(1L), true
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "the text protocol must be written even when the cache answers the XML one, but it isnt",
+            temp.resolve("2-protocols-txt/e9.txt").toFile(),
+            FileMatchers.anExistingFile()
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void keepsTheTextProtocolOfARunOutOfItsBudget(@Mktmp final Path temp)
+        throws IOException {
+        MorphingTest.merged(temp, 7);
+        new Morphing(
+            MorphingTest.phino(
+                temp,
+                String.join(
+                    " ",
+                    "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
+                    "case $p in *.xml) echo '<protocol><timeout limit=\"1\"/></protocol>' > \"$p\";;",
+                    "*) echo 'timeout(1)' > \"$p\";; esac; exit 1"
+                )
+            ),
+            new GlobalCache.GcFresh(),
+            new Scope(".*", "(?!)"), 32, Duration.ofMillis(900L), true
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "a text protocol out of its budget must stay for study, but it doesnt",
+            temp.resolve("2-protocols-txt/e7.txt").toFile(),
+            FileMatchers.anExistingFile()
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void morphsOnlyTheEntriesTheFilterMatches(@Mktmp final Path temp) throws IOException {
         MorphingTest.merged(temp, 3, 71, 12);
         new Morphing(
