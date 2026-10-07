@@ -373,7 +373,14 @@ final class MjLowerTest {
     private static Path tables(final Path temp) throws IOException {
         final Path made = Files.createDirectories(temp.resolve("tables"));
         Files.write(
-            made.resolve("provides.xml"), "<provides/>".getBytes(StandardCharsets.UTF_8)
+            made.resolve("provides.xml"),
+            String.join(
+                "",
+                "<provides><type id='Φ.gap'>",
+                "<attr name='a' void='true' holds='Φ.number'/>",
+                "<attr name='b' void='true' holds='Φ.number'/>",
+                "</type></provides>"
+            ).getBytes(StandardCharsets.UTF_8)
         );
         Files.write(
             made.resolve("links.xml"),
