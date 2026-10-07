@@ -65,7 +65,7 @@ final class UnescapedTest {
             "a fullwidth character must not count as a digit of a unicode escape, but it did",
             Assertions.assertThrows(
                 ParseError.class,
-                () -> new Unescaped("\\uＦＦ２６", 7, 3).bytes()
+                new Unescaped("\\uＦＦ２６", 7, 3)::bytes
             ).getMessage(),
             Matchers.equalTo(
                 "unicode escape \\uＦＦ２６ is not exactly four hexadecimal digits"
