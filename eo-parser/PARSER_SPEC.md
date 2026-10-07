@@ -165,7 +165,7 @@ The parser recognises the following lexical tokens:
 | --- | --- |
 | `META` | `+` `NAME` followed by zero or more space-separated parts; each part is one or more non-whitespace characters. Parts may contain `:`, `.`, `-`, `/`, e.g. `+rt jvm a.b.c:lib:1.0.0`. |
 | `COMMENTARY` | `#` followed by the rest of the line. |
-| `NAME` | `[a-z]` followed by characters other than space, line break, tab, `,`, `.`, `\|`, `'`, `:`, `;`, `!`, `?`, `/`, `]`, `[`, `}`, `{`, `)`, `(`, `🌵`. The slash is excluded for the same reason `!` and `?` are: it opens an atom signature (§6.3), so a name ends where it starts. |
+| `NAME` | `[a-z]` followed by characters other than space, line break, tab, `,`, `.`, `\|`, `'`, `:`, `;`, `!`, `?`, `/`, `*`, `]`, `[`, `}`, `{`, `)`, `(`, `🌵`. The slash is excluded for the same reason `!` and `?` are: it opens an atom signature (§6.3), so a name ends where it starts. The star is excluded for the same reason: it opens a compact-tuple marker (§3.9), so `foo.bar*1` is the head `foo.bar` and a marker glued to it, not an attribute called `bar*1`. |
 | `PHI` | `@` |
 | `RHO` | `^` |
 | `ROOT` | `Q` |
@@ -487,6 +487,8 @@ seq * > @
 ```
 
 is a perfectly valid compact tuple: the head is `seq` (a `head`-kind expression), `N` defaults to 0, and the two vertical children become elements of the synthesised `Φ.tuple`. This is the canonical "tuple of N elements as one arg" form.
+
+R-3.9.5. The marker must be preceded by a space. A `*` glued to the head ends the name (§2.3), so `foo.bar*1` is the head `foo.bar` with a glued marker, not a dispatch on an attribute called `bar*1`, and the line is rejected: error "compact tuple marker must follow a space".
 
 Outer kind: **`compact-tuple`** (open for vertical children; closed for `.method` continuation until the block ends).
 
