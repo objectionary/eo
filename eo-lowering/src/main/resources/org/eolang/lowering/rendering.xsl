@@ -212,7 +212,7 @@
     <xsl:if test="exists(key('eo:known', $symbol, $eo:doc))">
       <xsl:sequence select="eo:taint(concat('The root ', $symbol, ' of the entry ', $number, ' is a constant'))"/>
     </xsl:if>
-    <xsl:if test="not(map:contains($eo:voids, $symbol)) and not(eo:type($symbol) = 'Phi') and empty(eo:around())">
+    <xsl:if test="((map:contains($eo:voids, $symbol) and exists(eo:returns($locator))) or (not(map:contains($eo:voids, $symbol)) and not(eo:type($symbol) = 'Phi'))) and empty(eo:around())">
       <xsl:sequence select="eo:bare($symbol)"/>
     </xsl:if>
     <xsl:sequence select="$symbol"/>
