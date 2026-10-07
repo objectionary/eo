@@ -508,7 +508,7 @@ final class TokensTest {
     void rejectsHexWithFullwidthLetters() {
         Assertions.assertThrows(
             ParseError.class,
-            () -> new Tokens("0xＦＦ", new Span("0xＦＦ", 1)).readHex(),
+            new Tokens("0xＦＦ", new Span("0xＦＦ", 1))::readHex,
             "a HEX literal spelled with fullwidth letters must be rejected"
         );
     }
@@ -517,7 +517,7 @@ final class TokensTest {
     void rejectsHexWithFullwidthDigits() {
         Assertions.assertThrows(
             ParseError.class,
-            () -> new Tokens("0x１２", new Span("0x１２", 1)).readHex(),
+            new Tokens("0x１２", new Span("0x１２", 1))::readHex,
             "a HEX literal spelled with fullwidth digits must be rejected"
         );
     }
