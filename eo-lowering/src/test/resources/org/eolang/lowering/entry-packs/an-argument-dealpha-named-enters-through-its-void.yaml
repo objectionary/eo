@@ -14,6 +14,14 @@ eo:
           left > @
 dealpha:
   Φ.true.φ.α0: if
+provides: |
+  <provides>
+    <type id="Φ.true.φ.α0">
+      <attr name="left" type="Φ.true.φ.α0.left" void="true" holds="Φ.number"/>
+      <attr name="right" type="Φ.true.φ.α0.right" void="true"
+        holds="Φ.number"/>
+    </type>
+  </provides>
 xmir:
   - "//o[@name='e1']/o[@as='v' and @base='Φ.true']"
   - "//o[@name='e2']/o[@as='v' and @base='Φ.true.φ.if']"
