@@ -150,7 +150,7 @@ public interface Data {
                 phi = Phi.Φ.take("bytes").copy();
                 final byte[] frozen = Arrays.copyOf(bytes, bytes.length);
                 phi.put(0, new PhDefault(frozen));
-                phi = new PhLiteral(phi, frozen);
+                phi = new PhApplication(phi, frozen);
             } else if (obj instanceof Number number) {
                 phi = Data.ToPhi.number(number.doubleValue());
             } else if (obj instanceof String text) {
@@ -159,7 +159,7 @@ public interface Data {
                 final byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
                 bts.put(0, new PhDefault(bytes));
                 phi.put(0, bts);
-                phi = new PhLiteral(phi, bytes);
+                phi = new PhApplication(phi, bytes);
             } else {
                 throw new ExFailure(
                     "Unknown type of data: %s",
@@ -183,7 +183,7 @@ public interface Data {
                 final byte[] bytes = new BytesOf(value).take();
                 bts.put(0, new PhDefault(bytes));
                 phi.put(0, bts);
-                phi = new PhLiteral(phi, bytes);
+                phi = new PhApplication(phi, bytes);
             }
             return phi;
         }
