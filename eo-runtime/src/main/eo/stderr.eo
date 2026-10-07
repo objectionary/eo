@@ -23,27 +23,27 @@
     write.
       os.is-windows.if
         [sys] >> impl
-          [^ buffer] > write
+          [^device buffer] > write
             @. > @
               output-block.write buffer
-            [^] > output-block
+            [^sink] > output-block
               true > @
-              [^ buffer] > write
+              [^block buffer] > write
                 seq * > @
                   if. >>!
                     code.eq -1
                     T
                       "Failed to write to standard error"
-                    ^.^.output-block
+                    block.sink.output-block
                   code
                   remainder
                 as-number. > code
-                  ^.^.^.sys.write ^.^.^.sys.descriptor buffer buffer.size >>!
+                  block.sink.device.sys.write block.sink.device.sys.descriptor buffer buffer.size >>!
                 if. > remainder
                   code.lt buffer.size
-                  ^.^.output-block.write
+                  block.sink.output-block.write
                     buffer.slice code (buffer.size.minus code)
-                  ^.^.output-block
+                  block.sink.output-block
         |
           []
             win32.stderr > descriptor

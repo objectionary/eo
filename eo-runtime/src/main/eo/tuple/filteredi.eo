@@ -13,18 +13,18 @@
 +version 0.0.0
 
 [^list func] > filteredi
-  [^ rest acc index] >> recfilter
+  [^list rest acc index] >> recfilter
     if. > @
       rest.length.eq 0
       acc
       seq *
         next.length
-        ^.recfilter
+        list.recfilter
           rest.tail
           next
           index.plus 1
     if. > next
-      ^.func rest.head index
+      list.func rest.head index
       acc.with rest.head
       acc
   | > @

@@ -48,17 +48,17 @@
     if.
       num.as-bytes.eq 80-00-00-00-00-00-00-00
       "-".as-bytes.concat
-        [^ a] >> positive
+        [^num a] >> positive
           if. > @
             digits.eq scale
-            if. > [^ unit rest] >> written
-              ^.^.places.eq 0
+            if. > [^frac unit rest] >> written
+              frac.num.places.eq 0
               unit.as-decimal
               concat.
                 unit.as-decimal.concat ".".as-bytes
                 concat.
-                  rec-pad rest ^.k --
-                  zeros (^.^.places.minus ^.k) --
+                  rec-pad rest frac.k --
+                  zeros (frac.num.places.minus frac.k) --
             | (whole.plus 1) 0
             written whole digits
           floor. > digits
@@ -68,15 +68,15 @@
                 scale
               0.5
           if. > k
-            ^.places.gt 15
+            num.places.gt 15
             15
-            ^.places
+            num.places
           pow10 k > scale
           a.floor > whole
         | 0
       if.
         num.lt 0
-        if. > [^ a] >> signed
+        if. > [^num a] >> signed
           eq.
             floor.
               plus.
@@ -89,18 +89,18 @@
         | (num.times -1)
         positive num
   num.abs.gte 9.223372036854776e18 > huge
-  if. > [^ p] >> pow10
+  if. > [^num p] >> pow10
     p.eq 0
     1
     times.
-      ^.pow10
+      num.pow10
         as-number.
           p.minus 1
       10
-  if. > [^ value count acc] >> rec-pad
+  if. > [^num value count acc] >> rec-pad
     count.eq 0
     acc
-    ^.rec-pad
+    num.rec-pad
       floor.
         value.div 10
       as-number.
@@ -113,10 +113,10 @@
                 times. (value.div 10).floor 10
             48
         acc
-  if. > [^ count acc] >> zeros
+  if. > [^num count acc] >> zeros
     count.eq 0
     acc
-    ^.zeros
+    num.zeros
       as-number.
         count.minus 1
       acc.concat "0".as-bytes

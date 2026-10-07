@@ -42,7 +42,7 @@
               expo.is-integer.if
                 if.
                   expo.lt 0
-                  [^ factor n] >> ipow
+                  [^num factor n] >> ipow
                     if. > @
                       n.eq 0
                       1
@@ -52,13 +52,13 @@
                           number half
                           number half
                         factor.times
-                          ^.ipow factor (n.minus 1)
-                    ^.ipow factor (n.div 2) > half!
+                          num.ipow factor (n.minus 1)
+                    num.ipow factor (n.div 2) > half!
                   | (1.div base) expo.abs
                   ipow base expo.abs
                 if.
                   base.gt 0
-                  [^ y] >> expon
+                  [^num y] >> expon
                     times. > @
                       if.
                         lt. (number k) 0
@@ -67,17 +67,17 @@
                         ipow e (number k).abs
                       fraction 1
                     y > arg!
-                    if. > [^ j] > fraction
+                    if. > [^num j] > fraction
                       j.gt 20
                       1
                       1.plus
                         times.
                           div.
                             minus.
-                              number ^.arg
-                              number ^.k
+                              number num.arg
+                              number num.k
                             j
-                          ^.fraction (j.plus 1)
+                          num.fraction (j.plus 1)
                     floor. ((number arg).plus 0.5) > k!
                   | (expo.times base.ln)
                   nan

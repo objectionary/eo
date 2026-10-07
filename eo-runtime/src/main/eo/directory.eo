@@ -21,33 +21,33 @@
 [file] > directory
   file > @
   [dir time process fraction] > retried
-    [^ index] >> attempted
+    [^retry index] >> attempted
       if. > @
         descriptor.eq -1
         if.
           errno.eq
             os.is-windows.if win32.eexist posix.eexist
-          ^.attempted
+          retry.attempted
             index.plus 1
           T
             "Can't create a unique file in %s, OS error %d".printf
-              * ^.dir errno
+              * retry.dir errno
         seq *
-          ^.closed descriptor
+          retry.closed descriptor
           path
-      ^.opened path > descriptor!
+      retry.opened path > descriptor!
       os.is-windows.if win32.errno posix.errno > errno
-      ^.candidate index > path!
+      retry.candidate index > path!
     | 0 > @
-    [^ index] > candidate
+    [^retry index] > candidate
       path.separator.joined > @
-        * ^.dir name
+        * retry.dir name
       "%d-%d-%d-%f".printf > name!
         *
-          ^.time
-          ^.process
+          retry.time
+          retry.process
           index
-          ^.fraction
+          retry.fraction
     os.is-windows.if > [descriptor] > closed
       win32.close descriptor
       posix.close descriptor
@@ -79,36 +79,36 @@
       "Directory %s does not exist, can't create temporary file".printf
         * folder.file
   [^folder glob] > walk
-    [^ accum prefix dir] >> walked
-      [^ rest] >> stepped
+    [^folder accum prefix dir] >> walked
+      [^state rest] >> stepped
         if. > @
           rest.length.eq 0
           if.
-            ^.prefix.length.eq 0
-            ^.accum
-            picked ^.accum ^.prefix
+            state.prefix.length.eq 0
+            state.accum
+            picked state.accum state.prefix
           if.
             and.
               entry.is-directory false
               not.
                 entry.is-symlink false
-            ^.^.walked earlier sub child.as-dir
+            state.folder.walked earlier sub child.as-dir
             picked earlier sub
-        ^.dir.as-path.resolved name > child
-        ^.stepped rest.tail > earlier
+        state.dir.as-path.resolved name > child
+        state.stepped rest.tail > earlier
         child.as-file > entry
         rest.head > name
         if. > sub
-          ^.prefix.length.eq 0
+          state.prefix.length.eq 0
           name
           path.separator.joined
-            * ^.prefix name
+            * state.prefix name
       | dir.listed > @
     | > @
       *
       ""
       folder
-    if. > [^ accum rel] >> picked
+    if. > [^folder accum rel] >> picked
       matched rel
       accum.with
         Q.file (base.resolved rel).as-bytes
@@ -119,7 +119,7 @@
       "".joined
         * "\\" char
       char
-    [^ text] >> matched
+    [^folder text] >> matched
       as-bool. > @
         exists.
           next.
@@ -133,9 +133,9 @@
                           "/^"
                           translated 0 "" false false
                           "$/"
-                T > [^ message] >>
+                T > [^folder message] >>
                   "Can't parse '%s' as a glob pattern, %s".printf
-                    * ^.glob message
+                    * folder.glob message
               text
     "".joined >> single
       *
@@ -147,23 +147,23 @@
       "".joined
         * "\\" char
       char
-    if. > [^ from] >> closes
-      from.gte ^.glob.length
+    if. > [^folder from] >> closes
+      from.gte folder.glob.length
       false
       if.
         eq.
-          ^.glob.at
+          folder.glob.at
             from
             "" > [absent]
           "]"
         true
-        ^.closes
+        folder.closes
           from.plus 1
-    [^ index acc braced classed] >> translated
+    [^folder index acc braced classed] >> translated
       if. > @
-        index.gte ^.glob.length
+        index.gte folder.glob.length
         finished
-        ^.translated
+        folder.translated
           index.plus advance
           "".joined
             * acc token
@@ -199,25 +199,25 @@
         char.eq "["
         T
           "Can't parse '%s' as a glob pattern, Missing ']'".printf
-            * ^.glob
+            * folder.glob
         alternated
-      ^.glob.at index > char
+      folder.glob.at index > char
       classed.not.and > double
         and.
           char.eq "*"
           eq.
-            ^.glob.at
+            folder.glob.at
               index.plus 1
               "" > [message]
             "*"
       braced.if > finished
         T
           "Can't parse '%s' as a glob pattern, Missing '}'".printf
-            * ^.glob
+            * folder.glob
         acc
       opening.and > negated
         eq.
-          ^.glob.at
+          folder.glob.at
             index.plus 1
             "" > [missing]
           "!"
@@ -228,7 +228,7 @@
             index.plus 1
       double.and > slashed
         eq.
-          ^.glob.at
+          folder.glob.at
             index.plus 2
             "" > [space]
           "/"

@@ -153,10 +153,10 @@
           4503599627370496
       carried.if 1 0
   [^num b] > times
-    if. > [^ acc a bits] > looped
+    if. > [^num acc a bits] > looped
       bits.eq 00-00-00-00-00-00-00-00
       i64 acc
-      ^.looped
+      num.looped
         if.
           eq.
             bits.and 00-00-00-00-00-00-00-01

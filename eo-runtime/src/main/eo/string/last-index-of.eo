@@ -32,13 +32,13 @@
             minus.
               number tlen
               size
-  [^ idx] >> rec-index-of
+  [^text idx] >> rec-index-of
     if. > @
       0.eq idx
       includes.if idx -1
       includes.if
         idx
-        ^.rec-index-of (idx.plus -1).as-number
+        text.rec-index-of (idx.plus -1).as-number
     eq. > includes
       txt.slice idx size
       part

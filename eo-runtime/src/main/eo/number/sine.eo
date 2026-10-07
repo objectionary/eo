@@ -72,19 +72,19 @@
   tau.times gap > spread
   tau.minus crown > stub
   reduced.times > summed
-    if. > [^ depth] >> factor
+    if. > [^num depth] >> factor
       depth.gt 15
       1
       1.minus
         times.
           div.
-            ^.reduced.times ^.reduced
+            num.reduced.times num.reduced
             times.
               depth.times 2
               plus.
                 depth.times 2
                 1
-          ^.factor
+          num.factor
             depth.plus 1
     | 1
   2.4492935982947064e-16 > tail

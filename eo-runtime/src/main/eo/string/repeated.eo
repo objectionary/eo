@@ -24,7 +24,7 @@
           *
             string times.as-scientific
     string
-      [^ n] >> rec-repeated
+      [^text n] >> rec-repeated
         if. > @
           0.eq n
           --
@@ -34,8 +34,8 @@
             twice
             concat.
               half.concat >> twice
-                ^.rec-repeated (n.div 2).floor >> half!
-              ^.text.as-bytes
+                text.rec-repeated (n.div 2).floor >> half!
+              text.text.as-bytes
       | times
 
   eq. ++> can-format-the-error-message-of-a-negative-count

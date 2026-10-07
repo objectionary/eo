@@ -23,13 +23,13 @@
         minus.
           number len
           idx
-  [^ index] >> first-non-ws-index
+  [^text index] >> first-non-ws-index
     if. > @
       len.eq index
       index
       if.
         is-ws (b.slice index 1)!
-        ^.first-non-ws-index (index.plus 1).as-number
+        text.first-non-ws-index (index.plus 1).as-number
         index
   or. > [c] >> is-ws
     c.eq 20-

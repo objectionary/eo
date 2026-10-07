@@ -67,12 +67,12 @@
 [] > console
   os.is-windows.if > @
     [sys] >> impl
-      [^ size] > read
+      [^device size] > read
         @. > @
           read.
-            [^ buffer] >> input-block
+            [^source buffer] >> input-block
               buffer > @
-              [^ size] > read
+              [^block size] > read
                 seq * > @
                   if. >> chunk!
                     received.code.eq -1
@@ -80,35 +80,35 @@
                       "Failed to read from standard input"
                     received.data
                   received
-                  ^.^.input-block chunk
+                  block.source.input-block chunk
                 called. > received
-                  ^.^.^.sys.input.read ^.^.^.sys.input.descriptor size
+                  block.source.device.sys.input.read block.source.device.sys.input.descriptor size
             | --
             size
-      [^ buffer] > write
+      [^device buffer] > write
         @. > @
           write.
-            [^] >> output-block
+            [^sink] >> output-block
               true > @
-              [^ buffer] > write
+              [^block buffer] > write
                 seq * > @
                   if. >>!
                     code.eq -1
                     T
                       "Failed to write to standard output"
-                    ^.^.output-block
+                    block.sink.output-block
                   code
                   remainder
                 as-number. > code
-                  ^.^.^.sys.output.write >>!
-                    ^.^.^.sys.output.descriptor
+                  block.sink.device.sys.output.write >>!
+                    block.sink.device.sys.output.descriptor
                     buffer
                     buffer.size
                 if. > remainder
                   code.lt buffer.size
-                  ^.^.output-block.write
+                  block.sink.output-block.write
                     buffer.slice code (buffer.size.minus code)
-                  ^.^.output-block
+                  block.sink.output-block
             buffer
     |
       []
