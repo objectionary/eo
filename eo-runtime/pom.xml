@@ -287,6 +287,8 @@
           <loweringBudget>5</loweringBudget>
           <!-- The largest number of nested steps one run of phino may take in 'eo:lower'. -->
           <maxMorphingSteps>100</maxMorphingSteps>
+          <!-- Save every phino protocol of 'eo:lower' as indented text too, for a reader to study. -->
+          <saveTextProtocols>true</saveTextProtocols>
         </configuration>
         <executions>
           <execution>
