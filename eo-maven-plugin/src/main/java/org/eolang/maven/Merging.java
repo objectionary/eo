@@ -88,9 +88,10 @@ final class Merging implements Step {
     public void exec() throws IOException {
         final Map<String, TjForeign> all = this.indexed();
         final Collection<String> found = Merging.deepest(all);
+        final Map<String, TjForeign> origins = new HashMap<>(0);
         int done = 0;
         for (final String pkg : found) {
-            done = done + this.spliced(pkg, all);
+            done = done + this.spliced(pkg, all, origins);
         }
         if (done == 0) {
             Logger.debug(this, "No package member to put inside its object");
@@ -130,11 +131,16 @@ final class Merging implements Step {
         return all;
     }
 
-    private int spliced(final String pkg, final Map<String, TjForeign> all) throws IOException {
+    private int spliced(
+        final String pkg, final Map<String, TjForeign> all, final Map<String, TjForeign> origins
+    ) throws IOException {
         final TjForeign object = all.get(pkg);
         final Map<String, TjForeign> members = Merging.members(pkg, all);
         final Node formation = Merging.formation(object.xmir());
         final Collection<String> taken = Merging.names(formation);
+        for (final Node test : Merging.tests(formation)) {
+            origins.putIfAbsent(String.format("%s.%s", pkg, Merging.named(test)), object);
+        }
         for (final Map.Entry<String, TjForeign> member : members.entrySet()) {
             final Node top = formation.getOwnerDocument().importNode(
                 Merging.top(member.getValue().xmir()).node(), true
@@ -151,7 +157,22 @@ final class Merging implements Step {
             Merging.claimed(taken, name, member.getKey(), pkg);
             formation.appendChild(top);
             for (final Node test : Merging.tests(top)) {
-                Merging.claimed(taken, Merging.named(test), member.getKey(), pkg);
+                final String label = Merging.named(test);
+                final TjForeign origin = origins.getOrDefault(
+                    String.format("%s.%s", member.getKey(), label), member.getValue()
+                );
+                final TjForeign previous = origins.putIfAbsent(
+                    String.format("%s.%s", pkg, label), origin
+                );
+                if (previous != null) {
+                    throw new IllegalStateException(
+                        String.format(
+                            "The test '%s' is declared in both '%s' and '%s' while merging package '%s'",
+                            label.substring("p🌵".length()), previous.source(), origin.source(), pkg
+                        )
+                    );
+                }
+                Merging.claimed(taken, label, member.getKey(), pkg);
                 formation.appendChild(top.removeChild(test));
             }
         }
