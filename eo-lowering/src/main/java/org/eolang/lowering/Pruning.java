@@ -36,9 +36,9 @@ import org.cactoos.list.ListOf;
  * them.</p>
  *
  * <p>A {@code T} is an error of EO, like {@code T "oops"}, and the parser
- * writes it as the terminator {@code ⊥} of the calculus. phino stops at
- * {@code ⊥}, and nothing of the message is left in its protocol, so an atom
- * could never throw that message in Java. This is why every {@code T}
+ * writes it as the terminator of the calculus. phino stops at the
+ * terminator, and nothing of the message is left in its protocol, so an
+ * atom could never throw that message in Java. This is why every {@code T}
  * becomes a copy of {@code throw}, which {@link Planting} puts next to the
  * entries, and its argument becomes the {@code message} of that copy. phino
  * cannot answer the λ of {@code throw}, so it stops there, with the message
