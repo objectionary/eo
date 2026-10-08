@@ -5,10 +5,16 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="entries" version="3.0">
   <!--
-  Here we write the entries of the whole build: one object, "l🌵", holding an
+  Here we write the entries of the whole build: one object, "l/", holding an
   application of every formation that has a body to a symbol for each of its
   voids, so that one run of the calculus over that object folds every
   formation of the world.
+  The name of that object carries a slash, which no EO program can write: a
+  NAME token ends where a slash starts, so nothing of the build is ever named
+  like it, while the calculus reads a slash as an ordinary letter of a label.
+  The name is plain ASCII as well, because the stage that runs the calculus
+  names the object on the command line, and a locale outside UTF-8 turns
+  every other letter there into a question mark.
   The input of this stylesheet is not a program but a manifest, a list of the
   XMIR files of the build as URIs, and every one of them is opened here
   through "document()". The entries are numbered across the whole world and
@@ -251,7 +257,7 @@
   <xsl:template match="/">
     <planted entries="{count($eo:plan/entry)}" symbols="{count($eo:plan//sym)}" atom="{count($eo:reasons[. = 'atom'])}" bodiless="{count($eo:reasons[. = 'bodiless'])}" placed="{count($eo:reasons[. = 'placed'])}" opaque="{count($eo:reasons[. = 'opaque'])}">
       <object author="eo-lowering">
-        <o name="l🌵">
+        <o name="l/">
           <o name="mark">
             <o base="∅" name="n"/>
             <o base="∅" name="v"/>
@@ -282,7 +288,7 @@
   </xsl:template>
   <!-- One entry: the formation, applied to what was planted, wrapped in the mark. -->
   <xsl:template match="entry" mode="eo:xmir">
-    <o base="Φ.l🌵.mark" name="e{@n}">
+    <o base="Φ.l/.mark" name="e{@n}">
       <o as="n" base="Φ.number">
         <o as="α0" base="Φ.bytes">
           <o as="α0">

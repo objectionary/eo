@@ -6,7 +6,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="throwing" version="3.0">
   <!--
   Here every "T" of one XMIR file becomes a copy of "throw", the formation
-  the lowering keeps in "Φ.l🌵" next to the mark and the root, and the
+  the lowering keeps in "Φ.l/" next to the mark and the root, and the
   argument of the "T" becomes the "message" of that copy. The parser writes
   a "T" as the terminator "⊥" of the calculus, and phino stops at "⊥" with
   nothing left of the message, so an error of EO could never reach the Java
@@ -16,7 +16,7 @@
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="o[@base = '⊥']/@base">
-    <xsl:attribute name="base" select="'Φ.l🌵.throw'"/>
+    <xsl:attribute name="base" select="'Φ.l/.throw'"/>
   </xsl:template>
   <xsl:template match="o[@base = '⊥']/o[@as = 'α0']/@as">
     <xsl:attribute name="as" select="'message'"/>

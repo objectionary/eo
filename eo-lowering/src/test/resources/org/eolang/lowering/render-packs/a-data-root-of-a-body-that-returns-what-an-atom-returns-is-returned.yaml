@@ -27,15 +27,15 @@ atoms: |
   </atoms>
 protocol: |
   <protocol>
-    <morph at="Φ.l🌵.e1">
-      <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e1">
+    <morph at="Φ.l/.e1">
+      <evaluate λ="L_entry" by="morph" at="Φ.l/.e1">
         <evaluate λ="L_number_plus" by="morph" at="Φ.a🌵1">
           <dataize meta="𝛿1.2">𝜎1:λ</dataize>
           <dataize meta="𝛿2.2">𝜎2:λ</dataize>
           <minted symbol="𝜎3">𝜎1 𝜎2</minted>
         </evaluate>
       </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l🌵.e1">
+      <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
         <dataize meta="𝛿1.3">𝜎3:λ</dataize>
       </evaluate>
     </morph>

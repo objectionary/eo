@@ -226,7 +226,7 @@ final class MorphingTest {
         MatcherAssert.assertThat(
             "the run of an entry must be aimed at the mark of that entry, but it isnt",
             MorphingTest.text(protocols.resolve("e2.xml")),
-            Matchers.containsString("--locator=Q.l🌵.e2")
+            Matchers.containsString("--locator=Q.l/.e2")
         );
     }
 

@@ -139,7 +139,7 @@ final class PruningTest {
         MatcherAssert.assertThat(
             "the terminator must become a copy of the throw with its message, but it doesnt",
             new XMLDocument(temp.resolve("1-planting/broken.xmir"))
-                .nodes("//o[@base='Φ.l🌵.throw']/o[@as='message' and @base='Φ.string']"),
+                .nodes("//o[@base='Φ.l/.throw']/o[@as='message' and @base='Φ.string']"),
             Matchers.hasSize(1)
         );
     }

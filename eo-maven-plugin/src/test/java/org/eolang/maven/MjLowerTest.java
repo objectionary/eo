@@ -269,7 +269,7 @@ final class MjLowerTest {
         MatcherAssert.assertThat(
             "the goal must plant the formations of the program it compiled, but it didnt",
             new XMLDocument(home.resolve("entries.xmir")).xpath("//o[@name='e1']/@base"),
-            Matchers.contains("Φ.l🌵.mark")
+            Matchers.contains("Φ.l/.mark")
         );
     }
 

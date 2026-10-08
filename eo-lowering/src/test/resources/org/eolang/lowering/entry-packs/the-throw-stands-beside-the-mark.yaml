@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 ---
 # Every "T" of the world is a copy of "throw" by the time the world is
-# merged, so "l🌵" holds that formation next to the mark and the root: a void
+# merged, so "l/" holds that formation next to the mark and the root: a void
 # for the message and a λ the calculus is never told how to answer, so that a
 # run stops at it with the message as it was written.
 eo:
@@ -10,8 +10,8 @@ eo:
     [] > broken
       T "oops" > @
 xmir:
-  - "/object/o[@name='l🌵']/o[@name='throw']/o[@name='message' and @base='∅']"
-  - "/object/o[@name='l🌵']/o[@name='throw']/o[@name='λ' and text()='L_throw']"
-  - "/object/o[@name='l🌵']/o[@name='throw'][count(o) = 2]"
+  - "/object/o[@name='l/']/o[@name='throw']/o[@name='message' and @base='∅']"
+  - "/object/o[@name='l/']/o[@name='throw']/o[@name='λ' and text()='L_throw']"
+  - "/object/o[@name='l/']/o[@name='throw'][count(o) = 2]"
 entries:
   - "1\tΦ.broken"

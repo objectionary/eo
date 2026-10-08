@@ -19,11 +19,11 @@ voids:
   - "𝜎55\t54\titems.tail\ttuple"
 protocol: |
   <protocol>
-    <morph at="Φ.l🌵.e54">
-      <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e54">
-        <deferred symbol="𝜎134" by="morph" at="Φ.l🌵.e54.φ" of="Φ.joined.with-delimiter"><with><attr name="acc">𝜎54</attr><attr name="tup">𝜎55</attr></with><e>⟦ φ ↦ acc, +2 ⟧</e></deferred>
+    <morph at="Φ.l/.e54">
+      <evaluate λ="L_entry" by="morph" at="Φ.l/.e54">
+        <deferred symbol="𝜎134" by="morph" at="Φ.l/.e54.φ" of="Φ.joined.with-delimiter"><with><attr name="acc">𝜎54</attr><attr name="tup">𝜎55</attr></with><e>⟦ φ ↦ acc, +2 ⟧</e></deferred>
       </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l🌵.e54">
+      <evaluate λ="L_root" by="morph" at="Φ.l/.e54">
         <dataize meta="𝛿1.5">𝜎134:λ</dataize>
       </evaluate>
     </morph>

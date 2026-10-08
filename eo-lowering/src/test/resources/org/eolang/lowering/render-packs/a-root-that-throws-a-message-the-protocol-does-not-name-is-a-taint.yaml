@@ -15,13 +15,13 @@ eo:
       T "oops" > @
 protocol: |
   <protocol>
-    <morph at="Φ.l🌵.e4">
-      <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e4">
+    <morph at="Φ.l/.e4">
+      <evaluate λ="L_entry" by="morph" at="Φ.l/.e4">
         <bind meta="𝑛1.1">⟦ message ↦ "oops", λ ⤍ L_throw ⟧</bind>
-        <built meta="𝑛.1.1">Φ.l🌵.root( ⟦ message ↦ "oops", λ ⤍ L_throw ⟧ )</built>
+        <built meta="𝑛.1.1">Φ.l/.root( ⟦ message ↦ "oops", λ ⤍ L_throw ⟧ )</built>
         <answer meta="𝑛.1.2">⟦ v ↦ ⟦ message ↦ "oops", λ ⤍ L_throw ⟧, λ ⤍ L_root ⟧</answer>
       </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l🌵.e4">
+      <evaluate λ="L_root" by="morph" at="Φ.l/.e4">
         <unanswered λ="L_throw" by="dataize">⟦ message ↦ "oops", λ ⤍ L_throw ⟧</unanswered>
         <unfinished λ="L_throw"/>
       </evaluate>
