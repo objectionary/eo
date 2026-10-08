@@ -181,13 +181,13 @@
   phino left unfinished.
   -->
   <xsl:function name="eo:rootless">
-    <xsl:variable name="constant" select="($eo:doc/protocol/morph/evaluate[@λ = 'L_root'])[last()]/bind[starts-with(@meta, '𝛿1.')][last()]"/>
+    <xsl:variable name="constant" select="($eo:doc/protocol/morph/evaluate[@λ = 'L_root'])[last()]/bind[starts-with(@meta, '𝛿1·')][last()]"/>
     <xsl:variable name="unanswered" select="string(($eo:doc//unanswered)[last()])"/>
     <xsl:choose>
       <xsl:when test="exists($constant)">
         <xsl:sequence select="eo:taint(concat('The entry ', $number, ' always gives the constant ', $constant, ', and an atom that only returns a constant is not written yet'))"/>
       </xsl:when>
-      <xsl:when test="empty($eo:doc/protocol/morph/evaluate[@λ = 'L_root']) and $eo:doc/protocol/morph/evaluate[@λ = 'L_entry']/bind[@meta = '𝑛1.1'] = '⊥'">
+      <xsl:when test="empty($eo:doc/protocol/morph/evaluate[@λ = 'L_root']) and $eo:doc/protocol/morph/evaluate[@λ = 'L_entry']/bind[@meta = '𝑛1·1'] = '⊥'">
         <xsl:sequence select="eo:taint(concat('The body of the entry ', $number, ' reduced to ⊥ before phino computed anything, so its root was never dataized'))"/>
       </xsl:when>
       <xsl:when test="$unanswered = '⊥'">
@@ -263,7 +263,7 @@
         <xsl:sequence select="eo:taint(concat('The symbol ', current-grouping-key(), ' of the entry ', $number, ' is defined ', count(current-group()), ' times, while phino mints every symbol once'))"/>
       </xsl:if>
     </xsl:for-each-group>
-    <xsl:variable name="root" select="$eo:doc/protocol/morph/evaluate[@λ = 'L_root']/dataize[starts-with(@meta, '𝛿1.')][last()]"/>
+    <xsl:variable name="root" select="$eo:doc/protocol/morph/evaluate[@λ = 'L_root']/dataize[starts-with(@meta, '𝛿1·')][last()]"/>
     <xsl:if test="empty($root)">
       <xsl:sequence select="eo:rootless()"/>
     </xsl:if>
@@ -315,7 +315,7 @@
   such object, and then the root is returned the way its own type tells.
   -->
   <xsl:function name="eo:around" as="xs:string?">
-    <xsl:variable name="answer" select="normalize-space(($eo:doc/protocol/morph/evaluate[@λ = 'L_entry']/bind[@meta = '𝑛1.1'])[1])"/>
+    <xsl:variable name="answer" select="normalize-space(($eo:doc/protocol/morph/evaluate[@λ = 'L_entry']/bind[@meta = '𝑛1·1'])[1])"/>
     <xsl:variable name="applied" select="($eo:doc//applied[@meta = $answer])[1]"/>
     <xsl:if test="exists($applied) and count($applied/attr) = 1 and $applied/attr/@name = 'φ' and matches($applied/@of, '^Φ(\.[^.\s()]+)+$') and not(starts-with($applied/@of, concat($locator, '.')))">
       <xsl:sequence select="string($applied/@of)"/>
@@ -442,7 +442,7 @@
   <!-- The symbol the fork of a joined symbol forks on. -->
   <xsl:function name="eo:condition" as="xs:string">
     <xsl:param name="joined" as="element()"/>
-    <xsl:variable name="dataize" select="$joined/../dataize[starts-with(@meta, '𝛿1.')][1]"/>
+    <xsl:variable name="dataize" select="$joined/../dataize[starts-with(@meta, '𝛿1·')][1]"/>
     <xsl:if test="empty($dataize)">
       <xsl:sequence select="eo:taint(concat('The joined symbol ', $joined/@symbol, ' of the entry ', $number, ' has no condition'))"/>
     </xsl:if>

@@ -20,17 +20,17 @@ protocol: |
   <protocol>
     <morph at="Φ.l/.e1">
       <evaluate λ="L_entry" by="morph" at="Φ.l/.e1">
-        <applied meta="𝑛.1.4" by="morph" at="Φ.a🌵1" of="Φ.dataized"><attr name="target">𝜎1</attr></applied>
-        <applied meta="𝑛.1.5" by="morph" at="Φ.a🌵1" of="Φ.string"><attr name="φ">𝑛.1.4.as-bytes</attr></applied>
+        <applied meta="𝑛·1·4" by="morph" at="Φ.a🌵1" of="Φ.dataized"><attr name="target">𝜎1</attr></applied>
+        <applied meta="𝑛·1·5" by="morph" at="Φ.a🌵1" of="Φ.string"><attr name="φ">𝑛·1·4.as-bytes</attr></applied>
         <evaluate λ="L_dataized" by="morph" at="Φ.a🌵1.φ">
-          <dataize meta="𝛿1.2">𝜎1:λ</dataize>
+          <dataize meta="𝛿1·2">𝜎1:λ</dataize>
           <minted symbol="𝜎2">𝜎1</minted>
         </evaluate>
-        <bind meta="𝑛1.1">𝑛.1.5</bind>
-        <built meta="𝑛.1.6">Φ.l/.root( 𝑛.1.5 )</built>
+        <bind meta="𝑛1·1">𝑛·1·5</bind>
+        <built meta="𝑛·1·6">Φ.l/.root( 𝑛·1·5 )</built>
       </evaluate>
       <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
-        <dataize meta="𝛿1.3">𝜎2:λ</dataize>
+        <dataize meta="𝛿1·3">𝜎2:λ</dataize>
       </evaluate>
     </morph>
     <msec>11</msec>
