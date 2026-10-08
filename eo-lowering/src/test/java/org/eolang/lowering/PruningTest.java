@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collections;
 import org.cactoos.list.ListOf;
 import org.eolang.parser.EoSyntax;
@@ -123,6 +124,32 @@ final class PruningTest {
             new XMLDocument(temp.resolve("1-planting/pair.xmir"))
                 .nodes("/object/o[@name='pair'][o[@name='φ']][o[@name='gap']][count(o) = 4]"),
             Matchers.not(Matchers.empty())
+        );
+    }
+
+    @Test
+    void keepsTwoObjectsOfOneNameInTwoPackages(@Mktmp final Path temp) throws IOException {
+        new Pruning(
+            Arrays.asList(
+                PruningTest.parsed(
+                    Files.createDirectories(temp.resolve("foo")).resolve("app.xmir"),
+                    String.format("+package foo%n%n[a] > app%n  a > @%n")
+                ),
+                PruningTest.parsed(
+                    Files.createDirectories(temp.resolve("bar")).resolve("app.xmir"),
+                    String.format("+package bar%n%n[b] > app%n  b > @%n")
+                )
+            )
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "each object must get a copy under its own package, but it doesnt",
+            Arrays.asList(
+                new XMLDocument(temp.resolve("1-planting/foo/app.xmir"))
+                    .nodes("/object/o[@name='app']/o[@name='a']"),
+                new XMLDocument(temp.resolve("1-planting/bar/app.xmir"))
+                    .nodes("/object/o[@name='app']/o[@name='b']")
+            ),
+            Matchers.everyItem(Matchers.not(Matchers.empty()))
         );
     }
 

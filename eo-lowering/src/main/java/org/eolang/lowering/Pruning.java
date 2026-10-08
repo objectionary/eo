@@ -5,6 +5,7 @@
 package org.eolang.lowering;
 
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
@@ -33,13 +34,14 @@ import org.cactoos.iterable.Sorted;
  *
  * <p>The original sources are never changed. For every source, this stage
  * writes a copy without the tests into the directory {@code 1-planting},
- * inside the home directory of the lowering, under the same file name as
- * the source. All the next stages read these copies. If two sources have
- * the same file name, they would need the same copy, and one of them would
- * be lost without any warning. So, in that case, this stage fails the
- * build. The copies of an earlier build are deleted first. Without this, a
- * source that was deleted from the project would still be in the
- * directory, and the next stages would still read it.</p>
+ * inside the home directory of the lowering, under the directories of its
+ * package and the same file name as the source, see {@link Copy}. All the
+ * next stages read these copies. If two sources of one package have the
+ * same file name, they would need the same copy, and one of them would be
+ * lost without any warning. So, in that case, this stage fails the build.
+ * The copies of an earlier build are deleted first. Without this, a source
+ * that was deleted from the project would still be in the directory, and
+ * the next stages would still read it.</p>
  *
  * @since 0.64.0
  */
@@ -71,18 +73,21 @@ final class Pruning implements Proc<Path> {
             Files.delete(stale);
         }
         for (final Path source : new Sorted<>(this.sources)) {
-            if (!names.add(source.getFileName().toString())) {
+            final XML xmir = new XMLDocument(source);
+            final Path copy = new Copy(source, xmir).relative();
+            if (!names.add(copy.toString())) {
                 throw new IllegalStateException(
                     String.format(
-                        "The source '%s' is named like another one of the build, while the pruning keeps one copy per name",
+                        "The source '%s' is named like another one of the same package, while the pruning keeps one copy per name",
                         source
                     )
                 );
             }
+            final Path target = planting.resolve(copy);
+            Files.createDirectories(target.getParent());
             Files.write(
-                planting.resolve(source.getFileName().toString()),
-                sheet.transform(new XMLDocument(source)).toString()
-                    .getBytes(StandardCharsets.UTF_8)
+                target,
+                sheet.transform(xmir).toString().getBytes(StandardCharsets.UTF_8)
             );
         }
         Logger.info(
