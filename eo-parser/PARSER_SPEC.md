@@ -1358,7 +1358,7 @@ R-9.7.3. **Escape sequence table.** Recognised in both `STRING` and `TEXT`:
 | `\'` | `'` |
 | `\\` | `\` |
 | `\NNN` | Octal byte. `N` ∈ `[0-7]`, length 1–3 digits, value ≤ 0o377 (= 255 decimal). Pattern: `\\` followed by an optional `[0-3]`, an optional `[0-7]`, and a required `[0-7]` |
-| `\uXXXX` | Unicode codepoint, 4 hex digits. The grammar permits `\uu...uXXXX` (one or more `u`s) for legacy escape forms; the parser recognises any such sequence and decodes it to the codepoint. |
+| `\uXXXX` | Unicode codepoint, 4 hex digits, each one of `0`-`9`, `a`-`f`, `A`-`F` and nothing else: a character another alphabet counts as a digit, such as the fullwidth `Ｆ`, makes the escape `unicode escape \u… is not exactly four hexadecimal digits`. The grammar permits `\uu…uXXXX` (one or more `u`s) for legacy escape forms; the parser recognises any such sequence and decodes it to the codepoint. |
 
 R-9.7.4. **Escape decoding happens at parse time.** Every recognised escape — single-character, octal, and unicode — is decoded into its target codepoint(s) by the parser before the string body is fed into the `<o base='Φ.bytes'>` UTF-8 carrier (R-9.4 data carrier emission). The XMIR text body therefore contains decoded characters, never the source-level escape sequence; this applies equally to `STRING` and `TEXT` tokens (R-9.7.1 / R-9.7.2). Downstream consumers see the canonical UTF-8 bytes, not the literal `\uXXXX` / `\NNN` form.
 
