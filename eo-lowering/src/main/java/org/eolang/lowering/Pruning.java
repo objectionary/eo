@@ -47,14 +47,14 @@ import org.cactoos.list.ListOf;
  * {@code throwing.xsl} turns every {@code T} into such a copy.</p>
  *
  * <p>The original sources are never changed. For every source, this stage
- * writes a copy without the tests into the directory {@code 1-planting},
- * inside the home directory of the lowering, under the same file name as
- * the source. All the next stages read these copies. If two sources have
- * the same file name, they would need the same copy, and one of them would
- * be lost without any warning. So, in that case, this stage fails the
- * build. The copies of an earlier build are deleted first. Without this, a
- * source that was deleted from the project would still be in the
- * directory, and the next stages would still read it.</p>
+ * writes a copy with no tests and no {@code T} into the directory
+ * {@code 1-planting}, inside the home directory of the lowering, under the
+ * same file name as the source. All the next stages read these copies. If
+ * two sources have the same file name, they would need the same copy, and
+ * one of them would be lost without any warning. So, in that case, this
+ * stage fails the build. The copies of an earlier build are deleted first.
+ * Without this, a source that was deleted from the project would still be
+ * in the directory, and the next stages would still read it.</p>
  *
  * @since 0.64.0
  */
