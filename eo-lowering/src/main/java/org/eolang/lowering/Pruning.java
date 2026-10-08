@@ -7,6 +7,7 @@ package org.eolang.lowering;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
+import com.jcabi.xml.XSLChain;
 import com.jcabi.xml.XSLDocument;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -15,10 +16,13 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
 import org.cactoos.Proc;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.iterable.Sorted;
+import org.cactoos.list.ListOf;
 
 /**
- * The stage that removes the tests from copies of all the sources.
+ * The stage that removes the tests from copies of all the sources, and
+ * turns every {@code T} there into a copy of {@code throw}.
  *
  * <p>In EO, a test is written inside the object it tests. But a test is
  * really a separate small program: it makes the objects it needs, runs
@@ -30,6 +34,17 @@ import org.cactoos.iterable.Sorted;
  * So, the tests are removed before any other stage starts. The parser
  * marks every test with a special name, and this is how this stage finds
  * them.</p>
+ *
+ * <p>A {@code T} is an error of EO, like {@code T "oops"}, and the parser
+ * writes it as the terminator {@code ⊥} of the calculus. phino stops at
+ * {@code ⊥}, and nothing of the message is left in its protocol, so an atom
+ * could never throw that message in Java. This is why every {@code T}
+ * becomes a copy of {@code throw}, which {@link Planting} puts next to the
+ * entries, and its argument becomes the {@code message} of that copy. phino
+ * cannot answer the λ of {@code throw}, so it stops there, with the message
+ * in its protocol, and {@link Rendering} writes an atom that throws it.
+ * The stylesheet {@code pruning.xsl} cuts the tests, and the stylesheet
+ * {@code throwing.xsl} turns every {@code T} into such a copy.</p>
  *
  * <p>The original sources are never changed. For every source, this stage
  * writes a copy without the tests into the directory {@code 1-planting},
@@ -61,9 +76,15 @@ final class Pruning implements Proc<Path> {
 
     @Override
     public void exec(final Path home) throws IOException {
-        final XSL sheet = new XSLDocument(
-            Pruning.class.getResource("/org/eolang/lowering/pruning.xsl"),
-            "/org/eolang/lowering/pruning.xsl"
+        final XSL sheet = new XSLChain(
+            new ListOf<>(
+                new Mapped<XSL>(
+                    name -> new XSLDocument(Pruning.class.getResource(name), name),
+                    new ListOf<>(
+                        "/org/eolang/lowering/pruning.xsl", "/org/eolang/lowering/throwing.xsl"
+                    )
+                )
+            )
         );
         final Collection<String> names = new HashSet<>(this.sources.size());
         final Path planting = Files.createDirectories(home.resolve("1-planting"));
@@ -87,7 +108,7 @@ final class Pruning implements Proc<Path> {
         }
         Logger.info(
             this,
-            "Cut the tests out of %d XMIR files into %[file]s",
+            "Cut the tests out of %d XMIR files and turned every T into a throw, into %[file]s",
             this.sources.size(),
             planting
         );
