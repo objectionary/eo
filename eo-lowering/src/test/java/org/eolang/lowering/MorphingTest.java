@@ -445,7 +445,9 @@ final class MorphingTest {
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
         );
-        final String message = "the bytes are no number here, and a message this long must stay whole";
+        final String message = String.join(
+            " ", "the bytes are no number here,", "and a message this long must stay whole"
+        );
         new Pruning(
             Collections.singletonList(
                 Files.write(
