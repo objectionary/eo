@@ -16,8 +16,8 @@ voids:
   - "𝜎1\t1\tx\tnumber"
 protocol: |
   <protocol>
-    <morph at="Φ.l🌵.e1">
-      <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e1">
+    <morph at="Φ.l/.e1">
+      <evaluate λ="L_entry" by="morph" at="Φ.l/.e1">
         <evaluate λ="L_number_times" by="morph" at="Φ.a🌵1">
           <dataize meta="𝛿1.2">𝜎1:λ</dataize>
           <bind meta="𝛿2.2">BF-F0-00-00-00-00-00-00</bind>
@@ -27,9 +27,9 @@ protocol: |
           <answer meta="𝑛.2.7">𝑛.2.6</answer>
         </evaluate>
         <bind meta="𝑛1.1">𝑛.2.6</bind>
-        <built meta="𝑛.1.13">Φ.l🌵.root( 𝑛.2.6 )</built>
+        <built meta="𝑛.1.13">Φ.l/.root( 𝑛.2.6 )</built>
       </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l🌵.e1">
+      <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
         <dataize meta="𝛿1.3">𝜎2:λ</dataize>
       </evaluate>
     </morph>
