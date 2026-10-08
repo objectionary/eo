@@ -37,22 +37,10 @@ jobs:
       # pinned in the plugin. The Linux leg installs it, while Windows and
       # macOS build with lowering explicitly off, keeping the disabled path
       # of the goal continuously covered.
-      # The binary is copied into a folder of its own, because cabal keeps
-      # its files under `~/.local` and only symlinks the executable there,
-      # so a cache of `~/.cabal` would save nothing and rebuild phino each run.
       - if: ${{ matrix.os == 'ubuntu-24.04' }}
-        uses: actions/cache@v6
+        uses: objectionary/phino@f69bd2d22499767f050bd84edd697d9b9ea929aa  # master
         with:
-          path: ~/.phino
-          key: phino-${{ hashFiles('eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt') }}
-      - if: ${{ matrix.os == 'ubuntu-24.04' }}
-        run: |
-          ver=$(tr -d '[:space:]' < eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt)
-          if ! "$HOME/.phino/phino" --version 2>/dev/null | grep -qx "${ver}"; then
-            cabal update
-            cabal install "phino-${ver}" --installdir="$HOME/.phino" --install-method=copy --overwrite-policy=always
-          fi
-          echo "$HOME/.phino" >> "$GITHUB_PATH"
+          version-file: eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt
       - if: ${{ matrix.os != 'ubuntu-24.04' }}
         run: echo "LOWERING=-Deo.lowering=false" >> "$GITHUB_ENV"
       - run: mvn -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Deo.transpileTests=false' '-Deo.deadline=2' ${{ env.LOWERING }} clean install
