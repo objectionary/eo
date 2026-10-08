@@ -132,7 +132,8 @@ final class OyRemote implements Objectionary {
     @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
     private boolean exists(final URL url) throws IOException {
         final int code = this.send(url, HttpResponse.BodyHandlers.discarding()).statusCode();
-        if (code == HttpURLConnection.HTTP_CLIENT_TIMEOUT || code == 429) {
+        if (code == HttpURLConnection.HTTP_CLIENT_TIMEOUT || code == 429
+            || code >= HttpURLConnection.HTTP_INTERNAL_ERROR && code < 600) {
             throw new IOException(
                 String.format("Transient HTTP error %d for %s, will retry", code, url)
             );
