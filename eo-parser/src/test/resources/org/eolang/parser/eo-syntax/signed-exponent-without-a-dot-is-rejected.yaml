@@ -4,6 +4,6 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
-  - /object/errors/error[contains(text(),'invalid number literal') and @pos='0']
+  - /object/errors/error[contains(text(),'a float needs a dot before the exponent, as in 1.0e5') and @pos='0']
 input: |
-  +1foo
+  -1e5

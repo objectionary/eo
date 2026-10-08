@@ -636,6 +636,19 @@ final class Tokens {
         return " \t,.|':;!?[]{}()".indexOf(glyph) >= 0;
     }
 
+    private ParseError malformed(final int start) {
+        return new ParseError(
+            this.span.line(), this.span.indent() + start, "invalid number literal"
+        );
+    }
+
+    private ParseError exponential(final int start) {
+        return new ParseError(
+            this.span.line(), this.span.indent() + start,
+            "invalid number literal, a float needs a dot before the exponent, as in 1.0e5"
+        );
+    }
+
     private Value readDigits() {
         final int start = this.cursor;
         int idx = start;
@@ -648,17 +661,14 @@ final class Tokens {
         while (Tokens.digitAt(this.body, idx)) {
             idx = idx + 1;
         }
-        if (sign && Tokens.letterAt(this.body, idx)) {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + start,
-                "invalid signed-number literal"
-            );
+        if (Tokens.letterAt(this.body, idx)) {
+            if (this.body.charAt(idx) == 'e' || this.body.charAt(idx) == 'E') {
+                throw this.exponential(start);
+            }
+            throw this.malformed(start);
         }
         if (idx == from) {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + start,
-                "invalid signed-number literal"
-            );
+            throw this.malformed(start);
         }
         this.cursor = idx;
         return new Value(
@@ -857,10 +867,7 @@ final class Tokens {
             this.cursor = this.cursor + 1;
         }
         if (this.skipDigits() == 0) {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + start,
-                "invalid signed-number literal"
-            );
+            throw this.malformed(start);
         }
     }
 
