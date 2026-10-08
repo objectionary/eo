@@ -25,6 +25,6 @@ jobs:
       - name: Fetch history of master
         run: git fetch --unshallow --no-tags origin +refs/heads/master:refs/remotes/origin/master
       - name: Secret Scanning
-        uses: trufflesecurity/trufflehog@4c282f54c0160102ccbebba421b89f3c3af6404d # main
+        uses: trufflesecurity/trufflehog@f6499ffe785d92f646830c2429eccf3f4368298e # main
         with:
           extra_args: --only-verified
