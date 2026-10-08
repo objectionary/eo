@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -433,6 +434,47 @@ final class MorphingTest {
             "the protocol must record the firing of the atom the body reached, but it doesnt",
             MorphingTest.text(temp.resolve("2-protocols/gap.xml")),
             Matchers.stringContainsInOrder("L_entry", "L_number_plus", "L_root")
+        );
+    }
+
+    @Test
+    void stopsAtTheThrowWithTheWholeMessageThePinnedPhinoKeeps(@Mktmp final Path temp)
+        throws IOException {
+        final Phino phino = new Phino("phino");
+        Assumptions.assumeTrue(
+            MorphingTest.pinned(phino),
+            "the pinned phino is not on this machine, so the world cannot be morphed here"
+        );
+        final String message = "the bytes are no number here, and a message this long must stay whole";
+        new Pruning(
+            Collections.singletonList(
+                Files.write(
+                    Files.createDirectories(temp.resolve("sources")).resolve("broken.xmir"),
+                    new EoSyntax(String.format("[] > broken%n  T \"%s\" > @%n", message))
+                        .parsed().toString().getBytes(StandardCharsets.UTF_8)
+                )
+            )
+        ).exec(temp);
+        MorphingTest.xmir(temp, "number", "<o name=\"φ\" base=\"∅\" loc=\"Φ.number.φ\"/>");
+        MorphingTest.xmir(temp, "string", "<o name=\"φ\" base=\"∅\" loc=\"Φ.string.φ\"/>");
+        MorphingTest.xmir(temp, "bytes", "<o name=\"φ\" base=\"∅\" loc=\"Φ.bytes.φ\"/>");
+        final Path tables = Files.createDirectories(temp.resolve("tables"));
+        Files.write(
+            tables.resolve("provides.xml"),
+            "<provides><type id=\"Φ.broken\"/></provides>".getBytes(StandardCharsets.UTF_8)
+        );
+        new Planting(tables).exec(temp);
+        new Merging(phino).exec(temp);
+        new Morphing(
+            phino, new GlobalCache.GcFresh(), new Scope(".*", "(?!)"), 32, Duration.ofMinutes(1L)
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "the protocol must stop at the throw with its whole message, but it doesnt",
+            MorphingTest.text(temp.resolve("2-protocols/broken.xml")),
+            Matchers.stringContainsInOrder(
+                String.format("<attr name=\"message\">\"%s\"</attr>", message),
+                "<unanswered λ=\"L_throw\""
+            )
         );
     }
 
