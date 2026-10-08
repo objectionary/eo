@@ -721,7 +721,11 @@ final class Tokens {
     }
 
     private static boolean hexDigit(final char glyph) {
-        return Character.digit(glyph, 16) >= 0;
+        return Tokens.digit(glyph) || Tokens.hexLetter(glyph);
+    }
+
+    private static boolean hexLetter(final char glyph) {
+        return glyph >= 'a' && glyph <= 'f' || glyph >= 'A' && glyph <= 'F';
     }
 
     private static boolean letterAt(final String body, final int idx) {

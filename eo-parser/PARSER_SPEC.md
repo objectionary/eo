@@ -176,7 +176,7 @@ The parser recognises the following lexical tokens:
 | `QDOT` | `?.` — the fragile-dispatch operator (§3.5). Accepted in every position the plain `.` dispatch is, recorded as `@fragile` in XMIR. A `?` immediately followed by `.` is `QDOT`; a `?` followed by space (`? > name`) is `VOID`. |
 | `INT` | optional sign, then `0` or non-zero digit string. |
 | `FLOAT` | optional sign, digits, `.`, digits, optional exponent. |
-| `HEX` | `0x` followed by hex digits. |
+| `HEX` | `0x` followed by ASCII hex digits (R-9.8.3). |
 | `STRING` | `"..."` with standard escape sequences. |
 | `BYTES` | one of: `--` (empty); a single byte followed by `-`; a sequence `BB-BB(-BB)*` optionally continued across lines via trailing `-` + newline (§3.13). |
 | `TEXT` | triple-quoted text block (§3.11). |
@@ -1368,7 +1368,7 @@ Any other backslash sequence is a lexical error.
 
 R-9.8.1. `INT`: optional sign (`+` or `-`), then either `0` alone (the literal zero) or a digit in `[1-9]` followed by any number of digits in `[0-9]`. **Any leading zero on a multi-digit literal is forbidden** — `07`, `007`, `+07`, and `-07` are all lexical errors. The new parser narrows the underlying grammar here: the grammar (`INT : (PLUS | MINUS)? (ZERO | ZERO?[1-9][0-9]*)`) permits one optional leading zero before a non-zero digit-run; the new parser does not. Implementations must check explicitly after lexing.
 R-9.8.2. `FLOAT`: optional sign, one or more digits, `.`, one or more digits, optional exponent `(e|E)(+|-)?digits`.
-R-9.8.3. `HEX`: literal `0x` (lowercase only) followed by one or more hex digits (case-insensitive).
+R-9.8.3. `HEX`: literal `0x` (lowercase only) followed by one or more hex digits (case-insensitive). A hex digit is one of `0`-`9`, `a`-`f`, `A`-`F` and nothing else: a character another alphabet counts as a digit, such as the fullwidth `Ｆ` or the fullwidth `１`, ends the literal where it stands, so `0xＦＦ` is `hexadecimal literal requires at least one digit` rather than 255.
 
 ### 9.9 Error messages — canonical texts
 
