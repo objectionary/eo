@@ -280,6 +280,46 @@ final class MjTranspileTest {
     }
 
     @Test
+    void wrapsDispatchWithoutArgumentsInPhSticky(@Mktmp final Path temp) throws IOException {
+        final Path parsed = Files.createDirectories(temp.resolve("parsed"));
+        Files.writeString(
+            parsed.resolve("app.xmir"),
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(),
+                    "[] > app", "  2.neg > x", "  x > @", ""
+                )
+            ).parsed().toString()
+        );
+        Files.writeString(
+            parsed.resolve("number.xmir"),
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(),
+                    "[as-bytes] > number", "  as-bytes > @",
+                    "  [] > neg", "    as-bytes > @", ""
+                )
+            ).parsed().toString()
+        );
+        final Path tables = temp.resolve("tables");
+        new Inferring(parsed, temp.resolve("pre"), tables).exec();
+        MatcherAssert.assertThat(
+            "a dispatch over data that takes no arguments must be wrapped in PhSticky, but it wasnt",
+            new Xsline(
+                new TrDefault<Shift>()
+                    .with(new StClasspath("/org/eolang/parser/parse/set-locators.xsl"))
+                    .with(new StClasspath("/org/eolang/maven/transpile/set-original-names.xsl"))
+                    .with(new StClasspath("/org/eolang/maven/transpile/classes.xsl"))
+                    .with(new StClasspath("/org/eolang/maven/transpile/attrs.xsl"))
+                    .with(new StClasspath("/org/eolang/maven/transpile/data.xsl"))
+                    .with(new StPure("/org/eolang/maven/transpile/purify.xsl", tables))
+                    .with(new StClasspath("/org/eolang/maven/transpile/to-java.xsl"))
+            ).pass(new XMLDocument(parsed.resolve("app.xmir"))).toString(),
+            Matchers.containsString("new PhSticky(")
+        );
+    }
+
+    @Test
     void leavesUnmarkedFormationBare(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
             "a formation nobody marked as safe to cache must not be wrapped in PhSticky, but it was",
