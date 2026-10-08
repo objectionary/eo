@@ -54,6 +54,9 @@
   bound by name: XMIR has no "as" of "ρ". So a formation whose "ρ" is filled
   is written as a dispatch off the planted object, "⟨𝜎5⟩.minus(…)" rather than
   "Φ.number.minus(…)", which binds the same thing the way the calculus does.
+  Next to the mark and the root stands "throw", which every "T" of the copies
+  is a copy of by now. Its λ is in no table of operations, so the calculus
+  stops there, with the message the copy was given still in its protocol.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <!--
@@ -257,6 +260,10 @@
           <o name="root">
             <o base="∅" name="v"/>
             <o name="λ">L_root</o>
+          </o>
+          <o name="throw">
+            <o base="∅" name="message"/>
+            <o name="λ">L_throw</o>
           </o>
           <xsl:apply-templates select="$eo:plan/entry" mode="eo:xmir"/>
         </o>
