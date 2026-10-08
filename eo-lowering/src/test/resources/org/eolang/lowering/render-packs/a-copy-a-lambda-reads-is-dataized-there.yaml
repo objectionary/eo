@@ -27,13 +27,13 @@ protocol: |
       <evaluate λ="L_entry" by="morph" at="Φ.l/.e54">
         <deferred symbol="𝜎134" by="morph" at="Φ.l/.e54.φ.ρ" of="Φ.joined.first"><with><attr name="x">𝜎54</attr></with><e>⟦ φ ↦ x, +1 ⟧</e></deferred>
         <evaluate λ="L_number_plus" by="morph" at="Φ.a🌵1">
-          <dataize meta="𝛿1.2">𝜎134:λ</dataize>
-          <bind meta="𝛿2.2">3F-F0-00-00-00-00-00-00</bind>
+          <dataize meta="𝛿1·2">𝜎134:λ</dataize>
+          <bind meta="𝛿2·2">3F-F0-00-00-00-00-00-00</bind>
           <minted symbol="𝜎135">𝜎134 3F-F0-00-00-00-00-00-00</minted>
         </evaluate>
       </evaluate>
       <evaluate λ="L_root" by="morph" at="Φ.l/.e54">
-        <dataize meta="𝛿1.3">𝜎135:λ</dataize>
+        <dataize meta="𝛿1·3">𝜎135:λ</dataize>
       </evaluate>
     </morph>
     <msec>400</msec>

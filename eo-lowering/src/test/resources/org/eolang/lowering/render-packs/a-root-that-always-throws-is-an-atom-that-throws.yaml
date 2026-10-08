@@ -16,19 +16,19 @@ eo:
 protocol: |
   <protocol>
     <morph at="Φ.l/.e1">
-      <applied meta="𝑛.0.1" by="morph" at="Φ.l/.e1" of="⟦ n ↦ ∅, v ↦ ∅, λ ⤍ L_entry ⟧"><attr name="n">1</attr></applied>
-      <applied meta="𝑛.0.2" by="morph" at="Φ.l/.e1" of="𝑛.0.1"><attr name="v">Φ.broken</attr></applied>
+      <applied meta="𝑛·0·1" by="morph" at="Φ.l/.e1" of="⟦ n ↦ ∅, v ↦ ∅, λ ⤍ L_entry ⟧"><attr name="n">1</attr></applied>
+      <applied meta="𝑛·0·2" by="morph" at="Φ.l/.e1" of="𝑛·0·1"><attr name="v">Φ.broken</attr></applied>
       <evaluate λ="L_entry" by="morph" at="Φ.l/.e1">
-        <bind meta="𝛿1.1">3F-F0-00-00-00-00-00-00</bind>
-        <applied meta="𝑛.1.3" by="morph" at="Φ.a🌵1" of="⟦ message ↦ ∅, λ ⤍ L_throw ⟧"><attr name="message">"oops"</attr></applied>
-        <applied meta="𝑛.1.4" by="morph" at="Φ.a🌵1.message" of="Φ.bytes"><attr name="φ">6F-6F-70-73:Δ</attr></applied>
-        <bind meta="𝑛1.1">𝑛.1.3</bind>
-        <built meta="𝑛.1.6">Φ.l/.root( 𝑛.1.3 )</built>
-        <applied meta="𝑛.1.7" by="morph" at="Φ.l/.e1" of="⟦ v ↦ ∅, λ ⤍ L_root ⟧"><attr name="v">𝑛.1.3</attr></applied>
-        <answer meta="𝑛.1.8">𝑛.1.7</answer>
+        <bind meta="𝛿1·1">3F-F0-00-00-00-00-00-00</bind>
+        <applied meta="𝑛·1·3" by="morph" at="Φ.a🌵1" of="⟦ message ↦ ∅, λ ⤍ L_throw ⟧"><attr name="message">"oops"</attr></applied>
+        <applied meta="𝑛·1·4" by="morph" at="Φ.a🌵1.message" of="Φ.bytes"><attr name="φ">6F-6F-70-73:Δ</attr></applied>
+        <bind meta="𝑛1·1">𝑛·1·3</bind>
+        <built meta="𝑛·1·6">Φ.l/.root( 𝑛·1·3 )</built>
+        <applied meta="𝑛·1·7" by="morph" at="Φ.l/.e1" of="⟦ v ↦ ∅, λ ⤍ L_root ⟧"><attr name="v">𝑛·1·3</attr></applied>
+        <answer meta="𝑛·1·8">𝑛·1·7</answer>
       </evaluate>
       <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
-        <unanswered λ="L_throw" by="dataize">𝑛.1.3</unanswered>
+        <unanswered λ="L_throw" by="dataize">𝑛·1·3</unanswered>
         <unfinished λ="L_throw"/>
       </evaluate>
     </morph>

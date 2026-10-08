@@ -32,7 +32,7 @@ protocol: |
           <minted symbol="𝜎2">𝜎1 00-00-00-00-00-00-00-00</minted>
         </evaluate>
         <evaluate λ="L_fork" by="morph" at="Φ.a🌵2">
-          <dataize meta="𝛿1.3">𝜎2:λ</dataize>
+          <dataize meta="𝛿1·3">𝜎2:λ</dataize>
           <evaluate λ="L_number_plus" by="morph" at="Φ.a🌵3">
             <minted symbol="𝜎3">𝜎1 3F-F0-00-00-00-00-00-00</minted>
           </evaluate>
@@ -49,7 +49,7 @@ protocol: |
         </evaluate>
       </evaluate>
       <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
-        <dataize meta="𝛿1.8">𝜎7:λ</dataize>
+        <dataize meta="𝛿1·8">𝜎7:λ</dataize>
       </evaluate>
     </morph>
     <msec>885</msec>

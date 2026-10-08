@@ -43,13 +43,13 @@ protocol: |
     <morph at="Φ.l/.e1">
       <evaluate λ="L_entry" by="morph" at="Φ.l/.e1">
         <evaluate λ="L_bytes_concat" by="morph" at="Φ.a🌵1">
-          <dataize meta="𝛿1.2">𝜎2:λ</dataize>
-          <bind meta="𝛿2.2">2F-</bind>
+          <dataize meta="𝛿1·2">𝜎2:λ</dataize>
+          <bind meta="𝛿2·2">2F-</bind>
           <minted symbol="𝜎4">𝜎2 2F-</minted>
         </evaluate>
       </evaluate>
       <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
-        <dataize meta="𝛿1.3">𝜎4:λ</dataize>
+        <dataize meta="𝛿1·3">𝜎4:λ</dataize>
       </evaluate>
     </morph>
     <msec>130</msec>
