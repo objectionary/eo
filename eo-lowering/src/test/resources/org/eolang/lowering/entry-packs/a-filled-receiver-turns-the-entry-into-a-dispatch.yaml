@@ -15,6 +15,7 @@ provides: |
   <provides>
     <type id="Φ.holder.twice">
       <attr name="ρ" type="Φ.holder.twice.ρ" void="true" holds="Φ.number"/>
+      <attr name="x" type="Φ.holder.twice.x" void="true" holds="Φ.number"/>
     </type>
   </provides>
 xmir:

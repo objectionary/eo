@@ -728,6 +728,10 @@
   Application of an object to its arguments. One that purify.xsl marked with
   @pure is wrapped in PhSticky, so that the bytes it works out are remembered
   instead of being worked out on every read of it.
+  A dispatch that takes no arguments, "x.neg" for example, arrives here with
+  nothing to bind, since the receiver is the only object under it and the
+  template above has already taken it. The wrapping is still owed: such a
+  dispatch is read as often as any other and works its answer out every time.
   -->
   <xsl:template match="*" mode="application">
     <xsl:param name="indent"/>
@@ -775,6 +779,13 @@
         <xsl:text>)</xsl:text>
       </xsl:if>
       <xsl:text>;</xsl:text>
+    </xsl:if>
+    <xsl:if test="not($inners) and @pure='true'">
+      <xsl:value-of select="eo:eol($indent)"/>
+      <xsl:value-of select="$name"/>
+      <xsl:text> = new PhSticky(</xsl:text>
+      <xsl:value-of select="$name"/>
+      <xsl:text>);</xsl:text>
     </xsl:if>
     <xsl:apply-templates select="value">
       <xsl:with-param name="name" select="$name"/>

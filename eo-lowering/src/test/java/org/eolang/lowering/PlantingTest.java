@@ -114,7 +114,18 @@ final class PlantingTest {
             Files.createDirectories(temp.resolve("1-planting")).resolve("gap.xmir"),
             String.format("[a b] > gap%n  a.plus b > @%n")
         );
-        new Planting(PlantingTest.tables(temp, "<provides/>")).exec(temp);
+        new Planting(
+            PlantingTest.tables(
+                temp,
+                String.join(
+                    "",
+                    "<provides><type id='Φ.gap'>",
+                    "<attr name='a' void='true' holds='Φ.number'/>",
+                    "<attr name='b' void='true' holds='Φ.number'/>",
+                    "</type></provides>"
+                )
+            )
+        ).exec(temp);
         return temp;
     }
 
