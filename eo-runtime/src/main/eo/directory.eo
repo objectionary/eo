@@ -162,7 +162,7 @@
     [^ index acc braced classed] >> translated
       if. > @
         index.gte ^.glob.length
-        acc
+        finished
         ^.translated
           index.plus advance
           "".joined
@@ -195,6 +195,12 @@
               char.eq ","
             "|"
             escaped char
+      if. > bracketed
+        char.eq "["
+        T
+          "Can't parse '%s' as a glob pattern, Missing ']'".printf
+            * ^.glob
+        alternated
       ^.glob.at index > char
       classed.not.and > double
         and.
@@ -204,6 +210,11 @@
               index.plus 1
               "" > [message]
             "*"
+      braced.if > finished
+        T
+          "Can't parse '%s' as a glob pattern, Missing '}'".printf
+            * ^.glob
+        acc
       opening.and > negated
         eq.
           ^.glob.at
@@ -243,7 +254,7 @@
                   if.
                     char.eq "/"
                     literal
-                    alternated
+                    bracketed
       opening.if > within
         true
         if.
@@ -721,22 +732,6 @@
       made.
         directory mktemp.tmpfile.deleted
 
-  ++> can-walk-with-an-unmatched-glob-bracket
-    seq * > @
-      touched.
-        as-file.
-          d.resolved "[.txt"
-      touched.
-        as-file.
-          d.resolved "a.txt"
-      eq.
-        ",".joined
-          d.as-dir.walk "[.txt"
-        d.resolved "[.txt"
-    as-path. > d
-      made.
-        directory mktemp.tmpfile.deleted
-
   ++> can-walk-without-including-the-walked-directory
     seq * > @
       made.
@@ -777,8 +772,25 @@
     directory mktemp.tmpfile.deleted
     "**"
 
+  --> stops-on-walking-with-a-glob-bracket-left-open
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      eq. (d.as-dir.walk "[.txt").length 0
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
   --> stops-on-walking-with-a-malformed-glob
-    d.as-dir.walk "{" > @
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      eq.
+        length.
+          d.as-dir.walk "a{b"
+        0
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted

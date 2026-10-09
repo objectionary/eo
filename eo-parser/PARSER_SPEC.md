@@ -59,7 +59,7 @@ A conforming parser meets these complexity bounds:
 - **Time:** O(n) in the number of source lines (single pass). Per-line work is O(L) in line length for classification and emission; total: O(N) in source character count.
 - **Memory:** O(D) for the indent stack (§5.1), where D is the maximum indent depth in the source. O(B) for any open BYTES continuation (§3.13) or TEXT block (§3.11), where B is body size. O(C) for the pending comment buffer (§5.1.1), where C is the largest comment block.
 - **No backtracking:** the cross-line FSM (§5.2) consults only the current stack top and a small global state; no rewriting of earlier emission is required after a line is processed (modulo the per-line savepoint for error recovery, §7.2).
-- **Pathological inputs:** deeply nested formations grow the indent stack linearly with depth; no superlinear blowup, and nesting past 256 levels is rejected outright (R-5.2.7a). Long `.method` chains emit O(K) flat siblings for K chain links (§9.0.3).
+- **Pathological inputs:** deeply nested formations grow the indent stack linearly with depth; no superlinear blowup, and nesting past 256 levels is rejected outright, whether it comes from indentation (R-5.2.7a) or from paren groups (R-3.6.6a). Long `.method` chains emit O(K) flat siblings for K chain links (§9.0.3).
 
 ---
 
@@ -129,6 +129,7 @@ A property of a level record. One of:
 
 R-2.1.1. Source is UTF-8.
 R-2.1.2. Line endings are `\n` or `\r\n`. The parser normalises both to `\n` internally.
+R-2.1.3. A byte order mark (U+FEFF) at the very start of the source is dropped before the lines are split, the way a carriage return is, since some editors write one into a UTF-8 file. A U+FEFF anywhere else is an ordinary character of the program.
 
 ### 2.2 Indentation
 
@@ -175,7 +176,7 @@ The parser recognises the following lexical tokens:
 | `QDOT` | `?.` — the fragile-dispatch operator (§3.5). Accepted in every position the plain `.` dispatch is, recorded as `@fragile` in XMIR. A `?` immediately followed by `.` is `QDOT`; a `?` followed by space (`? > name`) is `VOID`. |
 | `INT` | optional sign, then `0` or non-zero digit string. |
 | `FLOAT` | optional sign, digits, `.`, digits, optional exponent. |
-| `HEX` | `0x` followed by hex digits. |
+| `HEX` | `0x` followed by ASCII hex digits (R-9.8.3). |
 | `STRING` | `"..."` with standard escape sequences. |
 | `BYTES` | one of: `--` (empty); a single byte followed by `-`; a sequence `BB-BB(-BB)*` optionally continued across lines via trailing `-` + newline (§3.13). |
 | `TEXT` | triple-quoted text block (§3.11). |
@@ -348,6 +349,8 @@ R-3.5.2. Name mapping inside the dispatch: `@` → `φ`, `^` → `ρ`. (Cross-re
 R-3.5.3. Horizontal arguments are accepted after the method name; they become args of the method.
 R-3.5.3a. **Fragile dispatch `?.`.** Anywhere the plain `.` dispatch operator is accepted, the fragile operator `?.` (`QDOT`, §2.3) is equally accepted: a horizontal chain link (`x?.read`, mixed `a.b?.c`), a `?.method` continuation line, and a reversed dispatch (`name?. …`). It parses identically to `.` and emits the same `<o>` — the only difference is an added `@fragile=''` marker on that link (§9.4). The operator is **syntax only** in this revision: the parser does not require `?.` for any receiver nor forbid `.`, because fragility is not known at parse time; enforcement (a fragile object must use `?.`) is a separate concern that reads the `@fragile` marker downstream. A `?` that is not immediately followed by `.` is the vertical-void marker (§3.4), not a dispatch.
 R-3.5.3b. **Fragile-dispatch enforcement (warning).** A first, purely syntactic slice of the enforcement that R-3.5.3a deferred: when a regular `.` dispatch is performed **directly** on a fragile `?.` dispatch that was not applied, a `warning`-severity `<error check='fragile-dispatch'>` is reported (no type inference — only the in-chain case decidable from the `@fragile` markers is checked). `x?.y.a` warns (write `x?.y?.a`); `x?.y?.a` is clean; `(x?.y 1 2).a` is clean because the dispatch is on the result of an application, not directly on `?.y`. Structurally the offending link is a method dispatch (`@method`, no `@fragile`) whose immediately-preceding sibling is a *childless* fragile link — an application carries arg children and so does not match. The check runs before `wrap-method-calls` (on the flat chain) and covers horizontal, vertical, and reversed dispatch uniformly; the broader "object known to be fragile" case needs type inference and is out of scope.
+R-3.5.3c. **Depth limit.** One chain holds 256 hops at the most. Otherwise: error `object nested deeper than 256 levels`, reported at the dot that goes too far. Every hop becomes one more level of the emitted tree, even though the source holds them all on one flat line, so the limit is the one R-5.2.7a puts on indentation, and it is there for the same reason.
+
 R-3.5.4. **Cross-line ownership of standalone-`.method` rejection.** A `.method` line carries an optional name suffix; the line's *legality* is decided cross-line, not per-line. Three rules own the rejection paths:
   - **R-5.2.3(b)** — same-indent `.method` after a horizontally-completed predecessor.
   - **R-5.2.5** — `.method` as a deeper-indent line (no previous sibling at this indent).
@@ -396,6 +399,8 @@ Illegal — formation as a horizontal arg:
 foo ([x] body)               ← rejected: horizontal formation as argument
 foo [x] 5                    ← rejected: `[x]` in the horizontal arg list of foo
 ```
+
+R-3.6.6a. **Depth limit.** Paren groups nest 256 deep at the most, counted over the whole line. Otherwise: error `object nested deeper than 256 levels`, reported at the opening parenthesis of the outermost group. Every group becomes one more level of the emitted tree, and the reader of a group parses its contents in turn, so the limit is the one R-5.2.7a puts on indentation and R-3.5.3c on a chain, and it is there for the same reason.
 
 R-3.6.6. **A paren group is consumed whole.** The expression between `(` and `)` must account for every character inside it; a group is an expression, not a recovery boundary. Anything the inner expression leaves behind — an optional marker, a name suffix, a test attribute, any token that has no place at that position — is rejected (`unexpected content inside a parenthesised expression`) rather than dropped, so `foo (bar baz?)`, `foo (bar baz >)` and `foo (bar baz +> test)` fail the same way `bar baz?` does without the parens.
 
@@ -596,6 +601,10 @@ R-3.13.1. A BYTES token has one of three forms:
 
 R-3.13.1a. A continuation chunk may lead with `-`, written `-BB(-BB)*`, and that dash joins it to the chunk above instead of doubling the separator: `44-` over `-43-FE` is the literal `44-43-FE`. Only the dashed form lets a one-byte chunk open or carry a multi-line literal, so a one-byte line stands alone whenever the line under it does not lead with `-`, and the two forms may be mixed within one literal.
 
+R-3.13.1b. `BB` is two **uppercase** hex digits: `0A-` is a byte, `0a-` is not. R-9.8.3 reads `HEX` either way, and bytes do not, so that the one spelling a program may carry is the one the printer writes.
+
+R-3.13.1c. A token that opens with a hex digit and holds a `-` is read as a BYTES literal, and nothing of it may be left over: an odd hex run, a lowercase digit, a doubled dash, or any tail the forms above do not cover is `invalid bytes literal`, reported at the column where the token starts rather than at the character the reader stopped on. A dash with nothing after it ends the literal, so it is a dangling continuation dash only when the token ends there; `0A-0B--0C` goes on for two more digits and is malformed instead.
+
 R-3.13.2. The continuation indent of the second and subsequent chunks must be at least as deep as the indent of *the line that began the BYTES token* (the first chunk's line, not the enclosing expression). Lower indent terminates the literal and is an error.
 
 R-3.13.2a. **Position attribute for multi-line BYTES.** The emitted `<o>` for a multi-line BYTES literal records `@line` and `@pos` from the **first chunk's line** (the line where the token starts), not from the continuation line. The token spans multiple source lines but is positioned at its opening.
@@ -657,7 +666,7 @@ R-3.14.4. **No pipe after `.method`.** A pipe may follow a formation or another 
 
 R-3.14.5. **Chaining.** Consecutive pipe lines build left-associated applications: `| a` then `| b` after formation `F` is `((F a) b)`, two applications. Each pipe in a chain is its own object and so must be named (R-3.14.2 applies to the *predecessor*, which for the second pipe is the first pipe). Contrast a single `| a b` (one application, two args).
 
-R-3.14.6. Name suffix per §3.10: `> name`, `>>`, or none (the last only when the pipe is an unnamed intermediate immediately wrapped by a `.method`, which names the whole chain). The atom signature `/sig` and the test attribute `+> name` are rejected — a pipe is an application, not a formation. All-or-nothing inline binding (§6.6) applies to the argument group.
+R-3.14.6. Name suffix per §3.10: `> name`, `>>`, or none (the last only when the pipe is an unnamed intermediate immediately wrapped by a `.method`, which names the whole chain). The atom signature `/sig` and the test attribute are rejected — a pipe is an application, not a formation. All three test markers of R-3.10.8 are refused alike, so `| 5 ++> t` and `| 5 --> t` are rejected the way `| 5 +> t` is; without the check `--` at the head of `-->` reads as an empty bytes literal and the line quietly becomes an ordinary attribute. All-or-nothing inline binding (§6.6) applies to the argument group.
 
 R-3.14.7. **Emission / XMIR.** A pipe line desugars to an ordinary application whose head is a reference to the (named) predecessor. So `| a > r` after a formation `F` (named `F`) is identical in XMIR to `F a > r`; `| a` then `| b` after `F >>` (auto-name `A`) is `A a` (auto-named) followed by `A′ b`. The parser emits the pipe line as a base-less `<o pipe=''>` with the args as children; the `wrap-applications` reshape (§9) sets `@base` from the preceding sibling's `@name`, so every downstream pass (scope resolution, base rolling) treats it as a hand-written application. The `@pipe` marker is **kept** on the application, as a cosmetic hint that lets the printer restore the compact `|` syntax (#5684); every compilation pass reads `@base` and ignores the marker.
 
@@ -1351,7 +1360,7 @@ R-9.7.3. **Escape sequence table.** Recognised in both `STRING` and `TEXT`:
 | `\'` | `'` |
 | `\\` | `\` |
 | `\NNN` | Octal byte. `N` ∈ `[0-7]`, length 1–3 digits, value ≤ 0o377 (= 255 decimal). Pattern: `\\` followed by an optional `[0-3]`, an optional `[0-7]`, and a required `[0-7]` |
-| `\uXXXX` | Unicode codepoint, 4 hex digits. The grammar permits `\uu...uXXXX` (one or more `u`s) for legacy escape forms; the parser recognises any such sequence and decodes it to the codepoint. |
+| `\uXXXX` | Unicode codepoint, 4 hex digits, each one of `0`-`9`, `a`-`f`, `A`-`F` and nothing else: a character another alphabet counts as a digit, such as the fullwidth `Ｆ`, makes the escape `unicode escape \u… is not exactly four hexadecimal digits`. The grammar permits `\uu…uXXXX` (one or more `u`s) for legacy escape forms; the parser recognises any such sequence and decodes it to the codepoint. |
 
 R-9.7.4. **Escape decoding happens at parse time.** Every recognised escape — single-character, octal, and unicode — is decoded into its target codepoint(s) by the parser before the string body is fed into the `<o base='Φ.bytes'>` UTF-8 carrier (R-9.4 data carrier emission). The XMIR text body therefore contains decoded characters, never the source-level escape sequence; this applies equally to `STRING` and `TEXT` tokens (R-9.7.1 / R-9.7.2). Downstream consumers see the canonical UTF-8 bytes, not the literal `\uXXXX` / `\NNN` form.
 
@@ -1361,7 +1370,7 @@ Any other backslash sequence is a lexical error.
 
 R-9.8.1. `INT`: optional sign (`+` or `-`), then either `0` alone (the literal zero) or a digit in `[1-9]` followed by any number of digits in `[0-9]`. **Any leading zero on a multi-digit literal is forbidden** — `07`, `007`, `+07`, and `-07` are all lexical errors. The new parser narrows the underlying grammar here: the grammar (`INT : (PLUS | MINUS)? (ZERO | ZERO?[1-9][0-9]*)`) permits one optional leading zero before a non-zero digit-run; the new parser does not. Implementations must check explicitly after lexing.
 R-9.8.2. `FLOAT`: optional sign, one or more digits, `.`, one or more digits, optional exponent `(e|E)(+|-)?digits`.
-R-9.8.3. `HEX`: literal `0x` (lowercase only) followed by one or more hex digits (case-insensitive).
+R-9.8.3. `HEX`: literal `0x` (lowercase only) followed by one or more hex digits (case-insensitive). A hex digit is one of `0`-`9`, `a`-`f`, `A`-`F` and nothing else: a character another alphabet counts as a digit, such as the fullwidth `Ｆ` or the fullwidth `１`, ends the literal where it stands, so `0xＦＦ` is `hexadecimal literal requires at least one digit` rather than 255.
 
 ### 9.9 Error messages — canonical texts
 
@@ -1373,7 +1382,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | --- | --- |
 | Odd indent | `unexpected odd indent` |
 | Indent jump > 1 level | `indent increased by more than one level` |
-| Nesting past 256 levels (R-5.2.7a) | `object nested deeper than 256 levels` |
+| Nesting past 256 levels, by indentation (R-5.2.7a), by a dispatch chain (R-3.5.3c) or by paren groups (R-3.6.6a) | `object nested deeper than 256 levels` |
 | Tab in leading whitespace | `tab character in leading whitespace` |
 | Leading whitespace other than a space or a tab (R-2.2.1) | `invalid character in leading whitespace` |
 | Carriage return that no line feed follows (R-2.1.2) | `standalone carriage return is not a line ending` |
@@ -1399,8 +1408,8 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | `+` followed by digit but the digit-run forms an invalid `INT`/`FLOAT` (R-3.2.5, e.g., `+1foo`) | `invalid signed-number literal` |
 | Nested atom inside another atom (R-6.3.4 (b)) | `atom may not contain a nested atom` |
 | `[x]` as a bare argument (horizontal anonym in arg position) | `horizontal formation not allowed as argument` |
-| Malformed BYTES literal (R-3.13.1 — invalid byte form, e.g., `Z9-`, single trailing dash without prefix, odd hex run) | `invalid bytes literal` |
-| Multi-byte BYTES literal ending in a continuation dash with no following chunk (R-3.13.1) | `bytes literal ends with a dangling continuation dash` |
+| Malformed BYTES literal (R-3.13.1, R-3.13.1b, R-3.13.1c — invalid byte form, e.g., `Z9-`, `A-`, `0AB-`, `0A-B`, `0a-`, `0A--`, `0A-0B--0C`) | `invalid bytes literal` |
+| Multi-byte BYTES literal whose token ends in a continuation dash with no following chunk (R-3.13.1, R-3.13.1c) | `bytes literal ends with a dangling continuation dash` |
 | Meta after first non-meta object | `meta directive must precede all other objects` |
 | Meta at indent other than 0 (R-3.2.1) | `meta directive must sit at indent 0, found indent <n>` (indent substituted) |
 | Plain child without name in formation | `object inside formation must have a name` |

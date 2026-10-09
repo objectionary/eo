@@ -5,7 +5,11 @@
 package org.eolang;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.StreamSupport;
+import org.cactoos.Scalar;
+import org.cactoos.experimental.Threads;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -59,6 +63,7 @@ final class AtOnceTest {
 
     @Test
     void cachesAttributeInParallelThreads() {
+        final int threads = 100;
         final AtomicInteger count = new AtomicInteger();
         final Attribute attr = new AtOnce(
             new AtComposite(
@@ -69,11 +74,20 @@ final class AtOnceTest {
                 }
             )
         );
-        IntStream.range(0, 100).parallel().forEach(idx -> attr.get());
         MatcherAssert.assertThat(
             "AtOnce must execute nested attribute only once, even in parallel threads",
-            count.get(),
-            Matchers.equalTo(1)
+            new long[] {
+                StreamSupport.stream(
+                    new Threads<Phi>(
+                        threads,
+                        IntStream.range(0, threads).<Scalar<Phi>>mapToObj(
+                            idx -> attr::get
+                        ).collect(Collectors.toList())
+                    ).spliterator(), false
+                ).count(),
+                count.get(),
+            },
+            Matchers.equalTo(new long[] {threads, 1})
         );
     }
 
