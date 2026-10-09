@@ -181,17 +181,13 @@ final class Globals {
      *
      * @param emit XMIR emitter
      * @param span Source span closing the header
-     * @return Whether sealing failed
      */
-    boolean sealOrReport(final Emit emit, final Span span) {
-        boolean failed = false;
+    void sealOrReport(final Emit emit, final Span span) {
         try {
             this.seal(emit, span);
         } catch (final ParseError err) {
             emit.error(err.line(), err.pos(), err.getMessage(), true);
-            failed = true;
         }
-        return failed;
     }
 
     /**
