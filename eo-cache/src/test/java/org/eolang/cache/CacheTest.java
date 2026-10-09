@@ -6,11 +6,13 @@ package org.eolang.cache;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import com.yegor256.Together;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
@@ -55,9 +57,8 @@ final class CacheTest {
         final Path tail = source.getFileName();
         new Cache(base, p -> "compiled").apply(source, temp.resolve("target.xmir"), tail);
         MatcherAssert.assertThat(
-            "Cache file must be created and hash file must be created",
-            Files.exists(base.resolve(tail))
-                && Files.exists(base.resolve(CacheTest.marker(tail))),
+            "the compiled content must be left in the cache, but it wasnt",
+            Files.exists(base.resolve(tail)),
             Matchers.is(true)
         );
     }
@@ -145,7 +146,7 @@ final class CacheTest {
         cache.apply(source, temp.resolve("out.txt"), tail);
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content",
-            Files.readString(base.resolve(CacheTest.marker(tail)), encoding),
+            CacheTest.stamp(base.resolve(tail)),
             Matchers.equalTo(
                 Base64.getEncoder().encodeToString(
                     MessageDigest.getInstance("SHA-256").digest(msg.getBytes(encoding))
@@ -172,10 +173,7 @@ final class CacheTest {
         new Cache(cache, p -> content).apply(source, temp.resolve("out.txt"), tail);
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content for large file",
-            Files.readString(
-                cache.resolve(CacheTest.marker(tail)),
-                StandardCharsets.UTF_8
-            ),
+            CacheTest.stamp(cache.resolve(tail)),
             Matchers.equalTo(
                 Base64.getEncoder().encodeToString(
                     MessageDigest.getInstance("SHA-256")
@@ -198,10 +196,7 @@ final class CacheTest {
         new Cache(cache, p -> content).apply(source, temp.resolve("out.txt"), tail);
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content for tiny file",
-            Files.readString(
-                cache.resolve(CacheTest.marker(tail)),
-                StandardCharsets.UTF_8
-            ),
+            CacheTest.stamp(cache.resolve(tail)),
             Matchers.equalTo(CacheTest.hash(content))
         );
     }
@@ -225,10 +220,7 @@ final class CacheTest {
         );
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content for folder with several files",
-            Files.readString(
-                cache.resolve("folder.sha256"),
-                StandardCharsets.UTF_8
-            ),
+            CacheTest.stamp(cache.resolve("folder")),
             Matchers.equalTo(new Sha(source).toString())
         );
     }
@@ -256,12 +248,32 @@ final class CacheTest {
         );
         MatcherAssert.assertThat(
             "Directories with identical content but differently named files must produce different hashes",
-            Files.readString(cache.resolve("dirA.sha256"), StandardCharsets.UTF_8),
-            Matchers.not(
-                Matchers.equalTo(
-                    Files.readString(cache.resolve("dirB.sha256"), StandardCharsets.UTF_8)
-                )
-            )
+            CacheTest.stamp(cache.resolve("dirA")),
+            Matchers.not(Matchers.equalTo(CacheTest.stamp(cache.resolve("dirB"))))
+        );
+    }
+
+    @Test
+    void refusesToHandTheContentOfAnotherSourceToThisOne(@Mktmp final Path temp) {
+        MatcherAssert.assertThat(
+            "a build must never be given the content compiled from a source it did not ask for",
+            new Together<>(
+                2,
+                thread -> {
+                    final String own = String.format("v%d", thread);
+                    final Path source = temp.resolve(own).resolve("app.eo");
+                    new Saved(own, source).value();
+                    final Path target = source.resolveSibling("app.xmir");
+                    final Cache cache = new Cache(temp.resolve("cache"), Files::readString);
+                    String seen = own;
+                    for (int run = 0; run < 200 && seen.equals(own); ++run) {
+                        cache.apply(source, target, Paths.get("foo", "app.xmir"));
+                        seen = Files.readString(target);
+                    }
+                    return seen;
+                }
+            ).asList(),
+            Matchers.containsInAnyOrder("v0", "v1")
         );
     }
 
@@ -272,21 +284,6 @@ final class CacheTest {
             IllegalStateException.class,
             () -> new Cache(state.base, p -> "v2").apply(state.source, state.target, state.tail),
             "a failure while writing the payload must be reported, not swallowed"
-        );
-    }
-
-    @Test
-    void leavesMarkerUntouchedAfterPayloadWriteFailure(
-        @Mktmp final Path temp
-    ) throws IOException, NoSuchAlgorithmException {
-        final CacheTest.Corrupted state = CacheTest.corrupted(temp);
-        CacheTest.attemptDoomedWrite(state);
-        MatcherAssert.assertThat(
-            "the marker must not point at a payload that was never written",
-            Files.readString(
-                state.base.resolve(CacheTest.marker(state.tail)), StandardCharsets.UTF_8
-            ),
-            Matchers.equalTo(CacheTest.hash("v1"))
         );
     }
 
@@ -337,8 +334,9 @@ final class CacheTest {
         );
     }
 
-    private static String marker(final Path tail) {
-        return String.format("%s.sha256", tail);
+    private static String stamp(final Path cached) throws IOException {
+        final String text = Files.readString(cached, StandardCharsets.UTF_8);
+        return text.substring(0, text.indexOf(' '));
     }
 
     /**

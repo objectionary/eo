@@ -21,9 +21,9 @@ concurrency:
 jobs:
   # This job is handed the write the job that measured could not be given,
   # because that one builds the code of the branch. Nothing of the branch is
-  # checked out here and nothing from it is run: the two files come out of
-  # the artifact and the only one that is read as anything but text is the
-  # pull request number, which is a number.
+  # checked out here and nothing from it is run: the table comes out of the
+  # artifact and is written as text, while the pull request it is written on
+  # is asked of GitHub rather than read out of the artifact.
   comment:
     if: ${{ github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success' }}
     timeout-minutes: 15
@@ -34,11 +34,29 @@ jobs:
           name: ladder
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      # The number comes from GitHub and not from the artifact. The job that
+      # uploaded it builds the code of the branch, so everything it writes is
+      # the branch's to choose, and a number chosen there would have this job
+      # write the branch's own text on whatever pull request it named (#9042).
+      # `workflow_run.pull_requests` is empty for a run of a fork, which is
+      # most of them, so the branch of the run is what the pull request is
+      # looked up by.
       - id: numbers
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_REPO: ${{ github.event.workflow_run.head_repository.full_name }}
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          REPO: ${{ github.repository }}
         run: |
-          number=$(tr -cd '0-9' < pr-number)
-          if [ -z "${number}" ]; then
-            echo 'The artifact carries no pull request number'
+          number=$(
+            gh api "repos/${REPO}/pulls" \
+              --method GET \
+              -f state=open \
+              -f "head=${HEAD_REPO%%/*}:${HEAD_BRANCH}" \
+              --jq '.[0].number'
+          )
+          if [ -z "${number}" ] || [ "${number}" = 'null' ]; then
+            echo "No open pull request stands on ${HEAD_REPO}:${HEAD_BRANCH}"
             exit 1
           fi
           echo "pr=${number}" >> "${GITHUB_OUTPUT}"
