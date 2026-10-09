@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The root of the entry dataized to bytes phino knew in advance, so the
+# object always gives the same constant, and there is no computing to turn
+# into Java.
+locator: Φ.yes
+number: 75
+taint: always gives the constant FF-
+eo:
+  yes.eo: |
+    [] > yes
+      true > @
+protocol: |
+  <protocol>
+    <morph at="Φ.l/.e75">
+      <evaluate λ="L_entry" by="morph" at="Φ.l/.e75">
+        <bind meta="𝛿1·1">40-52-C0-00-00-00-00-00</bind>
+        <answer meta="𝑛·1·2">⟦ λ ⤍ L_root, +1 ⟧</answer>
+      </evaluate>
+      <evaluate λ="L_root" by="morph" at="Φ.l/.e75">
+        <bind meta="𝛿1·2">FF-</bind>
+        <built meta="𝑛·2·1">⟦⟧</built>
+        <answer meta="𝑛·2·2">⟦⟧</answer>
+      </evaluate>
+    </morph>
+    <msec>268</msec>
+    <firings>2</firings>
+    <fps>7</fps>
+  </protocol>

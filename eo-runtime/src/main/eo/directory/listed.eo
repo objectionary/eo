@@ -24,12 +24,12 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^] > listed
+[^folder] > listed
   if. > @
     opened.code.eq -1
     T
       "Can't list the directory '%s': %s".printf
-        * ^.path opened.output
+        * folder.path opened.message
     seq *
       entries.is-empty
       closed
@@ -64,31 +64,25 @@
     os.is-windows.if
       win32.find-close opened.code
       code.
-        posix *1
-          "closedir"
-          opened.code
+        posix.closedir opened.code
     0
   sorted > entries
     gathered
       os.is-windows.if
         added
           *
-          opened.output
+          opened.name
         *
   [^ acc] > gathered
     if. > @
       read.code.eq -1
       acc
       ^.gathered
-        ^.added acc read.output
+        ^.added acc read.name
     called. > read
       os.is-windows.if
-        win32 *1
-          "FindNextFileW"
-          ^.opened.code
-        posix *1
-          "readdir"
-          ^.opened.code
+        win32.find-next-file ^.opened.code
+        posix.readdir ^.opened.code
   if. > [^ rest item] > inserted
     rest.length.eq 0
     * item
@@ -103,13 +97,10 @@
       rest.with item
   called. > opened
     os.is-windows.if
-      win32 *1
-        "FindFirstFileW"
-        ^.as-path.separator.joined
-          * ^.path "*"
-      posix *1
-        "opendir"
-        ^.path
+      win32.find-first-file
+        folder.as-path.separator.joined
+          * folder.path "*"
+      posix.opendir folder.path
   [^ one two bit] > smaller
     if. > @
       lit.eq

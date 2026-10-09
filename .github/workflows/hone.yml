@@ -7,12 +7,14 @@ name: hone
   push:
     branches:
       - master
+permissions:
+  contents: read
 concurrency:
   group: hone-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   hone:
-    timeout-minutes: 15
+    timeout-minutes: 45
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7

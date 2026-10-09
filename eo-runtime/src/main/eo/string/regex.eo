@@ -80,7 +80,7 @@
 +unlint redundant-attachment
 +version 0.0.0
 
-[^] > regex
+[^text] > regex
   compile > @
   or. > [^ c] >> alnum
     numeric c
@@ -317,7 +317,7 @@
       2F-.eq
         raw.slice 0 1
       false
-    ^.^.as-bytes > raw
+    ^.text.as-bytes > raw
     ^.cant-compile > [^ reason offset] > reported
       worded offset reason
     raw.size > size
@@ -976,16 +976,20 @@
       if. > @
         0.gt d
         numeral index acc
-        ^.counted
-          if.
-            0.gt acc
-            d
-            plus.
-              acc.times 10
-              d
-          index.plus 1
+        if.
+          next.gt 2147483647
+          numeral index -2
+          ^.counted
+            next
+            index.plus 1
       digit > d
         byte index
+      if. > next
+        0.gt acc
+        d
+        plus.
+          acc.times 10
+          d
     if. > [^ index] >> indexed
       0.gt index
       index
@@ -1336,21 +1340,45 @@
                     index.plus 1
                     opened
                     bits
-                  if.
-                    b.eq 7B-
-                    yes index opened bits empty --
-                    r.ok.if
-                      if.
-                        r.at.as-bytes.eq index.as-bytes
-                        escaped (index.plus 1) opened bits
-                        yes
-                          r.at
-                          opened
-                          bits
-                          plain bits r.text
-                          r.text
-                      r
+                  brace
       byte index > b
+      if. > brace
+        b.eq 7B-
+        yes
+          index
+          opened
+          bits
+          empty
+          --
+        r.ok.if
+          if.
+            r.at.as-bytes.eq index.as-bytes
+            escaped
+              index.plus 1
+              opened
+              bits
+            if.
+              and.
+                r.text.eq --
+                or.
+                  eq. (byte r.at) 2A-
+                  or.
+                    eq. (byte r.at) 2B-
+                    eq. (byte r.at) 3F-
+              no
+                index
+                string
+                  concat.
+                    "Dangling meta character '".as-bytes.concat
+                      byte r.at
+                    "'".as-bytes
+              yes
+                r.at
+                opened
+                bits
+                plain bits r.text
+                r.text
+          r
       scanned > r
         index
         bits
@@ -1514,22 +1542,23 @@
                 no
                   s.at.plus 1
                   "Illegal character range"
-                u.ok.if
-                  if.
-                    u.preset.or
-                      gt.
-                        key s.from
-                        key u.from
-                    no
-                      u.at.plus -1
-                      "Illegal character range"
-                    span u.at s.from u.from
-                  u
+                ranged
             s
         s
       byte s.at > d
       byte > n
         s.at.plus 1
+      u.ok.if > ranged
+        if.
+          u.preset.or
+            gt.
+              key s.from
+              key u.from
+          no
+            u.at.plus -1
+            "Illegal character range"
+          span u.at s.from u.from
+        u
       single index mode > s
       single > u
         s.at.plus 1
@@ -1656,59 +1685,59 @@
                   refused index e
       byte index > e
       e.or 20- > l
-    if. > [^ index e] >> refused
-      or.
-        e.eq 70-
-        e.eq 50-
-      no
-        index.plus -1
-        "Unicode property classes are not supported"
-      if.
-        e.eq 75-
+    [^ index e] >> refused
+      if. > @
+        or.
+          e.eq 70-
+          e.eq 50-
         no
           index.plus -1
-          "Unicode escapes are not supported"
+          "Unicode property classes are not supported"
         if.
-          e.eq 63-
+          e.eq 75-
           no
             index.plus -1
-            "Control escapes are not supported"
+            "Unicode escapes are not supported"
           if.
-            e.eq 30-
+            e.eq 63-
             no
               index.plus -1
-              "Octal escapes are not supported"
+              "Control escapes are not supported"
             if.
-              or.
-                e.eq 6B-
-                gt.
-                  digit e
-                  0
+              e.eq 30-
               no
                 index.plus -1
-                "Back references are not supported"
+                "Octal escapes are not supported"
               if.
                 or.
-                  e.eq 47-
-                  or.
-                    e.eq 52-
-                    or.
-                      e.eq 68-
-                      or.
-                        e.eq 76-
-                        or.
-                          e.eq 58-
-                          e.eq 4E-
+                  e.eq 6B-
+                  gt. (digit e) 0
                 no
                   index.plus -1
-                  string
-                    concat.
-                      "The escape sequence '\\".as-bytes.concat
-                        e
-                      "' is not supported".as-bytes
-                no
-                  index
-                  "Illegal/unsupported escape sequence"
+                  "Back references are not supported"
+                unsupported.if
+                  no (index.plus -1) message
+                  no
+                    index
+                    "Illegal/unsupported escape sequence"
+      string > message
+        concat.
+          "The escape sequence '\\".as-bytes.concat
+            e
+          "' is not supported".as-bytes
+      or. > unsupported
+        e.eq 47-
+        or.
+          e.eq 52-
+          or.
+            or.
+              e.eq 48-
+              e.eq 68-
+            or.
+              e.eq 76-
+              or.
+                e.eq 58-
+                e.eq 4E-
     [^ index opened bits] >> group
       if. > @
         b.eq 3F-
@@ -1841,41 +1870,33 @@
         bits
     [^ index] >> braces
       if. > @
-        0.gt n.value
+        n.value.eq -2
         no
-          index
-          "Illegal repetition"
+          n.at
+          "Illegal repetition range"
         if.
-          c.eq 7D-
-          bounds
-            n.at.plus 1
-            n.value
-            n.value
+          0.gt n.value
+          no
+            index
+            "Illegal repetition"
           if.
-            c.eq 2C-
+            c.eq 7D-
+            bounds
+              n.at.plus 1
+              n.value
+              n.value
             if.
-              d.eq 7D-
-              bounds
-                n.at.plus 2
-                n.value
-                number 7F-F0-00-00-00-00-00-00
+              c.eq 2C-
               if.
-                0.gt m.value
-                no
-                  n.at.plus 1
-                  "Unclosed counted closure"
-                if.
-                  eq. (byte m.at) 7D-
-                  if.
-                    n.value.gt m.value
-                    no m.at "Illegal repetition range"
-                    bounds (m.at.plus 1) n.value m.value
-                  no
-                    m.at
-                    "Unclosed counted closure"
-            no
-              n.at
-              "Unclosed counted closure"
+                d.eq 7D-
+                bounds
+                  n.at.plus 2
+                  n.value
+                  number 7F-F0-00-00-00-00-00-00
+                ranged
+              no
+                n.at
+                "Unclosed counted closure"
       byte n.at > c
       byte > d
         n.at.plus 1
@@ -1883,6 +1904,32 @@
         -1
         n.at.plus 1
       counted -1 index > n
+      if. > ranged
+        m.value.eq -2
+        no
+          m.at
+          "Illegal repetition range"
+        if.
+          0.gt m.value
+          no
+            n.at.plus 1
+            "Unclosed counted closure"
+          if.
+            eq.
+              byte m.at
+              7D-
+            if.
+              n.value.gt m.value
+              no
+                m.at
+                "Illegal repetition range"
+              bounds
+                m.at.plus 1
+                n.value
+                m.value
+            no
+              m.at
+              "Unclosed counted closure"
   [^ child least most] >> possessive
     [^ s at caps k] > run
       [^ n at caps] >> drain
@@ -2169,6 +2216,10 @@
         "Dangling meta character '*'"
       offset.eq 2
 
+  matches. ++> can-bind-a-quantifier-across-an-empty-quote
+    "/^x\\Q\\E*$/".regex.compiled
+    "xxx"
+
   matches. ++> can-bind-a-quantifier-to-the-last-character-of-a-run
     "/xab*/".regex.compiled
     "xa"
@@ -2320,15 +2371,27 @@
         "/(a)(b)?/".regex.match "a"
     3
 
+  eq. ++> can-keep-an-illegal-escape-diagnostic
+    "/ab\\g/".regex.compile I
+    "regex syntax is invalid: Illegal/unsupported escape sequence at offset 3 of the pattern"
+
   matches. ++> can-keep-an-inline-flag-to-the-end-of-its-group
     "/(a(?i)b)c/".regex.compiled
     "aBc"
+
+  eq. ++> can-keep-the-lowercase-horizontal-whitespace-escape-diagnostic
+    "/ab\\h/".regex.compile I
+    "regex syntax is invalid: The escape sequence '\\h' is not supported at offset 2 of the pattern"
 
   eq. ++> can-keep-the-position-of-a-missing-block
     position.
       next.
         "/[0-9]/".regex.match "abc"
     1
+
+  eq. ++> can-locate-an-unsupported-uppercase-horizontal-whitespace-escape
+    "/ab\\H/".regex.compile I
+    "regex syntax is invalid: The escape sequence '\\H' is not supported at offset 2 of the pattern"
 
   matches. ++> can-match-a-body-with-slashes-inside
     "/a/b|a/bc/".regex.compiled
@@ -2408,6 +2471,10 @@
     "/\\(\\)\\[\\]\\{\\}\\*\\+\\?\\.\\^\\$\\|\\\\\\//".regex.compiled
     "()[]{}*+?.^$|\\/"
 
+  matches. ++> can-match-long-digits-after-a-count
+    "/a{3}99999999999/".regex.compiled
+    "aaa99999999999"
+
   "/\\W\\S\\D/".regex.compiled.matches "-x?" ++> can-match-negated-preset-classes
 
   exists. ++> can-match-with-a-pattern-built-from-a-body-and-flags
@@ -2452,6 +2519,14 @@
     "/)/".regex.compile I
     "regex syntax is invalid: Unmatched closing ')'"
 
+  eq. ++> can-name-a-repetition-count-past-an-int
+    "/a{2147483648}/".regex.compile I
+    "regex syntax is invalid: Illegal repetition range at offset 11 of the pattern"
+
+  eq. ++> can-name-a-repetition-maximum-past-an-int
+    "/a{1,2147483648}/".regex.compile I
+    "regex syntax is invalid: Illegal repetition range at offset 13 of the pattern"
+
   eq. ++> can-name-a-trailing-backslash
     "/a\\/".regex.compile I
     "regex syntax is invalid: Unescaped trailing backslash at offset 2 of the pattern"
@@ -2494,6 +2569,14 @@
   eq. ++> can-name-an-unsupported-escape-letter
     "/\\g/".regex.compile I
     "regex syntax is invalid: Illegal/unsupported escape sequence at offset 1 of the pattern"
+
+  eq. ++> can-name-an-unsupported-uppercase-horizontal-whitespace-escape
+    "/\\H/".regex.compile I
+    "regex syntax is invalid: The escape sequence '\\H' is not supported at offset 0 of the pattern"
+
+  eq. ++> can-name-an-unsupported-uppercase-horizontal-whitespace-escape-inside-a-character-class
+    "/[\\H]/".regex.compile I
+    "regex syntax is invalid: The escape sequence '\\H' is not supported at offset 1 of the pattern"
 
   eq. ++> can-name-the-construct-and-the-offset-of-an-invalid-pattern
     "/a**/".regex.compile I
@@ -2556,6 +2639,10 @@
   eq. ++> can-refuse-a-nested-character-class
     "/[a[b]]/".regex.compile I
     "regex syntax is invalid: Nested character classes are not supported at offset 2 of the pattern"
+
+  eq. ++> can-refuse-a-quantifier-after-an-empty-quote
+    "/\\Q\\E*/".regex.compile I
+    "regex syntax is invalid: Dangling meta character '*' at offset 0 of the pattern"
 
   eq. ++> can-refuse-a-unicode-escape
     "/\\u0041/".regex.compile I

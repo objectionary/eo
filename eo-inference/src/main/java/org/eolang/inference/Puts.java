@@ -15,7 +15,21 @@ import java.util.Map;
  * <p>The same facts are wanted two ways. What a call is a copy of is answered
  * by what that one call filled, and what a void holds is answered by what every
  * call filled. So both sides are kept here, the second worked out once by
- * {@link Holders} rather than looked for again at every question.</p>
+ * {@link Fillings} rather than looked for again at every question. It is the
+ * census the tables publish, before it is counted, and not a list of the calls
+ * alone, since an atom fills a void too and a void handed on from another void
+ * holds whatever that one holds (#9006).</p>
+ *
+ * <p>So is which of the things put in never come back with a value, since an
+ * arm that terminates is put into a void like any other and hands nothing to
+ * whoever reads it (#8946).</p>
+ *
+ * <p>And so is which voids nothing ever fills, which is a different list from
+ * what every void holds, although it is worked out from it. What a void holds
+ * grows from pass to pass, so a void it is silent about may be filled a pass
+ * later, and an arm struck for reading it never comes back. The empty voids
+ * are therefore said once, by {@link Dispatched#empty(Map)}, after a whole run
+ * of passes that struck nothing, and handed to a second run that may (#8981).</p>
  *
  * @since 0.71.0
  */
@@ -27,22 +41,40 @@ final class Puts {
     private final Map<String, Map<String, String>> fills;
 
     /**
-     * What every void holds, from {@link Holders}.
+     * What every void holds, from {@link Fillings}.
      */
     private final Map<String, Collection<String>> holds;
+
+    /**
+     * Every object of the program that terminates, from {@link Dead}.
+     */
+    private final Collection<String> dead;
+
+    /**
+     * The voids nothing ever fills, from {@link Dispatched#empty(Map)}.
+     */
+    private final Collection<String> empty;
 
     /**
      * Ctor.
      *
      * @param bound What every application fills, from {@link Bound}
-     * @param holders What every void holds, from {@link Holders}
+     * @param holders What every void holds, from {@link Fillings}
+     * @param ends Every object of the program that terminates, from
+     *  {@link Dead}
+     * @param vacant The voids nothing ever fills, from
+     *  {@link Dispatched#empty(Map)}, empty where no arm may be struck
      */
     Puts(
         final Map<String, Map<String, String>> bound,
-        final Map<String, Collection<String>> holders
+        final Map<String, Collection<String>> holders,
+        final Collection<String> ends,
+        final Collection<String> vacant
     ) {
         this.fills = bound;
         this.holds = holders;
+        this.dead = ends;
+        this.empty = vacant;
     }
 
     /**
@@ -57,17 +89,23 @@ final class Puts {
     }
 
     /**
-     * Whether any call of the program puts anything into this void.
+     * Whether this filling never comes back with a value.
      *
-     * <p>A void nobody fills terminates the moment it is read, and a void the
-     * callers fill holds whatever they put there. The two read alike in a
-     * locator and are worlds apart in what an arm rooted at one is worth.</p>
+     * @param filling The locator of what a call put in
+     * @return True when it terminates
+     */
+    boolean dies(final String filling) {
+        return this.dead.contains(filling);
+    }
+
+    /**
+     * Whether anything puts anything into this void.
      *
      * @param hollow The locator of the void
-     * @return True when at least one call of the program fills it
+     * @return False only when the void is among the ones nothing ever fills
      */
     boolean fills(final String hollow) {
-        return this.holds.containsKey(hollow);
+        return !this.empty.contains(hollow);
     }
 
     /**

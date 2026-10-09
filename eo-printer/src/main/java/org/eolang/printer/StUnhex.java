@@ -96,7 +96,7 @@ final class StUnhex extends StEnvelope {
         if (num % 1 == 0) {
             if ("-0.0".equals(num.toString())) {
                 str = "-0";
-            } else if (Math.abs(num) < 0x1p63) {
+            } else if (num >= -0x1p63 && num < 0x1p63) {
                 str = Long.toString(num.longValue());
             } else {
                 str = Double.toString(num).replace('E', 'e');

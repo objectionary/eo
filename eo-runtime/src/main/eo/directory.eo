@@ -53,25 +53,23 @@
       posix.close descriptor
     code. > [name] > opened
       os.is-windows.if
-        win32 *1
-          "_open"
+        win32.open
           name
           plus.
             win32.rdonly.plus win32.creat
             win32.exclusive
           win32.mode
-        posix *1
-          "open"
+        posix.open
           name
           plus.
             posix.rdonly.plus posix.creat
             posix.exclusive
           posix.private
-  ^.exists.if > [^] > tmpfile
+  folder.exists.if > [^folder] > tmpfile
     Q.file
       as-bytes.
-        ^.retried
-          ^.path
+        folder.retried
+          folder.path
           clock.as-number
           os.is-windows.if win32.getpid posix.getpid
           os.is-windows.if
@@ -79,8 +77,8 @@
             posix.gettimeofday.micros.div 1000000
     T
       "Directory %s does not exist, can't create temporary file".printf
-        * ^.file
-  [^ glob] > walk
+        * folder.file
+  [^folder glob] > walk
     [^ accum prefix dir] >> walked
       [^ rest] >> stepped
         if. > @
@@ -109,13 +107,13 @@
     | > @
       *
       ""
-      ^
+      folder
     if. > [^ accum rel] >> picked
       matched rel
       accum.with
         Q.file (base.resolved rel).as-bytes
       accum
-    ^.as-path >> base
+    folder.as-path >> base
     if. > [char] >> escaped
       ".+()|^$[]\\".contains char
       "".joined
@@ -164,7 +162,7 @@
     [^ index acc braced classed] >> translated
       if. > @
         index.gte ^.glob.length
-        acc
+        finished
         ^.translated
           index.plus advance
           "".joined
@@ -197,6 +195,12 @@
               char.eq ","
             "|"
             escaped char
+      if. > bracketed
+        char.eq "["
+        T
+          "Can't parse '%s' as a glob pattern, Missing ']'".printf
+            * ^.glob
+        alternated
       ^.glob.at index > char
       classed.not.and > double
         and.
@@ -206,6 +210,11 @@
               index.plus 1
               "" > [message]
             "*"
+      braced.if > finished
+        T
+          "Can't parse '%s' as a glob pattern, Missing '}'".printf
+            * ^.glob
+        acc
       opening.and > negated
         eq.
           ^.glob.at
@@ -245,7 +254,7 @@
                   if.
                     char.eq "/"
                     literal
-                    alternated
+                    bracketed
       opening.if > within
         true
         if.
@@ -436,8 +445,7 @@
       seq *
         touched. (d.resolved "щи.txt").as-file
         code.
-          posix *1
-            "symlink"
+          posix.symlink
             d
             d.resolved "ссылка"
         eq.
@@ -724,22 +732,6 @@
       made.
         directory mktemp.tmpfile.deleted
 
-  ++> can-walk-with-an-unmatched-glob-bracket
-    seq * > @
-      touched.
-        as-file.
-          d.resolved "[.txt"
-      touched.
-        as-file.
-          d.resolved "a.txt"
-      eq.
-        ",".joined
-          d.as-dir.walk "[.txt"
-        d.resolved "[.txt"
-    as-path. > d
-      made.
-        directory mktemp.tmpfile.deleted
-
   ++> can-walk-without-including-the-walked-directory
     seq * > @
       made.
@@ -780,8 +772,25 @@
     directory mktemp.tmpfile.deleted
     "**"
 
+  --> stops-on-walking-with-a-glob-bracket-left-open
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      eq. (d.as-dir.walk "[.txt").length 0
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
   --> stops-on-walking-with-a-malformed-glob
-    d.as-dir.walk "{" > @
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      eq.
+        length.
+          d.as-dir.walk "a{b"
+        0
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted

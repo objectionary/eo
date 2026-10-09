@@ -123,6 +123,42 @@ final class StUnhexTest {
 
     @ParameterizedTest
     @MethodSource("shifts")
+    void convertsSmallestLongFromHexToEo(final Shift shift, final String type) {
+        MatcherAssert.assertThat(
+            String.format(
+                "StUnhex by %s must print the smallest long whole, but it didnt",
+                type
+            ),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    "<p><o base='Φ.number'><o base='Φ.bytes'><o>C3-E0-00-00-00-00-00-00</o></o></o></p>"
+                )
+            ),
+            XhtmlMatchers.hasXPath("//o[text()='-9223372036854775808']")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("shifts")
+    void keepsDoubleAboveLongCeilingInScientificNotation(
+        final Shift shift, final String type
+    ) {
+        MatcherAssert.assertThat(
+            String.format(
+                "StUnhex by %s cannot print as a long a double one past the long ceiling, but it did",
+                type
+            ),
+            new Xsline(new StUnhex(shift)).pass(
+                new XMLDocument(
+                    "<p><o base='Φ.number'><o base='Φ.bytes'><o>43-E0-00-00-00-00-00-00</o></o></o></p>"
+                )
+            ),
+            XhtmlMatchers.hasXPath("//o[text()='9.223372036854776e18']")
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("shifts")
     void convertsBigIntegerValuedDoubleFromHexToEo(final Shift shift, final String type) {
         MatcherAssert.assertThat(
             String.format(
