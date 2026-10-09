@@ -269,7 +269,7 @@ final class MjLowerTest {
         MatcherAssert.assertThat(
             "the goal must plant the formations of the program it compiled, but it didnt",
             new XMLDocument(home.resolve("entries.xmir")).xpath("//o[@name='e1']/@base"),
-            Matchers.contains("Φ.l🌵.mark")
+            Matchers.contains("Φ.l/.mark")
         );
     }
 
@@ -361,11 +361,11 @@ final class MjLowerTest {
         return String.join(
             "",
             "<protocol><morph><evaluate λ='L_entry'><evaluate λ='L_number_times'>",
-            "<bind meta='𝛿1.2'>40-00-00-00-00-00-00-00</bind>",
-            "<bind meta='𝛿2.2'>40-08-00-00-00-00-00-00</bind>",
+            "<bind meta='𝛿1·2'>40-00-00-00-00-00-00-00</bind>",
+            "<bind meta='𝛿2·2'>40-08-00-00-00-00-00-00</bind>",
             "<minted symbol='𝜎9'>40-00-00-00-00-00-00-00 40-08-00-00-00-00-00-00</minted>",
             "</evaluate></evaluate><evaluate λ='L_root'>",
-            "<dataize meta='𝛿1.3'>𝜎9:λ</dataize></evaluate></morph>",
+            "<dataize meta='𝛿1·3'>𝜎9:λ</dataize></evaluate></morph>",
             "<msec>13</msec><firings>2</firings><fps>153</fps></protocol>"
         );
     }
@@ -373,7 +373,14 @@ final class MjLowerTest {
     private static Path tables(final Path temp) throws IOException {
         final Path made = Files.createDirectories(temp.resolve("tables"));
         Files.write(
-            made.resolve("provides.xml"), "<provides/>".getBytes(StandardCharsets.UTF_8)
+            made.resolve("provides.xml"),
+            String.join(
+                "",
+                "<provides><type id='Φ.gap'>",
+                "<attr name='a' void='true' holds='Φ.number'/>",
+                "<attr name='b' void='true' holds='Φ.number'/>",
+                "</type></provides>"
+            ).getBytes(StandardCharsets.UTF_8)
         );
         Files.write(
             made.resolve("links.xml"),
