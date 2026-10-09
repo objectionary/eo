@@ -15,12 +15,6 @@ provides: |
       <attr name="t" type="Φ.first.t" void="true" holds="Φ.tuple"/>
     </type>
   </provides>
-links: |
-  <links>
-    <type id="Φ.first.φ">
-      <ref loc="Φ.string"/>
-    </type>
-  </links>
 xmir:
   - "//o[@as='t' and @base='Φ.tuple']/o[@as='length' and @base='Φ.number']\
     /o[@as='φ']/o[@as='φ']/o[@name='λ' and text()='𝜎1']"
