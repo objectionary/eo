@@ -156,20 +156,25 @@ final class FilledTest {
         pairs.put("yes", "Φ.bool");
         pairs.put("no", "Φ.bool");
         pairs.put("call", "Φ.bool.if");
-        final Map<String, Map<String, String>> bound = new Bound(
-            Map.of(
-                "yes", List.of("picks-left"),
-                "no", List.of("picks-right"),
-                "call", List.of("Φ.strïng", "Φ.number")
-            ),
-            Collections.emptyMap(), Collections.emptyMap(), Collections.emptyList(), pairs, owned
-        ).all();
         MatcherAssert.assertThat(
             "a read on top of a choice must be what every arm reads, but it stayed on the void",
             new Filled(
                 pairs,
                 owned,
-                new Puts(bound, new Holders(bound, pairs).all(), Collections.emptySet()),
+                new Puts(
+                    new Bound(
+                        Map.of(
+                            "yes", List.of("picks-left"),
+                            "no", List.of("picks-right"),
+                            "call", List.of("Φ.strïng", "Φ.number")
+                        ),
+                        Collections.emptyMap(), Collections.emptyMap(), Collections.emptyList(),
+                        pairs, owned
+                    ).all(),
+                    Map.of("Φ.bool.if", List.of("picks-left", "picks-right")),
+                    Collections.emptySet(),
+                    Collections.emptySet()
+                ),
                 hollows
             ).instead("Φ.bool.if.eq", "call", "read"),
             Matchers.equalTo("Φ.bool")
