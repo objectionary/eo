@@ -926,6 +926,11 @@ final class EoSyntaxTest {
             String.format(
                 "+package foo%n%n[] > app%n  x%s > @%n",
                 ".y".repeat(Stack.DEEPEST * 3)
+            ),
+            String.format(
+                "+package foo%n%n[] > app%n  %sx y%s > @%n",
+                "(".repeat(Stack.DEEPEST * 2),
+                ")".repeat(Stack.DEEPEST * 2)
             )
         )) {
             MatcherAssert.assertThat(
