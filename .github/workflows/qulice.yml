@@ -7,6 +7,10 @@ name: qulice
   pull_request:
     branches:
       - master
+    paths:
+      - '**.java'
+      - '**/pom.xml'
+      - '.github/workflows/qulice.yml'
 permissions:
   contents: read
 concurrency:

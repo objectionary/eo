@@ -42,8 +42,8 @@ import org.cactoos.text.UncheckedText;
 public final class MjAtomsTable extends MjSafe {
 
     /**
-     * Directory with XMIR sources to scan for atoms, falling back to a
-     * directory {@link Subdir} numbers "parse" when unset.
+     * Directory with XMIR sources to scan for atoms, falling back to the
+     * "parse" directory {@link Subdir} already found when unset.
      */
     @Parameter(alias = "atomsInputDir", property = "eo.atomsInputDir")
     private File sources;
@@ -68,7 +68,7 @@ public final class MjAtomsTable extends MjSafe {
 
     @Override
     void exec() throws IOException {
-        final Path home = new Subdir(this.target, "parse").orConfigured(this.sources);
+        final Path home = new Subdir(this.target, "parse").foundOrConfigured(this.sources);
         if (!Files.isDirectory(home)) {
             Logger.info(
                 this,

@@ -10,6 +10,7 @@ import java.net.Proxy;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * One active proxy of Maven settings, carrying the excluded hosts that a
@@ -77,6 +78,12 @@ final class MvnProxy {
      * matched without regard to case: an excluded host stays excluded when
      * the repository URL spells it with a capital letter.</p>
      *
+     * <p>Only {@code *} carries meaning in such a pattern; every other
+     * character stands for itself. The text around the wildcards is quoted
+     * rather than escaped one character at a time, so the brackets of an
+     * IPv6 literal like {@code [::1]} name a host instead of opening a
+     * character class.</p>
+     *
      * @param host The host a request is bound for
      * @return True when the host must be reached directly
      */
@@ -84,7 +91,9 @@ final class MvnProxy {
         final String hosts = this.origin.getNonProxyHosts();
         return hosts != null && Arrays.stream(hosts.split("\\|")).anyMatch(
             pattern -> Pattern.compile(
-                pattern.trim().replace(".", "\\.").replace("*", ".*"),
+                Arrays.stream(pattern.trim().split("\\*", -1))
+                    .map(Pattern::quote)
+                    .collect(Collectors.joining(".*")),
                 Pattern.CASE_INSENSITIVE
             ).matcher(host).matches()
         );

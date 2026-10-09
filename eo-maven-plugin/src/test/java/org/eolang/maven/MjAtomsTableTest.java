@@ -75,6 +75,18 @@ final class MjAtomsTableTest {
     }
 
     @Test
+    void createsNoStageDirectoryWhenNothingWasParsed(@Mktmp final Path temp) throws Exception {
+        new FakeMaven(temp)
+            .with("csv", temp.resolve("classes/org/eolang/atoms.csv").toFile())
+            .execute(MjAtomsTable.class);
+        MatcherAssert.assertThat(
+            "A goal that only reads must leave the target untouched, but it didnt",
+            Files.exists(temp.resolve("target")),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void writesEmptyTableWhenNoXmirSources(@Mktmp final Path temp) throws Exception {
         new FakeMaven(temp)
             .with("sources", temp.resolve("nothing").toFile())

@@ -251,22 +251,22 @@
                 buffer.size.minus sent
             ^.^.output-block
           ^.^.^.send buffer > sent
-  ^.port.is-integer.not.if > [^] > checked-port
+  endpoint.port.is-integer.not.if > [^endpoint] > checked-port
     T
-      ^.port.is-finite.if
+      endpoint.port.is-finite.if
         "Port must be an integer in 0 to 65535, but was %f".printf
-          * ^.port
+          * endpoint.port
         "Port must be an integer in 0 to 65535, but was %s".printf
           *
-            string ^.port.as-scientific
+            string endpoint.port.as-scientific
     if.
       or.
-        ^.port.lt 0
-        ^.port.gt 65535
+        endpoint.port.lt 0
+        endpoint.port.gt 65535
       T
         "Port %d is out of range; it must be 0 to 65535".printf
-          * ^.port
-      ^.port
+          * endpoint.port
+      endpoint.port
   [scope cleanup] > guarded
     seq * > @
       recovered value true
