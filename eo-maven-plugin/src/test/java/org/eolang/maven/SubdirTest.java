@@ -86,7 +86,7 @@ final class SubdirTest {
 
     @Test
     void skipsANumberHeldByARegularFile(@TempDir final Path temp) throws IOException {
-        Files.createFile(temp.resolve("01-lint"));
+        Files.write(temp.resolve("01-lint"), new byte[0]);
         MatcherAssert.assertThat(
             "a number held by a regular file must be stepped over, not retried until the stack ends (see #9010)",
             new Subdir(temp, "lint").path(),
