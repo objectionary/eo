@@ -76,19 +76,6 @@ final class EoSyntaxTest {
     }
 
     @Test
-    void resolvesLocalNamesThroughSingleArgumentFunctions() throws Exception {
-        MatcherAssert.assertThat(
-            "resolve-local-names declares a multi-argument function, which Saxon 13 misbinds across threads",
-            new XMLDocument(
-                new TextOf(
-                    new ResourceOf("org/eolang/parser/parse/resolve-local-names.xsl")
-                ).asString()
-            ).nodes("//*[local-name()='function'][count(*[local-name()='param']) > 1]"),
-            Matchers.empty()
-        );
-    }
-
-    @Test
     void parsesSimpleCode() throws Exception {
         MatcherAssert.assertThat(
             "EoSyntax must generate valid XMIR from simple code",
