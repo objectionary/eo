@@ -13,13 +13,37 @@
   The protocol says what fired and off which symbols, and a symbol is all a
   Java local is: a void is read off the object the atom lives in, a minted
   symbol is one statement under the operation of its λ, a known one is a
-  literal, and a joined one is a blank final that each branch of an "if"
-  assigns. A statement is placed as deep inside the branches as all of its
-  readers let it, so that what one branch alone needs is computed in that
-  branch alone. The symbols are walked from the highest number down, since
-  phino mints a symbol only after the symbols it is made of, so by the time a
-  symbol is reached every symbol that reads it has already said where it is
-  read.
+  literal, a joined one is a blank final that each branch of an "if"
+  assigns, and a deferred one is the copy of an object of the entry with
+  its arguments bound, which phino left for the run to work out. A looped
+  one, which phino answered when it cut a loop, is the same. The copy is
+  made where phino defers it, and dataized only where a λ reads it as an
+  operand, since phino read it as data right there. A join with a copy in
+  one branch holds the object of the branch taken, and the data of the
+  other branch is wrapped back into an object. The root is returned inside
+  the object the protocol names around it, when the answer of "L_entry"
+  for the body is an object of the world applied to its "φ" alone, since
+  such an object dataizes through its "φ" and the data of the root is the
+  data of that "φ": a string, for example, is "Φ.string" applied to its
+  bytes again, and a number is what "Data.ToPhi" makes of its double.
+  Otherwise the root is returned as the object it is when it is a void or
+  a copy, and bare when it is data the atom computed. Bare data loses the
+  object around it, so then the tables of "eo:inference" are asked what the
+  body returns, and an entry whose body is not a number, a bool or bytes is
+  a taint: a string would lose every attribute of its own, and so would an
+  "i16". A statement is
+  placed as deep inside the branches as all of its readers let it, so that
+  what one branch alone needs is computed in that branch alone. The
+  symbols are walked from the highest number down, since phino mints a
+  symbol only after the symbols it is made of, so by the time a symbol is
+  reached every symbol that reads it has already said where it is read.
+  An entry whose protocol defines one symbol twice is a taint, since phino
+  promises to mint every symbol once and the atom could not tell which of
+  the two values a reader of the symbol means.
+  A root that is a copy of "throw", which every "T" became before the world
+  was merged, stops phino at the λ of "throw", which no rule answers. The
+  atom of such an entry throws the message of that copy, the way "T" does
+  in eo-runtime, and computes nothing else.
   A taint is raised as an error and caught once, at the top, since there is
   no half of an atom worth writing.
   The class is named the way "_java-names.xsl" of the transpiler names every
@@ -27,6 +51,7 @@
   every reference to the atom by that rule and javac finds the class only
   under that one name.
   -->
+  <xsl:include href="/org/eolang/lowering/_returns.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <!-- The number of the entry, the one "entries.tsv" gives it. -->
   <xsl:param name="number" as="xs:string" select="''"/>
@@ -38,14 +63,26 @@
   <xsl:param name="source" as="xs:string" select="''"/>
   <!-- The table of voids the planting wrote, as a URI. -->
   <xsl:param name="voids" as="xs:string" select="''"/>
+  <!--
+  The directory with the tables of "eo:inference", as a URI. The tables are
+  opened only when the root of an entry is data, since the table of
+  eo-runtime is large and nothing else asks about the body.
+  -->
+  <xsl:param name="inference" as="xs:string" select="''"/>
+  <xsl:variable name="eo:tables" as="xs:string" select="if (ends-with($inference, '/')) then $inference else concat($inference, '/')"/>
+  <xsl:variable name="eo:provides" as="document-node()" select="document(concat($eo:tables, 'provides.xml'))"/>
+  <xsl:variable name="eo:links" as="document-node()" select="document(concat($eo:tables, 'links.xml'))"/>
+  <xsl:variable name="eo:atoms" as="document-node()" select="document(concat($eo:tables, 'atoms.xml'))"/>
   <xsl:variable name="eo:alpha" select="'α'"/>
   <xsl:variable name="eo:phi" select="'φ'"/>
   <!--
   What every λ the atom can spell is: the type of what it mints, the types of
   its operands in the order phino lists them, and the Java of the operation
-  with a numbered hole for each operand. There is no "L_bytes_slice" here,
-  since out of its range the atom returns the "cant-slice" its caller binds,
-  which the protocol does not hold, so an entry that slices is a taint.
+  with a numbered hole for each operand. Out of its range, the atom of
+  "L_bytes_slice" returns the "cant-slice" its caller binds, which the
+  protocol does not hold. No object of eo-runtime binds it, so reading it
+  fails, and "Slice" fails the same way. A caller that binds it loses its
+  fallback, and this is accepted.
   -->
   <xsl:variable name="eo:operations" as="element()*">
     <op λ="L_number_plus" type="double" args="double double">⟨1⟩ + ⟨2⟩</op>
@@ -59,11 +96,13 @@
     <op λ="L_bytes_not" type="byte[]" args="byte[]">new BytesOf(⟨1⟩).not().take()</op>
     <op λ="L_bytes_right" type="byte[]" args="byte[] double">new BytesOf(⟨1⟩).shift((int) ⟨2⟩).take()</op>
     <op λ="L_bytes_concat" type="byte[]" args="byte[] byte[]">java.nio.ByteBuffer.allocate(⟨1⟩.length + ⟨2⟩.length).put(⟨1⟩).put(⟨2⟩).array()</op>
+    <op λ="L_bytes_slice" type="byte[]" args="byte[] double double">new Slice(⟨1⟩, ⟨2⟩, ⟨3⟩).delta()</op>
     <op λ="L_dataized" type="byte[]" args="byte[]">⟨1⟩</op>
   </xsl:variable>
   <xsl:key name="eo:minted" match="minted" use="@symbol"/>
   <xsl:key name="eo:known" match="known" use="@symbol"/>
   <xsl:key name="eo:joined" match="joined" use="@symbol"/>
+  <xsl:key name="eo:deferred" match="deferred | looped[@symbol]" use="@symbol"/>
   <!-- The voids of this entry, by symbol, each as its path and its carrier. -->
   <xsl:variable name="eo:voids" as="map(xs:string, xs:string+)">
     <xsl:map>
@@ -77,11 +116,21 @@
   <xsl:template match="/">
     <rendered>
       <xsl:try>
-        <xsl:variable name="root" select="eo:root()"/>
-        <xsl:variable name="at" select="eo:placed($root)"/>
-        <atom file="{eo:file()}" voids="{count(map:keys($at)[map:contains($eo:voids, .)])}" statements="{count(map:keys($at)[exists(key('eo:minted', ., $eo:doc))])}" branches="{count(map:keys($at)[exists(key('eo:joined', ., $eo:doc))])}">
-          <xsl:value-of select="eo:java($root, $at)"/>
-        </atom>
+        <xsl:variable name="thrown" select="eo:thrown()"/>
+        <xsl:choose>
+          <xsl:when test="exists($thrown)">
+            <atom file="{eo:file()}" voids="0" statements="0" branches="0">
+              <xsl:value-of select="eo:java(concat('        throw new ExFailure(&quot;%s&quot;, &quot;', $thrown, '&quot;);&#10;'))"/>
+            </atom>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:variable name="root" select="eo:root()"/>
+            <xsl:variable name="at" select="eo:placed($root)"/>
+            <atom file="{eo:file()}" voids="{count(map:keys($at)[map:contains($eo:voids, .)])}" statements="{count(map:keys($at)[exists(key('eo:minted', ., $eo:doc)) or exists(key('eo:deferred', ., $eo:doc))])}" branches="{count(map:keys($at)[exists(key('eo:joined', ., $eo:doc))])}">
+              <xsl:value-of select="eo:java(eo:body($root, $at))"/>
+            </atom>
+          </xsl:otherwise>
+        </xsl:choose>
         <xsl:catch errors="eo:taint">
           <taint>
             <xsl:value-of select="$err:description"/>
@@ -132,13 +181,13 @@
   phino left unfinished.
   -->
   <xsl:function name="eo:rootless">
-    <xsl:variable name="constant" select="($eo:doc/protocol/morph/evaluate[@λ = 'L_root'])[last()]/bind[starts-with(@meta, '𝛿1.')][last()]"/>
+    <xsl:variable name="constant" select="($eo:doc/protocol/morph/evaluate[@λ = 'L_root'])[last()]/bind[starts-with(@meta, '𝛿1·')][last()]"/>
     <xsl:variable name="unanswered" select="string(($eo:doc//unanswered)[last()])"/>
     <xsl:choose>
       <xsl:when test="exists($constant)">
         <xsl:sequence select="eo:taint(concat('The entry ', $number, ' always gives the constant ', $constant, ', and an atom that only returns a constant is not written yet'))"/>
       </xsl:when>
-      <xsl:when test="empty($eo:doc/protocol/morph/evaluate[@λ = 'L_root']) and $eo:doc/protocol/morph/evaluate[@λ = 'L_entry']/bind[@meta = '𝑛1.1'] = '⊥'">
+      <xsl:when test="empty($eo:doc/protocol/morph/evaluate[@λ = 'L_root']) and $eo:doc/protocol/morph/evaluate[@λ = 'L_entry']/bind[@meta = '𝑛1·1'] = '⊥'">
         <xsl:sequence select="eo:taint(concat('The body of the entry ', $number, ' reduced to ⊥ before phino computed anything, so its root was never dataized'))"/>
       </xsl:when>
       <xsl:when test="$unanswered = '⊥'">
@@ -158,13 +207,63 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
+  <!--
+  The message the root of the entry always throws, as the body of a Java
+  string literal, or nothing when the root does not throw. The root throws
+  when phino stopped at the λ of "throw" right where it dataized the root,
+  and then the protocol names the copy of "throw" it stopped at, and the
+  record that applied "throw" to the message. phino writes the message as
+  a string literal with the escapes "\"", "\\", "\n", "\t" and "\u" with four
+  hex digits, which Java reads the same way, and "\x" with two hex digits
+  for any other character up to 0xFF it cannot print, which Java does not
+  know. So that one becomes an octal escape of three digits, which is the
+  same character to Java. A message that is not such a literal is an object
+  the atom would have to compute, and an entry that throws it is a taint, as
+  is an entry whose protocol does not say what the message is.
+  -->
+  <xsl:function name="eo:thrown" as="xs:string?">
+    <xsl:variable name="stop" select="($eo:doc/protocol/morph/evaluate[@λ = 'L_root']/unanswered[@λ = 'L_throw'])[1]"/>
+    <xsl:if test="exists($stop)">
+      <xsl:variable name="message" select="string(($eo:doc//applied[@meta = normalize-space($stop)]/attr[@name = 'message'])[1])"/>
+      <xsl:if test="$message = ''">
+        <xsl:sequence select="eo:taint(concat('The entry ', $number, ' always throws, but phino stopped at L_throw for ', normalize-space($stop), ', while no record of its protocol gives the message'))"/>
+      </xsl:if>
+      <xsl:if test="not(matches($message, '^&quot;(\\([&quot;\\nt]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4})|[^&quot;\\])*&quot;$'))">
+        <xsl:sequence select="eo:taint(concat('The entry ', $number, ' always throws, but its message ', $message, ' is not a string literal, and an atom that computes its message is not written yet'))"/>
+      </xsl:if>
+      <xsl:variable name="java">
+        <xsl:analyze-string select="substring($message, 2, string-length($message) - 2)" regex="\\(x[0-9a-fA-F]{{2}}|.)">
+          <xsl:matching-substring>
+            <xsl:choose>
+              <xsl:when test="starts-with(regex-group(1), 'x')">
+                <xsl:variable name="code" select="sum(for $i in (2, 3) return string-length(substring-before('0123456789abcdef', lower-case(substring(regex-group(1), $i, 1)))) * (if ($i = 2) then 16 else 1))"/>
+                <xsl:value-of select="concat('\', $code idiv 64, $code idiv 8 mod 8, $code mod 8)"/>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:value-of select="."/>
+              </xsl:otherwise>
+            </xsl:choose>
+          </xsl:matching-substring>
+          <xsl:non-matching-substring>
+            <xsl:value-of select="."/>
+          </xsl:non-matching-substring>
+        </xsl:analyze-string>
+      </xsl:variable>
+      <xsl:sequence select="string($java)"/>
+    </xsl:if>
+  </xsl:function>
   <!-- The symbol the root of the entry dataizes. -->
   <xsl:function name="eo:root" as="xs:string">
     <xsl:variable name="timeout" select="($eo:doc//timeout)[1]"/>
     <xsl:if test="exists($timeout)">
       <xsl:sequence select="eo:taint(concat('The entry ', $number, ' ran out of ', $timeout/@limit, ' seconds at ', $timeout/@at))"/>
     </xsl:if>
-    <xsl:variable name="root" select="$eo:doc/protocol/morph/evaluate[@λ = 'L_root']/dataize[starts-with(@meta, '𝛿1.')][last()]"/>
+    <xsl:for-each-group select="$eo:doc//(minted | joined | known | deferred | looped)/@symbol" group-by=".">
+      <xsl:if test="count(current-group()) &gt; 1">
+        <xsl:sequence select="eo:taint(concat('The symbol ', current-grouping-key(), ' of the entry ', $number, ' is defined ', count(current-group()), ' times, while phino mints every symbol once'))"/>
+      </xsl:if>
+    </xsl:for-each-group>
+    <xsl:variable name="root" select="$eo:doc/protocol/morph/evaluate[@λ = 'L_root']/dataize[starts-with(@meta, '𝛿1·')][last()]"/>
     <xsl:if test="empty($root)">
       <xsl:sequence select="eo:rootless()"/>
     </xsl:if>
@@ -172,27 +271,92 @@
     <xsl:if test="exists(key('eo:known', $symbol, $eo:doc))">
       <xsl:sequence select="eo:taint(concat('The root ', $symbol, ' of the entry ', $number, ' is a constant'))"/>
     </xsl:if>
+    <xsl:if test="((map:contains($eo:voids, $symbol) and exists(eo:returns($locator))) or (not(map:contains($eo:voids, $symbol)) and not(eo:type($symbol) = 'Phi'))) and empty(eo:around())">
+      <xsl:sequence select="eo:bare($symbol)"/>
+    </xsl:if>
     <xsl:sequence select="$symbol"/>
+  </xsl:function>
+  <!--
+  Stop the rendering of an entry whose root is data the atom would return
+  bare, while the protocol does not name the object around it, unless the
+  tables of "eo:inference" say that the body is a number, a bool or bytes,
+  which is what "Data.ToPhi" makes of the data anyway. Bare data loses the
+  object around it, so the atom of a body of any other type, a string or
+  an "i16" for example, would lose every attribute of its own. A body the
+  tables say nothing about may be anything, so its entry is a taint as
+  well.
+  -->
+  <xsl:function name="eo:bare">
+    <xsl:param name="symbol" as="xs:string"/>
+    <xsl:variable name="types" as="xs:string*" select="eo:returns($locator)"/>
+    <xsl:variable name="others" as="xs:string*" select="$types[not(. = ('Φ.number', 'Φ.bool', 'Φ.true', 'Φ.false', 'Φ.bytes'))]"/>
+    <xsl:choose>
+      <xsl:when test="empty($types)">
+        <xsl:sequence select="eo:taint(concat('The root ', $symbol, ' of the entry ', $number, ' is bare data, while inference does not say what ', $locator, ' returns'))"/>
+      </xsl:when>
+      <xsl:when test="exists($others)">
+        <xsl:sequence select="eo:taint(concat('The root ', $symbol, ' of the entry ', $number, ' is bare data, while inference says ', $locator, ' returns ', string-join($others, ' and '), ', and bare data would lose the object around it'))"/>
+      </xsl:when>
+    </xsl:choose>
   </xsl:function>
   <!-- The object a void is, as a chain of takes off the atom. -->
   <xsl:function name="eo:object" as="xs:string">
     <xsl:param name="void" as="xs:string"/>
     <xsl:sequence select="string-join(('this.take(&quot;ρ&quot;)', tokenize($eo:voids($void)[1], '\.') ! concat('.take(&quot;', eo:literal(.), '&quot;)')), '')"/>
   </xsl:function>
-  <!-- The whole Java file of the atom. -->
-  <xsl:function name="eo:java" as="xs:string">
+  <!--
+  The object the body puts around its data, which the protocol names in
+  the answer of "L_entry" for the body, or nothing: an object of the world,
+  outside the entry, applied to its "φ" alone. Such an object dataizes
+  through its "φ", so the data of the root is the data of that "φ", and the
+  atom gives the object back by applying it to the root again. An answer
+  that names anything else, an object with more arguments, one inside the
+  entry, the carrier of a bool, or the application of a dispatch, names no
+  such object, and then the root is returned the way its own type tells.
+  -->
+  <xsl:function name="eo:around" as="xs:string?">
+    <xsl:variable name="answer" select="normalize-space(($eo:doc/protocol/morph/evaluate[@λ = 'L_entry']/bind[@meta = '𝑛1·1'])[1])"/>
+    <xsl:variable name="applied" select="($eo:doc//applied[@meta = $answer])[1]"/>
+    <xsl:if test="exists($applied) and count($applied/attr) = 1 and $applied/attr/@name = 'φ' and matches($applied/@of, '^Φ(\.[^.\s()]+)+$') and not(starts-with($applied/@of, concat($locator, '.')))">
+      <xsl:sequence select="string($applied/@of)"/>
+    </xsl:if>
+  </xsl:function>
+  <!-- The objects "Data.ToPhi" makes of a Java value, each with the type of that value. -->
+  <xsl:variable name="eo:carriers" as="map(xs:string, xs:string)" select="map {'Φ.number': 'double', 'Φ.bytes': 'byte[]'}"/>
+  <!--
+  The Java of the root as the object the atom returns: inside the object
+  the protocol names around it, or, when the protocol names none, a void
+  and a copy as they are, and data wrapped into the carrier of its type.
+  -->
+  <xsl:function name="eo:returned" as="xs:string">
+    <xsl:param name="root" as="xs:string"/>
+    <xsl:variable name="around" select="eo:around()"/>
+    <xsl:choose>
+      <xsl:when test="empty($around)">
+        <xsl:sequence select="eo:argument($root)"/>
+      </xsl:when>
+      <xsl:when test="map:contains($eo:carriers, $around) and not(map:contains($eo:voids, $root)) and not(eo:type($root) = 'Phi')">
+        <xsl:sequence select="concat('new Data.ToPhi(', eo:value($root, $eo:carriers($around)), ')')"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="concat('new PhApplication(', eo:global($around), ', &quot;φ&quot;, ', eo:argument($root), ')')"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+  <!-- An object of the world, as a chain of takes off the root of the universe. -->
+  <xsl:function name="eo:global" as="xs:string">
+    <xsl:param name="object" as="xs:string"/>
+    <xsl:sequence select="string-join(('Phi.Φ', tokenize(substring-after($object, 'Φ.'), '\.') ! concat('take(&quot;', eo:literal(.), '&quot;)')), '.')"/>
+  </xsl:function>
+  <!-- The body of the lambda of an atom that returns the root. -->
+  <xsl:function name="eo:body" as="xs:string">
     <xsl:param name="root" as="xs:string"/>
     <xsl:param name="at" as="map(xs:string, xs:string*)"/>
-    <xsl:variable name="body">
-      <xsl:choose>
-        <xsl:when test="map:contains($eo:voids, $root)">
-          <xsl:value-of select="concat('        return ', eo:object($root), ';&#10;')"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="concat(eo:block($at, (), 2), '        return new Data.ToPhi(', eo:local($root), ');&#10;')"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
+    <xsl:sequence select="concat(if (map:contains($eo:voids, $root)) then '' else eo:block($at, (), 2), '        return ', eo:returned($root), ';&#10;')"/>
+  </xsl:function>
+  <!-- The whole Java file of the atom, around the body of its lambda. -->
+  <xsl:function name="eo:java" as="xs:string">
+    <xsl:param name="body" as="xs:string"/>
     <xsl:variable name="class" select="eo:class()"/>
     <xsl:sequence select="string-join(('/*', ' * This file was generated by eo-lowering, from the protocol of the entry', concat(' * ', $number, ', which is ', $locator, '.'), ' */', concat('package ', eo:package(), ';'), '', 'import org.eolang.*;', '', '/**', concat(' * The atom that took the place of the body of ', $locator, '.'), ' */', concat('@XmirObject(oname = &quot;', eo:literal(string-join(eo:names(), '.')), '&quot;)'), concat('public final class ', $class, ' extends PhDefault implements Atom {'), concat('    public ', $class, '() {'), '        super(new Attrs(new Attr(Phi.RHO, new AtRho())));', '    }', '', '    @Override', '    public Phi lambda() {', concat($body, '    }'), '}', ''), '&#10;')"/>
   </xsl:function>
@@ -206,7 +370,7 @@
   -->
   <xsl:function name="eo:placed" as="map(xs:string, xs:string*)">
     <xsl:param name="root" as="xs:string"/>
-    <xsl:variable name="all" select="distinct-values(($eo:doc//(minted | joined)/@symbol, map:keys($eo:voids)))"/>
+    <xsl:variable name="all" select="distinct-values(($eo:doc//(minted | joined | deferred | looped)/@symbol, map:keys($eo:voids)))"/>
     <xsl:iterate select="sort($all, (), function($s) { -eo:serial($s) })">
       <xsl:param name="at" as="map(xs:string, xs:string*)" select="map {$root: ()}"/>
       <xsl:on-completion>
@@ -223,6 +387,9 @@
           <xsl:when test="not(map:contains($at, $symbol))"/>
           <xsl:when test="exists($joined)">
             <xsl:sequence select="(map {eo:condition($joined): $here}, map {eo:branch($joined, 1): ($here, concat($symbol, '+'))}, map {eo:branch($joined, 2): ($here, concat($symbol, '-'))})"/>
+          </xsl:when>
+          <xsl:when test="exists(key('eo:deferred', $symbol, $eo:doc))">
+            <xsl:sequence select="eo:arguments(key('eo:deferred', $symbol, $eo:doc)[1])[not(map:contains($eo:voids, substring-after(., ':')))] ! map {substring-after(., ':'): $here}"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:sequence select="eo:operands($symbol) ! map {.: $here}"/>
@@ -275,7 +442,7 @@
   <!-- The symbol the fork of a joined symbol forks on. -->
   <xsl:function name="eo:condition" as="xs:string">
     <xsl:param name="joined" as="element()"/>
-    <xsl:variable name="dataize" select="$joined/../dataize[starts-with(@meta, '𝛿1.')][1]"/>
+    <xsl:variable name="dataize" select="$joined/../dataize[starts-with(@meta, '𝛿1·')][1]"/>
     <xsl:if test="empty($dataize)">
       <xsl:sequence select="eo:taint(concat('The joined symbol ', $joined/@symbol, ' of the entry ', $number, ' has no condition'))"/>
     </xsl:if>
@@ -291,6 +458,56 @@
     </xsl:if>
     <xsl:sequence select="$branches[$side]"/>
   </xsl:function>
+  <!--
+  The arguments a deferred copy takes, each as its name and its symbol with
+  a colon between them. A copy with an argument that is no symbol cannot be
+  made, since the atom has nothing to bind that argument to, and a void left
+  unset fails the copy once the program runs.
+  -->
+  <xsl:function name="eo:arguments" as="xs:string*">
+    <xsl:param name="deferred" as="element()"/>
+    <xsl:if test="empty($deferred/with)">
+      <xsl:sequence select="eo:taint(concat('The deferred symbol ', $deferred/@symbol, ' of the entry ', $number, ' does not say which symbols its arguments are'))"/>
+    </xsl:if>
+    <xsl:variable name="arguments" select="$deferred/with/attr ! concat(@name, ':', normalize-space(.))"/>
+    <xsl:for-each select="$arguments[not(starts-with(substring-after(., ':'), '𝜎'))][1]">
+      <xsl:sequence select="eo:taint(concat('The deferred symbol ', $deferred/@symbol, ' of the entry ', $number, ' has the argument ', substring-before(., ':'), ', which is no symbol'))"/>
+    </xsl:for-each>
+    <xsl:sequence select="$arguments"/>
+  </xsl:function>
+  <!--
+  The object a deferred copy is made of, as a chain of takes off the atom.
+  It must be inside the formation of the entry, since the atom reaches
+  nothing else, and outside its "φ", since the patching drops that "φ" along
+  with all it holds.
+  -->
+  <xsl:function name="eo:copied" as="xs:string">
+    <xsl:param name="deferred" as="element()"/>
+    <xsl:variable name="of" select="string($deferred/@of)"/>
+    <xsl:variable name="names" select="tokenize(substring-after($of, concat($locator, '.')), '\.')"/>
+    <xsl:choose>
+      <xsl:when test="$of = ''">
+        <xsl:sequence select="eo:taint(concat('The deferred symbol ', $deferred/@symbol, ' of the entry ', $number, ' does not say which object it copies'))"/>
+      </xsl:when>
+      <xsl:when test="empty($names)">
+        <xsl:sequence select="eo:taint(concat('The deferred symbol ', $deferred/@symbol, ' of the entry ', $number, ' copies ', $of, ', which is not inside ', $locator))"/>
+      </xsl:when>
+      <xsl:when test="$names[1] = 'φ'">
+        <xsl:sequence select="eo:taint(concat('The deferred symbol ', $deferred/@symbol, ' of the entry ', $number, ' copies ', $of, ', which the atom replaces'))"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="string-join(('this.take(&quot;ρ&quot;)', $names ! concat('.take(&quot;', eo:literal(.), '&quot;)')), '')"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+  <!--
+  The Java of a symbol as an object a copy takes: a void and a copy as they
+  are, anything else wrapped back into an object.
+  -->
+  <xsl:function name="eo:argument" as="xs:string">
+    <xsl:param name="symbol" as="xs:string"/>
+    <xsl:sequence select="if (map:contains($eo:voids, $symbol)) then eo:object($symbol) else eo:value($symbol, 'Phi')"/>
+  </xsl:function>
   <!-- The operation a minted symbol was minted by. -->
   <xsl:function name="eo:operation" as="element()">
     <xsl:param name="symbol" as="xs:string"/>
@@ -301,18 +518,31 @@
     </xsl:if>
     <xsl:sequence select="$op"/>
   </xsl:function>
-  <!-- The Java type of a symbol. -->
+  <!--
+  The Java type of a symbol. A void that holds a number is bytes, like a
+  void of any carrier but a bool, since a number may hold any bytes and a
+  double holds exactly eight. The bytes are read as a double only where an
+  operation wants one, which is where EO reads them as a number too. A
+  copy is an object, and so is a join with a copy in one of its branches,
+  since the join holds the object of the branch taken.
+  -->
   <xsl:function name="eo:type" as="xs:string">
     <xsl:param name="symbol" as="xs:string"/>
     <xsl:variable name="joined" select="key('eo:joined', $symbol, $eo:doc)[1]"/>
     <xsl:choose>
       <xsl:when test="map:contains($eo:voids, $symbol)">
-        <xsl:sequence select="(map {'number': 'double', 'bool': 'boolean'}($eo:voids($symbol)[2]), 'byte[]')[1]"/>
+        <xsl:sequence select="(map {'bool': 'boolean'}($eo:voids($symbol)[2]), 'byte[]')[1]"/>
+      </xsl:when>
+      <xsl:when test="exists(key('eo:deferred', $symbol, $eo:doc))">
+        <xsl:sequence select="'Phi'"/>
       </xsl:when>
       <xsl:when test="exists($joined)">
         <xsl:variable name="branches" select="(eo:branch($joined, 1), eo:branch($joined, 2))"/>
         <xsl:variable name="types" select="distinct-values($branches[not(eo:constant(.))] ! eo:type(.))"/>
         <xsl:choose>
+          <xsl:when test="$types = 'Phi'">
+            <xsl:sequence select="'Phi'"/>
+          </xsl:when>
           <xsl:when test="count($types) = 1">
             <xsl:sequence select="$types"/>
           </xsl:when>
@@ -347,6 +577,9 @@
       <xsl:when test="not(matches($bytes, '^(--|([0-9A-Fa-f]{2}-)+|[0-9A-Fa-f]{2}(-[0-9A-Fa-f]{2})+)$'))">
         <xsl:sequence select="eo:taint(concat('The constant ', $bytes, ' of the entry ', $number, ' is not bytes'))"/>
       </xsl:when>
+      <xsl:when test="$want = 'Phi'">
+        <xsl:sequence select="concat('new Data.ToPhi(', eo:literal-of($bytes, 'byte[]'), ')')"/>
+      </xsl:when>
       <xsl:when test="$want = 'double' and count($octets) = 8">
         <xsl:sequence select="concat('Double.longBitsToDouble(0x', upper-case(string-join($octets, '')), 'L)')"/>
       </xsl:when>
@@ -372,6 +605,12 @@
     <xsl:choose>
       <xsl:when test="$from = $to">
         <xsl:sequence select="$java"/>
+      </xsl:when>
+      <xsl:when test="$to = 'Phi'">
+        <xsl:sequence select="concat('new Data.ToPhi(', $java, ')')"/>
+      </xsl:when>
+      <xsl:when test="$from = 'Phi'">
+        <xsl:sequence select="concat('new Dataized(', $java, ').', map {'byte[]': 'take()', 'double': 'asNumber()', 'boolean': 'asBool()'}($to))"/>
       </xsl:when>
       <xsl:when test="$from = 'byte[]' and $to = 'double'">
         <xsl:sequence select="concat('(double) new BytesOf(', $java, ').asNumber()')"/>
@@ -408,11 +647,15 @@
     <xsl:variable name="joined" select="key('eo:joined', $symbol, $eo:doc)[1]"/>
     <xsl:choose>
       <xsl:when test="map:contains($eo:voids, $symbol)">
-        <xsl:sequence select="concat($indent, 'final ', $type, ' ', $local, ' = new Dataized(', eo:object($symbol), ').', (map {'double': 'asNumber()', 'boolean': 'asBool()'}($type), 'take()')[1], ';&#10;')"/>
+        <xsl:sequence select="concat($indent, 'final ', $type, ' ', $local, ' = new Dataized(', eo:object($symbol), ').', (map {'boolean': 'asBool()'}($type), 'take()')[1], ';&#10;')"/>
       </xsl:when>
       <xsl:when test="exists($joined)">
         <xsl:variable name="place" select="$at($symbol)"/>
         <xsl:sequence select="concat($indent, 'final ', $type, ' ', $local, ';&#10;', $indent, 'if (', eo:value(eo:condition($joined), 'boolean'), ') {&#10;', eo:block($at, ($place, concat($symbol, '+')), $depth + 1), $indent, '    ', $local, ' = ', eo:value(eo:branch($joined, 1), $type), ';&#10;', $indent, '} else {&#10;', eo:block($at, ($place, concat($symbol, '-')), $depth + 1), $indent, '    ', $local, ' = ', eo:value(eo:branch($joined, 2), $type), ';&#10;', $indent, '}&#10;')"/>
+      </xsl:when>
+      <xsl:when test="exists(key('eo:deferred', $symbol, $eo:doc))">
+        <xsl:variable name="deferred" select="key('eo:deferred', $symbol, $eo:doc)[1]"/>
+        <xsl:sequence select="concat($indent, 'final ', $type, ' ', $local, ' = new PhApplication(', string-join((eo:copied($deferred), eo:arguments($deferred) ! concat('new Bind(&quot;', eo:literal(substring-before(., ':')), '&quot;, ', eo:argument(substring-after(., ':')), ')')), ', '), ');&#10;')"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:variable name="op" select="eo:operation($symbol)"/>
@@ -425,11 +668,15 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-  <!-- Unicode escape of a character Java forbids in an identifier -->
+  <!--
+  Unicode escape of a character Java forbids in an identifier. Six digits,
+  not four: four dropped everything above the sixteenth bit of a code point,
+  so U+1F600 and U+F600 both read as "$uF600" (#9047).
+  -->
   <xsl:function name="eo:escape-char" as="xs:string">
     <xsl:param name="c" as="xs:string"/>
     <xsl:variable name="code" select="string-to-codepoints($c)[1]"/>
-    <xsl:value-of select="concat('$u', string-join(for $w in (4096, 256, 16, 1) return substring('0123456789ABCDEF', ($code idiv $w) mod 16 + 1, 1), ''))"/>
+    <xsl:value-of select="concat('$u', string-join(for $w in (1048576, 65536, 4096, 256, 16, 1) return substring('0123456789ABCDEF', ($code idiv $w) mod 16 + 1, 1), ''))"/>
   </xsl:function>
   <!-- Turn a name into a Java identifier, escaping every character Java forbids there -->
   <xsl:function name="eo:identifier" as="xs:string">
@@ -451,10 +698,15 @@
     <xsl:param name="n" as="xs:string"/>
     <xsl:value-of select="replace(replace($n, '\\', '\\\\'), '&quot;', '\\&quot;')"/>
   </xsl:function>
-  <!-- Get clean escaped object name -->
+  <!--
+  Get clean escaped object name. The "-" becomes "_" and the "_" an escape of
+  its own, which no "-" can produce: mapping "_" to "__" beside them made
+  "a-_b" and "a_-b" one name (#9047). The dollar is escaped ahead of them, so
+  that the escape is never read as a dollar the name itself carried.
+  -->
   <xsl:function name="eo:clean" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
-    <xsl:value-of select="concat('EO', eo:identifier(replace(replace(translate(translate(replace($n, '_', '__'), '-', '_'), '@', $eo:phi), $eo:alpha, '_'), '\$', '\$EO')))"/>
+    <xsl:value-of select="concat('EO', eo:identifier(replace(translate(translate(string-join(tokenize(replace($n, '\$', '\$EO'), '_'), eo:escape-char('_')), '-', '_'), '@', $eo:phi), $eo:alpha, '_')))"/>
   </xsl:function>
   <!--
   A deterministic digit fingerprint of a name, computed purely from the name's own
@@ -538,10 +790,10 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-  <!-- Get clean escaped package segment, prefixed to never clash with an object class -->
+  <!-- Get clean escaped package segment, prefixed to never clash with an object class, mapped the way "eo:clean" maps a name -->
   <xsl:function name="eo:clean-package" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
-    <xsl:value-of select="concat('EO_', eo:identifier(replace(replace(translate(translate(replace($n, '_', '__'), '-', '_'), '@', $eo:phi), $eo:alpha, '_'), '\$', '\$EO')))"/>
+    <xsl:value-of select="concat('EO_', eo:identifier(replace(translate(translate(string-join(tokenize(replace($n, '\$', '\$EO'), '_'), eo:escape-char('_')), '-', '_'), '@', $eo:phi), $eo:alpha, '_')))"/>
   </xsl:function>
   <!-- Get Java package name for the EO package, one clean-package per segment -->
   <xsl:function name="eo:package-name" as="xs:string">

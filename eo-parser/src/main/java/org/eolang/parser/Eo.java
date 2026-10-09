@@ -456,6 +456,8 @@ final class Eo implements Iterable<Directive> {
             line = Eo.applicative(span, Eo.reversedDispatch(span));
         } else if (Eo.rootHead(span)) {
             line = Eo.applicative(span, Eo.rootReversedDispatch(span));
+        } else if (Eo.topLevelGreaterBracketIndex(span.body()) == 0) {
+            line = new LnOnlyPhi(span);
         } else {
             line = Eo.rejected(span);
         }

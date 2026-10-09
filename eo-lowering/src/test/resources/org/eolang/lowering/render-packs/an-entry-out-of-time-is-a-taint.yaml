@@ -16,17 +16,17 @@ voids:
   - "𝜎40\t31\tρ\tnumber"
 protocol: |
   <protocol>
-    <morph at="Φ.l🌵.e31">
-      <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e31">
+    <morph at="Φ.l/.e31">
+      <evaluate λ="L_entry" by="morph" at="Φ.l/.e31">
         <evaluate λ="L_number_times" by="morph" at="Φ.a🌵1">
-          <dataize meta="𝛿1.2">𝜎40:λ</dataize>
-          <bind meta="𝛿2.2">BF-F0-00-00-00-00-00-00</bind>
+          <dataize meta="𝛿1·2">𝜎40:λ</dataize>
+          <bind meta="𝛿2·2">BF-F0-00-00-00-00-00-00</bind>
           <minted symbol="𝜎57">𝜎40 BF-F0-00-00-00-00-00-00</minted>
         </evaluate>
         <timeout limit="60" by="morph" at="Φ.a🌵2"/>
       </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l🌵.e31">
-        <dataize meta="𝛿1.3">𝜎57:λ</dataize>
+      <evaluate λ="L_root" by="morph" at="Φ.l/.e31">
+        <dataize meta="𝛿1·3">𝜎57:λ</dataize>
       </evaluate>
     </morph>
     <msec>284</msec>

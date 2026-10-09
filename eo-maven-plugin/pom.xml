@@ -65,6 +65,11 @@
       <!-- version from parent POM -->
     </dependency>
     <dependency>
+      <groupId>io.github.sekator778</groupId>
+      <artifactId>seqdir</artifactId>
+      <version>0.2.0</version>
+    </dependency>
+    <dependency>
       <groupId>org.cactoos</groupId>
       <artifactId>cactoos</artifactId>
       <!-- version from parent POM -->
