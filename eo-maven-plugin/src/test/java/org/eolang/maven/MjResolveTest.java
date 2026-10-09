@@ -90,9 +90,7 @@ final class MjResolveTest {
             ).execute(new PpResolve());
         MatcherAssert.assertThat(
             "The class file must exist, but it doesn't",
-            temp
-                .resolve("target")
-                .resolve(MjResolve.DIR)
+            new Subdir(temp.resolve("target"), "resolve").path()
                 .resolve("org.eolang/eo-runtime/-/0.7.0").resolve("eo-runtime-0.7.0.class")
                 .toFile(),
             FileMatchers.anExistingFile()
@@ -101,9 +99,7 @@ final class MjResolveTest {
 
     @Test
     void resolvesWhenPlaceDirectoryExistsButIsEmpty(@Mktmp final Path temp) throws IOException {
-        final Path place = temp
-            .resolve("target")
-            .resolve(MjResolve.DIR)
+        final Path place = new Subdir(temp.resolve("target"), "resolve").path()
             .resolve("org.eolang/eo-runtime/-/0.7.0");
         Files.createDirectories(place);
         new FakeMaven(temp).withProgram(
@@ -181,7 +177,12 @@ final class MjResolveTest {
                 .with("ignoreRuntime", true)
                 .execute(new PpResolve())
                 .result(),
-            Matchers.hasKey(String.format("target/%s/net.java.dev.jna/jna/-/5.14.0", MjResolve.DIR))
+            Matchers.hasKey(
+                String.format(
+                    "target/%s/net.java.dev.jna/jna/-/5.14.0",
+                    new Subdir(temp.resolve("target"), "resolve").path().getFileName()
+                )
+            )
         );
     }
 
@@ -198,9 +199,7 @@ final class MjResolveTest {
         maven.execute(new PpResolve());
         MatcherAssert.assertThat(
             "The class file must exist, but it doesn't",
-            temp
-                .resolve("target")
-                .resolve(MjResolve.DIR)
+            new Subdir(temp.resolve("target"), "resolve").path()
                 .resolve("org.eolang/eo-runtime/-/"),
             new ContainsFiles("**/eo-runtime-*.class")
         );
@@ -335,7 +334,7 @@ final class MjResolveTest {
                     "[] > main-1 /bytes"
                 )
             );
-        maven.with("ignoreConflicts", true)
+        maven.with("conflicts", true)
             .execute(new PpResolve());
         MatcherAssert.assertThat(
             "The class file must exist, but it doesn't",
@@ -364,7 +363,7 @@ final class MjResolveTest {
                 "[] > main-1 /bytes"
             )
         );
-        maven.with("ignoreConflicts", true)
+        maven.with("conflicts", true)
             .execute(new PpResolve());
         MatcherAssert.assertThat(
             "Both sibling versions must survive resolving, but one was deleted",

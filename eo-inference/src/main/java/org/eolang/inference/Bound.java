@@ -39,6 +39,21 @@ import java.util.Map;
  * itself dispatches as well, off the object it is written inside, and
  * {@link Taken} answers for both.</p>
  *
+ * <p>A name written by itself fills the receiver of the attribute it points
+ * at, and of nothing further down the chain of copies that attribute starts.
+ * {@code deleted}, inside a test that says {@code temp.deleted > deleted}, is
+ * the {@code deleted} of that test, which declares no receiver; the
+ * {@code deleted} of a file at the end of the chain got its receiver from
+ * {@code temp} already, and filling it with the test as well told every
+ * reader of that void that a file can hang off a test. The census of such a
+ * void then joined its members into nothing (#8953).</p>
+ *
+ * <p>A name written after a dot goes down that chain only as far as the
+ * first copy whose receiver is still empty, which {@link Stamped} finds: the
+ * {@code os} of {@code os.is-windows} fills nothing, since the
+ * {@code name.contains} it reaches took its receiver where it was written
+ * (#8955).</p>
+ *
  * <p>An application whose base is a void declares no place at all, and its
  * arguments would go nowhere: {@code cant-read "foo"}, written inside the
  * {@code [^ cant-read] > as-ascii} that takes it, is a copy of something
@@ -50,6 +65,16 @@ import java.util.Map;
  * are passed on to every formation it holds. A void may itself be a copy of
  * another one, and filling the second fills the first, so the formations are
  * gathered along the whole chain of copies rather than off its end alone.</p>
+ *
+ * <p>A read off a choice copies nothing one can name, since its pair is rooted
+ * at a void, and yet the formations it copies are known: they are the arms.
+ * {@code n.wide.div m}, where {@code wide} comes back as a {@code big} or as
+ * whatever its {@code fail} holds, is the {@code div} of that {@code big} in
+ * the first arm, and the {@code m} goes into its {@code b}. It used to go
+ * nowhere, since nothing in the program puts anything into the {@code div} of
+ * a void, and the {@code b} of every {@code u64.div} read as a void nobody
+ * fills (#8883). So the arms {@link Copied} finds are more formations such a
+ * call holds, and its arguments are relayed into them.</p>
  *
  * <p>What an application is a copy of is read off the attribute it takes, and
  * not off its pair, wherever that attribute is a void. The two say different
@@ -106,6 +131,11 @@ final class Bound {
     private final Provided owned;
 
     /**
+     * The arms every read off a choice is a copy of, from {@link Copied}.
+     */
+    private final Map<String, Collection<String>> arms;
+
+    /**
      * Ctor.
      *
      * @param arguments The arguments of every application, from {@link Given}
@@ -123,12 +153,36 @@ final class Bound {
         final Map<String, String> links,
         final Provided provided
     ) {
+        this(arguments, bindings, taken, dispatches, links, provided, Collections.emptyMap());
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param arguments The arguments of every application, from {@link Given}
+     * @param bindings The arguments of every application bound by name
+     * @param taken What every dispatch takes its attribute from
+     * @param dispatches Every dispatch and read of the program
+     * @param links The pairs, each name against the one it is a copy of
+     * @param provided What the types certainly have
+     * @param copied The arms every read off a choice is a copy of
+     */
+    Bound(
+        final Map<String, List<String>> arguments,
+        final Map<String, Map<String, String>> bindings,
+        final Map<String, String> taken,
+        final Collection<Site> dispatches,
+        final Map<String, String> links,
+        final Provided provided,
+        final Map<String, Collection<String>> copied
+    ) {
         this.args = arguments;
         this.named = bindings;
         this.receivers = taken;
         this.sites = dispatches;
         this.pairs = links;
         this.owned = provided;
+        this.arms = copied;
     }
 
     /**
@@ -177,7 +231,7 @@ final class Bound {
             }
         }
         for (final Map.Entry<String, String> dispatch : this.receivers.entrySet()) {
-            final String hollow = this.owned.receiver(this.base(dispatch.getKey(), landed));
+            final String hollow = this.owned.receiver(this.hung(dispatch, landed));
             if (!hollow.isEmpty()) {
                 found.computeIfAbsent(dispatch.getKey(), key -> new LinkedHashMap<>(1))
                     .put(hollow, dispatch.getValue());
@@ -226,6 +280,7 @@ final class Bound {
         final Map<String, Collection<String>> relays
     ) {
         final Map<String, Collection<String>> fillers = this.puts(found);
+        fillers.putAll(this.arms);
         for (final Map.Entry<String, List<String>> application : this.args.entrySet()) {
             for (final String filler : this.held(fillers, application.getKey(), landed)) {
                 final Map<String, String> passed = this.passed(filler, application.getValue());
@@ -327,6 +382,26 @@ final class Bound {
         final Collection<String> found = new HashSet<>(0);
         for (final String step : chain) {
             found.addAll(this.filled(step, found, landed).keySet());
+        }
+        return found;
+    }
+
+    // The parser writes the receiver of a name written after a dot beside it,
+    // at the locator of the dispatch with ρ on the end, so a receiver found
+    // anywhere else is one Taken found for a name written by itself. Such a
+    // name reads the attribute it points at, and that attribute is asked for
+    // its receiver rather than the end of its chain of copies.
+    private String hung(
+        final Map.Entry<String, String> dispatch, final Map<String, String> landed
+    ) {
+        final String found;
+        if (landed.containsKey(dispatch.getKey())) {
+            found = landed.get(dispatch.getKey());
+        } else if (dispatch.getValue().equals(dispatch.getKey().concat(".ρ"))) {
+            found = new Stamped(this.pairs, this.receivers, this.owned)
+                .names(dispatch.getKey());
+        } else {
+            found = this.pairs.getOrDefault(dispatch.getKey(), "");
         }
         return found;
     }

@@ -12,7 +12,7 @@ import org.cactoos.iterable.IterableOf;
  * An objectionary whose {@code get()}, {@code contains()} and
  * {@code isDirectory()} always fail with a given {@link IOException}.
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 final class FailingObjectionary implements Objectionary {
 

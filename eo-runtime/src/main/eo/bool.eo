@@ -15,19 +15,20 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint too-deep-object
 +version 0.0.0
 
 [if] > bool
   if > @
     FF-
     00-
-  ^.if > [^ x] > and
+  flag.if > [^flag x] > and
     FF-.eq x
     false
   if > not
     false
     true
-  ^.if > [^ x] > or
+  flag.if > [^flag x] > or
     true
     FF-.eq x
 

@@ -21,7 +21,15 @@ import java.util.Map;
  * so in one line. 1,187 of the 2,026 voids of eo-runtime hold one thing and
  * nothing else, and 1,087 of those hold something the table has a row for.</p>
  *
- * @since 0.74.0
+ * <p>A void whose source says what it holds is not among them, however few
+ * callers it has. {@code [^ substring] > ends-with} is taken off a string and
+ * off nothing else, so its {@code ^} holds a {@code Φ.string} for every caller
+ * there will ever be, while the one caller eo-runtime happens to have takes it
+ * off {@code Φ.eol}. The census is the poorer fact of the two, and where it
+ * has only one member it names that member for everybody who reads the void
+ * (#8960).</p>
+ *
+ * @since 0.64.0
  */
 final class Ones {
 
@@ -41,17 +49,19 @@ final class Ones {
     }
 
     /**
-     * Every void that holds one object and nothing else.
+     * Every void that holds one object and nothing else, and says nothing
+     * of what it holds.
      *
      * @return The locator of what it holds, by the locator of the void
      */
     Map<String, String> all() {
         final Collection<String> known = this.known();
+        final Map<String, String> declared = new Held(this.given).all();
         final Map<String, String> found = new LinkedHashMap<>(0);
         for (final Map.Entry<String, Collection<Type>> hollow
             : new Seen(this.given).all().entrySet()) {
             final String sole = new Sole(hollow.getValue(), known).names();
-            if (!sole.isEmpty()) {
+            if (!sole.isEmpty() && !declared.containsKey(hollow.getKey())) {
                 found.put(hollow.getKey(), sole);
             }
         }

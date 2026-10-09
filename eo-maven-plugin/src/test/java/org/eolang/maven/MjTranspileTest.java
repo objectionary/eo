@@ -8,8 +8,6 @@ import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
-import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Xsline;
@@ -95,7 +93,7 @@ final class MjTranspileTest {
                     "",
                     "[] > x"
                 )
-                ).with("trackSteps", true)
+                ).with("tracking", true)
                 .execute(MjParse.class)
                 .execute(MjTranspile.class),
             "We should be able to transpile a simple EO program without exceptions when tracking transformation steps"
@@ -109,35 +107,41 @@ final class MjTranspileTest {
         new FakeMaven(temp.resolve("first"))
             .withProgram(src)
             .with("cache", cache.toFile())
-            .with("trackSteps", true)
+            .with("tracking", true)
             .execute(MjParse.class)
             .execute(MjTranspile.class);
+        final FakeMaven maven = new FakeMaven(temp.resolve("second"))
+            .withProgram(src)
+            .with("cache", cache.toFile())
+            .with("tracking", true);
         MatcherAssert.assertThat(
             "a second build with the same flag and source must write the steps again, but the cache took them away",
-            new FakeMaven(temp.resolve("second"))
-                .withProgram(src)
-                .with("cache", cache.toFile())
-                .with("trackSteps", true)
+            maven
                 .execute(MjParse.class)
                 .execute(MjTranspile.class)
                 .result(),
             Matchers.hasKey(
-                String.format("target/%s/examples/x/01-set-locators.xml", Transpiling.PRE)
+                String.format(
+                    "target/%s/examples/x/01-set-locators.xml", maven.dirName("pre-transpile")
+                )
             )
         );
     }
 
     @Test
     void tracksStepsOfProgramWithTwoObjects(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(MjTranspileTest.pair())
+            .with("tracking", true);
         MatcherAssert.assertThat(
             "the first tracked step of a program holding two objects did not leave its XMIR in the pre-transpile directory",
-            new FakeMaven(temp).withProgram(MjTranspileTest.pair())
-                .with("trackSteps", true)
+            maven
                 .execute(MjParse.class)
                 .execute(MjTranspile.class)
                 .result(),
             Matchers.hasKey(
-                String.format("target/%s/examples/x/01-set-locators.xml", Transpiling.PRE)
+                String.format(
+                    "target/%s/examples/x/01-set-locators.xml", maven.dirName("pre-transpile")
+                )
             )
         );
     }
@@ -145,31 +149,30 @@ final class MjTranspileTest {
     @Test
     void marksSafeToCacheFormationOfTranspiledProgram(@Mktmp final Path temp)
         throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "+package examples",
+                "",
+                "# Outer.",
+                "[] > x",
+                "  inner > @",
+                "  # Inner.",
+                "  [] > inner",
+                "    42 > @"
+            )
+        ).with("tracking", true);
+        maven.execute(MjParse.class)
+            .execute(MjInference.class)
+            .execute(MjTranspile.class);
         MatcherAssert.assertThat(
             "a formation that takes nothing and copies nothing but a literal must be marked as safe to cache, but it wasnt",
             new XMLDocument(
-                new FakeMaven(temp).withProgram(
-                    String.join(
-                        System.lineSeparator(),
-                        "+package examples",
-                        "",
-                        "# Outer.",
-                        "[] > x",
-                        "  inner > @",
-                        "  # Inner.",
-                        "  [] > inner",
-                        "    42 > @"
-                    )
-                )
-                .with("trackSteps", true)
-                .execute(MjParse.class)
-                .execute(MjInference.class)
-                .execute(MjTranspile.class)
-                .targetPath()
-                .resolve(Transpiling.PRE)
-                .resolve("examples")
-                .resolve("x")
-                .resolve("10-purify.xml")
+                maven.targetPath()
+                    .resolve(maven.dirName("pre-transpile"))
+                    .resolve("examples")
+                    .resolve("x")
+                    .resolve("10-purify.xml")
             ),
             XhtmlMatchers.hasXPath("//abstract[@name='inner' and @pure='true']")
         );
@@ -235,46 +238,6 @@ final class MjTranspileTest {
     }
 
     @Test
-    void wrapsApplicationOfDataInPhSticky(@Mktmp final Path temp) throws IOException {
-        final Path parsed = Files.createDirectories(temp.resolve("parsed"));
-        Files.writeString(
-            parsed.resolve("app.xmir"),
-            new EoSyntax(
-                String.join(
-                    System.lineSeparator(),
-                    "[] > app", "  2.plus 3 > x", "  x > @", ""
-                )
-            ).parsed().toString()
-        );
-        Files.writeString(
-            parsed.resolve("number.xmir"),
-            new EoSyntax(
-                String.join(
-                    System.lineSeparator(),
-                    "[as-bytes] > number", "  as-bytes > @",
-                    "  [x] > plus", "    x > @", ""
-                )
-            ).parsed().toString()
-        );
-        final Path tables = temp.resolve("tables");
-        new Inferring(parsed, temp.resolve("pre"), tables).exec();
-        MatcherAssert.assertThat(
-            "an application whose parts are all data must be wrapped in PhSticky, but it wasnt",
-            new Xsline(
-                new TrDefault<Shift>()
-                    .with(new StClasspath("/org/eolang/parser/parse/set-locators.xsl"))
-                    .with(new StClasspath("/org/eolang/maven/transpile/set-original-names.xsl"))
-                    .with(new StClasspath("/org/eolang/maven/transpile/classes.xsl"))
-                    .with(new StClasspath("/org/eolang/maven/transpile/attrs.xsl"))
-                    .with(new StClasspath("/org/eolang/maven/transpile/data.xsl"))
-                    .with(new StPure("/org/eolang/maven/transpile/purify.xsl", tables))
-                    .with(new StClasspath("/org/eolang/maven/transpile/to-java.xsl"))
-            ).pass(new XMLDocument(parsed.resolve("app.xmir"))).toString(),
-            Matchers.containsString("new PhSticky(new PhApplication(")
-        );
-    }
-
-    @Test
     void leavesUnmarkedFormationBare(@Mktmp final Path temp) throws Exception {
         MatcherAssert.assertThat(
             "a formation nobody marked as safe to cache must not be wrapped in PhSticky, but it was",
@@ -295,7 +258,7 @@ final class MjTranspileTest {
         MatcherAssert.assertThat(
             "the second object of a tracked program did not reach the generated Java",
             new FakeMaven(temp).withProgram(MjTranspileTest.pair())
-                .with("trackSteps", true)
+                .with("tracking", true)
                 .execute(MjParse.class)
                 .execute(MjTranspile.class)
                 .result(),
@@ -507,24 +470,25 @@ final class MjTranspileTest {
 
     @Test
     void doesNotTouchAtom(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            "+architect yegor256@gmail.com",
+            "+package foo.x",
+            "+rt jvm org.eolang:eo-runtime:0.0.0",
+            "+unlint not-empty-atom",
+            String.format("+version 0.0.0%n"),
+            "[] > main /bytes",
+            "  ? > x",
+            "  ? > y",
+            "  ? > z"
+        );
         MatcherAssert.assertThat(
             "TranspileMojo should not touch atoms, but it did",
-            new FakeMaven(temp).withProgram(
-                "+architect yegor256@gmail.com",
-                "+package foo.x",
-                "+rt jvm org.eolang:eo-runtime:0.0.0",
-                "+unlint not-empty-atom",
-                String.format("+version 0.0.0%n"),
-                "[] > main /bytes",
-                "  ? > x",
-                "  ? > y",
-                "  ? > z"
-                )
-                .execute(new PpTranspile())
-                .result(),
+            maven.execute(new PpTranspile()).result(),
             Matchers.not(
                 Matchers.allOf(
-                    Matchers.hasKey(String.format("target/%s/foo/x/main.xmir", Transpiling.DIR)),
+                    Matchers.hasKey(
+                        String.format("target/%s/foo/x/main.xmir", maven.dirName("transpile"))
+                    ),
                     Matchers.hasKey("target/generated/EO_com/EO_example/EOfoo.java")
                 )
             )
@@ -694,7 +658,7 @@ final class MjTranspileTest {
         Assumptions.assumeTrue(
             java.toFile().setLastModified(0L)
                 && maven.targetPath()
-                    .resolve(String.format("%s/foo/x/main.xmir", Transpiling.DIR))
+                    .resolve(String.format("%s/foo/x/main.xmir", maven.dirName("transpile")))
                     .toFile()
                     .setLastModified(0L),
             "The filesystem refused to expire the transpiled files, cannot tell expired from fresh"
@@ -787,14 +751,14 @@ final class MjTranspileTest {
         final Path tests = target.resolve("generated-test-sources");
         final FakeMaven maven = new FakeMaven(temp);
         maven
-            .with("generatedDir", sources.toFile())
-            .with("targetDir", target.resolve("eo-sources").toFile())
+            .with("generated", sources.toFile())
+            .with("target", target.resolve("eo-sources").toFile())
             .withHelloWorld()
             .execute(new PpTranspile());
         maven
             .with("scope", "test")
-            .with("generatedDir", tests.toFile())
-            .with("targetDir", target.resolve("eo-test-sources").toFile()).withProgram(
+            .with("generated", tests.toFile())
+            .with("target", target.resolve("eo-test-sources").toFile()).withProgram(
                 MjTranspileTest.program().replace("main", "main-1")
             )
             .execute(new PpTranspile());

@@ -8,38 +8,35 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^] > deleted
-  ^.exists.if > @
+[^entry] > deleted
+  entry.exists.if > @
     if.
       or.
         removed.code.eq 0
-        ^.exists.not
-      ^
+        entry.exists.not
+      entry
       T
         "Cant delete the file '%s': %s".printf
-          * ^.path removed.output
-    ^
+          * entry.path removed.message
+    entry
   called. > removed
     os.is-windows.if
-      win32 *1
-        ^.is-symlink.if
-          "_unlink"
-          ^.is-directory.if "_rmdir" "_unlink"
-        ^.path
-      posix *1
-        ^.is-symlink.if
-          "unlink"
-          ^.is-directory.if "rmdir" "unlink"
-        ^.path
+      entry.is-symlink.if
+        win32.unlink entry.path
+        entry.is-directory.if
+          win32.rmdir entry.path
+          win32.unlink entry.path
+      entry.is-symlink.if
+        posix.unlink entry.path
+        entry.is-directory.if
+          posix.rmdir entry.path
+          posix.unlink entry.path
 
   ++> can-delete-a-dangling-symlink
     os.is-windows.or > @
       seq *
         code.
-          posix *1
-            "symlink"
-            d
-            link
+          posix.symlink d link
         d.as-file.deleted
         link.as-file.deleted
         link.as-file.exists.not
@@ -60,10 +57,7 @@
     os.is-windows.or > @
       seq *
         code.
-          posix *1
-            "symlink"
-            d
-            link
+          posix.symlink d link
         link.as-file.deleted
         link.as-file.exists.not
         d.as-file.exists

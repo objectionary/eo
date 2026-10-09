@@ -8,26 +8,20 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^ target] > moved
+[^entry target] > moved
   if. > @
     renamed.code.eq 0
     file target
     T
       "Cant move the file '%s' to '%s': %s".printf
         *
-          ^.path
+          entry.path
           target
-          renamed.output
+          renamed.message
   called. > renamed
     os.is-windows.if
-      win32 *1
-        "rename"
-        ^.path
-        target
-      posix *1
-        "rename"
-        ^.path
-        target
+      win32.rename entry.path target
+      posix.rename entry.path target
 
   ++> can-move-a-directory
     and. > @

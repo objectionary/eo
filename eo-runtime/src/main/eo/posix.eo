@@ -1,6 +1,6 @@
-# Makes a Unix syscall by `name` with POSIX interface.
-# Here `args` is a `org.eolang.tuple` of arguments required for
-# the particular syscall.
+# Unix syscalls with POSIX interface, one atom per call.
+# Each call that reports more than a number answers with a flat object of its
+# own, which says what the call did and leaves what to do about it to the caller.
 # See the linux syscall [table](https://filippo.io/linux-syscall-table) for more info.
 
 +architect yegor256@gmail.com
@@ -11,9 +11,7 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[name args] > posix
-  [] > @ /Q.posix.return
-    ? > ^
+[] > posix
   [] > accept /Q.number
     ? > descriptor /Q.number
     ? > sockaddr /Q.posix.sockaddr-in
@@ -30,6 +28,8 @@
     ? > length /Q.number
   [] > close /Q.number
     ? > descriptor /Q.number
+  [] > closedir /Q.posix.status-return
+    ? > dirp /Q.number
   [] > connect /Q.number
     ? > descriptor /Q.number
     ? > sockaddr /Q.posix.sockaddr-in
@@ -37,6 +37,10 @@
   os.is-macos.if > creat
     512
     64
+  [code name] > dir-return
+    posix.dir-return > called
+      code
+      name
   17 > eexist
   22 > einval
   2 > enoent
@@ -44,6 +48,12 @@
   os.is-macos.if > exclusive
     2048
     128
+  [] > getenv /Q.posix.getenv-return
+    ? > name /Q.string
+  [code value] > getenv-return
+    posix.getenv-return > called
+      code
+      value
   [] > getpid /Q.number
   [] > gettimeofday /Q.posix.time-return
   2 > inet
@@ -54,17 +64,40 @@
     ? > backlog /Q.number
   [] > lstat /Q.posix.stat-return
     ? > path /Q.string
+  [] > mkdir /Q.posix.status-return
+    ? > path /Q.string
+    ? > mode /Q.number
   420 > mode
   -1 > none
+  [] > open /Q.posix.status-return
+    ? > path /Q.string
+    ? > flags /Q.number
+    ? > mode /Q.number
+  [] > opendir /Q.posix.status-return
+    ? > path /Q.string
   511 > permissions
   384 > private
   0 > rdonly
   2 > rdwr
-  [^ code output] > return
-    output > @
-    ^.return > called
+  [] > read /Q.posix.read-return
+    ? > descriptor /Q.number
+    ? > size /Q.number
+  [code data] > read-return
+    data > @
+    posix.read-return > called
       code
-      output
+      data
+  [] > readdir /Q.posix.dir-return
+    ? > dirp /Q.number
+  [] > recv /Q.posix.read-return
+    ? > descriptor /Q.number
+    ? > size /Q.number
+    ? > flags /Q.number
+  [] > rename /Q.posix.status-return
+    ? > from /Q.string
+    ? > to /Q.string
+  [] > rmdir /Q.posix.status-return
+    ? > path /Q.string
   [] > send /Q.number
     ? > descriptor /Q.number
     ? > buffer
@@ -88,12 +121,19 @@
       code
       mode
       size
+  [code message] > status-return
+    posix.status-return > called
+      code
+      message
   2 > stderr
   0 > stdin
   1 > stdout
   1 > stream
   [] > strerror /Q.string
     ? > errno /Q.number
+  [] > symlink /Q.posix.status-return
+    ? > target /Q.string
+    ? > path /Q.string
   6 > tcp
   [code seconds micros] > time-return
     posix.time-return > called
@@ -103,6 +143,8 @@
   os.is-macos.if > trunc
     1024
     512
+  [] > unlink /Q.posix.status-return
+    ? > path /Q.string
   4294967295 > unresolved
   [] > write /Q.number
     ? > descriptor /Q.number
@@ -152,8 +194,7 @@
         posix.close fd
         fd.gt -1
     code. > fd
-      posix *1
-        "open"
+      posix.open
         "/dev/null"
         posix.wronly.plus posix.append
         0
@@ -164,8 +205,7 @@
         posix.close fd
         fd.gt -1
     code. > fd
-      posix *1
-        "open"
+      posix.open
         "/dev/null"
         posix.wronly.plus posix.trunc
         0
@@ -187,8 +227,7 @@
         posix.close fd
         fd.gt -1
     code. > fd
-      posix *1
-        "open"
+      posix.open
         "/dev/null"
         0
         0
@@ -201,8 +240,7 @@
   os.is-windows.or ++> can-report-eexist-when-creating-an-existing-file-exclusively
     seq *
       code.
-        posix *1
-          "open"
+        posix.open
           "/dev/null"
           plus.
             posix.rdonly.plus posix.creat
@@ -224,6 +262,12 @@
     eq.
       posix.inet-addr "255.255.255.255"
       posix.unresolved
+
+  eq. ++> can-stand-for-the-bytes-a-read-returned
+    posix.read-return
+      3
+      D0-B6-21
+    D0-B6-21
 
   ++> can-stat-the-size-of-dev-null
     os.is-windows.or > @
@@ -253,8 +297,7 @@
           -1
         true
     code. > fd
-      posix *1
-        "open"
+      posix.open
         "/dev/null"
         posix.wronly
         0
@@ -269,8 +312,7 @@
           4096
         true
     code. > fd
-      posix *1
-        "open"
+      posix.open
         "/dev/null"
         posix.wronly
         0

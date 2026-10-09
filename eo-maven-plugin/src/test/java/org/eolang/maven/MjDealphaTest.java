@@ -28,18 +28,21 @@ final class MjDealphaTest {
 
     @Test
     void namesArgumentAfterVoidItLandsIn(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > app",
+                "  [bar] > foo",
+                "    bar > @",
+                "  foo 42 > @"
+            )
+        );
         MatcherAssert.assertThat(
             "the argument must carry the name of the void it fills, but it doesnt",
             new XMLDocument(
-                new FakeMaven(temp).withProgram(
-                    String.join(
-                        System.lineSeparator(),
-                        "[] > app",
-                        "  [bar] > foo",
-                        "    bar > @",
-                        "  foo 42 > @"
-                    )
-                ).execute(new PpDealpha()).result().get("target/7-dealpha/foo/x/main.xmir")
+                maven.execute(new PpDealpha()).result().get(
+                    String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha"))
+                )
             ),
             XhtmlMatchers.hasXPath("/object/o/o[@name='φ']/o[@as='bar']")
         );
@@ -47,19 +50,22 @@ final class MjDealphaTest {
 
     @Test
     void namesSecondArgumentOfCurriedCopy(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > app",
+                "  [left right] > pair",
+                "    left > @",
+                "  pair 1 > half",
+                "  half 2 > @"
+            )
+        );
         MatcherAssert.assertThat(
             "the argument of a curried copy must fill the void left vacant, but it doesnt",
             new XMLDocument(
-                new FakeMaven(temp).withProgram(
-                    String.join(
-                        System.lineSeparator(),
-                        "[] > app",
-                        "  [left right] > pair",
-                        "    left > @",
-                        "  pair 1 > half",
-                        "  half 2 > @"
-                    )
-                ).execute(new PpDealpha()).result().get("target/7-dealpha/foo/x/main.xmir")
+                maven.execute(new PpDealpha()).result().get(
+                    String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha"))
+                )
             ),
             XhtmlMatchers.hasXPath("/object/o/o[@name='φ']/o[@as='right']")
         );
@@ -67,16 +73,19 @@ final class MjDealphaTest {
 
     @Test
     void keepsAlphaOfApplicationOfVoid(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[f] > app",
+                "  f 7 > @"
+            )
+        );
         MatcherAssert.assertThat(
             "an argument of a void has nowhere to land, but it was renamed",
             new XMLDocument(
-                new FakeMaven(temp).withProgram(
-                    String.join(
-                        System.lineSeparator(),
-                        "[f] > app",
-                        "  f 7 > @"
-                    )
-                ).execute(new PpDealpha()).result().get("target/7-dealpha/foo/x/main.xmir")
+                maven.execute(new PpDealpha()).result().get(
+                    String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha"))
+                )
             ),
             XhtmlMatchers.hasXPath("/object/o/o[@name='φ']/o[@as='α0']")
         );
@@ -99,18 +108,22 @@ final class MjDealphaTest {
 
     @Test
     void pointsObjectAtDealphaXmir(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > app",
+                "  [bar] > foo",
+                "    bar > @",
+                "  foo 42 > @"
+            )
+        );
+        maven.execute(new PpDealpha());
         MatcherAssert.assertThat(
             "the object must be transpiled from the renamed XMIR, but it isnt",
-            new FakeMaven(temp).withProgram(
-                String.join(
-                    System.lineSeparator(),
-                    "[] > app",
-                    "  [bar] > foo",
-                    "    bar > @",
-                    "  foo 42 > @"
-                )
-            ).execute(new PpDealpha()).foreignTojos().find("foo.x.main").xmir().toString(),
-            Matchers.endsWith(Paths.get("7-dealpha/foo/x/main.xmir").toString())
+            maven.foreignTojos().find("foo.x.main").xmir().toString(),
+            Matchers.endsWith(
+                Paths.get(String.format("%s/foo/x/main.xmir", maven.dirName("dealpha"))).toString()
+            )
         );
     }
 
@@ -135,6 +148,46 @@ final class MjDealphaTest {
                     .get("target/generated/org/eolang/EO_examples/EOapp.java")
             ).asString(),
             Matchers.containsString("new Bind(\"bar\"")
+        );
+    }
+
+    @Test
+    void remembersFormationInsideRenamedArgument(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "the formation under a renamed argument must still be found in the tables and cached, but it isnt",
+            new TextOf(
+                new FakeMaven(temp).withProgram(
+                    String.join(
+                        System.lineSeparator(),
+                        "+package examples",
+                        "",
+                        "[] > app",
+                        "  call > @",
+                        "    [z]",
+                        "      half 42 > @",
+                        "      [x] > half",
+                        "        x.div 2 > @",
+                        "  [f] > call",
+                        "    f 7 > @"
+                    ),
+                    "examples.app",
+                    "examples/app.eo"
+                ).withProgram(
+                    String.join(
+                        System.lineSeparator(),
+                        "[as-bytes] > number",
+                        "  as-bytes > @",
+                        "  [x] > div",
+                        "    x > @"
+                    ),
+                    "number",
+                    "number.eo"
+                ).execute(new PpDealpha())
+                    .execute(MjTranspile.class)
+                    .result()
+                    .get("target/generated/org/eolang/EO_examples/EOapp.java")
+            ).asString(),
+            Matchers.containsString("new PhSticky(")
         );
     }
 }
