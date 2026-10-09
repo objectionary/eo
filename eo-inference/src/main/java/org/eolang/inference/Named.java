@@ -57,18 +57,22 @@ import org.xembly.Xembler;
  * <p>A cell of its own and not the {@code holds} the source writes, because a
  * declaration is true of every caller there will ever be and a sighting only of
  * the callers this program happens to have. {@link Answers} lets the annotation
- * win where they disagree, and {@link Held} and {@link Provided} walk through a
- * void on what it declares, so a void the source typed is told nothing, and
- * neither is a row that reads it. That row goes on naming the void, and every
- * reader arrives at the declaration from there. Told the census instead, the
- * row of {@code ^ >> txt} in {@code ends-with} said that the receiver of every
- * {@code ends-with} is {@code Φ.eol}, the one string eo-runtime happens to
- * take it off; told the declaration, it would call witnessed what the source
- * wrote down (#8960). {@link Ones} leaves such voids out, and both tables are
- * told from that one reading of the census, since both want the same answer
- * (#8274).</p>
+ * win where they disagree, so a void the source typed is told no census.
+ * Told the census, the row of {@code ^ >> txt} in {@code ends-with} said that
+ * the receiver of every {@code ends-with} is {@code Φ.eol}, the one string
+ * eo-runtime happens to take it off (#8960). {@link Ones} leaves such voids
+ * out, and both tables are told from that one reading of the census, since
+ * both want the same answer (#8274).</p>
  *
- * @since 0.74.0
+ * <p>A row that reads such a void is told what the void declares, off
+ * {@link Held}, and without the mark. The {@code ^} of every attribute holds
+ * its owner, so a row that stopped at {@code Φ.rope.ends.ρ} handed its reader
+ * a void and a walk through {@code holds} to arrive at {@code Φ.rope}, and 300
+ * of the 343 rows of eo-runtime that end at a receiver ended so. A read on top
+ * of the void is resolved by {@link Provided} already; only the bare read was
+ * left naming it (#8979).</p>
+ *
+ * @since 0.64.0
  */
 public final class Named implements Clue {
 
@@ -101,18 +105,26 @@ public final class Named implements Clue {
         Files.write(provides, given.toString().getBytes(StandardCharsets.UTF_8));
         final Path links = tables.resolve("links.xml");
         final XML table = new XMLDocument(links);
+        final Map<String, String> declared = new Held(given).all();
         for (final Xnav row : new Rows(table).all()) {
-            row.elements(Filter.withName("ref")).forEach(ref -> Named.told(ref, ones));
+            row.elements(Filter.withName("ref")).forEach(ref -> Named.told(ref, ones, declared));
         }
         Files.write(links, table.toString().getBytes(StandardCharsets.UTF_8));
     }
 
-    private static void told(final Xnav ref, final Map<String, String> ones) {
-        final String sole = ones.getOrDefault(new Noted(ref).says("loc"), "");
-        if (!sole.isEmpty() && !ref.elements(Filter.withName("union")).findAny().isPresent()) {
-            new Xembler(
-                new Directives().attr("loc", sole).attr("witnessed", "true")
-            ).applyQuietly(ref.node());
+    private static void told(
+        final Xnav ref, final Map<String, String> ones, final Map<String, String> declared
+    ) {
+        final String loc = new Noted(ref).says("loc");
+        if (!ref.elements(Filter.withName("union")).findAny().isPresent()) {
+            if (ones.containsKey(loc)) {
+                new Xembler(
+                    new Directives().attr("loc", ones.get(loc)).attr("witnessed", "true")
+                ).applyQuietly(ref.node());
+            } else if (declared.containsKey(loc)) {
+                new Xembler(new Directives().attr("loc", declared.get(loc)))
+                    .applyQuietly(ref.node());
+            }
         }
     }
 

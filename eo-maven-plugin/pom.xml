@@ -15,13 +15,23 @@
   <name>eo-maven-plugin</name>
   <description>EO-to-Java Maven Plugin</description>
   <properties>
-    <!-- Don't upgrade to 2.x: there is no maven-resolver-supplier there and Maven 3.9 ships resolver 1.x -->
-    <maven.resolver.version>1.9.27</maven.resolver.version>
+    <!-- Keep in line with the resolver that the Maven 3.10.0 artifacts below ship -->
+    <maven.resolver.version>2.0.24</maven.resolver.version>
   </properties>
   <dependencies>
     <dependency>
       <groupId>org.eolang</groupId>
+      <artifactId>eo-cache</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eolang</groupId>
       <artifactId>eo-inference</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>eo-lowering</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -37,7 +47,7 @@
     <dependency>
       <groupId>org.eolang</groupId>
       <artifactId>lints</artifactId>
-      <version>0.4.9</version>
+      <version>0.5.0</version>
     </dependency>
     <dependency>
       <groupId>org.eolang</groupId>
@@ -53,6 +63,11 @@
       <groupId>com.jcabi.incubator</groupId>
       <artifactId>xembly</artifactId>
       <!-- version from parent POM -->
+    </dependency>
+    <dependency>
+      <groupId>io.github.sekator778</groupId>
+      <artifactId>seqdir</artifactId>
+      <version>0.2.0</version>
     </dependency>
     <dependency>
       <groupId>org.cactoos</groupId>
@@ -87,7 +102,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.maven.resolver</groupId>
-      <artifactId>maven-resolver-supplier</artifactId>
+      <artifactId>maven-resolver-supplier-mvn3</artifactId>
       <version>${maven.resolver.version}</version>
       <scope>provided</scope>
     </dependency>
@@ -100,25 +115,25 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-resolver-provider</artifactId>
-      <version>3.9.16</version>
+      <version>3.10.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <version>3.9.16</version>
+      <version>3.10.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-model</artifactId>
-      <version>3.9.16</version>
+      <version>3.10.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
-      <version>3.9.16</version>
+      <version>3.10.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -143,7 +158,7 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-settings</artifactId>
-      <version>3.9.16</version>
+      <version>3.10.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -155,7 +170,7 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-compat</artifactId>
-      <version>3.9.16</version>
+      <version>3.10.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>

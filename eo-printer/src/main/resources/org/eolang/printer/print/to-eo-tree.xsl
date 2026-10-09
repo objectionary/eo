@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="to-eo-tree" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="to-eo-tree" version="3.0">
   <!-- An EO-source printer; its tree templates form one cohesive module. -->
   <!-- xslint-disable-file too-many-templates -->
   <!--
@@ -165,10 +165,12 @@
   which a bracket param cannot express (#5614); and every void of an
   atom, whose head must stay empty (R-3.4.10) so a typed void may be
   followed by an untyped one without the two swapping places (#6082).
+  The handle of a receiver is not one of them: "^s" is a bracket param,
+  and the only spelling the receiver's handle has (R-3.4.13, #8227).
   -->
   <xsl:function name="eo:vertical-void" as="xs:boolean">
     <xsl:param name="o" as="element()"/>
-    <xsl:sequence select="eo:void($o) and (exists($o/@local) or exists($o/@type) or exists($o/@args) or eo:atom($o/..))"/>
+    <xsl:sequence select="eo:void($o) and ((exists($o/@local) and not($o/@name = $eo:rho)) or exists($o/@type) or exists($o/@args) or eo:atom($o/..))"/>
   </xsl:function>
   <!--
   A void's type tail (R-3.4.8): " /type" for its own forma, " /{type …}"
@@ -545,7 +547,7 @@
             <xsl:value-of select="'@'"/>
           </xsl:when>
           <xsl:when test="@name = $eo:rho">
-            <xsl:value-of select="'^'"/>
+            <xsl:value-of select="concat('^', @local)"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="@name"/>

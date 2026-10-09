@@ -8,15 +8,15 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^ cant-measure] > size
+[^entry cant-measure] > size
   if. > @
     info.code.eq 0
     info.size
     cant-measure
   called. > info
     os.is-windows.if
-      win32.stat64 ^.path
-      posix.stat ^.path
+      win32.stat64 entry.path
+      posix.stat entry.path
 
   eq. ++> can-ignore-the-fallback-when-a-file-exists
     0

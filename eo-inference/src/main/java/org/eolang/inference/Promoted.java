@@ -122,25 +122,31 @@ final class Promoted {
      * already.
      *
      * @param pairs The pairs, each object against the one it is a copy of
+     * @param copied The arms every read off a choice is a copy of, from
+     *  {@link Dispatched}
      * @return The voids answered this time, each against the one object the
      *  program puts into it, empty when no void is worth anything further or
      *  there is no void to look into
      */
-    Map<String, String> from(final Map<String, String> pairs) {
+    Map<String, String> from(
+        final Map<String, String> pairs, final Map<String, Collection<String>> copied
+    ) {
         final Map<String, String> found = new LinkedHashMap<>(0);
         if (!this.hollows.isEmpty()) {
-            found.putAll(this.named(pairs));
+            found.putAll(this.named(pairs, copied));
         }
         return found;
     }
 
-    private Map<String, String> named(final Map<String, String> pairs) {
+    private Map<String, String> named(
+        final Map<String, String> pairs, final Map<String, Collection<String>> copied
+    ) {
         final Collection<String> known = this.known();
         final Provided owned = new Provided(
             this.given, new Ends(pairs).names(), this.hollows
         );
         final Map<String, Collection<String>> asked = this.asked(pairs);
-        final Said said = this.written.with(pairs, this.table.binds(pairs));
+        final Said said = this.written.with(pairs, this.table.binds(pairs, copied));
         final Map<String, String> found = new LinkedHashMap<>(0);
         for (final Map.Entry<String, Collection<Type>> hollow
             : new Freed(

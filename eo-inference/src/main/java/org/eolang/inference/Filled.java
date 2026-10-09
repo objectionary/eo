@@ -69,7 +69,7 @@ import java.util.Map;
  * have not settled yet is an answer nobody has worked out. Writing the second
  * one down as if it were the first froze it, since {@link Dispatched} asks
  * again only about a name rooted at a void and takes one rooted answer for
- * another only when the second stands under the first. The {@code if} of a
+ * another only when the second is made of fewer steps. The {@code if} of a
  * {@code recovered} is a {@code Φ.bool.if}, which is rooted at a void as well,
  * so the site kept the name of a void the line above it fills (#8351).</p>
  *
@@ -253,7 +253,7 @@ final class Filled {
         for (final String call : this.calls(root, answer, bearer, site)) {
             final Map<String, String> arms = this.puts.armed(this.arms(call), root);
             if (!arms.isEmpty()) {
-                found = new Branched(this.owned, arms, this.hollows, this.puts).names();
+                found = new Branched(this.owned, arms, this.puts).names();
                 if (!found.isEmpty()) {
                     break;
                 }
@@ -261,7 +261,7 @@ final class Filled {
         }
         if (found.isEmpty() && !root.equals(answer)) {
             found = new Branched(
-                this.owned, this.puts.armed(fillings, root), this.hollows, this.puts
+                this.owned, this.puts.armed(fillings, root), this.puts
             ).names();
         }
         return found;
@@ -275,7 +275,7 @@ final class Filled {
             final Map<String, String> arms = this.puts.armed(this.arms(call), root);
             if (!arms.isEmpty()) {
                 final Collection<String> given =
-                    new Branched(this.owned, arms, this.hollows, this.puts).whole();
+                    new Branched(this.owned, arms, this.puts).arms();
                 if (given.size() > 1) {
                     found = given;
                     break;
@@ -284,9 +284,8 @@ final class Filled {
         }
         if (found.isEmpty() && !root.equals(answer)) {
             found = new Branched(
-                this.owned, this.puts.armed(this.fillings(bearer), root), this.hollows,
-                this.puts
-            ).whole();
+                this.owned, this.puts.armed(this.fillings(bearer), root), this.puts
+            ).arms();
         }
         return found;
     }

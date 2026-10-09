@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="restore-local-names" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="restore-local-names" version="3.0">
   <!--
   Inverse of the parser's "resolve-local-names" pass, applied before
   printing (#5563). A void declared with a file-local handle
@@ -270,7 +270,32 @@
     <xsl:param name="ref" as="element()"/>
     <xsl:sequence select="exists($ref/following-sibling::o[@name = eo:resolved-name($ref/@base)][@local][eo:recursive(., @name/string())])"/>
   </xsl:function>
-  <xsl:key name="void-handle" match="o[@local and (@base=$eo:empty or eo:recursive(., @name/string()) or @pipe)]" use="@name"/>
+  <xsl:key name="void-handle" match="o[@local and not(@name=$eo:rho) and (@base=$eo:empty or eo:recursive(., @name/string()) or @pipe)]" use="@name"/>
+  <!--
+  Whether some formation of this file names its receiver, "[^s …]"
+  (R-3.4.13, #8227). Most files name none, so "eo:receiver-handled" below
+  hands their references back untouched without climbing their ancestors.
+  -->
+  <xsl:variable name="eo:receivers" as="xs:boolean" select="exists(//o[@name=$eo:rho and @base=$eo:empty and @local])"/>
+  <!--
+  The segments of a reference with the receiver handle put back (#8227). A
+  receiver written as "^s" is the void "ρ" carrying the handle "s" in
+  "@local", and it keeps the name "ρ", so the head still declares the
+  receiver. A reference reaches it through a run of "ρ" hops: "ξ.ρ" from the
+  formation that declares it, one "ρ" more from each formation nested inside
+  that one. The hop that leaves such a formation becomes its handle, so
+  "ξ.ρ.ρ.bar" reads "ξ.s.ρ.bar" where it is declared and "ξ.ρ.s.bar" one
+  formation further in, the way a nested reference to any other handle keeps
+  its "ρ" hops in front of the handle. When the run leaves several formations
+  that name their receivers, the outermost of them takes the handle.
+  -->
+  <xsl:function name="eo:receiver-handled" as="xs:string*">
+    <xsl:param name="ref" as="element()"/>
+    <xsl:param name="segments" as="xs:string*"/>
+    <xsl:variable name="scopes" as="element()*" select="if ($eo:receivers and $segments[1] = $eo:xi and $segments[2] = $eo:rho) then reverse($ref/ancestor::o[not(@base)]) else ()"/>
+    <xsl:variable name="hop" as="xs:integer?" select="max(for $at in 1 to count($scopes) return if (count($segments) gt $at and (every $seg in subsequence($segments, 2, $at) satisfies $seg = $eo:rho) and exists($scopes[$at]/o[@name=$eo:rho and @base=$eo:empty and @local])) then $at else ())"/>
+    <xsl:sequence select="if (empty($hop)) then $segments else (subsequence($segments, 1, $hop), string($scopes[$hop]/o[@name=$eo:rho and @base=$eo:empty and @local][1]/@local), subsequence($segments, $hop + 2))"/>
+  </xsl:function>
   <!--
   References: rewrite each cactus segment that names a handled void, a
   recursive formation, or a pipe-application handle (`| args &gt;&gt; name`,
@@ -287,9 +312,13 @@
   from the other side reaches "string-join" unatomised and the sheet dies with
   "DOMNodeWrapper cannot be cast to AtomicValue". Wrapping the node in
   "string()" leaves nothing mixed to type, as in "eo:signature".
+
+  A "ρ" hop onto a receiver that carries a handle is put back first (see
+  "eo:receiver-handled"); the handle it leaves is no cactus name, so the
+  segment rewrite after it passes the handle through unchanged.
   -->
   <xsl:template match="@base">
-    <xsl:attribute name="base" select="string-join(for $seg in tokenize(., '\.') return (if (key('void-handle', $seg)) then string(key('void-handle', $seg)[1]/@local) else $seg), '.')"/>
+    <xsl:attribute name="base" select="string-join(for $seg in eo:receiver-handled(.., tokenize(., '\.')) return (if (key('void-handle', $seg)) then string(key('void-handle', $seg)[1]/@local) else $seg), '.')"/>
   </xsl:template>
   <!--
   Handled declaration (void or recursive formation): promote the handle
@@ -297,9 +326,11 @@
   pipe-application handle (#6015) are not promoted — only their "@local" marker
   is kept (below) — so their cactus name survives: the dispatch receiver for
   "inline-cactoos" to pipe against, the pipe handle to read as a `|` line whose
-  "&gt;&gt; name" comes from "@local" rather than a promoted "@name".
+  "&gt;&gt; name" comes from "@local" rather than a promoted "@name". Nor is a
+  receiver that carries a handle (#8227): it stays the void "ρ", which is what
+  makes its head declare the receiver.
   -->
-  <xsl:template match="o[@local and (@base=$eo:empty or eo:recursive(., @name/string()))]/@name">
+  <xsl:template match="o[@local and not(@name=$eo:rho) and (@base=$eo:empty or eo:recursive(., @name/string()))]/@name">
     <xsl:attribute name="name" select="../@local"/>
   </xsl:template>
   <!--

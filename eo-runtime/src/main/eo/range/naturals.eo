@@ -14,27 +14,27 @@
 +unlint redundant-attachment
 +version 0.0.0
 
-[^] > naturals
+[^span] > naturals
   if. > @
     and.
-      ^.start.is-integer.and ^.end.is-integer
+      span.start.is-integer.and span.end.is-integer
       and.
-        ^.start.abs.lt safe
-        ^.end.abs.lt safe
+        span.start.abs.lt safe
+        span.end.abs.lt safe
     range
       [^] >>
-        build ^.^.start > @
+        build ^.span.start > @
         [^ num] > build
           num > @
           ^.build > next
             1.plus @
-      ^.end
+      span.end
     T complaint
   printf. > complaint
     "Range bounds must be integers within the safe unit-step range (|x| < 2^53), but were %s and %s"
     *
-      printed ^.start
-      printed ^.end
+      printed span.start
+      printed span.end
   num.is-finite.if > [num] > printed
     "%f".printf
       * num

@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" exclude-result-prefixes="eo" id="to-java" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" exclude-result-prefixes="eo" id="to-java" version="3.0">
   <!-- A code transpiler; its 26 match templates form one cohesive module. -->
   <!-- xslint-disable-file too-many-templates -->
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
@@ -12,6 +12,8 @@
   <xsl:param name="trackLocations" select="'true'"/>
   <xsl:param name="coverage" select="'false'"/>
   <xsl:param name="phiDefaultClass" select="'PhDefault'"/>
+  <xsl:param name="deadline" select="'1'"/>
+  <xsl:param name="maxmem" select="'1G'"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <!-- VARIABLES -->
   <xsl:variable name="TAB">
@@ -726,6 +728,10 @@
   Application of an object to its arguments. One that purify.xsl marked with
   @pure is wrapped in PhSticky, so that the bytes it works out are remembered
   instead of being worked out on every read of it.
+  A dispatch that takes no arguments, "x.neg" for example, arrives here with
+  nothing to bind, since the receiver is the only object under it and the
+  template above has already taken it. The wrapping is still owed: such a
+  dispatch is read as often as any other and works its answer out every time.
   -->
   <xsl:template match="*" mode="application">
     <xsl:param name="indent"/>
@@ -774,6 +780,13 @@
       </xsl:if>
       <xsl:text>;</xsl:text>
     </xsl:if>
+    <xsl:if test="not($inners) and @pure='true'">
+      <xsl:value-of select="eo:eol($indent)"/>
+      <xsl:value-of select="$name"/>
+      <xsl:text> = new PhSticky(</xsl:text>
+      <xsl:value-of select="$name"/>
+      <xsl:text>);</xsl:text>
+    </xsl:if>
     <xsl:apply-templates select="value">
       <xsl:with-param name="name" select="$name"/>
       <xsl:with-param name="indent" select="$indent">
@@ -795,9 +808,15 @@
   <!-- Test suite for given class. -->
   <xsl:template match="class" mode="testing">
     <xsl:if test="attr[eo:test-attr(.)]">
+      <xsl:text>import java.util.concurrent.TimeUnit;</xsl:text>
+      <xsl:value-of select="eo:eol(0)"/>
       <xsl:text>import org.junit.jupiter.api.Assertions;</xsl:text>
       <xsl:value-of select="eo:eol(0)"/>
       <xsl:text>import org.junit.jupiter.api.Test;</xsl:text>
+      <xsl:value-of select="eo:eol(0)"/>
+      <xsl:text>import org.junit.jupiter.api.Timeout;</xsl:text>
+      <xsl:value-of select="eo:eol(0)"/>
+      <xsl:text>import org.junit.jupiter.api.extension.ExtendWith;</xsl:text>
       <xsl:value-of select="eo:eol(0)"/>
     </xsl:if>
     <xsl:value-of select="eo:eol(0)"/>
@@ -912,7 +931,14 @@
       <xsl:text>);</xsl:text>
     </xsl:if>
   </xsl:template>
-  <!-- Class for tests -->
+  <!--
+  Class for tests.
+
+  Every test carries its own deadline and memory budget, so that it keeps them
+  in any build that compiles it, even one that tells JUnit nothing: a runaway
+  test is stopped and reported as skipped, instead of eating the heap of the
+  whole build (#9074).
+  -->
   <xsl:template match="class" mode="tests">
     <xsl:value-of select="eo:eol(1)"/>
     <xsl:for-each select="attr">
@@ -921,6 +947,12 @@
       </xsl:if>
       <xsl:if test="eo:test-attr(.)">
         <xsl:text>@Test</xsl:text>
+        <xsl:value-of select="eo:eol(1)"/>
+        <xsl:value-of select="concat('@Timeout(value = ', $deadline, ', unit = TimeUnit.SECONDS)')"/>
+        <xsl:value-of select="eo:eol(1)"/>
+        <xsl:value-of select="concat('@Budget(&quot;', eo:literal($maxmem), '&quot;)')"/>
+        <xsl:value-of select="eo:eol(1)"/>
+        <xsl:text>@ExtendWith({Deadline.class, Maxmem.class})</xsl:text>
         <xsl:value-of select="eo:eol(1)"/>
         <xsl:text>void </xsl:text>
         <xsl:value-of select="eo:identifier(replace(eo:unmarked(@name), '-', '_'))"/>

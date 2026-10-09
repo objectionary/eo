@@ -7,9 +7,17 @@ name: xslint
   push:
     branches:
       - master
+    paths:
+      - '**.xsl'
+      - '.github/workflows/xslint.yml'
+      - '.xslint.yml'
   pull_request:
     branches:
       - master
+    paths:
+      - '**.xsl'
+      - '.github/workflows/xslint.yml'
+      - '.xslint.yml'
 permissions:
   contents: read
 concurrency:
@@ -21,6 +29,6 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
-      - uses: xslint/xslint-action@0.0.9
+      - uses: xslint/xslint-action@0.0.14
         with:
           config: .xslint.yml
