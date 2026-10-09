@@ -1,30 +1,14 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# The body of `answer` is a formation and not a copy, so "links.xml" has no
-# row about it at all. Yet `eo:inference` knows that `answer` is a number:
-# it binds nothing but its body, and so does that body, so the `reduced`
-# cell of both rows of "provides.xml" says what they behave as.
+# The body of `answer` is a formation with a body of its own, so both are
+# formations the calculus can be asked about, and each gets an entry, the
+# outer one first.
 eo:
   answer.eo: |
     [] > answer
       [] > @
         42 > @
-provides: |
-  <provides>
-    <type complete="false" id="Φ.answer" reduced="Φ.number">
-      <attr name="φ" type="Φ.answer.φ"/>
-    </type>
-    <type complete="false" id="Φ.answer.φ" reduced="Φ.number">
-      <attr name="φ" type="Φ.answer.φ.φ"/>
-    </type>
-  </provides>
-links: |
-  <links>
-    <type id="Φ.answer.φ.φ">
-      <ref loc="Φ.number"/>
-    </type>
-  </links>
 entries:
   - "1\tΦ.answer"
   - "2\tΦ.answer.φ"

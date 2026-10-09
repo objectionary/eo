@@ -4,6 +4,7 @@
  */
 package org.eolang.lowering;
 
+import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
@@ -14,6 +15,8 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Tests of the class {@link Signatures}.
@@ -22,6 +25,39 @@ import org.junit.jupiter.api.extension.ExtendWith;
  */
 @ExtendWith(MktmpResolver.class)
 final class SignaturesTest {
+
+    @ParameterizedTest
+    @CsvSource(
+        delimiter = '|', quoteCharacter = '"', value = {
+            "<type id='Φ.f' reduced='Φ.number'/>|\"\"|Φ.number",
+            "<type id='Φ.f.φ' reduced='Φ.number'/>|\"\"|Φ.number",
+            "<type id='Φ.decorator' reduced='Φ.number'/>|Φ.decorator|Φ.number",
+            "<type id='Φ.f.φ' reduced='Φ.number'/><type id='Φ.f' reduced='Φ.string'/>|Φ.bool|Φ.string"
+        }
+    )
+    void readsReducedTypesInTableOrder(
+        final String rows, final String ref, final String expected
+    ) {
+        final String linked;
+        if (ref.isEmpty()) {
+            linked = "";
+        } else {
+            linked = String.format("<ref loc='%s'/>", ref);
+        }
+        MatcherAssert.assertThat(
+            "the signature must prefer reduced types in the same order as entries.xsl",
+            new Signatures(
+                () -> new XMLDocument(String.format("<provides>%s</provides>", rows)),
+                () -> new XMLDocument(
+                    String.format(
+                        "<links><type id='Φ.f.φ'>%s</type></links>", linked
+                    )
+                ),
+                () -> new XMLDocument("<atoms/>")
+            ).of("Φ.f"),
+            Matchers.equalTo(String.format("f()→ %s", expected))
+        );
+    }
 
     @Test
     void printsTheTypesOfTheVoidsAndOfTheBody(@Mktmp final Path temp) throws IOException {

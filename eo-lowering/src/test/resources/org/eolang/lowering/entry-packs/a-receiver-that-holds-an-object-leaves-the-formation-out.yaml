@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The `ρ` a formation declares is a void like the others, so a `ρ` the tables
+# type as an object leaves the formation out too, the way the `input-block`
+# of a `read` is left out.
+eo:
+  block.eo: |
+    +package holder
+
+    [^ size] > block
+      ^.read size > @
+provides: |
+  <provides>
+    <type id="Φ.holder.block">
+      <attr name="ρ" type="Φ.holder.block.ρ" void="true" holds="Φ.reader"/>
+      <attr name="size" type="Φ.holder.block.size" void="true"
+        holds="Φ.number"/>
+    </type>
+  </provides>
+xmir:
+  - "/object/o[@name='l/'][not(o[starts-with(@name, 'e')])]"

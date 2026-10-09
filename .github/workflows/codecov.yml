@@ -14,9 +14,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   codecov:
-    # Forty-five minutes and not twenty-five: the first run after a bump of
-    # the pinned phino version builds it from source, and only that run.
-    timeout-minutes: 45
+    timeout-minutes: 25
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
@@ -32,20 +30,9 @@ jobs:
             maven-
       # The `lower` goal needs the exact phino version pinned in the plugin,
       # and this job is the one that always builds with lowering on.
-      # The binary is copied into a folder of its own, because cabal keeps
-      # its files under `~/.local` and only symlinks the executable there,
-      # so a cache of `~/.cabal` would save nothing and rebuild phino each run.
-      - uses: actions/cache@v6
+      - uses: objectionary/phino@ecf5bd26b7634d2681e865c28dc2dbb100c2fa0a  # master
         with:
-          path: ~/.phino
-          key: phino-${{ hashFiles('eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt') }}
-      - run: |
-          ver=$(tr -d '[:space:]' < eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt)
-          if ! "$HOME/.phino/phino" --version 2>/dev/null | grep -qx "${ver}"; then
-            cabal update
-            cabal install "phino-${ver}" --installdir="$HOME/.phino" --install-method=copy --overwrite-policy=always
-          fi
-          echo "$HOME/.phino" >> "$GITHUB_PATH"
+          version-file: eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt
       - run: mvn install '-Deo.coverageTracking=true' '-Deo.lowering=true'
       # The goal must have run, and a missing folder is how a silently
       # disabled lowering would look.
