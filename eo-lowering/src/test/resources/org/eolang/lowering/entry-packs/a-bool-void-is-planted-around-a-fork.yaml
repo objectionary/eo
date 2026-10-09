@@ -15,12 +15,6 @@ provides: |
       <attr name="a" type="Φ.both.a" void="true" holds="Φ.bool"/>
     </type>
   </provides>
-links: |
-  <links>
-    <type id="Φ.both.φ">
-      <ref loc="Φ.bool"/>
-    </type>
-  </links>
 xmir:
   - "//o[@as='a' and @base='Φ.bool']/o[@as='if']\
     /o[@name='λ' and text()='L_fork']"

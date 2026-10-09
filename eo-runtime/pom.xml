@@ -273,7 +273,6 @@
           <foreignFormat>csv</foreignFormat>
           <!-- Every lint warning is an error here; nothing may be tolerated. -->
           <failOnWarning>true</failOnWarning>
-          <skipExperimentalLints>true</skipExperimentalLints>
           <offline>true</offline>
           <ignoreRuntime>true</ignoreRuntime>
           <!--
@@ -307,10 +306,6 @@
             </goals>
             <configuration>
               <skipSourceLints>
-                <!-- https://github.com/objectionary/lints/issues/1279 -->
-                <lint>mandatory-package</lint>
-                <!-- https://github.com/objectionary/lints/issues/1273 -->
-                <lint>package-member-without-void</lint>
                 <!--
                 'redundant-object' sees one file at a time and counts only the
                 references written relative to the current object, so every
@@ -330,9 +325,10 @@
                 <lint>many-void-attributes</lint>
                 <!--
                 @todo #8654:30min Stop skipping 'unit-test-is-not-verb' here.
-                Lints 0.4.9 registers a lint that 0.4.8 shipped but never ran,
-                and it wants a test name to open with a verb in singular form,
-                which no 'can-...' name in this module does.
+                The lint wants a test name to hold a verb in singular form,
+                and in 155 names it finds none: its tagger reads 'format',
+                'print', 'scan', or 'floor' in 'can-format' and its siblings
+                as nouns, and names like 'can-or' or 'can-upper' have no verb.
                 -->
                 <lint>unit-test-is-not-verb</lint>
                 <!--
@@ -346,11 +342,77 @@
                 'broad-scope' asks for a private attribute read by one sibling
                 to move inside it, which for a recursive head means computing
                 it again on every step: 'i64.div' hoists 'bit' and 'dividend'
-                out of 'looped' on purpose. Thirty-four of its forty-six
+                out of 'looped' on purpose. Thirty-four of its forty-five
                 reports sit in 'string/regex.eo', whose objects share one
                 vocabulary across the whole parser, and #8654 holds the rest.
                 -->
                 <lint>broad-scope</lint>
+                <!--
+                @todo #9108:30min Stop skipping 'long-live-object' here.
+                The lint warns when more than five lines separate an attribute
+                from its last use in the same formation, and it does so 68
+                times in 27 files, twenty of them in 'net/uri.eo' and ten in
+                'number/sine.eo'. Each place is real, but moving the
+                attribute closer needs the formation to be split, not just
+                its lines to be reordered, because the printer puts a private
+                handle at its first use.
+                -->
+                <lint>long-live-object</lint>
+                <!--
+                @todo #9108:30min Stop skipping 'cyclomatic-complexity' here.
+                The lint counts every 'if', 'and', 'or', and 'while' as a
+                decision point and complains about seven formations, from
+                'file.touched' with twelve to 'number.power' with
+                twenty-five. Each of them has to be split into smaller
+                objects.
+                -->
+                <lint>cyclomatic-complexity</lint>
+                <!--
+                @todo #9108:30min Stop skipping 'direct-phi' here.
+                The lint forbids reading '@' directly and reports 24 errors.
+                Some are tests like '123.@.eq 123.@' in 'i64.eo', where '@'
+                is the void of 'number'. Others are deliberate, like the
+                '@. > @' heads of 'console', 'stdin', 'file', and 'map'
+                (#5747, #5748). Each place needs its own decision.
+                -->
+                <lint>direct-phi</lint>
+                <!--
+                @todo #9108:30min Stop skipping 'unoptimizable-recursion' here.
+                Thirteen of its 24 reports, in 'u8' to 'u64', 'i8' to 'i64',
+                'buffer', 'set', 'map', 'path', and 'stdin', are methods that
+                build a new copy of their owner, not recursion at all
+                (objectionary/lints#1528). The other eleven, from
+                'directory.listed' to 'seq', are real and must be rewritten
+                to call themselves in a tail position.
+                -->
+                <lint>unoptimizable-recursion</lint>
+                <!--
+                @todo #9108:30min Stop skipping 'excessive-visibility' here.
+                The lint wants every method that no test refers to be made
+                private, and it complains 152 times. In 71 of them the
+                method is already private, as a constant made with '!'
+                (objectionary/lints#1526). The rest are methods like
+                'i64.as-i16', which other files use but no test touches.
+                -->
+                <lint>excessive-visibility</lint>
+                <!--
+                @todo #9108:30min Stop skipping 'no-attribute-formation' here.
+                The lint rejects a formation without void attributes, and 125
+                of its 150 reports are tests, which take no arguments by
+                design (objectionary/lints#1527). The other 25, like 'clock',
+                'console', 'os', 'stdin', or 'malloc', are objects with no
+                arguments on purpose.
+                -->
+                <lint>no-attribute-formation</lint>
+                <!--
+                @todo #9108:30min Stop skipping 'missed-obfuscation' here.
+                The lint wants a formation that decorates another object to
+                make its void attributes private, and it complains 595 times,
+                87 of them about top-level objects. Making their voids
+                private changes the public interface of the runtime, which
+                only the architect may decide.
+                -->
+                <lint>missed-obfuscation</lint>
               </skipSourceLints>
               <!--
               Objects with an optional fallback argument, like 'string.as-fixed'
