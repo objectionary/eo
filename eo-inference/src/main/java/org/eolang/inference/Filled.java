@@ -87,7 +87,9 @@ import java.util.Map;
  * share nothing the reads on top of them are joined instead, and a row left
  * rooted at {@code Φ.bool.if} settles all the same. An arm without the
  * attribute ends it, since a read arriving nowhere from one of them says
- * nothing about the one they stand for (#8744).</p>
+ * nothing about the one they stand for (#8744). A call that puts something
+ * into a void is not joined: it stays rooted at the void, so that what it
+ * puts reaches the voids of every arm (#8883).</p>
  *
  * @since 0.69.0
  */
@@ -229,7 +231,10 @@ final class Filled {
     private String agreed(
         final String answer, final String root, final String bearer, final String site
     ) {
-        String found = new Joined(this.reads(answer, root, bearer, site), this.owned).names();
+        String found = "";
+        if (this.puts.at(site).isEmpty()) {
+            found = new Joined(this.reads(answer, root, bearer, site), this.owned).names();
+        }
         if (found.isEmpty()) {
             found = answer;
         }
