@@ -98,19 +98,15 @@
               * ^.^.entry.path opened.message
           if.
             recovered
-              seq *
-                ^.^.scope
-                  stream descriptor
-                true
+              seq
+                * scoped true
               false
             seq *
               syscall.close descriptor
               true
             seq *
               syscall.close descriptor
-              ^.^.cant-open
-                "The scope given to '%s'.open() failed; the descriptor was closed before propagating the failure".printf
-                  * ^.^.entry.path
+              scoped
         ^.^.appending.if syscall.append 0 > append
         ^.^.existing.not.if syscall.creat 0 > creat
         opened.code > descriptor
@@ -125,6 +121,8 @@
           append
         called. > opened
           syscall.open ^.^.entry.path flags syscall.mode
+        ^.^.scope > scoped!
+          stream descriptor
         [^ descriptor] > stream
           [^ size] > read
             read. > @
