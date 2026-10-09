@@ -85,6 +85,16 @@ final class SubdirTest {
     }
 
     @Test
+    void skipsANumberHeldByARegularFile(@TempDir final Path temp) throws IOException {
+        Files.createFile(temp.resolve("01-lint"));
+        MatcherAssert.assertThat(
+            "a number held by a regular file must be stepped over, not retried until the stack ends (see #9010)",
+            new Subdir(temp, "lint").path(),
+            Matchers.equalTo(temp.resolve("02-lint"))
+        );
+    }
+
+    @Test
     void createsTheDirectoryItNumbers(@TempDir final Path temp) {
         MatcherAssert.assertThat(
             "the numbered directory must exist as soon as it is numbered",
