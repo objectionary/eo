@@ -125,27 +125,25 @@ final class CentralMavenTest {
     @Test
     @ExtendWith(WeAreOnline.class)
     void resolvesWithInjectedComponents(@Mktmp final Path temp) {
-        final RepositorySystem system = new RepositorySystemSupplier().get();
-        final DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
-        session.setLocalRepositoryManager(
-            system.newLocalRepositoryManager(
-                session,
-                new LocalRepository(temp.resolve("local-repo").toFile())
-            )
-        );
         final Path dest = temp.resolve("unpacked");
-        new CentralMaven(
-            system,
-            session,
-            Collections.singletonList(
-                new RemoteRepository.Builder(
-                    "central", "default", "https://repo1.maven.org/maven2"
-                ).build()
-            )
-        ).accept(
-            CentralMavenTest.runtime(),
-            dest
-        );
+        try (RepositorySystem system = new RepositorySystemSupplier().get()) {
+            final DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
+            session.setLocalRepositoryManager(
+                system.newLocalRepositoryManager(
+                    session,
+                    new LocalRepository(temp.resolve("local-repo").toFile())
+                )
+            );
+            new CentralMaven(
+                system,
+                session,
+                Collections.singletonList(
+                    new RemoteRepository.Builder(
+                        "central", "default", "https://repo1.maven.org/maven2"
+                    ).build()
+                )
+            ).accept(CentralMavenTest.runtime(), dest);
+        }
         MatcherAssert.assertThat(
             "Unpacked destination must contain files when using injected resolver components",
             dest.toFile().list(),

@@ -17,6 +17,7 @@ import com.yegor256.tojos.TjSmart;
 import com.yegor256.tojos.TjSynchronized;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,7 +49,7 @@ final class MjRegisterIT {
                 MjRegisterIT.succeeds(f);
                 MatcherAssert.assertThat(
                     "Old pulled files must were removed, but it didn't",
-                    temp.resolve("target/eo/01-pull").toFile().exists(),
+                    MjRegisterIT.subdir(temp, "pull").toFile().exists(),
                     Matchers.is(false)
                 );
             }
@@ -68,7 +69,7 @@ final class MjRegisterIT {
                 MjRegisterIT.succeeds(f);
                 MatcherAssert.assertThat(
                     "Old resolved files must were removed, but it didn't",
-                    temp.resolve("target/eo/01-pull").toFile().exists(),
+                    MjRegisterIT.subdir(temp, "pull").toFile().exists(),
                     Matchers.is(false)
                 );
             }
@@ -114,12 +115,12 @@ final class MjRegisterIT {
                 MjRegisterIT.succeeds(f);
                 MatcherAssert.assertThat(
                     "Necessary objects must were pulled",
-                    temp.resolve("target/eo/01-pull/number.eo").toFile().exists(),
+                    MjRegisterIT.subdir(temp, "pull").resolve("number.eo").toFile().exists(),
                     Matchers.is(true)
                 );
                 MatcherAssert.assertThat(
                     "The whole root package must be pulled, string too, but it wasnt",
-                    temp.resolve("target/eo/01-pull/string.eo").toFile().exists(),
+                    MjRegisterIT.subdir(temp, "pull").resolve("string.eo").toFile().exists(),
                     Matchers.is(true)
                 );
             }
@@ -194,5 +195,15 @@ final class MjRegisterIT {
         return Stream.of(ids)
             .map(id -> foreign.getById(id).exists("id"))
             .collect(Collectors.toList());
+    }
+
+    private static Path subdir(final Path home, final String name) throws IOException {
+        final Path target = home.resolve("target/eo");
+        try (Stream<Path> kids = Files.list(target)) {
+            return kids
+                .filter(kid -> kid.getFileName().toString().matches(String.format("\\d+-%s", name)))
+                .findFirst()
+                .orElse(target.resolve(name));
+        }
     }
 }

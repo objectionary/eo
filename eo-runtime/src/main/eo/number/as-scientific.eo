@@ -139,3 +139,7 @@
   eq. ++> can-name-positive-infinity
     "infinity"
     string pinf.as-scientific
+
+  eq. ++> can-write-zero-in-scientific-notation
+    "0.000000e0"
+    string 0.as-scientific
