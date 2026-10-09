@@ -8,10 +8,10 @@
 +unlint redundant-attachment
 +version 0.0.0
 
-[^ substrings] > contains-any
+[^text substrings] > contains-any
   reduced. > @
     substrings.mapped
-      ^.^.contains x > [^ x] >>
+      ^.text.contains x > [^ x] >>
     false
     x.or a > [a x]
 

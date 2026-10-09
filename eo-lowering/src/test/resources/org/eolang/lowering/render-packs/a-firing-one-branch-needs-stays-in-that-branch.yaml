@@ -18,15 +18,21 @@ eo:
         t.plus 1
 voids:
   - "𝜎1\t1\tt\tnumber"
+links: |
+  <links>
+    <type id="Φ.twice.φ">
+      <ref loc="Φ.number"/>
+    </type>
+  </links>
 protocol: |
   <protocol>
-    <morph at="Φ.l🌵.e1">
-      <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e1">
+    <morph at="Φ.l/.e1">
+      <evaluate λ="L_entry" by="morph" at="Φ.l/.e1">
         <evaluate λ="L_number_gt" by="morph" at="Φ.a🌵1">
           <minted symbol="𝜎2">𝜎1 00-00-00-00-00-00-00-00</minted>
         </evaluate>
         <evaluate λ="L_fork" by="morph" at="Φ.a🌵2">
-          <dataize meta="𝛿1.3">𝜎2:λ</dataize>
+          <dataize meta="𝛿1·3">𝜎2:λ</dataize>
           <evaluate λ="L_number_plus" by="morph" at="Φ.a🌵3">
             <minted symbol="𝜎3">𝜎1 3F-F0-00-00-00-00-00-00</minted>
           </evaluate>
@@ -42,8 +48,8 @@ protocol: |
           <minted symbol="𝜎7">𝜎5 𝜎6</minted>
         </evaluate>
       </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l🌵.e1">
-        <dataize meta="𝛿1.8">𝜎7:λ</dataize>
+      <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
+        <dataize meta="𝛿1·8">𝜎7:λ</dataize>
       </evaluate>
     </morph>
     <msec>885</msec>
@@ -71,17 +77,17 @@ java: |
 
       @Override
       public Phi lambda() {
-          final double s1 = new Dataized(this.take("ρ").take("t")).asNumber();
-          final boolean s2 = s1 > Double.longBitsToDouble(0x0000000000000000L);
+          final byte[] s1 = new Dataized(this.take("ρ").take("t")).take();
+          final boolean s2 = (double) new BytesOf(s1).asNumber() > Double.longBitsToDouble(0x0000000000000000L);
           final double s5;
           if (s2) {
-              final double s3 = s1 + Double.longBitsToDouble(0x3FF0000000000000L);
+              final double s3 = (double) new BytesOf(s1).asNumber() + Double.longBitsToDouble(0x3FF0000000000000L);
               s5 = s3;
           } else {
-              final double s4 = s1 + Double.longBitsToDouble(0x4000000000000000L);
+              final double s4 = (double) new BytesOf(s1).asNumber() + Double.longBitsToDouble(0x4000000000000000L);
               s5 = s4;
           }
-          final double s6 = s1 + Double.longBitsToDouble(0x3FF0000000000000L);
+          final double s6 = (double) new BytesOf(s1).asNumber() + Double.longBitsToDouble(0x3FF0000000000000L);
           final double s7 = s5 + s6;
           return new Data.ToPhi(s7);
       }

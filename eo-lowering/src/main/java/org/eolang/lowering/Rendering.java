@@ -17,11 +17,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import javax.xml.transform.stream.StreamSource;
 import org.cactoos.Proc;
 import org.cactoos.Text;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.list.ListOf;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
 
@@ -68,7 +68,43 @@ import org.cactoos.text.TextOf;
  * the top object only, so two entries may ask for one class. Each of them
  * is a taint then, since javac would find only one of the two.</p>
  *
+ * <p>The atom gives back the result of the body inside the object the
+ * protocol names around it, when the answer of the run for the body is an
+ * object of the world applied to its {@code φ} alone: a string, for
+ * example, is {@code Φ.string} applied to its bytes again. Otherwise the
+ * atom gives the result back as the object it is when that result is a
+ * copy of another object, and as plain data when the atom computed it.
+ * Plain data has no object around it, so a string or an {@code i16}, for
+ * example, would lose every attribute of its own. This is why, when the
+ * result is plain data the protocol names no object around, this stage
+ * asks the tables of {@code eo:inference} what the body gives, and an
+ * entry whose body is not a number, a bool or bytes is a taint. The tables
+ * must be there before the stage starts, even though most entries never
+ * ask them.</p>
+ *
+ * <p>Every {@code T} of the copies is a copy of {@code throw} by now, see
+ * {@link Pruning}. phino stops at the λ of {@code throw}, since nothing
+ * answers it, and the protocol keeps the message that copy got. So when
+ * the root of an entry is such a copy, the atom only throws that message,
+ * through {@code ExFailure}, which is what {@code T} does in eo-runtime,
+ * and {@code recovered} catches it the same way.</p>
+ *
  * @since 0.64.0
+ * @todo #9248:45min Put the object around a root that comes out of an
+ *  {@code if} or a dispatch. The protocol names the object around the root
+ *  only when the answer of the run for the body is that object applied to
+ *  its {@code φ}. The body of {@code Φ.bytes.as-i8} is an {@code if} whose
+ *  branch is {@code i8} applied to the void {@code data}, so its atom
+ *  returns the void bare, as bytes, and the {@code i8} around it is lost.
+ *  A body that copies a decorator of a string, like {@code separator.joined
+ *  parts}, is a taint now for the same reason. Once phino names, in the
+ *  formations of {@code L_root}, the object each root reduced to, read the
+ *  object around the root there as well.
+ * @todo #9373:45min Write an atom for an entry that throws a message it
+ *  computes. When the message of a {@code T} is not a string literal, like
+ *  {@code T (string FF-FE)} or {@code T (x.as-string)}, phino writes it as
+ *  an object, and the entry is a taint now. But its atom could compute the
+ *  message first, and then throw it.
  * @todo #8548:30min Write an atom for an entry whose result is always the
  *  same. When the result of the body is known bytes, like an object that
  *  always returns {@code 42}, the entry is a taint now. But its atom could
@@ -82,16 +118,34 @@ final class Rendering implements Proc<Path> {
     private final Path atoms;
 
     /**
+     * The directory with the tables of {@code eo:inference}, which say what
+     * the body of an entry gives.
+     */
+    private final Path tables;
+
+    /**
      * Ctor.
      *
      * @param dir The directory where the Java atoms are written
+     * @param tbls The directory with the tables of {@code eo:inference}
      */
-    Rendering(final Path dir) {
+    Rendering(final Path dir, final Path tbls) {
         this.atoms = dir;
+        this.tables = tbls;
     }
 
     @Override
     public void exec(final Path home) throws IOException {
+        for (final String table : new ListOf<>("provides.xml", "links.xml", "atoms.xml")) {
+            if (!Files.exists(this.tables.resolve(table))) {
+                throw new IllegalStateException(
+                    String.format(
+                        "There is no '%s' in '%s', while rendering needs the tables of eo:inference to say what a body gives",
+                        table, this.tables
+                    )
+                );
+            }
+        }
         final Path entries = home.resolve("entries.tsv");
         if (!Files.exists(entries)) {
             throw new IllegalStateException(
@@ -108,8 +162,9 @@ final class Rendering implements Proc<Path> {
         final XSL sheet = new XSLDocument(
             Rendering.class.getResource("/org/eolang/lowering/rendering.xsl"),
             "/org/eolang/lowering/rendering.xsl"
-        ).with((href, base) -> new StreamSource(href))
-            .with("voids", home.resolve("voids.tsv").toUri().toString());
+        ).with(new Hrefs())
+            .with("voids", home.resolve("voids.tsv").toUri().toString())
+            .with("inference", this.tables.toUri().toString());
         final Collection<String> rendered = new ArrayList<>(0);
         final Map<String, Collection<String>> claims = new HashMap<>(0);
         int tainted = 0;

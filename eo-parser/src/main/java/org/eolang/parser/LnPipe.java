@@ -64,6 +64,10 @@ final class LnPipe implements Line {
     public void into(final Stack stack, final Globals globals, final Emit emit) {
         Blanks.checkPlain(this.span, globals, emit);
         this.precheck(stack);
+        this.rejectTest(
+            Eo.topLevelPlusPlusArrowIndex(this.span.body()) >= 0
+                || Eo.topLevelMinusMinusArrowIndex(this.span.body()) >= 0
+        );
         final Tokens tokens = this.piped();
         final List<Value> args = tokens.readArgs();
         Bindings.checkAllOrNothing(args, this.span);
@@ -71,12 +75,7 @@ final class LnPipe implements Line {
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
         suffix.rejectAtomOutsideFormation(this.span);
-        if (suffix.test()) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "a pipe application cannot declare a test attribute"
-            );
-        }
+        this.rejectTest(suffix.test());
         globals.seal(emit, this.span);
         final Openness openness;
         if (args.isEmpty()) {
@@ -102,6 +101,15 @@ final class LnPipe implements Line {
         }
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, this.span.line());
+        }
+    }
+
+    private void rejectTest(final boolean tested) {
+        if (tested) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "a pipe application cannot declare a test attribute"
+            );
         }
     }
 
