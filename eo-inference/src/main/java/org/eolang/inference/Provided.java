@@ -114,6 +114,24 @@ final class Provided {
     }
 
     /**
+     * The type of the attribute this type keeps under the given name itself,
+     * without going behind its {@code φ}.
+     *
+     * @param type The name the type goes by
+     * @param name The name of the attribute
+     * @return The type of the attribute, or an empty string when the name is
+     *  not this type's own
+     */
+    String here(final String type, final String name) {
+        String found = this.bound(type, name);
+        final String member = String.join(".", type, name);
+        if (found.isEmpty() && (this.table.containsKey(member) || this.blank(type))) {
+            found = member;
+        }
+        return found;
+    }
+
+    /**
      * The void this type keeps in the given place among the ones still empty.
      *
      * <p>The {@code ρ} a formation declares is not one of them. It is filled
@@ -257,12 +275,29 @@ final class Provided {
         return new Rooted(this.hollows).covers(type);
     }
 
-    private String kept(final String type, final String name, final Collection<String> walked) {
-        String found = this.bound(type, name);
-        final String member = String.join(".", type, name);
-        if (found.isEmpty() && (this.table.containsKey(member) || this.blank(type))) {
-            found = member;
+    /**
+     * The void this name is taken off, where only a caller can say what it
+     * holds.
+     *
+     * <p>A {@code ρ} is not one of them: whoever dispatches into its owner
+     * fills it, whether or not any call passes it, so the {@code ^} of the
+     * {@code made} of a {@code directory} is a directory on every run. Nor is
+     * a void that says what it holds, since that is true of every caller.</p>
+     *
+     * @param type The name the type goes by
+     * @return The locator of the void, empty when the name is taken off none
+     *  of them, off a {@code ρ}, or off a void that says what it holds
+     */
+    String rooted(final String type) {
+        String found = new Rooted(this.hollows).names(type);
+        if (found.endsWith(".ρ") || this.held.containsKey(found)) {
+            found = "";
         }
+        return found;
+    }
+
+    private String kept(final String type, final String name, final Collection<String> walked) {
+        String found = this.here(type, name);
         final String behind = this.behind(type);
         if (found.isEmpty() && !behind.isEmpty() && walked.add(type)) {
             found = this.kept(behind, name, walked);

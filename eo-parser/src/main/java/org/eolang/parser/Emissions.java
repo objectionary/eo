@@ -49,10 +49,12 @@ final class Emissions {
 
     /**
      * A valid void parameter name, other than the {@code @} and {@code ^}
-     * special forms — §4.5. Shared by every producer of a void parameter
-     * list ({@link LnFormation}, {@link LnOnlyPhi}, this class's own
-     * {@link #inlinePhi}), so a bracket list is validated the same way
-     * regardless of which line shape it appears on. The cactus emoji is
+     * special forms — §4.5. The same shape follows the {@code ^} of a
+     * receiver that carries a handle, {@code ^name} (R-3.4.13). Shared by
+     * every producer of a void parameter list ({@link LnFormation},
+     * {@link LnOnlyPhi}, this class's own {@link #inlinePhi}), so a bracket
+     * list is validated the same way regardless of which line shape it
+     * appears on. The cactus emoji is
      * excluded along with the ordinary NAME terminators, since §2.3 keeps
      * that glyph for auto-names.
      */
@@ -247,10 +249,11 @@ final class Emissions {
      * @param pos Source column of the parameter's first character
      */
     static void validParam(final String raw, final int line, final int pos) {
-        if (!"@".equals(raw) && !"^".equals(raw) && !Emissions.PARAM_NAME.matcher(raw).matches()) {
+        if (!"@".equals(raw) && !"^".equals(raw) && !Emissions.PARAM_NAME.matcher(raw).matches()
+            && !Emissions.PARAM_NAME.matcher(new VoidHandle(raw).asString()).matches()) {
             throw new ParseError(
                 line, pos,
-                "parameter names in voids must be NAME, @ or ^"
+                "parameter names in voids must be NAME, @, ^ or ^NAME"
             );
         }
         Suffix.checkGlyphs(raw, line, pos);
@@ -416,7 +419,7 @@ final class Emissions {
         final String str;
         if (Double.isFinite(num) && "-0.0".equals(Double.toString(num))) {
             str = "-0";
-        } else if (Double.isFinite(num) && Math.abs(num) < 0x1p63) {
+        } else if (Double.isFinite(num) && num >= -0x1p63 && num < 0x1p63) {
             str = Long.toString((long) num);
         } else {
             str = Double.toString(num);
@@ -539,7 +542,9 @@ final class Emissions {
         int pcol = column + bracket + 1;
         for (final String param : Emissions.splitParams(params, line, pcol)) {
             Emissions.validPhiParam(param, line, pcol);
-            emit.voidParam(new VoidName(param).asString(), line, pcol);
+            emit.voidParam(
+                new VoidName(param).asString(), new VoidHandle(param).asString(), line, pcol
+            );
             pcol = pcol + param.length() + 1;
         }
         final Tokens tokens = new Tokens(sub.body(), sub);

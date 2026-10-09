@@ -28,7 +28,7 @@ import java.util.stream.Stream;
  * refused, since a test must not fail over the shape of somebody's
  * classpath.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 final class MojoFields {
 

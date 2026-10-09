@@ -14,19 +14,22 @@
 # a double into halves narrow enough that their pairwise products round
 # nowhere: `turns` into `top` and `foot`, `tau` into `crown` and `stub`.
 # The four partials `high`, `mid`, `cross` and `low` then say what the single
-# rounded `product` dropped, and `slip` is that dropped part. The `reduced`
-# angle is the argument less `product`, less `slip`, less `turns times tail`.
+# rounded `product` dropped, and `slip` is that dropped part. The `angle` is
+# the argument less `product`, less `slip`, less `turns times tail`, taken
+# once and read back by the series as the `reduced` number.
 #
 # The attributes below stand in alphabetical order, which is not the order
 # they are computed in; the paragraph above is the order.
 #
 # Two doubles carry about 106 bits, so the reduction holds to a few ULP for
 # as long as `turns times two pi` needs no more than that, which is |num| up
-# to about `1e15`. Past it the reduced angle drifts out of [-pi, pi] and the
-# series is summed further from zero than it is meant to be. Holding the
-# whole range of a double would take Payne-Hanek reduction, with two-over-pi
-# written out to more bits than any product of doubles carries.
-# Non-finite arguments collapse to nan.
+# to `1e15`. Past it the reduced angle drifts out of [-pi, pi] and the series
+# is summed so far from zero that it answers outside [-1, 1], which is no
+# sine of anything: `1e300` came back as infinity. A finite angle above
+# `1e15` therefore terminates, rather than answering a number a sine cannot
+# be. Holding the whole range of a double would take Payne-Hanek reduction,
+# with two-over-pi written out to more bits than any product of doubles
+# carries. Non-finite arguments collapse to nan, as they did.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -35,8 +38,40 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^] > sine
-  reduced.times > @
+[^num] > sine
+  if. > @
+    arg.is-finite.and
+      arg.abs.gt 1000000000000000
+    T
+      "Can't take a sine of an angle above 1e15, the reduction cannot hold it"
+    summed
+  minus. > angle!
+    minus.
+      arg.minus product
+      slip
+    turns.times tail
+  number num.as-bytes > arg
+  spread.minus tau > away
+  foot.times crown > cross
+  spread.minus away > crown
+  turns.minus top > foot
+  134217729 > gap
+  top.times crown > high
+  foot.times stub > low
+  top.times stub > mid
+  turns.times tau > product
+  number angle > reduced
+  wide.minus turns > shed
+  plus. > slip
+    plus.
+      plus.
+        high.minus product
+        mid
+      cross
+    low
+  tau.times gap > spread
+  tau.minus crown > stub
+  reduced.times > summed
     if. > [^ depth] >> factor
       depth.gt 15
       1
@@ -52,31 +87,6 @@
           ^.factor
             depth.plus 1
     | 1
-  number ^.as-bytes > arg
-  spread.minus tau > away
-  foot.times crown > cross
-  spread.minus away > crown
-  turns.minus top > foot
-  134217729 > gap
-  top.times crown > high
-  foot.times stub > low
-  top.times stub > mid
-  turns.times tau > product
-  minus. > reduced
-    minus.
-      arg.minus product
-      slip
-    turns.times tail
-  wide.minus turns > shed
-  plus. > slip
-    plus.
-      plus.
-        high.minus product
-        mid
-      cross
-    low
-  tau.times gap > spread
-  tau.minus crown > stub
   2.4492935982947064e-16 > tail
   pi.times 2 > tau
   wide.minus shed > top
@@ -129,6 +139,11 @@
   lt. ++> can-take-a-sine-of-a-quadrillion
     abs.
       1000000000000000.sine.minus 0.8582727931702359
+    1.0e-14
+
+  lt. ++> can-take-a-sine-of-minus-a-quadrillion
+    abs.
+      -1000000000000000.sine.plus 0.8582727931702359
     1.0e-14
 
   lt. ++> can-take-a-sine-of-minus-pi-halves
@@ -191,3 +206,5 @@
     1
 
   0.sine.eq 0 ++> can-take-a-sine-of-zero
+
+  1.0e300.sine --> stops-on-a-sine-of-an-angle-the-reduction-cannot-hold

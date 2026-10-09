@@ -1,0 +1,45 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+ * SPDX-License-Identifier: MIT
+ */
+package org.eolang;
+
+import com.sun.jna.Pointer;
+import org.eolang.sys.Sockaddr;
+import org.eolang.sys.win32.Winsock;
+
+/**
+ * Reaches the address a socket is pointed at, as Winsock `connect` does.
+ *
+ * @since 0.77.0
+ * @checkstyle IllegalIdentifierNameCheck (6 lines)
+ * @checkstyle TypeNameCheck (5 lines)
+ */
+@XmirObject(oname = "win32.connect")
+@SuppressWarnings("PMD.AvoidDollarSigns")
+public final class EOwin32$EOconnect extends PhDefault implements Atom {
+
+    /**
+     * Ctor.
+     */
+    public EOwin32$EOconnect() {
+        super(
+            new Attrs(
+                new Attr("descriptor", new AtVoid("descriptor")),
+                new Attr("sockaddr", new AtVoid("sockaddr")),
+                new Attr("length", new AtVoid("length"))
+            )
+        );
+    }
+
+    @Override
+    public Phi lambda() {
+        return new Data.ToPhi(
+            Winsock.INSTANCE.connect(
+                new Pointer(new Dataized(this.take("descriptor")).asNumber().longValue()),
+                new Sockaddr(this.take("sockaddr")).it(),
+                new Int(Expect.at(this, "length")).it()
+            )
+        );
+    }
+}

@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
+import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -53,6 +54,42 @@ final class TranspilationTest {
     }
 
     @Test
+    void tellsDeadlinesApartInTheCacheKey() {
+        MatcherAssert.assertThat(
+            "a build whose tests run under one deadline took the result of one whose tests run under another",
+            this.transpilation(3L, "1G").version(),
+            Matchers.not(Matchers.equalTo(this.transpilation(11L, "1G").version()))
+        );
+    }
+
+    @Test
+    void tellsMemoryBudgetsApartInTheCacheKey() {
+        MatcherAssert.assertThat(
+            "a build whose tests run under one memory budget took the result of one whose tests run under another",
+            this.transpilation(1L, "257M").version(),
+            Matchers.not(Matchers.equalTo(this.transpilation(1L, "3G").version()))
+        );
+    }
+
+    @Test
+    void passesGivenDeadlineToGeneratedTimeout(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "The given deadline didnt reach the timeout of a generated test",
+            TranspilationTest.tested(this.transpilation(13L, "1G", temp)),
+            Matchers.containsString("@Timeout(value = 13, unit = TimeUnit.SECONDS)")
+        );
+    }
+
+    @Test
+    void passesGivenMemoryToGeneratedBudget(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "The given memory budget didnt reach the budget of a generated test",
+            TranspilationTest.tested(this.transpilation(1L, "389M", temp)),
+            Matchers.containsString("@Budget(\"389M\")")
+        );
+    }
+
+    @Test
     void foldsInImportedXslLibrariesIntoVersion() {
         MatcherAssert.assertThat(
             "the cache-key version must differ from a fingerprint of the top-level XSLS alone, proving the xsl:import-ed libraries are actually folded in",
@@ -70,6 +107,8 @@ final class TranspilationTest {
                 new Tracking(false, false),
                 false,
                 "PhDefault",
+                1L,
+                "1G",
                 Paths.get("xsl-measures.csv"),
                 Paths.get("target"),
                 Paths.get("target/eo/6-inference")
@@ -83,9 +122,53 @@ final class TranspilationTest {
             tracking,
             false,
             "PhDefault",
+            1L,
+            "1G",
             Paths.get("xsl-measures.csv"),
             Paths.get("target"),
             Paths.get("target/eo/6-inference")
+        );
+    }
+
+    private Transpilation transpilation(final long deadline, final String memory) {
+        return new Transpilation(
+            new Tracking(false, false),
+            false,
+            "PhDefault",
+            deadline,
+            memory,
+            Paths.get("xsl-measures.csv"),
+            Paths.get("target"),
+            Paths.get("target/eo/6-inference")
+        );
+    }
+
+    private Transpilation transpilation(
+        final long deadline, final String memory, final Path temp
+    ) {
+        return new Transpilation(
+            new Tracking(false, false),
+            false,
+            "PhDefault",
+            deadline,
+            memory,
+            temp.resolve("xsl-measures.csv"),
+            temp.resolve("target"),
+            temp.resolve("inference")
+        );
+    }
+
+    private static String tested(final Transpilation train) throws IOException {
+        return String.join(
+            "",
+            train.forSource("foo").apply(
+                new EoSyntax(
+                    String.join(
+                        System.lineSeparator(),
+                        "[] > foo", "  [] +> works", "    true > @", ""
+                    )
+                ).parsed()
+            ).xpath("//tests/text()")
         );
     }
 
@@ -94,6 +177,8 @@ final class TranspilationTest {
             new Tracking(false, false),
             false,
             "PhDefault",
+            1L,
+            "1G",
             Paths.get("xsl-measures.csv"),
             Paths.get("target"),
             tables

@@ -54,13 +54,22 @@ import java.util.Map;
  * it up leaves hundreds of names rooted at a void again while settling almost
  * nothing (#8571).</p>
  *
+ * <p>No stranger is asked about a call that takes the void itself, though,
+ * such as the {@code if} of a boolean. Its arguments are the only ones that
+ * went into the formations the void holds on its behalf, and the calls up the
+ * chain of its receiver are the ones that made the receiver: the {@code or}
+ * that a {@code tuple.at} chooses with makes its own choice of two booleans,
+ * and asking it made every {@code at} a boolean. The guess is kept for a name
+ * read off what the void holds, which is where the call that filled it is
+ * further up the chain (#8552).</p>
+ *
  * <p>A walk that dies answers nothing at all, rather than handing back the
  * name it was asked about. The two are not the same question: a void nobody
  * fills is the answer, while a void this call fills with something the passes
  * have not settled yet is an answer nobody has worked out. Writing the second
  * one down as if it were the first froze it, since {@link Dispatched} asks
  * again only about a name rooted at a void and takes one rooted answer for
- * another only when the second stands under the first. The {@code if} of a
+ * another only when the second is made of fewer steps. The {@code if} of a
  * {@code recovered} is a {@code Φ.bool.if}, which is rooted at a void as well,
  * so the site kept the name of a void the line above it fills (#8351).</p>
  *
@@ -73,17 +82,6 @@ import java.util.Map;
  * well.</p>
  *
  * @since 0.69.0
- * @todo #8744:90min Answer a read of a choice with a choice of the reads.
- *  A call is settled to its arms here only where it is on the void itself. Of
- *  the 885 rows eo-runtime leaves rooted at {@code Φ.bool.if}, 211 name their
- *  arms now; of the 674 left, 141 ask {@code eq} of such a call, 62 ask
- *  {@code if.eq} and 32 ask {@code if.plus}. Those are reads on top of a
- *  choice, and {@link Arrived} asks every arm for the whole of what is left
- *  over at once, so one arm without the attribute ends the lot. What such a
- *  read comes back with is the arms underneath it asked one by one, which
- *  wants the choice in hand where the read is answered, and a pass hands its
- *  answers round as locators. So it waits on the links side speaking in
- *  {@link Type} rather than in a name.
  */
 final class Filled {
 
@@ -169,7 +167,7 @@ final class Filled {
         Collection<String> found = Collections.emptyList();
         if (!root.isEmpty()) {
             found = new Arrived(this.owned).names(
-                this.chosen(root, bearer, site),
+                this.chosen(root, answer, bearer, site),
                 answer.substring(Math.min(root.length() + 1, answer.length()))
             );
         }
@@ -213,7 +211,7 @@ final class Filled {
         final String root = new Rooted(this.hollows).names(answer);
         String found = answer;
         if (!root.isEmpty()) {
-            final String handed = this.handed(root, fillings, bearer, site);
+            final String handed = this.handed(root, answer, fillings, bearer, site);
             if (!handed.isEmpty() && seen.add(handed)) {
                 found = this.through(answer, root, handed, site, seen);
             }
@@ -222,55 +220,60 @@ final class Filled {
     }
 
     private String handed(
-        final String root, final Map<String, String> fillings, final String bearer,
-        final String site
+        final String root, final String answer, final Map<String, String> fillings,
+        final String bearer, final String site
     ) {
         String found = "";
-        for (final String call : this.calls(bearer, site)) {
+        for (final String call : this.calls(root, answer, bearer, site)) {
             final Map<String, String> arms = this.puts.armed(this.arms(call), root);
             if (!arms.isEmpty()) {
-                found = new Branched(this.owned, arms, this.hollows).names();
+                found = new Branched(this.owned, arms, this.puts).names();
                 if (!found.isEmpty()) {
                     break;
                 }
             }
         }
-        if (found.isEmpty()) {
+        if (found.isEmpty() && !root.equals(answer)) {
             found = new Branched(
-                this.owned, this.puts.armed(fillings, root), this.hollows
+                this.owned, this.puts.armed(fillings, root), this.puts
             ).names();
         }
         return found;
     }
 
     private Collection<String> chosen(
-        final String root, final String bearer, final String site
+        final String root, final String answer, final String bearer, final String site
     ) {
         Collection<String> found = Collections.emptyList();
-        for (final String call : this.calls(bearer, site)) {
+        for (final String call : this.calls(root, answer, bearer, site)) {
             final Map<String, String> arms = this.puts.armed(this.arms(call), root);
             if (!arms.isEmpty()) {
                 final Collection<String> given =
-                    new Branched(this.owned, arms, this.hollows).arms();
+                    new Branched(this.owned, arms, this.puts).arms();
                 if (given.size() > 1) {
                     found = given;
                     break;
                 }
             }
         }
-        if (found.isEmpty()) {
+        if (found.isEmpty() && !root.equals(answer)) {
             found = new Branched(
-                this.owned, this.puts.armed(this.fillings(bearer), root), this.hollows
+                this.owned, this.puts.armed(this.fillings(bearer), root), this.puts
             ).arms();
         }
         return found;
     }
 
-    private Collection<String> calls(final String bearer, final String site) {
+    private Collection<String> calls(
+        final String root, final String answer, final String bearer, final String site
+    ) {
         final Collection<String> found = new LinkedHashSet<>(0);
         found.add(site);
         final Collection<String> seen = new HashSet<>(0);
         String walked = bearer;
+        if (root.equals(answer)) {
+            walked = "";
+        }
         while (!walked.isEmpty() && seen.add(walked)) {
             found.add(walked);
             if (this.pairs.containsKey(walked)) {

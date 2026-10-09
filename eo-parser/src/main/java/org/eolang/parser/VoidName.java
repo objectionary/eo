@@ -11,12 +11,14 @@ import org.cactoos.Text;
  *
  * <p>A parameter written as {@code @} declares the formation's decoratee
  * and is emitted as {@code φ}; one written as {@code ^} declares its
- * receiver and is emitted as {@code ρ} (R-3.4.2 / R-3.4.11 / R-9.3).
- * Every other token names itself. The §9.3 table is the single source of
+ * receiver and is emitted as {@code ρ} (R-3.4.2 / R-3.4.11 / R-9.3), and
+ * so is one written as {@code ^name}, which gives the receiver a readable
+ * handle as well (R-3.4.13, see {@link VoidHandle}). Every other token names
+ * itself. The §9.3 table is the single source of
  * truth for these promotions, so every parameter loop that emits a void
  * asks this object rather than deciding for itself.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 final class VoidName implements Text {
 
@@ -39,7 +41,7 @@ final class VoidName implements Text {
         final String mapped;
         if ("@".equals(this.raw)) {
             mapped = "φ";
-        } else if ("^".equals(this.raw)) {
+        } else if (this.raw.startsWith("^")) {
             mapped = "ρ";
         } else {
             mapped = this.raw;

@@ -7,9 +7,19 @@ name: codenarc
   push:
     branches:
       - master
+    paths:
+      - '**.groovy'
+      - '.github/workflows/codenarc.yml'
+      - '.codenarc'
   pull_request:
     branches:
       - master
+    paths:
+      - '**.groovy'
+      - '.github/workflows/codenarc.yml'
+      - '.codenarc'
+permissions:
+  contents: read
 concurrency:
   group: codenarc-${{ github.ref }}
   cancel-in-progress: true

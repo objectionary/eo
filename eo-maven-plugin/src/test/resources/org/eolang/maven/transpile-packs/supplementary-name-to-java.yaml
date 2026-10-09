@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #9047: the escape wrote four hex digits, so everything above the sixteenth
+# bit of a code point was dropped and U+1F600 and U+F600 both read as
+# `$uF600`.
+sheets:
+  - /org/eolang/parser/parse/set-locators.xsl
+  - /org/eolang/maven/transpile/set-original-names.xsl
+  - /org/eolang/maven/transpile/classes.xsl
+  - /org/eolang/maven/transpile/attrs.xsl
+  - /org/eolang/maven/transpile/data.xsl
+  - /org/eolang/maven/transpile/to-java.xsl
+asserts:
+  - /object[not(errors)]
+  - //java[contains(text(), 'public final class EOa$u01F600b extends PhDefault')]
+input: |
+  [] > a😀b
+    42 > @

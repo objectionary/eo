@@ -7,6 +7,7 @@ package org.eolang.inference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -38,6 +39,21 @@ import java.util.Map;
  * itself dispatches as well, off the object it is written inside, and
  * {@link Taken} answers for both.</p>
  *
+ * <p>A name written by itself fills the receiver of the attribute it points
+ * at, and of nothing further down the chain of copies that attribute starts.
+ * {@code deleted}, inside a test that says {@code temp.deleted > deleted}, is
+ * the {@code deleted} of that test, which declares no receiver; the
+ * {@code deleted} of a file at the end of the chain got its receiver from
+ * {@code temp} already, and filling it with the test as well told every
+ * reader of that void that a file can hang off a test. The census of such a
+ * void then joined its members into nothing (#8953).</p>
+ *
+ * <p>A name written after a dot goes down that chain only as far as the
+ * first copy whose receiver is still empty, which {@link Stamped} finds: the
+ * {@code os} of {@code os.is-windows} fills nothing, since the
+ * {@code name.contains} it reaches took its receiver where it was written
+ * (#8955).</p>
+ *
  * <p>An application whose base is a void declares no place at all, and its
  * arguments would go nowhere: {@code cant-read "foo"}, written inside the
  * {@code [^ cant-read] > as-ascii} that takes it, is a copy of something
@@ -49,6 +65,30 @@ import java.util.Map;
  * are passed on to every formation it holds. A void may itself be a copy of
  * another one, and filling the second fills the first, so the formations are
  * gathered along the whole chain of copies rather than off its end alone.</p>
+ *
+ * <p>A read off a choice copies nothing one can name, since its pair is rooted
+ * at a void, and yet the formations it copies are known: they are the arms.
+ * {@code n.wide.div m}, where {@code wide} comes back as a {@code big} or as
+ * whatever its {@code fail} holds, is the {@code div} of that {@code big} in
+ * the first arm, and the {@code m} goes into its {@code b}. It used to go
+ * nowhere, since nothing in the program puts anything into the {@code div} of
+ * a void, and the {@code b} of every {@code u64.div} read as a void nobody
+ * fills (#8883). So the arms {@link Copied} finds are more formations such a
+ * call holds, and its arguments are relayed into them.</p>
+ *
+ * <p>What an application is a copy of is read off the attribute it takes, and
+ * not off its pair, wherever that attribute is a void. The two say different
+ * things there: the pair says what the call comes back as, and once
+ * {@link Branched} has had its say that is one of the arguments the call was
+ * given, while the arguments themselves still go into whatever the void holds.
+ * The {@code ^.if} of an {@code and} comes back as a {@code Φ.bool}, and
+ * reading that as what the call copies put the first argument of the choice
+ * into the {@code if} of every boolean of the program; the {@code if} of a
+ * {@code tuple.front} comes back as a {@code Φ.tuple.back}, and its receiver
+ * went into the {@code ρ} of that {@code back} and its first argument into
+ * the {@code index}. So the question of what a call copies is asked of the
+ * attribute again, and only the question of what it comes back as is left to
+ * the pair (#8552).</p>
  *
  * <p>It is evidence and not a contract, as everything gathered from callers
  * is: the caller written tomorrow may put a formation of another shape there.
@@ -76,6 +116,11 @@ final class Bound {
     private final Map<String, String> receivers;
 
     /**
+     * Every dispatch and read of the program.
+     */
+    private final Collection<Site> sites;
+
+    /**
      * The pairs, each name against the one it is a copy of.
      */
     private final Map<String, String> pairs;
@@ -86,11 +131,17 @@ final class Bound {
     private final Provided owned;
 
     /**
+     * The arms every read off a choice is a copy of, from {@link Copied}.
+     */
+    private final Map<String, Collection<String>> arms;
+
+    /**
      * Ctor.
      *
      * @param arguments The arguments of every application, from {@link Given}
      * @param bindings The arguments of every application bound by name
      * @param taken What every dispatch takes its attribute from
+     * @param dispatches Every dispatch and read of the program
      * @param links The pairs, each name against the one it is a copy of
      * @param provided What the types certainly have
      */
@@ -98,14 +149,40 @@ final class Bound {
         final Map<String, List<String>> arguments,
         final Map<String, Map<String, String>> bindings,
         final Map<String, String> taken,
+        final Collection<Site> dispatches,
         final Map<String, String> links,
         final Provided provided
+    ) {
+        this(arguments, bindings, taken, dispatches, links, provided, Collections.emptyMap());
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param arguments The arguments of every application, from {@link Given}
+     * @param bindings The arguments of every application bound by name
+     * @param taken What every dispatch takes its attribute from
+     * @param dispatches Every dispatch and read of the program
+     * @param links The pairs, each name against the one it is a copy of
+     * @param provided What the types certainly have
+     * @param copied The arms every read off a choice is a copy of
+     */
+    Bound(
+        final Map<String, List<String>> arguments,
+        final Map<String, Map<String, String>> bindings,
+        final Map<String, String> taken,
+        final Collection<Site> dispatches,
+        final Map<String, String> links,
+        final Provided provided,
+        final Map<String, Collection<String>> copied
     ) {
         this.args = arguments;
         this.named = bindings;
         this.receivers = taken;
+        this.sites = dispatches;
         this.pairs = links;
         this.owned = provided;
+        this.arms = copied;
     }
 
     /**
@@ -116,21 +193,74 @@ final class Bound {
      *  nothing we can name
      */
     Map<String, Map<String, String>> all() {
+        return this.worked(new HashMap<>(0));
+    }
+
+    /**
+     * The voids every application fills only by way of what a void was seen
+     * to hold.
+     *
+     * <p>An argument handed to a call on a void goes into the formations the
+     * program puts there, and which formations those are is evidence gathered
+     * from the callers rather than a contract: the caller written tomorrow,
+     * or one compiled apart, may put a formation of another shape there. A
+     * bind that only this relay put there is named here, so that the row can
+     * say it is witnessed and a reader in need of a contract can leave it
+     * out (#8914).</p>
+     *
+     * @return The voids, by the locator of the application, without the
+     *  applications that fill nothing by way of a relay
+     */
+    Map<String, Collection<String>> relays() {
+        final Map<String, Collection<String>> found = new HashMap<>(0);
+        this.worked(found);
+        return found;
+    }
+
+    private Map<String, Map<String, String>> worked(
+        final Map<String, Collection<String>> relays
+    ) {
+        final Map<String, String> landed = this.landed();
         final Map<String, Map<String, String>> found = new LinkedHashMap<>(0);
         for (final String application : this.args.keySet()) {
-            final Map<String, String> filled = this.filled(application, this.taken(application));
+            final Map<String, String> filled = this.filled(
+                application, this.taken(application, landed), landed
+            );
             if (!filled.isEmpty()) {
                 found.put(application, filled);
             }
         }
         for (final Map.Entry<String, String> dispatch : this.receivers.entrySet()) {
-            final String hollow = this.owned.receiver(this.base(dispatch.getKey()));
+            final String hollow = this.owned.receiver(this.hung(dispatch, landed));
             if (!hollow.isEmpty()) {
                 found.computeIfAbsent(dispatch.getKey(), key -> new LinkedHashMap<>(1))
                     .put(hollow, dispatch.getValue());
             }
         }
-        this.relayed(found);
+        this.relayed(found, landed, relays);
+        return found;
+    }
+
+    // A call that takes a void is a copy of that void, whatever its pair has
+    // since been refined to. The attribute is looked up again rather than read
+    // off the pair, because the pair is where the refinement is written.
+    private Map<String, String> landed() {
+        final Map<String, String> names = new Ends(this.pairs).names();
+        final Map<String, String> found = new HashMap<>(0);
+        for (final Site dispatch : this.sites) {
+            String bearer = dispatch.bearer();
+            if (bearer.isEmpty()) {
+                bearer = this.receivers.getOrDefault(dispatch.made(), "");
+            }
+            if (!bearer.isEmpty()) {
+                final String attribute = this.owned.attribute(
+                    names.getOrDefault(bearer, bearer), dispatch.name()
+                );
+                if (!attribute.equals(dispatch.made()) && this.owned.hollow(attribute)) {
+                    found.put(dispatch.made(), attribute);
+                }
+            }
+        }
         return found;
     }
 
@@ -139,39 +269,52 @@ final class Bound {
         for (final Map<String, String> filled : found.values()) {
             for (final Map.Entry<String, String> fill : filled.entrySet()) {
                 fillers.computeIfAbsent(fill.getKey(), key -> new LinkedHashSet<>(0))
-                    .add(this.base(fill.getValue()));
+                    .add(new Ends(this.pairs).name(fill.getValue()));
             }
         }
         return fillers;
     }
 
-    private void relayed(final Map<String, Map<String, String>> found) {
+    private void relayed(
+        final Map<String, Map<String, String>> found, final Map<String, String> landed,
+        final Map<String, Collection<String>> relays
+    ) {
         final Map<String, Collection<String>> fillers = this.puts(found);
+        fillers.putAll(this.arms);
         for (final Map.Entry<String, List<String>> application : this.args.entrySet()) {
-            for (final String filler : this.held(fillers, application.getKey())) {
+            for (final String filler : this.held(fillers, application.getKey(), landed)) {
                 final Map<String, String> passed = this.passed(filler, application.getValue());
                 if (!passed.isEmpty()) {
-                    found.computeIfAbsent(application.getKey(), key -> new LinkedHashMap<>(1))
-                        .putAll(passed);
+                    final Map<String, String> filled = found.computeIfAbsent(
+                        application.getKey(), key -> new LinkedHashMap<>(1)
+                    );
+                    passed.keySet().stream()
+                        .filter(hollow -> !filled.containsKey(hollow)).forEach(
+                            hollow -> relays.computeIfAbsent(
+                                application.getKey(), key -> new HashSet<>(1)
+                            ).add(hollow)
+                        );
+                    filled.putAll(passed);
                 }
             }
         }
     }
 
     private Collection<String> held(
-        final Map<String, Collection<String>> fillers, final String application
+        final Map<String, Collection<String>> fillers, final String application,
+        final Map<String, String> landed
     ) {
         final Collection<String> found = new LinkedHashSet<>(0);
-        for (final String step : this.copies(application)) {
+        for (final String step : this.copies(application, landed)) {
             found.addAll(fillers.getOrDefault(step, Collections.emptyList()));
         }
         return found;
     }
 
-    private Collection<String> copies(final String name) {
+    private Collection<String> copies(final String name, final Map<String, String> landed) {
         final Collection<String> found = new LinkedHashSet<>(0);
         found.add(name);
-        found.addAll(this.chain(name));
+        found.addAll(this.chain(name, landed));
         return found;
     }
 
@@ -180,13 +323,15 @@ final class Bound {
     // already. The name it started from is not part of the answer: an
     // application is not a copy of itself, and counting it as one would mark
     // the voids it is about to fill as filled by somebody else.
-    private List<String> chain(final String name) {
+    // A call that takes a void starts its walk at that void and not at its
+    // pair, since the pair of such a call says what it comes back as.
+    private List<String> chain(final String name, final Map<String, String> landed) {
         final List<String> found = new ArrayList<>(0);
         final Collection<String> seen = new HashSet<>(0);
         seen.add(name);
         String walked = name;
-        while (this.pairs.containsKey(walked)) {
-            walked = this.pairs.get(walked);
+        while (landed.containsKey(walked) || this.pairs.containsKey(walked)) {
+            walked = landed.getOrDefault(walked, this.pairs.get(walked));
             if (!seen.add(walked)) {
                 break;
             }
@@ -206,18 +351,22 @@ final class Bound {
         return found;
     }
 
-    private Map<String, String> filled(final String application, final Collection<String> before) {
+    private Map<String, String> filled(
+        final String application, final Collection<String> before,
+        final Map<String, String> landed
+    ) {
         final Map<String, String> found = new LinkedHashMap<>(0);
+        final String base = this.base(application, landed);
         final List<String> given = this.args.getOrDefault(application, Collections.emptyList());
         for (int place = 0; place < given.size(); place += 1) {
-            final String hollow = this.owned.vacant(this.base(application), before, place);
+            final String hollow = this.owned.vacant(base, before, place);
             if (!hollow.isEmpty() && !given.get(place).isEmpty()) {
                 found.put(hollow, given.get(place));
             }
         }
         for (final Map.Entry<String, String> bind
             : this.named.getOrDefault(application, Collections.emptyMap()).entrySet()) {
-            final String hollow = this.owned.named(this.base(application), bind.getKey());
+            final String hollow = this.owned.named(base, bind.getKey());
             if (!hollow.isEmpty()) {
                 found.put(hollow, bind.getValue());
             }
@@ -225,17 +374,50 @@ final class Bound {
         return found;
     }
 
-    private Collection<String> taken(final String application) {
-        final List<String> chain = this.chain(application);
+    private Collection<String> taken(
+        final String application, final Map<String, String> landed
+    ) {
+        final List<String> chain = this.chain(application, landed);
         Collections.reverse(chain);
         final Collection<String> found = new HashSet<>(0);
         for (final String step : chain) {
-            found.addAll(this.filled(step, found).keySet());
+            found.addAll(this.filled(step, found, landed).keySet());
         }
         return found;
     }
 
-    private String base(final String name) {
-        return new Ends(this.pairs).name(name);
+    // The parser writes the receiver of a name written after a dot beside it,
+    // at the locator of the dispatch with ρ on the end, so a receiver found
+    // anywhere else is one Taken found for a name written by itself. Such a
+    // name reads the attribute it points at, and that attribute is asked for
+    // its receiver rather than the end of its chain of copies.
+    private String hung(
+        final Map.Entry<String, String> dispatch, final Map<String, String> landed
+    ) {
+        final String found;
+        if (landed.containsKey(dispatch.getKey())) {
+            found = landed.get(dispatch.getKey());
+        } else if (dispatch.getValue().equals(dispatch.getKey().concat(".ρ"))) {
+            found = new Stamped(this.pairs, this.receivers, this.owned)
+                .names(dispatch.getKey());
+        } else {
+            found = this.pairs.getOrDefault(dispatch.getKey(), "");
+        }
+        return found;
+    }
+
+    // A call that takes a void is a copy of the void itself, and a void
+    // declares no place of its own. Its pair is not asked, since that pair is
+    // what the void turns out to be once filled, and the arguments go into the
+    // formations that fill it, by way of the relay, and not into the voids of
+    // what those formations have in common.
+    private String base(final String name, final Map<String, String> landed) {
+        final String found;
+        if (landed.containsKey(name)) {
+            found = landed.get(name);
+        } else {
+            found = new Ends(this.pairs).name(name);
+        }
+        return found;
     }
 }

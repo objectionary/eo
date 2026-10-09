@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import org.cactoos.Scalar;
 import org.cactoos.io.ResourceOf;
+import org.eolang.cache.Saved;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;

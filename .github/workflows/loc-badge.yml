@@ -7,6 +7,9 @@ name: loc-badge
   push:
     branches:
       - master
+permissions:
+  contents: write
+  pull-requests: write
 concurrency:
   group: loc-badge-${{ github.ref }}
   cancel-in-progress: true
