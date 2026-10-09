@@ -22,6 +22,7 @@ import org.eolang.inference.Clues;
 import org.eolang.inference.Demanded;
 import org.eolang.inference.Depth;
 import org.eolang.inference.Ladder;
+import org.eolang.inference.Named;
 import org.eolang.inference.Reduced;
 import org.eolang.inference.Resolved;
 import org.eolang.inference.Witnessed;
@@ -111,15 +112,10 @@ final class Inferring implements Step {
                     )
                 );
             }
-            final int ready = this.ready();
-            final long start = System.currentTimeMillis();
-            new Witnessed(new Demanded(new Reduced(new Resolved(new Clues()))))
+            this.ready();
+            new Named(new Witnessed(new Demanded(new Reduced(new Resolved(new Clues())))))
                 .follow(this.prepared, this.tables);
             this.declared();
-            Logger.info(
-                this, "Inferred the types of %d XMIR(s) in %[ms]s",
-                ready, System.currentTimeMillis() - start
-            );
             Logger.info(
                 this, "Inference tables are in %[file]s (%s)",
                 this.tables, new Tabled(this.tables).asString()
@@ -173,7 +169,7 @@ final class Inferring implements Step {
         );
     }
 
-    private int ready() throws IOException {
+    private void ready() throws IOException {
         final Xsline train = new Xsline(
             new TrFull(
                 new TrDefault<>(
@@ -182,7 +178,6 @@ final class Inferring implements Step {
                 )
             )
         );
-        int done = 0;
         for (final Path source : this.sources()) {
             final Path target = this.prepared.resolve(this.input.relativize(source));
             Files.createDirectories(target.getParent());
@@ -190,9 +185,7 @@ final class Inferring implements Step {
                 target,
                 train.pass(new XMLDocument(source)).toString().getBytes(StandardCharsets.UTF_8)
             );
-            done = done + 1;
         }
-        return done;
     }
 
     private Collection<Path> sources() throws IOException {

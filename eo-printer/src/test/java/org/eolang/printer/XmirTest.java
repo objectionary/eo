@@ -106,6 +106,38 @@ final class XmirTest {
     }
 
     @Test
+    void printsPhiArgumentsWithoutAnInvalidAtSuffix() {
+        MatcherAssert.assertThat(
+            "The printer must not add an '@' suffix to φ arguments",
+            new Xmir(
+                new XMLDocument(
+                    "<object><o base='Φ.foo' name='x'><o base='Φ.bar' as='φ'/></o></object>"
+                )
+            ).toEO(),
+            Matchers.not(Matchers.containsString("bar:@"))
+        );
+    }
+
+    @Test
+    void parsesPrintedPhiArgumentsWithoutErrors() throws IOException {
+        MatcherAssert.assertThat(
+            "A φ-bound argument must be emitted as a positional argument, not '@'",
+            new EoSyntax(
+                String.format(
+                    "%s%n",
+                    new Xmir(
+                        new XMLDocument(
+                            "<object><o base='Φ.foo' name='x'><o base='Φ.bar' as='φ'/></o></object>"
+                        )
+                    ).toEO()
+                ),
+                new TrDefault<>()
+            ).parsed(),
+            Matchers.not(XhtmlMatchers.hasXPath("//errors/error"))
+        );
+    }
+
+    @Test
     void keepsArgumentsOfAnIdentityShapedFormation() {
         MatcherAssert.assertThat(
             "a formation that decorates its own void but also carries arguments cannot fold into the I glyph, which leaves nowhere for those arguments to go",
@@ -150,7 +182,7 @@ final class XmirTest {
             "The hosted template must not repeat the full first-host lookup",
             this.mergeMonikers(),
             XhtmlMatchers.hasXPaths(
-                "/*[local-name()='stylesheet' and @version='2.0']",
+                "/*[local-name()='stylesheet' and @version='3.0']",
                 "/*/*[local-name()='function' and @name='eo:moniker-refs' and not(@cache)]",
                 "/*/*[local-name()='function' and @name='eo:hosted-binding' and not(@cache)]",
                 "/*/*[local-name()='template' and @priority='1']/*[local-name()='variable' and @name='owner' and @select='ancestor::o[eo:abstract(.)][1]']",

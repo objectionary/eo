@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.eolang.cache.Saved;
 import org.eolang.parser.EoSyntax;
 
 /**

@@ -18,7 +18,7 @@ package org.eolang;
  * a {@code seq} step, a const, or anything else that dataizes while the normal
  * form is computed. Both are the same termination, so both are intercepted.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 @XmirObject(oname = "recovered")
 public final class EOrecovered extends PhDefault implements Atom {

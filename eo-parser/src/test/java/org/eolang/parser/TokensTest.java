@@ -250,6 +250,24 @@ final class TokensTest {
     }
 
     @Test
+    void readsFloatWhoseIntegerPartLeadsWithZero() {
+        MatcherAssert.assertThat(
+            "R-9.8.2 asks nothing of the integer part of a FLOAT, so `00.5` must read whole",
+            new Tokens("00.5", new Span("00.5", 1)).readNumber().raw(),
+            Matchers.equalTo("00.5")
+        );
+    }
+
+    @Test
+    void readsSignedFloatWhoseIntegerPartLeadsWithZeros() {
+        MatcherAssert.assertThat(
+            "a sign and an exponent cannot turn a leading zero into an INT error, but they did",
+            new Tokens("-007.25e2", new Span("-007.25e2", 1)).readNumber().raw(),
+            Matchers.equalTo("-007.25e2")
+        );
+    }
+
+    @Test
     void leavesIntegerWhenDotFollowedByName() {
         MatcherAssert.assertThat(
             "`42.as-bytes` must read as INT followed by a chain, not as a FLOAT",
@@ -483,6 +501,24 @@ final class TokensTest {
             ParseError.class,
             () -> new Tokens("0x", new Span("0x", 1)).readHex(),
             "a `0x` with no following hex digits must be rejected"
+        );
+    }
+
+    @Test
+    void rejectsHexWithFullwidthLetters() {
+        Assertions.assertThrows(
+            ParseError.class,
+            new Tokens("0xＦＦ", new Span("0xＦＦ", 1))::readHex,
+            "a HEX literal spelled with fullwidth letters must be rejected"
+        );
+    }
+
+    @Test
+    void rejectsHexWithFullwidthDigits() {
+        Assertions.assertThrows(
+            ParseError.class,
+            new Tokens("0x１２", new Span("0x１２", 1))::readHex,
+            "a HEX literal spelled with fullwidth digits must be rejected"
         );
     }
 

@@ -118,7 +118,7 @@ final class LnApplication implements Line {
             final int start = tokens.cursor();
             tokens.seek(start + 1);
             label = tokens.readBinding();
-            if (!tokens.atEnd() && tokens.current() == '.') {
+            if (!tokens.atEnd() && tokens.dispatchAhead()) {
                 throw new ParseError(
                     span.line(), span.indent() + start,
                     "inline binding allowed only on the last method in a chain"

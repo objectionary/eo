@@ -11,10 +11,10 @@ import java.util.List;
 /**
  * The 64-bit-inode {@code struct stat} of macOS on arm64.
  *
- * @since 0.74.0
+ * @since 0.64.0
  * @checkstyle VisibilityModifierCheck (60 lines)
  */
-public final class MacFileStat extends Structure implements StatSyscall.FileStat {
+public final class MacFileStat extends Structure implements Stat.FileStat {
 
     /**
      * Device id.

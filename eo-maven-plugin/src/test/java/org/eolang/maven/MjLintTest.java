@@ -28,6 +28,7 @@ import org.cactoos.scalar.Unchecked;
 import org.cactoos.set.SetOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.cache.Saved;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -100,7 +101,7 @@ final class MjLintTest {
     void reportsExperimentalDefectWhenSkipExperimentalIsFalse(@Mktmp final Path temp)
         throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
-            .with("skipExperimental", false).withProgram(
+            .with("experimental", false).withProgram(
                 "+architect yegor256@gmail.com",
                 "+home https://www.eolang.org",
                 "+package foo.x",
@@ -127,7 +128,7 @@ final class MjLintTest {
     void skipsExperimentalDefectWhenSkipExperimentalIsTrue(@Mktmp final Path temp)
         throws IOException {
         final FakeMaven maven = new FakeMaven(temp)
-            .with("skipExperimental", true).withProgram(
+            .with("experimental", true).withProgram(
                 "+architect yegor256@gmail.com",
                 "+home https://www.eolang.org",
                 "+package foo.x",
@@ -610,7 +611,7 @@ final class MjLintTest {
             .allTojosWithHash(CommitHash.FAKE)
             .execute(new PpLint());
         final Path path = maven.result().get(
-            String.format("target/%s/foo/x/main.%s", Linting.DIR, MjAssemble.XMIR)
+            String.format("target/%s/foo/x/main.%s", maven.dirName("lint"), MjAssemble.XMIR)
         );
         final String xpath = "/object/@time";
         final String before = new Xnav(path).one(xpath).text().orElseThrow();
@@ -655,8 +656,11 @@ final class MjLintTest {
             .execute(new PpLint());
         final String planted = new TextOf(new ResourceOf("org/eolang/maven/main.xml")).asString();
         try (Stream<Path> saved = Files.walk(cache.resolve(Linting.CACHE))) {
-            saved.filter(p -> p.endsWith(Paths.get("foo", "x", "main.xmir")))
-                .forEach(p -> new Unchecked<>(new Saved(planted, p)).value());
+            saved.filter(p -> p.endsWith(Paths.get("foo", "x", "main.xmir"))).forEach(
+                p -> new Unchecked<>(
+                    new Saved(MjLintTest.restamped(p, planted), p)
+                ).value()
+            );
         }
         maven.execute(MjLint.class);
         MatcherAssert.assertThat(
@@ -758,5 +762,10 @@ final class MjLintTest {
             "",
             "[] > main",
         };
+    }
+
+    private static String restamped(final Path slot, final String content) {
+        final String text = new UncheckedText(new TextOf(slot)).asString();
+        return text.substring(0, text.indexOf(' ') + 1).concat(content);
     }
 }

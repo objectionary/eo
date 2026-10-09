@@ -30,9 +30,11 @@
 +package string
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint sprintf-constant-args
++unlint sprintf-without-formatters
 +version 0.0.0
 
-[^ read] > scanf
+[^text read] > scanf
   [^ pattern specifiers] >>
     [^ text] > as-float
       negative.if negated scaled > @
@@ -45,12 +47,7 @@
             txt.slice 0 1
             "-"
           folded.times -1
-          if.
-            eq.
-              txt.slice 0 1
-              "+"
-            folded
-            folded
+          folded
         ^.^.fold-digits > folded
           signed.if
             txt.slice
@@ -266,7 +263,7 @@
     ch
   [^ position accumulated found pending] >> tokenize
     if. > @
-      position.gte ^.^.length
+      position.gte ^.text.length
       pending.if *1
         T
           "The format string ends with a dangling percent and no specifier after it"
@@ -328,7 +325,7 @@
                   escaped ch
               found
               false
-    ^.^.slice > ch
+    ^.text.slice > ch
       position
       1
   | >> tokens

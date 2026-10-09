@@ -78,4 +78,24 @@ final class DepthTest {
             Matchers.equalTo(2)
         );
     }
+
+    @Test
+    void tellsAGapNobodyCanCloseFromTheRest(@Mktmp final Path temp) throws IOException {
+        Files.writeString(
+            Files.createDirectories(temp.resolve("xmirs")).resolve("inc.xmir"),
+            String.join(
+                "",
+                "<object><o loc='Φ.inc' name='inc'>",
+                "<o base='∅' loc='Φ.inc.x' name='x'/>",
+                "<o base='ξ.x' loc='Φ.inc.φ' name='φ'/></o></object>"
+            )
+        );
+        new Resolved(new Clues()).follow(temp.resolve("xmirs"), temp.resolve("tables"));
+        MatcherAssert.assertThat(
+            "a gap nobody can close must be counted as one, but it was lumped in with the rest",
+            new Depth(temp.resolve("xmirs"), temp.resolve("tables"))
+                .ladder().bands().get("rooted at a void nobody fills"),
+            Matchers.equalTo(2)
+        );
+    }
 }
