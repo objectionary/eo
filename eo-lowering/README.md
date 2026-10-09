@@ -17,6 +17,7 @@ Java class per folded formation.
 
 Nothing is folded yet. The pipeline is six stages: the tests are cut out of
 the sources, since each of them is a program of its own and not part of the
-world, the entries are planted, the world is merged, the entries are morphed,
+world, and every `T` there becomes a copy of `throw`, so that its message
+reaches the protocol, the entries are planted, the world is merged, the entries are morphed,
 and the puzzle in each of the last two says how the sources will be patched
 and the Java rendered.

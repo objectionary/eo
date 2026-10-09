@@ -23,9 +23,11 @@ import org.cactoos.scalar.Unchecked;
  * <p>The types are read from the tables of {@code eo:inference}. A type
  * that goes in is the type of one void of the object, and it is found in
  * {@code provides.xml}, in the same place where {@link Planting} finds
- * it. The type that comes out is the type of the {@code φ} of the object,
- * which is found in {@code links.xml}. When that {@code φ} is an atom, the
- * type is the one that {@code atoms.xml} gives to that atom.</p>
+ * it. The output follows {@code eo:returns} in {@code _returns.xsl}: the
+ * object's {@code reduced} cell in {@code provides.xml}, then its body's
+ * cell, then the body's references in {@code links.xml}. Each result uses
+ * its atom's {@code forma} from {@code atoms.xml}, its {@code reduced}
+ * cell, or the reference itself, in that order.</p>
  *
  * <p>This is used only to tell the reader of the log what the atoms take
  * and give: the name of the object, the types of its voids in brackets,
@@ -34,11 +36,6 @@ import org.cactoos.scalar.Unchecked;
  * type is shown as {@code ?}.</p>
  *
  * @since 0.64.0
- * @todo #9224:30min Read the type of the body the way entries.xsl reads it.
- *  The planting now takes the "reduced" cell of provides.xml before the
- *  links, so an object whose body is a decorator of a number gets an entry,
- *  while the log still shows the decorator, or "?", as the type of its body.
- *  Both should ask the tables the same question.
  */
 final class Signatures {
 
@@ -103,17 +100,38 @@ final class Signatures {
             }
         }
         final Collection<String> outs = new LinkedHashSet<>(0);
-        for (final String ref : this.links.value().xpath(
-            String.format("/links/type[@id='%s.φ']/ref/@loc", loc)
-        )) {
-            final List<String> forma = this.atoms.value().xpath(
-                String.format("/atoms/atom[@loc='%s']/@forma", ref)
+        final List<String> refs = new ArrayList<>(
+            this.provides.value().xpath(
+                String.format("/provides/type[@id='%s'][1]/@reduced", loc)
+            )
+        );
+        if (refs.isEmpty()) {
+            refs.addAll(
+                this.provides.value().xpath(
+                    String.format("/provides/type[@id='%s.φ'][1]/@reduced", loc)
+                )
             );
-            if (forma.isEmpty()) {
-                outs.add(ref);
-            } else {
-                outs.add(forma.get(0));
-            }
+        }
+        if (refs.isEmpty()) {
+            refs.addAll(
+                this.links.value().xpath(
+                    String.format("/links/type[@id='%s.φ']/ref/@loc", loc)
+                )
+            );
+        }
+        for (final String ref : refs) {
+            final List<String> types = new ArrayList<>(
+                this.atoms.value().xpath(
+                    String.format("/atoms/atom[@loc='%s']/@forma", ref)
+                )
+            );
+            types.addAll(
+                this.provides.value().xpath(
+                    String.format("/provides/type[@id='%s'][1]/@reduced", ref)
+                )
+            );
+            types.add(ref);
+            outs.add(types.get(0));
         }
         if (outs.isEmpty()) {
             outs.add("?");
