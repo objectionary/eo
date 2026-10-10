@@ -15,10 +15,7 @@
     start
     if. > [^ tup] >> rec-reducedi
       tup.length.eq 1
-      ^.func
-        ^.start
-        tup.head
-        0
+      ^.func ^.start tup.head 0
       ^.func
         ^.rec-reducedi tup.tail
         tup.head

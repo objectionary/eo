@@ -74,4 +74,17 @@ final class Style {
     int points(final String block) {
         return new Penalty(block, this.weights).points();
     }
+
+    /**
+     * Whether every line in a rendered block fits within the configured width.
+     *
+     * @param block The rendered block
+     * @return True when no line is wider than the style's width
+     */
+    boolean fitsWidth(final String block) {
+        final int width = this.weights.getOrDefault(
+            PenaltyKey.WIDTH, PenaltyKey.WIDTH.fallback()
+        );
+        return block.lines().allMatch(line -> line.length() <= width);
+    }
 }

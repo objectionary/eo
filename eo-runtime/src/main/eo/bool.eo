@@ -19,15 +19,11 @@
 +version 0.0.0
 
 [if] > bool
-  if > @
-    FF-
-    00-
+  if FF- 00- > @
   flag.if > [^flag x] > and
     FF-.eq x
     false
-  if > not
-    false
-    true
+  if false true > not
   flag.if > [^flag x] > or
     true
     FF-.eq x
@@ -57,15 +53,11 @@
 
   eq. ++> can-choose-the-left-branch-of-true
     "yes"
-    true.if
-      "yes"
-      "no"
+    true.if "yes" "no"
 
   eq. ++> can-choose-the-right-branch-of-false
     "no"
-    false.if
-      "yes"
-      "no"
+    false.if "yes" "no"
 
   and. ++> can-compare-a-bool-to-bytes
     true.eq FF-

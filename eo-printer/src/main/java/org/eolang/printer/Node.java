@@ -446,9 +446,7 @@ final class Node {
         } else {
             String best = this.vertical(style, indent);
             final Optional<String> flat = this.horizontal(style, indent);
-            if (flat.isPresent()
-                && (this.forced() || this.labelled()
-                || style.points(flat.get()) <= style.points(best))) {
+            if (flat.isPresent() && this.horizontalWins(flat.get(), best, style)) {
                 best = flat.get();
             }
             if (star.isPresent() && style.points(star.get()) < style.points(best)) {
@@ -555,6 +553,43 @@ final class Node {
     private boolean nameless() {
         return (this.tail.isEmpty() || " > @".equals(this.tail))
             && this.anonymous();
+    }
+
+    private boolean horizontalWins(final String flat, final String vertical,
+        final Style style) {
+        return this.forced() || this.labelled()
+            || this.simpleArgumentsFit(flat, style)
+            || style.points(flat) <= style.points(vertical);
+    }
+
+    private boolean simpleArgumentsFit(final String flat, final Style style) {
+        return this.atomicApplication() && this.simpleArguments()
+            && style.fitsWidth(flat);
+    }
+
+    private boolean atomicApplication() {
+        return this.ordinaryNode() && this.nameSuffix();
+    }
+
+    private boolean ordinaryNode() {
+        return !this.abstractt && !this.test && !"*".equals(this.base);
+    }
+
+    private boolean nameSuffix() {
+        return this.tail.isEmpty() || this.tail.startsWith(" > ");
+    }
+
+    private boolean simpleArguments() {
+        return this.children.size() > 1
+            && this.children.stream().allMatch(Node::single);
+    }
+
+    private boolean single() {
+        return !this.abstractt && !this.reversed && this.empty();
+    }
+
+    private boolean empty() {
+        return this.children.isEmpty() && this.tail.isEmpty();
     }
 
     private boolean marked() {
