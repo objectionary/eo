@@ -633,7 +633,7 @@ final class Tokens {
      * @return Terminator flag
      */
     static boolean terminates(final char glyph) {
-        return " \t,.|':;!?[]{}()".indexOf(glyph) >= 0;
+        return " \t,.|':;!?*[]{}()".indexOf(glyph) >= 0;
     }
 
     private Value readDigits() {
