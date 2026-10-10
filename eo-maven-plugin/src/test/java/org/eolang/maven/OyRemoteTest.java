@@ -7,6 +7,7 @@ package org.eolang.maven;
 import com.sun.net.httpserver.HttpServer;
 import com.yegor256.WeAreOnline;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
@@ -44,12 +45,21 @@ final class OyRemoteTest {
         MatcherAssert.assertThat(
             "UrlOy generates correct URL for directory",
             new UrlOy(
-                "https://github.com/objectionary/home/tree/%s/objects/%s",
+                "https://api/repos/objectionary/home/contents/objects/%2$s?ref=%1$s",
                 "abcde"
             ).value("org.eolang.ss"),
             Matchers.is(
-                new URL("https://github.com/objectionary/home/tree/abcde/objects/ss")
+                new URL("https://api/repos/objectionary/home/contents/objects/ss?ref=abcde")
             )
+        );
+    }
+
+    @Test
+    void looksForDirectoryWhereAProgramMayRead() {
+        MatcherAssert.assertThat(
+            "The directory must be looked for in the API, not in the web page a person reads",
+            new OyRemote(new ChRemote("master")).toString(),
+            Matchers.containsString("Directory template: https://api.github.com/")
         );
     }
 
@@ -181,6 +191,36 @@ final class OyRemoteTest {
             ).isDirectory(directory),
             Matchers.is(true)
         );
+    }
+
+    @Test
+    void refusesToReadRefusalAsAbsenceOfDirectory() throws Exception {
+        final HttpServer server = HttpServer.create(
+            new InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0
+        );
+        server.createContext(
+            "/",
+            exchange -> {
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_FORBIDDEN, -1L);
+                exchange.close();
+            }
+        );
+        server.start();
+        try {
+            final String tpl = String.format(
+                "http://127.0.0.1:%d/%%s/%%s", server.getAddress().getPort()
+            );
+            Assertions.assertThrows(
+                IOException.class,
+                () -> new OyRemote(
+                    new UrlOy(tpl, "stub"),
+                    new UrlOy(tpl, "stub")
+                ).isDirectory("number"),
+                "Expected an IOException instead of a refusal to serve standing for the directory being absent"
+            );
+        } finally {
+            server.stop(0);
+        }
     }
 
     private static String notFoundMessage() throws Exception {
