@@ -167,6 +167,40 @@ final class StPureTest {
         );
     }
 
+    @Test
+    void readsTablesAgainAfterTheyAreRewritten(@Mktmp final Path temp) throws IOException {
+        final Path parsed = Files.createDirectories(temp.resolve("parsed"));
+        final Path source = parsed.resolve("app.xmir");
+        Files.writeString(
+            source,
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(),
+                    "[] > app", "  2.plus 3 > x", "  x > @", ""
+                )
+            ).parsed().toString()
+        );
+        Files.writeString(
+            parsed.resolve("number.xmir"),
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(),
+                    "[as-bytes] > number", "  as-bytes > @",
+                    "  [x] > plus", "    x > @", ""
+                )
+            ).parsed().toString()
+        );
+        final Path tables = temp.resolve("tables");
+        new Inferring(parsed, temp.resolve("pre"), tables).exec();
+        StPureTest.stamped(tables, source);
+        Files.writeString(tables.resolve("links.xml"), "<links/>");
+        MatcherAssert.assertThat(
+            "the second stamping must read the table that was rewritten under it, while it reads the one it parsed before",
+            StPureTest.stamped(tables, source).nodes("//o[@base='.plus'][@pure]"),
+            Matchers.empty()
+        );
+    }
+
     private Collection<String> unmatched(final Xtory pack) throws IOException {
         final Collection<String> failed = new ArrayList<>(0);
         for (final Object key : pack.map().keySet()) {
