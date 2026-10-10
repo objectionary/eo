@@ -5,9 +5,13 @@
 package org.eolang.maven;
 
 import com.jcabi.aspects.RetryOnFailure;
+import java.io.IOException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import org.cactoos.Scalar;
 import org.cactoos.Text;
 import org.cactoos.iterable.Filtered;
@@ -50,6 +54,34 @@ final class ObjectsIndex {
                     )
                 )
             )
+        );
+    }
+
+    /**
+     * Index of the EO sources in a selected revision's published archive.
+     *
+     * @param source Selected revision archive URL
+     */
+    ObjectsIndex(final UrlOy source) {
+        this(
+            () -> {
+                final Set<String> names = new HashSet<>(0);
+                try (
+                    ZipInputStream archive = new ZipInputStream(source.value("").openStream())
+                ) {
+                    for (ZipEntry entry = archive.getNextEntry(); entry != null;
+                        entry = archive.getNextEntry()) {
+                        final String path = entry.getName().replaceFirst("^[^/]+/", "");
+                        if (path.startsWith("objects/") && path.endsWith(".eo")) {
+                            names.add(ObjectsIndex.convert(path));
+                        }
+                    }
+                }
+                if (names.isEmpty()) {
+                    throw new IOException("The selected revision's archive has no EO objects");
+                }
+                return names;
+            }
         );
     }
 
