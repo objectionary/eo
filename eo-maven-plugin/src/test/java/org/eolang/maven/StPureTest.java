@@ -172,23 +172,13 @@ final class StPureTest {
         final Path parsed = Files.createDirectories(temp.resolve("parsed"));
         final Path source = parsed.resolve("app.xmir");
         Files.writeString(
-            source,
-            new EoSyntax(
-                String.join(
-                    System.lineSeparator(),
-                    "[] > app", "  2.plus 3 > x", "  x > @", ""
-                )
-            ).parsed().toString()
+            source, StPureTest.xmir("[] > app", "  2.plus 3 > x", "  x > @")
         );
         Files.writeString(
             parsed.resolve("number.xmir"),
-            new EoSyntax(
-                String.join(
-                    System.lineSeparator(),
-                    "[as-bytes] > number", "  as-bytes > @",
-                    "  [x] > plus", "    x > @", ""
-                )
-            ).parsed().toString()
+            StPureTest.xmir(
+                "[as-bytes] > number", "  as-bytes > @", "  [x] > plus", "    x > @"
+            )
         );
         final Path tables = temp.resolve("tables");
         new Inferring(parsed, temp.resolve("pre"), tables).exec();
@@ -232,6 +222,12 @@ final class StPureTest {
             }
         }
         return failed;
+    }
+
+    private static String xmir(final String... lines) throws IOException {
+        return new EoSyntax(
+            String.format("%s%n", String.join(System.lineSeparator(), lines))
+        ).parsed().toString();
     }
 
     private static XML stamped(final Path tables, final Path source) throws IOException {
