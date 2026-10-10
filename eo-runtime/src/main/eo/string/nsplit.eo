@@ -85,14 +85,22 @@
 
   eq. ++> can-format-the-error-message-of-a-fractional-limit
     "Invalid limit 1.500000 for nsplit, must be at least 1"
-    "a-b-c".nsplit "-" 1.5 I
+    "a-b-c".nsplit
+      "-"
+      1.5
+      I
 
   eq. ++> can-format-the-error-message-of-an-infinite-limit-when-splitting
     "Invalid limit infinity for nsplit, must be at least 1"
-    "a-b-c".nsplit "-" pinf I
+    "a-b-c".nsplit
+      "-"
+      pinf
+      I
 
   eq. ++> can-nsplit-an-empty-text-into-one-empty-string
-    "".nsplit "-" 3
+    "".nsplit
+      "-"
+      3
     * ""
 
   eq. ++> can-recover-from-a-fractional-limit
@@ -124,44 +132,58 @@
       "fallback" > [message]
 
   eq. ++> can-split-into-empty-strings
-    "-a-b-c".nsplit "-" 3
+    "-a-b-c".nsplit
+      "-"
+      3
     *
       ""
       "a"
       "b-c"
 
   eq. ++> can-split-multi-byte-characters
-    "аХбХв".nsplit "Х" 3
+    "аХбХв".nsplit
+      "Х"
+      3
     *
       "а"
       "б"
       "в"
 
   eq. ++> can-split-on-a-multi-character-delimiter
-    "a::b::c::d".nsplit "::" 2
+    "a::b::c::d".nsplit
+      "::"
+      2
     *
       "a"
       "b::c::d"
 
   eq. ++> can-split-on-dashes-with-a-limit-of-two
-    "a-b-c-d".nsplit "-" 2
+    "a-b-c-d".nsplit
+      "-"
+      2
     *
       "a"
       "b-c-d"
 
   eq. ++> can-split-with-a-high-limit
-    "a-b-c".nsplit "-" 10
+    "a-b-c".nsplit
+      "-"
+      10
     *
       "a"
       "b"
       "c"
 
   eq. ++> can-split-with-a-limit-of-one
-    "a-b-c".nsplit "-" 1
+    "a-b-c".nsplit
+      "-"
+      1
     * "a-b-c"
 
   eq. ++> can-split-with-a-limit-of-two
-    "Cookie: a=1; b=2".nsplit " " 2
+    "Cookie: a=1; b=2".nsplit
+      " "
+      2
     *
       "Cookie:"
       "a=1; b=2"

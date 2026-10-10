@@ -217,16 +217,26 @@
         caps
         ^.k > [^ at caps] >>
           at
-          mark ^.at ^.^.index caps at
+          mark
+            ^.at
+            ^.^.index
+            caps
+            at
   if. > [^ letter rest] >> chain
     letter.eq 64-
-    range 26 16 rest
+    range
+      26
+      16
+      rest
     if.
       letter.eq 73-
       range
         3.75
         3.125
-        range 8.5 8 rest
+        range
+          8.5
+          8
+          rest
       range
         26
         16
@@ -241,8 +251,16 @@
     [^ s at caps k] > run
       tried.exists.if > @
         tried
-        ^.right.run s at caps k
-      ^.left.run s at caps k > tried
+        ^.right.run
+          s
+          at
+          caps
+          k
+      ^.left.run > tried
+        s
+        at
+        caps
+        k
   slice. > [^ value] >> cipher
     as-bytes.
       value.plus 16
@@ -252,7 +270,9 @@
     except
       chain letter none
       rest
-    chain letter rest
+    chain
+      letter
+      rest
   [^ cant-compile] > compile
     opens.if > @
       if.
@@ -282,7 +302,9 @@
     raw.slice > body
       1
       closes.plus -1
-    ^.pattern body flags > built
+    ^.pattern > built
+      body
+      flags
     number last > closes
     raw.slice > flags
       closes.plus 1
@@ -342,7 +364,9 @@
                 10
           acc
         number tenfold
-    tens 0 value > tenfold!
+    tens > tenfold!
+      0
+      value
   [] >> empty
     k > [^ s at caps k] > run
       at
@@ -366,8 +390,14 @@
   [^ multiline unix] >> end
     if. > [^ s at caps k] > run
       ^.multiline.if
-        starts s at ^.unix
-        terminal s at ^.unix
+        starts
+          s
+          at
+          ^.unix
+        terminal
+          s
+          at
+          ^.unix
       k at caps
       nothing
   [inner rest] >> except
@@ -398,9 +428,13 @@
     lower
       upper c true
       true
-    lower c false
+    lower
+      c
+      false
   [^ text unicode] >> folded
-    fold text unicode > norm!
+    fold > norm!
+      text
+      unicode
     [^ s at caps k] > run
       if. > @
         s.size.gt at
@@ -447,7 +481,10 @@
               ^.^.k at caps
             ^.n.plus 1 > bump!
             at > here!
-      | 0 at caps > @
+      | > @
+        0
+        at
+        caps
   number > [c] >> key
     slice.
       concat.
@@ -487,7 +524,10 @@
               ^.^.child.run ^.s at caps anew
               nothing
         ^.k at caps > tried
-      | 0 at caps > @
+      | > @
+        0
+        at
+        caps
   [^ text] >> literal
     [^ s at caps k] > run
       if. > @
@@ -578,8 +618,12 @@
                 C3-BF
                 c
       c
-    c.slice 1 1 > b
-    c.slice 0 1 > lead
+    c.slice > b
+      1
+      1
+    c.slice > lead
+      0
+      1
   [from group next to] >> mark
     true > some
   [^ fold items negated unicode] >> member
@@ -663,7 +707,9 @@
         mode
       flag > bit
         ^.fraw.slice index 1
-    | 0 00- > initial
+    | > initial
+      0
+      00-
     [^ txt] > match
       [^ position start offset hit] > matched
         ^.^.parsed.groups.plus 1 > count
@@ -734,7 +780,11 @@
           latest index ^.hit.marks > m
       [^ position start offset] > matched-from-index
         hit.exists.if > @
-          ^.matched position start offset hit
+          ^.matched
+            position
+            start
+            offset
+            hit
           ^.missing position
         sought offset > hit
       [^ position] > missing
@@ -758,7 +808,10 @@
           "Matched block does not exist, can't get text"
         T > to
           "Matched block does not exist, can't get 'to' position"
-      matched-from-index 1 0 0 > next
+      matched-from-index > next
+        1
+        0
+        0
       [^ start] > searched
         if. > @
           start.is-integer.not.or
@@ -806,7 +859,10 @@
             nothing
             found at caps
       subject txt.as-bytes > subj
-    alternatives 0 0 initial > outcome
+    alternatives > outcome
+      0
+      0
+      initial
     if. > parsed
       initial.eq --
       [at reason] >> no
@@ -897,7 +953,9 @@
           "Braced hexadecimal escapes are not supported"
         if.
           0.gt h
-          no index "Illegal hexadecimal escape sequence"
+          no
+            index
+            "Illegal hexadecimal escape sequence"
           if.
             0.gt l
             no
@@ -935,7 +993,10 @@
     if. > [^ index] >> indexed
       0.gt index
       index
-      measured 0 0 index
+      measured
+        0
+        0
+        index
     [^ at count index] >> measured
       if. > @
         and.
@@ -1017,7 +1078,10 @@
       p.ok.if > @
         alternate p
         p
-      pieces index opened bits > p
+      pieces > p
+        index
+        opened
+        bits
     [^ acc] >> alternate
       if. > @
         eq.
@@ -1092,11 +1156,19 @@
                 q.eq 3F-
                 q.eq 7B-
           b.ok.if
-            yes after a.groups a.mode quantified --
+            yes
+              after
+              a.groups
+              a.mode
+              quantified
+              --
             b
           a
         a
-      atom index opened bits > a
+      atom > a
+        index
+        opened
+        bits
       if. > after
         or.
           g.eq 3F-
@@ -1155,7 +1227,11 @@
             b.least
             b.most
             plain a.mode last
-        repeat greed b.least b.most a.node
+        repeat
+          greed
+          b.least
+          b.most
+          a.node
     if. > [^ index text] >> back
       1.gt index
       0
@@ -1170,11 +1246,20 @@
         index
     if. > [^ greed least most node] >> repeat
       1.gt greed
-      greedy node least most
+      greedy
+        node
+        least
+        most
       if.
         2.gt greed
-        lazy node least most
-        possessive node least most
+        lazy
+          node
+          least
+          most
+        possessive
+          node
+          least
+          most
     if. > [^ mode text] >> plain
       1.gt text.size
       empty
@@ -1259,7 +1344,12 @@
       byte index > b
       if. > brace
         b.eq 7B-
-        yes index opened bits empty --
+        yes
+          index
+          opened
+          bits
+          empty
+          --
         r.ok.if
           if.
             r.at.as-bytes.eq index.as-bytes
@@ -1289,7 +1379,10 @@
                 plain bits r.text
                 r.text
           r
-      scanned index bits -- > r
+      scanned > r
+        index
+        bits
+        --
     [^ index mode acc] >> scanned
       if. > @
         or.
@@ -1369,7 +1462,13 @@
         none
         true
         true
-      members index opened bits none false true
+      members
+        index
+        opened
+        bits
+        none
+        false
+        true
     [^ index opened bits items negated first] >> members
       if. > @
         b.eq --
@@ -1392,7 +1491,9 @@
             --
           if.
             b.eq 5B-
-            no start "Nested character classes are not supported"
+            no
+              start
+              "Nested character classes are not supported"
             if.
               and.
                 b.eq 26-
@@ -1400,15 +1501,26 @@
                   byte
                     start.plus 1
                   26-
-              no start "Character class intersections are not supported"
+              no
+                start
+                "Character class intersections are not supported"
               e.ok.if
-                ^.members e.at opened bits joined negated false
+                ^.members
+                  e.at
+                  opened
+                  bits
+                  joined
+                  negated
+                  false
                 e
       byte start > b
       entry start bits > e
       skip index bits > here!
       e.preset.if > joined
-        cluster e.letter e.negated items
+        cluster
+          e.letter
+          e.negated
+          items
         range
           beyond e.to
           key e.from
@@ -1467,7 +1579,9 @@
     [^ index mode] >> classed
       if. > @
         e.eq --
-        no index "Unescaped trailing backslash"
+        no
+          index
+          "Unescaped trailing backslash"
         if.
           e.eq 78-
           h.ok.if
@@ -1603,7 +1717,9 @@
                   "Back references are not supported"
                 unsupported.if
                   no (index.plus -1) message
-                  no index "Illegal/unsupported escape sequence"
+                  no
+                    index
+                    "Illegal/unsupported escape sequence"
       string > message
         concat.
           "The escape sequence '\\".as-bytes.concat
@@ -1689,7 +1805,10 @@
             0
         m
       byte m.at > c
-      modifiers index bits true > m
+      modifiers > m
+        index
+        bits
+        true
     [^ index bits on] >> modifiers
       if. > @
         or.
@@ -1708,10 +1827,14 @@
             or.
               b.eq 55-
               b.eq 63-
-            no index "The inline modifiers 'U' and 'c' are not supported"
+            no
+              index
+              "The inline modifiers 'U' and 'c' are not supported"
             if.
               bit.eq --
-              no index "Unknown inline modifier"
+              no
+                index
+                "Unknown inline modifier"
               ^.modifiers
                 index.plus 1
                 toggled
@@ -1733,20 +1856,29 @@
             outer
             inner
             --
-          no ^.size "Unclosed group"
+          no
+            ^.size
+            "Unclosed group"
         r
       if. > inner
         1.gt index
         r.node
         captured r.node index
-      alternatives from opened bits > r
+      alternatives > r
+        from
+        opened
+        bits
     [^ index] >> braces
       if. > @
         n.value.eq -2
-        no n.at "Illegal repetition range"
+        no
+          n.at
+          "Illegal repetition range"
         if.
           0.gt n.value
-          no index "Illegal repetition"
+          no
+            index
+            "Illegal repetition"
           if.
             c.eq 7D-
             bounds
@@ -1762,7 +1894,9 @@
                   n.value
                   number 7F-F0-00-00-00-00-00-00
                 ranged
-              no n.at "Unclosed counted closure"
+              no
+                n.at
+                "Unclosed counted closure"
       byte n.at > c
       byte > d
         n.at.plus 1
@@ -1772,7 +1906,9 @@
       counted -1 index > n
       if. > ranged
         m.value.eq -2
-        no m.at "Illegal repetition range"
+        no
+          m.at
+          "Illegal repetition range"
         if.
           0.gt m.value
           no
@@ -1784,12 +1920,16 @@
               7D-
             if.
               n.value.gt m.value
-              no m.at "Illegal repetition range"
+              no
+                m.at
+                "Illegal repetition range"
               bounds
                 m.at.plus 1
                 n.value
                 m.value
-            no m.at "Unclosed counted closure"
+            no
+              m.at
+              "Unclosed counted closure"
   [^ child least most] >> possessive
     [^ s at caps k] > run
       [^ n at caps] >> drain
@@ -1810,8 +1950,15 @@
           ^.k at caps
         n.plus 1 > bump!
         hit.end > here!
-        ^.^.child.run ^.s at caps found > hit
-      | 0 at caps > @
+        ^.^.child.run > hit
+          ^.s
+          at
+          caps
+          found
+      | > @
+        0
+        at
+        caps
   [c] >> raised
     if. > @
       3.gt c.size
@@ -1878,8 +2025,12 @@
                     49-
                     if. (c.eq C5-BF) 53- c
       c
-    c.slice 1 1 > b
-    c.slice 0 1 > lead
+    c.slice > b
+      1
+      1
+    c.slice > lead
+      0
+      1
   [high low rest] >> range
     if. > [^ code] > has
       ^.low.gt code
@@ -2057,7 +2208,9 @@
     ""
 
   checked. ++> can-apply-the-fallback-to-the-construct-and-its-offset
-    regex.pattern "a**" ""
+    regex.pattern
+      "a**"
+      ""
     and. > [reason offset]
       reason.eq
         "Dangling meta character '*'"

@@ -23,7 +23,9 @@
         ^.rec
           rest.tail
           index.plus 1
-  | list.reversed 0 > @
+  | > @
+    list.reversed
+    0
 
   ++> can-iterate-over-a-list-with-indexes
     eq. > @

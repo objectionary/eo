@@ -36,7 +36,9 @@
     2.as-i64.div 0.as-i64 > cached!
 
   eq. ++> can-keep-the-value-when-not-terminated
-    recovered 42 7
+    recovered
+      42
+      7
     42
 
   eq. ++> can-recover-an-inner-recovery

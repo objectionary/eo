@@ -124,19 +124,28 @@
   malloc.for ++> can-copy-and-resize-to-a-target
     0
     seq * > [m]
-      m.copy 3 9 1
+      m.copy
+        3
+        9
+        1
       m.size.eq 10
 
   malloc.for ++> can-copy-data-from-start-to-end
     01-02-03-04-05-06
     seq * > [m]
-      m.copy 0 3 3
+      m.copy
+        0
+        3
+        3
       m.get.eq 01-02-03-01-02-03
 
   malloc.for ++> can-copy-data-inside-itself
     01-02-03-04-05
     seq * > [m]
-      m.copy 1 2 2
+      m.copy
+        1
+        2
+        2
       m.get.eq 01-02-02-03-05
 
   ++> can-dataize-a-scope-twice
@@ -294,7 +303,9 @@
         malloc.of > @
           12
           seq * > [^ m] >>
-            m.write 0 "Hello, "
+            m.write
+              0
+              "Hello, "
             m.write 7 "Jeff!"
             ^.b.put
               eq.
@@ -322,7 +333,9 @@
       20
 
   eq. ++> can-write-the-initial-value
-    malloc.for 42 I
+    malloc.for
+      42
+      I
     42
 
   malloc.of --> stops-on-changing-the-size-to-a-fraction

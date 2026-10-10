@@ -118,7 +118,9 @@
                 1
           host-port.index-of ":"
         -1
-    host-port.slice 0 port-colon-idx
+    host-port.slice
+      0
+      port-colon-idx
     host-port
   has-authority.if > path
     has-authority-path.if
@@ -151,9 +153,13 @@
   if. > scheme
     scheme-colon.eq -1
     ""
-    text.slice 0 scheme-colon
+    text.slice
+      0
+      scheme-colon
   has-userinfo.if > userinfo
-    authority.slice 0 userinfo-at-idx
+    authority.slice
+      0
+      userinfo-at-idx
     ""
 
   eq. ++> can-ignore-a-question-mark-that-appears-inside-the-fragment
