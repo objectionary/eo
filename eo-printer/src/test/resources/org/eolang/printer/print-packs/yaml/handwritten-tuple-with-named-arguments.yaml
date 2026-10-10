@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A `tuple` whose arguments are bound by name is not what `stars-to-tuples`
+# builds, so it keeps the shape it was written in (#9165). As a star it
+# would lose every argument, since none of them sits strictly between the
+# first child and the last.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > app
+    tuple > @
+      tuple.empty:tail
+      42:head
+
+printed: |
+  [] > app
+    tuple > @
+      *:tail
+      42:head

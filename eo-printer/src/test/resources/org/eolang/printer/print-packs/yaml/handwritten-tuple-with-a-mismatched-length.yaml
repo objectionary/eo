@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A `tuple` the author wrote by hand, whose length does not follow from the
+# elements beside it, is not what `stars-to-tuples` builds, so it keeps the
+# shape it was written in (#9165). As a star it would lose the length it
+# carries and take the one the star counts, and the re-parse reports no
+# error, so the rewrite is silent.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > app
+    tuple > @
+      tuple.empty
+      42
+      7
+
+printed: |
+  tuple > [] > app
+    *
+    42
+    7
