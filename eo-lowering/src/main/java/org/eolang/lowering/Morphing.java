@@ -275,6 +275,7 @@ final class Morphing implements Proc<Path> {
                 "Lowering of %s ran out of time budget (%[ms]s), its XML protocol kept in %[file]s for study",
                 cells[1], this.budget.toMillis(), protocol
             );
+            progress.expire();
         }
         return protocol;
     }
