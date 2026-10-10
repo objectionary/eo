@@ -46,6 +46,19 @@ interface Objectionary {
     boolean isDirectory(String name) throws IOException;
 
     /**
+     * Checks whether a provided name is a program of its own, as opposed to
+     * the package of other objects a directory stands for. A name may be
+     * both, and {@link #contains(String)} answers "true" for either, so it
+     * cannot tell one from the other (see
+     * <a href="https://github.com/objectionary/eo/issues/9368">#9368</a>).
+     *
+     * @param name Object name
+     * @return Boolean: "true" if there is a program under that name
+     * @throws IOException If fails to fetch.
+     */
+    boolean isProgram(String name) throws IOException;
+
+    /**
      * List the objects that live directly inside a package (see
      * <a href="https://github.com/objectionary/eo/issues/6175">#6175</a>).
      *
@@ -68,7 +81,9 @@ interface Objectionary {
         private final Func<? super String, ? extends Input> getter;
 
         /**
-         * Function that emulates 'contains()' method in {@link Objectionary}.
+         * Function that emulates 'contains()' and 'isProgram()' methods in
+         * {@link Objectionary}. A fake that needs the two apart gives it a
+         * function that tells the names apart.
          */
         private final Func<? super String, Boolean> container;
 
@@ -131,6 +146,11 @@ interface Objectionary {
         @Override
         public boolean isDirectory(final String name) {
             return new Unchecked<>(() -> this.directories.apply(name)).value();
+        }
+
+        @Override
+        public boolean isProgram(final String name) {
+            return new Unchecked<>(() -> this.container.apply(name)).value();
         }
 
         @Override
