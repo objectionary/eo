@@ -25,7 +25,10 @@ import java.util.stream.Collectors;
  * own indented lines, a {@link Horizontal} one, where they are inlined, a
  * {@link Phi} one for a formation bound to nothing but its decoratee, and
  * a {@link Starred} one for a tuple applied at the tail — and keeps the
- * one with the smaller {@link Penalty}. The decision is made recursively,
+ * one with the smaller {@link Penalty}. The identity glyph is the one head
+ * that takes no horizontal arguments (R-3.16.1), so an application headed by
+ * it, with or without a method chain behind it, keeps every argument on a
+ * line of its own. The decision is made recursively,
  * bottom-up, against a {@link Style} that carries the indentation width
  * and the penalty weights, so the node never has to refer back to the
  * printer that started it.</p>
@@ -463,7 +466,7 @@ final class Node {
         final Optional<String> result;
         if (this.abstractt) {
             result = this.phi(style, indent);
-        } else if (this.children.isEmpty()) {
+        } else if (this.children.isEmpty() || this.glyph()) {
             result = Optional.empty();
         } else {
             result = new Horizontal(
@@ -530,6 +533,8 @@ final class Node {
             result = Optional.empty();
         } else if (this.abstractt || !this.tail.isEmpty() || "*".equals(this.base)) {
             result = Optional.empty();
+        } else if (this.glyph() && !this.children.isEmpty()) {
+            result = Optional.empty();
         } else if (this.children.isEmpty()) {
             result = Optional.of(this.base);
         } else {
@@ -592,6 +597,10 @@ final class Node {
 
     private boolean labelled() {
         return this.reversed && this.tail.startsWith(":");
+    }
+
+    private boolean glyph() {
+        return "I".equals(this.base) || this.base.startsWith("I.");
     }
 
     private boolean forced() {
