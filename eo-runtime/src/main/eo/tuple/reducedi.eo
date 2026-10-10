@@ -13,14 +13,14 @@
 [^list start func] > reducedi
   list.is-empty.if > @
     start
-    if. > [^ tup] >> rec-reducedi
+    if. > [^list tup] >> rec-reducedi
       tup.length.eq 1
-      ^.func
-        ^.start
+      list.func
+        list.start
         tup.head
         0
-      ^.func
-        ^.rec-reducedi tup.tail
+      list.func
+        list.rec-reducedi tup.tail
         tup.head
         tup.tail.length
     | list

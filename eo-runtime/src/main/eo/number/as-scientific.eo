@@ -55,7 +55,7 @@
   rec-exponent > raw!
     scaled.abs
     0
-  if. > [^ m count] >> rec-exponent
+  if. > [^num m count] >> rec-exponent
     or.
       m.eq 0
       and.
@@ -64,11 +64,11 @@
     count
     if.
       m.lt 1
-      ^.rec-exponent
+      num.rec-exponent
         m.times 10
         as-number.
           count.minus 1
-      ^.rec-exponent
+      num.rec-exponent
         m.div 10
         as-number.
           count.plus 1

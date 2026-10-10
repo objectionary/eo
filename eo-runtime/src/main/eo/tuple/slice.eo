@@ -37,7 +37,7 @@
       *
       list.reducedi
         *
-        if. > [^ accum item index] >>
+        if. > [^list accum item index] >>
           and.
             index.gte s
             index.lt e

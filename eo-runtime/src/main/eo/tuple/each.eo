@@ -11,7 +11,7 @@
 
 [^list func] > each
   list.eachi > @
-    ^.func item > [^ item index] >>
+    list.func item > [^list item index] >>
 
   ++> can-iterate-over-a-list
     eq. > @

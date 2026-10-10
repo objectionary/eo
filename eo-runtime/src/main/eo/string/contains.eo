@@ -19,13 +19,13 @@
         eq.
           text >> txt!
           substring >> part!
-      [^ index] >> rec-contains
+      [^text index] >> rec-contains
         if. > @
           end.eq index
           includes
           includes.if
             true
-            ^.rec-contains (index.plus 1).as-number
+            text.rec-contains (index.plus 1).as-number
         eq. > includes
           txt.slice index size
           part

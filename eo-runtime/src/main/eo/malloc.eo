@@ -68,9 +68,9 @@
     malloc.of > @
       size.
         object >> bts!
-      seq * > [^ m] >>
+      seq * > [^task m] >>
         m.write 0 bts
-        ^.scope m
+        task.scope m
   [] > of /Q.bytes
     ? > ^
     ? > size /Q.number

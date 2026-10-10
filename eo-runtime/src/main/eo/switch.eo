@@ -29,15 +29,15 @@
     cases.length.eq 0
     fallback
       "Switch cases are empty"
-    [^ rest] >> rec-case
+    [^switch rest] >> rec-case
       if. > @
         rest.length.eq 0
-        ^.fallback
+        switch.fallback
           "No switch case matched"
         if.
           true.eq rest.head.tail.head!
           rest.head.head
-          ^.rec-case rest.tail
+          switch.rec-case rest.tail
     | cases.reversed
 
   eq. ++> can-recover-from-an-empty-switch

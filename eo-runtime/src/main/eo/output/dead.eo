@@ -11,9 +11,9 @@
 
 [] > dead
   [buffer] > write
-    [^] >> output-block
+    [^sink] >> output-block
       true > @
-      ^.^.output-block > [^ buffer] > write
+      block.sink.output-block > [^block buffer] > write
     | > @
 
   malloc.of ++> can-be-taken-off-any-output
