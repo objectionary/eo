@@ -8,9 +8,15 @@ import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import org.cactoos.Text;
+import org.cactoos.iterable.HeadOf;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.list.ListOf;
 
 /**
  * A report of how much of the work of {@link Morphing} is done.
@@ -19,7 +25,12 @@ import org.cactoos.Text;
  * and one entry alone may take most of that time. So, while the work is
  * still going on, {@link Morphing} prints this report from time to time.
  * The report says how many entries are done, how much time has passed,
- * how many results came from the cache, and how big the protocols are.</p>
+ * how many results came from the cache, and how big the protocols are.
+ * At the end, it names the entries that phino is still working on, the
+ * oldest first, so a reader sees which ones keep the build waiting. Only
+ * the first five are named, and the rest are only counted, as in
+ * {@code +12}. Every name is written without the {@code Φ.} at its
+ * start, so {@code Φ.number.exp} is written as {@code number.exp}.</p>
  *
  * <p>Many runs of phino work at the same time, in different threads, and
  * any of them may finish at any moment. This is why every counter here is
@@ -28,6 +39,11 @@ import org.cactoos.Text;
  * @since 0.64.0
  */
 final class Progress implements Text {
+
+    /**
+     * How many entries in processing the report names, at most.
+     */
+    private static final int SHOWN = 5;
 
     /**
      * How many entries there are in total.
@@ -55,6 +71,11 @@ final class Progress implements Text {
     private final AtomicLong bytes;
 
     /**
+     * The locators of the entries in processing, the oldest first.
+     */
+    private final Collection<String> busy;
+
+    /**
      * Ctor.
      *
      * @param entries How many entries there are in total
@@ -65,7 +86,8 @@ final class Progress implements Text {
             System.currentTimeMillis(),
             new AtomicInteger(),
             new AtomicInteger(),
-            new AtomicLong()
+            new AtomicLong(),
+            new ConcurrentLinkedQueue<>()
         );
     }
 
@@ -77,28 +99,60 @@ final class Progress implements Text {
      * @param count How many entries are done so far
      * @param hits How many of them got their protocols from the cache
      * @param size How many bytes all the protocols written so far take
+     * @param running The locators of the entries in processing, the oldest first
      */
     Progress(
         final int entries, final long moment, final AtomicInteger count,
-        final AtomicInteger hits, final AtomicLong size
+        final AtomicInteger hits, final AtomicLong size, final Collection<String> running
     ) {
         this.total = entries;
         this.start = moment;
         this.done = count;
         this.reused = hits;
         this.bytes = size;
+        this.busy = running;
     }
 
     @Override
     public String asString() {
-        return Logger.format(
-            "%d of %d entries in %[ms]s, %d of them from cache, %[size]s of protocols",
-            this.done.get(),
-            this.total,
-            System.currentTimeMillis() - this.start,
-            this.reused.get(),
-            this.bytes.get()
+        final List<String> names = new ListOf<>(
+            new Mapped<>(loc -> loc.replaceFirst("^Φ\\.", ""), this.busy)
         );
+        final StringBuilder line = new StringBuilder(
+            Logger.format(
+                "%d/%d entries in %[ms]s, %d from cache, %[size]s in XMLs",
+                this.done.get(),
+                this.total,
+                System.currentTimeMillis() - this.start,
+                this.reused.get(),
+                this.bytes.get()
+            )
+        );
+        if (!names.isEmpty()) {
+            line.append(": ").append(String.join(", ", new HeadOf<>(Progress.SHOWN, names)));
+        }
+        if (names.size() > Progress.SHOWN) {
+            line.append(", +").append(names.size() - Progress.SHOWN);
+        }
+        return line.toString();
+    }
+
+    /**
+     * Count one more entry as in processing.
+     *
+     * @param locator The locator of the entry, such as {@code Φ.number.exp}
+     */
+    void begin(final String locator) {
+        this.busy.add(locator);
+    }
+
+    /**
+     * Count one entry as not in processing any more.
+     *
+     * @param locator The locator of the entry, such as {@code Φ.number.exp}
+     */
+    void end(final String locator) {
+        this.busy.remove(locator);
     }
 
     /**
