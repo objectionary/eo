@@ -111,12 +111,17 @@ final class OyRemote implements Objectionary {
 
     @Override
     public boolean contains(final String name) throws IOException {
-        return this.exists(this.program.value(name)) || this.exists(this.directory.value(name));
+        return this.isProgram(name) || this.isDirectory(name);
     }
 
     @Override
     public boolean isDirectory(final String name) throws IOException {
         return this.exists(this.directory.value(name));
+    }
+
+    @Override
+    public boolean isProgram(final String name) throws IOException {
+        return this.exists(this.program.value(name));
     }
 
     @Override
