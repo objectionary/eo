@@ -7,11 +7,14 @@ package org.eolang.maven;
 import com.sun.net.httpserver.HttpServer;
 import com.yegor256.WeAreOnline;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -181,6 +184,70 @@ final class OyRemoteTest {
             ).isDirectory(directory),
             Matchers.is(true)
         );
+    }
+
+    @Test
+    void releasesBodyOfNotFoundResponse() throws Exception {
+        MatcherAssert.assertThat(
+            "The body of a 404 response must be released, while it stays open",
+            OyRemoteTest.released(404),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void releasesBodyOfThrottledResponse() throws Exception {
+        MatcherAssert.assertThat(
+            "The body of a 429 response must be released, while it stays open",
+            OyRemoteTest.released(429),
+            Matchers.is(true)
+        );
+    }
+
+    private static boolean released(final int status) throws Exception {
+        final long flood = 64L * 1024 * 1024;
+        final CountDownLatch cut = new CountDownLatch(1);
+        final HttpServer server = HttpServer.create(
+            new InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0
+        );
+        server.setExecutor(
+            command -> {
+                final Thread thread = new Thread(command);
+                thread.setDaemon(true);
+                thread.start();
+            }
+        );
+        server.createContext(
+            "/",
+            exchange -> {
+                exchange.sendResponseHeaders(status, flood);
+                try (OutputStream body = exchange.getResponseBody()) {
+                    final byte[] chunk = new byte[8192];
+                    for (long sent = 0L; sent < flood; sent += chunk.length) {
+                        body.write(chunk);
+                    }
+                } catch (final IOException ex) {
+                    cut.countDown();
+                }
+            }
+        );
+        server.start();
+        try {
+            final String tpl = String.format(
+                "http://127.0.0.1:%d/%%s/%%s.eo", server.getAddress().getPort()
+            );
+            Assertions.assertThrows(
+                IOException.class,
+                () -> new OyRemote(
+                    new UrlOy(tpl, "stub"),
+                    new UrlOy(tpl, "stub")
+                ).get("org.eolang.foo").stream(),
+                "Expected an IOException for the rejected HTTP status"
+            );
+            return cut.await(1L, TimeUnit.MINUTES);
+        } finally {
+            server.stop(0);
+        }
     }
 
     private static String notFoundMessage() throws Exception {
