@@ -101,7 +101,7 @@ final class Lhs {
         int idx = 0;
         while (idx < body.length() && found < 0) {
             final char glyph = body.charAt(idx);
-            if (glyph == '"') {
+            if (glyph == '"' && Tokens.opensString(body, idx)) {
                 idx = Tokens.closingQuote(body, idx);
             } else if (glyph == '(') {
                 depth = depth + 1;
