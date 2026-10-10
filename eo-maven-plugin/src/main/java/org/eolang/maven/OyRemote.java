@@ -25,6 +25,12 @@ import org.cactoos.iterable.IterableOf;
  *
  * <p>This class is supposed to be used together with {@link OyCached}.</p>
  *
+ * <p>A program is read from {@code raw.githubusercontent.com} and a directory
+ * is asked of the GitHub API, because both are meant to be read by a program.
+ * The web page under {@code github.com} is not: GitHub answers it with 403 to
+ * a client it does not care to serve, and a refusal to answer used to stand
+ * for the directory being absent (#9402).</p>
+ *
  * @since 0.1
  */
 final class OyRemote implements Objectionary {
@@ -57,7 +63,7 @@ final class OyRemote implements Objectionary {
                 hash
             ),
             new UrlOy(
-                "https://github.com/objectionary/home/tree/%s/objects/%s",
+                "https://api.github.com/repos/objectionary/home/contents/objects/%2$s?ref=%1$s",
                 hash
             ),
             proxies
@@ -135,6 +141,14 @@ final class OyRemote implements Objectionary {
         if (code == HttpURLConnection.HTTP_CLIENT_TIMEOUT || code == 429) {
             throw new IOException(
                 String.format("Transient HTTP error %d for %s, will retry", code, url)
+            );
+        }
+        if (code == HttpURLConnection.HTTP_FORBIDDEN) {
+            throw new IOException(
+                String.format(
+                    "HTTP error %d for %s, where a refusal to serve the request is no answer about presence",
+                    code, url
+                )
             );
         }
         return code >= HttpURLConnection.HTTP_OK && code < HttpURLConnection.HTTP_BAD_REQUEST;
