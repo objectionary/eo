@@ -12,7 +12,11 @@ import com.yegor256.xsline.StEnvelope;
 import com.yegor256.xsline.StXSL;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
+import java.net.URI;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
@@ -50,12 +54,22 @@ import org.xml.sax.SAXException;
  * since those megabytes are hundreds once parsed and reading a table again is
  * better than running a build out of memory.</p>
  *
+ * <p>What is kept is one state of the file, not its name: the time it was
+ * last written and its length go into the key. A build that runs
+ * {@code eo:inference} and then {@code eo:transpile} twice in one JVM
+ * rewrites the tables in between, and the second stamping must read what
+ * inference has just written rather than what the first one parsed
+ * (see #8225). A table that is not there has no state to tell, and an
+ * empty one stands for it: nothing is ever kept under such a key, since
+ * the reading throws before anything is put into the map.</p>
+ *
  * @since 0.75.0
  */
 final class StPure extends StEnvelope {
 
     /**
-     * The tables read so far, by their URIs.
+     * The tables read so far, by their URIs and the state of the files
+     * they were read from.
      */
     private static final Map<String, SoftReference<Node>> TABLES = new HashMap<>(0);
 
@@ -103,21 +117,37 @@ final class StPure extends StEnvelope {
     }
 
     private static Node table(final String href) throws TransformerException {
+        final String key = String.format("%s#%s", href, StPure.stamp(href));
         StPure.LOCK.lock();
         try {
-            final SoftReference<Node> kept = StPure.TABLES.get(href);
+            final SoftReference<Node> kept = StPure.TABLES.get(key);
             Node found = null;
             if (kept != null) {
                 found = kept.get();
             }
             if (found == null) {
                 found = StPure.parsed(href);
-                StPure.TABLES.put(href, new SoftReference<>(found));
+                StPure.TABLES.put(key, new SoftReference<>(found));
             }
             return found;
         } finally {
             StPure.LOCK.unlock();
         }
+    }
+
+    private static String stamp(final String href) {
+        String state;
+        try {
+            final BasicFileAttributes attrs = Files.readAttributes(
+                Paths.get(URI.create(href)), BasicFileAttributes.class
+            );
+            state = String.format(
+                "%d:%d", attrs.lastModifiedTime().toMillis(), attrs.size()
+            );
+        } catch (final IOException ex) {
+            state = "";
+        }
+        return state;
     }
 
     private static Node parsed(final String href) throws TransformerException {
