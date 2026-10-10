@@ -134,4 +134,17 @@ final class Woven {
             new Provided(this.given, new Ends(pairs).names(), this.hollows), copied
         ).all();
     }
+
+    /**
+     * The calls these binds leave out.
+     *
+     * @param binds What every pair put into the voids of what it copies, from
+     *  {@link #binds(Map, Map)}
+     * @return The calls nobody can place
+     */
+    Unplaced unplaced(final Map<String, Map<String, String>> binds) {
+        return new Unplaced(
+            this.all, this.applied.arguments(), this.applied.named(), binds.keySet()
+        );
+    }
 }
