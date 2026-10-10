@@ -27,12 +27,14 @@ final class MergingTest {
         final Path pkg = temp.resolve("pkg.xmir");
         Files.write(
             pkg,
-            new EoSyntax("[] > foo").parsed().toString().getBytes(StandardCharsets.UTF_8)
+            new EoSyntax(String.format("[] > foo%n  true ++> works"))
+                .parsed().toString().getBytes(StandardCharsets.UTF_8)
         );
         final Path member = temp.resolve("member.xmir");
         Files.write(
             member,
-            new EoSyntax("[] > bar").parsed().toString().getBytes(StandardCharsets.UTF_8)
+            new EoSyntax(String.format("[] > bar%n  true --> works"))
+                .parsed().toString().getBytes(StandardCharsets.UTF_8)
         );
         final Path target = new Place("foo").make(
             new Subdir(temp, "merge").path(), MjAssemble.XMIR
