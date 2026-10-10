@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object/errors/error[contains(text(),'only-phi formation body cannot be a reversed dispatch with horizontal arguments')]
+input: |
+  [] > foo
+    bar (^. 1 2 > [x]) > z
