@@ -146,17 +146,20 @@ final class OyRemote implements Objectionary {
             url, HttpResponse.BodyHandlers.ofInputStream()
         );
         final int code = response.statusCode();
+        final InputStream body = response.body();
         if (code == HttpURLConnection.HTTP_CLIENT_TIMEOUT || code == 429) {
+            body.close();
             throw new IOException(
                 String.format("Transient HTTP error %d for %s, will retry", code, url)
             );
         }
         if (code < HttpURLConnection.HTTP_OK || code >= HttpURLConnection.HTTP_BAD_REQUEST) {
+            body.close();
             throw new IOException(
                 String.format("HTTP error %d for %s", code, url)
             );
         }
-        return response.body();
+        return body;
     }
 
     private <T> HttpResponse<T> send(
