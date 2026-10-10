@@ -23,15 +23,15 @@ links: |
   </links>
 protocol: |
   <protocol>
-    <morph at="Φ.l🌵.e46">
-      <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e46">
+    <morph at="Φ.l/.e46">
+      <evaluate λ="L_entry" by="morph" at="Φ.l/.e46">
         <evaluate λ="L_bytes_size" by="morph" at="Φ.a🌵1">
-          <dataize meta="𝛿1.2">𝜎27:λ</dataize>
+          <dataize meta="𝛿1·2">𝜎27:λ</dataize>
           <minted symbol="𝜎128">𝜎27</minted>
         </evaluate>
       </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l🌵.e46">
-        <dataize meta="𝛿1.3">𝜎128:λ</dataize>
+      <evaluate λ="L_root" by="morph" at="Φ.l/.e46">
+        <dataize meta="𝛿1·3">𝜎128:λ</dataize>
       </evaluate>
     </morph>
     <msec>97</msec>

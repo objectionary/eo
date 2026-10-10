@@ -35,7 +35,8 @@ import org.eolang.cache.GlobalCache;
  * <li>the home directory itself holds the world and the other files that
  * are made on the way to it;</li>
  * <li>{@code 1-planting}, inside the home directory, holds the copies of the
- * sources, without the tests;</li>
+ * sources, without the tests, and with every {@code T} turned into a copy
+ * of {@code throw};</li>
  * <li>{@code 2-protocols}, inside the home directory, holds one protocol file
  * for every entry that phino worked on;</li>
  * <li>the directory of atoms, given to the constructor, holds the Java

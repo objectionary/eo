@@ -108,7 +108,7 @@ final class Escapes {
         final int cursor = start + 1;
         boolean valid = cursor + 4 <= body.length();
         for (int idx = cursor; valid && idx < cursor + 4; idx = idx + 1) {
-            valid = Character.digit(body.charAt(idx), 16) >= 0;
+            valid = Escapes.hexDigit(body.charAt(idx));
         }
         if (!valid) {
             throw new NumberFormatException(
@@ -122,6 +122,10 @@ final class Escapes {
             (char) Integer.parseInt(body.substring(cursor, cursor + 4), 16)
         );
         return cursor + 4;
+    }
+
+    private static boolean hexDigit(final char glyph) {
+        return "0123456789abcdefABCDEF".indexOf(glyph) >= 0;
     }
 
     private static String singleCharEscape(final char head, final char next) {

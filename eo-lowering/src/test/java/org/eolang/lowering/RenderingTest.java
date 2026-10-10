@@ -111,7 +111,7 @@ final class RenderingTest {
             Files.write(
                 protocol,
                 String.format(
-                    "<protocol><morph><evaluate λ=\"L_root\"><dataize meta=\"𝛿1.2\">𝜎%d:λ</dataize></evaluate></morph></protocol>",
+                    "<protocol><morph><evaluate λ=\"L_root\"><dataize meta=\"𝛿1·2\">𝜎%d:λ</dataize></evaluate></morph></protocol>",
                     idx + 1
                 ).getBytes(StandardCharsets.UTF_8)
             );

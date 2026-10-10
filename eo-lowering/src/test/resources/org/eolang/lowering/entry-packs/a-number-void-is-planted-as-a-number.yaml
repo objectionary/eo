@@ -13,6 +13,7 @@ provides: |
   <provides>
     <type id="Φ.gap">
       <attr name="a" type="Φ.gap.a" void="true" holds="Φ.number"/>
+      <attr name="b" type="Φ.gap.b" void="true" holds="Φ.number"/>
     </type>
   </provides>
 xmir:

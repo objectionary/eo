@@ -10,5 +10,11 @@ eo:
   vague.eo: |
     [k] > vague
       k.plus 7 > @
+provides: |
+  <provides>
+    <type id="Φ.vague">
+      <attr name="k" type="Φ.vague.k" void="true" holds="Φ.number"/>
+    </type>
+  </provides>
 entries:
   - "1\tΦ.vague"

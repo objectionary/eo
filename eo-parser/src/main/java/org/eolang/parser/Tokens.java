@@ -721,7 +721,11 @@ final class Tokens {
     }
 
     private static boolean hexDigit(final char glyph) {
-        return Character.digit(glyph, 16) >= 0;
+        return Tokens.digit(glyph) || Tokens.hexLetter(glyph);
+    }
+
+    private static boolean hexLetter(final char glyph) {
+        return glyph >= 'a' && glyph <= 'f' || glyph >= 'A' && glyph <= 'F';
     }
 
     private static boolean letterAt(final String body, final int idx) {
@@ -788,6 +792,7 @@ final class Tokens {
 
     private void skipGroup(final int start) {
         int depth = 1;
+        int deepest = 1;
         this.cursor = this.cursor + 1;
         while (this.cursor < this.body.length() && depth > 0) {
             final char glyph = this.body.charAt(this.cursor);
@@ -801,6 +806,7 @@ final class Tokens {
                 }
             } else if (glyph == '(') {
                 depth = depth + 1;
+                deepest = Math.max(deepest, depth);
             } else if (glyph == ')') {
                 depth = depth - 1;
             }
@@ -810,6 +816,12 @@ final class Tokens {
             throw new ParseError(
                 this.span.line(), this.span.indent() + start,
                 "unterminated paren group"
+            );
+        }
+        if (deepest > Stack.DEEPEST) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + start,
+                String.format("object nested deeper than %d levels", Stack.DEEPEST)
             );
         }
     }

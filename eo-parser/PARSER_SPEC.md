@@ -59,7 +59,7 @@ A conforming parser meets these complexity bounds:
 - **Time:** O(n) in the number of source lines (single pass). Per-line work is O(L) in line length for classification and emission; total: O(N) in source character count.
 - **Memory:** O(D) for the indent stack (§5.1), where D is the maximum indent depth in the source. O(B) for any open BYTES continuation (§3.13) or TEXT block (§3.11), where B is body size. O(C) for the pending comment buffer (§5.1.1), where C is the largest comment block.
 - **No backtracking:** the cross-line FSM (§5.2) consults only the current stack top and a small global state; no rewriting of earlier emission is required after a line is processed (modulo the per-line savepoint for error recovery, §7.2).
-- **Pathological inputs:** deeply nested formations grow the indent stack linearly with depth; no superlinear blowup, and nesting past 256 levels is rejected outright (R-5.2.7a). Long `.method` chains emit O(K) flat siblings for K chain links (§9.0.3).
+- **Pathological inputs:** deeply nested formations grow the indent stack linearly with depth; no superlinear blowup, and nesting past 256 levels is rejected outright, whether it comes from indentation (R-5.2.7a) or from paren groups (R-3.6.6a). Long `.method` chains emit O(K) flat siblings for K chain links (§9.0.3).
 
 ---
 
@@ -176,7 +176,7 @@ The parser recognises the following lexical tokens:
 | `QDOT` | `?.` — the fragile-dispatch operator (§3.5). Accepted in every position the plain `.` dispatch is, recorded as `@fragile` in XMIR. A `?` immediately followed by `.` is `QDOT`; a `?` followed by space (`? > name`) is `VOID`. |
 | `INT` | optional sign, then `0` or non-zero digit string. |
 | `FLOAT` | optional sign, digits, `.`, digits, optional exponent. |
-| `HEX` | `0x` followed by hex digits. |
+| `HEX` | `0x` followed by ASCII hex digits (R-9.8.3). |
 | `STRING` | `"..."` with standard escape sequences. |
 | `BYTES` | one of: `--` (empty); a single byte followed by `-`; a sequence `BB-BB(-BB)*` optionally continued across lines via trailing `-` + newline (§3.13). |
 | `TEXT` | triple-quoted text block (§3.11). |
@@ -399,6 +399,8 @@ Illegal — formation as a horizontal arg:
 foo ([x] body)               ← rejected: horizontal formation as argument
 foo [x] 5                    ← rejected: `[x]` in the horizontal arg list of foo
 ```
+
+R-3.6.6a. **Depth limit.** Paren groups nest 256 deep at the most, counted over the whole line. Otherwise: error `object nested deeper than 256 levels`, reported at the opening parenthesis of the outermost group. Every group becomes one more level of the emitted tree, and the reader of a group parses its contents in turn, so the limit is the one R-5.2.7a puts on indentation and R-3.5.3c on a chain, and it is there for the same reason.
 
 R-3.6.6. **A paren group is consumed whole.** The expression between `(` and `)` must account for every character inside it; a group is an expression, not a recovery boundary. Anything the inner expression leaves behind — an optional marker, a name suffix, a test attribute, any token that has no place at that position — is rejected (`unexpected content inside a parenthesised expression`) rather than dropped, so `foo (bar baz?)`, `foo (bar baz >)` and `foo (bar baz +> test)` fail the same way `bar baz?` does without the parens.
 
@@ -1358,7 +1360,7 @@ R-9.7.3. **Escape sequence table.** Recognised in both `STRING` and `TEXT`:
 | `\'` | `'` |
 | `\\` | `\` |
 | `\NNN` | Octal byte. `N` ∈ `[0-7]`, length 1–3 digits, value ≤ 0o377 (= 255 decimal). Pattern: `\\` followed by an optional `[0-3]`, an optional `[0-7]`, and a required `[0-7]` |
-| `\uXXXX` | Unicode codepoint, 4 hex digits. The grammar permits `\uu...uXXXX` (one or more `u`s) for legacy escape forms; the parser recognises any such sequence and decodes it to the codepoint. |
+| `\uXXXX` | Unicode codepoint, 4 hex digits, each one of `0`-`9`, `a`-`f`, `A`-`F` and nothing else: a character another alphabet counts as a digit, such as the fullwidth `Ｆ`, makes the escape `unicode escape \u… is not exactly four hexadecimal digits`. The grammar permits `\uu…uXXXX` (one or more `u`s) for legacy escape forms; the parser recognises any such sequence and decodes it to the codepoint. |
 
 R-9.7.4. **Escape decoding happens at parse time.** Every recognised escape — single-character, octal, and unicode — is decoded into its target codepoint(s) by the parser before the string body is fed into the `<o base='Φ.bytes'>` UTF-8 carrier (R-9.4 data carrier emission). The XMIR text body therefore contains decoded characters, never the source-level escape sequence; this applies equally to `STRING` and `TEXT` tokens (R-9.7.1 / R-9.7.2). Downstream consumers see the canonical UTF-8 bytes, not the literal `\uXXXX` / `\NNN` form.
 
@@ -1368,7 +1370,7 @@ Any other backslash sequence is a lexical error.
 
 R-9.8.1. `INT`: optional sign (`+` or `-`), then either `0` alone (the literal zero) or a digit in `[1-9]` followed by any number of digits in `[0-9]`. **Any leading zero on a multi-digit literal is forbidden** — `07`, `007`, `+07`, and `-07` are all lexical errors. The new parser narrows the underlying grammar here: the grammar (`INT : (PLUS | MINUS)? (ZERO | ZERO?[1-9][0-9]*)`) permits one optional leading zero before a non-zero digit-run; the new parser does not. Implementations must check explicitly after lexing.
 R-9.8.2. `FLOAT`: optional sign, one or more digits, `.`, one or more digits, optional exponent `(e|E)(+|-)?digits`.
-R-9.8.3. `HEX`: literal `0x` (lowercase only) followed by one or more hex digits (case-insensitive).
+R-9.8.3. `HEX`: literal `0x` (lowercase only) followed by one or more hex digits (case-insensitive). A hex digit is one of `0`-`9`, `a`-`f`, `A`-`F` and nothing else: a character another alphabet counts as a digit, such as the fullwidth `Ｆ` or the fullwidth `１`, ends the literal where it stands, so `0xＦＦ` is `hexadecimal literal requires at least one digit` rather than 255.
 
 ### 9.9 Error messages — canonical texts
 
@@ -1380,7 +1382,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | --- | --- |
 | Odd indent | `unexpected odd indent` |
 | Indent jump > 1 level | `indent increased by more than one level` |
-| Nesting past 256 levels, by indentation (R-5.2.7a) or by a dispatch chain (R-3.5.3c) | `object nested deeper than 256 levels` |
+| Nesting past 256 levels, by indentation (R-5.2.7a), by a dispatch chain (R-3.5.3c) or by paren groups (R-3.6.6a) | `object nested deeper than 256 levels` |
 | Tab in leading whitespace | `tab character in leading whitespace` |
 | Leading whitespace other than a space or a tab (R-2.2.1) | `invalid character in leading whitespace` |
 | Carriage return that no line feed follows (R-2.1.2) | `standalone carriage return is not a line ending` |

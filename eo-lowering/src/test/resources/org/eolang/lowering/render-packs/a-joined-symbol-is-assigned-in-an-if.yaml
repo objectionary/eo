@@ -22,22 +22,22 @@ provides: |
   </provides>
 protocol: |
   <protocol>
-    <morph at="Φ.l🌵.e8">
-      <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e8">
+    <morph at="Φ.l/.e8">
+      <evaluate λ="L_entry" by="morph" at="Φ.l/.e8">
         <evaluate λ="L_bytes_eq" by="morph" at="Φ.a🌵1">
-          <dataize meta="𝛿1.2">𝜎10:λ</dataize>
-          <bind meta="𝛿2.2">FF-</bind>
+          <dataize meta="𝛿1·2">𝜎10:λ</dataize>
+          <bind meta="𝛿2·2">FF-</bind>
           <minted symbol="𝜎752">𝜎10 FF-</minted>
         </evaluate>
       </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l🌵.e8">
+      <evaluate λ="L_root" by="morph" at="Φ.l/.e8">
         <evaluate λ="L_fork" by="dataize" at="Φ.a🌵4">
-          <dataize meta="𝛿1.4">𝜎752:λ</dataize>
+          <dataize meta="𝛿1·4">𝜎752:λ</dataize>
           <known symbol="𝜎753">FF-</known>
           <known symbol="𝜎754">00-</known>
           <joined symbol="𝜎755">𝜎753 𝜎754</joined>
         </evaluate>
-        <dataize meta="𝛿1.3">𝜎755:λ</dataize>
+        <dataize meta="𝛿1·3">𝜎755:λ</dataize>
       </evaluate>
     </morph>
     <msec>191</msec>
