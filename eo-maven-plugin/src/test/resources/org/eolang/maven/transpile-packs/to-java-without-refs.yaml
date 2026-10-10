@@ -24,8 +24,8 @@ input: |
       [] > inner-atom /bytes
       [] > inner-abstract
       if. > @
-        true > some
-        false > body
+        true
+        false
         [] > abstract-as-arg
           ^.^.void-attr > @
             5

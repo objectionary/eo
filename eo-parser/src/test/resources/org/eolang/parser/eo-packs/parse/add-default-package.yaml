@@ -30,7 +30,7 @@ input: |
   [args] > main
     stdin.x > w
     and > @
-      (scanner stdin).next-line > line!
+      (scanner stdin).next-line >>! line
       (stdout "You entered" line).print
       $
       ^.i
