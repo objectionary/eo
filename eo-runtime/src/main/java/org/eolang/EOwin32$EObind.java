@@ -36,7 +36,7 @@ public final class EOwin32$EObind extends PhDefault implements Atom {
     public Phi lambda() {
         return new Data.ToPhi(
             Winsock.INSTANCE.bind(
-                new Pointer(new Dataized(this.take("descriptor")).asNumber().longValue()),
+                new Pointer(new Handle("the socket of bind", this.take("descriptor")).it()),
                 new Sockaddr(this.take("sockaddr")).it(),
                 new Int(Expect.at(this, "length")).it()
             )
