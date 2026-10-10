@@ -37,7 +37,7 @@ eo: |
           sprintf
             "%dth Fibonacci number is %d\n"
             n
-            fibonacci n > f
+            fibonacci n
         true
 
     [i] > other
