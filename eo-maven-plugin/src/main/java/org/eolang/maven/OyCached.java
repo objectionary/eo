@@ -9,6 +9,9 @@ import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.cactoos.Input;
+import org.cactoos.bytes.BytesOf;
+import org.cactoos.bytes.IoCheckedBytes;
+import org.cactoos.io.InputOf;
 
 /**
  * Cached Objectionary.
@@ -23,7 +26,7 @@ final class OyCached implements Objectionary {
     private final Objectionary origin;
 
     /**
-     * The cache for programs.
+     * The cache for the content of programs.
      */
     private final Map<String, Input> programs;
 
@@ -90,7 +93,9 @@ final class OyCached implements Objectionary {
             return this.programs.computeIfAbsent(
                 name, key -> {
                     try {
-                        return this.origin.get(name);
+                        return new InputOf(
+                            new IoCheckedBytes(new BytesOf(this.origin.get(name))).asBytes()
+                        );
                     } catch (final IOException exception) {
                         throw new UncheckedIOException(exception);
                     }
