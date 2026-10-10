@@ -86,6 +86,50 @@ final class CacheTest {
     }
 
     @Test
+    void recompilesWhenFileBecomesDirectory(@Mktmp final Path temp) throws IOException {
+        final Path base = temp.resolve("cache-file-to-directory");
+        Files.createDirectories(base);
+        final Path source = temp.resolve("source");
+        new Saved("", source).value();
+        final Path target = temp.resolve("target");
+        final Path tail = source.getFileName();
+        final Cache cache = new Cache(
+            base, CacheTest::kind
+        );
+        cache.apply(source, target, tail);
+        Files.delete(source);
+        Files.createDirectory(source);
+        cache.apply(source, target, tail);
+        MatcherAssert.assertThat(
+            "a directory replacing a file must be compiled",
+            Files.readString(target),
+            Matchers.equalTo("directory")
+        );
+    }
+
+    @Test
+    void recompilesWhenDirectoryBecomesFile(@Mktmp final Path temp) throws IOException {
+        final Path base = temp.resolve("cache-directory-to-file");
+        Files.createDirectories(base);
+        final Path source = temp.resolve("source");
+        Files.createDirectory(source);
+        final Path target = temp.resolve("target");
+        final Path tail = source.getFileName();
+        final Cache cache = new Cache(
+            base, CacheTest::kind
+        );
+        cache.apply(source, target, tail);
+        Files.delete(source);
+        new Saved("", source).value();
+        cache.apply(source, target, tail);
+        MatcherAssert.assertThat(
+            "a file replacing a directory must be compiled",
+            Files.readString(target),
+            Matchers.equalTo("file")
+        );
+    }
+
+    @Test
     void compilesAgainWhenChanged(@Mktmp final Path temp) throws Exception {
         final Path base = temp.resolve("cache-base-dir");
         Files.createDirectories(base);
@@ -325,6 +369,16 @@ final class CacheTest {
             IllegalStateException.class,
             () -> new Cache(state.base, p -> "v2").apply(state.source, state.target, state.tail)
         );
+    }
+
+    private static String kind(final Path path) {
+        final String out;
+        if (Files.isDirectory(path)) {
+            out = "directory";
+        } else {
+            out = "file";
+        }
+        return out;
     }
 
     private static String hash(final String content) throws NoSuchAlgorithmException {
