@@ -101,7 +101,7 @@ final class LnVoid implements Line {
             );
         }
         globals.seal(emit, this.span);
-        final Level level = new Transition(stack, this.span).apply(
+        final Level level = new Transition(stack, this.span, emit).apply(
             Kind.VOID, Openness.VCOMPLETED, new Admission(suffix.named(), true)
         );
         this.checkPlaced(level);
