@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A formation passed as a named argument, whose body is just its φ. The
+# compact head `0D- > [c]` has no place for the binding, and `0D- > [c]:z`
+# does not parse, so the formation keeps its vertical form.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > app
+    foo > @
+      [c]:z
+        0D- > @
