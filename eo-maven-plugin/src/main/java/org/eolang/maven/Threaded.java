@@ -81,7 +81,7 @@ final class Threaded<T> {
                     tojo -> new ScalarWithFallback<>(
                         () -> this.scalar.apply(tojo),
                         new Fallback.From<>(
-                            Exception.class,
+                            Throwable.class,
                             ex -> {
                                 final String message = String.format(
                                     "Failed to process \"%s\" (%s)",
