@@ -122,7 +122,7 @@ final class SubdirTest {
             ProcessHandle.current().info().command().orElse("java"),
             holder.toString(),
             target.resolve(".seqdir.lock").toString()
-        ).redirectErrorStream(true).start();
+        ).redirectError(ProcessBuilder.Redirect.INHERIT).start();
         try (
             BufferedReader out = new BufferedReader(
                 new InputStreamReader(proc.getInputStream(), StandardCharsets.UTF_8)
