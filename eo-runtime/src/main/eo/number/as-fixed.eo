@@ -158,27 +158,19 @@
 
   eq. ++> can-format-the-error-message-of-a-magnitude-past-the-decimal-range
     "Can't write a fixed-point decimal with a magnitude of 2^63 or larger"
-    9.223372036854776e18.as-fixed
-      0
-      I
+    9.223372036854776e18.as-fixed 0 I
 
   eq. ++> can-format-the-error-message-of-a-non-decrementable-precision
     "Can't write a fixed-point decimal with 9007199254740992.000000 fraction places"
-    1.25.as-fixed
-      9007199254740992
-      I
+    1.25.as-fixed 9007199254740992 I
 
   eq. ++> can-format-the-error-message-of-infinite-places
     "Can't write a fixed-point decimal with a non-finite number of fraction places"
-    3.14159.as-fixed
-      pinf
-      I
+    3.14159.as-fixed pinf I
 
   eq. ++> can-format-the-error-message-of-negative-places
     "Can't write a fixed-point decimal with -2.000000 fraction places"
-    3.14159.as-fixed
-      -2
-      I
+    3.14159.as-fixed -2 I
 
   eq. ++> can-honour-custom-places
     "3.14"

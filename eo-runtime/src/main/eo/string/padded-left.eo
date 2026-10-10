@@ -42,35 +42,23 @@
 
   eq. ++> can-count-characters-and-not-bytes-when-padding-left
     "  Ж"
-    "Ж".padded-left
-      3
-      " "
+    "Ж".padded-left 3 " "
 
   eq. ++> can-format-the-error-message-of-a-negative-width-when-padding-left
     "Can't pad text to -1.000000 characters with x"
-    "y".padded-left
-      -1
-      "x"
-      I
+    "y".padded-left -1 "x" I
 
   eq. ++> can-format-the-error-message-of-an-infinite-width-when-padding-left
     "Can't pad text to infinity characters with x"
-    "y".padded-left
-      pinf
-      "x"
-      I
+    "y".padded-left pinf "x" I
 
   eq. ++> can-pad-a-number-with-leading-spaces
     "   42"
-    "42".padded-left
-      5
-      " "
+    "42".padded-left 5 " "
 
   eq. ++> can-pad-with-leading-zeros
     "0042"
-    "42".padded-left
-      4
-      "0"
+    "42".padded-left 4 "0"
 
   eq. ++> can-recover-from-a-multi-character-fill-when-padding-left
     "recovered"
@@ -102,21 +90,15 @@
 
   eq. ++> can-return-a-longer-text-unchanged-when-padding-left
     "hello"
-    "hello".padded-left
-      3
-      " "
+    "hello".padded-left 3 " "
 
   eq. ++> can-return-a-text-of-the-exact-width-unchanged-when-padding-left
     "hey"
-    "hey".padded-left
-      3
-      " "
+    "hey".padded-left 3 " "
 
   eq. ++> can-return-a-text-unchanged-at-zero-width-when-padding-left
     "x"
-    "x".padded-left
-      0
-      " "
+    "x".padded-left 0 " "
 
   padded-left. --> stops-on-a-negative-width-when-padding-left
     "y"
