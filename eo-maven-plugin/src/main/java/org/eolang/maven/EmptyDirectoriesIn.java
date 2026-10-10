@@ -18,6 +18,10 @@ import java.nio.file.Path;
  * outside the build output that EO never created. A link is also something
  * a directory holds, so a directory holding one is not empty.</p>
  *
+ * <p>This holds for the root as well as for anything under it: when the
+ * root given is a link, the walk stops there and the tree it points at is
+ * left alone.</p>
+ *
  * @since 0.55
  */
 final class EmptyDirectoriesIn {
@@ -58,15 +62,13 @@ final class EmptyDirectoriesIn {
     }
 
     private void delete(final File dir) {
-        if (!dir.isDirectory()) {
+        if (!dir.isDirectory() || Files.isSymbolicLink(dir.toPath())) {
             return;
         }
         final File[] before = dir.listFiles();
         if (before != null) {
             for (final File file : before) {
-                if (file.isDirectory() && !Files.isSymbolicLink(file.toPath())) {
-                    this.delete(file);
-                }
+                this.delete(file);
             }
         }
         final File[] after = dir.listFiles();
