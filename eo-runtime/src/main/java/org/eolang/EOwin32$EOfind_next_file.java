@@ -4,6 +4,7 @@
  */
 package org.eolang;
 
+import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import org.eolang.sys.Handles;
 import org.eolang.sys.win32.Kernel32;
@@ -14,8 +15,10 @@ import org.eolang.sys.win32.WinFindData;
  * `FindNextFileW` does.
  *
  * <p>The name comes with the code {@code 0}. The search running out is a
- * false coming back, and then the code is {@code -1} and there is no name,
- * which is what tells EO to stop reading.</p>
+ * false coming back with {@code GetLastError} at {@code ERROR_NO_MORE_FILES},
+ * which is {@code 18}, and then the code is {@code -1} and there is no name,
+ * which is what tells EO to stop reading. Any other failure is a read that
+ * went wrong: the code is {@code -2} and the name holds the error.</p>
  *
  * @since 0.77.0
  * @checkstyle IllegalIdentifierNameCheck (6 lines)
@@ -44,9 +47,14 @@ public final class EOwin32$EOfind_next_file extends PhDefault implements Atom {
         if (found) {
             result.put(0, new Data.ToPhi(0));
             result.put(1, new Data.ToPhi(data.filename()));
-        } else {
+        } else if (Native.getLastError() == 18) {
             result.put(0, new Data.ToPhi(-1));
             result.put(1, new PhDefault());
+        } else {
+            result.put(0, new Data.ToPhi(-2));
+            result.put(
+                1, new Data.ToPhi(String.format("Win32 error %d", Native.getLastError()))
+            );
         }
         return result;
     }
