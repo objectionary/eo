@@ -398,7 +398,11 @@ final class MjTranspileTest {
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
-            Matchers.not(Matchers.containsString("new PhDefault"))
+            Matchers.not(
+                Matchers.matchesPattern(
+                    "(?s).*(?:new PhDefault|new PhApplication\\([^,]+, new byte\\[\\]).*"
+                )
+            )
         );
     }
 
@@ -928,8 +932,6 @@ final class MjTranspileTest {
         ).xpath("//@java-name").get(0);
     }
 
-    // A workspace with an object and a member of its package, where the
-    // member holds an atom.
     private static FakeMaven withMember(final Path temp) throws IOException {
         return new FakeMaven(temp).withProgram(
             String.join(
