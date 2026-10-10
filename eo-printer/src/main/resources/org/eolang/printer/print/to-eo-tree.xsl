@@ -158,19 +158,31 @@
     <xsl:sequence select="if (empty($segments) or $segments[1] != $eo:rho) then 0 else 1 + eo:rho-run(subsequence($segments, 2))"/>
   </xsl:function>
   <!--
+  Whether a void carries an auto-generated name and no handle, the bare
+  "? &gt;&gt;" of R-3.4.7. Such a void has no name to show: the cactus one
+  is unreachable from outside (§9.2) and no handle stands for it inside
+  the file either.
+  -->
+  <xsl:function name="eo:bare-void" as="xs:boolean">
+    <xsl:param name="o" as="element()"/>
+    <xsl:sequence select="eo:void($o) and empty($o/@local) and starts-with(string($o/@name), $eo:cactus-name)"/>
+  </xsl:function>
+  <!--
   Whether a void has to be printed as a "? &gt; name" body line instead of
-  being folded into the "[…]" bracket head. Three shapes cannot live in
+  being folded into the "[…]" bracket head. Four shapes cannot live in
   the head: a "&gt;&gt; name" handle, whose anonymity a public bracket param
-  would blow (§9.2, R-9.2.3, #5581); a "/type" or "/{type …}" annotation,
-  which a bracket param cannot express (#5614); and every void of an
-  atom, whose head must stay empty (R-3.4.10) so a typed void may be
-  followed by an untyped one without the two swapping places (#6082).
-  The handle of a receiver is not one of them: "^s" is a bracket param,
-  and the only spelling the receiver's handle has (R-3.4.13, #8227).
+  would blow (§9.2, R-9.2.3, #5581); a bare "&gt;&gt;", which has no name at
+  all to put between the brackets (#9379); a "/type" or "/{type …}"
+  annotation, which a bracket param cannot express (#5614); and every
+  void of an atom, whose head must stay empty (R-3.4.10) so a typed void
+  may be followed by an untyped one without the two swapping places
+  (#6082). The handle of a receiver is not one of them: "^s" is a bracket
+  param, and the only spelling the receiver's handle has (R-3.4.13,
+  #8227).
   -->
   <xsl:function name="eo:vertical-void" as="xs:boolean">
     <xsl:param name="o" as="element()"/>
-    <xsl:sequence select="eo:void($o) and ((exists($o/@local) and not($o/@name = $eo:rho)) or exists($o/@type) or exists($o/@args) or eo:atom($o/..))"/>
+    <xsl:sequence select="eo:void($o) and ((exists($o/@local) and not($o/@name = $eo:rho)) or eo:bare-void($o) or exists($o/@type) or exists($o/@args) or eo:atom($o/..))"/>
   </xsl:function>
   <!--
   A void's type tail (R-3.4.8): " /type" for its own forma, " /{type …}"
@@ -390,15 +402,17 @@
   <!-- VOID AS A VERTICAL BODY LINE -->
   <!--
   A void the bracket head cannot hold, printed as a "? &gt; name" body line
-  (R-3.4.7); "eo:vertical-void" names the three shapes. A "&gt;&gt; name"
+  (R-3.4.7); "eo:vertical-void" names the four shapes. A "&gt;&gt; name"
   handle survives "restore-local-names" in @local and keeps the void
-  anonymous; a "/type" or "/{type …}" tail is rendered by
-  "eo:void-type"; and a φ or ρ void reverts to its "@" or "^" surface
-  spelling.
+  anonymous; a void that kept its cactus name alone is written back as
+  the bare "&gt;&gt;" it was, since the cactus name is no spelling of it
+  (#9379); a "/type" or "/{type …}" tail is rendered by "eo:void-type";
+  and a φ or ρ void reverts to its "@" or "^" surface spelling.
   -->
   <xsl:template match="o[eo:vertical-void(.)]" mode="tree">
-    <xsl:variable name="arrow" select="if (exists(@local)) then ' &gt;&gt; ' else ' &gt; '"/>
-    <xsl:variable name="label" select="if (exists(@local)) then string(@local) else if (@name = $eo:phi) then '@' else if (@name = $eo:rho) then '^' else string(@name)"/>
+    <xsl:variable name="bare" select="eo:bare-void(.)"/>
+    <xsl:variable name="arrow" select="if (exists(@local) or $bare) then ' &gt;&gt;' else ' &gt;'"/>
+    <xsl:variable name="label" select="if ($bare) then '' else concat(' ', if (exists(@local)) then string(@local) else if (@name = $eo:phi) then '@' else if (@name = $eo:rho) then '^' else string(@name))"/>
     <line base="?" tail="{concat($arrow, $label, eo:void-type(.))}" abstract="no" test="no" reversed="no"/>
   </xsl:template>
   <!-- PIPE APPLICATION (§3.14) -->

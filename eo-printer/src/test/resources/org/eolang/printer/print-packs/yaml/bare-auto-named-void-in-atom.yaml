@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A bare "? >>" void inside an atom (R-3.4.7): an auto-generated name and no
+# handle. The parser gives it a cactus name, which §9.2 keeps unreachable from
+# outside, so the name is no spelling of the void and the printer has to write
+# the void back as the bare "? >>" it was. Before #9379 it printed the cactus
+# name itself, "? > a🌵2-2", which re-parses as "cactus emoji is reserved for
+# auto-names". The type annotation rides along, since a void carries one
+# wherever it is written.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > foo /number
+    ? >> /number
+    ? >>
+
+printed: |
+  [] > foo /Q.number
+    ? >> /Q.number
+    ? >>
