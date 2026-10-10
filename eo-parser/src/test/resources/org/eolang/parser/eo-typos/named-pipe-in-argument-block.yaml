@@ -2,21 +2,11 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-penalties:
-  INDENT: 3
-  BRACKET: 7
-  EXCESS: 1
-  WIDTH: 80
-  STEP: 2
-  SPACE: 7
-origin: |
+line: 5
+message: "an argument cannot carry a name, move it into the formation body or give it a `>>` handle"
+input: |
   [] > app
     and > result
       [x] > bar
         x > @
-      | 5 >> baz
-printed: |
-  [] > app
-    and baz > result
-    I > bar
-    | 5 >> baz
+      | 5 > baz

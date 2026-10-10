@@ -8,10 +8,10 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@name='app']/o[@name='five' and @base='Φ.number']
-  - //o[@base='ξ.foo']/o[@base='ξ.five']
+  - //o[@name='app']/o[@local='five' and @base='Φ.number']
+  - //o[@base='ξ.foo']/o[starts-with(@base, 'ξ.a🌵')]
 input: |
   [] > app
     I > foo
     | >>
-      5 > five
+      5 >> five
