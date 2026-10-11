@@ -30,7 +30,7 @@ final class ProgressTest {
         MatcherAssert.assertThat(
             "the status must count the entries morphed so far, but it doesnt",
             progress.asString(),
-            Matchers.startsWith("2 of 7 entries")
+            Matchers.startsWith("2/7 entries")
         );
     }
 
@@ -42,7 +42,7 @@ final class ProgressTest {
         MatcherAssert.assertThat(
             "the status must sum the bytes of the protocols written so far, but it doesnt",
             progress.asString(),
-            Matchers.containsString("648b of protocols")
+            Matchers.containsString("648b in XMLs")
         );
     }
 
@@ -55,7 +55,7 @@ final class ProgressTest {
         MatcherAssert.assertThat(
             "the status must count the protocols taken from the cache, but it doesnt",
             progress.asString(),
-            Matchers.containsString("2 of them from cache")
+            Matchers.containsString("2 from cache")
         );
     }
 
@@ -68,7 +68,61 @@ final class ProgressTest {
         MatcherAssert.assertThat(
             "the status must count a reused protocol as a morphed entry, but it doesnt",
             progress.asString(),
-            Matchers.startsWith("2 of 5 entries")
+            Matchers.startsWith("2/5 entries")
+        );
+    }
+
+    @Test
+    void listsTheEntriesInProcessingWithoutTheirPhi() {
+        final Progress progress = new Progress(6);
+        progress.begin("Φ.number.exp");
+        progress.begin("Φ.number.power");
+        MatcherAssert.assertThat(
+            "the status must list the entries in processing, but it doesnt",
+            progress.asString(),
+            Matchers.endsWith(" in XMLs: number.exp, number.power")
+        );
+    }
+
+    @Test
+    void cutsTheListOfEntriesInProcessingAfterFive() {
+        final Progress progress = new Progress(11);
+        progress.begin("Φ.number.sin");
+        progress.begin("Φ.number.cos");
+        progress.begin("Φ.bytes.as-hex");
+        progress.begin("Φ.txt.sprintf");
+        progress.begin("Φ.ms.walk");
+        progress.begin("Φ.number.floor");
+        progress.begin("Φ.i64.as-i32");
+        MatcherAssert.assertThat(
+            "the status must cut the list of entries in processing after five, but it doesnt",
+            progress.asString(),
+            Matchers.endsWith(": number.sin, number.cos, bytes.as-hex, txt.sprintf, ms.walk, +2")
+        );
+    }
+
+    @Test
+    void forgetsTheEntryThatIsOver() {
+        final Progress progress = new Progress(3);
+        progress.begin("Φ.tuple.at");
+        progress.begin("Φ.number.as-i64");
+        progress.end("Φ.tuple.at");
+        MatcherAssert.assertThat(
+            "the status must not list an entry that is over, but it does",
+            progress.asString(),
+            Matchers.endsWith(" in XMLs: number.as-i64")
+        );
+    }
+
+    @Test
+    void listsNothingWhenNoEntryIsInProcessing() {
+        final Progress progress = new Progress(8);
+        progress.begin("Φ.bytes.concat");
+        progress.end("Φ.bytes.concat");
+        MatcherAssert.assertThat(
+            "the status must not list anything when no entry is in processing, but it does",
+            progress.asString(),
+            Matchers.endsWith(" in XMLs")
         );
     }
 }
