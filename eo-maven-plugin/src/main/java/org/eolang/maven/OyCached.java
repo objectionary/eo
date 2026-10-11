@@ -13,6 +13,12 @@ import org.cactoos.Input;
 /**
  * Cached Objectionary.
  *
+ * <p>A name is remembered as a program and as a directory apart, and
+ * {@code contains()} is the two of them together, since that is what it
+ * means: a name the objectionary has either way. Keeping the two answers
+ * apart is what lets a caller tell a package from a program when the
+ * objects index cannot be read (#9368).</p>
+ *
  * @since 0.56.10
  */
 final class OyCached implements Objectionary {
@@ -33,9 +39,9 @@ final class OyCached implements Objectionary {
     private final Map<String, Boolean> directories;
 
     /**
-     * The cache for presence checks.
+     * The cache for the presence of programs.
      */
-    private final Map<String, Boolean> presence;
+    private final Map<String, Boolean> sources;
 
     /**
      * Ctor.
@@ -74,14 +80,14 @@ final class OyCached implements Objectionary {
      * @param oby The objectionary
      * @param progs The cache for programs
      * @param dirs The cache for directories
-     * @param present The cache for presence checks
+     * @param srcs The cache for the presence of programs
      */
     OyCached(final Objectionary oby, final Map<String, Input> progs,
-        final Map<String, Boolean> dirs, final Map<String, Boolean> present) {
+        final Map<String, Boolean> dirs, final Map<String, Boolean> srcs) {
         this.origin = oby;
         this.programs = progs;
         this.directories = dirs;
-        this.presence = present;
+        this.sources = srcs;
     }
 
     @Override
@@ -105,16 +111,20 @@ final class OyCached implements Objectionary {
 
     @Override
     public boolean contains(final String name) throws IOException {
+        return this.isProgram(name) || this.isDirectory(name);
+    }
+
+    @Override
+    public boolean isProgram(final String name) throws IOException {
         final boolean found;
-        if (this.programs.containsKey(name)
-            || Boolean.TRUE.equals(this.directories.get(name))) {
+        if (this.programs.containsKey(name)) {
             found = true;
         } else {
             try {
-                found = this.presence.computeIfAbsent(
+                found = this.sources.computeIfAbsent(
                     name, key -> {
                         try {
-                            return this.origin.contains(name);
+                            return this.origin.isProgram(name);
                         } catch (final IOException exception) {
                             throw new UncheckedIOException(exception);
                         }
