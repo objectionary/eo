@@ -15,6 +15,7 @@ import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.Input;
 import org.cactoos.io.InputWithFallback;
@@ -45,6 +46,11 @@ final class OyRemote implements Objectionary {
     private final HttpClient http;
 
     /**
+     * Deadline for connecting and waiting for response headers, per attempt.
+     */
+    private final Duration timeout;
+
+    /**
      * Constructor.
      *
      * @param hash Commit hash
@@ -70,12 +76,26 @@ final class OyRemote implements Objectionary {
      * @param program Address template to program
      * @param directory Address template to directory
      * @param proxies Proxies to use
-     * @checkstyle ConstructorsCodeFreeCheck (10 lines)
      */
     OyRemote(final UrlOy program, final UrlOy directory, final MvnProxy... proxies) {
+        this(program, directory, Duration.ofSeconds(30), proxies);
+    }
+
+    /**
+     * Ctor with a deadline for testing.
+     *
+     * @param program Address template to program
+     * @param directory Address template to directory
+     * @param timeout Connection and request timeout
+     * @param proxies Proxies to use
+     * @checkstyle ConstructorsCodeFreeCheck (10 lines)
+     */
+    OyRemote(final UrlOy program, final UrlOy directory, final Duration timeout,
+        final MvnProxy... proxies) {
         this.program = program;
         this.directory = directory;
-        this.http = OyRemote.client(proxies);
+        this.timeout = timeout;
+        this.http = OyRemote.client(timeout, proxies);
     }
 
     @Override
@@ -172,7 +192,8 @@ final class OyRemote implements Objectionary {
     ) throws IOException {
         try {
             return this.http.send(
-                HttpRequest.newBuilder().uri(URI.create(url.toString())).GET().build(),
+                HttpRequest.newBuilder().uri(URI.create(url.toString()))
+                    .timeout(this.timeout).GET().build(),
                 handler
             );
         } catch (final InterruptedException ex) {
@@ -181,8 +202,9 @@ final class OyRemote implements Objectionary {
         }
     }
 
-    private static HttpClient client(final MvnProxy... proxies) {
+    private static HttpClient client(final Duration timeout, final MvnProxy... proxies) {
         final HttpClient.Builder builder = HttpClient.newBuilder()
+            .connectTimeout(timeout)
             .followRedirects(HttpClient.Redirect.NORMAL);
         if (proxies.length > 0) {
             builder.proxy(new NonProxyHostsSelector(proxies[0]));

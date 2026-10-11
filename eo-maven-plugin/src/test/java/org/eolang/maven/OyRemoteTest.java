@@ -13,13 +13,19 @@ import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.ThrowingSupplier;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test for {@link OyRemote}.
@@ -27,6 +33,61 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.1.0
  */
 final class OyRemoteTest {
+
+    @ParameterizedTest
+    @CsvSource({
+        "0,false", "1,false", "2,false", "0,true", "1,true", "2,true"
+    })
+    void boundsRequestsWaitingForHeaders(final int operation, final boolean responds)
+        throws Exception {
+        final AtomicInteger requests = new AtomicInteger();
+        final HttpServer server = HttpServer.create(
+            new InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0
+        );
+        server.createContext(
+            "/", exchange -> {
+                requests.incrementAndGet();
+                if (responds) {
+                    final byte[] body = "[] > foo".getBytes(StandardCharsets.UTF_8);
+                    exchange.sendResponseHeaders(200, body.length);
+                    exchange.getResponseBody().write(body);
+                    exchange.close();
+                }
+            }
+        );
+        server.start();
+        try {
+            final UrlOy template = new UrlOy(
+                String.format("http://127.0.0.1:%d/%%s/%%s", server.getAddress().getPort()), "stub"
+            );
+            final OyRemote remote = new OyRemote(template, template, Duration.ofMillis(200));
+            final ThrowingSupplier<Boolean> request = () -> switch (operation) {
+                case 0 -> remote.isProgram("foo");
+                case 1 -> remote.isDirectory("foo");
+                default -> "[] > foo".equals(new TextOf(remote.get("foo")).asString());
+            };
+            Assertions.assertTimeoutPreemptively(
+                Duration.ofSeconds(20),
+                () -> {
+                    if (responds) {
+                        Assertions.assertTrue(request.get(), "The immediate response must succeed");
+                    } else {
+                        Assertions.assertThrows(
+                            IOException.class, request::get,
+                            "Withheld headers must exhaust retries with an IOException"
+                        );
+                        MatcherAssert.assertThat(
+                            "The server must receive retried requests before failure",
+                            requests.get(), Matchers.equalTo(3)
+                        );
+                    }
+                },
+                "Remote calls must finish even when the server withholds headers"
+            );
+        } finally {
+            server.stop(0);
+        }
+    }
 
     @Test
     void buildsCorrectUrlForProgram() throws Exception {
