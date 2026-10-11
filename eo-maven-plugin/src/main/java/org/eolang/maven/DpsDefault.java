@@ -125,6 +125,7 @@ final class DpsDefault implements Dependencies {
 
     /**
      * Mark the tojos for a dependency after it has been resolved.
+     *
      * @param dependency Resolved dependency
      */
     void resolved(final Dep dependency) {
