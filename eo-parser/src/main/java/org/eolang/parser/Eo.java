@@ -177,7 +177,7 @@ final class Eo implements Iterable<Directive> {
         int idx = 0;
         while (idx < body.length() - 2 && found < 0) {
             final char glyph = body.charAt(idx);
-            if (glyph == '"') {
+            if (glyph == '"' && Tokens.opensString(body, idx)) {
                 idx = Tokens.closingQuote(body, idx);
             } else if (glyph == '(') {
                 depth = depth + 1;

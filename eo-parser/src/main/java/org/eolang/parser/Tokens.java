@@ -625,6 +625,23 @@ final class Tokens {
     }
 
     /**
+     * Whether the quote at this position opens a string literal, rather
+     * than standing inside a name. A {@code NAME} holds every character
+     * but the ones §2.3 lists, and {@code "} is not among them, so
+     * {@code a"b} is one name and a reader that takes its quote for the
+     * start of a literal walks past the rest of the line (#9378). A
+     * literal opens where a token opens: at the head of the text, or
+     * right after a glyph that ends the token before it.
+     *
+     * @param text Text being scanned
+     * @param idx Index of the quote
+     * @return Opening flag
+     */
+    static boolean opensString(final String text, final int idx) {
+        return idx == 0 || Tokens.terminates(text.charAt(idx - 1));
+    }
+
+    /**
      * Whether the glyph ends the token a reader is on. Shared with
      * {@link Bytes}, so a BYTES literal owns exactly the characters
      * every other reader of this class would leave to it.
