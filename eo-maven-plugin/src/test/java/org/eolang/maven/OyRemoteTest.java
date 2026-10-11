@@ -14,8 +14,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -284,6 +286,67 @@ final class OyRemoteTest {
         );
     }
 
+    @ParameterizedTest
+    @CsvSource({
+        "200, false", "200, true",
+        "404, false", "404, true",
+        "500, false", "500, true",
+        "503, false", "503, true",
+        "599, false", "599, true",
+        "600, false", "600, true"
+    })
+    void doesNotMemoizeServerErrors(final int code, final boolean directory) throws Exception {
+        final AtomicInteger status = new AtomicInteger(code);
+        final AtomicInteger requests = new AtomicInteger();
+        final HttpServer server = HttpServer.create(
+            new InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0
+        );
+        server.createContext(
+            "/", exchange -> {
+                requests.incrementAndGet();
+                final byte[] body = "presence".getBytes(StandardCharsets.UTF_8);
+                exchange.sendResponseHeaders(status.get(), body.length);
+                exchange.getResponseBody().write(body);
+                exchange.close();
+            }
+        );
+        server.start();
+        try {
+            final String template = String.format(
+                "http://127.0.0.1:%d/%%s/%%s", server.getAddress().getPort()
+            );
+            final OyRemote remote = new OyRemote(
+                new UrlOy(template, "stub"), new UrlOy(template, "stub")
+            );
+            final OyCached cached = new OyCached(remote);
+            boolean refused = false;
+            boolean first = false;
+            try {
+                first = OyRemoteTest.presence(cached, directory);
+            } catch (final IOException error) {
+                refused = true;
+            }
+            final int before = requests.get();
+            status.set(200);
+            final boolean recovered = OyRemoteTest.presence(cached, directory);
+            final int after = requests.get();
+            final boolean direct = OyRemoteTest.presence(remote, directory);
+            final boolean temporary = code >= 500 && code < 600;
+            MatcherAssert.assertThat(
+                "Temporary server errors must not be cached as missing; ordinary checks stay cached",
+                Arrays.asList(refused, first, recovered, after > before, direct),
+                Matchers.equalTo(
+                    Arrays.asList(
+                        temporary, !temporary && code == 200,
+                        temporary || code == 200, temporary, true
+                    )
+                )
+            );
+        } finally {
+            server.stop(0);
+        }
+    }
+
     private static boolean released(final int status) throws Exception {
         final long flood = 64L * 1024 * 1024;
         final CountDownLatch cut = new CountDownLatch(1);
@@ -328,6 +391,17 @@ final class OyRemoteTest {
         } finally {
             server.stop(0);
         }
+    }
+
+    private static boolean presence(final Objectionary source, final boolean directory)
+        throws IOException {
+        final boolean present;
+        if (directory) {
+            present = source.isDirectory("foo");
+        } else {
+            present = source.contains("foo");
+        }
+        return present;
     }
 
     private static String message(final int status) throws Exception {
