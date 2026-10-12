@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: []
+asserts:
+  - /object[not(errors/error)]
+  - /object/comments/comment[@line='1' and text()='Foo.']
+  - /object/o[@name='foo']/o[@name='φ' and @base='Φ.string']
+  - //o[@base='Φ.bytes']/o[text()='68-65-6C-6C-6F']
+input: |
+  # Foo.
+
+  [] > foo
+    """
+    hello
+    """ > @

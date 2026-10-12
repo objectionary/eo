@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+line: 2
+message: "invalid character in leading whitespace"
+input: "[] > app\n  42 > x\n"

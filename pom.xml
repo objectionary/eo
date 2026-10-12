@@ -468,6 +468,7 @@
       <activation>
         <property>
           <name>skipTests</name>
+          <value>true</value>
         </property>
       </activation>
       <properties>
@@ -480,6 +481,7 @@
       <activation>
         <property>
           <name>skipITs</name>
+          <value>true</value>
         </property>
       </activation>
       <properties>
@@ -491,6 +493,7 @@
       <activation>
         <property>
           <name>skipUTs</name>
+          <value>true</value>
         </property>
       </activation>
       <properties>

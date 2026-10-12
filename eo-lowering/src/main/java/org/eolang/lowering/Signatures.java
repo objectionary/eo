@@ -23,7 +23,7 @@ import org.cactoos.scalar.Unchecked;
  * <p>The types are read from the tables of {@code eo:inference}. A type
  * that goes in is the type of one void of the object, and it is found in
  * {@code provides.xml}, in the same place where {@link Planting} finds
- * it. The output follows {@code eo:returns} in {@code entries.xsl}: the
+ * it. The output follows {@code eo:returns} in {@code _returns.xsl}: the
  * object's {@code reduced} cell in {@code provides.xml}, then its body's
  * cell, then the body's references in {@code links.xml}. Each result uses
  * its atom's {@code forma} from {@code atoms.xml}, its {@code reduced}

@@ -476,7 +476,8 @@ final class Node {
     private Optional<String> phi(final Style style, final int indent) {
         final Optional<String> result;
         if (this.children.size() == 1
-            && " > @".equals(this.children.get(0).tail)) {
+            && " > @".equals(this.children.get(0).tail)
+            && !this.bound()) {
             result = new Phi(
                 this.base, this.tail, this.children.get(0)
             ).print(style, indent);
@@ -591,7 +592,11 @@ final class Node {
     }
 
     private boolean labelled() {
-        return this.reversed && this.tail.startsWith(":");
+        return this.reversed && this.bound();
+    }
+
+    private boolean bound() {
+        return this.tail.startsWith(":");
     }
 
     private boolean forced() {

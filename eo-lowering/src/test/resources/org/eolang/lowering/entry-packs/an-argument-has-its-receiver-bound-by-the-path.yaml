@@ -19,16 +19,10 @@ provides: |
   <provides>
     <type id="Φ.true.φ.α0">
       <attr name="ρ" type="Φ.true.φ.α0.ρ" void="true" settled="Φ.bool"/>
+      <attr name="left" type="Φ.true.φ.α0.left" void="true" holds="Φ.number"/>
+      <attr name="right" type="Φ.true.φ.α0.right" void="true"
+        holds="Φ.number"/>
     </type>
   </provides>
-links: |
-  <links>
-    <type id="Φ.true.φ">
-      <ref loc="Φ.bool"/>
-    </type>
-    <type id="Φ.true.φ.α0.φ">
-      <ref loc="Φ.bool"/>
-    </type>
-  </links>
 xmir:
-  - "//o[@name='e2']/o[@as='v' and @base='Φ.true.φ.if'][not(o)]"
+  - "//o[@name='e2']/o[@as='v' and @base='Φ.true.φ.if'][not(o[not(@as)])]"

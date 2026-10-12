@@ -121,7 +121,7 @@ final class SubdirTest {
         final Process proc = new ProcessBuilder(
             ProcessHandle.current().info().command().orElse("java"),
             holder.toString(),
-            target.resolve(".numbering.lock").toString()
+            target.resolve(".seqdir.lock").toString()
         ).redirectErrorStream(true).start();
         try (
             BufferedReader out = new BufferedReader(

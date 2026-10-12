@@ -11,15 +11,15 @@ eo:
       a.plus 1 > @
       [b] > inner
         b.plus 2 > @
-links: |
-  <links>
-    <type id="Φ.outer.φ">
-      <ref loc="Φ.number"/>
+provides: |
+  <provides>
+    <type id="Φ.outer">
+      <attr name="a" type="Φ.outer.a" void="true" holds="Φ.number"/>
     </type>
-    <type id="Φ.outer.inner.φ">
-      <ref loc="Φ.number"/>
+    <type id="Φ.outer.inner">
+      <attr name="b" type="Φ.outer.inner.b" void="true" holds="Φ.number"/>
     </type>
-  </links>
+  </provides>
 xmir:
   - "//o[@name='e1']/o[@as='v' and @base='Φ.outer']"
   - "//o[@name='e2']/o[@as='v' and @base='Φ.outer.inner']"

@@ -105,9 +105,9 @@ one after another:
     that need to be done
     with the XML document in order to make it ready for compilation.
     Each transformation has its own `.xsl` file in the `eo-parser` directory.
-    The class `org.eolang.parser.Program` is responsible for making XSLT
-    transformations and the entire list of them is stored in the
-    `org.eolang.parser.Pack` class. Some of XLST files are sanity checks
+    The class `org.eolang.parser.Pipeline` is responsible for making XSLT
+    transformations and the list of them is stored in the
+    `org.eolang.parser.Canonical` class. Some of XLST files are sanity checks
     (or linters).
     The output of each transformation you can find in the `target/eo/optimize`
     directory.

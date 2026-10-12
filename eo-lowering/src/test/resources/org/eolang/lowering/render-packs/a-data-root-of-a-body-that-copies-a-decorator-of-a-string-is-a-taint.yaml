@@ -1,0 +1,58 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The root is bytes the atom computed, and the protocol does not name the
+# object around them: the body copies `Φ.string.joined`, a formation of the
+# world that binds nothing but its body and voids, and the answer of
+# "L_entry" is that copy, not `Φ.string` applied to its `φ`. The tables say
+# the body behaves as a string, and bare bytes are no string, since they
+# lose every attribute of one, so the entry stays in EO (#9248).
+locator: Φ.slashed
+number: 1
+taint: The root 𝜎4 of the entry 1 is bare data, while inference says Φ.slashed returns Φ.string, and bare data would lose the object around it
+eo:
+  slashed.eo: |
+    [parts] > slashed
+      separator.joined parts > @
+      "/" > separator
+voids:
+  - "𝜎1\t1\tparts.length\tnumber"
+  - "𝜎2\t1\tparts.head\tobject"
+  - "𝜎3\t1\tparts.tail\ttuple"
+provides: |
+  <provides>
+    <type complete="false" id="Φ.slashed">
+      <attr name="parts" type="Φ.slashed.parts" void="true"/>
+      <attr name="separator" type="Φ.slashed.separator"/>
+      <attr name="φ" type="Φ.slashed.φ"/>
+    </type>
+    <type complete="false" id="Φ.string.joined" reduced="Φ.string">
+      <attr name="items" type="Φ.string.joined.items" void="true"/>
+      <attr name="φ" type="Φ.string.joined.φ"/>
+    </type>
+  </provides>
+links: |
+  <links>
+    <type id="Φ.slashed.φ">
+      <ref loc="Φ.string.joined"/>
+    </type>
+  </links>
+protocol: |
+  <protocol>
+    <morph at="Φ.l/.e1">
+      <evaluate λ="L_entry" by="morph" at="Φ.l/.e1">
+        <evaluate λ="L_bytes_concat" by="morph" at="Φ.a🌵1">
+          <dataize meta="𝛿1·2">𝜎2:λ</dataize>
+          <bind meta="𝛿2·2">2F-</bind>
+          <minted symbol="𝜎4">𝜎2 2F-</minted>
+        </evaluate>
+      </evaluate>
+      <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
+        <dataize meta="𝛿1·3">𝜎4:λ</dataize>
+      </evaluate>
+    </morph>
+    <msec>130</msec>
+    <firings>3</firings>
+    <fps>23</fps>
+  </protocol>
