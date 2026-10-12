@@ -10,6 +10,9 @@
 # block before it symbolizes and joins them: the true and false eo-runtime
 # spells, a bool a firing answered and an object decorating one are one
 # value in three spellings, and the join pairs nothing but symbols.
+# A branch that stops at the λ of "throw", which is what every T is by now,
+# raises: the fork is joined into its other branch, and the protocol keeps
+# the condition and the message, which rendering turns into a guard.
 - λ: L_number_(plus|times|div)
   dataize:
     𝛿1: $.ρ
@@ -48,11 +51,6 @@
   dataize:
     𝛿1: $.target
   𝑛: Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )
-# @todo #9448:30min Let a fork raise through a T in one of its branches.
-#  phino 0.0.152 writes no message into a terminate record under --deep, so
-#  every entry that raises would be a taint, and this table names no
-#  terminators for L_fork. Once phino releases objectionary/phino#1868, add
-#  "terminators: [L_throw]" to L_fork, and the guards of rendering.xsl apply.
 - λ: L_fork
   dataize:
     𝛿1: $.φ
@@ -99,6 +97,7 @@
     𝑛6: 𝑛4
   join:
     𝑛7: [𝑛5, 𝑛6]
+  terminators: [L_throw]
   𝑛: 𝑛7
 - λ: L_entry
   dataize:
