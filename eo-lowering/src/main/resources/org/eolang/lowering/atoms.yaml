@@ -48,6 +48,11 @@
   dataize:
     𝛿1: $.target
   𝑛: Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )
+# @todo #9448:30min Let a fork raise through a T in one of its branches.
+#  phino 0.0.152 writes no message into a terminate record under --deep, so
+#  every entry that raises would be a taint, and this table names no
+#  terminators for L_fork. Once phino releases objectionary/phino#1868, add
+#  "terminators: [L_throw]" to L_fork, and the guards of rendering.xsl apply.
 - λ: L_fork
   dataize:
     𝛿1: $.φ
