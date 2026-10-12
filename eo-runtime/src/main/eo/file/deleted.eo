@@ -59,9 +59,7 @@
         code.
           posix.symlink d link
         link.as-file.deleted
-        and.
-          link.as-file.exists.not
-          d.as-file.exists
+        link.as-file.exists.not.and d.as-file.exists
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
     d.resolved "ссылка" > link
 
@@ -71,9 +69,7 @@
         code.
           posix.symlink f link
         link.as-file.deleted
-        and.
-          link.as-file.exists.not
-          f.as-file.exists
+        link.as-file.exists.not.and f.as-file.exists
     mktemp.tmpfile.as-path > f
     mktemp.tmpfile.deleted.as-path > link
 
