@@ -87,7 +87,12 @@ import org.cactoos.text.TextOf;
  * answers it, and the protocol keeps the message that copy got. So when
  * the root of an entry is such a copy, the atom only throws that message,
  * through {@code ExFailure}, which is what {@code T} does in eo-runtime,
- * and {@code recovered} catches it the same way.</p>
+ * and {@code recovered} catches it the same way. A message phino could not
+ * write as a string literal, like the one of {@code T (string FF-FE)}, is
+ * an object, which the atom builds and dataizes into the reason it throws,
+ * the way a terminator of eo-runtime dataizes its own reason. An object the
+ * protocol names through a dispatch is a taint, since this stage never
+ * parses a phi-expression.</p>
  *
  * @since 0.64.0
  * @todo #9248:45min Put the object around a root that comes out of an
@@ -100,11 +105,6 @@ import org.cactoos.text.TextOf;
  *  parts}, is a taint now for the same reason. Once phino names, in the
  *  formations of {@code L_root}, the object each root reduced to, read the
  *  object around the root there as well.
- * @todo #9373:45min Write an atom for an entry that throws a message it
- *  computes. When the message of a {@code T} is not a string literal, like
- *  {@code T (string FF-FE)} or {@code T (x.as-string)}, phino writes it as
- *  an object, and the entry is a taint now. But its atom could compute the
- *  message first, and then throw it.
  * @todo #8548:30min Write an atom for an entry whose result is always the
  *  same. When the result of the body is known bytes, like an object that
  *  always returns {@code 42}, the entry is a taint now. But its atom could

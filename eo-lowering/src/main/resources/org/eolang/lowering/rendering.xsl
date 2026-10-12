@@ -43,7 +43,8 @@
   A root that is a copy of "throw", which every "T" became before the world
   was merged, stops phino at the λ of "throw", which no rule answers. The
   atom of such an entry throws the message of that copy, the way "T" does
-  in eo-runtime, and computes nothing else.
+  in eo-runtime, and computes nothing else. A message phino could not write
+  as a string literal is an object, which the atom builds and dataizes.
   A taint is raised as an error and caught once, at the top, since there is
   no half of an atom worth writing.
   The class is named the way "_java-names.xsl" of the transpiler names every
@@ -120,7 +121,7 @@
         <xsl:choose>
           <xsl:when test="exists($thrown)">
             <atom file="{eo:file()}" voids="0" statements="0" branches="0">
-              <xsl:value-of select="eo:java(concat('        throw new ExFailure(&quot;%s&quot;, &quot;', $thrown, '&quot;);&#10;'))"/>
+              <xsl:value-of select="eo:java(concat('        throw new ExFailure(&quot;%s&quot;, ', $thrown, ');&#10;'))"/>
             </atom>
           </xsl:when>
           <xsl:otherwise>
@@ -208,18 +209,19 @@
     </xsl:choose>
   </xsl:function>
   <!--
-  The message the root of the entry always throws, as the body of a Java
-  string literal, or nothing when the root does not throw. The root throws
-  when phino stopped at the λ of "throw" right where it dataized the root,
-  and then the protocol names the copy of "throw" it stopped at, and the
-  record that applied "throw" to the message. phino writes the message as
-  a string literal with the escapes "\"", "\\", "\n", "\t" and "\u" with four
-  hex digits, which Java reads the same way, and "\x" with two hex digits
-  for any other character up to 0xFF it cannot print, which Java does not
-  know. So that one becomes an octal escape of three digits, which is the
-  same character to Java. A message that is not such a literal is an object
-  the atom would have to compute, and an entry that throws it is a taint, as
-  is an entry whose protocol does not say what the message is.
+  The message the root of the entry always throws, as the Java of a string,
+  or nothing when the root does not throw. The root throws when phino
+  stopped at the λ of "throw" right where it dataized the root, and then
+  the protocol names the copy of "throw" it stopped at, and the record that
+  applied "throw" to the message. phino writes the message as a string
+  literal with the escapes "\"", "\\", "\n", "\t" and "\u" with four hex
+  digits, which Java reads the same way, and "\x" with two hex digits for
+  any other character up to 0xFF it cannot print, which Java does not know.
+  So that one becomes an octal escape of three digits, which is the same
+  character to Java. A message phino could not write as a literal is an
+  object, which the atom builds and dataizes the way eo-runtime dataizes
+  the reason of a terminator. An entry whose protocol does not say what the
+  message is stays a taint.
   -->
   <xsl:function name="eo:thrown" as="xs:string?">
     <xsl:variable name="stop" select="($eo:doc/protocol/morph/evaluate[@λ = 'L_root']/unanswered[@λ = 'L_throw'])[1]"/>
@@ -228,29 +230,60 @@
       <xsl:if test="$message = ''">
         <xsl:sequence select="eo:taint(concat('The entry ', $number, ' always throws, but phino stopped at L_throw for ', normalize-space($stop), ', while no record of its protocol gives the message'))"/>
       </xsl:if>
-      <xsl:if test="not(matches($message, '^&quot;(\\([&quot;\\nt]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4})|[^&quot;\\])*&quot;$'))">
-        <xsl:sequence select="eo:taint(concat('The entry ', $number, ' always throws, but its message ', $message, ' is not a string literal, and an atom that computes its message is not written yet'))"/>
-      </xsl:if>
-      <xsl:variable name="java">
-        <xsl:analyze-string select="substring($message, 2, string-length($message) - 2)" regex="\\(x[0-9a-fA-F]{{2}}|.)">
-          <xsl:matching-substring>
-            <xsl:choose>
-              <xsl:when test="starts-with(regex-group(1), 'x')">
-                <xsl:variable name="code" select="sum(for $i in (2, 3) return string-length(substring-before('0123456789abcdef', lower-case(substring(regex-group(1), $i, 1)))) * (if ($i = 2) then 16 else 1))"/>
-                <xsl:value-of select="concat('\', $code idiv 64, $code idiv 8 mod 8, $code mod 8)"/>
-              </xsl:when>
-              <xsl:otherwise>
+      <xsl:choose>
+        <xsl:when test="matches($message, '^&quot;(\\([&quot;\\nt]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4})|[^&quot;\\])*&quot;$')">
+          <xsl:variable name="java">
+            <xsl:analyze-string select="substring($message, 2, string-length($message) - 2)" regex="\\(x[0-9a-fA-F]{{2}}|.)">
+              <xsl:matching-substring>
+                <xsl:choose>
+                  <xsl:when test="starts-with(regex-group(1), 'x')">
+                    <xsl:variable name="code" select="sum(for $i in (2, 3) return string-length(substring-before('0123456789abcdef', lower-case(substring(regex-group(1), $i, 1)))) * (if ($i = 2) then 16 else 1))"/>
+                    <xsl:value-of select="concat('\', $code idiv 64, $code idiv 8 mod 8, $code mod 8)"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:value-of select="."/>
+                  </xsl:otherwise>
+                </xsl:choose>
+              </xsl:matching-substring>
+              <xsl:non-matching-substring>
                 <xsl:value-of select="."/>
-              </xsl:otherwise>
-            </xsl:choose>
-          </xsl:matching-substring>
-          <xsl:non-matching-substring>
-            <xsl:value-of select="."/>
-          </xsl:non-matching-substring>
-        </xsl:analyze-string>
-      </xsl:variable>
-      <xsl:sequence select="string($java)"/>
+              </xsl:non-matching-substring>
+            </xsl:analyze-string>
+          </xsl:variable>
+          <xsl:sequence select="concat('&quot;', string($java), '&quot;')"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:sequence select="concat('new Dataized(', eo:built($message), ').asString()')"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </xsl:if>
+  </xsl:function>
+  <!--
+  The Java that builds the object a phi-expression of the protocol names: an
+  object of the world applied to its "φ" alone, down to the bytes at the
+  bottom, as in "Φ.string( φ ↦ Φ.bytes( φ ↦ FF-FE:Δ ) )". The bytes at the
+  bottom are written as "Data.ToPhi", which is "Φ.bytes" applied to them
+  already, so the hop through "Φ.bytes" is left out. Anything else is an
+  object this module cannot build, since it never parses a phi-expression,
+  so its entry is a taint.
+  -->
+  <xsl:function name="eo:built" as="xs:string">
+    <xsl:param name="phi" as="xs:string"/>
+    <xsl:variable name="written" select="normalize-space($phi)"/>
+    <xsl:choose>
+      <xsl:when test="ends-with($written, ':Δ')">
+        <xsl:sequence select="eo:literal-of(substring($written, 1, string-length($written) - 2), 'Phi')"/>
+      </xsl:when>
+      <xsl:when test="matches($written, '^Φ\.bytes\(\s*φ\s*↦\s*[^()]+:Δ\s*\)$')">
+        <xsl:sequence select="eo:built(replace($written, '^Φ\.bytes\(\s*φ\s*↦\s*(.*?)\s*\)$', '$1'))"/>
+      </xsl:when>
+      <xsl:when test="matches($written, '^Φ(\.[^.\s()]+)+\(\s*φ\s*↦\s*.+\)$', 's')">
+        <xsl:sequence select="concat('new PhApplication(', eo:global(substring-before($written, '(')), ', &quot;φ&quot;, ', eo:built(replace($written, '^Φ(?:\.[^.\s()]+)+\(\s*φ\s*↦\s*(.*?)\s*\)$', '$1', 's')), ')')"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="eo:taint(concat('The entry ', $number, ' always throws the message ', $written, ', which is no object of the world applied to its φ, so the atom cannot build it'))"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:function>
   <!-- The symbol the root of the entry dataizes. -->
   <xsl:function name="eo:root" as="xs:string">
