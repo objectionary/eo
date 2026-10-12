@@ -94,6 +94,8 @@
     𝑛6: 𝑛4
   join:
     𝑛7: [𝑛5, 𝑛6]
+  lenient: true
+  terminators: [L_throw]
   𝑛: 𝑛7
 - λ: L_entry
   dataize:
