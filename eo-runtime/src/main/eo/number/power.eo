@@ -190,6 +190,11 @@
     4.power -3
     0.015625
 
+  eq. ++> can-raise-negative-infinity-to-a-negative-odd-integer
+    as-bytes.
+      ninf.power -3
+    80-00-00-00-00-00-00-00
+
   eq. ++> can-raise-negative-infinity-to-a-positive-float
     ninf.power 9.9
     pinf
@@ -219,8 +224,9 @@
     ninf
 
   eq. ++> can-raise-negative-zero-to-odd-positive
-    -0.power 3
-    -0
+    as-bytes.
+      -0.power 3
+    80-00-00-00-00-00-00-00
 
   lt. ++> can-raise-one-to-a-fraction
     abs.
