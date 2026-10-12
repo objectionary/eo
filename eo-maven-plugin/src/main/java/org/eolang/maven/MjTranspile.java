@@ -196,7 +196,11 @@ public final class MjTranspile extends MjSafe {
             new Transpiling(
                 tojos.standalone(),
                 this.target.toPath(),
-                new Written(this.generated.toPath(), this.tests, this.roots()),
+                new Written(
+                    this.generated.toPath(), this.tests, this.roots(),
+                    this.project.getTestCompileSourceRoots().stream()
+                        .map(Paths::get).toArray(Path[]::new)
+                ),
                 new Transpilation(
                     new Tracking(this.tracking, this.located),
                     this.coverage,
