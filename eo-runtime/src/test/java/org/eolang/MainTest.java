@@ -160,6 +160,24 @@ final class MainTest {
         );
     }
 
+    @Test
+    void reportsMissingObjectNameWithoutStacktrace() {
+        MatcherAssert.assertThat(
+            "A missing object name is reported with a Java stack trace, unlike an empty one",
+            MainTest.stderr(),
+            Matchers.not(Matchers.containsString("at org.eolang.Main.main"))
+        );
+    }
+
+    @Test
+    void refusesToRunWithUnknownOption() {
+        MatcherAssert.assertThat(
+            "An unknown option is ignored and the object is dataized anyway",
+            MainTest.stderr("--verbos", "true"),
+            Matchers.not(Matchers.containsString("Finished in"))
+        );
+    }
+
     private static String stderr(final String... cmds) {
         return MainTest.exec(cmds).stderr();
     }
