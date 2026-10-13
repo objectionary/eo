@@ -10,6 +10,9 @@
 # block before it symbolizes and joins them: the true and false eo-runtime
 # spells, a bool a firing answered and an object decorating one are one
 # value in three spellings, and the join pairs nothing but symbols.
+# A branch that stops at the λ of "throw", which is what every T is by now,
+# raises: the fork is joined into its other branch, and the protocol keeps
+# the condition and the message, which rendering turns into a guard.
 - λ: L_number_(plus|times|div)
   dataize:
     𝛿1: $.ρ
@@ -94,6 +97,8 @@
     𝑛6: 𝑛4
   join:
     𝑛7: [𝑛5, 𝑛6]
+  lenient: true
+  terminators: [L_throw]
   𝑛: 𝑛7
 - λ: L_entry
   dataize:

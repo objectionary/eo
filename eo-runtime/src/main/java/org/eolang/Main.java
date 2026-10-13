@@ -123,10 +123,22 @@ public final class Main {
     }
 
     private static void print(final Throwable thr) {
-        Main.LOGGER.log(Level.SEVERE, thr.getMessage());
+        Main.print(thr, "");
+    }
+
+    private static void print(final Throwable thr, final String above) {
+        final String msg = String.valueOf(thr.getMessage());
+        final boolean fresh = above.isEmpty() || !above.contains(msg);
+        if (fresh) {
+            Main.LOGGER.log(Level.SEVERE, msg);
+        }
         final Throwable cause = thr.getCause();
         if (cause != null) {
-            Main.print(cause);
+            if (fresh) {
+                Main.print(cause, msg);
+            } else {
+                Main.print(cause, above);
+            }
         }
     }
 

@@ -133,7 +133,10 @@ final class Span {
      * space nor a tab. An indent is made of spaces (R-2.2.1), and a
      * character nobody can see in an editor must not decide how deep a
      * line sits: a pair of form feeds reads as indent 1 to a counter that
-     * takes every whitespace character (#7924).
+     * takes every whitespace character (#7924). A no-break space and its
+     * Unicode kin belong to the leading run too, although Java does not
+     * call them whitespace, since a line copied from a web page carries
+     * them where an editor shows plain spaces (#9179).
      *
      * @return Alien-whitespace flag
      */
@@ -204,7 +207,9 @@ final class Span {
 
     private static int leading(final String body) {
         int count = 0;
-        while (count < body.length() && Character.isWhitespace(body.charAt(count))) {
+        while (count < body.length()
+            && (Character.isWhitespace(body.charAt(count))
+                || Character.isSpaceChar(body.charAt(count)))) {
             count = count + 1;
         }
         return count;

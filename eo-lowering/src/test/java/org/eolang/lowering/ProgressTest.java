@@ -71,4 +71,20 @@ final class ProgressTest {
             Matchers.startsWith("2 of 5 entries")
         );
     }
+
+    @Test
+    void countsTheEntriesThatRanOutOfTime(@Mktmp final Path temp) throws IOException {
+        final Progress progress = new Progress(3);
+        progress.add(Files.write(temp.resolve("1.xml"), new byte[11]));
+        progress.expire();
+        progress.expire();
+        MatcherAssert.assertThat(
+            "the status must count the entries that ran out of time as done, but it doesnt",
+            progress.asString(),
+            Matchers.allOf(
+                Matchers.startsWith("3 of 3 entries"),
+                Matchers.containsString("2 out of time")
+            )
+        );
+    }
 }
