@@ -638,7 +638,8 @@ final class Tokens {
      * @return Opening flag
      */
     static boolean opensString(final String text, final int idx) {
-        return idx == 0 || Tokens.terminates(text.charAt(idx - 1));
+        return text.charAt(idx) == '"'
+            && (idx == 0 || Tokens.terminates(text.charAt(idx - 1)));
     }
 
     /**
@@ -722,7 +723,7 @@ final class Tokens {
         int idx = 0;
         while (idx < inside.length()) {
             final char glyph = inside.charAt(idx);
-            if (glyph == '"') {
+            if (Tokens.opensString(inside, idx)) {
                 idx = Tokens.closingQuote(inside, idx);
             } else if (" ()[]".indexOf(glyph) >= 0) {
                 single = false;
@@ -813,7 +814,7 @@ final class Tokens {
         this.cursor = this.cursor + 1;
         while (this.cursor < this.body.length() && depth > 0) {
             final char glyph = this.body.charAt(this.cursor);
-            if (glyph == '"') {
+            if (Tokens.opensString(this.body, this.cursor)) {
                 this.cursor = Tokens.closingQuote(this.body, this.cursor);
                 if (this.cursor >= this.body.length()) {
                     throw new ParseError(
