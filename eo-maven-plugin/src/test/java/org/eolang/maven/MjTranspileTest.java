@@ -456,13 +456,16 @@ final class MjTranspileTest {
                         IllegalStateException.class,
                         () -> new FakeMaven(temp)
                             .withProgram("# Absent.")
-                            .execute(new PpTranspile()),
+                            .execute(MjParse.class)
+                            .execute(MjTranspile.class),
                         "TranspileMojo should throw an exception on invalid EO code"
                     )
                 )
             ).asString(),
             Matchers.allOf(
-                Matchers.containsString("Expected 1 child nodes, but found 0"),
+                Matchers.containsString(
+                    "XMIR should have either '/object/o/@name' or '/object/class/@name' attribute"
+                ),
                 Matchers.containsString("main.xmir' encountered some problems, broken syntax?")
             )
         );
