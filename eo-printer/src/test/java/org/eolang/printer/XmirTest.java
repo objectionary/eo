@@ -433,7 +433,6 @@ final class XmirTest {
     private boolean assertRoundTrip() throws IOException {
         final String payload = "40-14-00-00-00-00-00-00";
         final XML first = new EoSyntax(new InputOf(this.source(payload))).parsed();
-        this.assertSource(first);
         final String printed = new Xmir(first).toEO();
         MatcherAssert.assertThat(
             "a dataized const receiver must use the legal verbose only-phi spelling",
@@ -441,45 +440,13 @@ final class XmirTest {
             Matchers.equalTo(this.expected(payload))
         );
         final XML second = new EoSyntax(new InputOf(printed)).parsed();
-        this.assertPrinted(second);
-        this.assertSemantic(first, second, payload);
         MatcherAssert.assertThat(
-            "formatting the reparsed EO a second time must be stable",
-            new Xmir(second).toEO(),
-            Matchers.equalTo(printed)
-        );
-        return true;
-    }
-
-    private void assertSource(final XML source) {
-        MatcherAssert.assertThat(
-            "the source must parse without errors and keep its test node",
-            source,
-            Matchers.allOf(
-                Matchers.not(XhtmlMatchers.hasXPath("//errors/error")),
-                XhtmlMatchers.hasXPath("//o[@name='p🌵can-x']")
-            )
-        );
-    }
-
-    private void assertPrinted(final XML printed) {
-        MatcherAssert.assertThat(
-            "the printed EO must parse without errors",
-            printed,
-            Matchers.not(XhtmlMatchers.hasXPath("//errors/error"))
-        );
-    }
-
-    private void assertSemantic(final XML first, final XML second, final String payload) {
-        MatcherAssert.assertThat(
-            "the original parse must contain exactly one can-x test",
-            first.xpath("count(//o[@name='p🌵can-x'])"),
-            Matchers.contains("1")
-        );
-        MatcherAssert.assertThat(
-            "the reparsed output must contain exactly one can-x test",
-            second.xpath("count(//o[@name='p🌵can-x'])"),
-            Matchers.contains("1")
+            "both EO versions must parse without errors",
+            List.of(
+                first.xpath("count(//errors/error)"),
+                second.xpath("count(//errors/error)")
+            ),
+            Matchers.everyItem(Matchers.equalTo(List.of("0")))
         );
         final XML origin = new Xsline(
             new StClasspath("/org/eolang/printer/print/dataized-to-const.xsl")
@@ -488,17 +455,48 @@ final class XmirTest {
             new StClasspath("/org/eolang/printer/print/dataized-to-const.xsl")
         ).pass(second);
         MatcherAssert.assertThat(
-            "both semantic trees must contain exactly one const number",
-            origin.xpath("count(//o[@base='Φ.number' and @const])"),
-            Matchers.contains("1")
+            "test, const, and payload child counts must remain exactly one",
+            List.of(
+                first.xpath("count(//o[@name='p🌵can-x'])"),
+                second.xpath("count(//o[@name='p🌵can-x'])"),
+                origin.xpath("count(//o[@base='Φ.number' and @const])"),
+                reparsed.xpath("count(//o[@base='Φ.number' and @const])"),
+                reparsed.xpath(
+                    "count(//o[@base='Φ.number' and @const]/o[@base='Φ.bytes']/o)"
+                )
+            ),
+            Matchers.everyItem(Matchers.equalTo(List.of("1")))
         );
         MatcherAssert.assertThat(
-            "the reparsed semantic tree must contain exactly one const number",
-            reparsed.xpath("count(//o[@base='Φ.number' and @const])"),
-            Matchers.contains("1")
+            "const and eq payloads must remain exact across the round trip",
+            List.of(
+                origin.xpath(
+                    "//o[@base='Φ.number' and @const]/o[@base='Φ.bytes']/o/text()"
+                ),
+                reparsed.xpath(
+                    "//o[@base='Φ.number' and @const]/o[@base='Φ.bytes']/o/text()"
+                ),
+                origin.xpath("//o[@name='φ']/o[2][@base='Φ.bytes']/o/text()"),
+                reparsed.xpath("//o[@name='φ']/o[1][@base='Φ.bytes']/o/text()")
+            ),
+            Matchers.everyItem(Matchers.equalTo(List.of(payload)))
         );
-        this.assertPayloads(origin, reparsed, payload);
-        this.assertMarkers(origin, reparsed);
+        final List<String> firstmark = origin.xpath(
+            "//o[@name='φ']/o[2][@base='Φ.bytes']/@as"
+        );
+        final List<String> secondmark = reparsed.xpath(
+            "//o[@name='φ']/o[1][@base='Φ.bytes']/@as"
+        );
+        MatcherAssert.assertThat(
+            "the original eq byte argument must have one non-empty binding marker",
+            firstmark,
+            Matchers.contains(Matchers.not(Matchers.emptyString()))
+        );
+        MatcherAssert.assertThat(
+            "the eq byte argument must survive with its binding marker",
+            secondmark,
+            Matchers.equalTo(firstmark)
+        );
         final List<String> names = reparsed.xpath(
             "//o[@base='Φ.number' and @const]/@name"
         );
@@ -513,89 +511,11 @@ final class XmirTest {
             Matchers.contains("ξ.".concat(names.get(0)).concat(".eq"))
         );
         MatcherAssert.assertThat(
-            "the const payload children must remain intact",
-            reparsed.xpath("count(//o[@base='Φ.number' and @const]/o[@base='Φ.bytes']/o)"),
-            Matchers.contains("1")
+            "formatting the reparsed EO a second time must be stable",
+            new Xmir(second).toEO(),
+            Matchers.equalTo(printed)
         );
-    }
-
-    private void assertPayloads(final XML origin, final XML reparsed, final String payload) {
-        final List<String> firstbytes = origin.xpath(
-            "//o[@base='Φ.number' and @const]/o[@base='Φ.bytes']/o/text()"
-        );
-        final List<String> secondbytes = reparsed.xpath(
-            "//o[@base='Φ.number' and @const]/o[@base='Φ.bytes']/o/text()"
-        );
-        MatcherAssert.assertThat(
-            "the original const byte payload must be present",
-            firstbytes,
-            Matchers.contains(payload)
-        );
-        MatcherAssert.assertThat(
-            "the reparsed const byte payload must survive the round trip",
-            secondbytes,
-            Matchers.contains(payload)
-        );
-        MatcherAssert.assertThat(
-            "the const byte payload must remain identical",
-            secondbytes,
-            Matchers.equalTo(firstbytes)
-        );
-        final List<String> firsteq = origin.xpath(
-            "//o[@name='φ']/o[2][@base='Φ.bytes']/o/text()"
-        );
-        final List<String> secondeq = reparsed.xpath(
-            "//o[@name='φ']/o[1][@base='Φ.bytes']/o/text()"
-        );
-        MatcherAssert.assertThat(
-            "the original eq byte argument payload must be present",
-            firsteq,
-            Matchers.contains(payload)
-        );
-        MatcherAssert.assertThat(
-            "the reparsed eq byte argument payload must survive the round trip",
-            secondeq,
-            Matchers.contains(payload)
-        );
-        MatcherAssert.assertThat(
-            "the eq byte argument payload must remain identical",
-            secondeq,
-            Matchers.equalTo(firsteq)
-        );
-    }
-
-    private void assertMarkers(final XML origin, final XML reparsed) {
-        final List<String> originas = origin.xpath(
-            "//o[@name='φ']/o[2][@base='Φ.bytes']/@as"
-        );
-        final List<String> reparsedas = reparsed.xpath(
-            "//o[@name='φ']/o[1][@base='Φ.bytes']/@as"
-        );
-        MatcherAssert.assertThat(
-            "the original eq byte argument must have one non-empty binding marker",
-            originas,
-            Matchers.hasSize(1)
-        );
-        MatcherAssert.assertThat(
-            "the reparsed eq byte argument must have one non-empty binding marker",
-            reparsedas,
-            Matchers.hasSize(1)
-        );
-        MatcherAssert.assertThat(
-            "the original eq byte argument marker must not be empty",
-            originas.get(0),
-            Matchers.not(Matchers.equalTo(""))
-        );
-        MatcherAssert.assertThat(
-            "the reparsed eq byte argument marker must not be empty",
-            reparsedas.get(0),
-            Matchers.not(Matchers.equalTo(""))
-        );
-        MatcherAssert.assertThat(
-            "the eq byte argument must survive with its binding marker",
-            reparsedas,
-            Matchers.equalTo(originas)
-        );
+        return true;
     }
 
     private String source(final String payload) {
