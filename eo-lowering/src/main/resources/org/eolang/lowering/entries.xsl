@@ -286,18 +286,25 @@
       </entries>
     </planted>
   </xsl:template>
-  <!-- One entry: the formation, applied to what was planted, wrapped in the mark. -->
+  <!--
+  One entry: the formation, applied to what was planted, wrapped in the mark,
+  with the φ of the mark taken. The calculus fires a λ only where a dispatch
+  reads the formation carrying it, so without the dispatch the mark would stay
+  as it was written.
+  -->
   <xsl:template match="entry" mode="eo:xmir">
-    <o base="Φ.l/.mark" name="e{@n}">
-      <o as="n" base="Φ.number">
-        <o as="α0" base="Φ.bytes">
-          <o as="α0">
-            <xsl:value-of select="eo:bytes(xs:integer(@n))"/>
+    <o base=".φ" name="e{@n}">
+      <o base="Φ.l/.mark">
+        <o as="n" base="Φ.number">
+          <o as="α0" base="Φ.bytes">
+            <o as="α0">
+              <xsl:value-of select="eo:bytes(xs:integer(@n))"/>
+            </o>
           </o>
         </o>
-      </o>
-      <o as="v" base="{@base}">
-        <xsl:apply-templates select="receiver|arg" mode="eo:xmir"/>
+        <o as="v" base="{@base}">
+          <xsl:apply-templates select="receiver|arg" mode="eo:xmir"/>
+        </o>
       </o>
     </o>
   </xsl:template>
