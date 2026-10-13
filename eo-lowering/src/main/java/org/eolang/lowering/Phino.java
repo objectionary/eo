@@ -154,8 +154,8 @@ final class Phino {
                 new Jaxec(
                     this.binary,
                     "morph",
-                    "--deep",
                     "--acyclic=plausible",
+                    "--max-loops=2",
                     "--partial",
                     "--quiet",
                     "--sweet",
