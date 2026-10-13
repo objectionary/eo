@@ -23,7 +23,7 @@ provides: |
     </type>
   </provides>
 xmir:
-  - "//o[@name='e1']/o[@as='v' and @base='Φ.true']"
-  - "//o[@name='e2']/o[@as='v' and @base='Φ.true.φ.if']"
+  - "//o[@name='e1']/o/o[@as='v' and @base='Φ.true']"
+  - "//o[@name='e2']/o/o[@as='v' and @base='Φ.true.φ.if']"
 entries:
   - "2\tΦ.true.φ.α0"

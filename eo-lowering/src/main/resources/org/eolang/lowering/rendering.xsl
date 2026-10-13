@@ -44,6 +44,16 @@
   was merged, stops phino at the λ of "throw", which no rule answers. The
   atom of such an entry throws the message of that copy, the way "T" does
   in eo-runtime, and computes nothing else.
+  A fork whose branch is a "T", or "⊥", raises on that side. phino joins such
+  a fork into its other branch, and writes a "terminate" record, which names
+  the condition and the message. The atom checks that condition with a
+  guard, which throws the message the way "T" does, right where the
+  condition is computed, and what only the other branch reads is computed
+  after the guard. A guard stands at the top of the atom, so the fork that
+  raises must give the whole body. An entry whose fork does not, or that
+  forks anywhere else too, is a taint, since the protocol does not say
+  inside which branch of which fork a record sits. The message must be a
+  string literal, as for a root that always throws.
   A taint is raised as an error and caught once, at the top, since there is
   no half of an atom worth writing.
   The class is named the way "_java-names.xsl" of the transpiler names every
@@ -126,7 +136,7 @@
           <xsl:otherwise>
             <xsl:variable name="root" select="eo:root()"/>
             <xsl:variable name="at" select="eo:placed($root)"/>
-            <atom file="{eo:file()}" voids="{count(map:keys($at)[map:contains($eo:voids, .)])}" statements="{count(map:keys($at)[exists(key('eo:minted', ., $eo:doc)) or exists(key('eo:deferred', ., $eo:doc))])}" branches="{count(map:keys($at)[exists(key('eo:joined', ., $eo:doc))])}">
+            <atom file="{eo:file()}" voids="{count(map:keys($at)[map:contains($eo:voids, .)])}" statements="{count(map:keys($at)[exists(key('eo:minted', ., $eo:doc)) or exists(key('eo:deferred', ., $eo:doc))])}" branches="{count(map:keys($at)[exists(key('eo:joined', ., $eo:doc))]) + count(eo:raises())}">
               <xsl:value-of select="eo:java(eo:body($root, $at))"/>
             </atom>
           </xsl:otherwise>
@@ -252,6 +262,134 @@
       <xsl:sequence select="string($java)"/>
     </xsl:if>
   </xsl:function>
+  <!--
+  The records of the forks that raise, the outermost fork first. phino writes
+  the record of a fork once it is done with the fork, so the record of a fork
+  inside a branch of another one comes first in the protocol.
+  -->
+  <xsl:function name="eo:raises" as="element()*">
+    <xsl:sequence select="reverse($eo:doc//terminate)"/>
+  </xsl:function>
+  <!--
+  The marks of the places after the guards, one for each fork that raises,
+  the outermost fork first. A guard stands after the guards of the forks
+  around it, so what is computed after a guard is placed after all of them.
+  -->
+  <xsl:function name="eo:marks" as="xs:string*">
+    <xsl:sequence select="eo:raises() ! concat(@symbol, '!')"/>
+  </xsl:function>
+  <!-- The value of the condition a fork raises at: true on its left side and false on its right one. -->
+  <xsl:function name="eo:side" as="xs:string">
+    <xsl:param name="raise" as="element()"/>
+    <xsl:variable name="side" select="map {'left': 'true', 'right': 'false'}(string($raise/@branch))"/>
+    <xsl:if test="empty($side)">
+      <xsl:sequence select="eo:taint(concat('The entry ', $number, ' raises on ', $raise/@symbol, ' at the side ', $raise/@branch, ', which is neither left nor right'))"/>
+    </xsl:if>
+    <xsl:sequence select="$side"/>
+  </xsl:function>
+  <!-- The words that say when the entry raises, which every taint of a fork that raises starts with. -->
+  <xsl:function name="eo:raising" as="xs:string">
+    <xsl:param name="raise" as="element()"/>
+    <xsl:sequence select="concat('The entry ', $number, ' raises when ', $raise/@symbol, ' is ', eo:side($raise))"/>
+  </xsl:function>
+  <!--
+  Stop the rendering of an entry that raises where no guard can stand. A
+  guard stands at the top of the atom, so the fork that raises must give the
+  whole body, which it does when the answer of the fork is the answer of
+  "L_entry" for the body. Even then, the fork may sit inside a branch of a
+  fork that joins, or of one whose two branches came out the same, while
+  the protocol does not say inside which branch of which fork a record sits.
+  So an entry that raises and forks anywhere else is a taint as well, but
+  only after the messages are checked, since the message of the outer fork
+  may be code that forks on its own, and that is the reason a reader looks
+  for first.
+  -->
+  <xsl:function name="eo:unguarded">
+    <xsl:variable name="body" select="normalize-space(($eo:doc/protocol/morph/evaluate[@λ = 'L_entry']/bind[@meta = '𝑛1·1'])[1])"/>
+    <xsl:for-each select="eo:raises()">
+      <xsl:variable name="bytes" select="eo:octets(.)"/>
+      <xsl:choose>
+        <xsl:when test="empty(@message)">
+          <xsl:sequence select="eo:taint(concat(eo:raising(.), ', while phino does not say with what message'))"/>
+        </xsl:when>
+        <xsl:when test="empty($bytes)">
+          <xsl:sequence select="eo:taint(concat(eo:raising(.), ', but its message ', @message, ' is not a string literal, and an atom that computes its message is not written yet'))"/>
+        </xsl:when>
+        <xsl:when test="eo:text($bytes) = -1">
+          <xsl:sequence select="eo:taint(concat(eo:raising(.), ', but its message ', $bytes, ' is no text in UTF-8'))"/>
+        </xsl:when>
+        <xsl:when test="normalize-space(../answer[1]) != $body">
+          <xsl:sequence select="eo:taint(concat(eo:raising(.), ', but the fork that raises does not give the body, and an atom that raises inside an operand or a branch is not written yet'))"/>
+        </xsl:when>
+      </xsl:choose>
+    </xsl:for-each>
+    <xsl:for-each select="eo:raises()[exists($eo:doc//evaluate[@λ = 'L_fork'][empty(terminate)])][1]">
+      <xsl:sequence select="eo:taint(concat(eo:raising(.), ', while it forks on other conditions too, and an atom that raises next to other forks is not written yet'))"/>
+    </xsl:for-each>
+  </xsl:function>
+  <!--
+  The bytes of the message a fork raises, as phino writes bytes, or nothing
+  when the message is not the record that applies "Φ.string" to the record
+  of literal bytes alone, which is how phino writes a string literal.
+  -->
+  <xsl:function name="eo:octets" as="xs:string?">
+    <xsl:param name="raise" as="element()"/>
+    <xsl:variable name="string" select="($eo:doc//applied[@meta = string($raise/@message)])[1][@of = 'Φ.string' and count(attr) = 1]/attr[@name = 'φ']"/>
+    <xsl:variable name="bytes" select="normalize-space(($eo:doc//applied[@meta = normalize-space($string)])[1][@of = 'Φ.bytes' and count(attr) = 1]/attr[@name = 'φ'])"/>
+    <xsl:if test="matches($bytes, '^(--|[0-9A-F]{2}-|[0-9A-F]{2}(-[0-9A-F]{2})+):Δ$')">
+      <xsl:sequence select="substring-before($bytes, ':Δ')"/>
+    </xsl:if>
+  </xsl:function>
+  <!-- The code points of bytes read as text in UTF-8, with -1 where they are no such text. -->
+  <xsl:function name="eo:text" as="xs:integer*">
+    <xsl:param name="bytes" as="xs:string"/>
+    <xsl:sequence select="eo:utf8(tokenize($bytes, '-')[. != ''] ! fold-left(string-to-codepoints(upper-case(.)), 0, function($n, $c) { $n * 16 + string-length(substring-before('0123456789ABCDEF', codepoints-to-string($c))) }))"/>
+  </xsl:function>
+  <!--
+  The code points of octets in UTF-8, ending with -1 where the octets stop
+  being such text: an octet that starts no character, a character cut short
+  or written longer than it needs, a surrogate, or a code point past the
+  last one.
+  -->
+  <xsl:function name="eo:utf8" as="xs:integer*">
+    <xsl:param name="octets" as="xs:integer*"/>
+    <xsl:variable name="lead" select="head($octets)"/>
+    <xsl:variable name="size" select="if (empty($lead)) then 0 else if ($lead lt 128) then 1 else if ($lead lt 192) then -1 else if ($lead lt 224) then 2 else if ($lead lt 240) then 3 else if ($lead lt 248) then 4 else -1"/>
+    <xsl:choose>
+      <xsl:when test="$size = 0"/>
+      <xsl:when test="$size = -1">
+        <xsl:sequence select="-1"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:variable name="rest" select="subsequence($octets, 2, $size - 1)"/>
+        <xsl:variable name="code" select="fold-left($rest, $lead mod (128, 32, 16, 8)[$size], function($c, $o) { $c * 64 + $o mod 64 })"/>
+        <xsl:choose>
+          <xsl:when test="count($rest) lt $size - 1 or (some $o in $rest satisfies $o idiv 64 != 2) or $code lt (0, 128, 2048, 65536)[$size] or $code gt 1114111 or ($code ge 55296 and $code le 57343)">
+            <xsl:sequence select="-1"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:sequence select="($code, eo:utf8(subsequence($octets, $size + 1)))"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+  <!--
+  The escapes of the characters a Java string literal cannot hold as they
+  are: a quote, a backslash, the ends of a line, a tab, and the two
+  characters XML cannot hold, which Java reads as escapes before anything
+  else, where they do no harm.
+  -->
+  <xsl:variable name="eo:escapes" as="map(xs:integer, xs:string)" select="map {9: '\t', 10: '\n', 13: '\r', 34: '\&quot;', 92: '\\', 65534: '\uFFFE', 65535: '\uFFFF'}"/>
+  <!--
+  The message a fork raises, as the body of a Java string literal. Any other
+  control character becomes an octal escape of three digits, since Java
+  reads a "\u" escape before it splits the source into lines.
+  -->
+  <xsl:function name="eo:message" as="xs:string">
+    <xsl:param name="raise" as="element()"/>
+    <xsl:sequence select="string-join(eo:text(eo:octets($raise)) ! (if (map:contains($eo:escapes, .)) then $eo:escapes(.) else if (. lt 32 or . = 127) then concat('\', . idiv 64, . idiv 8 mod 8, . mod 8) else codepoints-to-string(.)), '')"/>
+  </xsl:function>
   <!-- The symbol the root of the entry dataizes. -->
   <xsl:function name="eo:root" as="xs:string">
     <xsl:variable name="timeout" select="($eo:doc//timeout)[1]"/>
@@ -267,6 +405,7 @@
     <xsl:if test="empty($root)">
       <xsl:sequence select="eo:rootless()"/>
     </xsl:if>
+    <xsl:sequence select="eo:unguarded()"/>
     <xsl:variable name="symbol" select="substring-before(concat(string($root), ':'), ':')"/>
     <xsl:if test="exists(key('eo:known', $symbol, $eo:doc))">
       <xsl:sequence select="eo:taint(concat('The root ', $symbol, ' of the entry ', $number, ' is a constant'))"/>
@@ -352,7 +491,7 @@
   <xsl:function name="eo:body" as="xs:string">
     <xsl:param name="root" as="xs:string"/>
     <xsl:param name="at" as="map(xs:string, xs:string*)"/>
-    <xsl:sequence select="concat(if (map:contains($eo:voids, $root)) then '' else eo:block($at, (), 2), '        return ', eo:returned($root), ';&#10;')"/>
+    <xsl:sequence select="concat(eo:block($at, (), 2), '        return ', eo:returned($root), ';&#10;')"/>
   </xsl:function>
   <!-- The whole Java file of the atom, around the body of its lambda. -->
   <xsl:function name="eo:java" as="xs:string">
@@ -366,13 +505,20 @@
   one as the joined symbol with "+" for its left branch and "-" for its right
   one. The symbols are walked from the highest number down, and each one
   tells the symbols it reads where it reads them, so that a symbol read in
-  two places is placed where both places agree.
+  two places is placed where both places agree. The root is read after all
+  the guards, and the condition of each guard after the guards around it,
+  each one as the mark of the place after its guard. A root that is a void
+  is returned as the object it is, and is never read as data at all.
   -->
   <xsl:function name="eo:placed" as="map(xs:string, xs:string*)">
     <xsl:param name="root" as="xs:string"/>
     <xsl:variable name="all" select="distinct-values(($eo:doc//(minted | joined | deferred | looped)/@symbol, map:keys($eo:voids)))"/>
+    <xsl:variable name="merged" as="function(*)" select="function($m, $r) { let $k := map:keys($r) return map:put($m, $k, if (map:contains($m, $k)) then eo:common($m($k), $r($k)) else $r($k)) }"/>
+    <xsl:variable name="raises" select="eo:raises()"/>
+    <xsl:variable name="marks" select="eo:marks()"/>
+    <xsl:variable name="seeds" select="((if (map:contains($eo:voids, $root)) then () else map {$root: $marks}), for $i in 1 to count($raises) return map {string($raises[$i]/@symbol): subsequence($marks, 1, $i - 1)})"/>
     <xsl:iterate select="sort($all, (), function($s) { -eo:serial($s) })">
-      <xsl:param name="at" as="map(xs:string, xs:string*)" select="map {$root: ()}"/>
+      <xsl:param name="at" as="map(xs:string, xs:string*)" select="fold-left($seeds[not(eo:constant(map:keys(.)))], map {}, $merged)"/>
       <xsl:on-completion>
         <xsl:for-each select="map:keys($at)[not(. = $all)][1]">
           <xsl:sequence select="eo:taint(concat('The symbol ', ., ' of the entry ', $number, ' is read, while nothing defines it'))"/>
@@ -401,7 +547,7 @@
         <xsl:sequence select="eo:taint(concat('The symbol ', $symbol, ' of the entry ', $number, ' reads ', map:keys(.), ', which was not minted before it'))"/>
       </xsl:for-each>
       <xsl:next-iteration>
-        <xsl:with-param name="at" select="fold-left($symbols, $at, function($m, $r) { let $k := map:keys($r) return map:put($m, $k, if (map:contains($m, $k)) then eo:common($m($k), $r($k)) else $r($k)) })"/>
+        <xsl:with-param name="at" select="fold-left($symbols, $at, $merged)"/>
       </xsl:next-iteration>
     </xsl:iterate>
   </xsl:function>
@@ -629,12 +775,26 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-  <!-- The statements of the symbols placed at one place, in the order they were minted. -->
+  <!--
+  The statements of the symbols placed at one place, in the order they were
+  minted, then the guard that stands at that place, if any, and the place
+  after that guard.
+  -->
   <xsl:function name="eo:block" as="xs:string">
     <xsl:param name="at" as="map(xs:string, xs:string*)"/>
     <xsl:param name="place" as="xs:string*"/>
     <xsl:param name="depth" as="xs:integer"/>
-    <xsl:sequence select="string-join(sort(map:keys($at)[deep-equal($at(.), $place)], (), eo:serial#1) ! eo:statement($at, ., $depth), '')"/>
+    <xsl:variable name="marks" select="eo:marks()"/>
+    <xsl:variable name="guard" select="(1 to count($marks))[deep-equal(subsequence($marks, 1, . - 1), $place)][1]"/>
+    <xsl:sequence select="concat(string-join(sort(map:keys($at)[deep-equal($at(.), $place)], (), eo:serial#1) ! eo:statement($at, ., $depth), ''), if (exists($guard)) then concat(eo:guard(eo:raises()[$guard], $depth), eo:block($at, ($place, $marks[$guard]), $depth)) else '')"/>
+  </xsl:function>
+  <!-- The guard that throws the message a fork raises, when its condition has the value it raises at. -->
+  <xsl:function name="eo:guard" as="xs:string">
+    <xsl:param name="raise" as="element()"/>
+    <xsl:param name="depth" as="xs:integer"/>
+    <xsl:variable name="indent" select="string-join((1 to $depth) ! '    ', '')"/>
+    <xsl:variable name="condition" select="eo:value(string($raise/@symbol), 'boolean')"/>
+    <xsl:sequence select="concat($indent, 'if (', if (eo:side($raise) = 'true') then $condition else if (matches($condition, '^\w+$')) then concat('!', $condition) else concat('!(', $condition, ')'), ') {&#10;', $indent, '    throw new ExFailure(&quot;%s&quot;, &quot;', eo:message($raise), '&quot;);&#10;', $indent, '}&#10;')"/>
   </xsl:function>
   <!-- The statement a symbol is computed by. -->
   <xsl:function name="eo:statement" as="xs:string">

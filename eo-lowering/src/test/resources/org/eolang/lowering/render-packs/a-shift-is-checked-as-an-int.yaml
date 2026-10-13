@@ -14,10 +14,16 @@ eo:
 voids:
   - "𝜎1\t6\tx\tobject"
   - "𝜎2\t6\tb\tobject"
+links: |
+  <links>
+    <type id="Φ.shifted.φ">
+      <ref loc="Φ.bytes"/>
+    </type>
+  </links>
 protocol: |
   <protocol>
-    <morph at="Φ.l🌵.e6">
-      <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e6">
+    <morph at="Φ.l/.e6">
+      <evaluate λ="L_entry" by="morph" at="Φ.l/.e6">
         <evaluate λ="L_dataized" by="morph" at="Φ.a🌵1">
           <minted symbol="𝜎3">𝜎1</minted>
         </evaluate>
@@ -28,8 +34,8 @@ protocol: |
           <minted symbol="𝜎5">𝜎3 𝜎4</minted>
         </evaluate>
       </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l🌵.e6">
-        <dataize meta="𝛿1.4">𝜎5:λ</dataize>
+      <evaluate λ="L_root" by="morph" at="Φ.l/.e6">
+        <dataize meta="𝛿1·4">𝜎5:λ</dataize>
       </evaluate>
     </morph>
     <msec>190</msec>
