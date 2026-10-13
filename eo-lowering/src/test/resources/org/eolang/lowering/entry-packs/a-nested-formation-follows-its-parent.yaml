@@ -21,8 +21,8 @@ provides: |
     </type>
   </provides>
 xmir:
-  - "//o[@name='e1']/o[@as='v' and @base='Φ.outer']"
-  - "//o[@name='e2']/o[@as='v' and @base='Φ.outer.inner']"
+  - "//o[@name='e1']/o/o[@as='v' and @base='Φ.outer']"
+  - "//o[@name='e2']/o/o[@as='v' and @base='Φ.outer.inner']"
 entries:
   - "1\tΦ.outer"
   - "2\tΦ.outer.inner"

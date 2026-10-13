@@ -89,6 +89,15 @@ import org.cactoos.text.TextOf;
  * through {@code ExFailure}, which is what {@code T} does in eo-runtime,
  * and {@code recovered} catches it the same way.</p>
  *
+ * <p>A fork whose branch is a {@code T} raises on that side, as
+ * {@code bytes.xor} does when its operands differ in length. phino joins
+ * such a fork into its other branch, and writes a {@code terminate} record
+ * that names the condition and the message. The atom checks that condition
+ * with an {@code if}, which throws the message through {@code ExFailure}
+ * right where the condition is computed. This check is a guard. An entry
+ * whose fork raises anywhere but around its whole body is a taint, and so
+ * is an entry that raises a message it would have to compute.</p>
+ *
  * @since 0.64.0
  * @todo #9248:45min Put the object around a root that comes out of an
  *  {@code if} or a dispatch. The protocol names the object around the root
@@ -109,6 +118,12 @@ import org.cactoos.text.TextOf;
  *  same. When the result of the body is known bytes, like an object that
  *  always returns {@code 42}, the entry is a taint now. But its atom could
  *  simply return those bytes.
+ * @todo #9448:45min Put a guard inside the branch or the operand where its
+ *  fork raises. A guard stands at the top of the atom now, so an entry is a
+ *  taint when the fork that raises sits inside a branch of another fork, or
+ *  inside an argument of an operation, or next to a fork that does not
+ *  raise. Once phino names, in every {@code terminate} record, the fork and
+ *  the branch the record sits inside, place every guard right there.
  */
 final class Rendering implements Proc<Path> {
 
