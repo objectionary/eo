@@ -279,6 +279,12 @@ final class Node {
      * (#5821) is spelled by {@link #inlined()}, which strips the {@code !}
      * here and appends it where it belongs (#5902).</p>
      *
+     * <p>A raw reversed dispatch has no inline spelling either. Its receiver
+     * may fold into the base through {@link #suffixed()}, which is attempted
+     * by {@link #flat()} first; if that fold is unavailable, a const-bearing
+     * dispatch must stay vertical so that the only-phi spelling remains
+     * parseable and stable across a round trip.</p>
+     *
      * @return The inlined content, or empty
      */
     Optional<String> flat() {
@@ -466,7 +472,10 @@ final class Node {
         final Optional<String> result;
         if (this.abstractt) {
             result = this.phi(style, indent);
-        } else if (this.children.isEmpty() || this.glyph()) {
+        } else if (
+            this.children.isEmpty() || this.glyph()
+                || this.reversed && this.children.stream().anyMatch(Node::constant)
+        ) {
             result = Optional.empty();
         } else {
             result = new Horizontal(
@@ -530,7 +539,7 @@ final class Node {
 
     private Optional<String> spelled() {
         final Optional<String> result;
-        if (this.reversed && this.children.size() <= 1) {
+        if (this.reversed) {
             result = Optional.empty();
         } else if (this.abstractt || !this.tail.isEmpty() || "*".equals(this.base)) {
             result = Optional.empty();
