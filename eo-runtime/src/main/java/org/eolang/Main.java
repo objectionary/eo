@@ -192,9 +192,7 @@ public final class Main {
             exit = true;
         }
         if (!exit && !Main.VERBOSE.equals(opt)) {
-            throw new ExFailure(
-                String.format("The option '%s' is not known, see %s", opt, Main.HELP)
-            );
+            throw new ExFailure("The option '%s' is not known, see %s", opt, Main.HELP);
         }
         return exit;
     }
