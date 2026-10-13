@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An anonymous formation applied through `|` inside an argument block. It has
+# no handle name to be read back by, so it is printed where it was, above the
+# pipe, and not referenced through a synthetic name nothing declares.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > app
+    foo > @
+      [x] >>
+        x.plus 1 > @
+      | 5
+
+printed: |
+  [] > app
+    foo > @
+      x.plus 1 > [x] >>
+      | 5

@@ -21,15 +21,6 @@ provides: |
       <attr name="c" type="Φ.two.c" void="true" holds="Φ.number"/>
     </type>
   </provides>
-links: |
-  <links>
-    <type id="Φ.one.φ">
-      <ref loc="Φ.number"/>
-    </type>
-    <type id="Φ.two.φ">
-      <ref loc="Φ.number"/>
-    </type>
-  </links>
 xmir:
   - "//o[@name='e1']/o[@as='v' and @base='Φ.one']/o[@as='a']/\
     /o[@name='λ' and text()='𝜎1']"

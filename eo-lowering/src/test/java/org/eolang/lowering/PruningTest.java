@@ -127,6 +127,52 @@ final class PruningTest {
     }
 
     @Test
+    void turnsATerminatorIntoACopyOfTheThrow(@Mktmp final Path temp) throws IOException {
+        new Pruning(
+            Collections.singletonList(
+                PruningTest.parsed(
+                    temp.resolve("broken.xmir"),
+                    String.format("[x] > broken%n  T \"no way\" > @%n")
+                )
+            )
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "the terminator must become a copy of the throw with its message, but it doesnt",
+            new XMLDocument(temp.resolve("1-planting/broken.xmir"))
+                .nodes("//o[@base='Φ.l/.throw']/o[@as='message' and @base='Φ.string']"),
+            Matchers.hasSize(1)
+        );
+    }
+
+    @Test
+    void leavesNoTerminatorInTheCopy(@Mktmp final Path temp) throws IOException {
+        new Pruning(
+            Collections.singletonList(
+                PruningTest.parsed(
+                    temp.resolve("guard.xmir"),
+                    String.format(
+                        String.join(
+                            "%n",
+                            "[a] > guard",
+                            "  if. > @",
+                            "    a.gt 0",
+                            "    a",
+                            "    T \"negative\"",
+                            "  T > nothing",
+                            ""
+                        )
+                    )
+                )
+            )
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "the copy must hold no terminator, but it does",
+            new XMLDocument(temp.resolve("1-planting/guard.xmir")).nodes("//o[@base='⊥']"),
+            Matchers.empty()
+        );
+    }
+
+    @Test
     void dropsTheCopyOfASourceTheBuildNoLongerHas(@Mktmp final Path temp)
         throws IOException {
         final Path stale = Files.write(

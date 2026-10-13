@@ -123,7 +123,16 @@ final class MergingTest {
                 .toString().getBytes(StandardCharsets.UTF_8)
         );
         final Path tables = Files.createDirectories(temp.resolve("tables"));
-        Files.write(tables.resolve("provides.xml"), "<provides/>".getBytes(StandardCharsets.UTF_8));
+        Files.write(
+            tables.resolve("provides.xml"),
+            String.join(
+                "",
+                "<provides><type id='Φ.gap'>",
+                "<attr name='a' void='true' holds='Φ.number'/>",
+                "<attr name='b' void='true' holds='Φ.number'/>",
+                "</type></provides>"
+            ).getBytes(StandardCharsets.UTF_8)
+        );
         Files.write(
             tables.resolve("links.xml"),
             "<links><type id='Φ.gap.φ'><ref loc='Φ.number'/></type></links>"
@@ -137,7 +146,7 @@ final class MergingTest {
             new String(
                 Files.readAllBytes(temp.resolve("world.phi")), StandardCharsets.UTF_8
             ),
-            Matchers.stringContainsInOrder("gap", "l🌵", "L_entry")
+            Matchers.stringContainsInOrder("gap", "l/", "L_entry")
         );
     }
 

@@ -118,3 +118,5 @@
     1
 
   1.eq 0.cosine ++> can-take-an-exact-cosine-of-zero
+
+  -1.0e300.cosine --> stops-on-a-cosine-of-an-angle-the-reduction-cannot-hold

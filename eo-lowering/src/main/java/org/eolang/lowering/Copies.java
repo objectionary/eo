@@ -12,10 +12,12 @@ import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Sorted;
 
 /**
- * The list of the copies of the sources, which have no tests inside.
+ * The list of the copies of the sources, which have no tests and no
+ * {@code T} inside.
  *
  * <p>The stage {@link Pruning} makes a copy of every source file of the
- * build, removes the tests from it, and saves it into the directory
+ * build, removes the tests from it, turns every {@code T} there into a copy
+ * of {@code throw}, and saves it into the directory
  * {@code 1-planting}, inside the home directory of the lowering. All the
  * stages after {@link Pruning} read only these copies, and never the
  * original sources. This class lists those copies.</p>

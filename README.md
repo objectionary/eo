@@ -14,6 +14,7 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/objectionary/eo/blob/master/LICENSE.txt)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcqfn%2Feo.svg?type=shield)](https://app.fossa.com/reports/0ebb3149-4934-4565-bf6f-6fa41aed3b49)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=objectionary_eo&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=objectionary_eo)
+[![Striff](https://striff.io/badge/objectionary/eo.svg)](https://striff.io/objectionary/eo)
 
 **EO** (stands for [Elegant Objects][book] or ISO 639-1 code of [Esperanto])
 is an object-oriented programming language based on [𝜑-calculus].

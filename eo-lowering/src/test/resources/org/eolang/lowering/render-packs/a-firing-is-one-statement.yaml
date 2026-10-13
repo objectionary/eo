@@ -3,8 +3,9 @@
 ---
 # yamllint disable rule:line-length
 # The body of neg is one firing of times over its receiver and the literal
-# minus one, so the atom reads the void into a double, multiplies it by the
-# bits of minus one in one statement, and returns the product as a number.
+# minus one, so the atom reads the void as its bytes, multiplies them as a
+# double by the bits of minus one in one statement, and returns the product
+# as a number.
 locator: Φ.number.neg
 number: 217
 eo:
@@ -14,18 +15,24 @@ eo:
         ^.times -1 > @
 voids:
   - "𝜎200\t217\tρ\tnumber"
+links: |
+  <links>
+    <type id="Φ.number.neg.φ">
+      <ref loc="Φ.number"/>
+    </type>
+  </links>
 protocol: |
   <protocol>
-    <morph at="Φ.l🌵.e217">
-      <evaluate λ="L_entry" by="morph" at="Φ.l🌵.e217">
+    <morph at="Φ.l/.e217">
+      <evaluate λ="L_entry" by="morph" at="Φ.l/.e217">
         <evaluate λ="L_number_times" by="morph" at="Φ.a🌵1">
-          <dataize meta="𝛿1.2">𝜎200:λ</dataize>
-          <bind meta="𝛿2.2">BF-F0-00-00-00-00-00-00</bind>
+          <dataize meta="𝛿1·2">𝜎200:λ</dataize>
+          <bind meta="𝛿2·2">BF-F0-00-00-00-00-00-00</bind>
           <minted symbol="𝜎752">𝜎200 BF-F0-00-00-00-00-00-00</minted>
         </evaluate>
       </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l🌵.e217">
-        <dataize meta="𝛿1.3">𝜎752:λ</dataize>
+      <evaluate λ="L_root" by="morph" at="Φ.l/.e217">
+        <dataize meta="𝛿1·3">𝜎752:λ</dataize>
       </evaluate>
     </morph>
     <msec>113</msec>
@@ -53,8 +60,8 @@ java: |
 
       @Override
       public Phi lambda() {
-          final double s200 = new Dataized(this.take("ρ").take("ρ")).asNumber();
-          final double s752 = s200 * Double.longBitsToDouble(0xBFF0000000000000L);
+          final byte[] s200 = new Dataized(this.take("ρ").take("ρ")).take();
+          final double s752 = (double) new BytesOf(s200).asNumber() * Double.longBitsToDouble(0xBFF0000000000000L);
           return new Data.ToPhi(s752);
       }
   }
