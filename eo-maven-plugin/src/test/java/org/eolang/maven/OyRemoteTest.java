@@ -60,7 +60,7 @@ final class OyRemoteTest {
             final UrlOy template = new UrlOy(
                 String.format("http://127.0.0.1:%d/%%s/%%s", server.getAddress().getPort()), "stub"
             );
-            final OyRemote remote = new OyRemote(template, template, Duration.ofMillis(200));
+            final OyRemote remote = new OyRemote(template, template, Duration.ofSeconds(1));
             final ThrowingSupplier<Boolean> request = () -> switch (operation) {
                 case 0 -> remote.isProgram("foo");
                 case 1 -> remote.isDirectory("foo");

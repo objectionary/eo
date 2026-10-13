@@ -526,6 +526,22 @@ final class MorphingTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void letsAForkRaiseThroughTheThrowInOneOfItsBranches(@Mktmp final Path temp)
+        throws IOException {
+        final Path home = MorphingTest.merged(temp);
+        new Morphing(
+            MorphingTest.recording(temp), new GlobalCache.GcFresh(),
+            new Scope(".*", "(?!)"), 16, Duration.ofMinutes(1L)
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "the fork must end at the throw of a branch, but it doesnt",
+            MorphingTest.text(home.resolve("atoms.yaml")),
+            Matchers.stringContainsInOrder("- λ: L_fork", "terminators: [L_throw]", "- λ: L_entry")
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void answersEveryBoolAsTheFormationWrappingIt(@Mktmp final Path temp) throws IOException {
         final Path home = MorphingTest.merged(temp);
         new Morphing(
