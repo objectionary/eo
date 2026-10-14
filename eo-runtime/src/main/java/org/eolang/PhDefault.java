@@ -482,9 +482,31 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     private boolean literal(final String name) {
-        return ("number".equals(name) || "string".equals(name))
-            && this.loaded().containsKey(Phi.PHI)
-            && !"?".equals(this.loaded().get(Phi.PHI).φTerm());
+        final boolean found;
+        if ("number".equals(name) || "string".equals(name)) {
+            found = this.loaded().containsKey(Phi.PHI)
+                && !"?".equals(this.loaded().get(Phi.PHI).φTerm())
+                && PhDefault.settled(this.loaded().get(Phi.PHI).get());
+        } else {
+            found = false;
+        }
+        return found;
+    }
+
+    private static boolean settled(final Phi phi) {
+        final boolean found;
+        if (phi instanceof PhDefault holder) {
+            if (holder.data.present()) {
+                found = true;
+            } else if (holder.loaded().containsKey(Phi.PHI)) {
+                found = PhDefault.settled(holder.loaded().get(Phi.PHI).get());
+            } else {
+                found = false;
+            }
+        } else {
+            found = false;
+        }
+        return found;
     }
 
     private String structural() {
