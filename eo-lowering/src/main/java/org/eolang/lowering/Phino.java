@@ -139,6 +139,8 @@ final class Phino {
      * @param entry The number of the entry to work on
      * @param protocol The file for the steps, in XML because its name ends with .xml
      * @param steps The largest number of steps phino may take inside one another
+     * @param loops How many times phino may enter the same formation again
+     *  before it decides that the run loops and cuts it
      * @param budget The time phino may work, rounded up to whole seconds
      * @throws IOException If phino cannot be started, or a
      *  {@link KilledException} if phino stopped because its time was over
@@ -146,7 +148,7 @@ final class Phino {
      */
     void morph(
         final Path world, final Path atoms, final int entry, final Path protocol,
-        final int steps, final Duration budget
+        final int steps, final int loops, final Duration budget
     ) throws IOException {
         final String task = String.format("morphing the entry %d of '%s'", entry, world);
         try {
@@ -155,7 +157,7 @@ final class Phino {
                     this.binary,
                     "morph",
                     "--acyclic=plausible",
-                    "--max-loops=2",
+                    String.format("--max-loops=%d", loops),
                     "--partial",
                     "--quiet",
                     "--sweet",

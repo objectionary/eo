@@ -108,6 +108,11 @@ public final class Lowering {
     private final int steps;
 
     /**
+     * How many times one run of phino may enter the same formation again.
+     */
+    private final int loops;
+
+    /**
      * The time that one run of phino on one entry may take before it is
      * stopped.
      */
@@ -126,14 +131,16 @@ public final class Lowering {
      * @param range The entries that phino is allowed to run on
      * @param ceiling The largest number of steps inside one another that one
      *  run of phino may take
+     * @param again How many times one run of phino may enter the same
+     *  formation again
      * @param span The time that one run of phino may take before it is stopped
      */
     public Lowering(
         final Collection<Path> srcs, final Path tbls, final Path dir, final String exe,
         final GlobalCache store, final Path kept, final Path copies, final Scope range,
-        final int ceiling, final Duration span
+        final int ceiling, final int again, final Duration span
     ) {
-        this(srcs, tbls, dir, new Phino(exe), store, kept, copies, range, ceiling, span);
+        this(srcs, tbls, dir, new Phino(exe), store, kept, copies, range, ceiling, again, span);
     }
 
     /**
@@ -149,12 +156,14 @@ public final class Lowering {
      * @param range The entries that phino is allowed to run on
      * @param ceiling The largest number of steps inside one another that one
      *  run of phino may take
+     * @param again How many times one run of phino may enter the same
+     *  formation again
      * @param span The time that one run of phino may take before it is stopped
      */
     Lowering(
         final Collection<Path> srcs, final Path tbls, final Path dir, final Phino exe,
         final GlobalCache store, final Path kept, final Path copies, final Scope range,
-        final int ceiling, final Duration span
+        final int ceiling, final int again, final Duration span
     ) {
         this.sources = srcs;
         this.tables = tbls;
@@ -165,6 +174,7 @@ public final class Lowering {
         this.patched = copies;
         this.scope = range;
         this.steps = ceiling;
+        this.loops = again;
         this.budget = span;
     }
 
@@ -233,7 +243,9 @@ public final class Lowering {
                 new Pruning(this.sources),
                 new Planting(this.tables),
                 new Merging(this.phino),
-                new Morphing(this.phino, this.cache, this.scope, this.steps, this.budget),
+                new Morphing(
+                    this.phino, this.cache, this.scope, this.steps, this.loops, this.budget
+                ),
                 new Rendering(this.atoms, this.tables),
                 new Patching(this.sources, this.tables, this.patched)
             )

@@ -64,7 +64,7 @@ final class PhinoTest {
     void handsPhinoTheBudgetInSeconds(@Mktmp final Path temp) throws IOException {
         new Phino(PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\"")).morph(
             temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 4,
-            temp.resolve("4.xml"), 32, Duration.ofSeconds(7L)
+            temp.resolve("4.xml"), 32, 2, Duration.ofSeconds(7L)
         );
         MatcherAssert.assertThat(
             "phino must be told the budget in seconds, but it isnt",
@@ -75,10 +75,24 @@ final class PhinoTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void handsPhinoTheLoopsItWasGiven(@Mktmp final Path temp) throws IOException {
+        new Phino(PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\"")).morph(
+            temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 8,
+            temp.resolve("8.xml"), 32, 6, Duration.ofSeconds(3L)
+        );
+        MatcherAssert.assertThat(
+            "phino must be told how often it may enter a formation again, but it isnt",
+            new String(Files.readAllBytes(temp.resolve("args.txt")), StandardCharsets.UTF_8),
+            Matchers.containsString("--max-loops=6")
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void roundsABudgetShorterThanASecondUpToOne(@Mktmp final Path temp) throws IOException {
         new Phino(PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\"")).morph(
             temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 9,
-            temp.resolve("9.xml"), 16, Duration.ofMillis(300L)
+            temp.resolve("9.xml"), 16, 2, Duration.ofMillis(300L)
         );
         MatcherAssert.assertThat(
             "a budget under a second must reach phino as one second, but it doesnt",
@@ -94,7 +108,7 @@ final class PhinoTest {
         Assertions.assertDoesNotThrow(
             () -> phino.morph(
                 temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 5,
-                temp.resolve("5.xml"), 32, Duration.ofMillis(500L)
+                temp.resolve("5.xml"), 32, 2, Duration.ofMillis(500L)
             ),
             "phino must stop by itself, and never be killed from Java"
         );
@@ -116,7 +130,7 @@ final class PhinoTest {
                 KilledException.class,
                 () -> phino.morph(
                     temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 3,
-                    temp.resolve("3.xml"), 32, Duration.ofSeconds(2L)
+                    temp.resolve("3.xml"), 32, 2, Duration.ofSeconds(2L)
                 ),
                 "a run that phino stopped on time must be reported as one"
             ).getMessage(),
@@ -132,7 +146,7 @@ final class PhinoTest {
             IllegalStateException.class,
             () -> phino.morph(
                 temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 6,
-                temp.resolve("6.xml"), 32, Duration.ofSeconds(4L)
+                temp.resolve("6.xml"), 32, 2, Duration.ofSeconds(4L)
             ),
             "a run that broke without a timeout must not be taken for one that ran out of time"
         );

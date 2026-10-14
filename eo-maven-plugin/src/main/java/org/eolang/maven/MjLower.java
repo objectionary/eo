@@ -115,6 +115,17 @@ public final class MjLower extends MjSafe {
     private int steps;
 
     /**
+     * How many times one run of phino may enter the same formation again,
+     * with other data, before it decides that the run loops and cuts it.
+     */
+    @Parameter(
+        alias = "maxLoops",
+        property = "eo.maxLoops",
+        defaultValue = "2"
+    )
+    private int loops;
+
+    /**
      * The regular expression that the whole locator of an entry, such as
      * {@code Φ.string.printf}, must match for phino to run on it.
      */
@@ -167,6 +178,7 @@ public final class MjLower extends MjSafe {
                     home.resolve("4-patched"),
                     new Scope(this.only, this.never),
                     this.steps,
+                    this.loops,
                     Duration.ofSeconds(this.budget)
                 );
                 if (this.optional && !pipeline.available()) {

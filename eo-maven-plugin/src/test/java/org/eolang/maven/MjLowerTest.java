@@ -257,6 +257,25 @@ final class MjLowerTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void handsPhinoTheNumberOfLoopsItWasGiven(@Mktmp final Path temp) throws IOException {
+        final int loops = new SecureRandom().nextInt(50) + 1;
+        new FakeMaven(temp)
+            .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
+            .execute(MjParse.class)
+            .with("lowering", true)
+            .with("loops", loops)
+            .with("binary", MjLowerTest.binary(temp))
+            .with("tables", MjLowerTest.tables(temp).toFile())
+            .execute(MjLower.class);
+        MatcherAssert.assertThat(
+            "the goal must hand phino the number of loops it was given, but it didnt",
+            Files.readString(temp.resolve("morph.txt"), StandardCharsets.UTF_8),
+            Matchers.containsString(String.format("--max-loops=%d", loops))
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void plantsTheEntriesOfTheProgramItCompiled(@Mktmp final Path temp) throws IOException {
         final Path home = new Subdir(temp.resolve("target"), "lowering").path();
         new FakeMaven(temp)
