@@ -57,9 +57,12 @@
   morph:
     𝑛1: $.left
     𝑛2: $.right
+  evaluate:
+    𝑛3: 𝑛1
+    𝑛4: 𝑛2
   rewrite:
-    𝑛3:
-      of: 𝑛1
+    𝑛5:
+      of: 𝑛3
       rules: &bool
         - name: false-literal
           pattern: >-
@@ -89,17 +92,17 @@
           result: >-
             ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
             φ ↦ 𝑒1 ⟧ ) ⟧
-    𝑛4:
-      of: 𝑛2
+    𝑛6:
+      of: 𝑛4
       rules: *bool
   symbolize:
-    𝑛5: 𝑛3
-    𝑛6: 𝑛4
+    𝑛7: 𝑛5
+    𝑛8: 𝑛6
   join:
-    𝑛7: [𝑛5, 𝑛6]
+    𝑛9: [𝑛7, 𝑛8]
   lenient: true
   terminators: [L_throw]
-  𝑛: 𝑛7
+  𝑛: 𝑛9
 - λ: L_entry
   dataize:
     𝛿1: $.n
