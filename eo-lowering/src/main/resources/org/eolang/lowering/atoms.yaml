@@ -51,6 +51,8 @@
   dataize:
     𝛿1: $.target
   𝑛: Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )
+- λ: L_os_name
+  𝑛: Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )
 - λ: L_fork
   dataize:
     𝛿1: $.φ
