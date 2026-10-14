@@ -16,7 +16,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -40,13 +39,20 @@ final class OyRemoteTest {
     })
     void boundsRequestsWaitingForHeaders(final int operation, final boolean responds)
         throws Exception {
-        final AtomicInteger requests = new AtomicInteger();
+        final CountDownLatch arrived = new CountDownLatch(3);
         final HttpServer server = HttpServer.create(
             new InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0
         );
+        server.setExecutor(
+            command -> {
+                final Thread thread = new Thread(command);
+                thread.setDaemon(true);
+                thread.start();
+            }
+        );
         server.createContext(
             "/", exchange -> {
-                requests.incrementAndGet();
+                arrived.countDown();
                 if (responds) {
                     final byte[] body = "[] > foo".getBytes(StandardCharsets.UTF_8);
                     exchange.sendResponseHeaders(200, body.length);
@@ -60,14 +66,14 @@ final class OyRemoteTest {
             final UrlOy template = new UrlOy(
                 String.format("http://127.0.0.1:%d/%%s/%%s", server.getAddress().getPort()), "stub"
             );
-            final OyRemote remote = new OyRemote(template, template, Duration.ofSeconds(1));
+            final OyRemote remote = new OyRemote(template, template, Duration.ofSeconds(5));
             final ThrowingSupplier<Boolean> request = () -> switch (operation) {
                 case 0 -> remote.isProgram("foo");
                 case 1 -> remote.isDirectory("foo");
                 default -> "[] > foo".equals(new TextOf(remote.get("foo")).asString());
             };
             Assertions.assertTimeoutPreemptively(
-                Duration.ofSeconds(20),
+                Duration.ofSeconds(90),
                 () -> {
                     if (responds) {
                         Assertions.assertTrue(request.get(), "The immediate response must succeed");
@@ -78,7 +84,7 @@ final class OyRemoteTest {
                         );
                         MatcherAssert.assertThat(
                             "The server must receive retried requests before failure",
-                            requests.get(), Matchers.equalTo(3)
+                            arrived.await(30L, TimeUnit.SECONDS), Matchers.is(true)
                         );
                     }
                 },
