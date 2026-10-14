@@ -215,7 +215,7 @@ final class OyRemoteTest {
     void reportsNameInTheEoObjectSlotWhenObjectNotFound() throws Exception {
         MatcherAssert.assertThat(
             "The object name must show up in the 'EO object' slot of the message",
-            OyRemoteTest.notFoundMessage(),
+            OyRemoteTest.message(404),
             Matchers.containsString("EO object 'org.eolang.txt.sprintf'")
         );
     }
@@ -224,8 +224,21 @@ final class OyRemoteTest {
     void reportsUrlInTheByUrlSlotWhenObjectNotFound() throws Exception {
         MatcherAssert.assertThat(
             "The URL must show up in the 'by url' slot of the message",
-            OyRemoteTest.notFoundMessage(),
+            OyRemoteTest.message(404),
             Matchers.containsString("by url: http://127.0.0.1")
+        );
+    }
+
+    @Test
+    void doesNotBlameTheNameWhenTheServerFails() throws Exception {
+        MatcherAssert.assertThat(
+            "A server error must be reported as a failed download, not as a misspelled name",
+            OyRemoteTest.message(503),
+            Matchers.both(
+                Matchers.containsString("HTTP error 503")
+            ).and(
+                Matchers.not(Matchers.containsString("misspelled"))
+            )
         );
     }
 
@@ -311,15 +324,15 @@ final class OyRemoteTest {
         }
     }
 
-    private static String notFoundMessage() throws Exception {
+    private static String message(final int status) throws Exception {
         final HttpServer server = HttpServer.create(
             new InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0
         );
         server.createContext(
             "/",
             exchange -> {
-                final byte[] body = "404: Not Found".getBytes(StandardCharsets.UTF_8);
-                exchange.sendResponseHeaders(404, body.length);
+                final byte[] body = "the body".getBytes(StandardCharsets.UTF_8);
+                exchange.sendResponseHeaders(status, body.length);
                 exchange.getResponseBody().write(body);
                 exchange.close();
             }
@@ -335,7 +348,7 @@ final class OyRemoteTest {
                     new UrlOy(tpl, "stub"),
                     new UrlOy(tpl, "stub")
                 ).get("org.eolang.txt.sprintf").stream(),
-                "Expected an IOException reporting the object as not found"
+                "Expected an IOException reporting the rejected HTTP status"
             ).getMessage();
         } finally {
             server.stop(0);
