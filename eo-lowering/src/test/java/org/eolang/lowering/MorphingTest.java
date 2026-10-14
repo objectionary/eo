@@ -393,7 +393,7 @@ final class MorphingTest {
             Assertions.assertThrows(
                 IllegalStateException.class,
                 () -> new Morphing(
-                    new Phino("absent"), new GlobalCache.GcFresh(),
+                    new Phino("absent", "1.3.8"), new GlobalCache.GcFresh(),
                     new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L)
                 ).exec(temp),
                 "a world that was not merged must fail the morphing"
@@ -411,7 +411,7 @@ final class MorphingTest {
             Assertions.assertThrows(
                 IllegalStateException.class,
                 () -> new Morphing(
-                    new Phino("absent"), new GlobalCache.GcFresh(),
+                    new Phino("absent", "1.3.8"), new GlobalCache.GcFresh(),
                     new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L)
                 ).exec(temp),
                 "entries that were not planted must fail the morphing"
@@ -422,7 +422,7 @@ final class MorphingTest {
 
     @Test
     void morphsTheWorldThePinnedPhinoFolds(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino");
+        final Phino phino = new Phino("phino", "0.0.154");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -476,7 +476,7 @@ final class MorphingTest {
     @Test
     void stopsAtTheThrowWithTheWholeMessageThePinnedPhinoKeeps(@Mktmp final Path temp)
         throws IOException {
-        final Phino phino = new Phino("phino");
+        final Phino phino = new Phino("phino", "0.0.154");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -598,7 +598,7 @@ final class MorphingTest {
 
     @Test
     void answersTheAtomOfBytesThePinnedPhinoReaches(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino");
+        final Phino phino = new Phino("phino", "0.0.154");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -721,6 +721,6 @@ final class MorphingTest {
             temp.resolve("phino"), new ListOf<>("#!/bin/sh", body)
         );
         Files.setPosixFilePermissions(binary, PosixFilePermissions.fromString("rwxr-xr-x"));
-        return new Phino(binary.toString());
+        return new Phino(binary.toString(), "2.6.4");
     }
 }

@@ -125,6 +125,7 @@ public final class Lowering {
      * @param tbls The directory with the tables of {@code eo:inference}
      * @param dir The home directory of the lowering, usually {@code target/eo/NN-lowering}
      * @param exe The name of the phino program, or the path to it
+     * @param pin The only version of phino that the lowering accepts
      * @param store The cache, where the protocols are kept between builds
      * @param kept The directory for the Java atoms, which javac compiles
      * @param copies The directory for the patched XMIR files
@@ -134,13 +135,16 @@ public final class Lowering {
      * @param again How many times one run of phino may enter the same
      *  formation again
      * @param span The time that one run of phino may take before it is stopped
+     * @checkstyle ParameterNumberCheck (10 lines)
      */
     public Lowering(
         final Collection<Path> srcs, final Path tbls, final Path dir, final String exe,
-        final GlobalCache store, final Path kept, final Path copies, final Scope range,
-        final int ceiling, final int again, final Duration span
+        final String pin, final GlobalCache store, final Path kept, final Path copies,
+        final Scope range, final int ceiling, final int again, final Duration span
     ) {
-        this(srcs, tbls, dir, new Phino(exe), store, kept, copies, range, ceiling, again, span);
+        this(
+            srcs, tbls, dir, new Phino(exe, pin), store, kept, copies, range, ceiling, again, span
+        );
     }
 
     /**

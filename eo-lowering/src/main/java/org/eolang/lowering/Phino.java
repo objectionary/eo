@@ -12,7 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.stream.Stream;
-import org.cactoos.io.ResourceOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.Trimmed;
@@ -26,8 +25,9 @@ import org.cactoos.text.UncheckedText;
  * itself, and this class is the only place that runs phino. Every new
  * release of phino may read its input a little differently and may give
  * different results. So, this module trusts phino only when its version is
- * exactly the one written in the resource file
- * {@code phino-version.txt}.</p>
+ * exactly the one it was given, which is called the "pin". Every command
+ * this class runs also hands the pin to phino, so phino itself refuses to
+ * work when its version is another one.</p>
  *
  * <p>phino is started as a separate process through {@link Jaxec}. What it
  * prints is not shown in the log of the build. Its normal output is thrown
@@ -44,12 +44,19 @@ final class Phino {
     private final String binary;
 
     /**
+     * The only version of phino that this module accepts.
+     */
+    private final String version;
+
+    /**
      * Ctor.
      *
      * @param exe The name of the phino program, or the path to it
+     * @param pin The only version of phino that this module accepts
      */
-    Phino(final String exe) {
+    Phino(final String exe, final String pin) {
         this.binary = exe;
+        this.version = pin;
     }
 
     @Override
@@ -102,6 +109,7 @@ final class Phino {
         this.run(
             new Jaxec(
                 this.binary,
+                String.format("--pin=%s", this.version),
                 "merge",
                 "--input=xmir",
                 "--sweet",
@@ -155,6 +163,7 @@ final class Phino {
             this.run(
                 new Jaxec(
                     this.binary,
+                    String.format("--pin=%s", this.version),
                     "morph",
                     "--acyclic=plausible",
                     String.format("--max-loops=%d", loops),
@@ -197,16 +206,10 @@ final class Phino {
     /**
      * The only version of phino that this module accepts.
      *
-     * @return The content of {@code phino-version.txt}, without spaces around it
+     * @return The version this object was given
      */
     String pin() {
-        return new UncheckedText(
-            new Trimmed(
-                new TextOf(
-                    new ResourceOf("org/eolang/lowering/phino-version.txt", this.getClass())
-                )
-            )
-        ).asString();
+        return this.version;
     }
 
     private void run(final Jaxec command, final String task) throws IOException {

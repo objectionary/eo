@@ -32,7 +32,7 @@ jobs:
       # and this job is the one that always builds with lowering on.
       - uses: objectionary/phino@3220ca00f33602190a41fa04ac6b42c4cd7c4a7c  # master
         with:
-          version-file: eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt
+          version: 0.0.154
       - run: mvn install '-Deo.coverageTracking=true' '-Deo.lowering=true'
       # The goal must have run, and a missing folder is how a silently
       # disabled lowering would look.

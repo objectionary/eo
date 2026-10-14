@@ -41,7 +41,7 @@ final class PhinoTest {
         );
         MatcherAssert.assertThat(
             "the version must be what the binary printed, but it isnt",
-            new Phino(binary.toString()).version(),
+            new Phino(binary.toString(), "0.4.2").version(),
             Matchers.equalTo("0.4.2")
         );
     }
@@ -52,7 +52,7 @@ final class PhinoTest {
             "the failure must name the binary that is absent, but it doesnt",
             Assertions.assertThrows(
                 IOException.class,
-                () -> new Phino(temp.resolve("absent").toString()).version(),
+                () -> new Phino(temp.resolve("absent").toString(), "6.0.3").version(),
                 "a binary that is not there cannot report a version"
             ).getMessage(),
             Matchers.containsString("absent")
@@ -62,7 +62,7 @@ final class PhinoTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void handsPhinoTheBudgetInSeconds(@Mktmp final Path temp) throws IOException {
-        new Phino(PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\"")).morph(
+        new Phino(PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\""), "1.9.27").morph(
             temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 4,
             temp.resolve("4.xml"), 32, 2, Duration.ofSeconds(7L)
         );
@@ -76,7 +76,7 @@ final class PhinoTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void handsPhinoTheLoopsItWasGiven(@Mktmp final Path temp) throws IOException {
-        new Phino(PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\"")).morph(
+        new Phino(PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\""), "1.9.27").morph(
             temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 8,
             temp.resolve("8.xml"), 32, 6, Duration.ofSeconds(3L)
         );
@@ -89,8 +89,46 @@ final class PhinoTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void pinsTheMorphingToTheVersionItWasGiven(@Mktmp final Path temp) throws IOException {
+        new Phino(
+            PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\""), "3.1.7"
+        ).morph(
+            temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 2,
+            temp.resolve("2.xml"), 32, 2, Duration.ofSeconds(3L)
+        );
+        MatcherAssert.assertThat(
+            "phino must be pinned to the version it was given before its command, but it isnt",
+            new String(Files.readAllBytes(temp.resolve("args.txt")), StandardCharsets.UTF_8),
+            Matchers.startsWith("--pin=3.1.7 morph ")
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void pinsTheMergingToTheVersionItWasGiven(@Mktmp final Path temp) throws IOException {
+        new Phino(
+            PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\""), "0.8.12"
+        ).merge(new ListOf<>(temp.resolve("a.xmir")), temp.resolve("world.phi"));
+        MatcherAssert.assertThat(
+            "the merging must be pinned to the version phino was given, but it isnt",
+            new String(Files.readAllBytes(temp.resolve("args.txt")), StandardCharsets.UTF_8),
+            Matchers.startsWith("--pin=0.8.12 merge ")
+        );
+    }
+
+    @Test
+    void takesThePinItWasGiven() {
+        MatcherAssert.assertThat(
+            "the pin must be the version phino was given, but it isnt",
+            new Phino("phino", "5.0.31").pin(),
+            Matchers.equalTo("5.0.31")
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void roundsABudgetShorterThanASecondUpToOne(@Mktmp final Path temp) throws IOException {
-        new Phino(PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\"")).morph(
+        new Phino(PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\""), "1.9.27").morph(
             temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 9,
             temp.resolve("9.xml"), 16, 2, Duration.ofMillis(300L)
         );
@@ -104,7 +142,7 @@ final class PhinoTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void letsPhinoWorkPastItsBudget(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino(PhinoTest.binary(temp, "sleep 2"));
+        final Phino phino = new Phino(PhinoTest.binary(temp, "sleep 2"), "1.9.27");
         Assertions.assertDoesNotThrow(
             () -> phino.morph(
                 temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 5,
@@ -122,7 +160,8 @@ final class PhinoTest {
                 temp,
                 "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
                 "echo '<protocol><morph><timeout limit=\"2\"/></morph><msec>2000</msec></protocol>' > \"$p\"; exit 1"
-            )
+            ),
+            "3.3.15"
         );
         MatcherAssert.assertThat(
             "the failure must name the budget the run ran out of, but it doesnt",
@@ -141,7 +180,7 @@ final class PhinoTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void failsAMorphingThatBreaksWithinItsBudget(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino(PhinoTest.binary(temp, "echo broken >&2; exit 3"));
+        final Phino phino = new Phino(PhinoTest.binary(temp, "echo broken >&2; exit 3"), "1.9.27");
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> phino.morph(

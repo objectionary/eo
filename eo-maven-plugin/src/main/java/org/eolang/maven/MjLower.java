@@ -83,6 +83,17 @@ public final class MjLower extends MjSafe {
     private String binary;
 
     /**
+     * The only version of phino that the goal accepts, which phino also
+     * gets through its {@code --pin} option.
+     */
+    @Parameter(
+        alias = "pinPhino",
+        property = "eo.pinPhino",
+        defaultValue = "0.0.154"
+    )
+    private String pin;
+
+    /**
      * Whether the goal skips, instead of failing the build, when phino
      * cannot be started on this computer.
      */
@@ -173,6 +184,7 @@ public final class MjLower extends MjSafe {
                     new Subdir(this.target, "inference").orConfigured(this.tables),
                     home,
                     this.binary,
+                    this.pin,
                     this.caching("lowered"),
                     atoms,
                     home.resolve("4-patched"),
