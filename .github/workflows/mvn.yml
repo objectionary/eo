@@ -38,7 +38,7 @@ jobs:
       # macOS build with lowering explicitly off, keeping the disabled path
       # of the goal continuously covered.
       - if: ${{ matrix.os == 'ubuntu-24.04' }}
-        uses: objectionary/phino@9f7992914b2aff1ec7d0b28d37066e43b9dfeeba  # master
+        uses: objectionary/phino@3220ca00f33602190a41fa04ac6b42c4cd7c4a7c  # master
         with:
           version-file: eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt
       - if: ${{ matrix.os != 'ubuntu-24.04' }}
