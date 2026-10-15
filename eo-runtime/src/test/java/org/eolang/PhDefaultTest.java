@@ -589,6 +589,29 @@ final class PhDefaultTest {
     }
 
     @Test
+    void countsVoidAttributesWhenRefusingToPut() {
+        final Phi phi = new PhDefault(
+            new Attrs(
+                new Attr("alpha", new AtVoid("alpha")),
+                new Attr("beta", new AtVoid("beta"))
+            )
+        );
+        phi.put(0, new Data.ToPhi(1L));
+        phi.put(1, new Data.ToPhi(2L));
+        MatcherAssert.assertThat(
+            "the message must count the void attributes of the object, but it didnt",
+            Assertions.assertThrows(
+                ExReadOnly.class,
+                () -> phi.put(0, new Data.ToPhi(3L)),
+                "putting into an object with no vacant void must fail"
+            ).getMessage(),
+            Matchers.equalTo(
+                "[] has just 2 void attribute(s), can't put the 0-th one"
+            )
+        );
+    }
+
+    @Test
     void verifiesThreadLocalNesting() {
         Assertions.assertDoesNotThrow(
             () -> this.phiWithContextAttribute("context-verifiesThreadLocalNesting")
