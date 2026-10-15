@@ -201,8 +201,8 @@
       seq *
         before
         drain 300
-        after.lt
-          before.plus 100
+        after.as-number.lt
+          before.as-number.plus 100
     seq * > after!
       posix.close second
       second
