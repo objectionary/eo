@@ -197,9 +197,18 @@
     13
 
   ++> can-close-a-descriptor-when-the-scope-fails
-    eq. > @
-      drain 300
-      true
+    os.is-windows.or > @
+      seq *
+        before
+        drain 300
+        after.lt
+          before.plus 100
+    seq * > after!
+      posix.close second
+      second
+    seq * > before!
+      posix.close first
+      first
     if. > [^ n] > drain
       n.lte 0
       true
@@ -211,6 +220,10 @@
           true
         ^.drain
           n.minus 1
+    code. > first!
+      posix.open "/dev/null" 0 0
+    code. > second!
+      posix.open "/dev/null" 0 0
     mktemp.tmpfile > tmp
 
   ++> can-create-the-target-of-a-dangling-symlink-on-writing
