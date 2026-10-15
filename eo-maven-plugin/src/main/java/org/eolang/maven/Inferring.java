@@ -69,6 +69,23 @@ import org.xembly.Xembler;
 final class Inferring implements Step {
 
     /**
+     * XPath of the lambda markers whose declared forma names an object.
+     *
+     * <p>A single letter from A to F is a generic type variable, which
+     * stands for whatever the caller puts in, and which object that is
+     * cannot be read off the text of the atom. It names no object, so an
+     * atom declared with it stays out of {@code atoms.xml} — a row there
+     * would make every reader of the table, {@code Signatures} and
+     * {@code _returns.xsl} among them, report the letter as a type
+     * (#9365).</p>
+     */
+    private static final String LAMBDAS = String.join(
+        "",
+        "//o[@name='λ' and string-length(@atom) > 0",
+        " and not(string-length(@atom) = 1 and contains('ABCDEF', @atom))]"
+    );
+
+    /**
      * The directory with the XMIR files of the program.
      */
     private final Path input;
@@ -153,8 +170,7 @@ final class Inferring implements Step {
                 .sorted()
                 .collect(Collectors.toList())) {
                 final XML xmir = new XMLDocument(source);
-                for (final XML lambda
-                    : xmir.nodes("//o[@name='λ' and string-length(@atom) > 0]")) {
+                for (final XML lambda : xmir.nodes(Inferring.LAMBDAS)) {
                     dirs.add("atom")
                         .attr("loc", lambda.xpath("../@loc").get(0))
                         .attr("forma", lambda.xpath("@atom").get(0))
