@@ -505,7 +505,7 @@ final class MorphingTest {
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
         );
-        MorphingTest.gap(temp, phino);
+        this.gap(temp, phino);
         new Morphing(
             phino, new GlobalCache.GcFresh(), new Scope(".*", "(?!)"), 32, Duration.ofMinutes(1L)
         ).exec(temp);
@@ -523,7 +523,7 @@ final class MorphingTest {
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
         );
-        MorphingTest.gap(temp, phino);
+        this.gap(temp, phino);
         new Morphing(
             phino, new GlobalCache.GcFresh(), new Scope(".*", "(?!)"), 32,
             Duration.ofMinutes(1L), true
@@ -743,7 +743,7 @@ final class MorphingTest {
         return home;
     }
 
-    private static void gap(final Path temp, final Phino phino) throws IOException {
+    private void gap(final Path temp, final Phino phino) throws IOException {
         Files.write(
             Files.createDirectories(temp.resolve("1-planting")).resolve("gap.xmir"),
             new EoSyntax(String.format("[a b] > gap%n  a.plus b > @%n")).parsed()
