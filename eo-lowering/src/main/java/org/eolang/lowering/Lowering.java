@@ -39,6 +39,9 @@ import org.eolang.cache.GlobalCache;
  * of {@code throw};</li>
  * <li>{@code 2-protocols}, inside the home directory, holds one protocol file
  * for every entry that phino worked on;</li>
+ * <li>{@code texts}, inside the home directory, holds the same protocols
+ * written as indented text, for a person to read, only when they are asked
+ * for;</li>
  * <li>the directory of atoms, given to the constructor, holds the Java
  * atoms;</li>
  * <li>the directory of patched sources, given to the constructor, holds
@@ -114,6 +117,11 @@ public final class Lowering {
     private final Duration budget;
 
     /**
+     * Whether every entry gets its protocol as indented text too.
+     */
+    private final boolean texts;
+
+    /**
      * Ctor.
      *
      * @param srcs The XMIR files of the build
@@ -127,13 +135,14 @@ public final class Lowering {
      * @param ceiling The largest number of steps inside one another that one
      *  run of phino may take
      * @param span The time that one run of phino may take before it is stopped
+     * @param text Whether every entry gets its protocol as indented text too
      */
     public Lowering(
         final Collection<Path> srcs, final Path tbls, final Path dir, final String exe,
         final GlobalCache store, final Path kept, final Path copies, final Scope range,
-        final int ceiling, final Duration span
+        final int ceiling, final Duration span, final boolean text
     ) {
-        this(srcs, tbls, dir, new Phino(exe), store, kept, copies, range, ceiling, span);
+        this(srcs, tbls, dir, new Phino(exe), store, kept, copies, range, ceiling, span, text);
     }
 
     /**
@@ -150,11 +159,12 @@ public final class Lowering {
      * @param ceiling The largest number of steps inside one another that one
      *  run of phino may take
      * @param span The time that one run of phino may take before it is stopped
+     * @param text Whether every entry gets its protocol as indented text too
      */
     Lowering(
         final Collection<Path> srcs, final Path tbls, final Path dir, final Phino exe,
         final GlobalCache store, final Path kept, final Path copies, final Scope range,
-        final int ceiling, final Duration span
+        final int ceiling, final Duration span, final boolean text
     ) {
         this.sources = srcs;
         this.tables = tbls;
@@ -166,6 +176,7 @@ public final class Lowering {
         this.scope = range;
         this.steps = ceiling;
         this.budget = span;
+        this.texts = text;
     }
 
     /**
@@ -233,7 +244,9 @@ public final class Lowering {
                 new Pruning(this.sources),
                 new Planting(this.tables),
                 new Merging(this.phino),
-                new Morphing(this.phino, this.cache, this.scope, this.steps, this.budget),
+                new Morphing(
+                    this.phino, this.cache, this.scope, this.steps, this.budget, this.texts
+                ),
                 new Rendering(this.atoms, this.tables),
                 new Patching(this.sources, this.tables, this.patched)
             )

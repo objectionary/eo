@@ -57,6 +57,13 @@ import org.eolang.lowering.Scope;
  * from build to build, so only a copy listed in {@code patched.tsv}, one
  * patched in this very build, is handed to the transpiler.</p>
  *
+ * <p>With {@code -Deo.saveTextProtocols=true} the lowering also keeps the
+ * protocol of every entry as indented text in {@code texts}, beside
+ * {@code 2-protocols}, so a person can read why an entry stopped where it
+ * did without any tool. phino writes one protocol per run, so this runs
+ * phino on every entry twice, unless the cache already holds the protocol
+ * and its text.</p>
+ *
  * @since 0.64.0
  */
 @Mojo(
@@ -115,6 +122,17 @@ public final class MjLower extends MjSafe {
     private int steps;
 
     /**
+     * Whether the lowering keeps the protocol of every entry as indented text
+     * too, beside the XML one.
+     */
+    @Parameter(
+        alias = "saveTextProtocols",
+        property = "eo.saveTextProtocols",
+        defaultValue = "false"
+    )
+    private boolean texts;
+
+    /**
      * The regular expression that the whole locator of an entry, such as
      * {@code Φ.string.printf}, must match for phino to run on it.
      */
@@ -167,7 +185,8 @@ public final class MjLower extends MjSafe {
                     home.resolve("4-patched"),
                     new Scope(this.only, this.never),
                     this.steps,
-                    Duration.ofSeconds(this.budget)
+                    Duration.ofSeconds(this.budget),
+                    this.texts
                 );
                 if (this.optional && !pipeline.available()) {
                     Logger.warn(
