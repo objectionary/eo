@@ -179,6 +179,28 @@ final class PhinoTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void reportsAMorphingThatRanOutOfItsBudgetIntoAText(@Mktmp final Path temp)
+        throws IOException {
+        final Phino phino = new Phino(
+            PhinoTest.binary(
+                temp,
+                "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
+                "printf '𝕄(Φ.l🌵.e4)\\n  timeout(3)  # 𝕄(Φ.a🌵7)\\nmsec(3000)\\n' > \"$p\"; exit 1"
+            ),
+            "3.3.16"
+        );
+        Assertions.assertThrows(
+            KilledException.class,
+            () -> phino.morph(
+                temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 4,
+                temp.resolve("4.txt"), 32, 2, Duration.ofSeconds(3L)
+            ),
+            "a run that phino stopped on time must be reported as one, even in a text"
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void failsAMorphingThatBreaksWithinItsBudget(@Mktmp final Path temp) throws IOException {
         final Phino phino = new Phino(PhinoTest.binary(temp, "echo broken >&2; exit 3"), "1.9.27");
         Assertions.assertThrows(

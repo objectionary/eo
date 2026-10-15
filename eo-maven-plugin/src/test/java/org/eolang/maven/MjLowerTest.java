@@ -196,6 +196,26 @@ final class MjLowerTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void savesTheTextOfEveryEntryWhenAsked(@Mktmp final Path temp) throws IOException {
+        new FakeMaven(temp)
+            .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
+            .execute(MjParse.class)
+            .with("lowering", true)
+            .with("texts", true)
+            .with("binary", MjLowerTest.binary(temp))
+            .with("tables", MjLowerTest.tables(temp).toFile())
+            .execute(MjLower.class);
+        MatcherAssert.assertThat(
+            "the goal must save the text of an entry when asked, but it didnt",
+            new Subdir(temp.resolve("target"), "lowering").path()
+                .resolve("texts/gap.txt")
+                .toFile(),
+            FileMatchers.anExistingFile()
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void morphsNoEntryTheFilterOfTheIncludedDoesntMatch(@Mktmp final Path temp)
         throws IOException {
         new FakeMaven(temp)

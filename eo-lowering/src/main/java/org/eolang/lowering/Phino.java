@@ -139,13 +139,16 @@ final class Phino {
      * nothing else. One entry that never ends must not stop the whole build,
      * so phino is told how many seconds it may work, and it stops by itself
      * when they are over. Then it closes the protocol with a {@code timeout}
-     * element and fails. This class never kills phino, because a killed phino
-     * leaves a protocol cut in the middle, which nobody can read.</p>
+     * element, or with a {@code timeout(…)} line when the protocol is
+     * indented text, and fails. This class never kills phino, because a
+     * killed phino leaves a protocol cut in the middle, which nobody can
+     * read.</p>
      *
      * @param world The world, which {@link Merging} wrote
      * @param atoms The table of operations phino may write down
      * @param entry The number of the entry to work on
-     * @param protocol The file for the steps, in XML because its name ends with .xml
+     * @param protocol The file for the steps, in XML when its name ends with
+     *  .xml and in indented text otherwise
      * @param steps The largest number of steps phino may take inside one another
      * @param loops How many times phino may enter the same formation again
      *  before it decides that the run loops and cuts it
@@ -189,7 +192,9 @@ final class Phino {
                 throw ex;
             }
             try (Stream<String> lines = Files.lines(protocol)) {
-                if (lines.noneMatch(line -> line.contains("<timeout "))) {
+                if (lines.noneMatch(
+                    line -> line.contains("<timeout ") || line.trim().startsWith("timeout(")
+                )) {
                     throw ex;
                 }
             }
