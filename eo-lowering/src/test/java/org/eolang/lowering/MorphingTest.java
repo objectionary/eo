@@ -216,6 +216,120 @@ final class MorphingTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void writesTheTextOfAnEntryBesideItsProtocolWhenAsked(@Mktmp final Path temp)
+        throws IOException {
+        MorphingTest.merged(temp, 8);
+        new Morphing(
+            MorphingTest.recording(temp), new GlobalCache.GcFresh(),
+            new Scope(".*", "(?!)"), 16, Duration.ofMinutes(1L), true
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "the text of an entry must be written by phino into the texts, but it isnt",
+            MorphingTest.text(temp.resolve("texts/e8.txt")),
+            Matchers.containsString(String.format("--protocol=%s", temp.resolve("texts/e8.txt")))
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void writesNoTextsUnlessAsked(@Mktmp final Path temp) throws IOException {
+        MorphingTest.merged(temp, 6);
+        new Morphing(
+            MorphingTest.recording(temp), new GlobalCache.GcFresh(),
+            new Scope(".*", "(?!)"), 16, Duration.ofMinutes(1L), false
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "no text must be written unless asked, but the texts are there",
+            temp.resolve("texts").toFile(),
+            Matchers.not(FileMatchers.anExistingFileOrDirectory())
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void takesTheTextFromTheCacheWhenTheWorldIsTheSame(@Mktmp final Path temp)
+        throws IOException {
+        MorphingTest.merged(temp, 4);
+        final Phino phino = MorphingTest.counting(temp);
+        for (int build = 0; build < 2; ++build) {
+            new Morphing(
+                phino, new GcShared(temp.resolve("cache"), "0.2.7"),
+                new Scope(".*", "(?!)"), 16, Duration.ofMinutes(1L), true
+            ).exec(temp);
+        }
+        MatcherAssert.assertThat(
+            "the second build over the same world must not run the binary for a text, but it does",
+            Files.readAllLines(temp.resolve("runs.txt")),
+            Matchers.hasSize(2)
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void writesTheTextOfAnEntryWhoseProtocolTheCacheAnswers(@Mktmp final Path temp)
+        throws IOException {
+        MorphingTest.merged(temp, 9);
+        final Phino phino = MorphingTest.counting(temp);
+        new Morphing(
+            phino, new GcShared(temp.resolve("cache"), "0.3.1"),
+            new Scope(".*", "(?!)"), 16, Duration.ofMinutes(1L), false
+        ).exec(temp);
+        new Morphing(
+            phino, new GcShared(temp.resolve("cache"), "0.3.1"),
+            new Scope(".*", "(?!)"), 16, Duration.ofMinutes(1L), true
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "the text must be written even when the cache answers the protocol, but it isnt",
+            temp.resolve("texts/e9.txt").toFile(),
+            FileMatchers.anExistingFile()
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void keepsTheTextOfARunOutOfItsBudget(@Mktmp final Path temp) throws IOException {
+        MorphingTest.merged(temp, 7);
+        new Morphing(
+            MorphingTest.phino(
+                temp,
+                String.join(
+                    " ",
+                    "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
+                    "case $p in *.xml) echo '<protocol><timeout limit=\"1\"/></protocol>' > \"$p\";;",
+                    "*) echo '  timeout(1)' > \"$p\";; esac; exit 1"
+                )
+            ),
+            new GlobalCache.GcFresh(),
+            new Scope(".*", "(?!)"), 32, Duration.ofMillis(900L), true
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "a text out of its budget must stay for study, but it doesnt",
+            temp.resolve("texts/e7.txt").toFile(),
+            FileMatchers.anExistingFile()
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void dropsTheTextsOfAnEarlierBuild(@Mktmp final Path temp) throws IOException {
+        MorphingTest.merged(temp, 2);
+        final Path stale = Files.write(
+            Files.createDirectories(temp.resolve("texts/gone")).resolve("x.txt"),
+            "𝕄(Φ.gone.x)".getBytes(StandardCharsets.UTF_8)
+        );
+        new Morphing(
+            MorphingTest.recording(temp), new GlobalCache.GcFresh(),
+            new Scope(".*", "(?!)"), 16, Duration.ofMinutes(1L), false
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "the text of an earlier build must be gone, but it stays",
+            stale.toFile(),
+            Matchers.not(FileMatchers.anExistingFile())
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void aimsTheRunOfAnEntryAtItsMark(@Mktmp final Path temp) throws IOException {
         MorphingTest.merged(temp, 1, 2);
         final Path protocols = temp.resolve("2-protocols");
@@ -391,42 +505,7 @@ final class MorphingTest {
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
         );
-        Files.write(
-            Files.createDirectories(temp.resolve("1-planting")).resolve("gap.xmir"),
-            new EoSyntax(String.format("[a b] > gap%n  a.plus b > @%n")).parsed()
-                .toString().getBytes(StandardCharsets.UTF_8)
-        );
-        MorphingTest.xmir(
-            temp,
-            "number",
-            "<o name=\"φ\" base=\"∅\" loc=\"Φ.number.φ\"/>",
-            "<o name=\"plus\" loc=\"Φ.number.plus\">",
-            "<o name=\"b\" base=\"∅\" loc=\"Φ.number.plus.b\"/>",
-            "<o name=\"λ\" loc=\"Φ.number.plus.λ\"/>",
-            "</o>"
-        );
-        MorphingTest.xmir(
-            temp, "bytes", "<o name=\"φ\" base=\"∅\" loc=\"Φ.bytes.φ\"/>"
-        );
-        final Path tables = Files.createDirectories(temp.resolve("tables"));
-        Files.write(
-            tables.resolve("provides.xml"),
-            String.join(
-                "",
-                "<provides><type id=\"Φ.gap\">",
-                "<attr name=\"a\" type=\"Φ.gap.a\" void=\"true\" settled=\"Φ.number\"/>",
-                "<attr name=\"b\" type=\"Φ.gap.b\" void=\"true\" settled=\"Φ.number\"/>",
-                "</type></provides>"
-            ).getBytes(StandardCharsets.UTF_8)
-        );
-        Files.write(
-            tables.resolve("links.xml"),
-            "<links><type id='Φ.gap.φ'><ref loc='Φ.number'/></type></links>"
-                .getBytes(StandardCharsets.UTF_8)
-        );
-        Files.write(tables.resolve("atoms.xml"), "<atoms/>".getBytes(StandardCharsets.UTF_8));
-        new Planting(tables).exec(temp);
-        new Merging(phino).exec(temp);
+        MorphingTest.gap(temp, phino);
         new Morphing(
             phino, new GlobalCache.GcFresh(), new Scope(".*", "(?!)"), 32, Duration.ofMinutes(1L)
         ).exec(temp);
@@ -434,6 +513,25 @@ final class MorphingTest {
             "the protocol must record the firing of the atom the body reached, but it doesnt",
             MorphingTest.text(temp.resolve("2-protocols/gap.xml")),
             Matchers.stringContainsInOrder("L_entry", "L_number_plus", "L_root")
+        );
+    }
+
+    @Test
+    void writesTheTextThePinnedPhinoFolds(@Mktmp final Path temp) throws IOException {
+        final Phino phino = new Phino("phino");
+        Assumptions.assumeTrue(
+            MorphingTest.pinned(phino),
+            "the pinned phino is not on this machine, so the world cannot be morphed here"
+        );
+        MorphingTest.gap(temp, phino);
+        new Morphing(
+            phino, new GlobalCache.GcFresh(), new Scope(".*", "(?!)"), 32,
+            Duration.ofMinutes(1L), true
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "the text must record the firing of the atom the body reached, but it doesnt",
+            MorphingTest.text(temp.resolve("texts/gap.txt")),
+            Matchers.stringContainsInOrder("𝔼(L_entry)", "𝔼(L_number_plus)")
         );
     }
 
@@ -643,6 +741,45 @@ final class MorphingTest {
                 .getBytes(StandardCharsets.UTF_8)
         );
         return home;
+    }
+
+    private static void gap(final Path temp, final Phino phino) throws IOException {
+        Files.write(
+            Files.createDirectories(temp.resolve("1-planting")).resolve("gap.xmir"),
+            new EoSyntax(String.format("[a b] > gap%n  a.plus b > @%n")).parsed()
+                .toString().getBytes(StandardCharsets.UTF_8)
+        );
+        MorphingTest.xmir(
+            temp,
+            "number",
+            "<o name=\"φ\" base=\"∅\" loc=\"Φ.number.φ\"/>",
+            "<o name=\"plus\" loc=\"Φ.number.plus\">",
+            "<o name=\"b\" base=\"∅\" loc=\"Φ.number.plus.b\"/>",
+            "<o name=\"λ\" loc=\"Φ.number.plus.λ\"/>",
+            "</o>"
+        );
+        MorphingTest.xmir(
+            temp, "bytes", "<o name=\"φ\" base=\"∅\" loc=\"Φ.bytes.φ\"/>"
+        );
+        final Path tables = Files.createDirectories(temp.resolve("tables"));
+        Files.write(
+            tables.resolve("provides.xml"),
+            String.join(
+                "",
+                "<provides><type id=\"Φ.gap\">",
+                "<attr name=\"a\" type=\"Φ.gap.a\" void=\"true\" settled=\"Φ.number\"/>",
+                "<attr name=\"b\" type=\"Φ.gap.b\" void=\"true\" settled=\"Φ.number\"/>",
+                "</type></provides>"
+            ).getBytes(StandardCharsets.UTF_8)
+        );
+        Files.write(
+            tables.resolve("links.xml"),
+            "<links><type id='Φ.gap.φ'><ref loc='Φ.number'/></type></links>"
+                .getBytes(StandardCharsets.UTF_8)
+        );
+        Files.write(tables.resolve("atoms.xml"), "<atoms/>".getBytes(StandardCharsets.UTF_8));
+        new Planting(tables).exec(temp);
+        new Merging(phino).exec(temp);
     }
 
     private static Path xmir(final Path temp, final String name, final String... body)
