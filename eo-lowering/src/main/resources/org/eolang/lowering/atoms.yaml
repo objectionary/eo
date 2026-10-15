@@ -9,7 +9,10 @@
 # A fork brings its two branches to one shape with the rules of its rewrite
 # block before it symbolizes and joins them: the true and false eo-runtime
 # spells, a bool a firing answered and an object decorating one are one
-# value in three spellings, and the join pairs nothing but symbols.
+# value in three spellings, and the join pairs nothing but symbols. Its
+# stay block then drops the ρ hung on a dispatch, such as the one the data
+# of bytes.as-number carries, so a branch read through the ρ of a copy
+# meets one made of no object in the same shape.
 # A branch that stops at the λ of "throw", which is what every T is by now,
 # raises: the fork is joined into its other branch, and the protocol keeps
 # the condition and the message, which rendering turns into a guard.
@@ -97,15 +100,18 @@
     𝑛6:
       of: 𝑛4
       rules: *bool
-  symbolize:
+  stay:
     𝑛7: 𝑛5
     𝑛8: 𝑛6
+  symbolize:
+    𝑛9: 𝑛7
+    𝑛10: 𝑛8
   join:
-    𝑛9: [𝑛7, 𝑛8]
+    𝑛11: [𝑛9, 𝑛10]
   lenient: true
   defer: true
   terminators: [L_throw]
-  𝑛: 𝑛9
+  𝑛: 𝑛11
 - λ: L_entry
   dataize:
     𝛿1: $.n
