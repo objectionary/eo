@@ -97,11 +97,6 @@ public final class Main {
             }
         }
         Main.LOGGER.log(Level.FINE, String.format("EOLANG Runtime %s", Main.ver()));
-        if (arguments.isEmpty()) {
-            throw new ExFailure(
-                "The name of an object is expected as a command line argument"
-            );
-        }
         try {
             Main.run(arguments);
         } catch (final ExAbstract ex) {
@@ -123,10 +118,22 @@ public final class Main {
     }
 
     private static void print(final Throwable thr) {
-        Main.LOGGER.log(Level.SEVERE, thr.getMessage());
+        Main.print(thr, "");
+    }
+
+    private static void print(final Throwable thr, final String above) {
+        final String msg = String.valueOf(thr.getMessage());
+        final boolean fresh = above.isEmpty() || !above.contains(msg);
+        if (fresh) {
+            Main.LOGGER.log(Level.SEVERE, msg);
+        }
         final Throwable cause = thr.getCause();
         if (cause != null) {
-            Main.print(cause);
+            if (fresh) {
+                Main.print(cause, msg);
+            } else {
+                Main.print(cause, above);
+            }
         }
     }
 
@@ -188,6 +195,11 @@ public final class Main {
     }
 
     private static void run(final List<String> opts) {
+        if (opts.isEmpty()) {
+            throw new ExFailure(
+                "The name of an object is expected as a command line argument"
+            );
+        }
         final String obj = opts.get(0);
         if (obj.isEmpty()) {
             throw new ExFailure(

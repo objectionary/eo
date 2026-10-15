@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import org.cactoos.Input;
 import org.cactoos.Scalar;
 import org.cactoos.Text;
 import org.cactoos.iterable.Filtered;
@@ -58,16 +59,26 @@ final class ObjectsIndex {
     }
 
     /**
+     * Ctor.
+     *
+     * @param all All objects index
+     */
+    ObjectsIndex(final Scalar<? extends Set<String>> all) {
+        this.objects = new Synced<>(new Sticky<>(all));
+    }
+
+    /**
      * Index of the EO sources in a selected revision's published archive.
      *
-     * @param source Selected revision archive URL
+     * @param source Selected revision archive input
+     * @return Cached archive index
      */
-    ObjectsIndex(final UrlOy source) {
-        this(
+    static ObjectsIndex from(final Input source) {
+        return new ObjectsIndex(
             () -> {
                 final Set<String> names = new HashSet<>(0);
                 try (
-                    ZipInputStream archive = new ZipInputStream(source.value("").openStream())
+                    ZipInputStream archive = new ZipInputStream(source.stream())
                 ) {
                     for (ZipEntry entry = archive.getNextEntry(); entry != null;
                         entry = archive.getNextEntry()) {
@@ -83,15 +94,6 @@ final class ObjectsIndex {
                 return names;
             }
         );
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param all All objects index
-     */
-    ObjectsIndex(final Scalar<? extends Set<String>> all) {
-        this.objects = new Synced<>(new Sticky<>(all));
     }
 
     /**

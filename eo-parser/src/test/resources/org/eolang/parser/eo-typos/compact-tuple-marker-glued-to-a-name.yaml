@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+line: 4
+message: |-
+  [4:5] error: 'compact tuple marker must follow a space'
+    foo*1 > x
+       ^
+input: |
+  +package foo
+
+  [] > app
+    foo*1 > x
+      1
+      2

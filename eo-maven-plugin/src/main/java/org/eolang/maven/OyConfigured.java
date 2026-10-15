@@ -62,15 +62,22 @@ final class OyConfigured implements Scalar<Objectionary> {
         try {
             if (this.origin == null) {
                 final CommitHash revision = new ChCached(new Unchecked<>(this.hash).value());
+                final MvnProxy[] proxies =
+                    new Proxies(new Unchecked<>(this.settings).value()).value();
                 this.origin = new OyIndexed(
                     new OyCached(
                         new OyRemote(
                             revision,
-                            new Proxies(new Unchecked<>(this.settings).value()).value()
+                            proxies
                         )
                     ),
-                    new ObjectsIndex(
-                        new UrlOy("https://codeload.github.com/objectionary/home/zip/%s", revision)
+                    ObjectsIndex.from(
+                        () -> {
+                            final UrlOy archive = new UrlOy(
+                                "https://codeload.github.com/objectionary/home/zip/%s", revision
+                            );
+                            return new OyRemote(archive, archive, proxies).get("").stream();
+                        }
                     )
                 );
             }

@@ -222,7 +222,10 @@
                     ^.unc.if
                       ^.share.concat valid
                       ^.drive.concat valid
-                    concat. (^.uri.concat ^.separator) valid
+                    if.
+                      ^.uri.size.eq 0
+                      valid
+                      concat. (^.uri.concat ^.separator) valid
       string > valid!
         as-bytes.
           ^.sys.sanitized other
@@ -629,6 +632,18 @@
       path.posix "/var/temp"
       "/www/html"
     "/www/html"
+
+  eq. ++> can-resolve-an-empty-posix-path-against-a-relative-path
+    resolved.
+      path.posix ""
+      "каталог/файл"
+    "каталог/файл"
+
+  eq. ++> can-resolve-an-empty-win32-path-against-a-relative-path
+    resolved.
+      path.win32 ""
+      "каталог\\файл"
+    "каталог\\файл"
 
   eq. ++> can-return-a-basename-with-a-backslash-on-posix
     basename.
