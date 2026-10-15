@@ -543,7 +543,8 @@ final class MorphingTest {
         );
         this.gap(temp, phino);
         new Morphing(
-            phino, new GlobalCache.GcFresh(), new Scope(".*", "(?!)"), 32, 2, Duration.ofMinutes(1L), false
+            phino, new GlobalCache.GcFresh(), new Scope(".*", "(?!)"), 32, 2,
+            Duration.ofMinutes(1L), false
         ).exec(temp);
         MatcherAssert.assertThat(
             "the protocol must record the firing of the atom the body reached, but it doesnt",
@@ -602,7 +603,8 @@ final class MorphingTest {
         new Planting(tables).exec(temp);
         new Merging(phino).exec(temp);
         new Morphing(
-            phino, new GlobalCache.GcFresh(), new Scope(".*", "(?!)"), 32, 2, Duration.ofMinutes(1L), false
+            phino, new GlobalCache.GcFresh(), new Scope(".*", "(?!)"), 32, 2,
+            Duration.ofMinutes(1L), false
         ).exec(temp);
         MatcherAssert.assertThat(
             "the protocol must stop at the throw with its whole message, but it doesnt",
@@ -740,7 +742,8 @@ final class MorphingTest {
         new Planting(tables).exec(temp);
         new Merging(phino).exec(temp);
         new Morphing(
-            phino, new GlobalCache.GcFresh(), new Scope(".*", "(?!)"), 32, 2, Duration.ofMinutes(1L), false
+            phino, new GlobalCache.GcFresh(), new Scope(".*", "(?!)"), 32, 2,
+            Duration.ofMinutes(1L), false
         ).exec(temp);
         MatcherAssert.assertThat(
             "the run must fire the atom of bytes the body reached, but it left it standing",
