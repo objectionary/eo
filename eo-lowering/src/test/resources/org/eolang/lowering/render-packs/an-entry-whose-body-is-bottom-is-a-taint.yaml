@@ -16,8 +16,10 @@ protocol: |
       <evaluate λ="L_entry" by="morph" at="Φ.l/.e11">
         <bind meta="𝛿1·1">40-26-00-00-00-00-00-00</bind>
         <bind meta="𝑛1·1">⊥</bind>
-        <built meta="𝑛·1·1">Φ.l/.root( ⊥ )</built>
-        <answer meta="𝑛·1·2">⟦ v ↦ ⊥, λ ⤍ L_root ⟧</answer>
+        <applied meta="𝑛·1·1" of="Φ.l/.root"><attr name="α0">⊥</attr></applied>
+        <built meta="𝑛·1·2">𝑛·1·1</built>
+        <formed meta="𝑛·1·3" of="Φ.l/.root"><attr name="v">⊥</attr></formed>
+        <answer meta="𝑛·1·4">𝑛·1·3</answer>
       </evaluate>
     </morph>
     <msec>225</msec>

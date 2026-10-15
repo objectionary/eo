@@ -536,7 +536,7 @@ final class MorphingTest {
 
     @Test
     void morphsTheWorldThePinnedPhinoFolds(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.155");
+        final Phino phino = new Phino("phino", "0.0.156");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -548,13 +548,13 @@ final class MorphingTest {
         MatcherAssert.assertThat(
             "the protocol must record the firing of the atom the body reached, but it doesnt",
             MorphingTest.text(temp.resolve("2-protocols/gap.xml")),
-            Matchers.stringContainsInOrder("L_entry", "L_number_plus", "L_root")
+            Matchers.stringContainsInOrder("L_entry", "L_root", "L_number_plus")
         );
     }
 
     @Test
     void writesTheTextThePinnedPhinoFolds(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.155");
+        final Phino phino = new Phino("phino", "0.0.156");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -574,7 +574,7 @@ final class MorphingTest {
     @Test
     void stopsAtTheThrowWithTheWholeMessageThePinnedPhinoKeeps(@Mktmp final Path temp)
         throws IOException {
-        final Phino phino = new Phino("phino", "0.0.155");
+        final Phino phino = new Phino("phino", "0.0.156");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -608,7 +608,11 @@ final class MorphingTest {
             "the protocol must stop at the throw with its whole message, but it doesnt",
             MorphingTest.text(temp.resolve("2-protocols/broken.xml")),
             Matchers.stringContainsInOrder(
-                String.format("<attr name=\"message\">\"%s\"</attr>", message),
+                String.format(
+                    "<attr name=\"φ\">%s</attr>",
+                    message.chars().mapToObj(code -> String.format("%02X", code))
+                        .collect(Collectors.joining("-"))
+                ),
                 "<unanswered λ=\"L_throw\""
             )
         );
@@ -696,7 +700,7 @@ final class MorphingTest {
 
     @Test
     void answersTheAtomOfBytesThePinnedPhinoReaches(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.155");
+        final Phino phino = new Phino("phino", "0.0.156");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
