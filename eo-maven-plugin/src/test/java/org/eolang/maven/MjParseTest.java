@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.log4j.Appender;
 import org.apache.log4j.AppenderSkeleton;
@@ -399,16 +400,12 @@ final class MjParseTest {
     @Test
     void logsParserWarningWithoutCallingItAFailure(@Mktmp final Path temp) throws Exception {
         final List<String> messages = new ArrayList<>(0);
-        final String scope = temp.getFileName().toString();
         final Appender appender = new AppenderSkeleton() {
             @Override
             protected void append(final LoggingEvent event) {
-                final String line = String.format(
-                    "[%s] %s", event.getLevel(), event.getRenderedMessage()
+                messages.add(
+                    String.format("[%s] %s", event.getLevel(), event.getRenderedMessage())
                 );
-                if (line.contains(scope)) {
-                    messages.add(line);
-                }
             }
 
             @Override
@@ -441,7 +438,9 @@ final class MjParseTest {
         }
         MatcherAssert.assertThat(
             "A parser warning must be logged as a warning, not as a parsing failure, but it was not",
-            messages,
+            messages.stream()
+                .filter(line -> line.contains(temp.getFileName().toString()))
+                .collect(Collectors.toList()),
             Matchers.both(
                 Matchers.<String>hasItem(
                     Matchers.allOf(
