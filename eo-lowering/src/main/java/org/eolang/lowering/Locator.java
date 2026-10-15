@@ -48,7 +48,7 @@ final class Locator {
      * @return The path of the protocol file
      */
     Path protocol() {
-        return this.path("xml");
+        return this.path(".xml");
     }
 
     /**
@@ -57,10 +57,10 @@ final class Locator {
      * @return The path of the text file
      */
     Path text() {
-        return this.path("txt");
+        return this.path(".txt");
     }
 
-    private Path path(final String extension) {
+    private Path path(final String suffix) {
         if (!this.text.startsWith("Φ.")) {
             throw new IllegalStateException(
                 String.format(
@@ -69,8 +69,6 @@ final class Locator {
                 )
             );
         }
-        return Path.of(
-            String.format("%s.%s", this.text.substring(2).replace('.', '/'), extension)
-        );
+        return Path.of(this.text.substring(2).replace('.', '/').concat(suffix));
     }
 }

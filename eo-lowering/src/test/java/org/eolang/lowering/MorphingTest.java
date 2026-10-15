@@ -226,7 +226,7 @@ final class MorphingTest {
         MatcherAssert.assertThat(
             "the text of an entry must be written by phino into the texts, but it isnt",
             MorphingTest.text(temp.resolve("texts/e8.txt")),
-            Matchers.containsString(String.format("--protocol=%s", temp.resolve("texts/e8.txt")))
+            Matchers.containsString("--protocol=".concat(temp.resolve("texts/e8.txt").toString()))
         );
     }
 

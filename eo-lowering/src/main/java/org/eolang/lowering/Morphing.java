@@ -253,9 +253,15 @@ final class Morphing implements Proc<Path> {
                         new Threads<>(
                             Runtime.getRuntime().availableProcessors(),
                             new Mapped<Scalar<Path>>(
-                                row -> () -> this.morph(
-                                    world, atoms, protocols, texts, row, progress, store, uses
-                                ),
+                                row -> () -> {
+                                    final Path protocol = this.morph(
+                                        world, atoms, protocols, row, progress, store, uses
+                                    );
+                                    if (this.text) {
+                                        this.transcribe(world, atoms, texts, row, store, uses);
+                                    }
+                                    return protocol;
+                                },
                                 rows
                             )
                         )
@@ -273,8 +279,8 @@ final class Morphing implements Proc<Path> {
     }
 
     private Path morph(
-        final Path world, final Path atoms, final Path protocols, final Path texts,
-        final String row, final Progress progress, final GlobalCache store, final Uses uses
+        final Path world, final Path atoms, final Path protocols, final String row,
+        final Progress progress, final GlobalCache store, final Uses uses
     ) throws IOException {
         final long start = System.currentTimeMillis();
         final String[] cells = row.split("\t", -1);
@@ -318,19 +324,19 @@ final class Morphing implements Proc<Path> {
             );
             progress.expire();
         }
-        if (this.text) {
-            this.transcribe(world, atoms, number, cells[1], texts, store, hash);
-        }
         return protocol;
     }
 
     private void transcribe(
-        final Path world, final Path atoms, final int number, final String loc,
-        final Path texts, final GlobalCache store, final String hash
+        final Path world, final Path atoms, final Path texts, final String row,
+        final GlobalCache store, final Uses uses
     ) throws IOException {
-        final Path tail = new Locator(loc).text();
+        final String[] cells = row.split("\t", -1);
+        final int number = Integer.parseInt(cells[0]);
+        final Path tail = new Locator(cells[1]).text();
         final Path target = texts.resolve(tail);
         Files.createDirectories(target.getParent());
+        final String hash = uses.hash(number, cells[1]);
         try {
             store.kept(
                 tail,
@@ -345,7 +351,7 @@ final class Morphing implements Proc<Path> {
             Logger.warn(
                 this,
                 "Lowering of %s ran out of time budget (%[ms]s), its text kept in %[file]s for study",
-                loc, this.budget.toMillis(), target
+                cells[1], this.budget.toMillis(), target
             );
         }
     }
