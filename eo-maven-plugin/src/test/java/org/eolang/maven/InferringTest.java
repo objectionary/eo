@@ -125,6 +125,26 @@ final class InferringTest {
     }
 
     @Test
+    void leavesGenericFormasOutOfTheAtoms(@Mktmp final Path temp) throws IOException {
+        final Path sources = Files.createDirectories(temp.resolve("stove"));
+        Files.writeString(
+            sources.resolve("keep.xmir"),
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(),
+                    "[] > keep /A", "  ? > value", ""
+                )
+            ).parsed().toString()
+        );
+        new Inferring(sources, temp.resolve("pre"), temp.resolve("rows")).exec();
+        MatcherAssert.assertThat(
+            "a generic letter names no object, so it must not be written down as a forma, but it was",
+            new XMLDocument(temp.resolve("rows").resolve("atoms.xml")),
+            Matchers.not(XhtmlMatchers.hasXPath("/atoms/atom[@forma='A']"))
+        );
+    }
+
+    @Test
     void writesDownHowMuchOfTheProgramWasUnderstood(@Mktmp final Path temp) throws IOException {
         final Path sources = Files.createDirectories(temp.resolve("yard"));
         Files.writeString(
