@@ -12,9 +12,9 @@
 
 [] > dead
   [size] > read
-    [^] >> input-block
+    [^source] >> input-block
       -- > @
-      ^.^.input-block > [^ size] > read
+      block.source.input-block > [^block size] > read
     | > @
 
   eq. ++> can-be-taken-off-any-input

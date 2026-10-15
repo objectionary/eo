@@ -20,8 +20,8 @@
         "Given index is out of tuple bounds"
       list.reducedi
         *
-        if. > [^ accum item position] >>
-          ^.index.eq position
+        if. > [^list accum item position] >>
+          list.index.eq position
           accum
           accum.with item
     T

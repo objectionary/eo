@@ -34,51 +34,51 @@
           1.div e
         descend 9 p
         series p
-    if. > [^ level p] > climb
+    if. > [^fold level p] > climb
       level.lt 0
-      ^.series p
+      fold.series p
       if.
         p.gte
-          ^.epow level
+          fold.epow level
         plus.
-          ^.climb
+          fold.climb
             level.minus 1
             p.div
-              ^.epow level
-          ^.step level
-        ^.climb
+              fold.epow level
+          fold.step level
+        fold.climb
           level.minus 1
           p
-    if. > [^ level p] > descend
+    if. > [^fold level p] > descend
       level.lt 0
-      ^.series p
+      fold.series p
       if.
         p.lt
           1.div
-            ^.epow level
+            fold.epow level
         minus.
-          ^.descend
+          fold.descend
             level.minus 1
             p.times
-              ^.epow level
-          ^.step level
-        ^.descend
+              fold.epow level
+          fold.step level
+        fold.descend
           level.minus 1
           p
-    [^ level] > epow
+    [^fold level] > epow
       if. > @
         level.eq 0
         e
         times.
           number prev
           number prev
-      ^.epow > prev!
+      fold.epow > prev!
         level.minus 1
     [m] > series
       2.times > @
         t.times
           horner 0
-      if. > [^ k] > horner
+      if. > [^term k] > horner
         k.gt 40
         0
         plus.
@@ -87,20 +87,20 @@
               k.times 2
               1
           times.
-            ^.t.times ^.t
-            ^.horner
+            term.t.times term.t
+            term.horner
               k.plus 1
       div. > t
         m.minus 1
         m.plus 1
-    [^ level] > step
+    [^fold level] > step
       if. > @
         level.eq 0
         1
         plus.
           number prev
           number prev
-      ^.step > prev!
+      fold.step > prev!
         level.minus 1
   number num.as-bytes > n
 

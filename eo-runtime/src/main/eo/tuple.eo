@@ -20,16 +20,16 @@
         list.length.lte index
       fallback
         "Given index is out of tuple bounds"
-      if. > [^ tup] >> at-fast
+      if. > [^list tup] >> at-fast
         0.eq tup.length
-        ^.fallback
+        list.fallback
           "Given index is out of tuple bounds"
         if.
           eq.
             tup.length.plus -1
             index
           tup.head
-          ^.at-fast tup.tail
+          list.at-fast tup.tail
       | list
   tuple > empty
     T
@@ -40,12 +40,12 @@
   [^list other] > eq
     and. > @
       list.length.eq other.length
-      if. > [^ first second] >> receq
+      if. > [^list first second] >> receq
         first.length.eq 0
         true
         if.
           first.head.eq second.head
-          ^.receq first.tail second.tail
+          list.receq first.tail second.tail
           false
       | list other
   tuple > [^list x] > with

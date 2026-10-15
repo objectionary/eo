@@ -22,11 +22,11 @@
         span.start.abs.lt safe
         span.end.abs.lt safe
     range
-      [^] >>
-        build ^.span.start > @
-        [^ num] > build
+      [^chain] >>
+        build chain.span.start > @
+        [^chain num] > build
           num > @
-          ^.build > next
+          chain.build > next
             1.plus @
       span.end
     T complaint

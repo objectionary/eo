@@ -19,11 +19,11 @@
 
 [^text] > english
   text > @
-  [^] > lower
+  [^text] > lower
     string > @
-      ^.text.as-bytes.array.reduced
+      text.as-bytes.array.reduced
         --
-        [^ accum byte] >>
+        [^text accum byte] >>
           accum.concat > @
             if.
               and.
@@ -40,11 +40,11 @@
           as-ascii. > code
             string byte
     "A".as-ascii >> mincode!
-  [^] > upper
+  [^text] > upper
     string > @
-      ^.text.as-bytes.array.reduced
+      text.as-bytes.array.reduced
         --
-        [^ accum byte] >>
+        [^text accum byte] >>
           accum.concat > @
             if.
               and.

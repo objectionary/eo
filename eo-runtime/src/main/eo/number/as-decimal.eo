@@ -61,13 +61,13 @@
     guess.times tenbillion
   if. > spelled
     truncated.lt tenbillion
-    [^ m] >> quick
+    [^num m] >> quick
       if. > @
         m.lt 10
         as-char.
           m.plus 48
         concat.
-          ^.quick head
+          num.quick head
           as-char.
             plus.
               m.minus

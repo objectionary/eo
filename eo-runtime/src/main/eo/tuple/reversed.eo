@@ -8,13 +8,13 @@
 +version 0.0.0
 
 [^list] > reversed
-  [^ rest acc] >> rec
+  [^list rest acc] >> rec
     if. > @
       rest.length.eq 0
       acc
       seq *
         next.length
-        ^.rec rest.tail next
+        list.rec rest.tail next
     acc.with rest.head > next
   | > @
     list

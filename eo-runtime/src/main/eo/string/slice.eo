@@ -59,7 +59,7 @@
           string
             text.as-bytes.slice bstart blen
   minus. > blen
-    [^ index accum result cause] >> recidx
+    [^ctx index accum result cause] >> recidx
       if. > @
         accum.eq result
         index
@@ -68,42 +68,42 @@
           T cause
           if.
             eq.
-              byte.and ^.p1
-              ^.r1
-            ^.recidx
-              ^.increase index 1 true
+              byte.and ctx.p1
+              ctx.r1
+            ctx.recidx
+              ctx.increase index 1 true
               accum.plus 1
               result
               cause
             if.
               eq.
-                byte.and ^.p2
-                ^.r2
-              ^.recidx
-                ^.increase index 2 twovalid
+                byte.and ctx.p2
+                ctx.r2
+              ctx.recidx
+                ctx.increase index 2 twovalid
                 accum.plus 1
                 result
                 cause
               if.
                 eq.
-                  byte.and ^.p3
-                  ^.r3
-                ^.recidx
-                  ^.increase index 3 threevalid
+                  byte.and ctx.p3
+                  ctx.r3
+                ctx.recidx
+                  ctx.increase index 3 threevalid
                   accum.plus 1
                   result
                   cause
                 if.
-                  eq. (byte.and ^.p4) ^.r4
-                  ^.recidx
-                    ^.increase index 4 fourvalid
+                  eq. (byte.and ctx.p4) ctx.r4
+                  ctx.recidx
+                    ctx.increase index 4 fourvalid
                     accum.plus 1
                     result
                     cause
                   T
                     "Unknown byte format (%x), can't recognize character".printf
                       * byte
-      ^.text.as-bytes.slice > b1
+      ctx.text.as-bytes.slice > b1
         index.plus 1
         1
       eq. > b1808f
@@ -125,19 +125,19 @@
       eq. > b1cont
         b1.and C0-
         80-
-      ^.text.as-bytes.slice > b2
+      ctx.text.as-bytes.slice > b2
         index.plus 2
         1
       eq. > b2cont
         b2.and C0-
         80-
-      ^.text.as-bytes.slice > b3
+      ctx.text.as-bytes.slice > b3
         index.plus 3
         1
       eq. > b3cont
         b3.and C0-
         80-
-      ^.text.as-bytes.slice index 1 > byte
+      ctx.text.as-bytes.slice index 1 > byte
       b2cont.and > fourvalid
         b3cont.and second4
       eq. > leadc0c1
@@ -171,7 +171,7 @@
           printed
             nstart.plus nlen
     bstart
-  if. > [^ index csize valid] > increase
+  if. > [^ctx index csize valid] > increase
     gt.
       index.plus csize
       size
@@ -180,13 +180,13 @@
         *
           csize
           index
-          ^.text.as-bytes
+          ctx.text.as-bytes
     valid.if
       index.plus csize
       T
         "Malformed UTF-8 sequence (%x) at %d index".printf
           *
-            ^.text.as-bytes.slice index csize
+            ctx.text.as-bytes.slice index csize
             index
   number len! > nlen
   number start! > nstart
