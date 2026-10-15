@@ -181,11 +181,12 @@ much the tables they are made from live there.
 ## How it works
 
 Every rule is a `Clue`: it reads the program and writes down one kind of fact.
-No clue decides anything, and none of them can fail, so they compose in any
-order:
+No clue decides anything and none of them can fail, but each one reads the
+tables the ones before it wrote, so the order decides the answer. This is the
+chain `Inferring` builds, and the order the passes are described in below:
 
 ```java
-new Witnessed(new Demanded(new Reduced(new Resolved(new Clues()))))
+new Named(new Witnessed(new Demanded(new Reduced(new Resolved(new Clues())))))
 ```
 
 `Clues` is the first pass and fills the three tables from the source text
