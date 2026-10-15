@@ -399,12 +399,16 @@ final class MjParseTest {
     @Test
     void logsParserWarningWithoutCallingItAFailure(@Mktmp final Path temp) throws Exception {
         final List<String> messages = new ArrayList<>(0);
+        final String scope = temp.getFileName().toString();
         final Appender appender = new AppenderSkeleton() {
             @Override
             protected void append(final LoggingEvent event) {
-                messages.add(
-                    String.format("[%s] %s", event.getLevel(), event.getRenderedMessage())
+                final String line = String.format(
+                    "[%s] %s", event.getLevel(), event.getRenderedMessage()
                 );
+                if (line.contains(scope)) {
+                    messages.add(line);
+                }
             }
 
             @Override
