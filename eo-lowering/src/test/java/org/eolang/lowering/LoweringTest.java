@@ -14,11 +14,7 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.time.Duration;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.Trimmed;
-import org.cactoos.text.UncheckedText;
 import org.eolang.cache.GlobalCache;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -43,8 +39,8 @@ final class LoweringTest {
         final Path home = temp.resolve("home");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), home, LoweringTest.binary(temp),
-            new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
-            new Scope(".*", "(?!)"), 16,
+            "7.2.19", new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
+            new Scope(".*", "(?!)"), 16, 2,
             Duration.ofMinutes(1L), false
         ).exec();
         MatcherAssert.assertThat(
@@ -61,8 +57,8 @@ final class LoweringTest {
         final Path home = temp.resolve("home");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), home, LoweringTest.binary(temp),
-            new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
-            new Scope(".*", "(?!)"), 16,
+            "7.2.19", new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
+            new Scope(".*", "(?!)"), 16, 2,
             Duration.ofMinutes(1L), false
         ).exec();
         MatcherAssert.assertThat(
@@ -79,8 +75,8 @@ final class LoweringTest {
         final Path home = temp.resolve("home");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), home, LoweringTest.binary(temp),
-            new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
-            new Scope(".*", "(?!)"), 16,
+            "7.2.19", new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
+            new Scope(".*", "(?!)"), 16, 2,
             Duration.ofMinutes(1L), false
         ).exec();
         MatcherAssert.assertThat(
@@ -97,8 +93,8 @@ final class LoweringTest {
         final Path home = temp.resolve("home");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), home, LoweringTest.binary(temp),
-            new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
-            new Scope(".*", "(?!)"), 16,
+            "7.2.19", new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
+            new Scope(".*", "(?!)"), 16, 2,
             Duration.ofMinutes(1L), false
         ).exec();
         try (Stream<Path> made = Files.list(home)) {
@@ -116,12 +112,12 @@ final class LoweringTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void failsWhenTheBinaryReportsAnotherVersion(@Mktmp final Path temp) throws IOException {
+    void checksTheBinaryAgainstThePinItWasGiven(@Mktmp final Path temp) throws IOException {
         final Path binary = temp.resolve("phino");
         Files.write(binary, new ListOf<>("#!/bin/sh", "echo 0.0.1"));
         Files.setPosixFilePermissions(binary, PosixFilePermissions.fromString("rwxr-xr-x"));
         MatcherAssert.assertThat(
-            "the failure must name both the version found and the one pinned, but it doesnt",
+            "the failure must name the version the lowering was pinned to, but it doesnt",
             Assertions.assertThrows(
                 IllegalStateException.class,
                 () -> new Lowering(
@@ -129,14 +125,14 @@ final class LoweringTest {
                     temp.resolve("tables"),
                     temp.resolve("home"),
                     binary.toString(),
-                    new GlobalCache.GcFresh(),
+                    "4.5.61", new GlobalCache.GcFresh(),
                     temp.resolve("atoms"), temp.resolve("patched"),
-                    new Scope(".*", "(?!)"), 16,
+                    new Scope(".*", "(?!)"), 16, 2,
                     Duration.ofMinutes(1L), false
                 ).exec(),
-                "a binary of another version must fail the lowering"
+                "a binary of another version than the pin given must fail the lowering"
             ).getMessage(),
-            Matchers.stringContainsInOrder("0.0.1", LoweringTest.pin())
+            Matchers.stringContainsInOrder("0.0.1", "4.5.61")
         );
     }
 
@@ -152,9 +148,9 @@ final class LoweringTest {
                     temp.resolve("tables"),
                     temp.resolve("home"),
                     binary.toString(),
-                    new GlobalCache.GcFresh(),
+                    "7.2.19", new GlobalCache.GcFresh(),
                     temp.resolve("atoms"), temp.resolve("patched"),
-                    new Scope(".*", "(?!)"), 16,
+                    new Scope(".*", "(?!)"), 16, 2,
                     Duration.ofMinutes(1L), false
                 ).exec(),
                 "a binary that is not there must fail the lowering"
@@ -172,9 +168,9 @@ final class LoweringTest {
                 temp.resolve("tables"),
                 temp.resolve("home"),
                 temp.resolve("absent").toString(),
-                new GlobalCache.GcFresh(),
+                "7.2.19", new GlobalCache.GcFresh(),
                 temp.resolve("atoms"), temp.resolve("patched"),
-                new Scope(".*", "(?!)"), 16,
+                new Scope(".*", "(?!)"), 16, 2,
                 Duration.ofMinutes(1L), false
             ).available(),
             Matchers.is(false)
@@ -191,19 +187,13 @@ final class LoweringTest {
                 temp.resolve("tables"),
                 temp.resolve("home"),
                 LoweringTest.binary(temp),
-                new GlobalCache.GcFresh(),
+                "7.2.19", new GlobalCache.GcFresh(),
                 temp.resolve("atoms"), temp.resolve("patched"),
-                new Scope(".*", "(?!)"), 16,
+                new Scope(".*", "(?!)"), 16, 2,
                 Duration.ofMinutes(1L), false
             ).available(),
             Matchers.is(true)
         );
-    }
-
-    private static String pin() {
-        return new UncheckedText(
-            new Trimmed(new TextOf(new ResourceOf("org/eolang/lowering/phino-version.txt")))
-        ).asString();
     }
 
     private static String binary(final Path temp) throws IOException {
@@ -212,8 +202,9 @@ final class LoweringTest {
             made,
             new ListOf<>(
                 "#!/bin/sh",
+                "case $1 in --pin=*) shift;; esac",
                 "case $1 in",
-                String.format("--version) echo %s;;", LoweringTest.pin()),
+                "--version) echo 7.2.19;;",
                 "merge) while [ $# -gt 0 ]; do [ \"$1\" = --target ] && : > \"$2\"; shift; done;;",
                 "morph) for a; do case $a in --protocol=*) : > \"${a#--protocol=}\";; esac; done;;",
                 "esac"

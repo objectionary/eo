@@ -399,12 +399,15 @@ final class MjParseTest {
     @Test
     void logsParserWarningWithoutCallingItAFailure(@Mktmp final Path temp) throws Exception {
         final List<String> messages = new ArrayList<>(0);
+        final String home = com.jcabi.log.Logger.format("%[file]s", temp);
         final Appender appender = new AppenderSkeleton() {
             @Override
             protected void append(final LoggingEvent event) {
-                messages.add(
-                    String.format("[%s] %s", event.getLevel(), event.getRenderedMessage())
-                );
+                if (event.getRenderedMessage().contains(home)) {
+                    messages.add(
+                        String.format("[%s] %s", event.getLevel(), event.getRenderedMessage())
+                    );
+                }
             }
 
             @Override

@@ -84,14 +84,14 @@ import org.eolang.cache.GlobalCache;
  * one entry away from phino. The other entries get no protocol, and they
  * stay in EO.</p>
  *
- * <p>A protocol stays the same as long as four things stay the same: the
+ * <p>A protocol stays the same as long as five things stay the same: the
  * part of the world that its entry uses, as {@link Uses} says, the table of
- * operations, the version of phino, and the limit of steps. So, every
- * protocol is saved in the cache, together with these four things. When a
- * later build has the same four things, it takes the protocol from the
- * cache and does not run phino at all. An object that changed makes phino
- * run again only on the entries that use it. A run that was
- * stopped saves nothing in the cache, so the next build tries it again.
+ * operations, the version of phino, the limit of steps, and the limit of
+ * loops. So, every protocol is saved in the cache, together with these five
+ * things. When a later build has the same five things, it takes the
+ * protocol from the cache and does not run phino at all. An object that
+ * changed makes phino run again only on the entries that use it. A run that
+ * was stopped saves nothing in the cache, so the next build tries it again.
  * The protocols of an earlier build are deleted before the runs, so that
  * an entry that is not in the world any more leaves no protocol
  * behind.</p>
@@ -136,6 +136,11 @@ final class Morphing implements Proc<Path> {
     private final int steps;
 
     /**
+     * How many times one run may enter the same formation again.
+     */
+    private final int loops;
+
+    /**
      * The time that one run may take before it is stopped.
      */
     private final Duration budget;
@@ -152,33 +157,19 @@ final class Morphing implements Proc<Path> {
      * @param store The cache, where the protocols are kept between builds
      * @param range The entries that phino is allowed to run on
      * @param ceiling The largest number of steps inside one another
-     * @param span The time that one run may take before it is stopped
-     */
-    Morphing(
-        final Phino exe, final GlobalCache store, final Scope range, final int ceiling,
-        final Duration span
-    ) {
-        this(exe, store, range, ceiling, span, false);
-    }
-
-    /**
-     * Ctor.
-     *
-     * @param exe The phino program, which does the morphing
-     * @param store The cache, where the protocols are kept between builds
-     * @param range The entries that phino is allowed to run on
-     * @param ceiling The largest number of steps inside one another
+     * @param again How many times one run may enter the same formation again
      * @param span The time that one run may take before it is stopped
      * @param texts Whether every entry gets its protocol as indented text too
      */
     Morphing(
         final Phino exe, final GlobalCache store, final Scope range, final int ceiling,
-        final Duration span, final boolean texts
+        final int again, final Duration span, final boolean texts
     ) {
         this.phino = exe;
         this.cache = store;
         this.scope = range;
         this.steps = ceiling;
+        this.loops = again;
         this.budget = span;
         this.text = texts;
     }
@@ -223,7 +214,8 @@ final class Morphing implements Proc<Path> {
         final GlobalCache store = this.cache
             .with(this.phino.pin())
             .with(new UncheckedText(new HexOf(new Sha256DigestOf(new InputOf(atoms)))).asString())
-            .with(String.valueOf(this.steps));
+            .with(String.valueOf(this.steps))
+            .with(String.valueOf(this.loops));
         final Uses uses = new Uses(home);
         final Collection<String> rows = new ListOf<>(
             new Filtered<>(
@@ -297,7 +289,7 @@ final class Morphing implements Proc<Path> {
                 (src, tgt) -> false,
                 (src, tgt) -> {
                     fresh.set(true);
-                    this.phino.morph(src, atoms, number, tgt, this.steps, this.budget);
+                    this.phino.morph(src, atoms, number, tgt, this.steps, this.loops, this.budget);
                     return tgt;
                 }
             ).apply(world, protocol);
@@ -343,7 +335,7 @@ final class Morphing implements Proc<Path> {
                 () -> hash,
                 (src, tgt) -> false,
                 (src, tgt) -> {
-                    this.phino.morph(src, atoms, number, tgt, this.steps, this.budget);
+                    this.phino.morph(src, atoms, number, tgt, this.steps, this.loops, this.budget);
                     return tgt;
                 }
             ).apply(world, target);
