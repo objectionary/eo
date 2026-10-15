@@ -30,6 +30,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.0.0
  */
 @ExtendWith(MktmpResolver.class)
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 final class EOdirectoryEOtmpfileTest {
 
     @Test
