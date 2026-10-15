@@ -221,9 +221,15 @@
         ^.drain
           n.minus 1
     code. > first!
-      posix.open "/dev/null" 0 0
+      posix.open
+        "/dev/null"
+        0
+        0
     code. > second!
-      posix.open "/dev/null" 0 0
+      posix.open
+        "/dev/null"
+        0
+        0
     mktemp.tmpfile > tmp
 
   ++> can-create-the-target-of-a-dangling-symlink-on-writing
