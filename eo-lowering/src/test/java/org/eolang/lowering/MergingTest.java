@@ -112,7 +112,7 @@ final class MergingTest {
 
     @Test
     void mergesAWorldThePinnedPhinoReads(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.154");
+        final Phino phino = new Phino("phino", "0.0.155");
         Assumptions.assumeTrue(
             MergingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be merged here"
