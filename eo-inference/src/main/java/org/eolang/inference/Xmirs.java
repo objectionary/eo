@@ -195,14 +195,18 @@ final class Xmirs {
      * one: {@code ξ.t} names something bound nearby, {@code Φ.number}
      * names what the whole program knows. Both carry exactly one name,
      * since a longer path was split into dispatches before any clue looked
-     * at the XMIR.</p>
+     * at the XMIR. A bare {@code ξ}, written {@code $}, names no attribute
+     * at all but still names an object, the one being formed around it, and
+     * leaving it out of here lost every read through it (#9361).</p>
      *
      * @return The references, file by file, in the order they appear in
      *  the code
      * @throws IOException If a file cannot be read
      */
     Collection<XML> references() throws IOException {
-        return this.matching("//o[starts-with(@base, 'ξ.') or starts-with(@base, 'Φ.')]");
+        return this.matching(
+            "//o[@base = 'ξ' or starts-with(@base, 'ξ.') or starts-with(@base, 'Φ.')]"
+        );
     }
 
     /**
