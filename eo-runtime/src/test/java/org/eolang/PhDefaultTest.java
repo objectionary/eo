@@ -574,6 +574,36 @@ final class PhDefaultTest {
     }
 
     @Test
+    void namesTheObjectWhenTheAttributePositionIsTooBig() {
+        MatcherAssert.assertThat(
+            "the message must name the object by its forma, while it named a Java class",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Data.ToPhi(5.0).take("plus").put(1, new Data.ToPhi(1.0)),
+                "putting into a position past the last attribute must fail"
+            ).getMessage(),
+            Matchers.containsString(
+                "Φ.number.plus has just 1 attribute(s), can't read the 1-th one"
+            )
+        );
+    }
+
+    @Test
+    void namesBothObjectsWhenTheAttributeIsAbsent() {
+        MatcherAssert.assertThat(
+            "the message must name both objects by their forma, while it named Java classes",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Data.ToPhi(5.0).take("plus").put("zz", new Data.ToPhi(1.0)),
+                "putting into an absent attribute must fail"
+            ).getMessage(),
+            Matchers.containsString(
+                "Can't #put(\"zz\", Φ.number) to Φ.number.plus, because the attribute is absent"
+            )
+        );
+    }
+
+    @Test
     void failsCorrectlyWhenTooManyAttributesPut() {
         MatcherAssert.assertThat(
             "the message explains what's going on",
