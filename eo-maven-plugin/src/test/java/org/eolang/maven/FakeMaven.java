@@ -443,6 +443,7 @@ final class FakeMaven {
         this.params.putIfAbsent("cacheEnabled", true);
         this.params.putIfAbsent("budget", 10);
         this.params.putIfAbsent("steps", 32);
+        this.params.putIfAbsent("pin", "0.0.156");
         this.params.putIfAbsent("only", ".*");
         this.params.putIfAbsent("never", "(?!)");
         this.params.putIfAbsent("discover", false);
