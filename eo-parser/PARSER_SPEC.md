@@ -1588,9 +1588,9 @@ Reproduced from §3.1 for convenience:
         *                             ← R-3.6: star tuple as head; becomes vapplication
           x.put 2                     ← R-3.6: happlication, horizontally-completed (R-6.1.1)
           loop                        ← R-3.6: bare head
-            x.lt 6 > [i] >>           ← R-3.10 inline-phi: outer = inline-phi-formation; φ `x.lt 6` has a harg, so closed for deeper children (§4.5)
+            ^.x.lt 6 > [i] >>         ← R-3.10 inline-phi: outer = inline-phi-formation; φ `^.x.lt 6` has a harg, so closed for deeper children (§4.5); `x` belongs to `[x]`, so R-9.2.4 wants `^.x`
             [i] >>                    ← R-3.4: formation
-              true
+              true > @                ← R-6.2.1: plain child of a formation must carry a name
 ```
 
 ### C.2 Stack trace for a vmethod naming check
