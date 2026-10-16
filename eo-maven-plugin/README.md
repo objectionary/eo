@@ -136,12 +136,14 @@ required objects
 and only download (and cache) them in case they are not found locally.
 
 This behaviour can be changed to always download objects from remote by
-providing Maven option `-U`
-(see [Maven CLI docs](https://maven.apache.org/ref/3.1.0/maven-embedder/cli.html)):
+setting `eo.overWrite`:
 
 ```shell
-mvn -U clean install
+mvn clean install -Deo.overWrite=true
 ```
+
+Setting `eo.cacheEnabled=false` does the same, by taking the cache out of
+the picture altogether.
 
 If you want to build your project or run your tests, which use eo-maven-plugin,
 you can change stack size for your purposes by stack-size option:
