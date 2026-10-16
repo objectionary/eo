@@ -166,16 +166,17 @@ It will build the plugin and install it in your local Maven repository.
 
 ### How to run Integration Tests only
 
-If you want to run a specific integration test without waiting until other unit
+The integration tests are the `*IT` classes of `eo-integration-tests`, run by
+failsafe. If you want to run one of them without waiting until the other unit
 or integration tests are executed, you might execute the following command
-under the `eo-maven-plugin` directory:
+in the root of the repository:
 
 ```shell
-mvn clean integration-test invoker:run -Dinvoker.test=fibonacci -DskipTests
+mvn verify -pl eo-integration-tests -am -Dit.test=JarIT -DskipTests
 ```
 
-Here `fibonacci` is the name of the desired integration test, `-DskipTests` is
-used in order to skip `eo-maven-plugin` unit tests.
+Here `JarIT` is the name of the desired integration test, `-DskipTests` is
+used in order to skip unit tests.
 
 ### How to disable Integration Tests
 
