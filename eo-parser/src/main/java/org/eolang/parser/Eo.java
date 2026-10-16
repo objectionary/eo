@@ -328,10 +328,10 @@ final class Eo implements Iterable<Directive> {
         if (globals.inTextBlock()) {
             Eo.continueTextBlock(span, stack, globals, emit);
         } else if (span.tab() && !span.blank()) {
-            emit.error(span.line(), 0, Eo.TAB);
+            emit.error(span.line(), 0, Eo.TAB, true);
             failed = true;
         } else if (span.alien() && !span.blank()) {
-            emit.error(span.line(), 0, Eo.ALIEN);
+            emit.error(span.line(), 0, Eo.ALIEN, true);
             failed = true;
         } else if (!span.blank() && span.indent() % 2 == 1) {
             emit.error(span.line(), 0, "unexpected odd indent");
