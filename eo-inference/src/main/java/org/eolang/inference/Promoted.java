@@ -59,6 +59,12 @@ import java.util.Map;
  * a void has, what comes back is a {@link Var}, which names nothing a reader
  * could go and look at, and {@link Sole} refuses it.</p>
  *
+ * <p>A void a call nobody can place fills is named after nothing, not after the
+ * callers in sight, since what the one out of sight puts there is not known
+ * and may be anything (#9006). The member {@link Fillings} gives it for that
+ * call is an {@link Unknown}, which {@link Sole} would refuse anyway, but
+ * {@link Shared} and {@link Agreed} read past a member that names nothing.</p>
+ *
  * <p>A filling that waits on the very void it fills is settled first, by
  * {@link Freed}, so that the two are not left waiting on each other for as
  * long as the passes run.</p>
@@ -146,11 +152,14 @@ final class Promoted {
             this.given, new Ends(pairs).names(), this.hollows
         );
         final Map<String, Collection<String>> asked = this.asked(pairs);
-        final Said said = this.written.with(pairs, this.table.binds(pairs, copied));
+        final Map<String, Map<String, String>> binds = this.table.binds(pairs, copied);
+        final Said said = this.written.with(pairs, binds);
         final Map<String, String> found = new LinkedHashMap<>(0);
         for (final Map.Entry<String, Collection<Type>> hollow
             : new Freed(
-                new Fillings(said, this.given, this.hollows).all(), said, owned, this.arms
+                new Fillings(said, this.given, this.hollows, this.table.unplaced(binds))
+                    .closed(),
+                said, owned, this.arms
             ).all().entrySet()) {
             String sole = new Sole(hollow.getValue(), known).names();
             if (sole.isEmpty()) {

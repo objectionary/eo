@@ -5,8 +5,11 @@
 package org.eolang.inference;
 
 import com.jcabi.xml.XML;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 /**
@@ -51,6 +54,14 @@ import java.util.Map;
  * answers, so that a void left holding the far end of a hop gives that up as
  * soon as a forma arrives for it (#8396).</p>
  *
+ * <p>A call nobody can place fills a void too, and binds nothing to say so.
+ * {@link Unplaced} says which names such calls hand arguments to, and every
+ * void of a formation by one of those names holds, besides what the calls in
+ * sight put there, an {@link Unknown}. That member is what keeps a void one
+ * caller fills with an {@code oak} from being named an {@code oak} while a
+ * call out of sight fills it with something else (#9006). A {@code ρ} is
+ * left alone, since whoever dispatches fills it, placed or not.</p>
+ *
  * @since 0.69.0
  */
 final class Fillings {
@@ -71,13 +82,24 @@ final class Fillings {
     private final Collection<String> hollows;
 
     /**
+     * The calls nobody can place.
+     */
+    private final Unplaced unseen;
+
+    /**
      * Ctor.
      *
      * @param links The links table, as {@link Resolved} left it
      * @param provides The provides table, which says where a filling can land
      */
     Fillings(final XML links, final XML provides) {
-        this(new Said(new Pairs(links)), provides, new Hollows(provides).all());
+        this(
+            new Said(new Pairs(links)), provides, new Hollows(provides).all(),
+            new Unplaced(
+                Collections.emptyList(), Collections.emptyMap(), Collections.emptyMap(),
+                Collections.emptyList()
+            )
+        );
     }
 
     /**
@@ -86,11 +108,16 @@ final class Fillings {
      * @param links What the links table says, as {@link Resolved} left it
      * @param provides The provides table, which says where a filling can land
      * @param voids The locator of every void, from {@link Hollows}
+     * @param unplaced The calls nobody can place
      */
-    Fillings(final Said links, final XML provides, final Collection<String> voids) {
+    Fillings(
+        final Said links, final XML provides, final Collection<String> voids,
+        final Unplaced unplaced
+    ) {
         this.table = links;
         this.given = provides;
         this.hollows = voids;
+        this.unseen = unplaced;
     }
 
     /**
@@ -100,10 +127,40 @@ final class Fillings {
      *  nobody ever fills
      */
     Map<String, Collection<Type>> all() {
+        final Map<String, Map<String, Type>> walked = this.walked();
         final Map<String, String> behaves = new Behaviours(this.given).all();
         final Map<String, Collection<Type>> found = new LinkedHashMap<>(0);
-        for (final Map.Entry<String, Map<String, Type>> hollow : this.walked().entrySet()) {
-            found.put(hollow.getKey(), new Counted(hollow.getValue(), behaves).all());
+        for (final Map.Entry<String, Map<String, Type>> hollow : walked.entrySet()) {
+            found.put(
+                hollow.getKey(), new ArrayList<>(new Counted(hollow.getValue(), behaves).all())
+            );
+        }
+        for (final String hollow : this.open(walked.keySet())) {
+            found.computeIfAbsent(hollow, key -> new ArrayList<>(1)).add(new Unknown());
+        }
+        return found;
+    }
+
+    /**
+     * What is ever put into every void that only calls in sight fill.
+     *
+     * <p>This is what a void may be named from. A void a call out of sight
+     * fills is left out whatever else fills it, since the {@link Unknown}
+     * {@link #all()} gives it is refused by {@link Sole} but read past by a
+     * rule that looks only at the members that name something.</p>
+     *
+     * @return The types put in, by the locator of the void, without the voids
+     *  nobody ever fills and the voids a call nobody can place fills
+     */
+    Map<String, Collection<Type>> closed() {
+        final Map<String, Map<String, Type>> walked = this.walked();
+        final Map<String, String> behaves = new Behaviours(this.given).all();
+        final Collection<String> open = this.open(walked.keySet());
+        final Map<String, Collection<Type>> found = new LinkedHashMap<>(0);
+        for (final Map.Entry<String, Map<String, Type>> hollow : walked.entrySet()) {
+            if (!open.contains(hollow.getKey())) {
+                found.put(hollow.getKey(), new Counted(hollow.getValue(), behaves).all());
+            }
         }
         return found;
     }
@@ -122,8 +179,28 @@ final class Fillings {
      */
     Map<String, Collection<String>> holders() {
         final Map<String, Collection<String>> found = new LinkedHashMap<>(0);
-        for (final Map.Entry<String, Map<String, Type>> hollow : this.walked().entrySet()) {
+        final Map<String, Map<String, Type>> walked = this.walked();
+        for (final Map.Entry<String, Map<String, Type>> hollow : walked.entrySet()) {
             found.put(hollow.getKey(), hollow.getValue().keySet());
+        }
+        for (final String hollow : this.open(walked.keySet())) {
+            found.putIfAbsent(hollow, Collections.emptySet());
+        }
+        return found;
+    }
+
+    private Collection<String> open(final Collection<String> filled) {
+        final Collection<String> names = this.unseen.names(
+            new Ends(this.table.all()).names(), filled
+        );
+        final Collection<String> found = new LinkedHashSet<>(0);
+        for (final String hollow : this.hollows) {
+            if (!hollow.endsWith(".ρ") && names.contains(
+                hollow.substring(0, Math.max(0, hollow.lastIndexOf('.')))
+                    .replaceFirst("^.*\\.", "")
+            )) {
+                found.add(hollow);
+            }
         }
         return found;
     }

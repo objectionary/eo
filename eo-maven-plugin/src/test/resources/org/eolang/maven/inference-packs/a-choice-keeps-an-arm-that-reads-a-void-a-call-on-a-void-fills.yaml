@@ -2,11 +2,13 @@
 # SPDX-License-Identifier: MIT
 ---
 # An arm of a choice that reads a void a call on a void fills is still an arm.
-# Both calls the tables see leave `m` alone, but `other.pick yes oak` puts an
-# `oak` there, and `other` is a void, so no pass ever says whose `pick` that
-# is. Not knowing who receives a call is not knowing that nobody makes it, so
-# `pick` is a `dial` or whatever `m` holds, not a `dial` alone. The matchers
-# of `string/regex.eo` are only ever run this way, as `^.child.run` (#9062).
+# The calls the tables see leave `m` alone, but `other.hold oak` puts an `oak`
+# there, and `other` is a void nobody fills, so no pass ever says whose `hold`
+# that is. Not knowing who receives a call is not knowing that nobody makes
+# it, so `pick` is a `dial` or whatever `m` holds, not a `dial` alone. The
+# matchers of `string/regex.eo` are only ever run this way, as `^.child.run`
+# (#9062). The census says the same of `m`: somebody out of sight fills it
+# (#9006).
 eo:
   choice.eo: |
     [pick] > choice
@@ -31,14 +33,17 @@ eo:
     [] > oak
   app.eo: |
     [] > app
-      [other] > hold
-        [^ flag m] > pick
+      [other] > box
+        other.hold oak > third
+      [m] > hold
+        [^ flag] > pick
           flag.pick > @
             dial 03-
-            m
+            ^.m
         pick yes > first
         pick no > second
-        other.pick yes oak > third
 links:
   - "/links/type[@id='Φ.app.hold.pick.φ']/ref/union/ref[@loc='Φ.dial']"
-  - "/links/type[@id='Φ.app.hold.pick.φ']/ref/union/ref[@loc='Φ.app.hold.pick.m']"
+  - "/links/type[@id='Φ.app.hold.pick.φ']/ref/union/ref[@loc='Φ.app.hold.m']"
+provides:
+  - "//attr[@name='m']/witnessed/unknown"
