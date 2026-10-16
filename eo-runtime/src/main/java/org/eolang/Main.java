@@ -97,11 +97,6 @@ public final class Main {
             }
         }
         Main.LOGGER.log(Level.FINE, String.format("EOLANG Runtime %s", Main.ver()));
-        if (arguments.isEmpty()) {
-            throw new ExFailure(
-                "The name of an object is expected as a command line argument"
-            );
-        }
         try {
             Main.run(arguments);
         } catch (final ExAbstract ex) {
@@ -200,6 +195,11 @@ public final class Main {
     }
 
     private static void run(final List<String> opts) {
+        if (opts.isEmpty()) {
+            throw new ExFailure(
+                "The name of an object is expected as a command line argument"
+            );
+        }
         final String obj = opts.get(0);
         if (obj.isEmpty()) {
             throw new ExFailure(

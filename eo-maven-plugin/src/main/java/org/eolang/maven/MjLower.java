@@ -57,6 +57,13 @@ import org.eolang.lowering.Scope;
  * from build to build, so only a copy listed in {@code patched.tsv}, one
  * patched in this very build, is handed to the transpiler.</p>
  *
+ * <p>With {@code -Deo.saveTextProtocols=true} the lowering also keeps the
+ * protocol of every entry as indented text in {@code texts}, beside
+ * {@code 2-protocols}, so a person can read why an entry stopped where it
+ * did without any tool. phino writes one protocol per run, so this runs
+ * phino on every entry twice, unless the cache already holds the protocol
+ * and its text.</p>
+ *
  * @since 0.64.0
  */
 @Mojo(
@@ -81,6 +88,17 @@ public final class MjLower extends MjSafe {
         defaultValue = "phino"
     )
     private String binary;
+
+    /**
+     * The only version of phino that the goal accepts, which phino also
+     * gets through its {@code --pin} option.
+     */
+    @Parameter(
+        alias = "pinPhino",
+        property = "eo.pinPhino",
+        defaultValue = "0.0.156"
+    )
+    private String pin;
 
     /**
      * Whether the goal skips, instead of failing the build, when phino
@@ -113,6 +131,28 @@ public final class MjLower extends MjSafe {
         defaultValue = "32"
     )
     private int steps;
+
+    /**
+     * How many times one run of phino may enter the same formation again,
+     * with other data, before it decides that the run loops and cuts it.
+     */
+    @Parameter(
+        alias = "maxLoops",
+        property = "eo.maxLoops",
+        defaultValue = "2"
+    )
+    private int loops;
+
+    /**
+     * Whether the lowering keeps the protocol of every entry as indented text
+     * too, beside the XML one.
+     */
+    @Parameter(
+        alias = "saveTextProtocols",
+        property = "eo.saveTextProtocols",
+        defaultValue = "false"
+    )
+    private boolean texts;
 
     /**
      * The regular expression that the whole locator of an entry, such as
@@ -162,12 +202,15 @@ public final class MjLower extends MjSafe {
                     new Subdir(this.target, "inference").orConfigured(this.tables),
                     home,
                     this.binary,
+                    this.pin,
                     this.caching("lowered"),
                     atoms,
                     home.resolve("4-patched"),
                     new Scope(this.only, this.never),
                     this.steps,
-                    Duration.ofSeconds(this.budget)
+                    this.loops,
+                    Duration.ofSeconds(this.budget),
+                    this.texts
                 );
                 if (this.optional && !pipeline.available()) {
                     Logger.warn(

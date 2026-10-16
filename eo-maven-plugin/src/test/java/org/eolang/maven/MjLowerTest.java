@@ -15,11 +15,7 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import org.apache.maven.plugin.testing.stubs.MavenProjectStub;
-import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.Trimmed;
-import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -62,7 +58,7 @@ final class MjLowerTest {
                     .execute(MjLower.class),
                 "a binary that is not there must fail the build"
             ).getCause().getCause().getMessage(),
-            Matchers.containsString(MjLowerTest.pin())
+            Matchers.containsString("0.0.156")
         );
     }
 
@@ -200,6 +196,26 @@ final class MjLowerTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void savesTheTextOfEveryEntryWhenAsked(@Mktmp final Path temp) throws IOException {
+        new FakeMaven(temp)
+            .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
+            .execute(MjParse.class)
+            .with("lowering", true)
+            .with("texts", true)
+            .with("binary", MjLowerTest.binary(temp))
+            .with("tables", MjLowerTest.tables(temp).toFile())
+            .execute(MjLower.class);
+        MatcherAssert.assertThat(
+            "the goal must save the text of an entry when asked, but it didnt",
+            new Subdir(temp.resolve("target"), "lowering").path()
+                .resolve("texts/gap.txt")
+                .toFile(),
+            FileMatchers.anExistingFile()
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void morphsNoEntryTheFilterOfTheIncludedDoesntMatch(@Mktmp final Path temp)
         throws IOException {
         new FakeMaven(temp)
@@ -252,6 +268,43 @@ final class MjLowerTest {
             "the goal must hand phino the number of steps it was given, but it didnt",
             Files.readString(temp.resolve("morph.txt"), StandardCharsets.UTF_8),
             Matchers.containsString(String.format("--max-steps=%d", steps))
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void pinsPhinoToTheVersionItWasGiven(@Mktmp final Path temp) throws IOException {
+        new FakeMaven(temp)
+            .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
+            .execute(MjParse.class)
+            .with("lowering", true)
+            .with("pin", "0.7.33")
+            .with("binary", MjLowerTest.binary(temp, "0.7.33"))
+            .with("tables", MjLowerTest.tables(temp).toFile())
+            .execute(MjLower.class);
+        MatcherAssert.assertThat(
+            "the goal must pin phino to the version it was given, but it didnt",
+            Files.readString(temp.resolve("morph.txt"), StandardCharsets.UTF_8),
+            Matchers.startsWith("--pin=0.7.33 morph ")
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void handsPhinoTheNumberOfLoopsItWasGiven(@Mktmp final Path temp) throws IOException {
+        final int loops = new SecureRandom().nextInt(50) + 1;
+        new FakeMaven(temp)
+            .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
+            .execute(MjParse.class)
+            .with("lowering", true)
+            .with("loops", loops)
+            .with("binary", MjLowerTest.binary(temp))
+            .with("tables", MjLowerTest.tables(temp).toFile())
+            .execute(MjLower.class);
+        MatcherAssert.assertThat(
+            "the goal must hand phino the number of loops it was given, but it didnt",
+            Files.readString(temp.resolve("morph.txt"), StandardCharsets.UTF_8),
+            Matchers.containsString(String.format("--max-loops=%d", loops))
         );
     }
 
@@ -312,14 +365,8 @@ final class MjLowerTest {
                     .execute(MjLower.class),
                 "a binary of another version must fail the build"
             ).getCause().getCause().getMessage(),
-            Matchers.stringContainsInOrder("0.0.1", MjLowerTest.pin())
+            Matchers.stringContainsInOrder("0.0.1", "0.0.156")
         );
-    }
-
-    private static String pin() {
-        return new UncheckedText(
-            new Trimmed(new TextOf(new ResourceOf("org/eolang/lowering/phino-version.txt")))
-        ).asString();
     }
 
     private static String binary(final Path temp) throws IOException {
@@ -328,18 +375,33 @@ final class MjLowerTest {
         );
     }
 
+    private static String binary(final Path temp, final String version) throws IOException {
+        return MjLowerTest.binary(
+            temp, 0,
+            "<protocol><morph/><msec>7</msec><firings>0</firings><fps>0</fps></protocol>",
+            version
+        );
+    }
+
     private static String binary(final Path temp, final int code, final String protocol)
         throws IOException {
+        return MjLowerTest.binary(temp, code, protocol, "0.0.156");
+    }
+
+    private static String binary(
+        final Path temp, final int code, final String protocol, final String version
+    ) throws IOException {
         final Path made = temp.resolve("phino");
         Files.write(
             made,
             new ListOf<>(
                 "#!/bin/sh",
+                "p=; case $1 in --pin=*) p=$1; shift;; esac",
                 "case $1 in",
-                String.format("--version) echo %s;;", MjLowerTest.pin()),
+                String.format("--version) echo %s;;", version),
                 "merge) while [ $# -gt 0 ]; do [ \"$1\" = --target ] && : > \"$2\"; shift; done;;",
                 String.format(
-                    "morph) echo \"$@\" >> '%s'; for a; do case $a in --protocol=*) cp '%s' \"${a#--protocol=}\";; esac; done; exit %d;;",
+                    "morph) echo \"$p $@\" >> '%s'; for a; do case $a in --protocol=*) cp '%s' \"${a#--protocol=}\";; esac; done; exit %d;;",
                     temp.resolve("morph.txt"),
                     Files.write(
                         temp.resolve("protocol.xml"), protocol.getBytes(StandardCharsets.UTF_8)
@@ -365,7 +427,7 @@ final class MjLowerTest {
             "<bind meta='𝛿2·2'>40-08-00-00-00-00-00-00</bind>",
             "<minted symbol='𝜎9'>40-00-00-00-00-00-00-00 40-08-00-00-00-00-00-00</minted>",
             "</evaluate></evaluate><evaluate λ='L_root'>",
-            "<dataize meta='𝛿1·3'>𝜎9:λ</dataize></evaluate></morph>",
+            "<dataize meta='𝛿1·3'>𝜎9</dataize></evaluate></morph>",
             "<msec>13</msec><firings>2</firings><fps>153</fps></protocol>"
         );
     }
