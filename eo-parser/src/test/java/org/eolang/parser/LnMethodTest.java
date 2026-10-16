@@ -44,6 +44,36 @@ final class LnMethodTest {
     }
 
     @Test
+    void rejectsAfterVoidAttribute() {
+        final Stack stack = new Stack();
+        new LnFormation(new Span("[] > foo", 1))
+            .into(stack, new Globals(), new Emit());
+        new LnVoid(new Span("  ? > v", 2))
+            .into(stack, new Globals(), new Emit());
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnMethod(new Span("  .foo", 3))
+                .into(stack, new Globals(), new Emit()),
+            "a `.method` line after a void attribute must be rejected per R-5.2.3(b″)"
+        );
+    }
+
+    @Test
+    void rejectsAfterReceiverVoid() {
+        final Stack stack = new Stack();
+        new LnFormation(new Span("[] > foo", 1))
+            .into(stack, new Globals(), new Emit());
+        new LnVoid(new Span("  ? > ^", 2))
+            .into(stack, new Globals(), new Emit());
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnMethod(new Span("  .foo", 3))
+                .into(stack, new Globals(), new Emit()),
+            "a `.method` line after a receiver void must be rejected per R-5.2.3(b″)"
+        );
+    }
+
+    @Test
     void extendsHeadToVmethodKind() {
         final Stack stack = new Stack();
         new LnApplication(new Span("foo > x", 1))
