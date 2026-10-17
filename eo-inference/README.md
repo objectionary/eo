@@ -27,7 +27,13 @@ that does bind something of its own is where the walk ends, and if we cannot
 say which formation it is we say so rather than dressing up a guess.
 
 The goal runs after `pre-inference` and writes three XML tables into
-`target/eo/6-inference`. Nothing else in the compiler reads them yet.
+`target/eo/NN-inference`, where `Subdir` gives the directory its number.
+Two parts of the compiler read them. The transpiler loads `provides.xml` and
+`links.xml` in `purify.xsl` and stamps `@pure`, which `to-java.xsl` turns
+into a `PhSticky`, and `Transpilation` folds their rows into its cache key
+for that reason. `eo-lowering` reads all three: `Planting` refuses to start
+without them, and `Signatures` says from them what every patched atom takes
+and gives.
 
 ## What it prints
 
