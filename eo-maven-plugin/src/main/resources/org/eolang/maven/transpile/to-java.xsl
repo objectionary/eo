@@ -97,7 +97,7 @@
     <xsl:variable name="pckg" select="/object/class/@package"/>
     <xsl:variable name="obj" select="/object/class/@name"/>
     <xsl:choose>
-      <xsl:when test="$pckg">
+      <xsl:when test="$pckg != ''">
         <xsl:value-of select="$pckg"/>
         <xsl:text>.</xsl:text>
         <xsl:value-of select="$obj"/>

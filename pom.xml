@@ -218,7 +218,7 @@
       <dependency>
         <groupId>net.sf.saxon</groupId>
         <artifactId>Saxon-HE</artifactId>
-        <version>13.0</version>
+        <version>13.1</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
@@ -580,7 +580,7 @@
               <dependency>
                 <groupId>net.sf.saxon</groupId>
                 <artifactId>Saxon-HE</artifactId>
-                <version>13.0</version>
+                <version>13.1</version>
               </dependency>
             </dependencies>
           </plugin>

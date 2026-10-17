@@ -199,8 +199,11 @@
   ++> can-open-and-close-a-file-through-a-syscall
     os.is-windows.or > @
       seq *
-        posix.close fd
         fd.gt -1
+        not.
+          eq.
+            posix.close fd
+            -1
     code. > fd
       posix.open "/dev/null" 0 0
 

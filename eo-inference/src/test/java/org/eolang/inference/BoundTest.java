@@ -4,6 +4,7 @@
  */
 package org.eolang.inference;
 
+import com.github.lombrozo.xnav.Xnav;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,6 +20,69 @@ import org.junit.jupiter.api.Test;
  * @since 0.69.0
  */
 final class BoundTest {
+
+    @Test
+    void stampsTheDelegatedCopyWithItsArgumentsStillBound() {
+        MatcherAssert.assertThat(
+            "the receiver must be the directory copy that owns made, with its input still filled",
+            new Bound(
+                Map.of("Φ.wrapper.φ", List.of("Φ.payload")),
+                Collections.emptyMap(),
+                Map.of("Φ.answer", "Φ.answer.ρ"),
+                List.of(
+                    BoundTest.site("<o base='.made' loc='Φ.answer'><o loc='Φ.answer.ρ'/></o>")
+                ),
+                Map.of(
+                    "Φ.answer", "Φ.directory.made",
+                    "Φ.answer.ρ", "Φ.wrapper", "Φ.wrapper.φ", "Φ.directory"
+                ),
+                new Provided(
+                    Map.of(
+                        "Φ.wrapper", List.of(Map.of("name", "φ", "type", "Φ.wrapper.φ")),
+                        "Φ.directory", List.of(
+                            Map.of("name", "made", "type", "Φ.directory.made"),
+                            Map.of("void", "true", "name", "x", "type", "Φ.directory.x")
+                        ),
+                        "Φ.directory.made", List.of(
+                            Map.of("void", "true", "name", "ρ", "type", "Φ.directory.made.ρ")
+                        )
+                    ),
+                    Collections.emptyMap(), Collections.emptyList(), Collections.emptyMap()
+                )
+            ).all(),
+            Matchers.equalTo(
+                Map.of(
+                    "Φ.wrapper.φ", Map.of("Φ.directory.x", "Φ.payload"),
+                    "Φ.answer", Map.of("Φ.directory.made.ρ", "Φ.wrapper.φ")
+                )
+            )
+        );
+    }
+
+    @Test
+    void stampsAnAnonymousFormationWithItsReader() {
+        MatcherAssert.assertThat(
+            "an anonymous formation must receive its reader, not its enclosing formation",
+            new Bound(
+                Collections.emptyMap(), Collections.emptyMap(),
+                Map.of("Φ.read", "Φ.read.ρ"),
+                List.of(
+                    BoundTest.site("<o base='.y' loc='Φ.read'><o loc='Φ.read.ρ'/></o>")
+                ),
+                Map.of("Φ.read", "Φ.app.α0", "Φ.read.ρ", "Φ.reader"),
+                new Provided(
+                    Map.of(
+                        "Φ.reader", List.of(Map.of("name", "y", "type", "Φ.app.α0")),
+                        "Φ.app.α0", List.of(
+                            Map.of("void", "true", "name", "ρ", "type", "Φ.app.α0.ρ")
+                        )
+                    ),
+                    Collections.emptyMap(), Collections.emptyList(), Collections.emptyMap()
+                )
+            ).all(),
+            Matchers.equalTo(Map.of("Φ.read", Map.of("Φ.app.α0.ρ", "Φ.read.ρ")))
+        );
+    }
 
     @Test
     void fillsAFreshVoidForEachApplicationOfAChain() {
@@ -197,5 +261,9 @@ final class BoundTest {
             ).relays(),
             Matchers.equalTo(Map.of("Φ.app.call", Collections.singleton("Φ.oak.x")))
         );
+    }
+
+    private static Site site(final String xmir) {
+        return new Site(new Xnav(xmir).element("o"));
     }
 }

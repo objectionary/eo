@@ -54,6 +54,15 @@ final class MainTest {
     }
 
     @Test
+    void dropsTheUnreachableObjectNameFromTheHelp() {
+        MatcherAssert.assertThat(
+            "the help must not name an object the root cannot take, while it did",
+            MainTest.stderr("--help"),
+            Matchers.not(Matchers.containsString("org.eolang.io.stdio"))
+        );
+    }
+
+    @Test
     void deliversCleanOutput() {
         MatcherAssert.assertThat(
             "Incorrect output when dataizing \"true\" object",
@@ -108,6 +117,17 @@ final class MainTest {
     }
 
     @Test
+    void printsDeepestErrorMessageOnlyOnce() {
+        final String deepest = "out of i64 bounds";
+        final String out = MainTest.stderr("nan.as-i64");
+        MatcherAssert.assertThat(
+            "The deepest error message must be printed once, not once per level of the cause chain",
+            out.length() - out.replace(deepest, "").length(),
+            Matchers.equalTo(deepest.length())
+        );
+    }
+
+    @Test
     void executesWithObjectNotFoundException() {
         MatcherAssert.assertThat(
             "Fails with the proper error message",
@@ -146,6 +166,15 @@ final class MainTest {
             "A --verbose placed after the object name must be an argument, not the verbose option, so no stacktrace is printed",
             MainTest.stderr("org.eolang.examples.app", Main.VERBOSE),
             Matchers.not(Matchers.containsString("at org.eolang.Main.run"))
+        );
+    }
+
+    @Test
+    void reportsMissingObjectNameWithoutStacktrace() {
+        MatcherAssert.assertThat(
+            "A missing object name is reported with a Java stack trace, unlike an empty one",
+            MainTest.stderr(),
+            Matchers.not(Matchers.containsString("at org.eolang.Main.main"))
         );
     }
 

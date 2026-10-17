@@ -19,18 +19,23 @@ protocol: |
     <morph at="Φ.l/.e1">
       <evaluate λ="L_entry" by="morph" at="Φ.l/.e1">
         <evaluate λ="L_number_times" by="morph" at="Φ.a🌵1">
-          <dataize meta="𝛿1·2">𝜎1:λ</dataize>
+          <dataize meta="𝛿1·2">𝜎1</dataize>
           <bind meta="𝛿2·2">BF-F0-00-00-00-00-00-00</bind>
           <minted symbol="𝜎2">𝜎1 BF-F0-00-00-00-00-00-00</minted>
-          <built meta="𝑛·2·5">Φ.number( φ ↦ Φ.bytes( φ ↦ 𝜎2:λ ) )</built>
-          <applied meta="𝑛·2·6" by="morph" at="Φ.a🌵1" of="Φ.number"><attr name="φ">Φ.bytes( φ ↦ 𝜎2:λ )</attr></applied>
-          <answer meta="𝑛·2·7">𝑛·2·6</answer>
+          <applied meta="𝑛·2·4" of="Φ.bytes"><attr name="φ">𝜎2</attr></applied>
+          <applied meta="𝑛·2·5" of="Φ.number"><attr name="φ">𝑛·2·4</attr></applied>
+          <built meta="𝑛·2·6">𝑛·2·5</built>
+          <morph at="𝑛·2·6">
+            <applied meta="𝑛·2·7" by="morph" at="𝑛·2·6" of="Φ.number"><attr name="φ">𝑛·2·4</attr></applied>
+          </morph>
+          <answer meta="𝑛·2·8">𝑛·2·7</answer>
         </evaluate>
-        <bind meta="𝑛1·1">𝑛·2·6</bind>
-        <built meta="𝑛·1·13">Φ.l/.root( 𝑛·2·6 )</built>
+        <bind meta="𝑛1·1">𝑛·2·7</bind>
+        <applied meta="𝑛·1·12" of="Φ.l/.root"><attr name="α0">𝑛·2·7</attr></applied>
+        <built meta="𝑛·1·13">𝑛·1·12</built>
       </evaluate>
       <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
-        <dataize meta="𝛿1·3">𝜎2:λ</dataize>
+        <dataize meta="𝛿1·3">𝜎2</dataize>
       </evaluate>
     </morph>
     <msec>43</msec>

@@ -89,8 +89,14 @@
             </xsl:attribute>
           </xsl:for-each>
           <xsl:if test="eo:abstract(.)">
+            <!--
+            Phi stays on the wrapper: appending a suffix to it would make
+            an invalid XMIR name. Give its hidden formation a cactus name,
+            as for other anonymous formations, so the printer can inline it.
+            -->
+            <xsl:variable name="hidden" select="if ($cname = $eo:phi) then concat('a', $eo:cactoos, @line, '-', @pos) else $cname"/>
             <xsl:attribute name="name">
-              <xsl:value-of select="eo:unique-name($cname, ./parent::o, 0)"/>
+              <xsl:value-of select="eo:unique-name($hidden, ./parent::o, 0)"/>
             </xsl:attribute>
           </xsl:if>
           <xsl:for-each select="o">

@@ -43,7 +43,8 @@ eo:
         ? > b
 provides:
   - "/provides/type[@id='Φ.bytes.eq' and @reduced='Φ.bool']"
-  - "/provides/type[@id='Φ.false' and @reduced='Φ.bool']"
+  - "/provides/type[@id='Φ.true' and not(@reduced)]"
+  - "/provides/type[@id='Φ.false' and not(@reduced)]"
   - "/provides/type[@id='Φ.bool.and' and @reduced='Φ.bool']"
 links:
   - "/links/type[@id='Φ.bool.and.φ']/ref[@loc='Φ.bool']"
