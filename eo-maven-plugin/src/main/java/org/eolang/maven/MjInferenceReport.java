@@ -16,7 +16,9 @@ import org.apache.maven.plugins.annotations.Parameter;
  * <p>The three numbers the tables come with say how much of a program we
  * understand without saying which part. A page says both, with the author's
  * own source on it and a mark on every object: green where the formation can
- * be named, amber where the answer is somebody else's void, red where there
+ * be named, amber where the name is rooted in a void the callers of the
+ * program fill several ways, violet where it is rooted in a void only an atom
+ * fills, slate where it is rooted in a void nobody fills, and red where there
  * is nothing.</p>
  *
  * <p>A goal of its own rather than a flag on {@link MjInference}: a build

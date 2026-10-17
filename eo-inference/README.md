@@ -154,10 +154,12 @@ is told nothing.
 
 The three numbers say how much of a program we understand without saying which
 part. A page per source file says both, with the author's own source on it and
-a mark on every object: green where we can name the formation, amber where the
-answer is somebody else's void, red where there is nothing. Hovering over a
-mark says what the tables hold about it, and an amber one names what the
-program was seen putting into the void besides.
+a mark on every object: green where we can name the formation, amber where
+the name is rooted in a void the callers of the program fill several ways,
+violet where it is rooted in a void only an atom fills, slate where it is
+rooted in a void nobody fills, and red where there is nothing. Hovering over
+a mark says what the tables hold about it, and one rooted in a void names
+what the program was seen putting into it besides.
 
 The pages of eo-runtime are published at
 [www.eolang.org/inference](https://www.eolang.org/inference/), rebuilt on every
