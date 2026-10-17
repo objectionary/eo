@@ -16,6 +16,13 @@ asserts:
   - //java[contains(text(), 'r1 = new PhApplication(r1, 0, new PhDefault(new byte[] {(byte) 0x40, (byte) 0x45, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00}));')]
   - //java[contains(text(), 'r11 = new PhApplication(r11, 0, new PhDefault(new byte[] {(byte) 0x40, (byte) 0x0C, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00}));')]
   - //java[contains(text(), 'r = new PhApplication(r, 0, new PhDefault(new byte[] {(byte) 0x01, (byte) 0xAF}));')]
+  - //java[contains(text(), 'r = new PhApplication(r, new byte[] {(byte) 0x40, (byte) 0x45, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00});')]
+  - //java[contains(text(), 'r = new PhApplication(r, new byte[] {(byte) 0x01, (byte) 0xAF});')]
+  - //java[contains(text(), 'r = new PhApplication(r, new byte[] {(byte) 0xE9, (byte) 0x9B, (byte) 0xAA});')]
+  - //java[contains(text(), '"as-bytes")') and not(contains(substring-before(substring-after(string(.), '"as-bytes")'), 'return '), 'new PhApplication(r, new byte[]'))]
+  - //java[contains(text(), 'new Bind("x",') and not(contains(substring-before(substring-after(string(.), 'new Bind("x",'), 'return '), 'new PhApplication(r, new byte[]'))]
+  - //java[contains(text(), 'new Bind(1,') and not(contains(substring-before(substring-after(string(.), 'new Bind(1,'), 'return '), 'new PhApplication(r, new byte[]'))]
+  - //java[count(tokenize(string(.), 'new PhApplication[(][^,]+, new byte\[\]')) = 15]
 input: |
   [] > data
     true > first
@@ -23,3 +30,11 @@ input: |
     42 > third
     number 3.5 > fourth
     01-AF > fifth
+    "雪" > sixth
+    [x] > computed
+      number x.as-bytes > @
+    number > named
+      42:x
+    number > extra
+      42
+      43
