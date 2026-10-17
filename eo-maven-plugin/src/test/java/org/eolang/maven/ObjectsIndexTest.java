@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.apache.maven.settings.Settings;
 import org.cactoos.scalar.ScalarOf;
 import org.cactoos.set.SetOf;
 import org.hamcrest.MatcherAssert;
@@ -16,6 +17,8 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test for {@link ObjectsIndex}.
@@ -23,6 +26,38 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * @since 0.29
  */
 final class ObjectsIndexTest {
+
+    @ParameterizedTest
+    @CsvSource({"string.as-char,true", "string.length,true", "string.lower,false"})
+    @ExtendWith(WeAreOnline.class)
+    void indexesConfiguredObjects(final String name, final boolean present) throws Exception {
+        MatcherAssert.assertThat(
+            "Membership must reflect the selected revision",
+            this.configured().contains("org.eolang.".concat(name)), Matchers.is(present)
+        );
+    }
+
+    @Test
+    @ExtendWith(WeAreOnline.class)
+    void indexesConfiguredChildren() throws Exception {
+        MatcherAssert.assertThat(
+            "Historical package children must include historical and common objects only",
+            this.configured().children("org.eolang.string"),
+            Matchers.allOf(
+                Matchers.hasItems("string.as-char", "string.length"),
+                Matchers.not(Matchers.hasItem("string.lower"))
+            )
+        );
+    }
+
+    @Test
+    @ExtendWith(WeAreOnline.class)
+    void classifiesConfiguredObjects() throws Exception {
+        MatcherAssert.assertThat(
+            "An indexed object with children must still be classified as an object",
+            this.configured().isDirectory("org.eolang.string"), Matchers.is(false)
+        );
+    }
 
     @Test
     void runsContainsWithOnlyOneCallToDecoratedObject() throws Exception {
@@ -167,5 +202,12 @@ final class ObjectsIndexTest {
             new ObjectsIndex().contains("stdout"),
             Matchers.is(true)
         );
+    }
+
+    private Objectionary configured() {
+        return new OyConfigured(
+            () -> new CommitHash.ChConstant("22fecd0b472c659ed00bbdc23fbc1b749145e410"),
+            Settings::new
+        ).value();
     }
 }
