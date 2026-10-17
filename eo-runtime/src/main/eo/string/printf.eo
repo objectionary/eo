@@ -50,13 +50,14 @@
 # through `%f`, because every magnitude it rejects is past the range `as-fixed`
 # writes, and a reason rendered with `%f` destroyed itself instead of arriving.
 #
-# The `%f` conversion leaves the `cant-print` fallback of `as-fixed` unbound,
-# so a number it refuses, a non-finite one or a magnitude of 2^63 or larger,
-# terminates with the reason `as-fixed` gives, instead of that reason standing
-# in the text where the number was meant to be. Its tests recover from that
-# termination instead of declaring it with `-->`, because a returned text of
-# more than one byte fails to dataize as a boolean exactly as a termination
-# does, and a `-->` test would pass either way.
+# The `%f` conversion first refuses a datum whose bytes are not exactly eight,
+# because only that shape can be a number. It then leaves the `cant-print`
+# fallback of `as-fixed` unbound, so a number it refuses, a non-finite one or a
+# magnitude of 2^63 or larger terminates with the reason `as-fixed` gives,
+# instead of that reason standing in the text where the number was meant to be.
+# Its tests recover from that termination instead of declaring it with `-->`,
+# because a returned text of more than one byte fails to dataize as a boolean
+# exactly as a termination does, and a `-->` test would pass either way.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -210,11 +211,7 @@
             number numeric
         if.
           66-.eq conv
-          as-fixed.
-            number numeric
-            precise.as-bool.if
-              number precision
-              6
+          fixed
           if.
             78-.eq conv
             capped (bytes datum).as-hex
@@ -251,6 +248,16 @@
         string value
         number width
         I
+    if. > fixed!
+      datum.size.eq 8
+      as-fixed.
+        number numeric
+        precise.as-bool.if
+          number precision
+          6
+      T
+        "The argument %x is not a number, the %%f conversion takes an eight-byte number".printf
+          * datum
     positional.as-bool.if > flags!
       plus.
         number dollar
