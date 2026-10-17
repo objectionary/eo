@@ -134,8 +134,10 @@
   <xsl:function name="eo:scope" as="element()?">
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="receiver" as="element()?" select="$ref/preceding-sibling::o[1]"/>
+    <!-- Named ρ receivers dispatch in their declaring formation's parent. -->
+    <xsl:variable name="receiver-handle" as="element()?" select="if (exists($receiver)) then eo:captor($receiver) else ()"/>
     <xsl:variable name="owner" as="element()?" select="$ref/ancestor::o[not(@base)][@name=$receiver/@base or exists(key('attributes', concat($receiver/@base, '#', generate-id(.))))][1]"/>
-    <xsl:sequence select="if (empty($receiver/@base)) then () else if ($receiver/@base='ξ' and empty($receiver/@method)) then $ref/ancestor::o[not(@base)][1] else if ($receiver/@base='ρ' and empty($receiver/@method)) then $ref/ancestor::o[not(@base)][2] else if ($receiver/@base='.ρ' and exists($receiver/@method)) then eo:scope($receiver)/ancestor::o[not(@base)][1] else if (empty($receiver/@method) and $owner/@name=$receiver/@base) then $owner else ()"/>
+    <xsl:sequence select="if (empty($receiver/@base)) then () else if ($receiver/@base='ξ' and empty($receiver/@method)) then $ref/ancestor::o[not(@base)][1] else if ($receiver/@base='ρ' and empty($receiver/@method)) then $ref/ancestor::o[not(@base)][2] else if ($receiver/@base='.ρ' and exists($receiver/@method)) then eo:scope($receiver)/ancestor::o[not(@base)][1] else if ($receiver-handle/@name=$eo:rho and $receiver-handle/@base=$eo:empty) then $receiver-handle/ancestor::o[not(@base)][2] else if (empty($receiver/@method) and $owner/@name=$receiver/@base) then $owner else ()"/>
   </xsl:function>
   <!--
   How many formations separate a bare, ancestor-search-captured reference
