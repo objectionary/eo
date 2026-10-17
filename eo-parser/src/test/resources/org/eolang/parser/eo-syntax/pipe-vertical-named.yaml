@@ -5,14 +5,14 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@name='app']/o[@name='foo' and @base='Φ.number']
-  - //o[@name='app']/o[@name='bar' and @base='Φ.number']
-  - //o[@base='ξ.add']/o[@base='ξ.foo']
-  - //o[@base='ξ.add']/o[@base='ξ.bar']
+  - //o[@name='app']/o[@local='foo' and @base='Φ.number']
+  - //o[@name='app']/o[@local='bar' and @base='Φ.number']
+  - //o[@base='ξ.add']/o[1][starts-with(@base, 'ξ.a🌵')]
+  - //o[@base='ξ.add']/o[2][starts-with(@base, 'ξ.a🌵')]
 input: |
   [] > app
     [x y] > add
       x.plus y > @
     | >>
-      2 > foo
-      3 > bar
+      2 >> foo
+      3 >> bar
