@@ -4,9 +4,11 @@
  */
 package org.eolang;
 
+import com.sun.jna.Native;
 import com.sun.jna.Platform;
 import com.sun.jna.Pointer;
 import org.eolang.posix.CStdLib;
+import org.eolang.posix.Strerror;
 import org.eolang.sys.Handles;
 
 /**
@@ -15,7 +17,10 @@ import org.eolang.sys.Handles;
  *
  * <p>The name comes with the code {@code 0}. The stream running out is a
  * {@code NULL} coming back, and then the code is {@code -1} and there is no
- * name: EO reads entries until it sees that, the way a C program does.</p>
+ * name: EO reads entries until it sees that, the way a C program does. A
+ * {@code NULL} is also what a failed read gives, and only {@code errno}, set
+ * to zero before the call, tells the two apart: then the code is {@code -2}
+ * and the name holds the message of the error.</p>
  *
  * <p>Only the name is read out of the {@code struct dirent}, and the whole
  * struct is never mapped, since the fields ahead of {@code d_name} differ from
@@ -66,10 +71,15 @@ public final class EOposix$EOreaddir extends PhDefault implements Atom {
             new Int(Expect.at(this, "dirp")).it()
         );
         final Phi result = Phi.Φ.take("posix").take("dir-return").copy();
+        Native.setLastError(0);
         final Pointer entry = CStdLib.INSTANCE.readdir(stream);
-        if (entry == null) {
+        final int errno = Native.getLastError();
+        if (entry == null && errno == 0) {
             result.put(0, new Data.ToPhi(-1));
             result.put(1, new PhDefault());
+        } else if (entry == null) {
+            result.put(0, new Data.ToPhi(-2));
+            result.put(1, new Data.ToPhi(new Strerror(errno).it()));
         } else {
             final Phi name = Phi.Φ.take("string").copy();
             name.put(0, new Data.ToPhi(EOposix$EOreaddir.named(entry)));

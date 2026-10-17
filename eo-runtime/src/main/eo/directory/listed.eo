@@ -77,8 +77,13 @@
     if. > @
       read.code.eq -1
       acc
-      ^.gathered
-        ^.added acc read.name
+      if.
+        read.code.eq -2
+        T
+          "Can't read the directory '%s': %s".printf
+            * ^.folder.path read.name
+        ^.gathered
+          ^.added acc read.name
     called. > read
       os.is-windows.if
         win32.find-next-file ^.opened.code
