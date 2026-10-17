@@ -17,8 +17,15 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.log4j.Appender;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggingEvent;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.bytes.Sha256DigestOf;
@@ -406,6 +413,68 @@ final class MjParseTest {
             "the stage after a parse from cache is not numbered as after a fresh parse",
             warm.dirName("lint"),
             Matchers.equalTo(cold.dirName("lint"))
+        );
+    }
+
+    @Test
+    void logsParserWarningWithoutCallingItAFailure(@Mktmp final Path temp) throws Exception {
+        final List<String> messages = new ArrayList<>(0);
+        final String home = com.jcabi.log.Logger.format("%[file]s", temp);
+        final Appender appender = new AppenderSkeleton() {
+            @Override
+            protected void append(final LoggingEvent event) {
+                if (event.getRenderedMessage().contains(home)) {
+                    messages.add(
+                        String.format("[%s] %s", event.getLevel(), event.getRenderedMessage())
+                    );
+                }
+            }
+
+            @Override
+            public void close() {
+                // Nothing to release.
+            }
+
+            @Override
+            public boolean requiresLayout() {
+                return false;
+            }
+        };
+        final Logger logger = Logger.getLogger(Parsing.class);
+        final Level level = logger.getLevel();
+        logger.setLevel(Level.ALL);
+        logger.addAppender(appender);
+        try {
+            new FakeMaven(temp).withProgram(
+                String.join(
+                    System.lineSeparator(),
+                    "+package foo.x",
+                    "",
+                    "[x] > main",
+                    "  x?.y.a > @"
+                )
+            ).execute(new PpParse());
+        } finally {
+            logger.removeAppender(appender);
+            logger.setLevel(level);
+        }
+        MatcherAssert.assertThat(
+            "A parser warning must be logged as a warning, not as a parsing failure, but it was not",
+            messages.stream()
+                .filter(line -> line.contains(temp.getFileName().toString()))
+                .collect(Collectors.toList()),
+            Matchers.both(
+                Matchers.<String>hasItem(
+                    Matchers.allOf(
+                        Matchers.containsString("[WARN]"),
+                        Matchers.containsString("fragile object requires")
+                    )
+                )
+            ).and(
+                Matchers.not(
+                    Matchers.<String>hasItem(Matchers.containsString("Failed to parse"))
+                )
+            )
         );
     }
 

@@ -138,6 +138,7 @@ R-2.2.2. Between two consecutive non-blank lines, indent may **increase by at mo
 R-2.2.3. Indent may decrease by any amount.
 R-2.2.4. Tabs in leading whitespace are rejected.
 R-2.2.5. A non-blank line whose last character is a space or a tab is rejected: `trailing whitespace at end of line`. This applies to every line, including a text-block body line (§3.11), which bypasses the ordinary line dispatch but is checked the same way. A whitespace-only (blank) line is exempt.
+R-2.2.6. The leading whitespace of a line runs to its first character that is neither a whitespace nor a Unicode space separator, so a no-break space (U+00A0) and its kin count towards the indent although Java does not call them whitespace. Anything there other than a space or a tab is rejected: `invalid character in leading whitespace`. A line copied from a web page or a chat often carries such a space where the editor shows a plain one, and the message names what the author cannot see.
 
 Example:
 
@@ -165,7 +166,7 @@ The parser recognises the following lexical tokens:
 | --- | --- |
 | `META` | `+` `NAME` followed by zero or more space-separated parts; each part is one or more non-whitespace characters. Parts may contain `:`, `.`, `-`, `/`, e.g. `+rt jvm a.b.c:lib:1.0.0`. |
 | `COMMENTARY` | `#` followed by the rest of the line. |
-| `NAME` | `[a-z]` followed by characters other than space, line break, tab, `,`, `.`, `\|`, `'`, `:`, `;`, `!`, `?`, `/`, `]`, `[`, `}`, `{`, `)`, `(`, `🌵`. The slash is excluded for the same reason `!` and `?` are: it opens an atom signature (§6.3), so a name ends where it starts. |
+| `NAME` | `[a-z]` followed by characters other than space, line break, tab, `,`, `.`, `\|`, `'`, `:`, `;`, `!`, `?`, `/`, `*`, `]`, `[`, `}`, `{`, `)`, `(`, `🌵`. The slash is excluded for the same reason `!` and `?` are: it opens an atom signature (§6.3), so a name ends where it starts. The star is excluded for the same reason: it opens a compact-tuple marker (§3.9), so `foo.bar*1` is the head `foo.bar` and a marker glued to it, not an attribute called `bar*1`. |
 | `PHI` | `@` |
 | `RHO` | `^` |
 | `ROOT` | `Q` |
@@ -489,6 +490,8 @@ seq * > @
 ```
 
 is a perfectly valid compact tuple: the head is `seq` (a `head`-kind expression), `N` defaults to 0, and the two vertical children become elements of the synthesised `Φ.tuple`. This is the canonical "tuple of N elements as one arg" form.
+
+R-3.9.5. The marker must be preceded by a space. A `*` glued to the head ends the name (§2.3), so `foo.bar*1` is the head `foo.bar` with a glued marker, not a dispatch on an attribute called `bar*1`, and the line is rejected: error "compact tuple marker must follow a space".
 
 Outer kind: **`compact-tuple`** (open for vertical children; closed for `.method` continuation until the block ends).
 
@@ -1360,7 +1363,7 @@ R-9.7.3. **Escape sequence table.** Recognised in both `STRING` and `TEXT`:
 | `\'` | `'` |
 | `\\` | `\` |
 | `\NNN` | Octal byte. `N` ∈ `[0-7]`, length 1–3 digits, value ≤ 0o377 (= 255 decimal). Pattern: `\\` followed by an optional `[0-3]`, an optional `[0-7]`, and a required `[0-7]` |
-| `\uXXXX` | Unicode codepoint, 4 hex digits, each one of `0`-`9`, `a`-`f`, `A`-`F` and nothing else: a character another alphabet counts as a digit, such as the fullwidth `Ｆ`, makes the escape `unicode escape \u… is not exactly four hexadecimal digits`. The grammar permits `\uu…uXXXX` (one or more `u`s) for legacy escape forms; the parser recognises any such sequence and decodes it to the codepoint. |
+| `\uXXXX` | Unicode codepoint, 4 hex digits, each one of `0`-`9`, `a`-`f`, `A`-`F` and nothing else: a character another alphabet counts as a digit, such as the fullwidth `Ｆ`, makes the escape `unicode escape \u… is not exactly four hexadecimal digits`. Exactly one `u` opens the escape: a second one, as in `\uu0041`, is not a legacy form but the same error, since `u` is not a hexadecimal digit. |
 
 R-9.7.4. **Escape decoding happens at parse time.** Every recognised escape — single-character, octal, and unicode — is decoded into its target codepoint(s) by the parser before the string body is fed into the `<o base='Φ.bytes'>` UTF-8 carrier (R-9.4 data carrier emission). The XMIR text body therefore contains decoded characters, never the source-level escape sequence; this applies equally to `STRING` and `TEXT` tokens (R-9.7.1 / R-9.7.2). Downstream consumers see the canonical UTF-8 bytes, not the literal `\uXXXX` / `\NNN` form.
 
@@ -1384,7 +1387,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Indent jump > 1 level | `indent increased by more than one level` |
 | Nesting past 256 levels, by indentation (R-5.2.7a), by a dispatch chain (R-3.5.3c) or by paren groups (R-3.6.6a) | `object nested deeper than 256 levels` |
 | Tab in leading whitespace | `tab character in leading whitespace` |
-| Leading whitespace other than a space or a tab (R-2.2.1) | `invalid character in leading whitespace` |
+| Leading whitespace other than a space or a tab, a no-break space among them (R-2.2.6) | `invalid character in leading whitespace` |
 | Carriage return that no line feed follows (R-2.1.2) | `standalone carriage return is not a line ending` |
 | Trailing space or tab at end of a non-blank line | `trailing whitespace at end of line` |
 | Deeper-indent under horizontally-completed line | `unexpected deeper-indent line — previous expression is closed for children` |
@@ -1455,6 +1458,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | String literal closed by neither a quote nor the end of the line (§9.7) | `unterminated string literal` |
 | String opened inside a paren group and never closed | `unterminated string inside paren group` |
 | Paren group with no matching `)` | `unterminated paren group` |
+| Trailing tokens inside a parenthesised expression (R-3.6.6) | `unexpected content inside a parenthesised expression` |
 | `:` with no binding label after it (§3.12) | `` expected binding label after `:` `` |
 | Hexadecimal literal expected but the text does not open with `0x` (R-9.8.3) | `expected hexadecimal literal` |
 | `0x` with no hex digit after it (R-9.8.3) | `hexadecimal literal requires at least one digit` |
@@ -1479,11 +1483,14 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | `?` line whose suffix is neither a name nor an auto-name, or carries `!` (R-3.4.7) | `` a void attribute must be written as `? > name` or `? >> name` `` |
 | `?` line whose parent is not a formation (R-3.4.7) | `a void attribute is legal only as a direct child of a formation` |
 | `> ^` written on a line that is not a `?` void attribute (R-3.4.11) | `only a void attribute can declare the receiver ^` |
+| `?` void attribute declared below a non-void attribute (R-3.4.9) | `a void attribute must be declared above all other attributes` |
 | Void type annotation `/` with no type after it (R-3.4.8) | `a void type annotation requires a type` |
+| Void type annotation whose type is not a dotted path of `NAME` tokens (R-3.4.8) | `type must be a dotted path of NAME tokens` |
 | `/{…}` argument list with no closing `}` (R-3.4.8) | `` a `/{…}` argument list must end with `}` `` |
 | Empty `/{…}` argument list (R-3.4.8) | `` a `/{…}` argument list must name at least one type `` |
 | Only-phi parameter list `> [` with no closing `]` (R-3.10.1) | `` only-phi parameter list missing closing `]` `` |
 | Only-phi line carrying none of the arrows that introduce one (R-3.10.8) | `` only-phi formation must contain `> [`, `++>` or `-->` `` |
+| Only-phi formation carrying an atom signature (R-3.10.8) | `an only-phi formation cannot be an atom` |
 | Only-phi line with an empty body before its arrow (R-3.10.6) | `` only-phi formation requires a non-empty body before `> [` or `++>` `` |
 | Trailing text after the φ expression of an only-phi formation (R-3.10.1) | `unexpected content in the body of an only-phi formation` |
 | Only-phi body that is a reversed dispatch carrying horizontal arguments (R-3.10.6) | `only-phi formation body cannot be a reversed dispatch with horizontal arguments` |
@@ -1497,6 +1504,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Test attribute on a pipe application (§3.14) | `a pipe application cannot declare a test attribute` |
 | Pipe whose predecessor is missing, unnamed, or not a formation or pipe (§3.14) | `a pipe must follow a named formation or another pipe` |
 | Text block body line shallower than its opener (R-3.11.2) | `text block body line indented less than opener` |
+| Test attribute `+>` with no blank line above it (R-6.5.3) | `` missing blank line before a `+>` test attribute (R-6.5.3); exactly one blank line must precede every test attribute `` |
 | Two or more consecutive blank lines (R-6.5.3) | `consecutive blank lines forbidden — at most one blank may separate two non-blank lines (R-6.5.3)` |
 | First object of the file at an indent other than 0 (§5.2) | `unexpected indentation, the first object must start at indent 0` |
 | Blank line between two meta directives (R-6.5.7) | `blank line between meta directives is forbidden (R-6.5.7); the meta header is a single contiguous block` |
@@ -1585,9 +1593,9 @@ Reproduced from §3.1 for convenience:
         *                             ← R-3.6: star tuple as head; becomes vapplication
           x.put 2                     ← R-3.6: happlication, horizontally-completed (R-6.1.1)
           loop                        ← R-3.6: bare head
-            x.lt 6 > [i] >>           ← R-3.10 inline-phi: outer = inline-phi-formation; φ `x.lt 6` has a harg, so closed for deeper children (§4.5)
+            ^.x.lt 6 > [i] >>         ← R-3.10 inline-phi: outer = inline-phi-formation; φ `^.x.lt 6` has a harg, so closed for deeper children (§4.5); `x` belongs to `[x]`, so R-9.2.4 wants `^.x`
             [i] >>                    ← R-3.4: formation
-              true
+              true > @                ← R-6.2.1: plain child of a formation must carry a name
 ```
 
 ### C.2 Stack trace for a vmethod naming check

@@ -356,6 +356,40 @@ final class HeapsTest {
     }
 
     @Test
+    void blamesTheSizeQueryOfAnUnallocatedBlock() {
+        MatcherAssert.assertThat(
+            "the failure of size must blame the size query, while it blamed a resize",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> Heaps.INSTANCE.size(Integer.MAX_VALUE)
+            ).getMessage(),
+            Matchers.equalTo(
+                String.format(
+                    "Block in memory by identifier '%d' is not allocated, can't get size",
+                    Integer.MAX_VALUE
+                )
+            )
+        );
+    }
+
+    @Test
+    void blamesTheResizeOfAnUnallocatedBlock() {
+        MatcherAssert.assertThat(
+            "the failure of resize must blame the resize, while it blamed a size query",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> Heaps.INSTANCE.resize(Integer.MAX_VALUE, 10)
+            ).getMessage(),
+            Matchers.equalTo(
+                String.format(
+                    "Block in memory by identifier '%d' is not allocated, can't resize",
+                    Integer.MAX_VALUE
+                )
+            )
+        );
+    }
+
+    @Test
     void returnsValidSize() {
         MatcherAssert.assertThat(
             "Heaps should return valid size of allocated block, but it didn't",

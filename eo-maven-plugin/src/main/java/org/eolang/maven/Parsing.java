@@ -191,16 +191,24 @@ final class Parsing implements Step {
             Logger.debug(this, "Parsed %[file]s to %[file]s", source, xmir);
         } else {
             for (final Xnav error : errors) {
-                Logger.error(
-                    this,
-                    "Failed to parse '%[file]s:%s': %s",
-                    source,
-                    error.attribute("line").text().orElse("0"),
-                    error.text().orElse("")
-                );
+                this.logged(source, error);
             }
         }
         return 1;
+    }
+
+    private void logged(final Path source, final Xnav error) {
+        final String location = Logger.format(
+            "'%[file]s:%s': %s",
+            source,
+            error.attribute("line").text().orElse("0"),
+            error.text().orElse("")
+        );
+        if ("warning".equals(error.attribute("severity").text().orElse("error"))) {
+            Logger.warn(this, "Warning while parsing %s", location);
+        } else {
+            Logger.error(this, "Failed to parse %s", location);
+        }
     }
 
     private Node parsed(

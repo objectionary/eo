@@ -3,12 +3,12 @@
 ---
 # yamllint disable rule:line-length
 # The root throws, but no record of the protocol applies "throw" to the
-# message under the name phino stopped at, as with a phino older than
-# 0.0.150, which wrote the whole copy there instead. The atom cannot tell
-# what to throw, so the entry is a taint.
+# message under the name phino stopped at: the copy of "throw" is a
+# formation phino wrote whole, with its message as an expression of its own.
+# The atom cannot tell what to throw, so the entry is a taint.
 locator: Φ.lost
 number: 4
-taint: phino stopped at L_throw for ⟦ message ↦ "oops", λ ⤍ L_throw ⟧, while no record of its protocol gives the message
+taint: phino stopped at L_throw for 𝑛·1·1, while no record of its protocol gives the message
 eo:
   lost.eo: |
     [] > lost
@@ -17,13 +17,20 @@ protocol: |
   <protocol>
     <morph at="Φ.l/.e4">
       <evaluate λ="L_entry" by="morph" at="Φ.l/.e4">
-        <bind meta="𝑛1·1">⟦ message ↦ "oops", λ ⤍ L_throw ⟧</bind>
-        <built meta="𝑛·1·1">Φ.l/.root( ⟦ message ↦ "oops", λ ⤍ L_throw ⟧ )</built>
-        <answer meta="𝑛·1·2">⟦ v ↦ ⟦ message ↦ "oops", λ ⤍ L_throw ⟧, λ ⤍ L_root ⟧</answer>
+        <formed meta="𝑛·1·1" of="Φ.l/.throw"><attr name="message">𝑒1</attr></formed>
+        <bind meta="𝑛1·1">𝑛·1·1</bind>
+        <applied meta="𝑛·1·2" of="Φ.l/.root"><attr name="α0">𝑛·1·1</attr></applied>
+        <built meta="𝑛·1·3">𝑛·1·2</built>
+        <morph at="𝑛·1·3">
+          <applied meta="𝑛·1·4" by="morph" at="𝑛·1·3" of="Φ.l/.root"><attr name="v">𝑛·1·1</attr></applied>
+        </morph>
+        <answer meta="𝑛·1·5">𝑛·1·4</answer>
       </evaluate>
       <evaluate λ="L_root" by="morph" at="Φ.l/.e4">
-        <unanswered λ="L_throw" by="dataize">⟦ message ↦ "oops", λ ⤍ L_throw ⟧</unanswered>
-        <unfinished λ="L_throw"/>
+        <dataize at="Φ.a🌵2">
+          <unanswered λ="L_throw" by="dataize">𝑛·1·1</unanswered>
+        </dataize>
+        <stuck λ="L_throw"/>
       </evaluate>
     </morph>
     <msec>1</msec>
