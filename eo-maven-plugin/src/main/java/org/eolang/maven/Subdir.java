@@ -32,6 +32,11 @@ import java.util.Optional;
  * claim the same number and one name never gets two (see #9013).</p>
  *
  * @since 0.72.0
+ * @todo #9510:45min Remove this class and let every goal call Seqdir
+ *  directly, as the lowering does, so that one rule names the stage
+ *  directories of the plugin and of the lowering alike. The fallback of
+ *  orConfigured() and foundOrConfigured() to a directory given in a mojo
+ *  parameter has to stay where those goals read it.
  */
 final class Subdir {
 

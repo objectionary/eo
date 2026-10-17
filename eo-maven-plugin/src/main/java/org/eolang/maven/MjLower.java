@@ -65,6 +65,14 @@ import org.eolang.lowering.Scope;
  * and its text.</p>
  *
  * @since 0.64.0
+ * @todo #9510:60min Number the directories of texts, atoms and patched
+ *  sources through seqdir, the way the lowering numbers planting and
+ *  protocols. Morphing has to reserve texts with once() only when it saves
+ *  them, and still clean an unnumbered texts left by an older build.
+ *  Rendering and Patching have to reserve atoms and patched sources with
+ *  once(), so Lowering, Rendering and Patching stop taking these two
+ *  directories in their constructors, and this goal finds them after the
+ *  lowering instead of resolving 3-atoms and 4-patched.
  */
 @Mojo(
     name = "lower",

@@ -80,6 +80,7 @@ final class MorphingTest {
     void writesTheProtocolOfAnEntryUnderItsLocator(@Mktmp final Path temp)
         throws IOException {
         final Path home = Files.createDirectories(temp);
+        Files.createDirectories(home.resolve("1-planting"));
         Files.write(home.resolve("world.phi"), "⟦ ⟧".getBytes(StandardCharsets.UTF_8));
         Files.write(
             home.resolve("entries.tsv"),
@@ -307,6 +308,32 @@ final class MorphingTest {
             temp.resolve("texts/e7.txt").toFile(),
             FileMatchers.anExistingFile()
         );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void writesIntoTheVeryProtocolsOfAnEarlierBuild(@Mktmp final Path temp)
+        throws IOException {
+        MorphingTest.merged(temp, 6);
+        Files.setPosixFilePermissions(
+            Files.createDirectories(temp.resolve("7-protocols")),
+            PosixFilePermissions.fromString("rwx------")
+        );
+        new Morphing(
+            MorphingTest.recording(temp), new GlobalCache.GcFresh(),
+            new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
+        ).exec(temp);
+        try (Stream<Path> files = Files.walk(temp)) {
+            MatcherAssert.assertThat(
+                "the protocol must land in the very directory of an earlier build, but it didnt",
+                PosixFilePermissions.toString(
+                    Files.getPosixFilePermissions(
+                        files.filter(path -> path.endsWith("e6.xml")).findFirst().get().getParent()
+                    )
+                ),
+                Matchers.equalTo("rwx------")
+            );
+        }
     }
 
     @Test
@@ -768,6 +795,7 @@ final class MorphingTest {
 
     private static Path merged(final Path temp, final int... entries) throws IOException {
         final Path home = Files.createDirectories(temp);
+        Files.createDirectories(home.resolve("1-planting"));
         Files.write(home.resolve("world.phi"), "⟦ ⟧".getBytes(StandardCharsets.UTF_8));
         Files.write(
             home.resolve("entries.tsv"),

@@ -31,6 +31,26 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class UsesTest {
 
     @Test
+    void readsTheCopiesOfAnEarlierPlanting(@Mktmp final Path temp) throws IOException {
+        Files.write(
+            temp.resolve("entries.xmir"),
+            "<object><o><o name='e3'><o base='Φ.qz'/></o></o></object>"
+                .getBytes(StandardCharsets.UTF_8)
+        );
+        final Path copy = Files.createDirectories(temp.resolve("4-planting")).resolve("qz.xmir");
+        Files.write(copy, "<object><o loc='Φ.qz'/></object>".getBytes(StandardCharsets.UTF_8));
+        final String before = new Uses(temp).hash(3, "Φ.qz");
+        Files.write(
+            copy, "<object><o loc='Φ.qz' name='qz'/></object>".getBytes(StandardCharsets.UTF_8)
+        );
+        MatcherAssert.assertThat(
+            "the hash must change when a copy of an earlier planting changes, but it doesnt",
+            new Uses(temp).hash(3, "Φ.qz"),
+            Matchers.not(Matchers.equalTo(before))
+        );
+    }
+
+    @Test
     void changesTheHashWhenTheThrowChanges(@Mktmp final Path temp) throws IOException {
         final Path entries = temp.resolve("entries.xmir");
         final String xmir = String.join(
