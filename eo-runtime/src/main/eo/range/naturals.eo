@@ -27,7 +27,7 @@
         [^ num] > build
           num > @
           ^.build > next
-            1.plus @
+            1.plus num
       span.end
     T complaint
   printf. > complaint

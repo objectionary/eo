@@ -52,7 +52,7 @@
       nan.minus nan
     nan.as-bytes
 
-  nan.@.as-bytes.eq nan.as-bytes ++> can-be-nan-when-nan-negated
+  nan.neg.is-nan ++> can-be-nan-when-nan-negated
 
   eq. ++> can-be-nan-when-nan-plus-a-number
     as-bytes.
