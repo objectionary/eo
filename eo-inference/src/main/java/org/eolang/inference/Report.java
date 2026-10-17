@@ -8,6 +8,8 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSLDocument;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -183,13 +185,24 @@ public final class Report {
             final XML made = pages.get(name);
             dirs.add("file")
                 .attr("name", name.substring(name.lastIndexOf('/') + 1))
-                .attr("href", name.concat(".html"))
+                .attr("href", Report.href(name))
                 .attr("named", made.xpath("/page/@named").get(0))
                 .attr("rooted", made.xpath("/page/@rooted").get(0))
                 .attr("atom", made.xpath("/page/@atom").get(0))
                 .attr("unfilled", made.xpath("/page/@unfilled").get(0))
                 .attr("blank", made.xpath("/page/@blank").get(0))
                 .up();
+        }
+    }
+
+    private static String href(final String name) {
+        final String link = name.concat(".html");
+        try {
+            return new URI(null, null, link, null).toASCIIString();
+        } catch (final URISyntaxException ex) {
+            throw new IllegalArgumentException(
+                String.format("Can't turn '%s' into a link of the index", link), ex
+            );
         }
     }
 
