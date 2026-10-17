@@ -54,6 +54,15 @@ final class MainTest {
     }
 
     @Test
+    void dropsTheUnreachableObjectNameFromTheHelp() {
+        MatcherAssert.assertThat(
+            "the help must not name an object the root cannot take, while it did",
+            MainTest.stderr("--help"),
+            Matchers.not(Matchers.containsString("org.eolang.io.stdio"))
+        );
+    }
+
+    @Test
     void deliversCleanOutput() {
         MatcherAssert.assertThat(
             "Incorrect output when dataizing \"true\" object",

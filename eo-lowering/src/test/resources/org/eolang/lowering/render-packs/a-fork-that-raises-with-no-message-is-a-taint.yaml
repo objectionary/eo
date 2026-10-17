@@ -24,35 +24,37 @@ protocol: |
       <evaluate λ="L_entry" by="morph" at="Φ.l/.e7">
         <evaluate λ="L_bytes_size" by="morph" at="Φ.a🌵1">
           <applied meta="𝑛·2·1" by="morph" at="Φ.a🌵2" of="Φ.bytes"><attr name="φ">𝜎7</attr></applied>
-          <dataize meta="𝛿1·2">𝜎7:λ</dataize>
+          <dataize meta="𝛿1·2">𝜎7</dataize>
           <minted symbol="𝜎135">𝜎7</minted>
         </evaluate>
         <evaluate λ="L_bytes_eq" by="morph" at="Φ.a🌵1">
-          <dataize meta="𝛿1·3">𝜎135:λ</dataize>
+          <dataize meta="𝛿1·3">𝜎135</dataize>
           <evaluate λ="L_bytes_size" by="morph" at="Φ.a🌵4">
             <applied meta="𝑛·4·1" by="morph" at="Φ.a🌵5" of="Φ.bytes"><attr name="φ">𝜎8</attr></applied>
-            <dataize meta="𝛿1·4">𝜎8:λ</dataize>
+            <dataize meta="𝛿1·4">𝜎8</dataize>
             <minted symbol="𝜎136">𝜎8</minted>
           </evaluate>
-          <dataize meta="𝛿2·3">𝜎136:λ</dataize>
+          <dataize meta="𝛿2·3">𝜎136</dataize>
           <minted symbol="𝜎137">𝜎135 𝜎136</minted>
         </evaluate>
-        <applied meta="𝑛·1·12" by="morph" at="Φ.a🌵1" of="⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, φ ↦ 𝜎137:λ ⟧"><attr name="left">𝑛·2·1.or( b ↦ 𝑛·4·1 )</attr></applied>
+        <formed meta="𝑛·1·10" λ="L_fork"><void name="left"/><void name="right"/><attr name="φ">𝜎137</attr></formed>
+        <applied meta="𝑛·1·11" of="𝑛·2·1.or"><attr name="b">𝑛·4·1</attr></applied>
+        <applied meta="𝑛·1·12" by="morph" at="Φ.a🌵1" of="𝑛·1·10"><attr name="left">𝑛·1·11</attr></applied>
         <applied meta="𝑛·1·13" by="morph" at="Φ.a🌵1" of="𝑛·1·12"><attr name="right">⊥</attr></applied>
         <evaluate λ="L_bytes_or" by="morph" at="Φ.a🌵1.left">
-          <dataize meta="𝛿1·5">𝜎7:λ</dataize>
-          <dataize meta="𝛿2·5">𝜎8:λ</dataize>
+          <dataize meta="𝛿1·5">𝜎7</dataize>
+          <dataize meta="𝛿2·5">𝜎8</dataize>
           <minted symbol="𝜎138">𝜎7 𝜎8</minted>
         </evaluate>
         <bind meta="𝑛1·1">𝑛·1·13</bind>
       </evaluate>
       <evaluate λ="L_root" by="morph" at="Φ.l/.e7">
         <evaluate λ="L_fork" by="dataize" at="Φ.a🌵8">
-          <dataize meta="𝛿1·7">𝜎137:λ</dataize>
+          <dataize meta="𝛿1·7">𝜎137</dataize>
           <terminate symbol="𝜎137" branch="right"/>
           <answer meta="𝑛·7·2">𝑛·5·4</answer>
         </evaluate>
-        <dataize meta="𝛿1·6">𝜎138:λ</dataize>
+        <dataize meta="𝛿1·6">𝜎138</dataize>
       </evaluate>
     </morph>
     <msec>26</msec>

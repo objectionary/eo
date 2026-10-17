@@ -55,17 +55,12 @@ _test\resources\jul.properties_:
 _test\resources\logback.xml_:
 
 ```xml
-<logger name="org.eolang.Dataized" level="FINE"/>
 <logger name="org.eolang.PhDefault" level="FINE"/>
 ```
 
-For the latter `FINE` level must be set to desired object. `Dataized` will
-produce extensive logging for dataization process and `PhDefault` for
-attributes retrieval process.
-By default, dataization will be logged up until nesting level 3.
-If for some reason deeper dataization log is required it can be
-achieved by jvm property `-Dmax.dataization.log=<N>`
-where `N` is an integer representing desired nesting level to log.
+`PhDefault` is the only object of the runtime that logs. At `FINE` it
+prints a line for every attribute it resolves, indented by the nesting
+level of the retrieval, so a deep chain of attributes reads as a tree.
 
 ## How to release eo-runtime
 

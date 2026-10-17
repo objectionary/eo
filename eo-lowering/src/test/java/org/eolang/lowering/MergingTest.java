@@ -103,7 +103,7 @@ final class MergingTest {
             "the failure must name the entries that are missing, but it doesnt",
             Assertions.assertThrows(
                 IllegalStateException.class,
-                () -> new Merging(new Phino("absent")).exec(temp),
+                () -> new Merging(new Phino("absent", "1.3.8")).exec(temp),
                 "a home without entries must fail the merging"
             ).getMessage(),
             Matchers.containsString(temp.resolve("entries.xmir").toString())
@@ -112,7 +112,7 @@ final class MergingTest {
 
     @Test
     void mergesAWorldThePinnedPhinoReads(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino");
+        final Phino phino = new Phino("phino", "0.0.156");
         Assumptions.assumeTrue(
             MergingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be merged here"
@@ -179,6 +179,6 @@ final class MergingTest {
             temp.resolve("phino"), new ListOf<>("#!/bin/sh", body)
         );
         Files.setPosixFilePermissions(binary, PosixFilePermissions.fromString("rwxr-xr-x"));
-        return new Phino(binary.toString());
+        return new Phino(binary.toString(), "2.6.4");
     }
 }

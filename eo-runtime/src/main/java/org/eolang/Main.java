@@ -180,8 +180,8 @@ public final class Main {
             Main.LOGGER.info(
                 String.join(
                     System.lineSeparator(),
-                    "Usage: java -cp target/classes org.eolang.Main [option...] class [argument...]",
-                    "  class: Name of EO class, e.g. \"org.eolang.io.stdio\"",
+                    "Usage: java -cp target/classes org.eolang.Main [option...] object [argument...]",
+                    "  object: Name of an EO object under the root, e.g. \"stdout\"",
                     "  argument: Value that will be wrapped as strings and passed to your EO object",
                     "  options:",
                     String.format("  %s     Print this documentation and exit", Main.HELP),
