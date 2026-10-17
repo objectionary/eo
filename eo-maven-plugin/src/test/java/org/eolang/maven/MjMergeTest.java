@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link MjMerge}.
@@ -170,6 +171,57 @@ final class MjMergeTest {
                 )
             ),
             Matchers.stringContainsInOrder("can-be-one", "foo.baz", "foo")
+        );
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "foo, foo.bar, ++>", "foo, foo.bar, -->",
+        "foo.bar, foo.baz, ++>", "foo.bar, foo.baz, -->",
+        "foo, foo.bar.qux, ++>", "foo, foo.bar.qux, -->",
+        "foo.bar.qux, foo.baz.quux, ++>",
+        "foo.bar.qux, foo.baz.quux, -->"
+    })
+    void namesBothOriginalSources(
+        final String first, final String second, final String suffix
+    ) throws Exception {
+        final String member = String.join(".", Arrays.copyOf(second.split("\\."), 2));
+        final FakeMaven maven = new FakeMaven(this.dir);
+        for (final String name : Arrays.asList(
+            "foo", "foo.bar", "foo.baz", "foo.bar.qux", "foo.baz.quux"
+        )) {
+            final int dot = name.lastIndexOf('.');
+            final Collection<String> lines = new ArrayList<>(0);
+            if (dot >= 0) {
+                lines.add(String.format("+package %s", name.substring(0, dot)));
+            }
+            lines.add("");
+            lines.add(String.format("[] > %s", name.substring(dot + 1)));
+            lines.add("  42 > @");
+            if (name.equals(first) || name.equals(second)) {
+                lines.add(String.format("  true %s can-be-one", suffix));
+            }
+            maven.withProgram(
+                String.join(System.lineSeparator(), lines),
+                name, String.format("sources/%s.eo", name.replace('.', '/'))
+            );
+        }
+        MatcherAssert.assertThat(
+            "a duplicate test must name its human label, original EO files, member and package",
+            MjMergeTest.root(
+                Assertions.assertThrows(
+                    IllegalStateException.class, () -> maven.execute(new PpMerge())
+                )
+            ),
+            Matchers.allOf(
+                Matchers.stringContainsInOrder(
+                    "test 'can-be-one'", maven.foreignTojos().find(first).source().toString(),
+                    maven.foreignTojos().find(second).source().toString(),
+                    String.format("member '%s'", member), "package 'foo'"
+                ),
+                Matchers.not(Matchers.containsString("🌵")),
+                Matchers.not(Matchers.containsString(".xmir"))
+            )
         );
     }
 
