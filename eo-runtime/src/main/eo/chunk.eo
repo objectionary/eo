@@ -73,6 +73,7 @@
     ? > capacity /Q.number
   [] > size /Q.number
     ? > ^
+  true > [^] > valid
   [] > write /Q.bytes
     ? > ^
     ? > offset /Q.number
