@@ -89,9 +89,7 @@
   2A-.as-i8.as-bytes.eq 2A- ++> can-expose-valid-bytes
 
   eq. ++> can-expose-valid-bytes-of-a-negative
-    -56.as-i64.as-i32.as-i16.as-bytes.slice
-      1
-      1
+    -56.as-i64.as-i32.as-i16.as-bytes.slice 1 1
     C8-
 
   eq. ++> can-multiply-two-negatives

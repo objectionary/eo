@@ -47,10 +47,7 @@
                   width.minus 1
               "0"
               cant-pad
-      text.padded-left
-        width
-        "0"
-        cant-pad
+      text.padded-left width "0" cant-pad
 
   eq. ++> can-count-characters-and-not-bytes-when-padding-with-zeros
     "00Ж"
@@ -58,15 +55,11 @@
 
   eq. ++> can-format-the-error-message-of-a-negative-width-when-padding-with-zeros
     "Can't pad text to -4.000000 characters with zeros"
-    "7".padded-zeros
-      -4
-      I
+    "7".padded-zeros -4 I
 
   eq. ++> can-format-the-error-message-of-an-infinite-width-when-padding-with-zeros
     "Can't pad text to infinity characters with zeros"
-    "7".padded-zeros
-      pinf
-      I
+    "7".padded-zeros pinf I
 
   eq. ++> can-keep-a-minus-sign-in-front-of-the-zeros
     "-0042"

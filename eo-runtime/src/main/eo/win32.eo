@@ -39,9 +39,7 @@
     ? > length /Q.number
   256 > creat
   [code name] > dir-return
-    win32.dir-return > called
-      code
-      name
+    win32.dir-return code name > called
   17 > eexist
   10022 > einval
   [] > errno /Q.number
@@ -59,9 +57,7 @@
   [] > getenv /Q.win32.getenv-return
     ? > name /Q.string
   [code value] > getenv-return
-    win32.getenv-return > called
-      code
-      value
+    win32.getenv-return code value > called
   [] > getpid /Q.number
   2 > inet
   [] > inet-addr /Q.number
@@ -85,9 +81,7 @@
     ? > size /Q.number
   [code data] > read-return
     data > @
-    win32.read-return > called
-      code
-      data
+    win32.read-return code data > called
   [] > recv /Q.win32.read-return
     ? > descriptor /Q.number
     ? > size /Q.number
@@ -99,10 +93,7 @@
   [] > rmdir /Q.win32.status-return
     ? > path /Q.string
   [code name message] > search-return
-    win32.search-return > called
-      code
-      name
-      message
+    win32.search-return code name message > called
   [] > send /Q.number
     ? > descriptor /Q.number
     ? > buffer
@@ -120,26 +111,18 @@
     ? > type /Q.number
     ? > protocol /Q.number
   [code mode size] > stat-return
-    win32.stat-return > called
-      code
-      mode
-      size
+    win32.stat-return code mode size > called
   [] > stat64 /Q.win32.stat-return
     ? > path /Q.string
   [code message] > status-return
-    win32.status-return > called
-      code
-      message
+    win32.status-return code message > called
   2 > stderr
   0 > stdin
   1 > stdout
   1 > stream
   6 > tcp
   [code seconds micros] > time-return
-    win32.time-return > called
-      code
-      seconds
-      micros
+    win32.time-return code seconds micros > called
   512 > trunc
   [] > unlink /Q.win32.status-return
     ? > path /Q.string
@@ -176,10 +159,7 @@
 
   ++> can-compute-the-size-of-a-sockaddr-in
     addr.size.eq 16 > @
-    win32.sockaddr-in > addr
-      00-00
-      00-00
-      00-00-00-00
+    win32.sockaddr-in 00-00 00-00 00-00-00-00 > addr
 
   ++> can-open-a-file-with-the-append-flag
     os.is-windows.not.or > @
@@ -256,9 +236,7 @@
       16777343
 
   eq. ++> can-stand-for-the-bytes-a-read-returned
-    win32.read-return
-      3
-      D0-B6-21
+    win32.read-return 3 D0-B6-21
     D0-B6-21
 
   ++> can-stat-the-size-of-nul
