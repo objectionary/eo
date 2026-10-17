@@ -1458,6 +1458,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | String literal closed by neither a quote nor the end of the line (§9.7) | `unterminated string literal` |
 | String opened inside a paren group and never closed | `unterminated string inside paren group` |
 | Paren group with no matching `)` | `unterminated paren group` |
+| Trailing tokens inside a parenthesised expression (R-3.6.6) | `unexpected content inside a parenthesised expression` |
 | `:` with no binding label after it (§3.12) | `` expected binding label after `:` `` |
 | Hexadecimal literal expected but the text does not open with `0x` (R-9.8.3) | `expected hexadecimal literal` |
 | `0x` with no hex digit after it (R-9.8.3) | `hexadecimal literal requires at least one digit` |
@@ -1482,11 +1483,14 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | `?` line whose suffix is neither a name nor an auto-name, or carries `!` (R-3.4.7) | `` a void attribute must be written as `? > name` or `? >> name` `` |
 | `?` line whose parent is not a formation (R-3.4.7) | `a void attribute is legal only as a direct child of a formation` |
 | `> ^` written on a line that is not a `?` void attribute (R-3.4.11) | `only a void attribute can declare the receiver ^` |
+| `?` void attribute declared below a non-void attribute (R-3.4.9) | `a void attribute must be declared above all other attributes` |
 | Void type annotation `/` with no type after it (R-3.4.8) | `a void type annotation requires a type` |
+| Void type annotation whose type is not a dotted path of `NAME` tokens (R-3.4.8) | `type must be a dotted path of NAME tokens` |
 | `/{…}` argument list with no closing `}` (R-3.4.8) | `` a `/{…}` argument list must end with `}` `` |
 | Empty `/{…}` argument list (R-3.4.8) | `` a `/{…}` argument list must name at least one type `` |
 | Only-phi parameter list `> [` with no closing `]` (R-3.10.1) | `` only-phi parameter list missing closing `]` `` |
 | Only-phi line carrying none of the arrows that introduce one (R-3.10.8) | `` only-phi formation must contain `> [`, `++>` or `-->` `` |
+| Only-phi formation carrying an atom signature (R-3.10.8) | `an only-phi formation cannot be an atom` |
 | Only-phi line with an empty body before its arrow (R-3.10.6) | `` only-phi formation requires a non-empty body before `> [` or `++>` `` |
 | Trailing text after the φ expression of an only-phi formation (R-3.10.1) | `unexpected content in the body of an only-phi formation` |
 | Only-phi body that is a reversed dispatch carrying horizontal arguments (R-3.10.6) | `only-phi formation body cannot be a reversed dispatch with horizontal arguments` |
@@ -1500,6 +1504,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Test attribute on a pipe application (§3.14) | `a pipe application cannot declare a test attribute` |
 | Pipe whose predecessor is missing, unnamed, or not a formation or pipe (§3.14) | `a pipe must follow a named formation or another pipe` |
 | Text block body line shallower than its opener (R-3.11.2) | `text block body line indented less than opener` |
+| Test attribute `+>` with no blank line above it (R-6.5.3) | `` missing blank line before a `+>` test attribute (R-6.5.3); exactly one blank line must precede every test attribute `` |
 | Two or more consecutive blank lines (R-6.5.3) | `consecutive blank lines forbidden — at most one blank may separate two non-blank lines (R-6.5.3)` |
 | First object of the file at an indent other than 0 (§5.2) | `unexpected indentation, the first object must start at indent 0` |
 | Blank line between two meta directives (R-6.5.7) | `blank line between meta directives is forbidden (R-6.5.7); the meta header is a single contiguous block` |
