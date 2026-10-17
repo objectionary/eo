@@ -30,12 +30,12 @@
 
 [^num places cant-print] > as-fixed
   if. > @
-    num.is-finite.not.or
-      huge.or
+    ^.num.is-finite.not.or > [^] >> unwritable
+      ^.huge.or
         or.
-          0.gt places
-          places.is-integer.not.or
-            places.gt 9007199254740991
+          0.gt ^.places
+          ^.places.is-integer.not.or
+            ^.places.gt 9007199254740991
     cant-print
       num.is-finite.not.if
         "Can't write a non-finite number as a fixed-point decimal"
