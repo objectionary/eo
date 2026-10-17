@@ -104,11 +104,11 @@ final class JavaFilesTest {
     }
 
     @Test
-    void writesExactlyOneFileForAtom(@Mktmp final Path temp) throws IOException {
+    void countsNoMainFilesForAtom(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
-            "only a test class of an atom must be written",
+            "a tests-only atom must not be counted as a generated main Java file",
             JavaFilesTest.generateAtom(temp),
-            Matchers.equalTo(1)
+            Matchers.equalTo(0)
         );
     }
 
@@ -117,7 +117,7 @@ final class JavaFilesTest {
         JavaFilesTest.generateAtom(temp);
         MatcherAssert.assertThat(
             "an atom implementation class must not be written",
-            Files.exists(temp.resolve("generated/EOatom.java")),
+            Files.exists(temp.resolve("generated/org/eolang/EOatom.java")),
             Matchers.equalTo(false)
         );
     }
@@ -127,8 +127,34 @@ final class JavaFilesTest {
         JavaFilesTest.generateAtom(temp);
         MatcherAssert.assertThat(
             "an atom test class must be written",
-            Files.exists(temp.resolve("generated/EOatomTest.java")),
+            Files.exists(
+                temp.resolve("generated-test-sources/org/eolang/TestEOatom.java")
+            ),
             Matchers.equalTo(true)
+        );
+    }
+
+    @Test
+    void removesCompanionsWhenAtomsAreDisabled(@Mktmp final Path temp)
+        throws IOException {
+        final Path generated = temp.resolve("target/generated-sources");
+        final Path tests = temp.resolve("target/generated-test-sources/org/eolang");
+        new Saved("old", tests.resolve("TestEOatom.java")).value();
+        new Saved("old", tests.resolve("TestAtomEOatom.java")).value();
+        new JavaFiles(generated).total(
+            true,
+            JavaFilesTest.atom(temp),
+            "",
+            false,
+            new GlobalCache.GcFresh()
+        );
+        MatcherAssert.assertThat(
+            "disabled atom tests must remove both possible generated companions",
+            Arrays.asList(
+                Files.exists(tests.resolve("TestEOatom.java")),
+                Files.exists(tests.resolve("TestAtomEOatom.java"))
+            ),
+            Matchers.equalTo(Arrays.asList(false, false))
         );
     }
 
@@ -148,7 +174,9 @@ final class JavaFilesTest {
             String.join(
                 "",
                 "<object><o><o name='λ'/></o>",
-                "<class java-name='EOmain'><java>class EOmain {}</java></class>",
+                "<class java-name='EOmain' skip-java='true'>",
+                "<tests>public final class TestEOmain { @Test void works() {} }</tests>",
+                "</class>",
                 "</object>"
             ),
             atom
@@ -210,20 +238,26 @@ final class JavaFilesTest {
         );
     }
 
-    private static int generateAtom(final Path temp) throws IOException {
+    private static Path atom(final Path temp) throws IOException {
         final Path xmir = temp.resolve("main.xmir");
         new Saved(
             String.join(
                 "",
-                "<object><o><o name='λ'/></o>",
-                "<class java-name='EOatom'><java>class EOatom {}</java></class>",
-                "<class java-name='EOatomTest'><java>class EOatomTest {}</java></class>",
+                "<object><o name='atom'><o name='λ' atom='org.example.Atom'/></o>",
+                "<class java-name='org.eolang.EOatom' skip-java='true'>",
+                "<tests>import org.junit.jupiter.api.Test; ",
+                "public final class TestEOatom { @Test void works() {} }</tests>",
+                "</class>",
                 "</object>"
             ),
             xmir
         ).value();
+        return xmir;
+    }
+
+    private static int generateAtom(final Path temp) throws IOException {
         return new JavaFiles(temp.resolve("generated")).total(
-            true, xmir, "", false, new GlobalCache.GcFresh()
+            true, JavaFilesTest.atom(temp), "", true, new GlobalCache.GcFresh()
         );
     }
 }
