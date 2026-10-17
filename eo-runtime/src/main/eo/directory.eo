@@ -30,13 +30,14 @@
           ^.attempted
             index.plus 1
           T
-            "Can't create a unique file in %s, OS error %d".printf
-              * ^.dir errno
+            "Can't create a unique file in %s: %s".printf
+              * ^.dir outcome.message
         seq *
           ^.closed descriptor
           path
-      ^.opened path > descriptor!
+      outcome.code > descriptor!
       os.is-windows.if win32.errno posix.errno > errno
+      ^.opened path > outcome
       ^.candidate index > path!
     | 0 > @
     [^ index] > candidate
@@ -51,20 +52,19 @@
     os.is-windows.if > [descriptor] > closed
       win32.close descriptor
       posix.close descriptor
-    code. > [name] > opened
-      os.is-windows.if
-        win32.open
-          name
-          plus.
-            win32.rdonly.plus win32.creat
-            win32.exclusive
-          win32.mode
-        posix.open
-          name
-          plus.
-            posix.rdonly.plus posix.creat
-            posix.exclusive
-          posix.private
+    os.is-windows.if > [name] > opened
+      win32.open
+        name
+        plus.
+          win32.rdonly.plus win32.creat
+          win32.exclusive
+        win32.mode
+      posix.open
+        name
+        plus.
+          posix.rdonly.plus posix.creat
+          posix.exclusive
+        posix.private
   folder.exists.if > [^folder] > tmpfile
     Q.file
       as-bytes.
