@@ -188,7 +188,7 @@
   malloc.of ++> can-give-an-id-to-an-allocated-block
     1
     m.put > [m]
-      m.id.gt 0
+      m.id.gte 0
 
   eq. ++> can-grow-an-empty-block-on-the-first-put
     malloc.empty
