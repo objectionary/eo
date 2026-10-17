@@ -15,12 +15,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import org.cactoos.Proc;
 import org.cactoos.Text;
+import org.cactoos.io.Directory;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.iterable.Sorted;
 import org.cactoos.list.ListOf;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
@@ -34,6 +37,12 @@ import org.cactoos.text.TextOf;
  * body is a few lines of Java: one line for every symbol that phino made
  * in the protocol. These lines are put into a Java class, which is an
  * atom. Later, {@link Patching} puts this atom into the EO object.</p>
+ *
+ * <p>The atoms of an earlier build are deleted before this one writes any,
+ * the way {@link Morphing} deletes the protocols of an earlier build. The
+ * Maven goal hands the directory to javac whole, so an atom whose entry is
+ * now a taint, or whose object was renamed or deleted, would otherwise be
+ * compiled again and again (#9267).</p>
  *
  * <p>The Java files are written into the directory of atoms, next to the
  * directory of protocols, so that a reader of the build can compare every
@@ -180,6 +189,7 @@ final class Rendering implements Proc<Path> {
         ).with(new Hrefs())
             .with("voids", home.resolve("voids.tsv").toUri().toString())
             .with("inference", this.tables.toUri().toString());
+        this.clean();
         final Collection<String> rendered = new ArrayList<>(0);
         final Map<String, Collection<String>> claims = new HashMap<>(0);
         int tainted = 0;
@@ -245,6 +255,15 @@ final class Rendering implements Proc<Path> {
             "Rendered %d atoms into %[file]s, while %d entries were taints",
             rendered.size(), this.atoms, tainted
         );
+    }
+
+    private void clean() throws IOException {
+        if (Files.exists(this.atoms)) {
+            for (final Path stale
+                : new Sorted<>(Comparator.reverseOrder(), new Directory(this.atoms))) {
+                Files.delete(stale);
+            }
+        }
     }
 
     private int unshared(
