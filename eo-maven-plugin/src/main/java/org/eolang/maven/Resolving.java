@@ -124,7 +124,10 @@ final class Resolving implements Step {
     @Override
     public void exec() {
         final Path dir = new Subdir(this.target, "resolve").path();
-        final Collection<Dep> deps = this.deps();
+        final DpsDefault defaults = new DpsDefault(
+            this.tojos, this.discover, this.skipzero, this.jna
+        );
+        final Collection<Dep> deps = this.deps(defaults);
         final int unpacked;
         if (deps.isEmpty()) {
             unpacked = 0;
@@ -132,7 +135,11 @@ final class Resolving implements Step {
             final Map<String, Set<String>> versions = new ResolvedVersions(deps).byCoordinate();
             unpacked = new Threaded<>(
                 deps,
-                dep -> this.resolved(dep, dir, versions)
+                dep -> {
+                    final int files = this.resolved(dep, dir, versions);
+                    defaults.resolved(dep);
+                    return files;
+                }
             ).total();
         }
         if (unpacked == 0) {
@@ -243,10 +250,8 @@ final class Resolving implements Step {
         return 1;
     }
 
-    private Collection<Dep> deps() {
-        Dependencies result = new DpsDefault(
-            this.tojos, this.discover, this.skipzero, this.jna
-        );
+    private Collection<Dep> deps(final DpsDefault defaults) {
+        Dependencies result = defaults;
         if (this.noruntime) {
             Logger.info(this, "Runtime dependency is ignored because eo:ignoreRuntime=TRUE");
             result = new DpsWithoutRuntime(result);
