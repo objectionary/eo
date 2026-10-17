@@ -321,10 +321,9 @@
   ++> can-delete-a-tmpfile-without-orphans
     seq * > @
       temp.deleted
-      temp.exists.not
-      next.exists.not
+      gone
       parent.deleted
-      true
+      gone
     path.separator.joined > candidate
       *
         parent.path
@@ -339,6 +338,7 @@
       42
       8
       0.5
+    temp.exists.not.and next.exists.not > gone!
     Q.file candidate.as-bytes > next
     mktemp.tmpfile.deleted.as-path.as-dir.made > parent
     Q.file created.as-bytes > temp
