@@ -129,6 +129,7 @@ final class Inferring implements Step {
                     )
                 );
             }
+            Files.createDirectories(this.prepared);
             this.ready();
             new Named(new Witnessed(new Demanded(new Reduced(new Resolved(new Clues())))))
                 .follow(this.prepared, this.tables);
