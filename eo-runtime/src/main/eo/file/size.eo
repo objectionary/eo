@@ -11,12 +11,12 @@
 [^entry cant-measure] > size
   if. > @
     info.code.eq 0
-    info.size
+    size.
+      called. >> info
+        os.is-windows.if
+          win32.stat64 entry.path
+          posix.stat entry.path
     cant-measure
-  called. > info
-    os.is-windows.if
-      win32.stat64 entry.path
-      posix.stat entry.path
 
   eq. ++> can-ignore-the-fallback-when-a-file-exists
     0

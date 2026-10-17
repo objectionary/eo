@@ -85,6 +85,8 @@
     50.as-i64.as-i32.as-i16
     50.as-i64.as-i32.as-i16
 
+  42.as-i16.as-number.eq 42 ++> can-convert-to-a-number
+
   ++> can-divide-by-one
     eq. > @
       dividend.div 1.as-i64.as-i32.as-i16
@@ -120,6 +122,8 @@
   eq. ++> can-multiply-with-overflow
     32767.as-i64.as-i32.as-i16.times 2.as-i64.as-i32.as-i16
     -2.as-i64.as-i32.as-i16
+
+  7.as-i16.neg.eq -7.as-i16 ++> can-negate-a-positive
 
   eq. ++> can-recover-from-division-by-zero
     "recovered"

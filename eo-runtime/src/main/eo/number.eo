@@ -124,6 +124,10 @@
 
   42.as-bytes.eq 42 ++> can-convert-to-bytes-and-back
 
+  -300.as-i16.as-number.eq -300 ++> can-convert-to-i16-and-back
+
+  -70000.as-i32.as-number.eq -70000 ++> can-convert-to-i32-and-back
+
   eq. ++> can-divide-a-positive-dividend
     256.div 16
     16
