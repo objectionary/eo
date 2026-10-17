@@ -6,9 +6,11 @@ package org.eolang.maven;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.iterable.Mapped;
 
 /**
  * Mojo that works out the types of the objects of a program,
@@ -37,6 +39,14 @@ import org.apache.maven.plugins.annotations.Parameter;
  * misses an attribute to have been seen whole, and almost none of them have
  * been; the tables have to describe the program before anything can read
  * them for mistakes.</p>
+ *
+ * <p>The XMIR of every registered source is read, and not every file the
+ * parse directory holds: a source that was deleted leaves its XMIR behind,
+ * and the tables would go on describing an object nobody wrote any more
+ * (#9271). Where each one lies is worked out from the identifier of the
+ * tojo, and not read off its {@code xmir} attribute, because {@code eo:merge}
+ * moves that attribute of a package object into the merge directory, while
+ * the tables are made of what the parser wrote.</p>
  *
  * <p>The XMIR prepared for the rules is saved in {@link #prepared} and the
  * tables in {@link #tables}, a document each, with {@code ladder.txt} beside
@@ -77,10 +87,17 @@ public final class MjInference extends MjSafe {
 
     @Override
     void exec() throws IOException {
-        new Inferring(
-            new Subdir(this.target, "parse").path(),
-            new Subdir(this.target, "pre-inference").orConfigured(this.prepared),
-            new Subdir(this.target, "inference").orConfigured(this.tables)
-        ).exec();
+        final Path parsed = new Subdir(this.target, "parse").path();
+        try (TjsForeign tojos = this.tojos()) {
+            new Inferring(
+                new Mapped<>(
+                    tojo -> new Place(tojo.identifier()).make(parsed, MjAssemble.XMIR),
+                    tojos.withXmir()
+                ),
+                parsed,
+                new Subdir(this.target, "pre-inference").orConfigured(this.prepared),
+                new Subdir(this.target, "inference").orConfigured(this.tables)
+            ).exec();
+        }
     }
 }

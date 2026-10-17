@@ -16,6 +16,7 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -101,6 +102,31 @@ final class InferringTest {
                 "/provides/type[@id='Φ.kettle']/attr[@name='steam']",
                 "/provides/type[@id='Φ.cup']/attr[@name='handle']"
             )
+        );
+    }
+
+    @Test
+    void leavesOutAnXmirTheCallerDidNotName(@Mktmp final Path temp) throws IOException {
+        final Path parsed = Files.createDirectories(temp.resolve("parsed"));
+        Files.writeString(
+            parsed.resolve("app.xmir"),
+            new EoSyntax(String.join(System.lineSeparator(), "[] > app", "")).parsed().toString()
+        );
+        Files.writeString(
+            parsed.resolve("bee.xmir"),
+            new EoSyntax(String.join(System.lineSeparator(), "[] > bee", "")).parsed().toString()
+        );
+        new Inferring(
+            Collections.singletonList(parsed.resolve("app.xmir")),
+            parsed,
+            temp.resolve("pre"),
+            temp.resolve("tables")
+        ).exec();
+        MatcherAssert.assertThat(
+            "a file left behind by a deleted source must stay out of the tables, but it didnt",
+            new XMLDocument(temp.resolve("tables").resolve("provides.xml"))
+                .nodes("/provides/type[@id='Φ.bee']"),
+            Matchers.empty()
         );
     }
 

@@ -14,10 +14,12 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.cactoos.io.Directory;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.Sorted;
 import org.eolang.inference.Clues;
 import org.eolang.inference.Demanded;
 import org.eolang.inference.Depth;
@@ -35,10 +37,13 @@ import org.xembly.Xembler;
  *
  * <p>The types of a whole program are worked out at once, because an object in
  * one file is used by objects in others and no single file can be typed on its
- * own. The XMIR of every file parsed so far is taken from the first directory,
- * prepared for the rules and left in the second, while the tables of what has
- * been worked out go to the third, a document each. {@link MjInference} names
- * all three.</p>
+ * own. The XMIR files are named by the caller, prepared for the rules and left
+ * in the second directory, while the tables of what has been worked out go to
+ * the third, a document each. {@link MjInference} names them from the
+ * registered tojos, and not from whatever the parse directory still holds: a
+ * source that was deleted leaves its XMIR behind, and reading that XMIR would
+ * put the types of an object nobody wrote any more into the tables
+ * (#9271).</p>
  *
  * <p>Every object keeps the type it was born with — nothing is ever renamed or
  * merged — and what we learn about those types goes into tables instead, one row
@@ -86,7 +91,13 @@ final class Inferring implements Step {
     );
 
     /**
-     * The directory with the XMIR files of the program.
+     * The XMIR files the tables are made of.
+     */
+    private final Iterable<Path> sources;
+
+    /**
+     * The directory the XMIR files come from, which says where under
+     * {@link #prepared} each of them lands.
      */
     private final Path input;
 
@@ -104,7 +115,7 @@ final class Inferring implements Step {
     private final Path tables;
 
     /**
-     * Ctor.
+     * Ctor, for a caller that owns the directory and wants every XMIR in it.
      *
      * @param parsed The directory with XMIR files, as the parser leaves them
      *  after its canonical pipeline (see {@code org.eolang.parser.Canonical})
@@ -112,6 +123,21 @@ final class Inferring implements Step {
      * @param rows The directory for the tables
      */
     Inferring(final Path parsed, final Path pre, final Path rows) {
+        this(new Directory(parsed), parsed, pre, rows);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param xmirs The XMIR files the tables are made of
+     * @param parsed The directory those files come from
+     * @param pre The directory for the prepared XMIR files
+     * @param rows The directory for the tables
+     */
+    Inferring(
+        final Iterable<Path> xmirs, final Path parsed, final Path pre, final Path rows
+    ) {
+        this.sources = xmirs;
         this.input = parsed;
         this.prepared = pre;
         this.tables = rows;
@@ -195,23 +221,18 @@ final class Inferring implements Step {
                 )
             )
         );
-        for (final Path source : this.sources()) {
+        for (final Path source : new Sorted<>(
+            new Filtered<>(
+                path -> path.toString().endsWith(".xmir") && Files.isRegularFile(path),
+                this.sources
+            )
+        )) {
             final Path target = this.prepared.resolve(this.input.relativize(source));
             Files.createDirectories(target.getParent());
             Files.write(
                 target,
                 train.pass(new XMLDocument(source)).toString().getBytes(StandardCharsets.UTF_8)
             );
-        }
-    }
-
-    private Collection<Path> sources() throws IOException {
-        try (Stream<Path> found = Files.walk(this.input)) {
-            return found
-                .filter(path -> path.toString().endsWith(".xmir"))
-                .filter(Files::isRegularFile)
-                .sorted()
-                .collect(Collectors.toList());
         }
     }
 }
