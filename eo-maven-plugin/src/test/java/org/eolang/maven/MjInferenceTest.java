@@ -73,6 +73,21 @@ final class MjInferenceTest {
     }
 
     @Test
+    void writesTablesForModuleWithoutSources(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.execute(MjParse.class).execute(MjInference.class);
+        MatcherAssert.assertThat(
+            "the tables must be written for a module with no sources, but they werent",
+            new XMLDocument(
+                maven.targetPath()
+                    .resolve(maven.dirName("inference"))
+                    .resolve("provides.xml")
+            ),
+            XhtmlMatchers.hasXPath("/provides[not(*)]")
+        );
+    }
+
+    @Test
     void keepsPreparedXmirOfProgram(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             String.join(
