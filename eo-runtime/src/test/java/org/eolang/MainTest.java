@@ -178,6 +178,15 @@ final class MainTest {
         );
     }
 
+    @Test
+    void refusesToRunWithUnknownOption() {
+        MatcherAssert.assertThat(
+            "An unknown option is ignored and the object is dataized anyway",
+            MainTest.stderr("--verbos", "true"),
+            Matchers.not(Matchers.containsString("Finished in"))
+        );
+    }
+
     private static String stderr(final String... cmds) {
         return MainTest.exec(cmds).stderr();
     }

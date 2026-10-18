@@ -91,13 +91,13 @@ public final class Main {
                 arguments.add(arg);
             }
         }
-        for (final String opt : opts) {
-            if (Main.parse(opt)) {
-                return;
-            }
-        }
-        Main.LOGGER.log(Level.FINE, String.format("EOLANG Runtime %s", Main.ver()));
         try {
+            for (final String opt : opts) {
+                if (Main.parse(opt)) {
+                    return;
+                }
+            }
+            Main.LOGGER.log(Level.FINE, String.format("EOLANG Runtime %s", Main.ver()));
             Main.run(arguments);
         } catch (final ExAbstract ex) {
             Main.report(opts, ex);
@@ -190,6 +190,9 @@ public final class Main {
                 )
             );
             exit = true;
+        }
+        if (!exit && !Main.VERBOSE.equals(opt)) {
+            throw new ExFailure("The option '%s' is not known, see %s", opt, Main.HELP);
         }
         return exit;
     }
