@@ -450,7 +450,7 @@ final class MjTranspileTest {
     void writesNoTimeoutWhenDeadlineIsZero(@Mktmp final Path temp)
         throws Exception {
         MatcherAssert.assertThat(
-            "a zero eo.deadline must take the deadline away from a generated test, since JUnit refuses a timeout of zero",
+            "a zero eo.deadline must take the deadline away from a generated test, while keeping its budget, since JUnit refuses a timeout of zero",
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.truthy())
@@ -459,7 +459,10 @@ final class MjTranspileTest {
                     .result()
                     .get("target/generated-test-sources/org/eolang/EO_foo/EO_x/TestEOmain.java")
             ).asString(),
-            Matchers.not(Matchers.containsString("@Timeout("))
+            Matchers.allOf(
+                Matchers.containsString("@Budget(\"1G\")"),
+                Matchers.not(Matchers.containsString("@Timeout("))
+            )
         );
     }
 
