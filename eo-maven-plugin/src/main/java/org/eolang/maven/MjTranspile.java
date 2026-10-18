@@ -153,8 +153,10 @@ public final class MjTranspile extends MjSafe {
      * keep it in any build that compiles them, even one that configures
      * nothing for JUnit. A test that outlives it is reported as skipped by
      * {@code org.eolang.Deadline}, rather than left to run until the heap
-     * of the whole build is gone. The property has the same name as the one
-     * {@code eo-runtime} gives its own tests, so one setting covers both.
+     * of the whole build is gone. Zero means no deadline, and no
+     * {@code @Timeout} is written; a negative number is refused. The property
+     * has the same name as the one {@code eo-runtime} gives its own tests, so
+     * one setting covers both.
      */
     @Parameter(property = "eo.deadline", defaultValue = "1")
     private long deadline;
@@ -205,7 +207,7 @@ public final class MjTranspile extends MjSafe {
                     new Tracking(this.tracking, this.located),
                     this.coverage,
                     this.base(),
-                    this.deadline,
+                    this.seconds(),
                     this.memory,
                     this.measures.toPath(),
                     this.target.toPath(),
@@ -239,6 +241,18 @@ public final class MjTranspile extends MjSafe {
             .map(Paths::get)
             .filter(root -> !root.startsWith(build))
             .collect(Collectors.toList());
+    }
+
+    private long seconds() {
+        if (this.deadline < 0L) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "The value of eo.deadline is %d, while zero or a positive number of seconds is expected",
+                    this.deadline
+                )
+            );
+        }
+        return this.deadline;
     }
 
     private String base() {
