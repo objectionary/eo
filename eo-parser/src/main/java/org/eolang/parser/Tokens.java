@@ -644,13 +644,15 @@ final class Tokens {
     /**
      * Whether the glyph ends the token a reader is on. Shared with
      * {@link Bytes}, so a BYTES literal owns exactly the characters
-     * every other reader of this class would leave to it.
+     * every other reader of this class would leave to it. The slash is
+     * among them because §2.3 keeps it out of a {@code NAME}: it opens
+     * an atom signature, so a name ends where one starts (#9317).
      *
      * @param glyph The character to weigh
      * @return Terminator flag
      */
     static boolean terminates(final char glyph) {
-        return " \t,.|':;!?*[]{}()".indexOf(glyph) >= 0;
+        return " \t,.|':;!?*/[]{}()".indexOf(glyph) >= 0;
     }
 
     private Value readDigits() {
