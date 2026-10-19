@@ -422,11 +422,15 @@ public class PhDefault implements Phi, Cloneable {
             throw new ExReadOnly(
                 String.format(
                     "%s has just %d void attribute(s), can't put the %d-th one",
-                    this.forma(), pos, pos
+                    this.forma(), this.voids(), pos
                 )
             );
         }
         return name;
+    }
+
+    private long voids() {
+        return this.loaded().values().stream().filter(Attribute::voided).count();
     }
 
     private String attr(final int pos) {
