@@ -447,6 +447,46 @@ final class MjTranspileTest {
     }
 
     @Test
+    void writesNoTimeoutWhenDeadlineIsZero(@Mktmp final Path temp)
+        throws Exception {
+        MatcherAssert.assertThat(
+            "a zero eo.deadline must take the deadline away from a generated test, while keeping its budget, since JUnit refuses a timeout of zero",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(MjTranspileTest.truthy())
+                    .with("deadline", 0L)
+                    .execute(new PpTranspile())
+                    .result()
+                    .get("target/generated-test-sources/org/eolang/EO_foo/EO_x/TestEOmain.java")
+            ).asString(),
+            Matchers.allOf(
+                Matchers.containsString("@Budget(\"1G\")"),
+                Matchers.not(Matchers.containsString("@Timeout("))
+            )
+        );
+    }
+
+    @Test
+    void rejectsNegativeDeadline(@Mktmp final Path temp) {
+        MatcherAssert.assertThat(
+            "a negative eo.deadline must be refused by naming the option, instead of emitting a timeout that JUnit refuses",
+            new UncheckedText(
+                new TextOf(
+                    Assertions.assertThrows(
+                        IllegalStateException.class,
+                        () -> new FakeMaven(temp)
+                            .withProgram(MjTranspileTest.truthy())
+                            .with("deadline", -1L)
+                            .execute(new PpTranspile()),
+                        "a negative eo.deadline must not reach the generated tests"
+                    )
+                )
+            ).asString(),
+            Matchers.containsString("eo.deadline")
+        );
+    }
+
+    @Test
     void throwsDetailedError(@Mktmp final Path temp) {
         MatcherAssert.assertThat(
             "TranspileMojo should throw an exception with detailed message on invalid EO code",
