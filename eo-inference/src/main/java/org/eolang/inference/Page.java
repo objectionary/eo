@@ -52,8 +52,14 @@ final class Page {
 
     /**
      * Where one line of the listing ends and the next begins.
+     *
+     * <p>Only the breaks the parser counts, and not {@code \R}, which also
+     * matches {@code U+2028} and its kin. The parser lets those stand inside
+     * a string literal and counts no line for them, so a page that broke on
+     * one would put every mark below the literal on the wrong line
+     * (#9270).</p>
      */
-    private static final Pattern BREAK = Pattern.compile("\\R");
+    private static final Pattern BREAK = Pattern.compile("\\r?\\n");
 
     /**
      * The XMIR of the file.
