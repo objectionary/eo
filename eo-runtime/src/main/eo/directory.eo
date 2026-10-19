@@ -132,7 +132,7 @@
                         *
                           "/^"
                           translated 0 "" false false
-                          "$/"
+                          "$/s"
                 T > [^ message] >>
                   "Can't parse '%s' as a glob pattern, %s".printf
                     * ^.glob message
@@ -418,6 +418,18 @@
           *
             d.resolved "sub"
             d.resolved "sub/b.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-a-file-whose-name-has-a-line-break
+    os.is-windows.or > @
+      seq *
+        touched. (d.resolved "a\nb.txt").as-file
+        eq.
+          length.
+            d.as-dir.walk "**"
+          1
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted
