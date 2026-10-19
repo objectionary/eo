@@ -87,6 +87,33 @@ final class RenderingTest {
     }
 
     @Test
+    void removesTheAtomsOfAnEarlierBuild(@Mktmp final Path temp) throws IOException {
+        final Path home = Files.createDirectories(temp);
+        Files.write(
+            home.resolve("entries.tsv"),
+            String.format("3\tΦ.slow%n").getBytes(StandardCharsets.UTF_8)
+        );
+        Files.write(home.resolve("voids.tsv"), new byte[0]);
+        Files.write(
+            Files.createDirectories(temp.resolve("1-planting")).resolve("slow.xmir"),
+            new EoSyntax(String.format("[] > slow%n  42 > @%n")).parsed().toString()
+                .getBytes(StandardCharsets.UTF_8)
+        );
+        final Path stale = Files.createDirectories(
+            temp.resolve("atoms").resolve("org").resolve("eolang")
+        ).resolve("EOstale$EOφ.java");
+        Files.write(stale, "// nothing".getBytes(StandardCharsets.UTF_8));
+        new Rendering(
+            temp.resolve("atoms"), RenderingTest.tables(temp, "<links/>", "<atoms/>", "<provides/>")
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "an atom of an earlier build must not survive the rendering, but it did",
+            Files.exists(stale),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void rendersNothingOfTwoEntriesWhoseAtomsShareAClass(@Mktmp final Path temp)
         throws IOException {
         Files.write(
