@@ -470,6 +470,30 @@ final class HeapsTest {
         );
     }
 
+    @Test
+    void refusesToAllocateMoreBytesThanTheHeapHas() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> Heaps.INSTANCE.malloc(Integer.MAX_VALUE, idx -> idx),
+            "Heaps must refuse a size larger than the free heap with an ExFailure, which EO can recover from, but it didn't"
+        );
+    }
+
+    @Test
+    void refusesToResizeToMoreBytesThanTheHeapHas() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> Heaps.INSTANCE.malloc(
+                5,
+                idx -> {
+                    Heaps.INSTANCE.resize(idx, Integer.MAX_VALUE);
+                    return idx;
+                }
+            ),
+            "Heaps must refuse a new size larger than the free heap with an ExFailure, which EO can recover from, but it didn't"
+        );
+    }
+
     private static byte[] rejectedWrite(final int identifier, final byte[] original) {
         Heaps.INSTANCE.write(identifier, 0, original);
         MatcherAssert.assertThat(
