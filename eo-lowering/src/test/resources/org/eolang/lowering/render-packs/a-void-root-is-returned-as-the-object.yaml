@@ -16,12 +16,17 @@ voids:
   - "𝜎9\t3\tx\tstring"
 protocol: |
   <protocol>
-    <morph at="Φ.l/.e3">
-      <evaluate λ="L_entry" by="morph" at="Φ.l/.e3"/>
-      <evaluate λ="L_root" by="morph" at="Φ.l/.e3">
-        <dataize meta="𝛿1·2">𝜎9</dataize>
-      </evaluate>
-    </morph>
+    <path>
+      <morph at="Φ.l/.e3">
+        <evaluate λ="L_entry" by="morph" at="Φ.l/.e3"/>
+        <evaluate λ="L_root" by="morph" at="Φ.l/.e3">
+          <dataize at="Φ.a🌵1">
+            <manufactured meta="𝛿·2·1">𝜎9</manufactured>
+          </dataize>
+          <bound meta="𝛿1·2">𝛿·2·1</bound>
+        </evaluate>
+      </morph>
+    </path>
     <msec>595</msec>
     <firings>2</firings>
     <fps>3</fps>

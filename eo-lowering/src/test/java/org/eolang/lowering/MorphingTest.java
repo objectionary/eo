@@ -673,7 +673,7 @@ final class MorphingTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void bringsTheBranchesOfAForkToOneShapeBeforeTheJoin(@Mktmp final Path temp)
+    void forksOnTheConditionInsteadOfAnsweringAnIf(@Mktmp final Path temp)
         throws IOException {
         final Path home = MorphingTest.merged(temp);
         new Morphing(
@@ -681,29 +681,12 @@ final class MorphingTest {
             new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
         ).exec(temp);
         MatcherAssert.assertThat(
-            "the fork must rewrite its branches before it symbolizes and joins them, but it doesnt",
+            "the fork must split the run on its condition, one side per path, but it doesnt",
             MorphingTest.text(home.resolve("atoms.yaml")),
             Matchers.stringContainsInOrder(
-                "- λ: L_fork", "morph:", "rewrite:",
-                "false-literal", "true-literal", "bool-without-rho", "decorated-bool",
-                "symbolize:", "join:"
+                "- λ: L_fork", "dataize:", "morph:", "stay:", "symbolize:", "fork:",
+                "on: 𝛿1", "left: 𝑛5", "right: 𝑛6", "- λ: L_entry"
             )
-        );
-    }
-
-    @Test
-    @DisabledOnOs(OS.WINDOWS)
-    void letsAForkRaiseThroughTheThrowInOneOfItsBranches(@Mktmp final Path temp)
-        throws IOException {
-        final Path home = MorphingTest.merged(temp);
-        new Morphing(
-            MorphingTest.recording(temp), new GlobalCache.GcFresh(),
-            new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
-        ).exec(temp);
-        MatcherAssert.assertThat(
-            "the fork must end at the throw of a branch, but it doesnt",
-            MorphingTest.text(home.resolve("atoms.yaml")),
-            Matchers.stringContainsInOrder("- λ: L_fork", "terminators: [L_throw]", "- λ: L_entry")
         );
     }
 

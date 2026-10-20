@@ -6,20 +6,21 @@
 # name of a λ function; a bare 𝜎 in an answer is a fresh symbol wrapped in
 # the carrier of the operation. A λ function no key matches is left where
 # it stands, and the formation that reached it is a taint.
-# A fork first unfolds a branch that is an ordinary object, firing what its
-# φ comes to, and a call the firing enters again, or a copy over a bare
-# symbol, becomes a symbol of its own. Then it brings the branches to one
-# shape with the rules of its rewrite block: the true and false eo-runtime
-# spells, a bool a firing answered and an object decorating one are one
-# value in three spellings, and a tuple shrinks to three symbols, one per
-# part. Its stay block drops the ρ hung on a dispatch, such as the one the
-# data of bytes.as-number carries, so a branch read through the ρ of a copy
-# meets one made of no object in the same shape. The upcast block casts a
-# bare symbol into the shape of the other branch, and the join pairs
-# nothing but symbols.
-# A branch that stops at the λ of "throw", which is what every T is by now,
-# raises: the fork is joined into its other branch, and the protocol keeps
-# the condition and the message, which rendering turns into a guard.
+# A fork answers neither of its sides. Its condition is a value nobody
+# worked out, so phino morphs both sides first. Two sides that come to one
+# term up to their symbols are joined into a fresh symbol that stands for
+# either, and the run goes on as one: the "stay" lines drop the ρ a side
+# may hang on its bytes, and the "symbolize" lines turn a literal a side
+# holds into a symbol, so that a side computed and a side written out
+# compare as one shape. Otherwise the run splits at the fork into two
+# paths: the first goes on with the left side, and the second starts at
+# the fork with the right side, in the state the run was in there. A
+# condition decided once on a path is decided for that path. Every path
+# ends in a root of its own, and the rendering turns the paths into nested
+# ifs, with one return per path, and every join into an if that assigns
+# the joined symbol. A path whose side stops at the λ of "throw", which is
+# what every T is by now, ends in that throw, and its if throws the
+# message.
 - λ: L_number_(plus|times|div)
   dataize:
     𝛿1: $.ρ
@@ -66,74 +67,16 @@
   morph:
     𝑛1: $.left
     𝑛2: $.right
-  evaluate:
+  stay:
     𝑛3: 𝑛1
     𝑛4: 𝑛2
-  unfold:
-    𝑛5: {of: 𝑛3, defer: true}
-    𝑛6: {of: 𝑛4, defer: true}
-  rewrite:
-    𝑛7:
-      of: 𝑛5
-      rules: &shape
-        - name: false-literal
-          pattern: >-
-            ⟦ !B1, φ ↦ Φ.bool( if ↦ ⟦ ρ ↦ ∅, 𝜏1 ↦ ∅, 𝜏2 ↦ ∅,
-            φ ↦ ξ.𝜏2 ⟧ ), !B2 ⟧
-          result: >-
-            ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
-            φ ↦ ⟦ Δ ⤍ 00- ⟧ ⟧ ) ⟧
-        - name: true-literal
-          pattern: >-
-            ⟦ !B1, φ ↦ Φ.bool( if ↦ ⟦ ρ ↦ ∅, 𝜏1 ↦ ∅, 𝜏2 ↦ ∅,
-            φ ↦ ξ.𝜏1 ⟧ ), !B2 ⟧
-          result: >-
-            ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
-            φ ↦ ⟦ Δ ⤍ FF- ⟧ ⟧ ) ⟧
-        - name: bool-without-rho
-          pattern: >-
-            ⟦ !B1, φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
-            φ ↦ 𝑒1 ⟧ ), !B2 ⟧
-          result: >-
-            ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
-            φ ↦ 𝑒1 ⟧ ) ⟧
-        - name: decorated-bool
-          pattern: >-
-            ⟦ !B1, φ ↦ ⟦ !B3, φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅,
-            right ↦ ∅, φ ↦ 𝑒1 ⟧ ), !B4 ⟧, !B2 ⟧
-          result: >-
-            ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
-            φ ↦ 𝑒1 ⟧ ) ⟧
-        - name: small-tuple
-          pattern: ⟦ tail ↦ 𝑒1, head ↦ 𝑒2, length ↦ 𝑒3, !B ⟧
-          result: Φ.tuple( tail ↦ 𝑒4, head ↦ 𝑒5, length ↦ 𝑒6 )
-          where:
-            - meta: 𝑒4
-              function: remint
-              args: [𝑒1]
-            - meta: 𝑒5
-              function: remint
-              args: [𝑒2]
-            - meta: 𝑒6
-              function: remint
-              args: [𝑒3]
-    𝑛8:
-      of: 𝑛6
-      rules: *shape
-  stay:
-    𝑛9: 𝑛7
-    𝑛10: 𝑛8
   symbolize:
-    𝑛11: 𝑛9
-    𝑛12: 𝑛10
-  upcast:
-    𝑛13: 𝑛11
-    𝑛14: 𝑛12
-  join:
-    𝑛15: [𝑛13, 𝑛14]
-  lenient: []
-  terminators: [L_throw]
-  𝑛: 𝑛15
+    𝑛5: 𝑛3
+    𝑛6: 𝑛4
+  fork:
+    on: 𝛿1
+    left: 𝑛5
+    right: 𝑛6
 - λ: L_entry
   dataize:
     𝛿1: $.n

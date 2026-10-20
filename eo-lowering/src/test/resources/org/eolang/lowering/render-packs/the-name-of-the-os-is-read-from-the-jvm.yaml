@@ -21,20 +21,28 @@ links: |
   </links>
 protocol: |
   <protocol>
-    <morph at="Φ.l/.e12">
-      <evaluate λ="L_entry" by="morph" at="Φ.l/.e12">
-        <evaluate λ="L_os_name" by="morph" at="Φ.a🌵1">
-          <minted symbol="𝜎751"/>
+    <path>
+      <morph at="Φ.l/.e12">
+        <evaluate λ="L_entry" by="morph" at="Φ.l/.e12">
+          <evaluate λ="L_os_name" by="morph" at="Φ.a🌵1">
+            <minted symbol="𝜎751"/>
+          </evaluate>
+          <evaluate λ="L_bytes_size" by="morph" at="Φ.a🌵2">
+            <dataize at="Φ.a🌵3">
+              <manufactured meta="𝛿·3·1">𝜎751</manufactured>
+            </dataize>
+            <bound meta="𝛿1·3">𝛿·3·1</bound>
+            <minted symbol="𝜎752">𝜎751</minted>
+          </evaluate>
         </evaluate>
-        <evaluate λ="L_bytes_size" by="morph" at="Φ.a🌵2">
-          <dataize meta="𝛿1·3">𝜎751</dataize>
-          <minted symbol="𝜎752">𝜎751</minted>
+        <evaluate λ="L_root" by="morph" at="Φ.l/.e12">
+          <dataize at="Φ.a🌵4">
+            <manufactured meta="𝛿·4·1">𝜎752</manufactured>
+          </dataize>
+          <bound meta="𝛿1·4">𝛿·4·1</bound>
         </evaluate>
-      </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l/.e12">
-        <dataize meta="𝛿1·4">𝜎752</dataize>
-      </evaluate>
-    </morph>
+      </morph>
+    </path>
     <msec>21</msec>
     <firings>4</firings>
     <fps>190</fps>

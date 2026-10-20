@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# The root is a bool the atom computed, so the atom returns it bare, and the
+# yamllint disable rule:line-length
+# Each path comes down to a bool, so the atom returns it bare, and the
 # tables must say the body is a number, a string, a bool or bytes. The link
 # of the body arrives at `Φ.bool.not`, a copy and not a formation, but
 # `flipped` binds nothing but its body, and `eo:inference` has chased that
@@ -30,21 +31,45 @@ links: |
   </links>
 protocol: |
   <protocol>
-    <morph at="Φ.l/.e1">
-      <evaluate λ="L_entry" by="morph" at="Φ.l/.e1"/>
-      <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
-        <evaluate λ="L_fork" by="dataize" at="Φ.a🌵1">
-          <dataize meta="𝛿1·2">𝜎1</dataize>
-          <known symbol="𝜎2">00-</known>
-          <known symbol="𝜎3">FF-</known>
-          <joined symbol="𝜎4">𝜎2 𝜎3</joined>
+    <path>
+      <morph at="Φ.l/.e1">
+        <evaluate λ="L_entry" by="morph" at="Φ.l/.e1"/>
+        <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
+          <dataize at="Φ.a🌵2">
+            <evaluate λ="L_fork" by="dataize" at="Φ.a🌵2">
+              <dataize at="Φ.a🌵7">
+                <manufactured meta="𝛿·3·1">𝜎1</manufactured>
+              </dataize>
+              <bound meta="𝛿1·3">𝛿·3·1</bound>
+              <morph at="Φ.a🌵3">
+                <applied meta="𝑛·3·1" by="morph" at="Φ.a🌵3" of="Φ.bytes"><datum name="φ">00-</datum></applied>
+              </morph>
+              <forked side="left">𝜎1</forked>
+              <answered meta="𝑛·3·2">𝑛·3·1</answered>
+            </evaluate>
+            <dataized meta="𝛿·2·1">00-</dataized>
+          </dataize>
+          <bound meta="𝛿1·2">𝛿·2·1</bound>
         </evaluate>
-        <dataize meta="𝛿1·3">𝜎4</dataize>
-      </evaluate>
-    </morph>
+      </morph>
+    </path>
+    <path>
+      <morph at="Φ.l/.e1">
+        <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
+          <dataize at="Φ.a🌵2">
+            <evaluate λ="L_fork" by="dataize" at="Φ.a🌵2">
+              <forked side="right">𝜎1</forked>
+              <answered meta="𝑛·6·2">𝑛·6·1</answered>
+            </evaluate>
+            <dataized meta="𝛿·5·1">FF-</dataized>
+          </dataize>
+          <bound meta="𝛿1·5">𝛿·5·1</bound>
+        </evaluate>
+      </morph>
+    </path>
     <msec>120</msec>
-    <firings>3</firings>
-    <fps>25</fps>
+    <firings>6</firings>
+    <fps>50</fps>
   </protocol>
 file: org/eolang/EOflipped$EOφ.java
 java: |
@@ -68,12 +93,10 @@ java: |
       @Override
       public Phi lambda() {
           final boolean s1 = new Dataized(this.take("ρ").take("x")).asBool();
-          final boolean s4;
           if (s1) {
-              s4 = false;
+              return new Data.ToPhi(false);
           } else {
-              s4 = true;
+              return new Data.ToPhi(true);
           }
-          return new Data.ToPhi(s4);
       }
   }

@@ -1,0 +1,209 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The sum asks two ifs, one on each comparison. The first path takes the
+# left side of both, and each of these two decisions opens a path: the
+# second path starts at the first if with its right side, and the third one
+# at the second if with its right side, after the left of the first. The
+# second path then meets the second if afresh, takes its left side, and
+# opens the fourth path, which takes the right side of both. The atom is an
+# if on the first comparison, with an if on the second one inside each of
+# its sides, and a return in each of the four leaves.
+locator: Φ.both
+number: 1
+eo:
+  both.eo: |
+    [x y p q] > both
+      plus. > @
+        if.
+          x.gt 0
+          x
+          y
+        if.
+          p.gt 0
+          p
+          q
+voids:
+  - "𝜎1\t1\tx\tnumber"
+  - "𝜎2\t1\ty\tnumber"
+  - "𝜎3\t1\tp\tnumber"
+  - "𝜎4\t1\tq\tnumber"
+links: |
+  <links>
+    <type id="Φ.both.φ">
+      <ref loc="Φ.number"/>
+    </type>
+  </links>
+protocol: |
+  <protocol>
+    <path>
+      <morph at="Φ.l/.e1">
+        <evaluate λ="L_entry" by="morph" at="Φ.l/.e1">
+          <evaluate λ="L_number_gt" by="morph" at="Φ.a🌵1">
+            <minted symbol="𝜎5">𝜎1 00-00-00-00-00-00-00-00</minted>
+          </evaluate>
+          <evaluate λ="L_number_gt" by="morph" at="Φ.a🌵2">
+            <minted symbol="𝜎6">𝜎3 00-00-00-00-00-00-00-00</minted>
+          </evaluate>
+        </evaluate>
+        <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
+          <dataize at="Φ.a🌵3">
+            <evaluate λ="L_number_plus" by="dataize" at="Φ.a🌵3">
+              <dataize at="Φ.a🌵4">
+                <evaluate λ="L_fork" by="dataize" at="Φ.a🌵4">
+                  <dataize at="Φ.a🌵10">
+                    <manufactured meta="𝛿·4·1">𝜎5</manufactured>
+                  </dataize>
+                  <bound meta="𝛿1·4">𝛿·4·1</bound>
+                  <forked side="left">𝜎5</forked>
+                  <answered meta="𝑛·4·2">𝑛·4·1</answered>
+                </evaluate>
+                <manufactured meta="𝛿·3·1">𝜎1</manufactured>
+              </dataize>
+              <bound meta="𝛿1·3">𝛿·3·1</bound>
+              <dataize at="Φ.a🌵5">
+                <evaluate λ="L_fork" by="dataize" at="Φ.a🌵5">
+                  <dataize at="Φ.a🌵11">
+                    <manufactured meta="𝛿·5·1">𝜎6</manufactured>
+                  </dataize>
+                  <bound meta="𝛿1·5">𝛿·5·1</bound>
+                  <forked side="left">𝜎6</forked>
+                  <answered meta="𝑛·5·2">𝑛·5·1</answered>
+                </evaluate>
+                <manufactured meta="𝛿·3·2">𝜎3</manufactured>
+              </dataize>
+              <bound meta="𝛿2·3">𝛿·3·2</bound>
+              <minted symbol="𝜎7">𝜎1 𝜎3</minted>
+            </evaluate>
+            <manufactured meta="𝛿·2·1">𝜎7</manufactured>
+          </dataize>
+          <bound meta="𝛿1·2">𝛿·2·1</bound>
+        </evaluate>
+      </morph>
+    </path>
+    <path>
+      <morph at="Φ.l/.e1">
+        <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
+          <dataize at="Φ.a🌵3">
+            <evaluate λ="L_number_plus" by="dataize" at="Φ.a🌵3">
+              <dataize at="Φ.a🌵4">
+                <evaluate λ="L_fork" by="dataize" at="Φ.a🌵4">
+                  <forked side="right">𝜎5</forked>
+                  <answered meta="𝑛·6·2">𝑛·6·1</answered>
+                </evaluate>
+                <manufactured meta="𝛿·7·1">𝜎2</manufactured>
+              </dataize>
+              <bound meta="𝛿1·7">𝛿·7·1</bound>
+              <dataize at="Φ.a🌵5">
+                <evaluate λ="L_fork" by="dataize" at="Φ.a🌵5">
+                  <dataize at="Φ.a🌵12">
+                    <manufactured meta="𝛿·8·1">𝜎6</manufactured>
+                  </dataize>
+                  <bound meta="𝛿1·8">𝛿·8·1</bound>
+                  <forked side="left">𝜎6</forked>
+                  <answered meta="𝑛·8·2">𝑛·8·1</answered>
+                </evaluate>
+                <manufactured meta="𝛿·7·2">𝜎3</manufactured>
+              </dataize>
+              <bound meta="𝛿2·7">𝛿·7·2</bound>
+              <minted symbol="𝜎8">𝜎2 𝜎3</minted>
+            </evaluate>
+            <manufactured meta="𝛿·6·1">𝜎8</manufactured>
+          </dataize>
+          <bound meta="𝛿1·6">𝛿·6·1</bound>
+        </evaluate>
+      </morph>
+    </path>
+    <path>
+      <morph at="Φ.l/.e1">
+        <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
+          <dataize at="Φ.a🌵3">
+            <evaluate λ="L_number_plus" by="dataize" at="Φ.a🌵3">
+              <dataize at="Φ.a🌵5">
+                <evaluate λ="L_fork" by="dataize" at="Φ.a🌵5">
+                  <forked side="right">𝜎6</forked>
+                  <answered meta="𝑛·10·2">𝑛·10·1</answered>
+                </evaluate>
+                <manufactured meta="𝛿·9·2">𝜎4</manufactured>
+              </dataize>
+              <bound meta="𝛿2·9">𝛿·9·2</bound>
+              <minted symbol="𝜎9">𝜎1 𝜎4</minted>
+            </evaluate>
+            <manufactured meta="𝛿·11·1">𝜎9</manufactured>
+          </dataize>
+          <bound meta="𝛿1·11">𝛿·11·1</bound>
+        </evaluate>
+      </morph>
+    </path>
+    <path>
+      <morph at="Φ.l/.e1">
+        <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
+          <dataize at="Φ.a🌵3">
+            <evaluate λ="L_number_plus" by="dataize" at="Φ.a🌵3">
+              <dataize at="Φ.a🌵5">
+                <evaluate λ="L_fork" by="dataize" at="Φ.a🌵5">
+                  <forked side="right">𝜎6</forked>
+                  <answered meta="𝑛·13·2">𝑛·13·1</answered>
+                </evaluate>
+                <manufactured meta="𝛿·12·2">𝜎4</manufactured>
+              </dataize>
+              <bound meta="𝛿2·12">𝛿·12·2</bound>
+              <minted symbol="𝜎10">𝜎2 𝜎4</minted>
+            </evaluate>
+            <manufactured meta="𝛿·14·1">𝜎10</manufactured>
+          </dataize>
+          <bound meta="𝛿1·14">𝛿·14·1</bound>
+        </evaluate>
+      </morph>
+    </path>
+    <msec>90</msec>
+    <firings>16</firings>
+    <fps>177</fps>
+  </protocol>
+file: org/eolang/EOboth$EOφ.java
+java: |
+  /*
+   * This file was generated by eo-lowering, from the protocol of the entry
+   * 1, which is Φ.both.
+   */
+  package org.eolang;
+
+  import org.eolang.*;
+
+  /**
+   * The atom that took the place of the body of Φ.both.
+   */
+  @XmirObject(oname = "both.φ")
+  public final class EOboth$EOφ extends PhDefault implements Atom {
+      public EOboth$EOφ() {
+          super(new Attrs(new Attr(Phi.RHO, new AtRho())));
+      }
+
+      @Override
+      public Phi lambda() {
+          final byte[] s1 = new Dataized(this.take("ρ").take("x")).take();
+          final byte[] s3 = new Dataized(this.take("ρ").take("p")).take();
+          final byte[] s4 = new Dataized(this.take("ρ").take("q")).take();
+          final boolean s5 = (double) new BytesOf(s1).asNumber() > Double.longBitsToDouble(0x0000000000000000L);
+          final boolean s6 = (double) new BytesOf(s3).asNumber() > Double.longBitsToDouble(0x0000000000000000L);
+          if (s5) {
+              if (s6) {
+                  final double s7 = (double) new BytesOf(s1).asNumber() + (double) new BytesOf(s3).asNumber();
+                  return new Data.ToPhi(s7);
+              } else {
+                  final double s9 = (double) new BytesOf(s1).asNumber() + (double) new BytesOf(s4).asNumber();
+                  return new Data.ToPhi(s9);
+              }
+          } else {
+              final byte[] s2 = new Dataized(this.take("ρ").take("y")).take();
+              if (s6) {
+                  final double s8 = (double) new BytesOf(s2).asNumber() + (double) new BytesOf(s3).asNumber();
+                  return new Data.ToPhi(s8);
+              } else {
+                  final double s10 = (double) new BytesOf(s2).asNumber() + (double) new BytesOf(s4).asNumber();
+                  return new Data.ToPhi(s10);
+              }
+          }
+      }
+  }

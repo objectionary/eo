@@ -99,14 +99,20 @@ import org.cactoos.text.TextOf;
  * through {@code ExFailure}, which is what {@code T} does in eo-runtime,
  * and {@code recovered} catches it the same way.</p>
  *
- * <p>A fork whose branch is a {@code T} raises on that side, as
- * {@code bytes.xor} does when its operands differ in length. phino joins
- * such a fork into its other branch, and writes a {@code terminate} record
- * that names the condition and the message. The atom checks that condition
- * with an {@code if}, which throws the message through {@code ExFailure}
- * right where the condition is computed. This check is a guard. An entry
- * whose fork raises anywhere but around its whole body is a taint, and so
- * is an entry that raises a message it would have to compute.</p>
+ * <p>A fork is an {@code if} whose condition nobody worked out, such as
+ * the check of {@code bytes.xor} that its operands have one length. phino
+ * works out both sides of it first. When they are the same up to their
+ * symbols, phino joins them into one symbol, and the atom assigns that
+ * symbol inside an {@code if} on the condition. Otherwise phino goes on
+ * with the left side and opens a new path, which starts at the fork with
+ * the right side and inherits every decision of the path it left. The
+ * protocol holds one path for every such continuation, in the order the
+ * forks opened them. The atom is the tree of these decisions: an
+ * {@code if} for every fork, with the statements only one side needs
+ * inside that side, and a {@code return} or a {@code throw} at the end of
+ * every path. A path whose side is a copy of {@code throw} ends in the
+ * throw of its message, the way the root of a whole entry does, and an
+ * entry that throws a message it would have to compute is a taint.</p>
  *
  * @since 0.64.0
  * @todo #9248:45min Put the object around a root that comes out of an
@@ -124,16 +130,6 @@ import org.cactoos.text.TextOf;
  *  {@code T (string FF-FE)} or {@code T (x.as-string)}, phino writes it as
  *  an object, and the entry is a taint now. But its atom could compute the
  *  message first, and then throw it.
- * @todo #8548:30min Write an atom for an entry whose result is always the
- *  same. When the result of the body is known bytes, like an object that
- *  always returns {@code 42}, the entry is a taint now. But its atom could
- *  simply return those bytes.
- * @todo #9448:45min Put a guard inside the branch or the operand where its
- *  fork raises. A guard stands at the top of the atom now, so an entry is a
- *  taint when the fork that raises sits inside a branch of another fork, or
- *  inside an argument of an operation, or next to a fork that does not
- *  raise. Once phino names, in every {@code terminate} record, the fork and
- *  the branch the record sits inside, place every guard right there.
  */
 final class Rendering implements Proc<Path> {
 
