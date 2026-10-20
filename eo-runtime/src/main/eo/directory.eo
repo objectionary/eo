@@ -802,6 +802,19 @@
       made.
         directory mktemp.tmpfile.deleted
 
+  --> stops-on-walking-with-a-glob-that-is-not-a-regex
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      eq.
+        length.
+          d.as-dir.walk "[z-a]"
+        0
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
   --> stops-on-walking-with-a-malformed-glob
     seq * > @
       touched.

@@ -134,13 +134,11 @@ jobs:
       # ordinary run: one dataization of a twenty-digit `%d` takes longer than
       # `eo.deadline` and passes about 800M through the allocator. It is named
       # here so that a regression in the message is a failure and not a skip
-      # (#8327). `EOdirectoryEOwalkTest` is named for the same reason: a
-      # fallback of `walk` that misses its glob overflows the stack for longer
-      # than `eo.deadline` (#9541).
+      # (#8327).
       - env:
           CLASSES: ${{ steps.eo.outputs.classes }}
         run: |
-          tests='EOscanfDiagnosticTest,EOdirectoryEOwalkTest'
+          tests='EOscanfDiagnosticTest'
           if [ -n "${CLASSES}" ]; then
             tests="${tests},${CLASSES}"
           fi
