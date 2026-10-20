@@ -681,11 +681,11 @@ final class MorphingTest {
             new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
         ).exec(temp);
         MatcherAssert.assertThat(
-            "the fork must split the run on its condition, one side per path, but it doesnt",
+            "the fork must defer each side it morphed and split the run on its condition, but it doesnt",
             MorphingTest.text(home.resolve("atoms.yaml")),
             Matchers.stringContainsInOrder(
-                "- λ: L_fork", "dataize:", "morph:", "stay:", "symbolize:", "fork:",
-                "on: 𝛿1", "left: 𝑛5", "right: 𝑛6", "- λ: L_entry"
+                "- λ: L_fork", "dataize:", "morph:", "stay:", "symbolize:", "defer:",
+                "𝑛7: 𝑛5", "𝑛8: 𝑛6", "fork:", "on: 𝛿1", "left: 𝑛7", "right: 𝑛8", "- λ: L_entry"
             )
         );
     }

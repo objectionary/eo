@@ -10,17 +10,19 @@
 # worked out, so phino morphs both sides first. Two sides that come to one
 # term up to their symbols are joined into a fresh symbol that stands for
 # either, and the run goes on as one: the "stay" lines drop the ρ a side
-# may hang on its bytes, and the "symbolize" lines turn a literal a side
-# holds into a symbol, so that a side computed and a side written out
-# compare as one shape. Otherwise the run splits at the fork into two
-# paths: the first goes on with the left side, and the second starts at
-# the fork with the right side, in the state the run was in there. A
-# condition decided once on a path is decided for that path. Every path
-# ends in a root of its own, and the rendering turns the paths into nested
-# ifs, with one return per path, and every join into an if that assigns
-# the joined symbol. A path whose side stops at the λ of "throw", which is
-# what every T is by now, ends in that throw, and its if throws the
-# message.
+# may hang on its bytes, the "symbolize" lines turn a literal a side holds
+# into a symbol, so that a side computed and a side written out compare
+# as one shape, and the "defer" lines turn a copy over a bare symbol,
+# which nobody can work out, into a symbol that stands for it, so that a
+# flow taking that side ends in the symbol instead of getting stuck inside
+# the copy. Otherwise the run splits at the fork into two flows, one per
+# side, and the record of the fork holds what each of them did from there
+# on. A condition decided once on a flow is decided for that flow. Every
+# flow ends in a root of its own, and the rendering turns the forks into
+# nested ifs, with one return per flow, and every join into an if that
+# assigns the joined symbol. A flow whose side stops at the λ of "throw",
+# which is what every T is by now, ends in that throw, and its if throws
+# the message.
 - λ: L_number_(plus|times|div)
   dataize:
     𝛿1: $.ρ
@@ -73,10 +75,13 @@
   symbolize:
     𝑛5: 𝑛3
     𝑛6: 𝑛4
+  defer:
+    𝑛7: 𝑛5
+    𝑛8: 𝑛6
   fork:
     on: 𝛿1
-    left: 𝑛5
-    right: 𝑛6
+    left: 𝑛7
+    right: 𝑛8
 - λ: L_entry
   dataize:
     𝛿1: $.n
