@@ -16,16 +16,14 @@ voids:
   - "𝜎4\t12\tz\tobject"
 protocol: |
   <protocol>
-    <path>
-      <morph at="Φ.l/.e12">
-        <evaluate λ="L_root" by="morph" at="Φ.l/.e12">
-          <dataize at="Φ.a🌵1">
-            <manufactured meta="𝛿·2·1">𝜎4</manufactured>
-          </dataize>
-          <bound meta="𝛿1·2">𝛿·2·1</bound>
-        </evaluate>
-      </morph>
-    </path>
+    <morph at="Φ.l/.e12">
+      <evaluate λ="L_root" by="morph" at="Φ.l/.e12">
+        <dataize at="Φ.a🌵1">
+          <manufactured meta="𝛿·2·1">𝜎4</manufactured>
+        </dataize>
+        <bound meta="𝛿1·2">𝛿·2·1</bound>
+      </evaluate>
+    </morph>
   </protocol>
 file: org/eolang/EOfoo$EOinner$EOφ.java
 java: |

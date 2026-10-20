@@ -22,16 +22,14 @@ links: |
   </links>
 protocol: |
   <protocol>
-    <path>
-      <morph at="Φ.l/.e1">
-        <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
-          <dataize at="Φ.a🌵1">
-            <manufactured meta="𝛿·2·1">𝜎1</manufactured>
-          </dataize>
-          <bound meta="𝛿1·2">𝛿·2·1</bound>
-        </evaluate>
-      </morph>
-    </path>
+    <morph at="Φ.l/.e1">
+      <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
+        <dataize at="Φ.a🌵1">
+          <manufactured meta="𝛿·2·1">𝜎1</manufactured>
+        </dataize>
+        <bound meta="𝛿1·2">𝛿·2·1</bound>
+      </evaluate>
+    </morph>
     <msec>100</msec>
     <firings>2</firings>
     <fps>20</fps>

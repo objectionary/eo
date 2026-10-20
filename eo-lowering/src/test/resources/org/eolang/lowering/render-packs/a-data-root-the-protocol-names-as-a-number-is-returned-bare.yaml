@@ -16,39 +16,37 @@ voids:
   - "𝜎1\t1\tx\tnumber"
 protocol: |
   <protocol>
-    <path>
-      <morph at="Φ.l/.e1">
-        <evaluate λ="L_entry" by="morph" at="Φ.l/.e1">
-          <evaluate λ="L_number_times" by="morph" at="Φ.a🌵1">
-            <dataize at="Φ.a🌵2">
-              <manufactured meta="𝛿·2·1">𝜎1</manufactured>
-            </dataize>
-            <bound meta="𝛿1·2">𝛿·2·1</bound>
-            <dataize at="Φ.a🌵3">
-              <dataized meta="𝛿·2·2">BF-F0-00-00-00-00-00-00</dataized>
-            </dataize>
-            <bound meta="𝛿2·2">𝛿·2·2</bound>
-            <minted symbol="𝜎2">𝜎1 BF-F0-00-00-00-00-00-00</minted>
-            <applied meta="𝑛·2·4" of="Φ.bytes"><symbol name="φ">𝜎2</symbol></applied>
-            <applied meta="𝑛·2·5" of="Φ.number"><meta name="φ">𝑛·2·4</meta></applied>
-            <built meta="𝑛·2·6">𝑛·2·5</built>
-            <morph at="𝑛·2·6">
-              <applied meta="𝑛·2·7" by="morph" at="𝑛·2·6" of="Φ.number"><meta name="φ">𝑛·2·4</meta></applied>
-            </morph>
-            <answered meta="𝑛·2·8">𝑛·2·7</answered>
-          </evaluate>
-          <bound meta="𝑛1·1">𝑛·2·7</bound>
-          <applied meta="𝑛·1·12" of="Φ.l/.root"><meta name="α0">𝑛·2·7</meta></applied>
-          <built meta="𝑛·1·13">𝑛·1·12</built>
-        </evaluate>
-        <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
-          <dataize at="Φ.a🌵4">
-            <manufactured meta="𝛿·3·1">𝜎2</manufactured>
+    <morph at="Φ.l/.e1">
+      <evaluate λ="L_entry" by="morph" at="Φ.l/.e1">
+        <evaluate λ="L_number_times" by="morph" at="Φ.a🌵1">
+          <dataize at="Φ.a🌵2">
+            <manufactured meta="𝛿·2·1">𝜎1</manufactured>
           </dataize>
-          <bound meta="𝛿1·3">𝛿·3·1</bound>
+          <bound meta="𝛿1·2">𝛿·2·1</bound>
+          <dataize at="Φ.a🌵3">
+            <dataized meta="𝛿·2·2">BF-F0-00-00-00-00-00-00</dataized>
+          </dataize>
+          <bound meta="𝛿2·2">𝛿·2·2</bound>
+          <minted symbol="𝜎2">𝜎1 BF-F0-00-00-00-00-00-00</minted>
+          <applied meta="𝑛·2·4" of="Φ.bytes"><symbol attr="φ">𝜎2</symbol></applied>
+          <applied meta="𝑛·2·5" of="Φ.number"><meta attr="φ">𝑛·2·4</meta></applied>
+          <built meta="𝑛·2·6">𝑛·2·5</built>
+          <morph at="𝑛·2·6">
+            <applied meta="𝑛·2·7" by="morph" at="𝑛·2·6" of="Φ.number"><meta attr="φ">𝑛·2·4</meta></applied>
+          </morph>
+          <answered meta="𝑛·2·8">𝑛·2·7</answered>
         </evaluate>
-      </morph>
-    </path>
+        <bound meta="𝑛1·1">𝑛·2·7</bound>
+        <applied meta="𝑛·1·12" of="Φ.l/.root"><meta attr="α0">𝑛·2·7</meta></applied>
+        <built meta="𝑛·1·13">𝑛·1·12</built>
+      </evaluate>
+      <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
+        <dataize at="Φ.a🌵4">
+          <manufactured meta="𝛿·3·1">𝜎2</manufactured>
+        </dataize>
+        <bound meta="𝛿1·3">𝛿·3·1</bound>
+      </evaluate>
+    </morph>
     <msec>43</msec>
     <firings>3</firings>
     <fps>70</fps>

@@ -40,29 +40,27 @@ links: |
   </links>
 protocol: |
   <protocol>
-    <path>
-      <morph at="Φ.l/.e1">
-        <evaluate λ="L_entry" by="morph" at="Φ.l/.e1">
-          <evaluate λ="L_bytes_concat" by="morph" at="Φ.a🌵1">
-            <dataize at="Φ.a🌵2">
-              <manufactured meta="𝛿·2·1">𝜎2</manufactured>
-            </dataize>
-            <bound meta="𝛿1·2">𝛿·2·1</bound>
-            <dataize at="Φ.a🌵3">
-              <dataized meta="𝛿·2·2">2F-</dataized>
-            </dataize>
-            <bound meta="𝛿2·2">𝛿·2·2</bound>
-            <minted symbol="𝜎4">𝜎2 2F-</minted>
-          </evaluate>
-        </evaluate>
-        <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
-          <dataize at="Φ.a🌵4">
-            <manufactured meta="𝛿·3·1">𝜎4</manufactured>
+    <morph at="Φ.l/.e1">
+      <evaluate λ="L_entry" by="morph" at="Φ.l/.e1">
+        <evaluate λ="L_bytes_concat" by="morph" at="Φ.a🌵1">
+          <dataize at="Φ.a🌵2">
+            <manufactured meta="𝛿·2·1">𝜎2</manufactured>
           </dataize>
-          <bound meta="𝛿1·3">𝛿·3·1</bound>
+          <bound meta="𝛿1·2">𝛿·2·1</bound>
+          <dataize at="Φ.a🌵3">
+            <dataized meta="𝛿·2·2">2F-</dataized>
+          </dataize>
+          <bound meta="𝛿2·2">𝛿·2·2</bound>
+          <minted symbol="𝜎4">𝜎2 2F-</minted>
         </evaluate>
-      </morph>
-    </path>
+      </evaluate>
+      <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
+        <dataize at="Φ.a🌵4">
+          <manufactured meta="𝛿·3·1">𝜎4</manufactured>
+        </dataize>
+        <bound meta="𝛿1·3">𝛿·3·1</bound>
+      </evaluate>
+    </morph>
     <msec>130</msec>
     <firings>3</firings>
     <fps>23</fps>

@@ -13,21 +13,19 @@ eo:
       as-bytes.size > as-number
 protocol: |
   <protocol>
-    <path>
-      <morph at="Φ.l/.e11">
-        <evaluate λ="L_entry" by="morph" at="Φ.l/.e11">
-          <dataize at="Φ.a🌵1">
-            <dataized meta="𝛿·1·1">40-26-00-00-00-00-00-00</dataized>
-          </dataize>
-          <bound meta="𝛿1·1">𝛿·1·1</bound>
-          <bound meta="𝑛1·1">⊥</bound>
-          <applied meta="𝑛·1·1" of="Φ.l/.root"><bottom name="α0"/></applied>
-          <built meta="𝑛·1·2">𝑛·1·1</built>
-          <formed meta="𝑛·1·3" of="Φ.l/.root"><bottom name="v"/></formed>
-          <answered meta="𝑛·1·4">𝑛·1·3</answered>
-        </evaluate>
-      </morph>
-    </path>
+    <morph at="Φ.l/.e11">
+      <evaluate λ="L_entry" by="morph" at="Φ.l/.e11">
+        <dataize at="Φ.a🌵1">
+          <dataized meta="𝛿·1·1">40-26-00-00-00-00-00-00</dataized>
+        </dataize>
+        <bound meta="𝛿1·1">𝛿·1·1</bound>
+        <bound meta="𝑛1·1">⊥</bound>
+        <applied meta="𝑛·1·1" of="Φ.l/.root"><bottom attr="α0"/></applied>
+        <built meta="𝑛·1·2">𝑛·1·1</built>
+        <formed meta="𝑛·1·3" of="Φ.l/.root"><bottom attr="v"/></formed>
+        <answered meta="𝑛·1·4">𝑛·1·3</answered>
+      </evaluate>
+    </morph>
     <msec>225</msec>
     <firings>1</firings>
     <fps>4</fps>

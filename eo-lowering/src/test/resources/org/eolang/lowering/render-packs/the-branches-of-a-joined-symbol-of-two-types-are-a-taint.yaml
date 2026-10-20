@@ -27,35 +27,33 @@ links: |
   </links>
 protocol: |
   <protocol>
-    <path>
-      <morph at="Φ.l/.e1">
-        <evaluate λ="L_entry" by="morph" at="Φ.l/.e1">
-          <evaluate λ="L_number_gt" by="morph" at="Φ.a🌵1">
-            <minted symbol="𝜎3">𝜎1 00-00-00-00-00-00-00-00</minted>
-          </evaluate>
+    <morph at="Φ.l/.e1">
+      <evaluate λ="L_entry" by="morph" at="Φ.l/.e1">
+        <evaluate λ="L_number_gt" by="morph" at="Φ.a🌵1">
+          <minted symbol="𝜎3">𝜎1 00-00-00-00-00-00-00-00</minted>
         </evaluate>
-        <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
-          <dataize at="Φ.a🌵2">
-            <evaluate λ="L_fork" by="dataize" at="Φ.a🌵2">
-              <dataize at="Φ.a🌵6">
-                <manufactured meta="𝛿·3·1">𝜎3</manufactured>
-              </dataize>
-              <bound meta="𝛿1·3">𝛿·3·1</bound>
-              <evaluate λ="L_number_plus" by="morph" at="Φ.a🌵3">
-                <minted symbol="𝜎4">𝜎1 3F-F0-00-00-00-00-00-00</minted>
-              </evaluate>
-              <evaluate λ="L_bytes_or" by="morph" at="Φ.a🌵4">
-                <minted symbol="𝜎6">𝜎2 01-</minted>
-              </evaluate>
-              <joined symbol="𝜎5" left="𝜎4" right="𝜎6">𝜎3</joined>
-              <answered meta="𝑛·3·3">𝑛·3·2</answered>
+      </evaluate>
+      <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
+        <dataize at="Φ.a🌵2">
+          <evaluate λ="L_fork" by="dataize" at="Φ.a🌵2">
+            <dataize at="Φ.a🌵6">
+              <manufactured meta="𝛿·3·1">𝜎3</manufactured>
+            </dataize>
+            <bound meta="𝛿1·3">𝛿·3·1</bound>
+            <evaluate λ="L_number_plus" by="morph" at="Φ.a🌵3">
+              <minted symbol="𝜎4">𝜎1 3F-F0-00-00-00-00-00-00</minted>
             </evaluate>
-            <manufactured meta="𝛿·2·1">𝜎5</manufactured>
-          </dataize>
-          <bound meta="𝛿1·2">𝛿·2·1</bound>
-        </evaluate>
-      </morph>
-    </path>
+            <evaluate λ="L_bytes_or" by="morph" at="Φ.a🌵4">
+              <minted symbol="𝜎6">𝜎2 01-</minted>
+            </evaluate>
+            <joined symbol="𝜎5" left="𝜎4" right="𝜎6">𝜎3</joined>
+            <answered meta="𝑛·3·3">𝑛·3·2</answered>
+          </evaluate>
+          <manufactured meta="𝛿·2·1">𝜎5</manufactured>
+        </dataize>
+        <bound meta="𝛿1·2">𝛿·2·1</bound>
+      </evaluate>
+    </morph>
     <msec>30</msec>
     <firings>5</firings>
     <fps>166</fps>

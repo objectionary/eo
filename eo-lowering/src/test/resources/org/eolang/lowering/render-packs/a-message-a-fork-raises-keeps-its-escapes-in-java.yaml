@@ -28,82 +28,72 @@ links: |
   </links>
 protocol: |
   <protocol>
-    <path>
-      <morph at="Φ.l/.e7">
-        <evaluate λ="L_entry" by="morph" at="Φ.l/.e7">
-          <evaluate λ="L_bytes_size" by="morph" at="Φ.a🌵1">
-            <dataize at="Φ.a🌵12">
-              <manufactured meta="𝛿·2·1">𝜎7</manufactured>
+    <morph at="Φ.l/.e7">
+      <evaluate λ="L_entry" by="morph" at="Φ.l/.e7">
+        <evaluate λ="L_bytes_size" by="morph" at="Φ.a🌵1">
+          <dataize at="Φ.a🌵12">
+            <manufactured meta="𝛿·2·1">𝜎7</manufactured>
+          </dataize>
+          <bound meta="𝛿1·2">𝛿·2·1</bound>
+          <minted symbol="𝜎135">𝜎7</minted>
+        </evaluate>
+        <evaluate λ="L_bytes_eq" by="morph" at="Φ.a🌵1">
+          <dataize at="Φ.a🌵13">
+            <manufactured meta="𝛿·3·1">𝜎135</manufactured>
+          </dataize>
+          <bound meta="𝛿1·3">𝛿·3·1</bound>
+          <evaluate λ="L_bytes_size" by="morph" at="Φ.a🌵4">
+            <dataize at="Φ.a🌵15">
+              <manufactured meta="𝛿·4·1">𝜎8</manufactured>
             </dataize>
-            <bound meta="𝛿1·2">𝛿·2·1</bound>
-            <minted symbol="𝜎135">𝜎7</minted>
+            <bound meta="𝛿1·4">𝛿·4·1</bound>
+            <minted symbol="𝜎136">𝜎8</minted>
           </evaluate>
-          <evaluate λ="L_bytes_eq" by="morph" at="Φ.a🌵1">
-            <dataize at="Φ.a🌵13">
-              <manufactured meta="𝛿·3·1">𝜎135</manufactured>
+          <dataize at="Φ.a🌵14">
+            <manufactured meta="𝛿·3·2">𝜎136</manufactured>
+          </dataize>
+          <bound meta="𝛿2·3">𝛿·3·2</bound>
+          <minted symbol="𝜎137">𝜎135 𝜎136</minted>
+        </evaluate>
+        <applied meta="𝑛·1·17" of="Φ.bytes"><datum attr="φ">73-61-79-20-22-68-69-22-20-5C-20-E2-86-92-20-C3-A9-20-F0-9F-98-80-0A-09-01</datum></applied>
+        <applied meta="𝑛·1·18" of="Φ.string"><meta attr="φ">𝑛·1·17</meta></applied>
+        <applied meta="𝑛·1·19" of="Φ.l/.throw"><meta attr="message">𝑛·1·18</meta></applied>
+        <bound meta="𝑛1·1">𝑛·1·30</bound>
+      </evaluate>
+      <evaluate λ="L_root" by="morph" at="Φ.l/.e7">
+        <dataize at="Φ.a🌵6">
+          <evaluate λ="L_fork" by="dataize" at="Φ.a🌵7">
+            <dataize at="Φ.a🌵17">
+              <manufactured meta="𝛿·7·1">𝜎137</manufactured>
             </dataize>
-            <bound meta="𝛿1·3">𝛿·3·1</bound>
-            <evaluate λ="L_bytes_size" by="morph" at="Φ.a🌵4">
-              <dataize at="Φ.a🌵15">
-                <manufactured meta="𝛿·4·1">𝜎8</manufactured>
+            <bound meta="𝛿1·7">𝛿·7·1</bound>
+            <evaluate λ="L_bytes_or" by="morph" at="Φ.a🌵8">
+              <dataize at="Φ.a🌵18">
+                <manufactured meta="𝛿·8·1">𝜎7</manufactured>
               </dataize>
-              <bound meta="𝛿1·4">𝛿·4·1</bound>
-              <minted symbol="𝜎136">𝜎8</minted>
+              <bound meta="𝛿1·8">𝛿·8·1</bound>
+              <dataize at="Φ.a🌵19">
+                <manufactured meta="𝛿·8·2">𝜎8</manufactured>
+              </dataize>
+              <bound meta="𝛿2·8">𝛿·8·2</bound>
+              <minted symbol="𝜎138">𝜎7 𝜎8</minted>
             </evaluate>
-            <dataize at="Φ.a🌵14">
-              <manufactured meta="𝛿·3·2">𝜎136</manufactured>
-            </dataize>
-            <bound meta="𝛿2·3">𝛿·3·2</bound>
-            <minted symbol="𝜎137">𝜎135 𝜎136</minted>
+            <forked on="𝜎137">
+              <left>
+                <answered meta="𝑛·7·2">𝑛·7·1</answered>
+                <manufactured meta="𝛿·6·1">𝜎138</manufactured>
+                <bound meta="𝛿1·6">𝛿·6·1</bound>
+              </left>
+              <right>
+                <answered meta="𝑛·11·2">𝑛·1·19</answered>
+                <unanswered λ="L_throw" by="dataize">𝑛·1·19</unanswered>
+                <stuck λ="L_throw"/>
+              </right>
+            </forked>
           </evaluate>
-          <applied meta="𝑛·1·17" of="Φ.bytes"><datum name="φ">73-61-79-20-22-68-69-22-20-5C-20-E2-86-92-20-C3-A9-20-F0-9F-98-80-0A-09-01</datum></applied>
-          <applied meta="𝑛·1·18" of="Φ.string"><meta name="φ">𝑛·1·17</meta></applied>
-          <applied meta="𝑛·1·19" of="Φ.l/.throw"><meta name="message">𝑛·1·18</meta></applied>
-          <bound meta="𝑛1·1">𝑛·1·30</bound>
-        </evaluate>
-        <evaluate λ="L_root" by="morph" at="Φ.l/.e7">
-          <dataize at="Φ.a🌵6">
-            <evaluate λ="L_fork" by="dataize" at="Φ.a🌵7">
-              <dataize at="Φ.a🌵17">
-                <manufactured meta="𝛿·7·1">𝜎137</manufactured>
-              </dataize>
-              <bound meta="𝛿1·7">𝛿·7·1</bound>
-              <evaluate λ="L_bytes_or" by="morph" at="Φ.a🌵8">
-                <dataize at="Φ.a🌵18">
-                  <manufactured meta="𝛿·8·1">𝜎7</manufactured>
-                </dataize>
-                <bound meta="𝛿1·8">𝛿·8·1</bound>
-                <dataize at="Φ.a🌵19">
-                  <manufactured meta="𝛿·8·2">𝜎8</manufactured>
-                </dataize>
-                <bound meta="𝛿2·8">𝛿·8·2</bound>
-                <minted symbol="𝜎138">𝜎7 𝜎8</minted>
-              </evaluate>
-              <forked side="left">𝜎137</forked>
-              <answered meta="𝑛·7·2">𝑛·7·1</answered>
-            </evaluate>
-          </dataize>
-          <dataize at="Φ.a🌵16">
-            <manufactured meta="𝛿·6·1">𝜎138</manufactured>
-          </dataize>
-          <bound meta="𝛿1·6">𝛿·6·1</bound>
-        </evaluate>
-      </morph>
-    </path>
-    <path>
-      <morph at="Φ.l/.e7">
-        <evaluate λ="L_root" by="morph" at="Φ.l/.e7">
-          <dataize at="Φ.a🌵6">
-            <evaluate λ="L_fork" by="dataize" at="Φ.a🌵7">
-              <forked side="right">𝜎137</forked>
-              <answered meta="𝑛·11·2">𝑛·1·19</answered>
-            </evaluate>
-            <unanswered λ="L_throw" by="dataize">𝑛·1·19</unanswered>
-          </dataize>
-          <stuck λ="L_throw"/>
-        </evaluate>
-      </morph>
-    </path>
+        </dataize>
+      </evaluate>
+    </morph>
     <msec>32</msec>
     <firings>9</firings>
     <fps>281</fps>

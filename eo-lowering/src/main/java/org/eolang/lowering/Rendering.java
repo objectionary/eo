@@ -103,16 +103,15 @@ import org.cactoos.text.TextOf;
  * the check of {@code bytes.xor} that its operands have one length. phino
  * works out both sides of it first. When they are the same up to their
  * symbols, phino joins them into one symbol, and the atom assigns that
- * symbol inside an {@code if} on the condition. Otherwise phino goes on
- * with the left side and opens a new path, which starts at the fork with
- * the right side and inherits every decision of the path it left. The
- * protocol holds one path for every such continuation, in the order the
- * forks opened them. The atom is the tree of these decisions: an
- * {@code if} for every fork, with the statements only one side needs
- * inside that side, and a {@code return} or a {@code throw} at the end of
- * every path. A path whose side is a copy of {@code throw} ends in the
- * throw of its message, the way the root of a whole entry does, and an
- * entry that throws a message it would have to compute is a taint.</p>
+ * symbol inside an {@code if} on the condition. Otherwise the run splits
+ * into two flows, one per side, and the record of the fork holds what
+ * each of them did from there on, with the forks they meet nested inside
+ * it the same way. The atom is the tree of these forks: an {@code if} for
+ * every fork, with the statements only one side needs inside that side,
+ * and a {@code return} or a {@code throw} at the end of every flow. A flow
+ * whose side is a copy of {@code throw} ends in the throw of its message,
+ * the way the root of a whole entry does, and an entry that throws a
+ * message it would have to compute is a taint.</p>
  *
  * @since 0.64.0
  * @todo #9248:45min Put the object around a root that comes out of an
