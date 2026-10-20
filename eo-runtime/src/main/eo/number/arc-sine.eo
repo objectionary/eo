@@ -1,4 +1,4 @@
-# Arc sine of `num` as `org.eolang.number`, the angle in radians whose sine is
+# Arc sine of `num` as `number`, the angle in radians whose sine is
 # `num`. An argument above one half is folded toward zero through the identity
 # asin(x) equals pi/2 minus twice asin(sqrt((1 minus x) div 2)), so the Taylor
 # series always runs in its fast region, while arguments outside [-1, 1] and
