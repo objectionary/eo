@@ -5,6 +5,7 @@
 package org.eolang.lowering;
 
 import com.jcabi.log.Logger;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,18 +15,17 @@ import java.util.Comparator;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Stream;
 import org.cactoos.Proc;
 import org.cactoos.Scalar;
 import org.cactoos.Text;
 import org.cactoos.bytes.BytesOf;
 import org.cactoos.bytes.Sha256DigestOf;
 import org.cactoos.experimental.Threads;
-import org.cactoos.io.Directory;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.iterable.Sorted;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
@@ -200,13 +200,18 @@ final class Morphing implements Proc<Path> {
                 () -> new BytesOf(new ResourceOf("org/eolang/lowering/atoms.yaml")).asBytes()
             ).value()
         );
-        final Path protocols = home.resolve("2-protocols");
+        final Path protocols = new Seqdir(home, 1).dirs().once("protocols");
         final Path texts = home.resolve("texts");
         for (final Path dir : new ListOf<>(protocols, texts)) {
             if (Files.exists(dir)) {
-                for (final Path stale
-                    : new Sorted<>(Comparator.reverseOrder(), new Directory(dir))) {
-                    Files.delete(stale);
+                try (Stream<Path> inside = Files.walk(dir)) {
+                    for (final Path stale : new ListOf<>(
+                        inside.filter(path -> !path.equals(dir))
+                            .sorted(Comparator.reverseOrder())
+                            .iterator()
+                    )) {
+                        Files.delete(stale);
+                    }
                 }
             }
         }

@@ -71,6 +71,7 @@ final class RenderingTest {
             String.format("3\tΦ.slow%n").getBytes(StandardCharsets.UTF_8)
         );
         Files.write(home.resolve("voids.tsv"), new byte[0]);
+        Files.createDirectories(temp.resolve("2-protocols"));
         Files.write(
             Files.createDirectories(temp.resolve("1-planting")).resolve("slow.xmir"),
             new EoSyntax(String.format("[] > slow%n  42 > @%n")).parsed().toString()
@@ -154,6 +155,24 @@ final class RenderingTest {
     }
 
     @Test
+    void failsNamingTheHomeWithoutProtocols(@Mktmp final Path temp) throws IOException {
+        Files.write(
+            Files.createDirectories(temp).resolve("entries.tsv"),
+            String.format("5\tΦ.idle%n").getBytes(StandardCharsets.UTF_8)
+        );
+        final Path tables = RenderingTest.tables(temp, "<links/>", "<atoms/>", "<provides/>");
+        MatcherAssert.assertThat(
+            "the failure must name the home with no protocols, but it doesnt",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> new Rendering(temp.resolve("atoms"), tables).exec(temp),
+                "a home without protocols must fail the rendering"
+            ).getMessage(),
+            Matchers.containsString(temp.toString())
+        );
+    }
+
+    @Test
     void logsAnEntryWithNoProtocol(@Mktmp final Path temp) throws IOException {
         final Path home = Files.createDirectories(temp);
         final int number = new SecureRandom().nextInt(900) + 100;
@@ -162,6 +181,7 @@ final class RenderingTest {
             String.format("%d\tΦ.lazy%n", number).getBytes(StandardCharsets.UTF_8)
         );
         Files.write(home.resolve("voids.tsv"), new byte[0]);
+        Files.createDirectories(temp.resolve("2-protocols"));
         Files.write(
             Files.createDirectories(temp.resolve("1-planting")).resolve("lazy.xmir"),
             new EoSyntax(String.format("[] > lazy%n  42 > @%n")).parsed().toString()
@@ -362,7 +382,7 @@ final class RenderingTest {
                         .getBytes(StandardCharsets.UTF_8)
                 );
             }
-            final Path protocol = this.temp.resolve("2-protocols")
+            final Path protocol = this.temp.resolve("5-protocols")
                 .resolve(new Locator(locator).protocol());
             Files.createDirectories(protocol.getParent());
             Files.write(

@@ -104,7 +104,7 @@ final class LoweringTest {
                 Matchers.containsInAnyOrder(
                     "entries.xmir", "voids.tsv", "entries.tsv",
                     "world.phi", "atoms.yaml", "rendered.tsv", "patched.tsv",
-                    "1-planting", "2-protocols"
+                    "1-planting", "2-protocols", ".seqdir.lock"
                 )
             );
         }
