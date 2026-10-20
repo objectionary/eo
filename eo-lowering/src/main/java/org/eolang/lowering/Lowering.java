@@ -42,8 +42,7 @@ import org.eolang.cache.GlobalCache;
  * <li>{@code texts}, inside the home directory, holds the same protocols
  * written as indented text, for a person to read, only when they are asked
  * for;</li>
- * <li>the directory of atoms, given to the constructor, holds the Java
- * atoms;</li>
+ * <li>{@code 3-atoms}, inside the home directory, holds the Java atoms;</li>
  * <li>the directory of patched sources, given to the constructor, holds
  * the XMIR files where atoms took the place of the bodies of
  * objects.</li>
@@ -89,11 +88,6 @@ public final class Lowering {
     private final GlobalCache cache;
 
     /**
-     * The directory for the Java atoms, which javac compiles.
-     */
-    private final Path atoms;
-
-    /**
      * The directory for the XMIR files where atoms took the place of the
      * bodies of objects, which the transpiler reads.
      */
@@ -135,7 +129,6 @@ public final class Lowering {
      * @param exe The name of the phino program, or the path to it
      * @param pin The only version of phino that the lowering accepts
      * @param store The cache, where the protocols are kept between builds
-     * @param kept The directory for the Java atoms, which javac compiles
      * @param copies The directory for the patched XMIR files
      * @param range The entries that phino is allowed to run on
      * @param ceiling The largest number of steps inside one another that one
@@ -148,13 +141,11 @@ public final class Lowering {
      */
     public Lowering(
         final Collection<Path> srcs, final Path tbls, final Path dir, final String exe,
-        final String pin, final GlobalCache store, final Path kept, final Path copies,
-        final Scope range, final int ceiling, final int again, final Duration span,
-        final boolean text
+        final String pin, final GlobalCache store, final Path copies, final Scope range,
+        final int ceiling, final int again, final Duration span, final boolean text
     ) {
         this(
-            srcs, tbls, dir, new Phino(exe, pin), store, kept, copies, range, ceiling, again,
-            span, text
+            srcs, tbls, dir, new Phino(exe, pin), store, copies, range, ceiling, again, span, text
         );
     }
 
@@ -166,7 +157,6 @@ public final class Lowering {
      * @param dir The home directory of the lowering, usually {@code target/eo/NN-lowering}
      * @param exe The phino program on this computer
      * @param store The cache, where the protocols are kept between builds
-     * @param kept The directory for the Java atoms, which javac compiles
      * @param copies The directory for the patched XMIR files
      * @param range The entries that phino is allowed to run on
      * @param ceiling The largest number of steps inside one another that one
@@ -178,15 +168,14 @@ public final class Lowering {
      */
     Lowering(
         final Collection<Path> srcs, final Path tbls, final Path dir, final Phino exe,
-        final GlobalCache store, final Path kept, final Path copies, final Scope range,
-        final int ceiling, final int again, final Duration span, final boolean text
+        final GlobalCache store, final Path copies, final Scope range, final int ceiling,
+        final int again, final Duration span, final boolean text
     ) {
         this.sources = srcs;
         this.tables = tbls;
         this.home = dir;
         this.phino = exe;
         this.cache = store;
-        this.atoms = kept;
         this.patched = copies;
         this.scope = range;
         this.steps = ceiling;
@@ -264,7 +253,7 @@ public final class Lowering {
                     this.phino, this.cache, this.scope, this.steps, this.loops, this.budget,
                     this.texts
                 ),
-                new Rendering(this.atoms, this.tables),
+                new Rendering(this.tables),
                 new Patching(this.sources, this.tables, this.patched)
             )
         ).exec(this.home);
