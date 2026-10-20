@@ -583,12 +583,18 @@
   than folded (#5952). Restricted to based handles: an abstract formation
   becomes a `| args` pipe (see the two abstract branches above), and a bare or
   argument-less based handle (`a.plus &gt;&gt; b`) carries no children of its
-  own, so appending the reference's arguments applies it cleanly.
+  own, so appending the reference's arguments applies it cleanly. A
+  dataized-const handle (`foo &gt;&gt;! h`, R-3.10.12) counts here too: its
+  children are the `&#934;.dataized` wrapper rather than arguments, yet the fold
+  reads them the same way and appends nothing, so `h 5 &gt; g` printed as
+  `foo &gt; g!` and the `5` was gone (#9295). Such a const has no inline
+  spelling as the head of an application either — the fold would have to dataize
+  the value and apply the result in one breath — so it is left standing as well.
   -->
   <xsl:function name="eo:reapplied" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string"/>
-    <xsl:sequence select="not(eo:abstract($target)) and not(eo:dataized-const($target)) and exists($target/o) and exists(eo:references($target, $name)[eo:resolved-name(@base) = $name and o])"/>
+    <xsl:sequence select="not(eo:abstract($target)) and exists($target/o) and exists(eo:references($target, $name)[eo:resolved-name(@base) = $name and o])"/>
   </xsl:function>
   <!--
   Whether the auto-named binding `$target` survives the drop template
