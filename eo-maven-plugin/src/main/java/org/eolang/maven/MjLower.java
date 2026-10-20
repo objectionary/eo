@@ -120,7 +120,10 @@ public final class MjLower extends MjSafe {
     private boolean optional;
 
     /**
-     * The seconds one run of phino may take on one entry before it is killed.
+     * The seconds one run of phino may take on one entry, after which it
+     * stops itself and closes the protocol with a {@code timeout} element.
+     * Nothing kills phino, so the protocol of an entry that ran out of
+     * time is whole and can be read.
      */
     @Parameter(
         alias = "loweringBudget",
