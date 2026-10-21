@@ -27,7 +27,13 @@ that does bind something of its own is where the walk ends, and if we cannot
 say which formation it is we say so rather than dressing up a guess.
 
 The goal runs after `pre-inference` and writes three XML tables into
-`target/eo/6-inference`. Nothing else in the compiler reads them yet.
+`target/eo/NN-inference`, where `Subdir` gives the directory its number.
+Two parts of the compiler read them. The transpiler loads `provides.xml` and
+`links.xml` in `purify.xsl` and stamps `@pure`, which `to-java.xsl` turns
+into a `PhSticky`, and `Transpilation` folds their rows into its cache key
+for that reason. `eo-lowering` reads all three: `Planting` refuses to start
+without them, and `Signatures` says from them what every patched atom takes
+and gives.
 
 ## What it prints
 
@@ -154,10 +160,12 @@ is told nothing.
 
 The three numbers say how much of a program we understand without saying which
 part. A page per source file says both, with the author's own source on it and
-a mark on every object: green where we can name the formation, amber where the
-answer is somebody else's void, red where there is nothing. Hovering over a
-mark says what the tables hold about it, and an amber one names what the
-program was seen putting into the void besides.
+a mark on every object: green where we can name the formation, amber where
+the name is rooted in a void the callers of the program fill several ways,
+violet where it is rooted in a void only an atom fills, slate where it is
+rooted in a void nobody fills, and red where there is nothing. Hovering over
+a mark says what the tables hold about it, and one rooted in a void names
+what the program was seen putting into it besides.
 
 The pages of eo-runtime are published at
 [www.eolang.org/inference](https://www.eolang.org/inference/), rebuilt on every

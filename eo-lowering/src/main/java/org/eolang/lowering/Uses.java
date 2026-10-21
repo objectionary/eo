@@ -6,8 +6,8 @@ package org.eolang.lowering;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import io.github.sekator778.seqdir.Seqdir;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -73,7 +73,7 @@ final class Uses {
                     () -> {
                         final Map<String, Map.Entry<String, Collection<String>>> all =
                             new HashMap<>(0);
-                        if (Files.exists(home.resolve("1-planting"))) {
+                        if (new Seqdir(home, 1).dirs().find("planting").isPresent()) {
                             for (final Path copy : new Copies(home)) {
                                 final XML xmir = new XMLDocument(copy);
                                 all.put(

@@ -65,6 +65,14 @@ import org.eolang.lowering.Scope;
  * and its text.</p>
  *
  * @since 0.64.0
+ * @todo #9510:60min Number the directories of texts, atoms and patched
+ *  sources through seqdir, the way the lowering numbers planting and
+ *  protocols. Morphing has to reserve texts with once() only when it saves
+ *  them, and still clean an unnumbered texts left by an older build.
+ *  Rendering and Patching have to reserve atoms and patched sources with
+ *  once(), so Lowering, Rendering and Patching stop taking these two
+ *  directories in their constructors, and this goal finds them after the
+ *  lowering instead of resolving 3-atoms and 4-patched.
  */
 @Mojo(
     name = "lower",
@@ -112,7 +120,10 @@ public final class MjLower extends MjSafe {
     private boolean optional;
 
     /**
-     * The seconds one run of phino may take on one entry before it is killed.
+     * The seconds one run of phino may take on one entry, after which it
+     * stops itself and closes the protocol with a {@code timeout} element.
+     * Nothing kills phino, so the protocol of an entry that ran out of
+     * time is whole and can be read.
      */
     @Parameter(
         alias = "loweringBudget",

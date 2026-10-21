@@ -46,6 +46,11 @@
       <!-- version from parent POM -->
     </dependency>
     <dependency>
+      <groupId>io.github.sekator778</groupId>
+      <artifactId>seqdir</artifactId>
+      <version>0.2.0</version>
+    </dependency>
+    <dependency>
       <groupId>net.sf.saxon</groupId>
       <artifactId>Saxon-HE</artifactId>
       <!-- version from parent POM -->

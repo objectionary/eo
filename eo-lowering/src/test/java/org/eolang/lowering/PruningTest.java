@@ -30,6 +30,23 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class PruningTest {
 
     @Test
+    void prunesIntoThePlantingOfAnEarlierBuild(@Mktmp final Path temp) throws IOException {
+        Files.createDirectories(temp.resolve("3-planting"));
+        new Pruning(
+            Collections.singletonList(
+                PruningTest.parsed(
+                    temp.resolve("calm.xmir"), String.format("[] > calm%n  42 > @%n")
+                )
+            )
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "the copy must land in the planting of an earlier build, but it didnt",
+            temp.resolve("3-planting/calm.xmir").toFile(),
+            FileMatchers.anExistingFile()
+        );
+    }
+
+    @Test
     void cutsACheckOutOfAnObject(@Mktmp final Path temp) throws IOException {
         new Pruning(
             Collections.singletonList(

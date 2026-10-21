@@ -9,6 +9,7 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -179,6 +180,14 @@ final class Rendering implements Proc<Path> {
                 )
             );
         }
+        final Path protocols = new Seqdir(home, 1).dirs().find("protocols").orElseThrow(
+            () -> new IllegalStateException(
+                String.format(
+                    "There are no protocols in '%s', while rendering needs the protocols the morphing writes",
+                    home
+                )
+            )
+        );
         final Map<String, Path> tops = new HashMap<>(0);
         for (final Path copy : new Copies(home)) {
             tops.put(new XMLDocument(copy).xpath("/object/o[1]/@loc").get(0), copy);
@@ -198,8 +207,7 @@ final class Rendering implements Proc<Path> {
             new Mapped<>(Text::asString, new Split(new TextOf(entries), "\\R"))
         )) {
             final String[] cells = row.split("\t", -1);
-            final Path protocol = home.resolve("2-protocols")
-                .resolve(new Locator(cells[1]).protocol());
+            final Path protocol = protocols.resolve(new Locator(cells[1]).protocol());
             if (Files.exists(protocol)) {
                 final String top = Rendering.top(tops, cells[1]);
                 final XML out = sheet
