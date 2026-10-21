@@ -6,6 +6,7 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -95,7 +96,7 @@ final class Dealphaing implements Step {
         if (this.tojos.isEmpty()) {
             Logger.debug(this, "No XMIR to name the arguments in");
         } else {
-            final Path dir = new Subdir(this.target, "dealpha").path();
+            final Path dir = new Seqdir(this.target, 2).dirs().once("dealpha");
             final Map<String, String> names = this.landings.names();
             final Map<String, Collection<String>> verdicts = new HashMap<>(3);
             for (final TjForeign tojo : this.tojos) {

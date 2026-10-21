@@ -32,11 +32,13 @@ import java.util.Optional;
  * claim the same number and one name never gets two (see #9013).</p>
  *
  * @since 0.72.0
- * @todo #9510:45min Remove this class and let every goal call Seqdir
- *  directly, as the lowering does, so that one rule names the stage
- *  directories of the plugin and of the lowering alike. The fallback of
- *  orConfigured() and foundOrConfigured() to a directory given in a mojo
- *  parameter has to stay where those goals read it.
+ * @todo #9557:60min Let MjInference, MjInferenceReport, MjDealpha, MjLower,
+ *  MjTranspile, MjAtomsTable and MjRegister call Seqdir directly, as the
+ *  other goals already do, keeping in each of them the fallback to the
+ *  directory given in its mojo parameter, and the unnumbered path that
+ *  found() gives to a stage that never ran. Then move FakeMaven and the
+ *  tests to Seqdir, drop the mentions of this class from the javadoc and
+ *  from eo-inference/README.md, and remove this class with SubdirTest.
  */
 final class Subdir {
 

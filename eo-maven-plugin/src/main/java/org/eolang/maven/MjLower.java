@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -205,7 +206,8 @@ public final class MjLower extends MjSafe {
     @Override
     void exec() throws IOException {
         if (this.lowering) {
-            final Path home = new Subdir(this.target, "lowering").path().toAbsolutePath();
+            final Path home = new Seqdir(this.target.toPath(), 2).dirs()
+                .once("lowering").toAbsolutePath();
             final Path atoms = home.resolve("3-atoms");
             try (TjsForeign tojos = this.tojos()) {
                 final Lowering pipeline = new Lowering(

@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -37,7 +38,7 @@ public final class MjPlace extends MjSafe {
         try (TjsPlaced placed = this.placed()) {
             new Placing(
                 placed,
-                new Subdir(this.target, "resolve").path(),
+                new Seqdir(this.target.toPath(), 2).dirs().once("resolve"),
                 this.classes.toPath(),
                 this.placeBinaries,
                 this.skipBinaries,

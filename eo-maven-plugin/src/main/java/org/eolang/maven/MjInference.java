@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -87,7 +88,7 @@ public final class MjInference extends MjSafe {
 
     @Override
     void exec() throws IOException {
-        final Path parsed = new Subdir(this.target, "parse").path();
+        final Path parsed = new Seqdir(this.target.toPath(), 2).dirs().once("parse");
         try (TjsForeign tojos = this.tojos()) {
             new Inferring(
                 new Mapped<>(
