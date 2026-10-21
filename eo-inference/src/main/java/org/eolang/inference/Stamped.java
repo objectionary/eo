@@ -5,8 +5,10 @@
 package org.eolang.inference;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -31,6 +33,9 @@ import java.util.Map;
  * <p>A formation declaring {@code ^} is asked about first, because the parser
  * writes that {@code ^} where it writes the receiver of a dispatch, and
  * {@link Xmirs} finds the two the same way.</p>
+ *
+ * <p>A formation written as an argument is stamped the same way, by whatever
+ * holds the void it was put in, which is the application that put it there.</p>
  *
  * @since 0.76.0
  */
@@ -130,6 +135,45 @@ final class Stamped {
             found = walked;
         }
         return found;
+    }
+
+    /**
+     * Give every formation an application puts into a void its receiver.
+     *
+     * <p>A formation written as an argument belongs to nobody, and the
+     * {@code ^} it declares is empty until it is read off the void it was put
+     * in. The runtime stamps it then with the object that holds the void, as
+     * it does with any attribute, and that object is the application or a
+     * copy of it: {@code x [^]} fills the {@code ^} of that {@code [^]} with
+     * the {@code x}, whoever reads its {@code y}. A copy that points at a
+     * formation got its receiver where it was written and is not told, a
+     * receiver filled already stays, and one that came by way of a relay is a
+     * relay too (#9359).</p>
+     *
+     * @param found What every application fills, to add the receivers to
+     * @param relays What every application fills by way of a relay, to add
+     *  the receivers that came that way to
+     */
+    void adopt(
+        final Map<String, Map<String, String>> found,
+        final Map<String, Collection<String>> relays
+    ) {
+        final Map<String, Map<String, String>> adopted = new HashMap<>(0);
+        for (final Map.Entry<String, Map<String, String>> filled : found.entrySet()) {
+            for (final Map.Entry<String, String> fill : filled.getValue().entrySet()) {
+                final String hollow = this.owned.receiver(fill.getValue());
+                if (!hollow.isEmpty() && !fill.getKey().endsWith(".ρ")
+                    && !filled.getValue().containsKey(hollow)) {
+                    adopted.computeIfAbsent(filled.getKey(), key -> new LinkedHashMap<>(1))
+                        .put(hollow, filled.getKey());
+                    if (relays.getOrDefault(filled.getKey(), Collections.emptySet())
+                        .contains(fill.getKey())) {
+                        relays.get(filled.getKey()).add(hollow);
+                    }
+                }
+            }
+        }
+        adopted.forEach((application, given) -> found.get(application).putAll(given));
     }
 
     private boolean dotted(final String name) {

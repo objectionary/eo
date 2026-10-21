@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A formation written as an argument belongs to nobody, so the `^` it declares
+# is not the `foo` it happens to sit in. The runtime stamps it with the object
+# that holds the void it was put in whenever `$.y` reads it there, so the `^`
+# holds the `x` it was handed to, and a `leaf` taken off it is the `leaf` of
+# an `x`. Nothing is declared for that void, so the row says no `holds`. The
+# `bar` handed to the other `x` is no formation written there: it got its
+# receiver where it was written, and `other` fills no `^` of it (#9359).
+eo:
+  foo.eo: |
+    [] > foo
+      x > @
+        [^]
+          ^.leaf > five
+      x bar > other
+      [^] > bar
+      [y] > x
+        $.y.five > @
+        [] > leaf
+provides:
+  - "/provides/type[@id='Φ.foo.φ.α0']/attr[@name='ρ'][not(@holds)]\
+    /witnessed[not(.//ref[@loc='Φ.foo'])]/ref[@loc='Φ.foo.x']"
+links:
+  - "/links/type[@id='Φ.foo.φ']/ref/bind[@void='Φ.foo.φ.α0.ρ'][not(@witnessed)]"
+  - "/links/type[@id='Φ.foo.φ.α0.five']/ref[@loc='Φ.foo.x.leaf']"
+  - "/links[not(type[@id='Φ.foo.other']//bind[@void='Φ.foo.bar.ρ'])]"
