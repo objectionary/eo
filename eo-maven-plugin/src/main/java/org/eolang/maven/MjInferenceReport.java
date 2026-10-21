@@ -46,14 +46,15 @@ public final class MjInferenceReport extends MjSafe {
 
     /**
      * The directory where the XMIR prepared for the rules was saved, falling
-     * back to a directory {@link Subdir} numbers "pre-inference" when unset.
+     * back to the "pre-inference" directory {@link Subdir} already found
+     * when unset.
      */
     @Parameter(alias = "preInferenceDir", property = "eo.preInferenceDir")
     private File prepared;
 
     /**
-     * The directory where the tables were saved, falling back to a
-     * directory {@link Subdir} numbers "inference" when unset.
+     * The directory where the tables were saved, falling back to the
+     * "inference" directory {@link Subdir} already found when unset.
      */
     @Parameter(alias = "inferenceDir", property = "eo.inferenceDir")
     private File tables;
@@ -68,8 +69,8 @@ public final class MjInferenceReport extends MjSafe {
     @Override
     void exec() throws IOException {
         new Reporting(
-            new Subdir(this.target, "pre-inference").orConfigured(this.prepared),
-            new Subdir(this.target, "inference").orConfigured(this.tables),
+            new Subdir(this.target, "pre-inference").foundOrConfigured(this.prepared),
+            new Subdir(this.target, "inference").foundOrConfigured(this.tables),
             this.pages.toPath()
         ).exec();
     }
