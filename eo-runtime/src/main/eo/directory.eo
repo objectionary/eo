@@ -769,7 +769,7 @@
     mktemp.tmpfile.deleted.as-path.as-dir > parent
 
   tmpfile. --> stops-on-a-tmpfile-in-an-absent-directory
-    @.
+    as-dir.
       mktemp.tmpfile.deleted.as-path.resolved "child"
 
   is-directory. --> stops-on-checking-an-absent-directory

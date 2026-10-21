@@ -534,7 +534,7 @@
     I
 
   tmpfile. --> stops-on-touching-a-temp-file-in-an-absent-directory
-    @.
+    as-dir.
       mktemp.as-path.resolved "foo"
 
   mktemp.tmpfile.open --> stops-on-writing-with-a-wrong-mode
