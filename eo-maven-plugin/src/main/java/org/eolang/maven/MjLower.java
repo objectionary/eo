@@ -230,7 +230,14 @@ public final class MjLower extends MjSafe {
                     );
                 } else {
                     pipeline.exec();
-                    final Path atoms = new Seqdir(home, 1).dirs().find("atoms").orElseThrow();
+                    final Path atoms = new Seqdir(home, 1).dirs().find("atoms").orElseThrow(
+                        () -> new IllegalStateException(
+                            String.format(
+                                "There are no atoms in '%s', while the lowering always makes them",
+                                home
+                            )
+                        )
+                    );
                     MjLower.repoint(tojos, home);
                     this.project.addCompileSourceRoot(atoms.toString());
                     Logger.info(
