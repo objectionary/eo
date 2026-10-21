@@ -95,12 +95,12 @@ final class RenderingTest {
             String.format("3\tΦ.slow%n").getBytes(StandardCharsets.UTF_8)
         );
         Files.write(home.resolve("voids.tsv"), new byte[0]);
+        Files.createDirectories(temp.resolve("2-protocols"));
         Files.write(
             Files.createDirectories(temp.resolve("1-planting")).resolve("slow.xmir"),
             new EoSyntax(String.format("[] > slow%n  42 > @%n")).parsed().toString()
                 .getBytes(StandardCharsets.UTF_8)
         );
-        Files.createDirectories(temp.resolve("2-protocols"));
         final Path stale = Files.createDirectories(
             temp.resolve("3-atoms").resolve("org").resolve("eolang")
         ).resolve("EOstale$EOφ.java");
