@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fb version="0.19.6" size="18365818">
+<fb version="0.19.6" size="18402100">
   <f>
     <added t="I">8</added>
     <cycles t="I">1</cycles>
     <deleted t="I">8</deleted>
-    <error t="S">Judge find-all-issues stopped by timeout after 9m23s: execution expired</error>
     <inserted t="I">8</inserted>
-    <seconds t="F">2417.791275187</seconds>
+    <seconds t="F">2310.509794741</seconds>
     <version t="S">0.61.1</version>
     <what t="S">judges-summary</what>
-    <when t="T">2026-10-21T00:43:56Z</when>
+    <when t="T">2026-10-21T11:08:48Z</when>
   </f>
   <f>
     <_id t="I">671</_id>
@@ -267500,7 +267499,7 @@
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">94</latest_issue_was_found>
     <merges_were_scanned t="I">0</merges_were_scanned>
-    <min_issue_was_found t="I">146</min_issue_was_found>
+    <min_issue_was_found t="I">147</min_issue_was_found>
     <min_pull_was_found t="I">0</min_pull_was_found>
     <repository t="I">447446664</repository>
     <types_were_scanned t="I">0</types_were_scanned>
@@ -269428,10 +269427,10 @@
     <_job t="I">28730971104</_job>
     <_time t="T">2026-07-05T05:47:35Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">836</assignees_were_scanned>
+    <assignees_were_scanned t="I">1122</assignees_were_scanned>
     <closures_were_checked t="I">0</closures_were_checked>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">24640968761</events_were_scanned>
+    <events_were_scanned t="I">24704232879</events_were_scanned>
     <issues_were_scanned t="I">1226</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">347</latest_issue_was_found>
@@ -269439,7 +269438,7 @@
     <min_issue_was_found t="I">1115</min_issue_was_found>
     <min_pull_was_found t="I">335</min_pull_was_found>
     <repository t="I">840332960</repository>
-    <types_were_scanned t="I">798</types_were_scanned>
+    <types_were_scanned t="I">945</types_were_scanned>
     <what t="S">iterate</what>
     <where t="S">github</where>
   </f>
@@ -271972,7 +271971,7 @@
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">34</latest_issue_was_found>
     <merges_were_scanned t="I">0</merges_were_scanned>
-    <min_issue_was_found t="I">49</min_issue_was_found>
+    <min_issue_was_found t="I">50</min_issue_was_found>
     <min_pull_was_found t="I">0</min_pull_was_found>
     <repository t="I">570457023</repository>
     <types_were_scanned t="I">0</types_were_scanned>
@@ -274463,6 +274462,7 @@
       <v t="F">7.582277962211566</v>
       <v t="F">7.582277962211566</v>
       <v t="F">7.582277962211566</v>
+      <v t="F">7.582277962211566</v>
     </cost_of_qod>
     <qod_per_day>
       <v t="F">20.262571430008</v>
@@ -275334,9 +275334,10 @@
       <v t="F">65.6929794058284</v>
       <v t="F">65.6929794058284</v>
       <v t="F">65.6929794058284</v>
+      <v t="F">65.6929794058284</v>
     </qod_per_day>
     <what t="S">learn-eva</what>
-    <when t="T">2026-10-20T21:29:29Z</when>
+    <when t="T">2026-10-21T05:33:35Z</when>
   </f>
   <f>
     <_id t="I">1108453</_id>
@@ -276663,18 +276664,18 @@
     <_job t="I">28918253257</_job>
     <_time t="T">2026-07-08T04:55:42Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">1078</assignees_were_scanned>
+    <assignees_were_scanned t="I">1565</assignees_were_scanned>
     <closures_were_checked t="I">0</closures_were_checked>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">17749110664</events_were_scanned>
+    <events_were_scanned t="I">17801873305</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
-    <labels_were_scanned t="I">1876</labels_were_scanned>
+    <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">365</latest_issue_was_found>
     <merges_were_scanned t="I">0</merges_were_scanned>
     <min_issue_was_found t="I">1767</min_issue_was_found>
     <min_pull_was_found t="I">0</min_pull_was_found>
     <repository t="I">977982682</repository>
-    <types_were_scanned t="I">926</types_were_scanned>
+    <types_were_scanned t="I">1081</types_were_scanned>
     <what t="S">iterate</what>
     <where t="S">github</where>
   </f>
@@ -277417,7 +277418,7 @@
     <assignees_were_scanned t="I">0</assignees_were_scanned>
     <closures_were_checked t="I">0</closures_were_checked>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">24638572853</events_were_scanned>
+    <events_were_scanned t="I">24678298446</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">160</latest_issue_was_found>
@@ -279938,18 +279939,18 @@
     <_job t="I">29014863301</_job>
     <_time t="T">2026-07-09T11:37:47Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">1380</assignees_were_scanned>
-    <closures_were_checked t="I">0</closures_were_checked>
+    <assignees_were_scanned t="I">1076</assignees_were_scanned>
+    <closures_were_checked t="I">1057</closures_were_checked>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">24661231352</events_were_scanned>
+    <events_were_scanned t="I">17782968508</events_were_scanned>
     <issues_were_scanned t="I">1532</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">765</latest_issue_was_found>
     <merges_were_scanned t="I">0</merges_were_scanned>
-    <min_issue_was_found t="I">1359</min_issue_was_found>
+    <min_issue_was_found t="I">1366</min_issue_was_found>
     <min_pull_was_found t="I">1018</min_pull_was_found>
     <repository t="I">889819508</repository>
-    <types_were_scanned t="I">0</types_were_scanned>
+    <types_were_scanned t="I">836</types_were_scanned>
     <what t="S">iterate</what>
     <where t="S">github</where>
   </f>
@@ -282224,10 +282225,10 @@
     <_job t="I">29023948844</_job>
     <_time t="T">2026-07-09T14:12:52Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">0</assignees_were_scanned>
+    <assignees_were_scanned t="I">1797</assignees_were_scanned>
     <closures_were_checked t="I">0</closures_were_checked>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">17576796141</events_were_scanned>
+    <events_were_scanned t="I">24689969334</events_were_scanned>
     <issues_were_scanned t="I">1808</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">1356</latest_issue_was_found>
@@ -282235,7 +282236,7 @@
     <min_issue_was_found t="I">1713</min_issue_was_found>
     <min_pull_was_found t="I">1573</min_pull_was_found>
     <repository t="I">671896902</repository>
-    <types_were_scanned t="I">0</types_were_scanned>
+    <types_were_scanned t="I">1671</types_were_scanned>
     <what t="S">iterate</what>
     <where t="S">github</where>
   </f>
@@ -282250,7 +282251,7 @@
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">5</latest_issue_was_found>
     <merges_were_scanned t="I">0</merges_were_scanned>
-    <min_issue_was_found t="I">23</min_issue_was_found>
+    <min_issue_was_found t="I">25</min_issue_was_found>
     <min_pull_was_found t="I">1</min_pull_was_found>
     <repository t="I">1260338737</repository>
     <types_were_scanned t="I">0</types_were_scanned>
@@ -282324,7 +282325,7 @@
     <assignees_were_scanned t="I">0</assignees_were_scanned>
     <closures_were_checked t="I">0</closures_were_checked>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">23885991948</events_were_scanned>
+    <events_were_scanned t="I">24674280983</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">69</latest_issue_was_found>
@@ -282369,7 +282370,7 @@
     <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">184</latest_issue_was_found>
     <merges_were_scanned t="I">0</merges_were_scanned>
-    <min_issue_was_found t="I">268</min_issue_was_found>
+    <min_issue_was_found t="I">270</min_issue_was_found>
     <min_pull_was_found t="I">52</min_pull_was_found>
     <repository t="I">519299365</repository>
     <types_were_scanned t="I">0</types_were_scanned>
@@ -282754,8 +282755,8 @@
     <_job t="I">29023948844</_job>
     <_time t="T">2026-07-09T14:18:00Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">1314</assignees_were_scanned>
-    <closures_were_checked t="I">0</closures_were_checked>
+    <assignees_were_scanned t="I">1124</assignees_were_scanned>
+    <closures_were_checked t="I">1140</closures_were_checked>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
     <events_were_scanned t="I">24635463675</events_were_scanned>
     <issues_were_scanned t="I">0</issues_were_scanned>
@@ -282765,7 +282766,7 @@
     <min_issue_was_found t="I">1256</min_issue_was_found>
     <min_pull_was_found t="I">1040</min_pull_was_found>
     <repository t="I">489321585</repository>
-    <types_were_scanned t="I">1433</types_were_scanned>
+    <types_were_scanned t="I">0</types_were_scanned>
     <what t="S">iterate</what>
     <where t="S">github</where>
   </f>
@@ -282785,7 +282786,7 @@
     <min_issue_was_found t="I">474</min_issue_was_found>
     <min_pull_was_found t="I">410</min_pull_was_found>
     <repository t="I">970961472</repository>
-    <types_were_scanned t="I">474</types_were_scanned>
+    <types_were_scanned t="I">0</types_were_scanned>
     <what t="S">iterate</what>
     <where t="S">github</where>
   </f>
@@ -282794,18 +282795,18 @@
     <_job t="I">29023948844</_job>
     <_time t="T">2026-07-09T14:18:01Z</_time>
     <_version t="S">0.19.9/0.60.2/0.17.17</_version>
-    <assignees_were_scanned t="I">7377</assignees_were_scanned>
-    <closures_were_checked t="I">8173</closures_were_checked>
+    <assignees_were_scanned t="I">7723</assignees_were_scanned>
+    <closures_were_checked t="I">8704</closures_were_checked>
     <earliest_issue_was_found t="I">1</earliest_issue_was_found>
-    <events_were_scanned t="I">24665675689</events_were_scanned>
+    <events_were_scanned t="I">17800703446</events_were_scanned>
     <issues_were_scanned t="I">9112</issues_were_scanned>
-    <labels_were_scanned t="I">8616</labels_were_scanned>
+    <labels_were_scanned t="I">0</labels_were_scanned>
     <latest_issue_was_found t="I">4591</latest_issue_was_found>
-    <merges_were_scanned t="I">9531</merges_were_scanned>
-    <min_issue_was_found t="I">9308</min_issue_was_found>
+    <merges_were_scanned t="I">9005</merges_were_scanned>
+    <min_issue_was_found t="I">9309</min_issue_was_found>
     <min_pull_was_found t="I">5338</min_pull_was_found>
     <repository t="I">73056727</repository>
-    <types_were_scanned t="I">5776</types_were_scanned>
+    <types_were_scanned t="I">5914</types_were_scanned>
     <what t="S">iterate</what>
     <where t="S">github</where>
   </f>
@@ -916643,6 +916644,7 @@ Thanks for resolving this issue! Based on our team's bonus policy, you've earned
     <hoc t="I">38</hoc>
     <is_human t="I">1</is_human>
     <issue t="I">1145</issue>
+    <receipt t="S">receipt-#101262</receipt>
     <repository t="I">840332960</repository>
     <review_comments t="I">0</review_comments>
     <seconds t="I">33003</seconds>
@@ -917029,6 +917031,7 @@ Thanks for resolving this issue! Based on our team's bonus policy, you've earned
 &lt;!-- Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+5076](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
     <is_human t="I">1</is_human>
     <issue t="I">1417</issue>
+    <receipt t="S">receipt-#101258</receipt>
     <repository t="I">489321585</repository>
     <what t="S">bug-report-was-rewarded</what>
     <when t="T">2026-10-18T00:52:56Z</when>
@@ -917048,6 +917051,7 @@ Thanks for resolving this issue! Based on our team's bonus policy, you've earned
 &lt;!-- Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+5088](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
     <is_human t="I">1</is_human>
     <issue t="I">9309</issue>
+    <receipt t="S">receipt-#101259</receipt>
     <repository t="I">73056727</repository>
     <what t="S">bug-report-was-rewarded</what>
     <when t="T">2026-10-18T00:53:00Z</when>
@@ -917067,6 +917071,7 @@ Thanks for resolving this issue! Based on our team's bonus policy, you've earned
 &lt;!-- Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+5100](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
     <is_human t="I">1</is_human>
     <issue t="I">1427</issue>
+    <receipt t="S">receipt-#101260</receipt>
     <repository t="I">489321585</repository>
     <what t="S">bug-report-was-rewarded</what>
     <when t="T">2026-10-18T00:53:04Z</when>
@@ -917086,6 +917091,7 @@ Thanks for resolving this issue! Based on our team's bonus policy, you've earned
 &lt;!-- Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+5112](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
     <is_human t="I">1</is_human>
     <issue t="I">9310</issue>
+    <receipt t="S">receipt-#101261</receipt>
     <repository t="I">73056727</repository>
     <what t="S">bug-report-was-rewarded</what>
     <when t="T">2026-10-18T00:53:08Z</when>
@@ -917105,6 +917111,7 @@ Thanks for resolving this issue! Based on our team's bonus policy, you've earned
 &lt;!-- Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+5124](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
     <is_human t="I">1</is_human>
     <issue t="I">9311</issue>
+    <receipt t="S">receipt-#101224</receipt>
     <repository t="I">73056727</repository>
     <what t="S">bug-report-was-rewarded</what>
     <when t="T">2026-10-18T00:53:12Z</when>
@@ -917124,6 +917131,7 @@ Thanks for resolving this issue! Based on our team's bonus policy, you've earned
 &lt;!-- Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+5136](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
     <is_human t="I">1</is_human>
     <issue t="I">9312</issue>
+    <receipt t="S">receipt-#101223</receipt>
     <repository t="I">73056727</repository>
     <what t="S">bug-report-was-rewarded</what>
     <when t="T">2026-10-18T00:53:16Z</when>
@@ -917143,6 +917151,7 @@ Thanks for resolving this issue! Based on our team's bonus policy, you've earned
 &lt;!-- Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+2978](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
     <is_human t="I">1</is_human>
     <issue t="I">1464</issue>
+    <receipt t="S">receipt-#101222</receipt>
     <repository t="I">489321585</repository>
     <what t="S">bug-report-was-rewarded</what>
     <when t="T">2026-10-18T00:53:20Z</when>
@@ -917791,6 +917800,7 @@ Thanks for resolving this issue! Based on our team's bonus policy, you've earned
 &lt;!-- Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+5180](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
     <is_human t="I">1</is_human>
     <issue t="I">9313</issue>
+    <receipt t="S">receipt-#101221</receipt>
     <repository t="I">73056727</repository>
     <what t="S">bug-report-was-rewarded</what>
     <when t="T">2026-10-18T05:39:08Z</when>
@@ -919167,6 +919177,7 @@ Thanks for resolving this issue! Based on our team's bonus policy, you've earned
 &lt;!-- Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+5372](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
     <is_human t="I">1</is_human>
     <issue t="I">9327</issue>
+    <receipt t="S">receipt-#101220</receipt>
     <repository t="I">73056727</repository>
     <what t="S">bug-report-was-rewarded</what>
     <when t="T">2026-10-18T20:13:23Z</when>
@@ -919610,28 +919621,6 @@ Thanks for resolving this issue! Based on our team's bonus policy, you've earned
     <total_stars t="I">1907</total_stars>
     <what t="S">dimensions-of-terrain</what>
     <when t="T">2026-10-19T00:40:12Z</when>
-  </f>
-  <f>
-    <_id t="I">1143028</_id>
-    <_job t="I">100624</_job>
-    <_time t="T">2026-10-19T00:42:24Z</_time>
-    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
-    <analyzers t="I">18</analyzers>
-    <text t="S">The average reward per task (10.0 points) is increasing (R=0.19).
-The average punishment per task (7.0 points) is staying still.
-The average number of builds per week (18161.6) is increasing (R=0.44).
-The average number of commits per week (414.5) is increasing (R=0.48).
-The average bugs accepted per month (229.0) is increasing (R=0.86).
-The average monthly punishment (531 points) is increasing (R=0.70).
-The average monthly wage (10.6 points) is increasing (R=0.51).
-The average issue cycle time (5d7h) is staying still.
-The average pull cycle time (3d10h) is staying still.
-The average number of releases per month (30.5) is increasing (R=0.14).
-The average monthly turnover (33.0 developers) is increasing (R=0.61).
-The average weekly cost of HoC (5.88 points) is staying still.
-The average monthly zents/points ratio (0.47) is decreasing (R=0.61).</text>
-    <what t="S">assessment</what>
-    <when t="T">2026-10-19T00:42:24Z</when>
   </f>
   <f>
     <_id t="I">1143029</_id>
@@ -925979,6 +925968,7 @@ The average monthly zents/points ratio (0.47) is decreasing (R=0.62).</text>
     <is_human t="I">1</is_human>
     <issue t="I">9425</issue>
     <repository t="I">73056727</repository>
+    <review_comments t="I">0</review_comments>
     <succeeded_builds t="I">10</succeeded_builds>
     <suggestions t="I">0</suggestions>
     <what t="S">pull-was-merged</what>
@@ -926000,5 +925990,784 @@ The average monthly zents/points ratio (0.47) is decreasing (R=0.62).</text>
     <when t="T">2026-10-20T12:57:23Z</when>
     <where t="S">github</where>
     <who t="I">109566739</who>
+  </f>
+  <f>
+    <_id t="I">1143357</_id>
+    <_job t="I">100943</_job>
+    <_time t="T">2026-10-21T00:45:44Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <award t="I">7</award>
+    <details t="S">It's time to reward @yegor256 for the bug resolved in objectionary/eo#9171 in 74 hours, the reward amount is 7.</details>
+    <greeting t="S">Thanks for closing this issue! You've earned +7 points for this, calculated per our [work policy](https://www.eolang.org/zerocracy/policy.html): +8 as the base award, then -1 for 3 days of delay (0.5 points per day). Your running score is [+2161](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too.
+
+&lt;!-- Thanks for closing this issue! You've earned +7 points for this: +8 as a basis; -1 for 3 days of delay. Your running score is [+2161](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">9171</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">resolved-bug-was-rewarded</what>
+    <when t="T">2026-10-21T00:45:44Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+    <why t="S">Resolved bug in objectionary/eo#9171</why>
+  </f>
+  <f>
+    <_id t="I">1143358</_id>
+    <_job t="I">100943</_job>
+    <_time t="T">2026-10-21T00:45:48Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <award t="I">7</award>
+    <details t="S">It's time to reward @yegor256 for the bug resolved in objectionary/eo#9172 in 74 hours, the reward amount is 7.</details>
+    <greeting t="S">Nice work closing this one! That bug took a bit longer than usual, so your bonus lands at **+6.5** points: **+8** as the base reward, minus **1.5** for the 3 days it sat waiting (that's **0.5** points per day, as per our policy). Your running score is now [+2168](https://www.eolang.org/zerocracy/objectionary-vitals.html) — keep it up, and don't forget to peek at your [Zerocracy account](https://www.zerocracy.com/) too!
+
+&lt;!-- Thanks for closing this issue! You've earned +7 points for this: +8 as a basis; -1 for 3 days of delay. Your running score is [+2168](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">9172</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">resolved-bug-was-rewarded</what>
+    <when t="T">2026-10-21T00:45:48Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+    <why t="S">Resolved bug in objectionary/eo#9172</why>
+  </f>
+  <f>
+    <_id t="I">1143359</_id>
+    <_job t="I">100943</_job>
+    <_time t="T">2026-10-21T00:45:55Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <award t="I">12</award>
+    <details t="S">It's time to reward @yegor256 for the bug resolved in objectionary/phino#1966 in 4 hours, the reward amount is 12.</details>
+    <greeting t="S">Thanks for closing this issue! You've earned **+12 points** for this, calculated per our work policy: **+8** as a base award, **+4** for resolving it in less than 12 hours (no delay deductions applied, and the self-resolution penalty didn't apply). Your running score is [+2180](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too.
+
+&lt;!-- Thanks for closing this issue! You've earned +12 points for this: +8 as a basis; +4 for resolving it in less than 12 hours. Your running score is [+2180](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">1966</issue>
+    <repository t="I">977982682</repository>
+    <what t="S">resolved-bug-was-rewarded</what>
+    <when t="T">2026-10-21T00:45:55Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+    <why t="S">Resolved bug in objectionary/phino#1966</why>
+  </f>
+  <f>
+    <_id t="I">1143360</_id>
+    <_job t="I">100943</_job>
+    <_time t="T">2026-10-21T00:45:59Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <award t="I">12</award>
+    <details t="S">It's time to reward @yegor256 for the bug resolved in objectionary/phino#1964 in 4 hours, the reward amount is 12.</details>
+    <greeting t="S">🎉 Great job closing this issue! You've earned **+12 points**: +8 base, +4 for resolving it in under 12 hours. Your running score is now [+2192](https://www.eolang.org/zerocracy/objectionary-vitals.html) — check your [Zerocracy account](https://www.zerocracy.com/) for details!
+
+&lt;!-- Thanks for closing this issue! You've earned +12 points for this: +8 as a basis; +4 for resolving it in less than 12 hours. Your running score is [+2192](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">1964</issue>
+    <repository t="I">977982682</repository>
+    <what t="S">resolved-bug-was-rewarded</what>
+    <when t="T">2026-10-21T00:45:59Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+    <why t="S">Resolved bug in objectionary/phino#1964</why>
+  </f>
+  <f>
+    <_id t="I">1143361</_id>
+    <_job t="I">100943</_job>
+    <_time t="T">2026-10-21T00:46:01Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <award t="I">12</award>
+    <details t="S">It's time to reward @yegor256 for the bug resolved in objectionary/phino#1965 in 3 hours, the reward amount is 12.</details>
+    <greeting t="S">Nice work closing this one! 🎉 You've bagged **+12 points**: **+8** as the base reward, plus a **+4** bonus for getting it done in under **12 hours** — fast work like that really pays off, especially since the max you can earn per bug is capped at **16**. Your running score just jumped to [+2204](https://www.eolang.org/zerocracy/objectionary-vitals.html), so keep up the great pace — and don't forget to peek at your [Zerocracy account](https://www.zerocracy.com/) for the full picture.
+
+&lt;!-- Thanks for closing this issue! You've earned +12 points for this: +8 as a basis; +4 for resolving it in less than 12 hours. Your running score is [+2204](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">1965</issue>
+    <repository t="I">977982682</repository>
+    <what t="S">resolved-bug-was-rewarded</what>
+    <when t="T">2026-10-21T00:46:01Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+    <why t="S">Resolved bug in objectionary/phino#1965</why>
+  </f>
+  <f>
+    <_id t="I">1143362</_id>
+    <_job t="I">100943</_job>
+    <_time t="T">2026-10-21T00:46:08Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <award t="I">12</award>
+    <details t="S">It's time to reward @yegor256 for the bug resolved in objectionary/phino#1963 in 3 hours, the reward amount is 12.</details>
+    <greeting t="S">Nice work closing this one! 🎉 You've bagged **+12 points** — **8** as the base reward, plus **4** since you knocked it out in under 12 hours. No delays, no self-report deductions, just solid work. Your running score is now [+2216](https://www.eolang.org/zerocracy/objectionary-vitals.html) — keep it up, and swing by your [Zerocracy account](https://www.zerocracy.com/) to see it all tallied up.
+
+&lt;!-- Thanks for closing this issue! You've earned +12 points for this: +8 as a basis; +4 for resolving it in less than 12 hours. Your running score is [+2216](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">1963</issue>
+    <repository t="I">977982682</repository>
+    <what t="S">resolved-bug-was-rewarded</what>
+    <when t="T">2026-10-21T00:46:08Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+    <why t="S">Resolved bug in objectionary/phino#1963</why>
+  </f>
+  <f>
+    <_id t="I">1143363</_id>
+    <_job t="I">100943</_job>
+    <_time t="T">2026-10-21T00:46:22Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <comments t="I">3</comments>
+    <details t="S">The pull request objectionary/phino#1986 with 158 HoC created by @github-actions[bot] was merged by @rultor after 11h26m of being in review and 3 comments.</details>
+    <hoc t="I">158</hoc>
+    <is_human t="I">0</is_human>
+    <issue t="I">1986</issue>
+    <merger t="I">8086956</merger>
+    <repository t="I">977982682</repository>
+    <review_comments t="I">0</review_comments>
+    <seconds t="I">41163</seconds>
+    <what t="S">code-was-contributed</what>
+    <when t="T">2026-10-20T20:36:03Z</when>
+    <where t="S">github</where>
+    <who t="I">41898282</who>
+  </f>
+  <f>
+    <_id t="I">1143364</_id>
+    <_job t="I">100943</_job>
+    <_time t="T">2026-10-21T00:46:54Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <award t="I">12</award>
+    <details t="S">It's time to reward @gemshrine for the bug reported in objectionary/phino#1858, the reward amount is 12.</details>
+    <greeting t="S">🎉 Thanks for reporting a new bug! You've earned **+12 points**. Bug reports like yours help keep our project in top shape. If you spot anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) quite right, [don't hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report it](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html). Your running score is now [+2462](https://www.eolang.org/zerocracy/objectionary-vitals.html) — check your [Zerocracy account](https://www.zerocracy.com/) for more details.
+
+&lt;!-- Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+2462](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">1858</issue>
+    <repository t="I">977982682</repository>
+    <what t="S">bug-report-was-rewarded</what>
+    <when t="T">2026-10-21T00:46:54Z</when>
+    <where t="S">github</where>
+    <who t="I">113778529</who>
+    <why t="S">Reported bug in objectionary/phino#1858</why>
+  </f>
+  <f>
+    <_id t="I">1143365</_id>
+    <_job t="I">100943</_job>
+    <_time t="T">2026-10-21T00:46:58Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <award t="I">12</award>
+    <details t="S">It's time to reward @morphqdd for the bug reported in objectionary/eo#9362, the reward amount is 12.</details>
+    <greeting t="S">Thanks for reporting a new bug! As per team policy, accepted bug reports earn a flat **+12** points, which have been added to your score. Your contributions help improve our project's quality—if you spot anything else that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) right, [don't hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report it](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html). Your running score is now [+5116](https://www.eolang.org/zerocracy/objectionary-vitals.html)—check your [Zerocracy account](https://www.zerocracy.com/) for details. Keep up the great work!
+
+&lt;!-- Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+5116](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">9362</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">bug-report-was-rewarded</what>
+    <when t="T">2026-10-21T00:46:58Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+    <why t="S">Reported bug in objectionary/eo#9362</why>
+  </f>
+  <f>
+    <_id t="I">1143366</_id>
+    <_job t="I">100943</_job>
+    <_time t="T">2026-10-21T00:47:02Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <award t="I">12</award>
+    <details t="S">It's time to reward @morphqdd for the bug reported in objectionary/eo#9363, the reward amount is 12.</details>
+    <greeting t="S">Thanks for reporting a new bug! As our [work policy](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) states, every accepted bug report earns a flat **+12** points bonus, and you've just received it. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+5128](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too.
+
+&lt;!-- Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+5128](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">9363</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">bug-report-was-rewarded</what>
+    <when t="T">2026-10-21T00:47:02Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+    <why t="S">Reported bug in objectionary/eo#9363</why>
+  </f>
+  <f>
+    <_id t="I">1143367</_id>
+    <_job t="I">100943</_job>
+    <_time t="T">2026-10-21T00:47:06Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <award t="I">12</award>
+    <details t="S">It's time to reward @morphqdd for the bug reported in objectionary/eo#9364, the reward amount is 12.</details>
+    <greeting t="S">Hey, awesome find on that bug! 🎉 Since it got accepted by the team, you've earned **+12** points, just like our policy promises for every accepted report. Keep an eye out for anything in the repo that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) quite right, [don't hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report it](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html), every bit helps us level up quality. You're now sitting at [+5140](https://www.eolang.org/zerocracy/objectionary-vitals.html) overall, nice work, check your [Zerocracy account](https://www.zerocracy.com/) for the full picture.
+
+&lt;!-- Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+5140](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">9364</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">bug-report-was-rewarded</what>
+    <when t="T">2026-10-21T00:47:06Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+    <why t="S">Reported bug in objectionary/eo#9364</why>
+  </f>
+  <f>
+    <_id t="I">1143368</_id>
+    <_job t="I">100943</_job>
+    <_time t="T">2026-10-21T00:47:10Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <award t="I">12</award>
+    <details t="S">It's time to reward @morphqdd for the bug reported in objectionary/eo#9365, the reward amount is 12.</details>
+    <greeting t="S">Thanks for reporting a new bug! As per our [work policy](#), accepted bug reports earn a flat **+12 points** bonus, which has been added to your score. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+5152](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too.
+
+&lt;!-- Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+5152](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">9365</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">bug-report-was-rewarded</what>
+    <when t="T">2026-10-21T00:47:10Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+    <why t="S">Reported bug in objectionary/eo#9365</why>
+  </f>
+  <f>
+    <_id t="I">1143369</_id>
+    <_job t="I">100943</_job>
+    <_time t="T">2026-10-21T00:47:15Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <award t="I">12</award>
+    <details t="S">It's time to reward @morphqdd for the bug reported in objectionary/eo#9377, the reward amount is 12.</details>
+    <greeting t="S">Hey, nice catch on that bug! 🎉 Since it was accepted by the team, you've earned **+12** points, just like our policy promises for every accepted report. Keep an eye out — if anything else in the repo [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) right, [don't hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report it](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html). Your running score is now [+5164](https://www.eolang.org/zerocracy/objectionary-vitals.html) — check it out, and don't forget to peek at your [Zerocracy account](https://www.zerocracy.com/) too!
+
+&lt;!-- Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+5164](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">9377</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">bug-report-was-rewarded</what>
+    <when t="T">2026-10-21T00:47:15Z</when>
+    <where t="S">github</where>
+    <who t="I">125282851</who>
+    <why t="S">Reported bug in objectionary/eo#9377</why>
+  </f>
+  <f>
+    <_id t="I">1143370</_id>
+    <_job t="I">39548073299</_job>
+    <_time t="T">2026-10-21T05:12:51Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <commit t="S">fb14e03bc4b8e045209a559066e4ec357e786901</commit>
+    <default_branch t="S">master</default_branch>
+    <details t="S">A new Git push #47111245620 has arrived to objectionary/jeo-maven-plugin, made by @yegor256 (default branch is "master"), not associated with any pull request.</details>
+    <event_id t="I">24675101336</event_id>
+    <event_type t="S">PushEvent</event_type>
+    <is_human t="I">1</is_human>
+    <push_id t="I">47111245620</push_id>
+    <ref t="S">refs/heads/master</ref>
+    <repository t="I">671896902</repository>
+    <to_master t="I">1</to_master>
+    <what t="S">git-was-pushed</what>
+    <when t="T">2026-10-20T09:18:04Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1143371</_id>
+    <_job t="I">39548073299</_job>
+    <_time t="T">2026-10-21T05:29:04Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <total_active_contributors t="I">14</total_active_contributors>
+    <total_commits t="I">59545</total_commits>
+    <total_contributors t="I">553</total_contributors>
+    <total_files t="I">17206</total_files>
+    <total_forks t="I">562</total_forks>
+    <total_issues t="I">8253</total_issues>
+    <total_pulls t="I">13928</total_pulls>
+    <total_releases t="I">1014</total_releases>
+    <total_repositories t="I">39</total_repositories>
+    <total_stars t="I">1907</total_stars>
+    <what t="S">dimensions-of-terrain</what>
+    <when t="T">2026-10-21T05:29:04Z</when>
+  </f>
+  <f>
+    <_id t="I">1143372</_id>
+    <_job t="I">100972</_job>
+    <_time t="T">2026-10-21T05:31:34Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <analyzers t="I">18</analyzers>
+    <text t="S">The average reward per task (10.1 points) is increasing (R=0.19).
+The average punishment per task (7.0 points) is staying still.
+The average number of builds per week (18161.6) is increasing (R=0.44).
+The average number of commits per week (414.5) is increasing (R=0.48).
+The average bugs accepted per month (229.0) is increasing (R=0.86).
+The average monthly punishment (532 points) is increasing (R=0.70).
+The average monthly wage (10.6 points) is increasing (R=0.55).
+The average issue cycle time (5d7h) is staying still.
+The average pull cycle time (3d8h) is staying still.
+The average number of releases per month (30.5) is increasing (R=0.14).
+The average monthly turnover (33.0 developers) is increasing (R=0.62).
+The average weekly cost of HoC (5.81 points) is staying still.
+The average monthly zents/points ratio (0.46) is decreasing (R=0.63).</text>
+    <what t="S">assessment</what>
+    <when t="T">2026-10-21T05:31:34Z</when>
+  </f>
+  <f>
+    <_id t="I">1143373</_id>
+    <_job t="I">100972</_job>
+    <_time t="T">2026-10-21T05:31:34Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <award t="I">12</award>
+    <details t="S">It's time to reward @yegor256 for the bug resolved in objectionary/phino#1968 in 1 hours, the reward amount is 12.</details>
+    <greeting t="S">Thanks for closing this issue! According to our [work policy](#), you've earned +12 points for this: **+8** as a basis, plus **+4** for resolving it in less than 12 hours (no deductions applied, since it wasn't self-reported and there was no delay). Your running score is [+2216](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too.
+
+&lt;!-- Thanks for closing this issue! You've earned +12 points for this: +8 as a basis; +4 for resolving it in less than 12 hours. Your running score is [+2216](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">1968</issue>
+    <repository t="I">977982682</repository>
+    <what t="S">resolved-bug-was-rewarded</what>
+    <when t="T">2026-10-21T05:31:34Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+    <why t="S">Resolved bug in objectionary/phino#1968</why>
+  </f>
+  <f>
+    <_id t="I">1143374</_id>
+    <_job t="I">100972</_job>
+    <_time t="T">2026-10-21T05:31:39Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <award t="I">12</award>
+    <details t="S">It's time to reward @yegor256 for the bug resolved in objectionary/phino#1967 in 0 hours, the reward amount is 12.</details>
+    <greeting t="S">Nice work closing this one! 🎉 You've bagged **+12 points** — that's **8** as the base reward, plus **4** for getting it done in under 12 hours. Since you weren't the one who reported it and resolved it with no major delay, there's nothing to deduct, so you're sitting comfortably between the 4-16 point range. Your running score just hit [+2228](https://www.eolang.org/zerocracy/objectionary-vitals.html) — keep it up, and don't forget to peek at your [Zerocracy account](https://www.zerocracy.com/) too!
+
+&lt;!-- Thanks for closing this issue! You've earned +12 points for this: +8 as a basis; +4 for resolving it in less than 12 hours. Your running score is [+2228](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">1967</issue>
+    <repository t="I">977982682</repository>
+    <what t="S">resolved-bug-was-rewarded</what>
+    <when t="T">2026-10-21T05:31:39Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+    <why t="S">Resolved bug in objectionary/phino#1967</why>
+  </f>
+  <f>
+    <_id t="I">1143375</_id>
+    <_job t="I">100972</_job>
+    <_time t="T">2026-10-21T05:31:44Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <award t="I">12</award>
+    <details t="S">It's time to reward @yegor256 for the bug resolved in objectionary/phino#1989 in 0 hours, the reward amount is 12.</details>
+    <greeting t="S">Nice work closing this one! 🎉 You've bagged **+12 points** — **8** as the base, plus **4** since you knocked it out in under **12 hours**, no delays or self-report deductions this time. Your running score is now [+2240](https://www.eolang.org/zerocracy/objectionary-vitals.html), and you can always peek at the details on your [Zerocracy account](https://www.zerocracy.com/). Keep it up!
+
+&lt;!-- Thanks for closing this issue! You've earned +12 points for this: +8 as a basis; +4 for resolving it in less than 12 hours. Your running score is [+2240](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">1989</issue>
+    <repository t="I">977982682</repository>
+    <what t="S">resolved-bug-was-rewarded</what>
+    <when t="T">2026-10-21T05:31:44Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+    <why t="S">Resolved bug in objectionary/phino#1989</why>
+  </f>
+  <f>
+    <_id t="I">1143376</_id>
+    <_job t="I">100972</_job>
+    <_time t="T">2026-10-21T05:31:49Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <award t="I">12</award>
+    <details t="S">It's time to reward @yegor256 for the bug resolved in objectionary/phino#1983 in 1 hours, the reward amount is 12.</details>
+    <greeting t="S">Nice work squashing that bug so fast! 🎉 You've bagged **+12 points** — the standard **+8** for getting it done, plus a nice **+4** bonus since you wrapped it up in under **12 hours**. Keep that speed up and you could be looking at even more next time (up to **16** points is the cap!). Your running score is now [+2252](https://www.eolang.org/zerocracy/objectionary-vitals.html), and you can always peek at the details on your [Zerocracy account](https://www.zerocracy.com/).
+
+&lt;!-- Thanks for closing this issue! You've earned +12 points for this: +8 as a basis; +4 for resolving it in less than 12 hours. Your running score is [+2252](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">1983</issue>
+    <repository t="I">977982682</repository>
+    <what t="S">resolved-bug-was-rewarded</what>
+    <when t="T">2026-10-21T05:31:49Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+    <why t="S">Resolved bug in objectionary/phino#1983</why>
+  </f>
+  <f>
+    <_id t="I">1143377</_id>
+    <_job t="I">100972</_job>
+    <_time t="T">2026-10-21T05:31:54Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <award t="I">12</award>
+    <details t="S">It's time to reward @yegor256 for the bug resolved in objectionary/phino#1984 in 0 hours, the reward amount is 12.</details>
+    <greeting t="S">Hi, thanks for resolving this bug! You've earned **+12 points**: +8 base award, +4 for resolving it in under 12 hours. Your running score is now [+2264](https://www.eolang.org/zerocracy/objectionary-vitals.html) — check your [Zerocracy account](https://www.zerocracy.com/) for details. Keep up the great work!
+
+&lt;!-- Thanks for closing this issue! You've earned +12 points for this: +8 as a basis; +4 for resolving it in less than 12 hours. Your running score is [+2264](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">1984</issue>
+    <repository t="I">977982682</repository>
+    <what t="S">resolved-bug-was-rewarded</what>
+    <when t="T">2026-10-21T05:31:54Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+    <why t="S">Resolved bug in objectionary/phino#1984</why>
+  </f>
+  <f>
+    <_id t="I">1143378</_id>
+    <_job t="I">100972</_job>
+    <_time t="T">2026-10-21T05:31:56Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <award t="I">12</award>
+    <details t="S">It's time to reward @yegor256 for the bug resolved in objectionary/phino#1982 in 0 hours, the reward amount is 12.</details>
+    <greeting t="S">Thanks for closing this issue! You've earned +12 points: +8 as a base, +4 for resolving it in under 12 hours. Great work staying within the policy guidelines. Your running score is [+2276](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too.
+
+&lt;!-- Thanks for closing this issue! You've earned +12 points for this: +8 as a basis; +4 for resolving it in less than 12 hours. Your running score is [+2276](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">1982</issue>
+    <repository t="I">977982682</repository>
+    <what t="S">resolved-bug-was-rewarded</what>
+    <when t="T">2026-10-21T05:31:56Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+    <why t="S">Resolved bug in objectionary/phino#1982</why>
+  </f>
+  <f>
+    <_id t="I">1143379</_id>
+    <_job t="I">100972</_job>
+    <_time t="T">2026-10-21T05:32:09Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <comments t="I">7</comments>
+    <details t="S">The pull request objectionary/eo#9425 with 95 HoC created by @gemshrine was merged by @yegor256 after 1w2d of being in review and 7 comments.</details>
+    <hoc t="I">95</hoc>
+    <is_human t="I">1</is_human>
+    <issue t="I">9425</issue>
+    <merger t="I">526301</merger>
+    <repository t="I">73056727</repository>
+    <review_comments t="I">0</review_comments>
+    <seconds t="I">783033</seconds>
+    <what t="S">code-was-contributed</what>
+    <when t="T">2026-10-20T10:27:10Z</when>
+    <where t="S">github</where>
+    <who t="I">113778529</who>
+  </f>
+  <f>
+    <_id t="I">1143380</_id>
+    <_job t="I">100972</_job>
+    <_time t="T">2026-10-21T05:32:40Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <award t="I">12</award>
+    <details t="S">It's time to reward @gemshrine for the bug reported in objectionary/eo#9415, the reward amount is 12.</details>
+    <greeting t="S">🎉 Thanks for reporting a new bug! You've earned **+12 points**. Bug reports like yours help us keep the project in great shape, so if you spot anything else that [doesn't look right](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html), [don't hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report it](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html). Your running score is now [+2414](https://www.eolang.org/zerocracy/objectionary-vitals.html) — check your [Zerocracy account](https://www.zerocracy.com/) for details!
+
+&lt;!-- Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+2414](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">9415</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">bug-report-was-rewarded</what>
+    <when t="T">2026-10-21T05:32:40Z</when>
+    <where t="S">github</where>
+    <who t="I">113778529</who>
+    <why t="S">Reported bug in objectionary/eo#9415</why>
+  </f>
+  <f>
+    <_id t="I">1143381</_id>
+    <_job t="I">100972</_job>
+    <_time t="T">2026-10-21T05:32:44Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <award t="I">12</award>
+    <details t="S">It's time to reward @sherenkov for the bug reported in objectionary/phino#1871, the reward amount is 12.</details>
+    <greeting t="S">Hey, nice catch on that bug! 🎉 Since it got accepted by the team, you've earned **+12** points, just like our policy promises for every accepted report. Keep an eye out for anything that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) right in the repo — [don't hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report it](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html), it genuinely helps us level up quality. You're now at [+30](https://www.eolang.org/zerocracy/objectionary-vitals.html) overall, so go check your [Zerocracy account](https://www.zerocracy.com/) and see the score for yourself!
+
+&lt;!-- Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+30](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">1871</issue>
+    <repository t="I">977982682</repository>
+    <what t="S">bug-report-was-rewarded</what>
+    <when t="T">2026-10-21T05:32:44Z</when>
+    <where t="S">github</where>
+    <who t="I">699111</who>
+    <why t="S">Reported bug in objectionary/phino#1871</why>
+  </f>
+  <f>
+    <_id t="I">1143382</_id>
+    <_job t="I">100972</_job>
+    <_time t="T">2026-10-21T05:32:49Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <award t="I">12</award>
+    <details t="S">It's time to reward @gemshrine for the bug reported in objectionary/eo#9426, the reward amount is 12.</details>
+    <greeting t="S">Thanks for reporting a new bug! As [our policy](#) states, every accepted bug report earns a flat **12** points, and you've just received them. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+2426](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too.
+
+&lt;!-- Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+2426](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">9426</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">bug-report-was-rewarded</what>
+    <when t="T">2026-10-21T05:32:49Z</when>
+    <where t="S">github</where>
+    <who t="I">113778529</who>
+    <why t="S">Reported bug in objectionary/eo#9426</why>
+  </f>
+  <f>
+    <_id t="I">1143383</_id>
+    <_job t="I">100972</_job>
+    <_time t="T">2026-10-21T05:32:53Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <award t="I">12</award>
+    <details t="S">It's time to reward @gemshrine for the bug reported in objectionary/eo#9427, the reward amount is 12.</details>
+    <greeting t="S">Hey, nice catch on that bug! 🎉 Since it got accepted by the team, you've just earned **+12 points**, as per our policy of awarding points for accepted bug reports. Keep an eye out for anything in the repo that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) quite right, and [don't hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report it](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) — it genuinely helps us all out. Your running score is now [+2438](https://www.eolang.org/zerocracy/objectionary-vitals.html), and you can check the details anytime on your [Zerocracy account](https://www.zerocracy.com/).
+
+&lt;!-- Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+2438](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  --&gt;</greeting>
+    <is_human t="I">1</is_human>
+    <issue t="I">9427</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">bug-report-was-rewarded</what>
+    <when t="T">2026-10-21T05:32:53Z</when>
+    <where t="S">github</where>
+    <who t="I">113778529</who>
+    <why t="S">Reported bug in objectionary/eo#9427</why>
+  </f>
+  <f>
+    <_id t="I">1143384</_id>
+    <_job t="I">39584894124</_job>
+    <_time t="T">2026-10-21T10:31:55Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <details t="S">The issue objectionary/eo#9570 has been opened by @yegor256.</details>
+    <event_id t="I">17788929879</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">9570</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-opened</what>
+    <when t="T">2026-10-21T07:43:52Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1143385</_id>
+    <_job t="I">39584894124</_job>
+    <_time t="T">2026-10-21T10:31:59Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <branch t="S">9018</branch>
+    <details t="S">The pull request objectionary/eo#9569 has been opened by @yegor256.</details>
+    <event_id t="I">17786471104</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">9569</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-10-21T07:08:46Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1143386</_id>
+    <_job t="I">39584894124</_job>
+    <_time t="T">2026-10-21T10:32:02Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <branch t="S">9021</branch>
+    <details t="S">The pull request objectionary/eo#9568 has been opened by @demach89.</details>
+    <event_id t="I">17785744764</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">9568</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-10-21T06:57:41Z</when>
+    <where t="S">github</where>
+    <who t="I">109566739</who>
+  </f>
+  <f>
+    <_id t="I">1143387</_id>
+    <_job t="I">39584894124</_job>
+    <_time t="T">2026-10-21T10:32:05Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <branch t="S">8596</branch>
+    <details t="S">The pull request objectionary/eo#9567 has been opened by @yegor256.</details>
+    <event_id t="I">17783965890</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">9567</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-10-21T06:30:40Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1143388</_id>
+    <_job t="I">39584894124</_job>
+    <_time t="T">2026-10-21T10:32:07Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <branch t="S">9290</branch>
+    <details t="S">The pull request objectionary/eo#9566 has been opened by @demach89.</details>
+    <event_id t="I">17783392539</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">9566</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-10-21T06:21:20Z</when>
+    <where t="S">github</where>
+    <who t="I">109566739</who>
+  </f>
+  <f>
+    <_id t="I">1143389</_id>
+    <_job t="I">39584894124</_job>
+    <_time t="T">2026-10-21T10:32:10Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <details t="S">The issue objectionary/eo#9559 has been closed by @yegor256.</details>
+    <event_id t="I">17782568464</event_id>
+    <event_type t="S">IssuesEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">9559</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">issue-was-closed</what>
+    <when t="T">2026-10-21T06:08:14Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1143390</_id>
+    <_job t="I">39584894124</_job>
+    <_time t="T">2026-10-21T10:32:12Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <branch t="S">9268</branch>
+    <details t="S">The pull request objectionary/eo#9565 has been opened by @demach89.</details>
+    <event_id t="I">17780823480</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">9565</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-10-21T05:39:56Z</when>
+    <where t="S">github</where>
+    <who t="I">109566739</who>
+  </f>
+  <f>
+    <_id t="I">1143391</_id>
+    <_job t="I">39584894124</_job>
+    <_time t="T">2026-10-21T10:32:13Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <branch t="S">9559</branch>
+    <details t="S">The pull request objectionary/eo#9564 has been opened by @demach89.</details>
+    <event_id t="I">17780263985</event_id>
+    <event_type t="S">PullRequestEvent</event_type>
+    <is_human t="I">1</is_human>
+    <issue t="I">9564</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-10-21T05:30:38Z</when>
+    <where t="S">github</where>
+    <who t="I">109566739</who>
+  </f>
+  <f>
+    <_id t="I">1143392</_id>
+    <_job t="I">39584894124</_job>
+    <_time t="T">2026-10-21T10:51:26Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <branch t="S">agent/issue-9026-source-comment-pack</branch>
+    <details t="S">The missing pull objectionary/eo#9562 has been opened by @titanism0v0.</details>
+    <is_human t="I">1</is_human>
+    <issue t="I">9562</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-10-21T01:53:18Z</when>
+    <where t="S">github</where>
+    <who t="I">263808434</who>
+  </f>
+  <f>
+    <_id t="I">1143393</_id>
+    <_job t="I">39584894124</_job>
+    <_time t="T">2026-10-21T10:51:27Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <branch t="S">9561</branch>
+    <details t="S">The missing pull objectionary/eo#9563 has been opened by @roian6.</details>
+    <is_human t="I">1</is_human>
+    <issue t="I">9563</issue>
+    <repository t="I">73056727</repository>
+    <what t="S">pull-was-opened</what>
+    <when t="T">2026-10-21T02:52:44Z</when>
+    <where t="S">github</where>
+    <who t="I">23256775</who>
+  </f>
+  <f>
+    <_id t="I">1143394</_id>
+    <_job t="I">39584894124</_job>
+    <_time t="T">2026-10-21T10:54:48Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#9549.</details>
+    <is_human t="I">1</is_human>
+    <issue t="I">9549</issue>
+    <label t="S">bug</label>
+    <repository t="I">73056727</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-10-20T07:11:21Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1143395</_id>
+    <_job t="I">39584894124</_job>
+    <_time t="T">2026-10-21T10:54:51Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <details t="S">The "bug" label was attached by @0pdd to the issue objectionary/eo#9556.</details>
+    <is_human t="I">0</is_human>
+    <issue t="I">9556</issue>
+    <label t="S">bug</label>
+    <repository t="I">73056727</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-10-20T10:02:20Z</when>
+    <where t="S">github</where>
+    <who t="I">24456188</who>
+  </f>
+  <f>
+    <_id t="I">1143396</_id>
+    <_job t="I">39584894124</_job>
+    <_time t="T">2026-10-21T10:54:55Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <details t="S">The "bug" label was attached by @0pdd to the issue objectionary/eo#9557.</details>
+    <is_human t="I">0</is_human>
+    <issue t="I">9557</issue>
+    <label t="S">bug</label>
+    <repository t="I">73056727</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-10-20T10:02:23Z</when>
+    <where t="S">github</where>
+    <who t="I">24456188</who>
+  </f>
+  <f>
+    <_id t="I">1143397</_id>
+    <_job t="I">39584894124</_job>
+    <_time t="T">2026-10-21T10:54:59Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#9559.</details>
+    <is_human t="I">1</is_human>
+    <issue t="I">9559</issue>
+    <label t="S">bug</label>
+    <repository t="I">73056727</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-10-20T11:16:55Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1143398</_id>
+    <_job t="I">39584894124</_job>
+    <_time t="T">2026-10-21T10:55:02Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#9561.</details>
+    <is_human t="I">1</is_human>
+    <issue t="I">9561</issue>
+    <label t="S">bug</label>
+    <repository t="I">73056727</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-10-21T06:07:46Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1143399</_id>
+    <_job t="I">39584894124</_job>
+    <_time t="T">2026-10-21T10:55:05Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <details t="S">The "bug" label was attached by @yegor256 to the issue objectionary/eo#9570.</details>
+    <is_human t="I">1</is_human>
+    <issue t="I">9570</issue>
+    <label t="S">bug</label>
+    <repository t="I">73056727</repository>
+    <what t="S">label-was-attached</what>
+    <when t="T">2026-10-21T07:43:52Z</when>
+    <where t="S">github</where>
+    <who t="I">526301</who>
+  </f>
+  <f>
+    <_id t="I">1143400</_id>
+    <_job t="I">39584894124</_job>
+    <_time t="T">2026-10-21T11:08:22Z</_time>
+    <_version t="S">0.19.16/0.61.1/0.17.23</_version>
+    <since t="T">2026-05-20T10:18:20Z</since>
+    <what t="S">quality-of-service</what>
+    <when t="T">2026-05-27T10:28:34Z</when>
   </f>
 </fb>
