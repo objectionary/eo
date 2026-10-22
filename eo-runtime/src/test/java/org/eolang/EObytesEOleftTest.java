@@ -79,7 +79,7 @@ final class EObytesEOleftTest {
                             new Data.ToPhi(new byte[]{0x01, 0x02})
                         ),
                         "b",
-                        new Data.ToPhi(2147483648.0)
+                        new Data.ToPhi(2_147_483_648.0)
                     )
                 ).take(),
                 "left with b above the int range cannot pass"
