@@ -16,6 +16,8 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Integration tests for eo-maven-plugin:resolve.
@@ -71,16 +73,20 @@ final class MjResolveIT {
         );
     }
 
-    @Test
-    void removesOldJarFile(@Mktmp final Path temp) throws IOException {
-        final String version = "0.38.0";
+    @ParameterizedTest
+    @CsvSource({"0.38.0, 0.40.0", "0.40.0, 0.38.0"})
+    void removesOldJarFile(
+        final String version,
+        final String replacement,
+        @Mktmp final Path temp
+    ) throws IOException {
         new Farea(temp).together(
             f -> {
-                MjResolveIT.configureFarea(f, version);
-                f.exec("process-classes");
-                f.dependencies()
-                    .append("org.eolang", "eo-runtime", "0.40.0");
-                f.exec("process-classes");
+                MjResolveIT.configureFarea(f, "${eo.runtime.version}");
+                f.exec("process-classes", String.format("-Deo.runtime.version=%s", version));
+                MjResolveIT.succeeds(f);
+                MjResolveIT.unpacksJar(f, version, "the original JAR was unpacked");
+                f.exec("process-classes", String.format("-Deo.runtime.version=%s", replacement));
                 MjResolveIT.succeeds(f);
                 MatcherAssert.assertThat(
                     "binary files from the old JAR were removed",
@@ -93,7 +99,26 @@ final class MjResolveIT {
                     ).exists(),
                     Matchers.is(false)
                 );
+                MjResolveIT.unpacksJar(f, replacement, "the replacement JAR was unpacked");
             }
+        );
+    }
+
+    private static void unpacksJar(
+        final Farea farea,
+        final String version,
+        final String message
+    ) throws IOException {
+        MatcherAssert.assertThat(
+            message,
+            farea.files().file(
+                String.format(
+                    "target/eo/%s/org.eolang/eo-runtime/-/%s/org/eolang/Phi.class",
+                    "01-resolve",
+                    version
+                )
+            ).exists(),
+            Matchers.is(true)
         );
     }
 
