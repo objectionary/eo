@@ -241,16 +241,19 @@ final class Placing implements Step {
         private void placeBinary(final Path file) {
             final Path path = this.dir.relativize(file);
             try {
-                final Footprint generated = new FpGenerated(InputOf::new);
-                final Path target = new FpIfTargetExists(
+                final Footprint generated = (source, destination) -> {
+                    final Path target = new FpGenerated(InputOf::new).apply(source, destination);
+                    Placing.this.placed.placeClass(
+                        target,
+                        Placing.this.classes.relativize(target).toString(),
+                        this.dep
+                    );
+                    return target;
+                };
+                new FpIfTargetExists(
                     new FpFork(this.rwte, generated, new FpIgnore()),
                     generated
                 ).apply(file, Placing.this.classes.resolve(path));
-                Placing.this.placed.placeClass(
-                    target,
-                    Placing.this.classes.relativize(target).toString(),
-                    this.dep
-                );
             } catch (final IOException ex) {
                 throw new IllegalStateException(
                     Logger.format(
