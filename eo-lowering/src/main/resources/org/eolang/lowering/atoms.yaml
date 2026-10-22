@@ -14,15 +14,10 @@
 # into a symbol, so that a side computed and a side written out compare
 # as one shape, and the "defer" lines turn a copy over a bare symbol,
 # which nobody can work out, into a symbol that stands for it, so that a
-# flow taking that side ends in the symbol instead of getting stuck inside
-# the copy. Otherwise the run splits at the fork into two flows, one per
-# side, and the record of the fork holds what each of them did from there
-# on. A condition decided once on a flow is decided for that flow. Every
-# flow ends in a root of its own, and the rendering turns the forks into
-# nested ifs, with one return per flow, and every join into an if that
-# assigns the joined symbol. A flow whose side stops at the λ of "throw",
-# which is what every T is by now, ends in that throw, and its if throws
-# the message.
+# side ends in the symbol instead of getting stuck inside the copy. Two
+# sides that do not join get the firing stuck, and the formation that
+# reached it is a taint. The rendering turns every join into an if that
+# assigns the joined symbol.
 - λ: L_number_(plus|times|div)
   dataize:
     𝛿1: $.ρ
@@ -69,19 +64,72 @@
   morph:
     𝑛1: $.left
     𝑛2: $.right
+    𝑛15: 𝑛9
+    𝑛16: 𝑛10
   stay:
     𝑛3: 𝑛1
     𝑛4: 𝑛2
-  symbolize:
+  evaluate:
     𝑛5: 𝑛3
     𝑛6: 𝑛4
+  rewrite:
+    𝑛9:
+      of: 𝑛5
+      rules: &bool
+        - name: true-literal
+          pattern: >-
+            ⟦ 𝐵1, φ ↦ Φ.bool( if ↦ ⟦ ρ ↦ ∅, 𝜏1 ↦ ∅, 𝜏2 ↦ ∅, φ ↦ ξ.𝜏1 ⟧ ) ⟧
+          result: >-
+            ⟦ 𝐵1, φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, φ ↦ ⟦ Δ ⤍ FF- ⟧ ⟧ ) ⟧
+        - name: false-literal
+          pattern: >-
+            ⟦ 𝐵1, φ ↦ Φ.bool( if ↦ ⟦ ρ ↦ ∅, 𝜏1 ↦ ∅, 𝜏2 ↦ ∅, φ ↦ ξ.𝜏2 ⟧ ) ⟧
+          result: >-
+            ⟦ 𝐵1, φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, φ ↦ ⟦ Δ ⤍ 00- ⟧ ⟧ ) ⟧
+    𝑛10:
+      of: 𝑛6
+      rules: *bool
+  symbolize:
+    𝑛11: 𝑛15
+    𝑛12: 𝑛16
   defer:
-    𝑛7: 𝑛5
-    𝑛8: 𝑛6
-  fork:
+    𝑛13: 𝑛11
+    𝑛14: 𝑛12
+  join:
     on: 𝛿1
-    left: 𝑛7
-    right: 𝑛8
+    left: 𝑛13
+    right: 𝑛14
+    otherwise: L_join
+- λ: L_join
+  morph:
+    𝑛1: $.left🌵
+    𝑛2: $.right🌵
+    𝑛15: 𝑛9
+    𝑛16: 𝑛10
+  stay:
+    𝑛3: 𝑛1
+    𝑛4: 𝑛2
+  evaluate:
+    𝑛5: 𝑛3
+    𝑛6: 𝑛4
+  rewrite:
+    𝑛9:
+      of: 𝑛5
+      rules: *bool
+    𝑛10:
+      of: 𝑛6
+      rules: *bool
+  symbolize:
+    𝑛11: 𝑛15
+    𝑛12: 𝑛16
+  defer:
+    𝑛13: 𝑛11
+    𝑛14: 𝑛12
+  join:
+    on: $.on🌵
+    left: 𝑛13
+    right: 𝑛14
+    otherwise: L_join
 - λ: L_entry
   dataize:
     𝛿1: $.n
