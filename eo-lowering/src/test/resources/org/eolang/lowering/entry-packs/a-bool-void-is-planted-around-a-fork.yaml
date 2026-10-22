@@ -4,7 +4,9 @@
 # A bool is planted with its `if` filled by a fork, because `bool.eo` routes
 # `and`, `or`, `not` and dataization through that attribute. Both branches are
 # left void, so whoever takes the bool binds them, and the fork is what the run
-# sees when a branch is taken.
+# sees when a branch is taken. The fork holds its condition and its two sides
+# under the names phino gives the copies it fabricates when a join fails, so
+# that one entry of the table answers a planted fork and a fabricated one alike.
 eo:
   both.eo: |
     [a] > both
@@ -20,7 +22,12 @@ xmir:
     /o[@name='λ' and text()='L_fork']"
   - "//o[@as='a' and @base='Φ.bool']/o[@as='if']/o[@name='left' and @base='∅']"
   - "//o[@as='a' and @base='Φ.bool']/o[@as='if']/o[@name='right' and @base='∅']"
-  - "//o[@as='a' and @base='Φ.bool']/o[@as='if']/o[@name='φ']\
+  - "//o[@as='a' and @base='Φ.bool']/o[@as='if']/o[@name='on🌵']\
     /o[@name='λ' and text()='𝜎1']"
+  - "//o[@as='a' and @base='Φ.bool']/o[@as='if']\
+    /o[@name='left🌵' and @base='ξ.left']"
+  - "//o[@as='a' and @base='Φ.bool']/o[@as='if']\
+    /o[@name='right🌵' and @base='ξ.right']"
+  - "//o[@as='a' and @base='Φ.bool']/o[@as='if'][not(o[@name='φ'])]"
 voids:
   - "𝜎1\t1\ta\tbool"

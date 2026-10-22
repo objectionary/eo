@@ -681,11 +681,12 @@ final class MorphingTest {
             new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
         ).exec(temp);
         MatcherAssert.assertThat(
-            "the fork must defer each side it morphed and split the run on its condition, but it doesnt",
+            "the fork must read a fabricated copy by the names phino gives it and name itself when a join fails, but it doesnt",
             MorphingTest.text(home.resolve("atoms.yaml")),
             Matchers.stringContainsInOrder(
-                "- λ: L_fork", "dataize:", "morph:", "stay:", "symbolize:", "defer:",
-                "𝑛7: 𝑛5", "𝑛8: 𝑛6", "fork:", "on: 𝛿1", "left: 𝑛7", "right: 𝑛8", "- λ: L_entry"
+                "- λ: L_fork", "dataize:", "𝛿1: $.on🌵", "morph:", "𝑛1: $.left🌵", "𝑛2: $.right🌵",
+                "stay:", "evaluate:", "rewrite:", "symbolize:", "defer:",
+                "join:", "on: 𝛿1", "left: 𝑛13", "right: 𝑛14", "otherwise: L_fork", "- λ: L_entry"
             )
         );
     }

@@ -343,7 +343,10 @@
   <!--
   A bool carries its symbol inside the fork of its "if", because "bool.eo"
   routes "and", "or", "not" and dataization through that attribute, and a
-  fork is what the run has to see when a branch is taken.
+  fork is what the run has to see when a branch is taken. The fork holds
+  the symbol and its two sides under the names phino gives the copies it
+  fabricates when a join fails, so that one entry of the table answers a
+  planted fork and a fabricated copy alike.
   -->
   <xsl:template match="plant[@carrier = 'bool']" mode="eo:xmir">
     <xsl:param name="as" as="xs:string" select="''"/>
@@ -355,11 +358,13 @@
         <o name="λ">L_fork</o>
         <o base="∅" name="left"/>
         <o base="∅" name="right"/>
-        <o name="φ">
+        <o name="on🌵">
           <o name="λ">
             <xsl:value-of select="concat('𝜎', index-of($eo:symbols, generate-id(sym[1])))"/>
           </o>
         </o>
+        <o base="ξ.left" name="left🌵"/>
+        <o base="ξ.right" name="right🌵"/>
       </o>
     </o>
   </xsl:template>
