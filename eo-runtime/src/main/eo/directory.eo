@@ -11,11 +11,19 @@
 #  below still costs one frame per entry, because every loop EO has grows the
 #  stack: `while` nests a frame per cycle and `tuple.reducedi` one per element,
 #  so a directory of a few thousand entries still overflows.
+#
+# @todo #9541:30min Stop skipping 'redundant-attachment' here. It reads the
+#  `>>` name of the fallback `walk` hands to `compile` as unreferenced, since
+#  the `^` its head declares masks the hop to `glob` in `walk`, while without
+#  the name the walk ends with the bare message of the regex. Remove this
+#  directive once objectionary/lints#1301 counts a hop through the receiver
+#  as reaching outward.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-attachment
 +version 0.0.0
 
 [file] > directory
@@ -135,7 +143,7 @@
                           "$/s"
                 T > [^ message] >>
                   "Can't parse '%s' as a glob pattern, %s".printf
-                    * ^.glob message
+                    * ^.^.glob message
               text
     "".joined >> single
       *
@@ -790,6 +798,19 @@
         as-file.
           d.resolved "a.txt"
       eq. (d.as-dir.walk "[.txt").length 0
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  --> stops-on-walking-with-a-glob-that-is-not-a-regex
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      eq.
+        length.
+          d.as-dir.walk "[z-a]"
+        0
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted
