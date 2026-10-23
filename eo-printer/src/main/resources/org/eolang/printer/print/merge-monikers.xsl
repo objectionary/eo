@@ -314,7 +314,7 @@
         <xsl:variable name="owner" select="$binding/.."/>
         <xsl:variable name="name" select="substring-after($binding/@base, $eo:xi-dot)"/>
         <xsl:variable name="predecessor" as="element()?">
-          <xsl:sequence select="if (starts-with($binding/@base, $eo:xi-dot) and $name != '' and not(contains($name, '.'))) then (key('moniker-binding', concat(generate-id($owner), ' ', $name), root($binding)), key('anonymous-pipe-binding', concat(generate-id($owner), ' ', $name), root($binding)))[1] else ()"/>
+          <xsl:sequence select="if (starts-with($binding/@base, $eo:xi-dot) and $name != '' and not(contains($name, '.'))) then (let $lookup := concat(generate-id($owner), ' ', $name) return (key('moniker-binding', $lookup, root($binding)), key('anonymous-pipe-binding', $lookup, root($binding))))[1] else ()"/>
         </xsl:variable>
         <xsl:choose>
           <xsl:when test="empty($predecessor) or not(eo:pipe-chain-terminal($binding, ()))"/>
