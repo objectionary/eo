@@ -7,6 +7,8 @@ package org.eolang;
 import com.sun.management.ThreadMXBean;
 import java.lang.management.ManagementFactory;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,6 +32,19 @@ import java.util.concurrent.ConcurrentHashMap;
  * to end takes a reading of itself before it goes, rather than leaving the
  * last word to a watcher that may look a moment too late.</p>
  *
+ * <p>A thread that is born and dies between two readings is never asked at
+ * all, and no map can keep what was never taken. The JVM, though, also
+ * says how much every thread of this machine has allocated together, the
+ * departed ones included, and that number cannot lose a thread. So the
+ * bytes nobody can name are the whole of the machine less what was there
+ * before the group was made and less every reading taken since, from the
+ * threads of the group and from the strangers alike. They are charged to
+ * the group, because a stranger that comes and goes within a test is a
+ * rarity, while a test that starts a thread and joins it is not (#9468).
+ * A stranger is read on every turn exactly so that it stops being a
+ * stranger the moment it is seen, and leaves nothing behind when it
+ * ends.</p>
+ *
  * @since 0.75.0
  */
 final class Consumed {
@@ -45,7 +60,7 @@ final class Consumed {
     private final ThreadGroup group;
 
     /**
-     * The largest reading taken from every thread, by thread identifier.
+     * The largest reading taken from every thread of the group, by identifier.
      *
      * <p>Both the thread that runs the test and the one that watches it
      * take readings, so the map is a concurrent one and a reading only ever
@@ -55,13 +70,37 @@ final class Consumed {
     private final Map<Long, Long> readings;
 
     /**
+     * The largest reading taken from every thread outside the group.
+     */
+    private final Map<Long, Long> strangers;
+
+    /**
+     * How much the threads that were already dead had allocated when the
+     * group was made.
+     */
+    private final long dead;
+
+    /**
      * Ctor.
      *
      * @param grp The group whose threads are counted
      */
     Consumed(final ThreadGroup grp) {
+        this(grp, Consumed.departed(), Consumed.alive());
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param grp The group whose threads are counted
+     * @param gone How much the threads already dead had allocated
+     * @param seen The readings of the threads alive right now
+     */
+    private Consumed(final ThreadGroup grp, final long gone, final Map<Long, Long> seen) {
         this.group = grp;
         this.readings = new ConcurrentHashMap<>(0);
+        this.strangers = seen;
+        this.dead = gone;
     }
 
     /**
@@ -79,28 +118,39 @@ final class Consumed {
      * @return Bytes allocated, or zero if this JVM does not count them
      */
     long bytes() {
+        final long whole = Consumed.whole();
         this.refresh();
-        long total = 0L;
+        long mine = 0L;
         for (final long taken : this.readings.values()) {
-            total += taken;
+            mine += taken;
         }
-        return total;
+        long named = this.dead + mine;
+        for (final long taken : this.strangers.values()) {
+            named += taken;
+        }
+        return mine + Math.max(0L, whole - named);
     }
 
     /**
-     * Take a fresh reading from every thread of the group.
+     * Take a fresh reading from every thread of this machine.
      */
     void refresh() {
-        final Thread[] threads = this.threads();
-        if (Consumed.counting() && threads.length > 0) {
-            final long[] ids = new long[threads.length];
-            for (int idx = 0; idx < threads.length; ++idx) {
-                ids[idx] = threads[idx].getId();
+        if (Consumed.counting()) {
+            final Collection<Long> mine = new HashSet<>(0);
+            for (final Thread thread : this.threads()) {
+                mine.add(thread.getId());
             }
+            final long[] ids = Consumed.BEAN.get().getAllThreadIds();
             final long[] taken = Consumed.BEAN.get().getThreadAllocatedBytes(ids);
             for (int idx = 0; idx < ids.length; ++idx) {
                 if (taken[idx] >= 0L) {
-                    this.readings.merge(ids[idx], taken[idx], Math::max);
+                    final Map<Long, Long> into;
+                    if (mine.contains(ids[idx])) {
+                        into = this.readings;
+                    } else {
+                        into = this.strangers;
+                    }
+                    into.merge(ids[idx], taken[idx], Math::max);
                 }
             }
         }
@@ -116,6 +166,40 @@ final class Consumed {
             count = this.group.enumerate(found, true);
         }
         return Arrays.copyOf(found, count);
+    }
+
+    private static long whole() {
+        long bytes = 0L;
+        if (Consumed.counting()) {
+            bytes = Consumed.BEAN.get().getTotalThreadAllocatedBytes();
+        }
+        return bytes;
+    }
+
+    private static long departed() {
+        long bytes = 0L;
+        if (Consumed.counting()) {
+            long live = 0L;
+            for (final long taken : Consumed.alive().values()) {
+                live += taken;
+            }
+            bytes = Consumed.whole() - live;
+        }
+        return bytes;
+    }
+
+    private static Map<Long, Long> alive() {
+        final Map<Long, Long> seen = new ConcurrentHashMap<>(0);
+        if (Consumed.counting()) {
+            final long[] ids = Consumed.BEAN.get().getAllThreadIds();
+            final long[] taken = Consumed.BEAN.get().getThreadAllocatedBytes(ids);
+            for (int idx = 0; idx < ids.length; ++idx) {
+                if (taken[idx] >= 0L) {
+                    seen.put(ids[idx], taken[idx]);
+                }
+            }
+        }
+        return seen;
     }
 
     private static Optional<ThreadMXBean> bean() {
