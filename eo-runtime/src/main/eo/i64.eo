@@ -35,7 +35,12 @@
 +version 0.0.0
 
 [as-bytes] > i64
-  as-bytes > @
+  if. > @
+    as-bytes.size.eq 8
+    as-bytes
+    T
+      "An i64 needs exactly 8 bytes, got %d".printf
+        * as-bytes.size
   as-i32.as-i16 > as-i16
   [^num cant-convert] > as-i32
     if. > @
@@ -358,6 +363,8 @@
       i64 7F-FF-FF-FF-FF-FF-FF-FF
       1.as-i64
     i64 80-00-00-00-00-00-00-00
+
+  i64 01-02-03 --> stops-on-bytes-of-the-wrong-width
 
   2147483648.as-i64.as-i32 --> stops-on-converting-i32-max-plus-one-to-i32
 
