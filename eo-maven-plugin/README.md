@@ -95,10 +95,10 @@ one after another:
     module. It takes the source code in a plain text format and parses into
     XML document, using [ANTLR4](https://www.antlr.org/) and
     [Xembly](https://www.xembly.org). The output of the parser you can find
-    in the `target/eo/parse` directory. Parsed objects which are versioned
-    (normally pulled from
-    [Objectionary](https://github.com/objectionary/home)) are cached in
-    `.eo/parsed` folder.
+    in the `target/eo/parse` directory. Parsing results for all sources,
+    including project sources, are cached under the `parsed` subdirectory of
+    `eo.cache` (`~/.eo/parsed` by default). Cache keys include the plugin
+    version and the source hash. Set `eo.cacheEnabled=false` to disable caching.
 
 * **Optimization**.
     There are a number of [XSL transformations](https://en.wikipedia.org/wiki/XSLT)
