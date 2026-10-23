@@ -33,7 +33,7 @@ final class ConsumedTest {
         MatcherAssert.assertThat(
             "The bytes of a thread that was born and gone between two readings must still be charged to its group, but they werent",
             ConsumedTest.missed(chunk),
-            Matchers.greaterThan((long) chunk - 1024L * 1024L)
+            Matchers.greaterThan(chunk - 1024L * 1024L)
         );
     }
 

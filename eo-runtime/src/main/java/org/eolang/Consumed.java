@@ -12,6 +12,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.management.JMException;
+import javax.management.ObjectName;
 
 /**
  * How much memory the threads of a single group have taken.
@@ -53,6 +55,18 @@ final class Consumed {
      * The bean that counts bytes, empty if this JVM refuses to count them.
      */
     private static final Optional<ThreadMXBean> BEAN = Consumed.bean();
+
+    /**
+     * The name of the bean that says how much every thread of this
+     * machine has allocated together, empty if the name is refused.
+     *
+     * <p>The total is read through JMX and not through
+     * {@link ThreadMXBean}, where it also lives, because the method was
+     * added to that interface after Java 17, and this runtime is compiled
+     * for Java 17. A JVM too old to answer leaves the tally exactly where
+     * it was before, with the threads nobody sampled unaccounted for.</p>
+     */
+    private static final Optional<ObjectName> THREADING = Consumed.threading();
 
     /**
      * The group whose threads are counted.
@@ -140,18 +154,14 @@ final class Consumed {
             for (final Thread thread : this.threads()) {
                 mine.add(thread.getId());
             }
-            final long[] ids = Consumed.BEAN.get().getAllThreadIds();
-            final long[] taken = Consumed.BEAN.get().getThreadAllocatedBytes(ids);
-            for (int idx = 0; idx < ids.length; ++idx) {
-                if (taken[idx] >= 0L) {
-                    final Map<Long, Long> into;
-                    if (mine.contains(ids[idx])) {
-                        into = this.readings;
-                    } else {
-                        into = this.strangers;
-                    }
-                    into.merge(ids[idx], taken[idx], Math::max);
+            for (final Map.Entry<Long, Long> seen : Consumed.alive().entrySet()) {
+                final Map<Long, Long> into;
+                if (mine.contains(seen.getKey())) {
+                    into = this.readings;
+                } else {
+                    into = this.strangers;
                 }
+                into.merge(seen.getKey(), seen.getValue(), Math::max);
             }
         }
     }
@@ -170,10 +180,26 @@ final class Consumed {
 
     private static long whole() {
         long bytes = 0L;
-        if (Consumed.counting()) {
-            bytes = Consumed.BEAN.get().getTotalThreadAllocatedBytes();
+        if (Consumed.counting() && Consumed.THREADING.isPresent()) {
+            try {
+                bytes = ((Number) ManagementFactory.getPlatformMBeanServer().getAttribute(
+                    Consumed.THREADING.get(), "TotalThreadAllocatedBytes"
+                )).longValue();
+            } catch (final JMException ex) {
+                bytes = 0L;
+            }
         }
         return bytes;
+    }
+
+    private static Optional<ObjectName> threading() {
+        Optional<ObjectName> found;
+        try {
+            found = Optional.of(new ObjectName("java.lang:type=Threading"));
+        } catch (final JMException ex) {
+            found = Optional.empty();
+        }
+        return found;
     }
 
     private static long departed() {
