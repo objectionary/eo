@@ -21,14 +21,14 @@
       seq *
         tup.head.deleted
         ^.r tup.tail
-    | entries
+    |
+      recovered > [^] >>
+        ^.folder.walk "**"
+        ^.folder.exists.if
+          ^.folder.walk "**"
+          *
     folder.as-path.as-file.deleted
     folder
-  recovered > [^] > entries
-    ^.folder.walk "**"
-    ^.folder.exists.if
-      ^.folder.walk "**"
-      *
 
   ++> can-delete-a-directory-containing-a-dangling-symlink
     os.is-windows.or > @

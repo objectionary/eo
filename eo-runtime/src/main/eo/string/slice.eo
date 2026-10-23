@@ -24,7 +24,9 @@
 [^text start len] > slice
   if. > @
     or.
-      nstart.lt 0
+      lt.
+        number start! >> nstart
+        0
       nstart.is-integer.not
     T
       nstart.is-finite.if
@@ -35,7 +37,9 @@
             string nstart.as-scientific
     if.
       or.
-        nlen.lt 0
+        lt.
+          number len! >> nlen
+          0
         nlen.is-integer.not
       T
         nlen.is-finite.if
@@ -45,133 +49,122 @@
             *
               string nlen.as-scientific
       seq *
-        recidx >> bstart!
-          0
-          0
-          nstart
-          "Start index (%s) is out of string bounds".printf
-            *
-              printed nstart
-        blen
+        number >> bstart
+          recidx >>!
+            0
+            0
+            nstart
+            "Start index (%s) is out of string bounds".printf
+              *
+                if. > [num] >> printed
+                  9.223372036854776e18.gt num
+                  "%d".printf
+                    * num
+                  string num.as-scientific
+                | nstart
+        minus. >> blen
+          [^ index accum result cause] >> recidx
+            if. > @
+              accum.eq result
+              index
+              if.
+                index.eq size
+                T cause
+                if.
+                  eq.
+                    and.
+                      ^.text.as-bytes.slice index 1 >> byte
+                      80-
+                    00-
+                  ^.recidx
+                    increase index 1 true
+                    accum.plus 1
+                    result
+                    cause
+                  if.
+                    eq. (byte.and E0-) C0-
+                    ^.recidx
+                      increase
+                        index
+                        2
+                        ((byte.and FE-).eq C0-).not.and
+                          eq. (b1.and C0-) 80- >> b1cont
+                      accum.plus 1
+                      result
+                      cause
+                    if.
+                      eq. (byte.and F0-) E0-
+                      ^.recidx
+                        increase
+                          index
+                          3
+                          and.
+                            eq. >> b2cont
+                              and.
+                                ^.text.as-bytes.slice (index.plus 2) 1
+                                C0-
+                              80-
+                            if.
+                              byte.eq E0-
+                              eq.
+                                and.
+                                  ^.text.as-bytes.slice (index.plus 1) 1 >> b1
+                                  E0-
+                                A0-
+                              if.
+                                byte.eq ED-
+                                eq. (b1.and E0-) 80-
+                                b1cont
+                        accum.plus 1
+                        result
+                        cause
+                      if.
+                        eq. (byte.and F8-) F0-
+                        ^.recidx
+                          increase
+                            index
+                            4
+                            b2cont.and
+                              and.
+                                eq.
+                                  and.
+                                    ^.text.as-bytes.slice (index.plus 3) 1
+                                    C0-
+                                  80-
+                                if.
+                                  byte.eq F0-
+                                  ((b1.and F0-).eq 90-).or
+                                    eq. (b1.and E0-) A0-
+                                  if.
+                                    byte.eq F4-
+                                    eq. (b1.and F0-) 80-
+                                    if.
+                                      or. >>
+                                        byte.eq F1- >> leadf1
+                                        or. (byte.eq F2-) (byte.eq F3-)
+                                      b1cont
+                                      false
+                          accum.plus 1
+                          result
+                          cause
+                        T
+                          "Unknown byte format (%x), can't recognize character".printf
+                            * byte
+          |
+            bstart
+            0
+            nlen
+            "Start index + length to slice (%s) is out of string bounds".printf
+              *
+                printed
+                  nstart.plus nlen
+          bstart
         if.
           nlen.eq 0
           ""
           string
             text.as-bytes.slice bstart blen
-  minus. > blen
-    [^ index accum result cause] >> recidx
-      if. > @
-        accum.eq result
-        index
-        if.
-          index.eq size
-          T cause
-          if.
-            eq.
-              byte.and ^.p1
-              ^.r1
-            ^.recidx
-              ^.increase index 1 true
-              accum.plus 1
-              result
-              cause
-            if.
-              eq.
-                byte.and ^.p2
-                ^.r2
-              ^.recidx
-                ^.increase index 2 twovalid
-                accum.plus 1
-                result
-                cause
-              if.
-                eq.
-                  byte.and ^.p3
-                  ^.r3
-                ^.recidx
-                  ^.increase index 3 threevalid
-                  accum.plus 1
-                  result
-                  cause
-                if.
-                  eq. (byte.and ^.p4) ^.r4
-                  ^.recidx
-                    ^.increase index 4 fourvalid
-                    accum.plus 1
-                    result
-                    cause
-                  T
-                    "Unknown byte format (%x), can't recognize character".printf
-                      * byte
-      ^.text.as-bytes.slice > b1
-        index.plus 1
-        1
-      eq. > b1808f
-        b1.and F0-
-        80-
-      eq. > b1809f
-        b1.and E0-
-        80-
-      or. > b190bf
-        eq.
-          b1.and F0-
-          90-
-        eq.
-          b1.and E0-
-          A0-
-      eq. > b1a0bf
-        b1.and E0-
-        A0-
-      eq. > b1cont
-        b1.and C0-
-        80-
-      ^.text.as-bytes.slice > b2
-        index.plus 2
-        1
-      eq. > b2cont
-        b2.and C0-
-        80-
-      ^.text.as-bytes.slice > b3
-        index.plus 3
-        1
-      eq. > b3cont
-        b3.and C0-
-        80-
-      ^.text.as-bytes.slice index 1 > byte
-      b2cont.and > fourvalid
-        b3cont.and second4
-      eq. > leadc0c1
-        byte.and FE-
-        C0-
-      byte.eq E0- > leade0
-      byte.eq ED- > leaded
-      byte.eq F0- > leadf0
-      byte.eq F1- > leadf1
-      leadf1.or > leadf1f3
-        leadf2.or leadf3
-      byte.eq F2- > leadf2
-      byte.eq F3- > leadf3
-      byte.eq F4- > leadf4
-      leade0.if > second3
-        b1a0bf
-        leaded.if b1809f b1cont
-      leadf0.if > second4
-        b190bf
-        leadf4.if
-          b1808f
-          leadf1f3.if b1cont false
-      b2cont.and second3 > threevalid
-      leadc0c1.not.and b1cont > twovalid
-    |
-      number bstart
-      0
-      nlen
-      "Start index + length to slice (%s) is out of string bounds".printf
-        *
-          printed
-            nstart.plus nlen
-    bstart
-  if. > [^ index csize valid] > increase
+  if. > [^ index csize valid] >> increase
     gt.
       index.plus csize
       size
@@ -188,34 +181,7 @@
           *
             ^.text.as-bytes.slice index csize
             index
-  number len! > nlen
-  number start! > nstart
-  80- > p1
-  E0- > p2
-  F0- > p3
-  F8- > p4
-  if. > [num] > printed
-    9.223372036854776e18.gt num
-    "%d".printf
-      * num
-    string num.as-scientific
-  00- > r1
-  C0- > r2
-  E0- > r3
-  F0- > r4
   text.as-bytes.size >> size!
-
-  eq. ++> can-print-an-index-inside-the-long-range
-    printed.
-      "hello".slice 0 0
-      42
-    "42"
-
-  eq. ++> can-print-an-index-past-the-long-range
-    printed.
-      "hello".slice 0 0
-      1.0e30
-    "1.000000e30"
 
   eq. ++> can-slice-a-line-break-escape-sequence
     "\n".slice

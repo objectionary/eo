@@ -15,47 +15,45 @@
         plus.
           as-i64.
             and.
-              tbytes.left shift1
+              left.
+                clock.as-bytes >> tbytes
+                35
               as-bytes.
-                minus. (one.left 53).as-i64 one
+                minus.
+                  as-i64.
+                    left.
+                      00-00-00-00-00-00-00-01 >> one
+                      53
+                  00-00-00-00-00-00-00-01
           plus.
             as-i64.
               and.
-                tbytes.left shift3
+                tbytes.left 17
                 as-bytes.
-                  minus. (one.left shift1).as-i64 one
+                  minus. (one.left 35).as-i64 00-00-00-00-00-00-00-01
             as-i64.
-              tbytes.and ((one.left shift3).as-i64.minus one).as-bytes
-    00-00-00-00-00-00-00-01 > one
-    35 > shift1
-    17 > shift3
-    clock.as-bytes > tbytes
-  as-i64. > high
-    and.
-      as-bytes.
-        num.as-i64.div 67108864.as-i64
-      00-00-00-00-03-FF-FF-FF
-  as-i64. > low
-    num.as-i64.as-bytes.and 00-00-00-00-03-FF-FF-FF
-  as-i64. > lowered
-    low.times 25214903917.as-i64
+              tbytes.and ((one.left 17).as-i64.minus 00-00-00-00-00-00-00-01).as-bytes
   random. > next
     as-number.
       as-i64.
         and.
           as-bytes.
             plus.
-              shifted.plus lowered
+              plus.
+                as-i64.
+                  left.
+                    and.
+                      as-bytes.
+                        ((num.as-i64.div 67108864.as-i64).as-bytes.and 00-00-00-00-03-FF-FF-FF).as-i64.times
+                          25214903917.as-i64
+                      00-00-00-00-03-FF-FF-FF
+                    26
+                as-i64.
+                  (num.as-i64.as-bytes.and 00-00-00-00-03-FF-FF-FF).as-i64.times
+                    25214903917.as-i64
               11.as-i64
           00-1F-FF-FF-FF-FF-FF-FF
   clocked clock > pseudo
-  as-i64. > shifted
-    left.
-      and.
-        as-bytes.
-          high.times 25214903917.as-i64
-        00-00-00-00-03-FF-FF-FF
-      26
 
   not. ++> can-differ-between-two-draws
     eq.
