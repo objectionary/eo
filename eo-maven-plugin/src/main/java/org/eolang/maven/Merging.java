@@ -72,14 +72,11 @@ import org.w3c.dom.NodeList;
 final class Merging implements Step {
 
     /**
-     * The mark the parser puts in front of a test that must hold.
+     * The length of the mark the parser puts in front of a test: one letter,
+     * {@code p} for a test that must hold and {@code n} for one that must
+     * throw, and the cactus that follows it.
      */
-    private static final String HOLDS = "p🌵";
-
-    /**
-     * The mark the parser puts in front of a test that must throw.
-     */
-    private static final String THROWS = "n🌵";
+    private static final int MARK = "p🌵".length();
 
     /**
      * The tojos of everything this build compiles.
@@ -211,7 +208,7 @@ final class Merging implements Step {
         for (int idx = 0; idx < kids.getLength(); ++idx) {
             final Node kid = kids.item(idx);
             final String name = Merging.named(kid);
-            if (name.startsWith(Merging.HOLDS) || name.startsWith(Merging.THROWS)) {
+            if (name.startsWith("p🌵") || name.startsWith("n🌵")) {
                 found.add(kid);
             }
         }
@@ -221,9 +218,9 @@ final class Merging implements Step {
     private static String prefixed(final String test, final String owner) {
         return String.format(
             "%s%s-%s",
-            test.substring(0, Merging.HOLDS.length()),
+            test.substring(0, Merging.MARK),
             owner,
-            test.substring(Merging.HOLDS.length())
+            test.substring(Merging.MARK)
         );
     }
 
