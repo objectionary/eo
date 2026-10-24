@@ -7,6 +7,7 @@ package org.eolang.maven;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
@@ -15,8 +16,12 @@ import java.util.UUID;
 import org.eolang.cache.Saved;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link MjUnplace}.
@@ -89,6 +94,68 @@ final class MjUnplaceTest {
                 Matchers.not(Matchers.hasKey("target/classes/org")),
                 Matchers.hasKey("target/classes")
             )
+        );
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "class,true,true,false,false", "txt,true,true,false,false",
+        "class,true,false,false,false", "txt,true,false,false,false",
+        "class,false,false,false,false", "txt,false,false,false,false",
+        "class,true,false,true,false", "txt,true,false,true,false",
+        "class,false,false,false,true", "txt,false,false,false,true"
+    })
+    void unplacesOnlyCopiedBinaries(
+        final ArgumentsAccessor args, @Mktmp final Path temp
+    ) throws IOException {
+        final boolean exists = args.getBoolean(1);
+        final boolean rewrite = args.getBoolean(3);
+        final FakeMaven maven = new FakeMaven(temp).with("rewrite", rewrite);
+        final String binary = String.format("org/example/file.%s", args.getString(0));
+        final byte[] original = {1, 2};
+        final byte[] dependency;
+        if (args.getBoolean(2)) {
+            dependency = original;
+        } else {
+            dependency = new byte[]{3, 4};
+        }
+        new Saved(
+            dependency,
+            new Subdir(maven.targetPath(), "resolve").path()
+                .resolve("foo/hello/-/0.1").resolve(binary)
+        ).value();
+        final Path target = maven.classesPath().resolve(binary);
+        if (exists) {
+            new Saved(original, target).value();
+        }
+        maven.execute(MjPlace.class);
+        if (args.getBoolean(4)) {
+            maven.execute(MjPlace.class);
+        }
+        final boolean owned = maven.placed().find(target).isPresent();
+        final byte[] placed = Files.readAllBytes(target);
+        maven.execute(MjUnplace.class);
+        final boolean retained = Files.exists(target);
+        final byte[] remaining;
+        if (retained) {
+            remaining = Files.readAllBytes(target);
+        } else {
+            remaining = new byte[0];
+        }
+        final boolean copied = !exists || rewrite;
+        Assertions.assertAll(
+            () -> Assertions.assertEquals(copied, owned, "Only copied binaries must be owned"),
+            () -> Assertions.assertEquals(
+                !copied, retained, "Only copied binaries must be removed"
+            ),
+            () -> {
+                if (copied) {
+                    Assertions.assertArrayEquals(dependency, placed, "The binary must be copied");
+                } else {
+                    Assertions.assertArrayEquals(original, placed, "The binary must be skipped");
+                    Assertions.assertArrayEquals(original, remaining, "Unowned bytes must survive");
+                }
+            }
         );
     }
 
