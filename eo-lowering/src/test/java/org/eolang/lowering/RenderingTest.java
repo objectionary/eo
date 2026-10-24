@@ -78,12 +78,12 @@ final class RenderingTest {
                 .getBytes(StandardCharsets.UTF_8)
         );
         new Rendering(
-            temp.resolve("atoms"), RenderingTest.tables(temp, "<links/>", "<atoms/>", "<provides/>")
+            RenderingTest.tables(temp, "<links/>", "<atoms/>", "<provides/>")
         ).exec(temp);
         MatcherAssert.assertThat(
             "an entry whose run was killed must be rendered into nothing, but it is",
-            Files.exists(temp.resolve("atoms")),
-            Matchers.is(false)
+            temp.resolve("3-atoms").toFile().list(),
+            Matchers.emptyArray()
         );
     }
 
@@ -102,11 +102,11 @@ final class RenderingTest {
                 .getBytes(StandardCharsets.UTF_8)
         );
         final Path stale = Files.createDirectories(
-            temp.resolve("atoms").resolve("org").resolve("eolang")
+            temp.resolve("3-atoms").resolve("org").resolve("eolang")
         ).resolve("EOstale$EOφ.java");
         Files.write(stale, "// nothing".getBytes(StandardCharsets.UTF_8));
         new Rendering(
-            temp.resolve("atoms"), RenderingTest.tables(temp, "<links/>", "<atoms/>", "<provides/>")
+            RenderingTest.tables(temp, "<links/>", "<atoms/>", "<provides/>")
         ).exec(temp);
         MatcherAssert.assertThat(
             "an atom of an earlier build must not survive the rendering, but it did",
@@ -146,7 +146,7 @@ final class RenderingTest {
             );
         }
         new Rendering(
-            temp.resolve("atoms"), RenderingTest.tables(temp, "<links/>", "<atoms/>", "<provides/>")
+            RenderingTest.tables(temp, "<links/>", "<atoms/>", "<provides/>")
         ).exec(temp);
         MatcherAssert.assertThat(
             "two entries whose atoms ask for one class must both be taints, but some were rendered",
@@ -166,7 +166,7 @@ final class RenderingTest {
             "the failure must name the home with no protocols, but it doesnt",
             Assertions.assertThrows(
                 IllegalStateException.class,
-                () -> new Rendering(temp.resolve("atoms"), tables).exec(temp),
+                () -> new Rendering(tables).exec(temp),
                 "a home without protocols must fail the rendering"
             ).getMessage(),
             Matchers.containsString(temp.toString())
@@ -192,7 +192,6 @@ final class RenderingTest {
             "an entry with no protocol must be logged as left in EO, but it isnt",
             RenderingTest.logged(
                 new Rendering(
-                    temp.resolve("atoms"),
                     RenderingTest.tables(temp, "<links/>", "<atoms/>", "<provides/>")
                 ),
                 temp
@@ -214,7 +213,7 @@ final class RenderingTest {
             "the failure must name the table of the bodies that is missing, but it doesnt",
             Assertions.assertThrows(
                 IllegalStateException.class,
-                () -> new Rendering(temp.resolve("atoms"), tables).exec(temp),
+                () -> new Rendering(tables).exec(temp),
                 "tables without the types of the bodies must fail the rendering"
             ).getMessage(),
             Matchers.containsString("links.xml")
@@ -393,7 +392,6 @@ final class RenderingTest {
             log.addAll(
                 RenderingTest.logged(
                     new Rendering(
-                        this.temp.resolve("atoms"),
                         RenderingTest.tables(
                             this.temp,
                             this.story.map().getOrDefault("links", "<links/>").toString(),
@@ -404,7 +402,7 @@ final class RenderingTest {
                     this.temp
                 )
             );
-            return this.temp.resolve("atoms");
+            return this.temp.resolve("6-atoms");
         }
 
         private List<Path> files(final Path atoms) throws IOException {

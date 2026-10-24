@@ -19,12 +19,11 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.cactoos.Proc;
 import org.cactoos.Text;
-import org.cactoos.io.Directory;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.iterable.Sorted;
 import org.cactoos.list.ListOf;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
@@ -45,7 +44,7 @@ import org.cactoos.text.TextOf;
  * now a taint, or whose object was renamed or deleted, would otherwise be
  * compiled again and again (#9267).</p>
  *
- * <p>The Java files are written into the directory of atoms, next to the
+ * <p>The Java files are written into a numbered {@code atoms}, next to the
  * directory of protocols, so that a reader of the build can compare every
  * atom with the protocol it was made from. The Maven goal gives this
  * directory to javac as one more directory of sources. The file name of
@@ -138,11 +137,6 @@ import org.cactoos.text.TextOf;
 final class Rendering implements Proc<Path> {
 
     /**
-     * The directory where the Java atoms are written.
-     */
-    private final Path atoms;
-
-    /**
      * The directory with the tables of {@code eo:inference}, which say what
      * the body of an entry gives.
      */
@@ -151,11 +145,9 @@ final class Rendering implements Proc<Path> {
     /**
      * Ctor.
      *
-     * @param dir The directory where the Java atoms are written
      * @param tbls The directory with the tables of {@code eo:inference}
      */
-    Rendering(final Path dir, final Path tbls) {
-        this.atoms = dir;
+    Rendering(final Path tbls) {
         this.tables = tbls;
     }
 
@@ -198,7 +190,8 @@ final class Rendering implements Proc<Path> {
         ).with(new Hrefs())
             .with("voids", home.resolve("voids.tsv").toUri().toString())
             .with("inference", this.tables.toUri().toString());
-        this.clean();
+        final Path atoms = new Seqdir(home, 1).dirs().once("atoms");
+        Rendering.clean(atoms);
         final Collection<String> rendered = new ArrayList<>(0);
         final Map<String, Collection<String>> claims = new HashMap<>(0);
         int tainted = 0;
@@ -224,7 +217,7 @@ final class Rendering implements Proc<Path> {
                         cells[0], cells[1], out.xpath("/rendered/taint/text()").get(0)
                     );
                 } else {
-                    final Path file = this.atoms.resolve(
+                    final Path file = atoms.resolve(
                         out.xpath("/rendered/atom/@file").get(0)
                     );
                     Files.createDirectories(file.getParent());
@@ -253,7 +246,7 @@ final class Rendering implements Proc<Path> {
                 );
             }
         }
-        tainted += this.unshared(claims, rendered);
+        tainted += this.unshared(atoms, claims, rendered);
         Files.write(
             home.resolve("rendered.tsv"),
             String.join("", rendered).getBytes(StandardCharsets.UTF_8)
@@ -261,27 +254,31 @@ final class Rendering implements Proc<Path> {
         Logger.info(
             this,
             "Rendered %d atoms into %[file]s, while %d entries were taints",
-            rendered.size(), this.atoms, tainted
+            rendered.size(), atoms, tainted
         );
     }
 
-    private void clean() throws IOException {
-        if (Files.exists(this.atoms)) {
-            for (final Path stale
-                : new Sorted<>(Comparator.reverseOrder(), new Directory(this.atoms))) {
+    private static void clean(final Path atoms) throws IOException {
+        try (Stream<Path> inside = Files.walk(atoms)) {
+            for (final Path stale : new ListOf<>(
+                inside.filter(path -> !path.equals(atoms))
+                    .sorted(Comparator.reverseOrder())
+                    .iterator()
+            )) {
                 Files.delete(stale);
             }
         }
     }
 
     private int unshared(
-        final Map<String, Collection<String>> claims, final Collection<String> rendered
+        final Path atoms, final Map<String, Collection<String>> claims,
+        final Collection<String> rendered
     ) throws IOException {
         int dropped = 0;
         for (final Map.Entry<String, Collection<String>> claim : claims.entrySet()) {
             if (claim.getValue().size() > 1) {
                 rendered.removeAll(claim.getValue());
-                Files.delete(this.atoms.resolve(claim.getKey()));
+                Files.delete(atoms.resolve(claim.getKey()));
                 dropped += claim.getValue().size();
                 Logger.info(
                     this,
