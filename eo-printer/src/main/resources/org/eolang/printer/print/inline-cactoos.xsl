@@ -427,6 +427,20 @@
             <xsl:apply-templates select="@*[name() != 'base']"/>
             <xsl:attribute name="base" select="$alias/@base"/>
             <xsl:apply-templates select="$alias/node()"/>
+            <!--
+            This binding applies the alias to arguments of its own
+            (`h 5 &gt;&gt; g` over `foo &gt;&gt; h`), so landing the alias
+            value alone hands `g` the (empty) argument list of `h` and the
+            `5` is gone, printed as `foo &gt;&gt; g` (#9294) — the kept-handle
+            flavour of the loss #5952 fixed on the reference path above. The
+            binding's own `o` children follow the alias's so the arguments
+            survive as `foo 5 &gt;&gt; g`. Guarded the same way: an alias that
+            is already applied has no inline spelling as the head of another
+            application and is kept standing instead (see `eo:reapplied`).
+            -->
+            <xsl:if test="not($alias/o)">
+              <xsl:apply-templates select="o"/>
+            </xsl:if>
           </xsl:copy>
         </xsl:when>
         <xsl:otherwise>
