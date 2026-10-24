@@ -1,0 +1,48 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# `star` runs its `child` as `^.child.run s k`, the way the matchers of
+# `string/regex.eo` do. The receiver is a read off `^`, which no pass ever
+# settles, so nobody can say whose `run` takes `s` and `k`, and every void of
+# every `run` is filled by somebody out of sight. The census of the `k` of
+# `lit.run` says so, and the arm of `pick` that reads it is not struck as
+# dead (#9006).
+eo:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  dial.eo: |
+    [^ sys] > dial
+  oak.eo: |
+    [] > oak
+  app.eo: |
+    [] > app
+      [child] > star
+        [s k] > run
+          ^.child.run s k > @
+      [] > lit
+        [s k] > run
+          s.pick > @
+            dial 03-
+            k
+      star lit > one
+      one.run yes oak > two
+      one.run no oak > three
+links:
+  - "/links/type[@id='Φ.app.lit.run.φ' and not(ref[@loc='Φ.dial'])]"
+provides:
+  - "//attr[@type='Φ.app.lit.run.k']/witnessed/unknown"

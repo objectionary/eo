@@ -33,6 +33,11 @@ import java.util.stream.Collectors;
  * filled with a {@code Φ.string} deserves to know that somebody also fills it
  * with something nobody has looked into.</p>
  *
+ * <p>A call nobody could place is in the choice as an {@code unknown} and is
+ * read back as one, for the same reason: it is somebody filling the void out
+ * of sight, and a void with one member in sight and one out of it is not a
+ * void of one member (#9006).</p>
+ *
  * <p>What is read here is what {@link Answers} types a void from, exactly as
  * {@link Witnessed} says: one member and the void is that member, several and
  * it is still a void. So it is read twice over — to type the voids that can be
@@ -92,6 +97,9 @@ final class Seen {
         if (Seen.holds(told, "data")) {
             found.add(new Data());
         }
+        if (Seen.holds(told, "unknown")) {
+            found.add(new Unknown());
+        }
         return found;
     }
 
@@ -107,7 +115,7 @@ final class Seen {
     }
 
     private static List<Xnav> listed(final Xnav node) {
-        return Seen.choices(node, "ref", "var", "data");
+        return Seen.choices(node, "ref", "var", "data", "unknown");
     }
 
     private static List<Xnav> choices(final Xnav node, final String... names) {

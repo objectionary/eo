@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A void one call fills with an `oak` and another call fills with something
+# nobody can see is not a void that holds an `oak`. `pick oak` is the call the
+# tables can place; `other.pick elm` is made on a void, so no pass says whose
+# `pick` it takes, and what it hands in is unknown, not absent. The census of
+# `m` keeps that unknown member, and `pick` is not named after the one caller
+# that could be seen (#9006).
+eo:
+  oak.eo: |
+    [] > oak
+  elm.eo: |
+    [] > elm
+  app.eo: |
+    [] > app
+      [other] > hold
+        [m] > pick
+          m > @
+        pick oak > first
+        other.pick elm > second
+provides:
+  - "//attr[@name='m']/witnessed/union/ref[@loc='Φ.oak']"
+  - "//attr[@name='m']/witnessed/union/unknown"
+links:
+  - "/links/type[@id='Φ.app.hold.pick.φ' and not(.//ref[@loc='Φ.oak'])]"
