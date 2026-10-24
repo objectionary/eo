@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object/errors[count(error)=2]
+  - /object/errors/error[@line='3' and @pos='4' and contains(text(),'the identity object takes no arguments')]
+  - /object/errors/error[@line='6' and @pos='6' and contains(text(),'the identity object takes no arguments')]
+  - /object/o[@name='app']/o[@name='direct' and count(o)=2 and count(o[@base='∅' and @name='x'])=1 and count(o[@base='ξ.x' and @name='φ'])=1]
+  - /object/o[@name='app']/o[@name='nested']/o[not(@name) and count(o)=2 and count(o[@base='∅' and @name='x'])=1 and count(o[@base='ξ.x' and @name='φ'])=1]
+input: |
+  [] > app
+    I > direct
+      5
+    foo > nested
+      I
+        5
