@@ -6,6 +6,7 @@
 package org.eolang;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 /**
  * A data container.
@@ -126,7 +127,7 @@ public interface Data {
             if (obj == null) {
                 throw new IllegalArgumentException("Cannot convert null data to Phi");
             }
-            final Phi phi;
+            Phi phi;
             if (obj instanceof Boolean) {
                 if (obj.equals(true)) {
                     phi = Phi.Φ.take("true");
@@ -147,14 +148,18 @@ public interface Data {
                 phi = tuple;
             } else if (obj instanceof byte[] bytes) {
                 phi = Phi.Φ.take("bytes").copy();
-                phi.put(0, new PhDefault(bytes));
+                final byte[] frozen = Arrays.copyOf(bytes, bytes.length);
+                phi.put(0, new PhDefault(frozen));
+                phi = new PhApplication(phi, frozen);
             } else if (obj instanceof Number number) {
                 phi = Data.ToPhi.number(number.doubleValue());
             } else if (obj instanceof String text) {
                 phi = Phi.Φ.take("string").copy();
                 final Phi bts = Phi.Φ.take("bytes").copy();
-                bts.put(0, new PhDefault(text.getBytes(StandardCharsets.UTF_8)));
+                final byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
+                bts.put(0, new PhDefault(bytes));
                 phi.put(0, bts);
+                phi = new PhApplication(phi, bytes);
             } else {
                 throw new ExFailure(
                     "Unknown type of data: %s",
@@ -165,7 +170,7 @@ public interface Data {
         }
 
         private static Phi number(final double value) {
-            final Phi phi;
+            Phi phi;
             if (Double.isNaN(value)) {
                 phi = Phi.Φ.take("nan");
             } else if (value == Double.POSITIVE_INFINITY) {
@@ -175,8 +180,10 @@ public interface Data {
             } else {
                 phi = Phi.Φ.take("number").copy();
                 final Phi bts = Phi.Φ.take("bytes").copy();
-                bts.put(0, new PhDefault(new BytesOf(value).take()));
+                final byte[] bytes = new BytesOf(value).take();
+                bts.put(0, new PhDefault(bytes));
                 phi.put(0, bts);
+                phi = new PhApplication(phi, bytes);
             }
             return phi;
         }

@@ -5,6 +5,7 @@
 
 package org.eolang;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
@@ -39,6 +40,11 @@ public final class PhApplication extends PhOnce {
     private static final Pattern DASHES = Pattern.compile("-");
 
     /**
+     * Known bytes, absent in regular applications.
+     */
+    private final Snapshot data;
+
+    /**
      * Ctor.
      *
      * @param phi The object
@@ -53,7 +59,8 @@ public final class PhApplication extends PhOnce {
                 }
                 return copy;
             },
-            Optional.of(() -> PhApplication.applied(phi, binds))
+            Optional.of(() -> PhApplication.applied(phi, binds)),
+            null
         );
     }
 
@@ -80,18 +87,49 @@ public final class PhApplication extends PhOnce {
     }
 
     /**
+     * Ctor with known data.
+     *
+     * @param phi The object graph
+     * @param data The known bytes
+     */
+    public PhApplication(final Phi phi, final byte[] data) {
+        this(() -> phi, Optional.empty(), new Snapshot(Objects.requireNonNull(data)));
+    }
+
+    /**
      * Ctor.
      *
      * @param sup Supplier of the wrapped object
      * @param phrase Supplier of the φ-term
+     * @param data Known bytes, or {@code null}
      */
-    private PhApplication(final Supplier<Phi> sup, final Optional<Supplier<String>> phrase) {
+    private PhApplication(
+        final Supplier<Phi> sup, final Optional<Supplier<String>> phrase,
+        final Snapshot data
+    ) {
         super(sup, phrase);
+        this.data = data;
     }
 
     @Override
     public Phi wrapped(final Supplier<Phi> sup, final Optional<Supplier<String>> phrase) {
-        return new PhApplication(sup, phrase);
+        return new PhApplication(sup, phrase, this.data);
+    }
+
+    @Override
+    public byte[] dataized() {
+        final byte[] result;
+        if (this.data == null) {
+            result = super.dataized();
+        } else {
+            if (Thread.currentThread().isInterrupted()) {
+                throw new ExInterrupted(
+                    "Can't dataize an application, because the thread was interrupted"
+                );
+            }
+            result = this.data.bytes();
+        }
+        return result;
     }
 
     private static String applied(final Phi phi, final Bind... binds) {
