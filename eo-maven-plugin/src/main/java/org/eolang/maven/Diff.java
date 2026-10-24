@@ -7,7 +7,6 @@ package org.eolang.maven;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -16,10 +15,14 @@ import java.util.stream.Collectors;
  *
  * <p>Both sides are split into lines and aligned by their longest
  * common subsequence. The result is rendered in the familiar unified
- * style: common lines are prefixed with a space, deletions with
- * {@code -} highlighted in red, and additions with {@code +} highlighted
- * in green. When the two texts are identical, {@link #colored()} returns
- * an empty string and {@link #same()} returns {@code true}.</p>
+ * style: deletions are prefixed with {@code -} highlighted in red,
+ * additions with {@code +} highlighted in green, and each change is shown
+ * with a few unchanged lines around it, under an {@code @@} header that
+ * says where in either text the change sits. A line further away than
+ * that is not printed at all, so one wrong line in a long file prints
+ * nine lines and not the whole file. When the two texts are identical,
+ * {@link #colored()} returns an empty string and {@link #same()} returns
+ * {@code true}.</p>
  *
  * <p>Line terminators are part of what is compared, since two texts that
  * differ only in them are not the same text and a diff that shows nothing
@@ -45,6 +48,11 @@ final class Diff {
      * ANSI escape that resets all coloring.
      */
     private static final String RESET = "\033[0m";
+
+    /**
+     * How many unchanged lines are shown on either side of a change.
+     */
+    private static final int CONTEXT = 3;
 
     /**
      * The text before the change.
@@ -106,26 +114,90 @@ final class Diff {
     }
 
     private static String render(final List<String> before, final List<String> after) {
-        final int[][] lcs = Diff.lcs(before, after);
+        final List<String> script = Diff.script(before, after);
         final StringBuilder out = new StringBuilder(0);
+        int idx = 0;
+        while (idx < script.size()) {
+            if (' ' == script.get(idx).charAt(0)) {
+                idx += 1;
+            } else {
+                final int last = Diff.closing(script, idx);
+                final int till = Math.min(script.size(), last + 1 + Diff.CONTEXT);
+                Diff.hunk(out, script, Math.max(0, idx - Diff.CONTEXT), till);
+                idx = till;
+            }
+        }
+        return out.toString();
+    }
+
+    private static List<String> script(final List<String> before, final List<String> after) {
+        final int[][] lcs = Diff.lcs(before, after);
+        final List<String> out = new ArrayList<>(0);
         int row = 0;
         int col = 0;
         while (row < before.size() && col < after.size()) {
             if (before.get(row).equals(after.get(col))) {
-                Diff.common(out, before.get(row));
+                out.add(String.join("", " ", before.get(row)));
                 row += 1;
                 col += 1;
             } else if (lcs[row + 1][col] >= lcs[row][col + 1]) {
-                Diff.deleted(out, before.get(row));
+                out.add(String.join("", "-", before.get(row)));
                 row += 1;
             } else {
-                Diff.added(out, after.get(col));
+                out.add(String.join("", "+", after.get(col)));
                 col += 1;
             }
         }
-        Diff.drain(out, before.subList(row, before.size()), Diff::deleted);
-        Diff.drain(out, after.subList(col, after.size()), Diff::added);
-        return out.toString();
+        Diff.drain(out, before.subList(row, before.size()), "-");
+        Diff.drain(out, after.subList(col, after.size()), "+");
+        return out;
+    }
+
+    private static int closing(final List<String> script, final int start) {
+        int last = start;
+        int idx = start;
+        while (idx < script.size() && idx - last <= 2 * Diff.CONTEXT) {
+            if (' ' != script.get(idx).charAt(0)) {
+                last = idx;
+            }
+            idx += 1;
+        }
+        return last;
+    }
+
+    private static void hunk(
+        final StringBuilder out, final List<String> script, final int from, final int till
+    ) {
+        out.append(
+            String.format(
+                "@@ -%d,%d +%d,%d @@",
+                Diff.counted(script, 0, from, '+') + 1,
+                Diff.counted(script, from, till, '+'),
+                Diff.counted(script, 0, from, '-') + 1,
+                Diff.counted(script, from, till, '-')
+            )
+        ).append('\n');
+        for (final String line : script.subList(from, till)) {
+            if ('-' == line.charAt(0)) {
+                Diff.deleted(out, line.substring(1));
+            } else if ('+' == line.charAt(0)) {
+                Diff.added(out, line.substring(1));
+            } else {
+                Diff.common(out, line.substring(1));
+            }
+        }
+    }
+
+    private static int counted(
+        final List<String> script, final int from, final int till, final char skip
+    ) {
+        int count = 0;
+        for (final String line : script.subList(from, till)) {
+            if (skip != line.charAt(0)) {
+                count += 1;
+            }
+        }
+        return count;
     }
 
     private static int[][] lcs(final List<String> before, final List<String> after) {
@@ -145,11 +217,10 @@ final class Diff {
     }
 
     private static void drain(
-        final StringBuilder out, final List<String> tail,
-        final BiConsumer<? super StringBuilder, ? super String> appender
+        final List<String> out, final List<String> tail, final String mark
     ) {
         for (final String line : tail) {
-            appender.accept(out, line);
+            out.add(String.join("", mark, line));
         }
     }
 
