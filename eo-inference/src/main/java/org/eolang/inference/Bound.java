@@ -54,6 +54,10 @@ import java.util.Map;
  * {@code name.contains} it reaches took its receiver where it was written
  * (#8955).</p>
  *
+ * <p>A formation written as an argument gets its receiver from the
+ * application that puts it into a void, which {@link Stamped} finds as well
+ * (#9359).</p>
+ *
  * <p>An application whose base is a void declares no place at all, and its
  * arguments would go nowhere: {@code cant-read "foo"}, written inside the
  * {@code [^ cant-read] > as-ascii} that takes it, is a copy of something
@@ -230,8 +234,8 @@ final class Bound {
                 found.put(application, filled);
             }
         }
-        final Map<String, String> bearers = new Stamped(this.pairs, this.receivers, this.owned)
-            .bearers(this.sites);
+        final Stamped stamped = new Stamped(this.pairs, this.receivers, this.owned);
+        final Map<String, String> bearers = stamped.bearers(this.sites);
         for (final Map.Entry<String, String> dispatch : this.receivers.entrySet()) {
             final String hollow = this.owned.receiver(this.hung(dispatch, landed));
             if (!hollow.isEmpty()) {
@@ -240,6 +244,7 @@ final class Bound {
             }
         }
         this.relayed(found, landed, relays);
+        stamped.adopt(found, relays);
         return found;
     }
 
