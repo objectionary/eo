@@ -587,6 +587,13 @@
         * "x"
       "stopped"
 
+  eq. ++> can-stop-on-an-unsupported-format
+    "stopped"
+    recovered
+      "%o".printf
+        * 8
+      "stopped"
+
   eq. ++> can-truncate-a-negative-float-toward-zero
     "-7"
     "%d".printf
@@ -678,10 +685,6 @@
   printf. --> stops-on-an-oversized-positional-index
     "%99999999999999999999$s"
     * "Jeff"
-
-  printf. --> stops-on-an-unsupported-format
-    "%o"
-    *
 
   printf. --> stops-on-arguments-that-do-not-match
     "%s%s"
