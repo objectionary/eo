@@ -15,6 +15,16 @@
 # ```
 # Case conversion is exposed as string methods `lower` and `upper`, backed
 # by the locale wrappers `string.english` (the default) and `string.turkish`.
+#
+# @todo #9025:60min Test a text block and a Unicode escape in EO. The
+#  canonical printer writes a text block as a plain string and `\u0424` as
+#  the letter it stands for, and the build refuses a file that is not
+#  canonical, so the tests named after text blocks and escapes below can
+#  only compare the plain string with its bytes. The printer also folds
+#  `string` of valid UTF-8 bytes into the literal they spell, so
+#  `can-turn-bytes-into-a-string` in `bytes.eo` compares a literal with its
+#  bytes as well. Once the printer keeps such literals, or a form it leaves
+#  alone is found, write these tests with the literals themselves.
 # .
 
 +architect yegor256@gmail.com
@@ -62,19 +72,19 @@
 
   eq. ++> can-preserve-indentation-in-a-text-block
     "a\n b\n  c"
-    "a\n b\n  c"
+    61-0A-20-62-0A-20-20-63
 
-  "\n".eq "\n" ++> can-support-a-line-break-escape-sequence
+  "\n".eq 0A- ++> can-support-a-line-break-escape-sequence
 
-  "Ф".eq "Ф" ++> can-support-a-unicode-escape-sequence
+  "Ф".eq D0-A4 ++> can-support-a-unicode-escape-sequence
 
   eq. ++> can-support-escape-sequences
     "Hello, друг!\n"
-    "Hello, друг!\n"
+    48-65-6C-6C-6F-2C-20-D0-B4-D1-80-D1-83-D0-B3-21-0A
 
   eq. ++> can-support-escape-sequences-in-a-text-block
     "Hello, друг!\n"
-    "Hello, друг!\n"
+    48-65-6C-6C-6F-2C-20-D0-B4-D1-80-D1-83-D0-B3-21-0A
 
   eq. ++> can-turn-into-bytes
     "€ друг".as-bytes
