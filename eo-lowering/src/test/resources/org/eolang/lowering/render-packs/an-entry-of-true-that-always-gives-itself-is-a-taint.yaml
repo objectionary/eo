@@ -1,16 +1,21 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# The root of the entry dataized to bytes phino knew in advance, so the
-# object always gives the same constant, and there is no computing to turn
-# into Java.
-locator: Φ.yes
+# The root of `Φ.true` binds the bool phino knew in advance, and that bool
+# is `Φ.true` itself, so its atom would return the object it stands in.
+locator: Φ.true
 number: 75
-taint: always gives the constant FF-
+taint: always gives itself, Φ.true
 eo:
-  yes.eo: |
-    [] > yes
-      true > @
+  true.eo: |
+    [] > true
+      FF- > @
+provides: |
+  <provides>
+    <type complete="false" id="Φ.true" reduced="Φ.bool">
+      <attr name="φ" type="Φ.true.φ"/>
+    </type>
+  </provides>
 protocol: |
   <protocol>
     <morph at="Φ.l/.e75">
