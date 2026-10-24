@@ -69,4 +69,31 @@ final class KindTest {
             Matchers.is(false)
         );
     }
+
+    @ParameterizedTest
+    @EnumSource(
+        value = Kind.class,
+        names = {"TOP_LEVEL", "BARE_FORMATION"}
+    )
+    void holdsAttributesUnderBodyKinds(final Kind kind) {
+        MatcherAssert.assertThat(
+            "a child of the file or of a bare formation is an attribute, so it may carry a name",
+            kind.body(),
+            Matchers.is(true)
+        );
+    }
+
+    @ParameterizedTest
+    @EnumSource(
+        value = Kind.class,
+        names = {"TOP_LEVEL", "BARE_FORMATION"},
+        mode = EnumSource.Mode.EXCLUDE
+    )
+    void holdsArgumentsUnderOtherKinds(final Kind kind) {
+        MatcherAssert.assertThat(
+            "a child of any other kind is an argument, which cannot carry a name",
+            kind.body(),
+            Matchers.is(false)
+        );
+    }
 }

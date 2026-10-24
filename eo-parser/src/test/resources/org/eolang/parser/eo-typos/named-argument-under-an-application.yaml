@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #6145: a name on an argument line would float the argument out to the
+# enclosing formation, which is not what the author meant.
+line: 3
+message: |-
+  [3:4] error: 'an argument cannot carry a name, move it into the formation body or give it a `>>` handle'
+      42 > bar
+      ^
+input: |
+  [] > app
+    x > foo
+      42 > bar
