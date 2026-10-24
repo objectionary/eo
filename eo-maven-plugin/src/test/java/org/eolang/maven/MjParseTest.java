@@ -398,6 +398,25 @@ final class MjParseTest {
     }
 
     @Test
+    void numbersNextDirectoryAlikeWhenParsedFromCache(@Mktmp final Path temp)
+        throws IOException {
+        final File cache = temp.resolve("cache").toFile();
+        final FakeMaven cold = new FakeMaven(temp.resolve("cold"))
+            .withHelloWorld()
+            .with("cache", cache)
+            .execute(new PpParse());
+        final FakeMaven warm = new FakeMaven(temp.resolve("warm"))
+            .withHelloWorld()
+            .with("cache", cache);
+        warm.execute(new PpParse());
+        MatcherAssert.assertThat(
+            "the stage after a parse from cache is not numbered as after a fresh parse",
+            warm.dirName("lint"),
+            Matchers.equalTo(cold.dirName("lint"))
+        );
+    }
+
+    @Test
     void logsParserWarningWithoutCallingItAFailure(@Mktmp final Path temp) throws Exception {
         final List<String> messages = new ArrayList<>(0);
         final String home = com.jcabi.log.Logger.format("%[file]s", temp);
