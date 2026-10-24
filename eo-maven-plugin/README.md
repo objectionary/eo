@@ -11,19 +11,20 @@ Here is a simple program that gets a year from a command line and tells you
 whether it's leap or not:
 
 ```eo
-[args...] > main
-  [y] > leap
-    or. > @
-      and.
-        eq. (mod. y 4) 0
-        not. (eq. (mod. y 100) 0)
-      eq. (mod. y 400) 0
-  Q.io.stdout > @
-    Q.string.sprintf
-      "%d is %sa leap year!"
-      (args.get 0).as-int > year!
-      if (leap year:y) "" "not "
+# Tells whether the year from the command line is a leap one.
 
+[args] > main
+  stdout > @
+    "%d is %sa leap year!\n".printf
+      *
+        year
+        if. leap "" "not "
+  (args.at 0).as-number > year
+  or. > leap
+    and.
+      eq. (year.mod 4) 0
+      not. (eq. (year.mod 100) 0)
+    eq. (year.mod 400) 0
 ```
 
 To compile this program, put it into `src/main/eo/main.eo` and then
@@ -32,6 +33,21 @@ create a file `pom.xml` with this content (it's just a sample):
 ```xml
 <project>
   [...]
+  <properties>
+    <maven.compiler.release>17</maven.compiler.release>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>eo-runtime</artifactId>
+      <version>0.63.2</version>
+    </dependency>
+    <dependency>
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>jna</artifactId>
+      <version>5.19.1</version>
+    </dependency>
+  </dependencies>
   <build>
     <plugins>
       <plugin>
@@ -51,6 +67,7 @@ create a file `pom.xml` with this content (it's just a sample):
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
+        <version>3.6.4</version>
         <executions>
           <execution>
             <phase>test</phase>
