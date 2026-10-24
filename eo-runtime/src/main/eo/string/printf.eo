@@ -376,6 +376,11 @@
       number flags
       30-
 
+  eq. ++> can-align-bytes-to-the-left
+    "40-45-00-00-00-00-00-00  "
+    "%-25x".printf
+      * 42.as-bytes
+
   eq. ++> can-answer-the-length-of-the-formatted-text
     2
     length.
@@ -509,11 +514,6 @@
     "Hey"
     "%s".printf
       * "Hey" "Jeff"
-
-  eq. ++> can-left-align-bytes
-    "40-45-00-00-00-00-00-00  "
-    "%-25x".printf
-      * 42.as-bytes
 
   eq. ++> can-preserve-an-escaped-bytes-format
     "%x"
