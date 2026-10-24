@@ -48,8 +48,6 @@
         "Can't convert i64 number %s to i32 because it's out of i32 bounds".printf
           *
             string num.as-number.as-scientific
-    i32 > left
-      num.as-bytes.slice 4 4
   [^num] > as-number
     if. > @
       eq.
