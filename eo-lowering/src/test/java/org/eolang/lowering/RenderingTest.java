@@ -7,6 +7,8 @@ package org.eolang.lowering;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,15 +16,18 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.tools.ToolProvider;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 import org.cactoos.list.ListOf;
+import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
 import org.eolang.xax.XtSticky;
@@ -35,6 +40,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Isolated;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Tests of the class {@link Rendering}.
@@ -61,6 +67,50 @@ final class RenderingTest {
             new RenderingTest.Pack(new XtSticky(new XtYaml(yaml)), this.dir).unmet(),
             Matchers.empty()
         );
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {0, 1, 255, 256, 257, 1023, 1024, 1025, 4696, 10_000, 65_536})
+    void preservesTheBytesOfACompiledLiteral(final int size) throws Exception {
+        final byte[] expected = new byte[size];
+        for (int idx = 0; idx < size; ++idx) {
+            expected[idx] = (byte) idx;
+        }
+        String bytes = "--";
+        if (size > 0) {
+            bytes = HexFormat.ofDelimiter("-").withUpperCase().formatHex(expected).concat("-");
+        }
+        final String expression = Files.readString(
+            new RenderingTest.Pack(
+                new XtYaml(
+                    new TextOf(
+                        RenderingTest.class.getResource(
+                            "render-packs/a-data-root-of-a-body-that-returns-bytes-is-returned.yaml"
+                        )
+                    ).asString().replace("FF-", bytes)
+                ),
+                this.dir
+            ).rendered(new ArrayList<>(0)).resolve("org/eolang/EOwrap$EOφ.java")
+        ).replaceAll("(?s).*\\.and\\(new BytesOf\\((.*)\\)\\)\\.take\\(\\);.*", "$1");
+        final Path source = this.dir.resolve("Literal.java");
+        Files.writeString(
+            source,
+            String.format(
+                "public final class Literal { public static byte[] bytes() { return %s; } }",
+                expression
+            )
+        );
+        try (URLClassLoader loader = new URLClassLoader(new URL[]{this.dir.toUri().toURL()})) {
+            MatcherAssert.assertThat(
+                "the compiled literal must preserve every byte of the rendered constant",
+                ToolProvider.getSystemJavaCompiler().run(null, null, null, source.toString()) == 0
+                    && Arrays.equals(
+                        expected,
+                        (byte[]) loader.loadClass("Literal").getMethod("bytes").invoke(null)
+                    ),
+                Matchers.is(true)
+            );
+        }
     }
 
     @Test
