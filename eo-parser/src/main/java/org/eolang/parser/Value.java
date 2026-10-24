@@ -337,7 +337,7 @@ final class Value {
         int idx = 0;
         while (idx < inner.length() - 2 && !found) {
             final char glyph = inner.charAt(idx);
-            if (glyph == '"') {
+            if (Tokens.opensString(inner, idx)) {
                 idx = Tokens.closingQuote(inner, idx);
             } else if (glyph == '(') {
                 depth = depth + 1;
