@@ -9,7 +9,12 @@
 +version 0.0.0
 
 [as-bytes] > u32
-  as-bytes > @
+  if. > @
+    as-bytes.size.eq 4
+    as-bytes
+    T
+      "A u32 needs exactly 4 bytes, got %d".printf
+        * as-bytes.size
   i64 > [^num] > as-i64
     00-00-00-00.concat num.as-bytes
   as-i64.as-number > as-number
@@ -127,5 +132,7 @@
   eq. ++> can-wrap-a-product-modulo-two-to-the-thirty-second
     00-01-00-00.as-u32.times 00-01-00-00.as-u32
     00-00-00-00.as-u32
+
+  u32 01-02-03 --> stops-on-bytes-of-the-wrong-width
 
   00-00-00-02.as-u32.div 00-00-00-00.as-u32 --> stops-on-division-by-zero
