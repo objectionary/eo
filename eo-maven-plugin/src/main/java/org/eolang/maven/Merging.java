@@ -8,6 +8,7 @@ import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -102,8 +103,8 @@ final class Merging implements Step {
         }
     }
 
-    private Path dir() {
-        return new Subdir(this.target, "merge").path();
+    private Path dir() throws IOException {
+        return new Seqdir(this.target, 2).dirs().once("merge");
     }
 
     private static Collection<String> deepest(final Map<String, TjForeign> all) {
