@@ -76,26 +76,86 @@
     i1.read 4 > i2
     i2.read 4 > i3
 
-  01-02-03.as-input.read 3.5 --> stops-on-a-fractional-byte-count-above-available
+  eq. ++> can-read-from-exhausted-input
+    read.
+      01-02-03.as-input.read 3
+      2
+    --
+
+  eq. ++> can-read-zero-bytes-from-empty-input
+    --.as-input.read 0
+    --
+
+  eq. --> stops-on-a-fractional-byte-count-above-available
+    01-02-03.as-input.read 3.5
+    01-02-03
+
+  eq. --> stops-on-a-fractional-byte-count-after-exhaustion
+    read.
+      01-02-03.as-input.read 3
+      0.5
+    --
 
   01-02-03.as-input.read 0.5 --> stops-on-a-fractional-byte-count-below-available
+
+  eq. --> stops-on-a-fractional-byte-count-from-empty-input
+    --.as-input.read 0.5
+    --
 
   read. --> stops-on-a-fractional-byte-count-in-a-chained-read
     01-02-03-04-05-06.as-input.read 3
     1.5
 
-  01-02-03.as-input.read nan --> stops-on-a-nan-byte-count
+  eq. --> stops-on-a-nan-byte-count
+    01-02-03.as-input.read nan
+    01-02-03
 
-  read. --> stops-on-a-nan-byte-count-in-a-chained-read
-    01-02-03-04-05-06.as-input.read 3
-    nan
+  eq. --> stops-on-a-nan-byte-count-after-exhaustion
+    read.
+      01-02-03.as-input.read 3
+      nan
+    --
+
+  eq. --> stops-on-a-nan-byte-count-from-empty-input
+    --.as-input.read nan
+    --
+
+  eq. --> stops-on-a-nan-byte-count-in-a-chained-read
+    read.
+      01-02-03-04-05-06.as-input.read 3
+      nan
+    04-05-06
+
+  eq. --> stops-on-a-negative-byte-count-after-exhaustion
+    read.
+      01-02-03.as-input.read 3
+      -5
+    --
+
+  eq. --> stops-on-a-negative-byte-count-from-empty-input
+    --.as-input.read -5
+    --
 
   read. --> stops-on-a-negative-byte-count-in-a-chained-read
     01-02-03-04-05-06.as-input.read 3
     -5
 
-  01-02-03.as-input.read pinf --> stops-on-an-infinite-byte-count
+  eq. --> stops-on-an-infinite-byte-count
+    01-02-03.as-input.read pinf
+    01-02-03
 
-  read. --> stops-on-an-infinite-byte-count-in-a-chained-read
-    01-02-03-04-05-06.as-input.read 3
-    pinf
+  eq. --> stops-on-an-infinite-byte-count-after-exhaustion
+    read.
+      01-02-03.as-input.read 3
+      pinf
+    --
+
+  eq. --> stops-on-an-infinite-byte-count-from-empty-input
+    --.as-input.read pinf
+    --
+
+  eq. --> stops-on-an-infinite-byte-count-in-a-chained-read
+    read.
+      01-02-03-04-05-06.as-input.read 3
+      pinf
+    04-05-06
