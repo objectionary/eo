@@ -10,6 +10,7 @@ import com.jcabi.log.Logger;
 import com.jcabi.manifests.Manifests;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -223,8 +224,8 @@ final class Linting implements Step {
         return sum;
     }
 
-    private Path dir() {
-        return new Subdir(this.target, "lint").path();
+    private Path dir() throws IOException {
+        return new Seqdir(this.target, 2).dirs().once("lint");
     }
 
     private void linting() throws IOException {

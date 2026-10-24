@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -161,7 +162,7 @@ final class Pulling implements Step {
     }
 
     private Path pulled(final String object, final String hsh) throws IOException {
-        final Path base = new Subdir(this.target, "pull").path();
+        final Path base = new Seqdir(this.target, 2).dirs().once("pull");
         final Path dest = new Place(object).make(base, MjAssemble.EO);
         final Supplier<Path> che = new CachePath(
             this.cdir,

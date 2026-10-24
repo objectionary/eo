@@ -7,6 +7,7 @@ package org.eolang.maven;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -103,7 +104,7 @@ final class Transpiling implements Step {
     private int transpiled(final TjForeign tojo, final JavaFiles files) throws IOException {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
-        final Path base = new Subdir(this.target, "transpile").path();
+        final Path base = new Seqdir(this.target, 2).dirs().once("transpile");
         final String name = new OnDetailed(new OnDefault(new Xnav(xmir.inner())), source).get();
         final Path dest = new Place(name).make(base, MjAssemble.XMIR);
         final Supplier<String> hsh = new TojoHash(tojo);

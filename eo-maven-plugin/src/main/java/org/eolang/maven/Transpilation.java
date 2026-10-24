@@ -14,6 +14,8 @@ import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
+import io.github.sekator778.seqdir.Seqdir;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -252,13 +254,14 @@ final class Transpilation {
      *
      * @param name Name of the object the source XMIR holds
      * @return XSL transformation function
+     * @throws IOException If the directory of the steps can't be numbered
      */
-    Function<XML, XML> forSource(final String name) {
+    Function<XML, XML> forSource(final String name) throws IOException {
         final Train<Shift> measured = this.measured(this.train());
         final Function<XML, XML> func;
         if (this.tracking.steps()) {
             final Path dir = new Place(name).make(
-                new Subdir(this.target, "pre-transpile").path(), ""
+                new Seqdir(this.target, 2).dirs().once("pre-transpile"), ""
             );
             func = xml -> new Xsline(new TrSpy(measured, dir)).pass(xml);
         } else {
