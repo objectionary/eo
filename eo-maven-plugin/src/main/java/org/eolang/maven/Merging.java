@@ -59,9 +59,24 @@ import org.w3c.dom.NodeList;
  * package that holds it, so a test written three files deep arrives at the top
  * one level at a time and nothing has to look for it.</p>
  *
+ * <p>A lifted test takes the name of the member it came from in front of its
+ * own, so {@code works} of {@code box/left.eo} arrives as
+ * {@code left-works}. Each file names its tests on its own, and two files of
+ * one package naming a test alike is as ordinary as two files naming an
+ * attribute alike, so the name a test arrives under has to say which member
+ * wrote it. Without the prefix the second {@code works} read as a name the
+ * object already held and stopped the build.</p>
+ *
  * @since 0.68.0
  */
 final class Merging implements Step {
+
+    /**
+     * The length of the mark the parser puts in front of a test: one letter,
+     * {@code p} for a test that must hold and {@code n} for one that must
+     * throw, and the cactus that follows it.
+     */
+    private static final int MARK = "p🌵".length();
 
     /**
      * The tojos of everything this build compiles.
@@ -151,7 +166,9 @@ final class Merging implements Step {
             Merging.claimed(taken, name, member.getKey(), pkg);
             formation.appendChild(top);
             for (final Node test : Merging.tests(top)) {
-                Merging.claimed(taken, Merging.named(test), member.getKey(), pkg);
+                final String lifted = Merging.prefixed(Merging.named(test), name);
+                Merging.claimed(taken, lifted, member.getKey(), pkg);
+                test.getAttributes().getNamedItem("name").setNodeValue(lifted);
                 formation.appendChild(top.removeChild(test));
             }
         }
@@ -196,6 +213,15 @@ final class Merging implements Step {
             }
         }
         return found;
+    }
+
+    private static String prefixed(final String test, final String owner) {
+        return String.format(
+            "%s%s-%s",
+            test.substring(0, Merging.MARK),
+            owner,
+            test.substring(Merging.MARK)
+        );
     }
 
     private static String named(final Node object) {
