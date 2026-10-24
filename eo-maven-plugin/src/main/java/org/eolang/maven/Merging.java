@@ -59,9 +59,27 @@ import org.w3c.dom.NodeList;
  * package that holds it, so a test written three files deep arrives at the top
  * one level at a time and nothing has to look for it.</p>
  *
+ * <p>A lifted test takes the name of the member it came from in front of its
+ * own, so {@code works} of {@code box/left.eo} arrives as
+ * {@code left-works}. Each file names its tests on its own, and two files of
+ * one package naming a test alike is as ordinary as two files naming an
+ * attribute alike, so the name a test arrives under has to say which member
+ * wrote it. Without the prefix the second {@code works} read as a name the
+ * object already held and stopped the build.</p>
+ *
  * @since 0.68.0
  */
 final class Merging implements Step {
+
+    /**
+     * The mark the parser puts in front of a test that must hold.
+     */
+    private static final String HOLDS = "p🌵";
+
+    /**
+     * The mark the parser puts in front of a test that must throw.
+     */
+    private static final String THROWS = "n🌵";
 
     /**
      * The tojos of everything this build compiles.
@@ -151,7 +169,9 @@ final class Merging implements Step {
             Merging.claimed(taken, name, member.getKey(), pkg);
             formation.appendChild(top);
             for (final Node test : Merging.tests(top)) {
-                Merging.claimed(taken, Merging.named(test), member.getKey(), pkg);
+                final String lifted = Merging.prefixed(Merging.named(test), name);
+                Merging.claimed(taken, lifted, member.getKey(), pkg);
+                test.getAttributes().getNamedItem("name").setNodeValue(lifted);
                 formation.appendChild(top.removeChild(test));
             }
         }
@@ -191,11 +211,20 @@ final class Merging implements Step {
         for (int idx = 0; idx < kids.getLength(); ++idx) {
             final Node kid = kids.item(idx);
             final String name = Merging.named(kid);
-            if (name.startsWith("p🌵") || name.startsWith("n🌵")) {
+            if (name.startsWith(Merging.HOLDS) || name.startsWith(Merging.THROWS)) {
                 found.add(kid);
             }
         }
         return found;
+    }
+
+    private static String prefixed(final String test, final String owner) {
+        return String.format(
+            "%s%s-%s",
+            test.substring(0, Merging.HOLDS.length()),
+            owner,
+            test.substring(Merging.HOLDS.length())
+        );
     }
 
     private static String named(final Node object) {
