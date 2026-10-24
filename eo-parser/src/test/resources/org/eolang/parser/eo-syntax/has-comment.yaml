@@ -4,6 +4,8 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
-  - /comment()[1]
+  - /object/comments[count(comment)=1]/comment[@line='1' and text()='Source comment for issue 9026.']
 input: |
+  # Source comment for issue 9026.
+
   [] > main
