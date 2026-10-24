@@ -45,7 +45,7 @@
             level.minus 1
             p.div
               ^.epow level
-          ^.step level
+          ^.step level 1
         ^.climb
           level.minus 1
           p
@@ -61,7 +61,7 @@
             level.minus 1
             p.times
               ^.epow level
-          ^.step level
+          ^.step level 1
         ^.descend
           level.minus 1
           p
@@ -77,31 +77,29 @@
     [m] > series
       2.times > @
         t.times
-          horner 0
-      if. > [^ k] > horner
-        k.gt 40
-        0
-        plus.
-          1.div
-            plus.
-              k.times 2
-              1
-          times.
-            ^.t.times ^.t
-            ^.horner
-              k.plus 1
+          horner 40 0
+      if. > [^ k acc] > horner
+        k.lt 0
+        acc
+        ^.horner
+          k.minus 1
+          plus.
+            1.div
+              plus.
+                k.times 2
+                1
+            times.
+              ^.t.times ^.t
+              acc
       div. > t
         m.minus 1
         m.plus 1
-    [^ level] > step
-      if. > @
-        level.eq 0
-        1
-        plus.
-          number prev
-          number prev
-      ^.step > prev!
+    if. > [^ level acc] > step
+      level.eq 0
+      acc
+      ^.step
         level.minus 1
+        acc.times 2
   number num.as-bytes > n
 
   -2.2.ln.is-nan ++> can-return-nan-for-a-logarithm-of-a-negative-float
