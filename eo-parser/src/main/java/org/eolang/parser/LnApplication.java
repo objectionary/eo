@@ -82,7 +82,9 @@ final class LnApplication implements Line {
         } else {
             openness = Openness.OPEN;
         }
-        this.transition(stack, suffix, kind, openness);
+        suffix.rejectNameInArguments(
+            this.transition(stack, suffix, kind, openness), this.span
+        );
         Bindings.observeChild(stack, outer, this.span);
         globals.clearBlanks();
         globals.markEmitted();
@@ -178,10 +180,10 @@ final class LnApplication implements Line {
         }
     }
 
-    private void transition(
+    private Level transition(
         final Stack stack, final Suffix suffix, final Kind kind, final Openness openness
     ) {
-        new Transition(stack, this.span).apply(
+        return new Transition(stack, this.span).apply(
             kind, openness, new Admission(suffix.named(), suffix.test(), suffix.test())
         );
     }
