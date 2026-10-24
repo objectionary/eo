@@ -245,6 +245,8 @@
       i64 80-00-00-00-00-00-00-00
     -9223372036854775808
 
+  300.as-i64.as-i16.eq 300.as-i16 ++> can-convert-to-i16
+
   234.as-i64.eq 234.as-i64.as-i32.as-i64 ++> can-convert-to-i32-and-back
 
   123.@.eq 123.@ ++> can-equal-the-same-i64
