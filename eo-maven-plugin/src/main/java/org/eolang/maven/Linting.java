@@ -300,7 +300,7 @@ final class Linting implements Step {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
         final Path base = this.dir();
-        final Path out = new LintTarget(xmir, source).under(base);
+        final Path out = new LintTarget(xmir, source, tojo.identifier()).under(base);
         if (this.enabled) {
             this.guard.apply(
                 source, out, base.relativize(out),
