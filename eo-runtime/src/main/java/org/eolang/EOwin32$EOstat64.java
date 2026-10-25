@@ -5,8 +5,8 @@
 package org.eolang;
 
 import com.sun.jna.WString;
-import org.eolang.posix.Errno;
 import org.eolang.sys.Cstring;
+import org.eolang.sys.win32.Errno;
 import org.eolang.sys.win32.Msvcrt;
 import org.eolang.sys.win32.WinStat;
 
