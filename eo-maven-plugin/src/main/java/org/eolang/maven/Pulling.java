@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -25,7 +26,7 @@ import org.eolang.cache.FpUpdateFromCache;
  *
  * <p>Goes through all objects from "foreign" catalog that lack sources and
  * pulls them from the Objectionary remote repository. The pulled sources
- * are stored in a directory {@link Subdir} numbers "pull".</p>
+ * are stored in a directory {@code Seqdir} numbers "pull".</p>
  *
  * @since 0.61.0
  */
@@ -161,7 +162,7 @@ final class Pulling implements Step {
     }
 
     private Path pulled(final String object, final String hsh) throws IOException {
-        final Path base = new Subdir(this.target, "pull").path();
+        final Path base = new Seqdir(this.target, 2).dirs().once("pull");
         final Path dest = new Place(object).make(base, MjAssemble.EO);
         final Supplier<Path> che = new CachePath(
             this.cdir,
