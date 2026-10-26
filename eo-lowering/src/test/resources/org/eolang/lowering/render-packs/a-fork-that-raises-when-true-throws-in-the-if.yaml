@@ -117,7 +117,7 @@ java: |
           final byte[] s8 = new Dataized(this.take("ρ").take("b")).take();
           final double s135 = s7.length;
           final double s136 = s8.length;
-          final boolean s137 = java.util.Arrays.equals(new BytesOf(s135).take(), new BytesOf(s136).take());
+          final boolean s137 = java.util.Arrays.equals(java.nio.ByteBuffer.allocate(8).putDouble(s135).array(), java.nio.ByteBuffer.allocate(8).putDouble(s136).array());
           if (s137) {
               throw new ExFailure("%s", "bytes.xor requires operands of different lengths");
           } else {

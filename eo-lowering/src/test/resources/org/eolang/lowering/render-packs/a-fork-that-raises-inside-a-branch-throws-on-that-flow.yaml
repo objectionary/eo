@@ -156,9 +156,9 @@ java: |
           final byte[] s8 = new Dataized(this.take("ρ").take("b")).take();
           final double s135 = s7.length;
           final double s136 = s8.length;
-          final boolean s137 = java.util.Arrays.equals(new BytesOf(s135).take(), new BytesOf(s136).take());
+          final boolean s137 = java.util.Arrays.equals(java.nio.ByteBuffer.allocate(8).putDouble(s135).array(), java.nio.ByteBuffer.allocate(8).putDouble(s136).array());
           if (s137) {
-              final boolean s138 = java.util.Arrays.equals(new BytesOf(s135).take(), new byte[] {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00});
+              final boolean s138 = java.util.Arrays.equals(java.nio.ByteBuffer.allocate(8).putDouble(s135).array(), new byte[] {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00});
               if (s138) {
                   final byte[] s139 = new BytesOf(s7).or(new BytesOf(s8)).take();
                   return new Data.ToPhi(s139);

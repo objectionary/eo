@@ -968,7 +968,7 @@
         <xsl:sequence select="concat('java.nio.ByteBuffer.wrap(', $java, ').getDouble()')"/>
       </xsl:when>
       <xsl:when test="$from = 'double' and $to = 'byte[]'">
-        <xsl:sequence select="concat('new BytesOf(', $java, ').take()')"/>
+        <xsl:sequence select="concat('java.nio.ByteBuffer.allocate(8).putDouble(', $java, ').array()')"/>
       </xsl:when>
       <xsl:when test="$from = 'boolean' and $to = 'byte[]'">
         <xsl:sequence select="concat('new byte[] {(byte) (', $java, ' ? 0xFF : 0x00)}')"/>

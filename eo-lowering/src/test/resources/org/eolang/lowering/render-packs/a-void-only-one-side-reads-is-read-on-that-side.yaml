@@ -104,7 +104,7 @@ java: |
       public Phi lambda() {
           final byte[] s7 = new Dataized(this.take("ρ").take("ρ")).take();
           final double s135 = s7.length;
-          final boolean s136 = java.util.Arrays.equals(new BytesOf(s135).take(), new byte[] {(byte) 0x40, (byte) 0x20, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00});
+          final boolean s136 = java.util.Arrays.equals(java.nio.ByteBuffer.allocate(8).putDouble(s135).array(), new byte[] {(byte) 0x40, (byte) 0x20, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00});
           if (s136) {
               final byte[] s8 = new Dataized(this.take("ρ").take("b")).take();
               final byte[] s137 = new BytesOf(s7).or(new BytesOf(s8)).take();
