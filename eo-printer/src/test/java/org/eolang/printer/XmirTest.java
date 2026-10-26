@@ -138,6 +138,85 @@ final class XmirTest {
     }
 
     @Test
+    void keepsTwoAndThreeAnonymousPipesInsideAnArgumentBlock() throws IOException {
+        this.assertChainedPipe(
+            String.join(
+                System.lineSeparator(),
+                "[] > app",
+                "  foo > @",
+                "    [a] >>",
+                "      a > @",
+                "    | 2 >>",
+                "    |",
+                "      3"
+            ),
+            String.join(
+                System.lineSeparator(),
+                "[] > app",
+                "  foo > @",
+                "    I >>",
+                "    | 2 >>",
+                "    | 3"
+            ),
+            2
+        );
+        MatcherAssert.assertThat(
+            "the three-link chain passes its semantic round-trip assertions",
+            this.assertChainedPipe(
+            String.join(
+                System.lineSeparator(),
+                "[] > app",
+                "  foo > @",
+                "    [a] >>",
+                "      a > @",
+                "    | 2 >>",
+                "    | 3 >>",
+                "    | 4"
+            ),
+            String.join(
+                System.lineSeparator(),
+                "[] > app",
+                "  foo > @",
+                "    I >>",
+                "    | 2 >>",
+                "    | 3 >>",
+                "    | 4"
+            ),
+            3
+            ),
+            Matchers.is(true)
+        );
+    }
+
+    @SuppressWarnings("PMD.UnnecessaryLocalRule")
+    @Test
+    void keepsHeadWhenPipeChainHasNoTerminalHost() {
+        final XML merged = new Xsline(
+            new StClasspath("/org/eolang/printer/print/merge-monikers.xsl")
+        ).pass(
+            new XMLDocument(
+                String.join(
+                    "", "<object><o name='app'><o base='Φ.foo' name='φ'/>",
+                    "<o name='a🌵1'><o name='φ'/><o name='q'/></o>",
+                    "<o base='ξ.a🌵1' name='a🌵2' pipe=''><o base='Φ.number'>40-00-00-00-00-00-00-00</o></o>",
+                    "<o base='ξ.a🌵2' name='a🌵3' pipe=''><o base='Φ.number'>40-08-00-00-00-00-00-00</o></o>",
+                    "<o base='Φ.number' name='a🌵4' const='' local='root'>42</o>",
+                    "<o base='ξ.a🌵4' name='a🌵5' pipe=''><o base='Φ.number'>40-10-00-00-00-00-00-00</o></o>",
+                    "<o base='Φ.foo' name='ρ'><o as='α0' base='ξ.a🌵5' pipe=''><o base='Φ.number'>40-18-00-00-00-00-00-00</o></o></o>",
+                    "</o></object>"
+                )
+            )
+        );
+        MatcherAssert.assertThat(
+            "the head remains in the incomplete chain", merged,
+            XhtmlMatchers.hasXPaths(
+                "/object/o[@name='app']/o[@name='a🌵1']",
+                "/object/o[@name='app']/o[@name='a🌵5' and @pipe]"
+            )
+        );
+    }
+
+    @Test
     void keepsArgumentsOfAnIdentityShapedFormation() {
         MatcherAssert.assertThat(
             "a formation that decorates its own void but also carries arguments cannot fold into the I glyph, which leaves nowhere for those arguments to go",
@@ -378,6 +457,54 @@ final class XmirTest {
             expected = origin;
         }
         return expected;
+    }
+
+    private boolean assertChainedPipe(
+        final String source, final String expected, final int links
+    ) throws IOException {
+        final String printed = String.join(
+            System.lineSeparator(), new Xmir(
+                new EoSyntax(new InputOf(source)).parsed()
+            ).toEO().lines().toList()
+        );
+        MatcherAssert.assertThat(printed, Matchers.equalTo(expected));
+        final XML reparsed = new EoSyntax(new InputOf(printed)).parsed();
+        MatcherAssert.assertThat(
+            reparsed,
+            XhtmlMatchers.hasXPaths(
+                "/object[not(errors)]",
+                "/object/o[@name='app']/o[@name='φ' and @base='Φ.foo' and count(o)=1]",
+                String.join(
+                    "",
+                    "/object/o[@name='app']/o[@name='φ' and @base='Φ.foo']/o[",
+                    "@pipe and @as='α0' and not(@name) and count(o)=1 and ",
+                    "@base=concat('ξ.', /object/o[@name='app']/o[@pipe and @name and not(@local)][last()]/@name)]"
+                )
+            )
+        );
+        MatcherAssert.assertThat(
+            reparsed.nodes("/object/o[@name='app']/o[@pipe and @name and not(@local)]").size(),
+            Matchers.equalTo(links - 1)
+        );
+        MatcherAssert.assertThat(
+            reparsed.nodes("//o[@pipe]/o[@base='Φ.number']").size(),
+            Matchers.equalTo(links)
+        );
+        MatcherAssert.assertThat(
+            reparsed.nodes(
+                String.join(
+                    "",
+                    "/object/o[@name='app']/o[@pipe and @name and not(@local)]",
+                    "[@base=concat('ξ.', preceding-sibling::o[1]/@name)]"
+                )
+            ).size(),
+            Matchers.equalTo(links - 1)
+        );
+        MatcherAssert.assertThat(
+            String.join(System.lineSeparator(), new Xmir(reparsed).toEO().lines().toList()),
+            Matchers.equalTo(printed)
+        );
+        return true;
     }
 
     private Xmir asXmir(final String program, final Map<PenaltyKey, Integer> config)
