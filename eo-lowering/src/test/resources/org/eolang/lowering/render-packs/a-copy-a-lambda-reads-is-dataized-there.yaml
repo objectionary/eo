@@ -64,7 +64,7 @@ java: |
       @Override
       public Phi lambda() {
           final Phi s134 = new PhApplication(this.take("ρ").take("first"), new Bind("x", this.take("ρ").take("items").take("head")));
-          final double s135 = new Dataized(s134).asNumber() + 1.0;
+          final double s135 = new Dataized(s134).asNumber() + 1.0d;
           return new Data.ToPhi(s135);
       }
   }

@@ -916,7 +916,8 @@
   <!--
   The Java literal of bytes, as a value of a type. A double is the number
   phino wrote next to the same bytes in the protocol, the shortest decimal
-  that reads back as the same double. It is the bits themselves when phino
+  that reads back as the same double, with the suffix "d", so that a reader
+  sees at once that it is a double. It is the bits themselves when phino
   wrote no such number, or wrote one that is not finite.
   -->
   <xsl:function name="eo:literal-of" as="xs:string">
@@ -932,7 +933,7 @@
       </xsl:when>
       <xsl:when test="$want = 'double' and count($octets) = 8">
         <xsl:variable name="number" select="string(key('eo:number', upper-case($bytes), $eo:doc)[1]/@number)"/>
-        <xsl:sequence select="if (matches($number, '^-?[0-9]+\.[0-9]+(e-?[0-9]+)?$')) then $number else concat('Double.longBitsToDouble(0x', upper-case(string-join($octets, '')), 'L)')"/>
+        <xsl:sequence select="if (matches($number, '^-?[0-9]+\.[0-9]+(e-?[0-9]+)?$')) then concat($number, 'd') else concat('Double.longBitsToDouble(0x', upper-case(string-join($octets, '')), 'L)')"/>
       </xsl:when>
       <xsl:when test="$want = 'boolean' and upper-case($bytes) = ('FF-', '00-')">
         <xsl:sequence select="if (upper-case($bytes) = 'FF-') then 'true' else 'false'"/>

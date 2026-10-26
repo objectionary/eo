@@ -71,7 +71,7 @@ java: |
       @Override
       public Phi lambda() {
           final byte[] s1 = new Dataized(this.take("ρ").take("k")).take();
-          final double s2 = (double) new BytesOf(s1).asNumber() * 12.0;
+          final double s2 = (double) new BytesOf(s1).asNumber() * 12.0d;
           return new Data.ToPhi(s2);
       }
   }

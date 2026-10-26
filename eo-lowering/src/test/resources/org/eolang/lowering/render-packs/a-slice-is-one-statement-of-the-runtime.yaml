@@ -65,7 +65,7 @@ java: |
       @Override
       public Phi lambda() {
           final byte[] s1 = new Dataized(this.take("ρ").take("x")).take();
-          final byte[] s2 = new Slice(s1, 1.0, 2.0).delta();
+          final byte[] s2 = new Slice(s1, 1.0d, 2.0d).delta();
           return new Data.ToPhi(s2);
       }
   }
