@@ -88,7 +88,9 @@ import org.cactoos.text.TextOf;
  * example, would lose every attribute of its own. This is why, when the
  * result is plain data the protocol names no object around, this stage
  * asks the tables of {@code eo:inference} what the body gives, and an
- * entry whose body is not a number, a bool or bytes is a taint. The tables
+ * entry whose body is not a number, a bool or bytes is a taint. A body
+ * that always gives the same bytes, like {@code 42}, is such plain data
+ * too, and its atom returns them wrapped the way the tables say. The tables
  * must be there before the stage starts, even though most entries never
  * ask them.</p>
  *
@@ -124,10 +126,6 @@ import org.cactoos.text.TextOf;
  *  {@code T (string FF-FE)} or {@code T (x.as-string)}, phino writes it as
  *  an object, and the entry is a taint now. But its atom could compute the
  *  message first, and then throw it.
- * @todo #8548:30min Write an atom for an entry whose result is always the
- *  same. When the result of the body is known bytes, like an object that
- *  always returns {@code 42}, the entry is a taint now. But its atom could
- *  simply return those bytes.
  * @todo #9448:45min Put a guard inside the branch or the operand where its
  *  fork raises. A guard stands at the top of the atom now, so an entry is a
  *  taint when the fork that raises sits inside a branch of another fork, or
