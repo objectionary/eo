@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The `if` of a `bool` is a void, and the program fills it twice: `true` puts
+# its own picker there and `false` puts another. A call written on a void is
+# relayed into every formation the void holds, since the call alone does not
+# say which one it arrives at. Here the receiver says it: `true.if` lands on
+# the picker of `true` and on nothing else, so its arguments belong in the
+# voids of that picker. Relaying them into the picker of `false` as well made
+# the census of each void list what only the other caller passed (#9363).
+eo:
+  bool.eo: |
+    [if] > bool
+      if > @
+  true.eo: |
+    [^] > true
+      bool > @
+        [^ left right]
+          left > @
+  false.eo: |
+    [^] > false
+      bool > @
+        [^ left right]
+          right > @
+  oak.eo: |
+    [] > oak
+  elm.eo: |
+    [] > elm
+  app.eo: |
+    [] > app
+      true.if oak elm > x
+      false.if elm oak > y
+links:
+  - "//type[@id='Φ.app.x']/ref[@loc='Φ.true.φ.α0'][not(bind[starts-with(@void, 'Φ.false.')])]"
+  - "//type[@id='Φ.app.y']/ref[@loc='Φ.false.φ.α0'][not(bind[starts-with(@void, 'Φ.true.')])]"
+provides:
+  - "//type[@id='Φ.true.φ.α0']/attr[@name='left']/witnessed[ref[@loc='Φ.oak']][not(ref[@loc='Φ.elm'])]"
+  - "//type[@id='Φ.false.φ.α0']/attr[@name='left']/witnessed[ref[@loc='Φ.elm']][not(ref[@loc='Φ.oak'])]"
