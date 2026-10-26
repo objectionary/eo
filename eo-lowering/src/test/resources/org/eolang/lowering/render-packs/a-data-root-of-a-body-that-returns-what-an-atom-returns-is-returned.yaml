@@ -27,25 +27,20 @@ atoms: |
   </atoms>
 protocol: |
   <protocol>
-    <morph at="Φ.l/.e1">
-      <evaluate λ="L_entry" by="morph" at="Φ.l/.e1">
-        <evaluate λ="L_number_plus" by="morph" at="Φ.a🌵1">
-          <dataize at="Φ.a🌵2">
-            <manufactured meta="𝛿·2·1">𝜎1</manufactured>
-          </dataize>
-          <bound meta="𝛿1·2">𝛿·2·1</bound>
-          <dataize at="Φ.a🌵3">
-            <manufactured meta="𝛿·2·2">𝜎2</manufactured>
-          </dataize>
-          <bound meta="𝛿2·2">𝛿·2·2</bound>
-          <minted symbol="𝜎3">𝜎1 𝜎2</minted>
-        </evaluate>
-        <dataize at="Φ.a🌵4">
-          <manufactured meta="𝛿·3·1">𝜎3</manufactured>
+    <dataize at="Φ.l/.e1">
+      <evaluate λ="L_number_plus" by="morph" at="Φ.a🌵1">
+        <dataize at="Φ.a🌵2">
+          <manufactured meta="𝛿·2·1">𝜎1</manufactured>
         </dataize>
-        <bound meta="𝛿1·3">𝛿·3·1</bound>
+        <bound meta="𝛿1·2">𝛿·2·1</bound>
+        <dataize at="Φ.a🌵3">
+          <manufactured meta="𝛿·2·2">𝜎2</manufactured>
+        </dataize>
+        <bound meta="𝛿2·2">𝛿·2·2</bound>
+        <minted symbol="𝜎3">𝜎1 𝜎2</minted>
       </evaluate>
-    </morph>
+      <manufactured meta="𝛿·3·1">𝜎3</manufactured>
+    </dataize>
     <msec>110</msec>
     <firings>2</firings>
     <fps>27</fps>

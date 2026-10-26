@@ -23,26 +23,21 @@ links: |
   </links>
 protocol: |
   <protocol>
-    <morph at="Φ.l/.e54">
-      <evaluate λ="L_entry" by="morph" at="Φ.l/.e54">
-        <deferred symbol="𝜎134" by="morph" at="Φ.l/.e54.φ.ρ" of="Φ.joined.first"><with><symbol attr="x">𝜎54</symbol></with></deferred>
-        <evaluate λ="L_number_plus" by="morph" at="Φ.a🌵1">
-          <dataize at="Φ.a🌵2">
-            <manufactured meta="𝛿·2·1">𝜎134</manufactured>
-          </dataize>
-          <bound meta="𝛿1·2">𝛿·2·1</bound>
-          <dataize at="Φ.a🌵3">
-            <dataized meta="𝛿·2·2">3F-F0-00-00-00-00-00-00</dataized>
-          </dataize>
-          <bound meta="𝛿2·2">𝛿·2·2</bound>
-          <minted symbol="𝜎135">𝜎134 3F-F0-00-00-00-00-00-00</minted>
-        </evaluate>
-        <dataize at="Φ.a🌵4">
-          <manufactured meta="𝛿·3·1">𝜎135</manufactured>
+    <dataize at="Φ.l/.e54">
+      <deferred symbol="𝜎134" by="morph" at="Φ.l/.e54.φ.ρ" of="Φ.joined.first"><with><symbol attr="x">𝜎54</symbol></with></deferred>
+      <evaluate λ="L_number_plus" by="morph" at="Φ.a🌵1">
+        <dataize at="Φ.a🌵2">
+          <manufactured meta="𝛿·2·1">𝜎134</manufactured>
         </dataize>
-        <bound meta="𝛿1·3">𝛿·3·1</bound>
+        <bound meta="𝛿1·2">𝛿·2·1</bound>
+        <dataize at="Φ.a🌵3">
+          <dataized meta="𝛿·2·2">3F-F0-00-00-00-00-00-00</dataized>
+        </dataize>
+        <bound meta="𝛿2·2">𝛿·2·2</bound>
+        <minted symbol="𝜎135">𝜎134 3F-F0-00-00-00-00-00-00</minted>
       </evaluate>
-    </morph>
+      <manufactured meta="𝛿·3·1">𝜎135</manufactured>
+    </dataize>
     <msec>400</msec>
     <firings>3</firings>
     <fps>10</fps>

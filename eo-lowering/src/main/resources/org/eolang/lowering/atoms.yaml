@@ -106,10 +106,3 @@
     left: 𝑛13
     right: 𝑛14
     otherwise: L_fork
-- λ: L_entry
-  dataize:
-    𝛿1: 𝑛1
-    𝛿2: $.n
-  morph:
-    𝑛1: $.v.φ
-  𝑛: ⟦ ⟧

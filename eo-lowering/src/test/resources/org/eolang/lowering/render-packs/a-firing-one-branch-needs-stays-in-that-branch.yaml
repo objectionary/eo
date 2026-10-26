@@ -27,60 +27,54 @@ links: |
   </links>
 protocol: |
   <protocol>
-    <morph at="Φ.l/.e1">
-      <evaluate λ="L_entry" by="morph" at="Φ.l/.e1">
-        <evaluate λ="L_number_gt" by="morph" at="Φ.a🌵1">
-          <minted symbol="𝜎2">𝜎1 00-00-00-00-00-00-00-00</minted>
-        </evaluate>
-        <evaluate λ="L_number_plus" by="morph" at="Φ.a🌵5">
-          <minted symbol="𝜎6">𝜎1 3F-F0-00-00-00-00-00-00</minted>
-        </evaluate>
-        <dataize at="Φ.a🌵6">
-          <evaluate λ="L_number_plus" by="dataize" at="Φ.a🌵6">
-            <dataize at="Φ.a🌵2">
-              <evaluate λ="L_fork" by="dataize" at="Φ.a🌵2">
-                <dataize at="Φ.a🌵13">
-                  <manufactured meta="𝛿·4·1">𝜎2</manufactured>
-                </dataize>
-                <bound meta="𝛿1·4">𝛿·4·1</bound>
-                <evaluate λ="L_number_plus" by="morph" at="Φ.a🌵3">
-                  <minted symbol="𝜎3">𝜎1 3F-F0-00-00-00-00-00-00</minted>
-                </evaluate>
-                <evaluate λ="L_number_plus" by="morph" at="Φ.a🌵4">
-                  <minted symbol="𝜎4">𝜎1 40-00-00-00-00-00-00-00</minted>
-                </evaluate>
-                <forked on="𝜎2">
-                  <left>
-                    <answered meta="𝑛·4·2">𝑛·4·1</answered>
-                    <manufactured meta="𝛿·5·1">𝜎3</manufactured>
-                    <bound meta="𝛿1·5">𝛿·5·1</bound>
-                    <dataize at="Φ.a🌵12">
-                      <manufactured meta="𝛿·5·2">𝜎6</manufactured>
-                    </dataize>
-                    <bound meta="𝛿2·5">𝛿·5·2</bound>
-                    <minted symbol="𝜎7">𝜎3 𝜎6</minted>
-                    <manufactured meta="𝛿·3·1">𝜎7</manufactured>
-                    <bound meta="𝛿1·3">𝛿·3·1</bound>
-                  </left>
-                  <right>
-                    <answered meta="𝑛·8·2">𝑛·8·1</answered>
-                    <manufactured meta="𝛿·9·1">𝜎4</manufactured>
-                    <bound meta="𝛿1·9">𝛿·9·1</bound>
-                    <dataize at="Φ.a🌵16">
-                      <manufactured meta="𝛿·9·2">𝜎6</manufactured>
-                    </dataize>
-                    <bound meta="𝛿2·9">𝛿·9·2</bound>
-                    <minted symbol="𝜎8">𝜎4 𝜎6</minted>
-                    <manufactured meta="𝛿·7·1">𝜎8</manufactured>
-                    <bound meta="𝛿1·7">𝛿·7·1</bound>
-                  </right>
-                </forked>
-              </evaluate>
+    <dataize at="Φ.l/.e1">
+      <evaluate λ="L_number_gt" by="morph" at="Φ.a🌵1">
+        <minted symbol="𝜎2">𝜎1 00-00-00-00-00-00-00-00</minted>
+      </evaluate>
+      <evaluate λ="L_number_plus" by="morph" at="Φ.a🌵5">
+        <minted symbol="𝜎6">𝜎1 3F-F0-00-00-00-00-00-00</minted>
+      </evaluate>
+      <evaluate λ="L_number_plus" by="dataize" at="Φ.a🌵6">
+        <dataize at="Φ.a🌵2">
+          <evaluate λ="L_fork" by="dataize" at="Φ.a🌵2">
+            <dataize at="Φ.a🌵13">
+              <manufactured meta="𝛿·4·1">𝜎2</manufactured>
             </dataize>
+            <bound meta="𝛿1·4">𝛿·4·1</bound>
+            <evaluate λ="L_number_plus" by="morph" at="Φ.a🌵3">
+              <minted symbol="𝜎3">𝜎1 3F-F0-00-00-00-00-00-00</minted>
+            </evaluate>
+            <evaluate λ="L_number_plus" by="morph" at="Φ.a🌵4">
+              <minted symbol="𝜎4">𝜎1 40-00-00-00-00-00-00-00</minted>
+            </evaluate>
+            <forked on="𝜎2">
+              <left>
+                <answered meta="𝑛·4·2">𝑛·4·1</answered>
+                <manufactured meta="𝛿·5·1">𝜎3</manufactured>
+                <bound meta="𝛿1·5">𝛿·5·1</bound>
+                <dataize at="Φ.a🌵12">
+                  <manufactured meta="𝛿·5·2">𝜎6</manufactured>
+                </dataize>
+                <bound meta="𝛿2·5">𝛿·5·2</bound>
+                <minted symbol="𝜎7">𝜎3 𝜎6</minted>
+                <manufactured meta="𝛿·3·1">𝜎7</manufactured>
+              </left>
+              <right>
+                <answered meta="𝑛·8·2">𝑛·8·1</answered>
+                <manufactured meta="𝛿·9·1">𝜎4</manufactured>
+                <bound meta="𝛿1·9">𝛿·9·1</bound>
+                <dataize at="Φ.a🌵16">
+                  <manufactured meta="𝛿·9·2">𝜎6</manufactured>
+                </dataize>
+                <bound meta="𝛿2·9">𝛿·9·2</bound>
+                <minted symbol="𝜎8">𝜎4 𝜎6</minted>
+                <manufactured meta="𝛿·7·1">𝜎8</manufactured>
+              </right>
+            </forked>
           </evaluate>
         </dataize>
       </evaluate>
-    </morph>
+    </dataize>
     <msec>885</msec>
     <firings>9</firings>
     <fps>11</fps>

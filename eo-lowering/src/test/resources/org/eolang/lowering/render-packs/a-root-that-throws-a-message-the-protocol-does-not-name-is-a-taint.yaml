@@ -15,15 +15,14 @@ eo:
       T "oops" > @
 protocol: |
   <protocol>
-    <morph at="Φ.l/.e4">
-      <evaluate λ="L_entry" by="morph" at="Φ.l/.e4">
-        <bound meta="𝑛1·1">𝑒1</bound>
-        <dataize at="Φ.a🌵2">
-          <unanswered λ="L_throw" by="dataize">𝑒1</unanswered>
-        </dataize>
-        <stuck λ="L_throw"/>
-      </evaluate>
-    </morph>
+    <dataize at="Φ.l/.e4">
+      <boxed meta="𝑛·0·1">Φ.l/.e4.φ</boxed>
+      <morph at="𝑛·0·1">
+        <morphed meta="𝑛·0·2">𝑒1</morphed>
+      </morph>
+      <unanswered λ="L_throw" by="dataize">𝑒1</unanswered>
+      <stuck λ="L_throw"/>
+    </dataize>
     <msec>1</msec>
     <firings>1</firings>
     <fps>2000</fps>

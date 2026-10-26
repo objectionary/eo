@@ -22,23 +22,18 @@ links: |
   </links>
 protocol: |
   <protocol>
-    <morph at="Φ.l/.e6">
-      <evaluate λ="L_entry" by="morph" at="Φ.l/.e6">
-        <evaluate λ="L_dataized" by="morph" at="Φ.a🌵1">
-          <minted symbol="𝜎3">𝜎1</minted>
-        </evaluate>
-        <evaluate λ="L_dataized" by="morph" at="Φ.a🌵2">
-          <minted symbol="𝜎4">𝜎2</minted>
-        </evaluate>
-        <evaluate λ="L_bytes_right" by="morph" at="Φ.a🌵3">
-          <minted symbol="𝜎5">𝜎3 𝜎4</minted>
-        </evaluate>
-        <dataize at="Φ.a🌵4">
-          <manufactured meta="𝛿·4·1">𝜎5</manufactured>
-        </dataize>
-        <bound meta="𝛿1·4">𝛿·4·1</bound>
+    <dataize at="Φ.l/.e6">
+      <evaluate λ="L_dataized" by="morph" at="Φ.a🌵1">
+        <minted symbol="𝜎3">𝜎1</minted>
       </evaluate>
-    </morph>
+      <evaluate λ="L_dataized" by="morph" at="Φ.a🌵2">
+        <minted symbol="𝜎4">𝜎2</minted>
+      </evaluate>
+      <evaluate λ="L_bytes_right" by="morph" at="Φ.a🌵3">
+        <minted symbol="𝜎5">𝜎3 𝜎4</minted>
+      </evaluate>
+      <manufactured meta="𝛿·4·1">𝜎5</manufactured>
+    </dataize>
     <msec>190</msec>
     <firings>4</firings>
     <fps>20</fps>

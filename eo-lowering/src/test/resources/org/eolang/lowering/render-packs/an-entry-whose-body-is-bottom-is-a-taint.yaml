@@ -3,7 +3,7 @@
 ---
 # yamllint disable rule:line-length
 # phino reduced the body of the entry to ⊥ before it computed anything, so
-# the root was never asked to dataize.
+# the run stopped right after it took the "φ" of the entry.
 locator: Φ.wide.as-number
 number: 11
 taint: The body of the entry 11 reduced to ⊥ before phino computed anything
@@ -13,18 +13,14 @@ eo:
       as-bytes.size > as-number
 protocol: |
   <protocol>
-    <morph at="Φ.l/.e11">
-      <evaluate λ="L_entry" by="morph" at="Φ.l/.e11">
-        <dataize at="Φ.a🌵1">
-          <dataized meta="𝛿·1·1">40-26-00-00-00-00-00-00</dataized>
-        </dataize>
-        <bound meta="𝛿2·1">𝛿·1·1</bound>
-        <bound meta="𝑛1·1">⊥</bound>
-        <unanswered λ="⊥" by="dataize">⊥</unanswered>
-        <stuck λ="⊥"/>
-      </evaluate>
-    </morph>
+    <dataize at="Φ.l/.e11">
+      <morph at="Φ.l/.e11">
+        <morphed meta="𝑛·0·1">Φ.l/.e11</morphed>
+      </morph>
+      <boxed meta="𝑛·0·2">Φ.l/.e11.φ</boxed>
+      <unanswered λ="⊥" by="dataize">⊥</unanswered>
+    </dataize>
     <msec>225</msec>
-    <firings>1</firings>
-    <fps>4</fps>
+    <firings>0</firings>
+    <fps>0</fps>
   </protocol>

@@ -294,7 +294,7 @@ final class Morphing implements Proc<Path> {
                 (src, tgt) -> false,
                 (src, tgt) -> {
                     fresh.set(true);
-                    this.phino.morph(src, atoms, number, tgt, this.steps, this.loops, this.budget);
+                    this.phino.dataize(src, atoms, number, tgt, this.steps, this.loops, this.budget);
                     return tgt;
                 }
             ).apply(world, protocol);
@@ -340,7 +340,7 @@ final class Morphing implements Proc<Path> {
                 () -> hash,
                 (src, tgt) -> false,
                 (src, tgt) -> {
-                    this.phino.morph(src, atoms, number, tgt, this.steps, this.loops, this.budget);
+                    this.phino.dataize(src, atoms, number, tgt, this.steps, this.loops, this.budget);
                     return tgt;
                 }
             ).apply(world, target);

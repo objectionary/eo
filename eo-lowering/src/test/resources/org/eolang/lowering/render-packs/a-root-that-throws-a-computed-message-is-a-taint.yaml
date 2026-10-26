@@ -16,19 +16,18 @@ voids:
   - "𝜎1\t3\tb\tbytes"
 protocol: |
   <protocol>
-    <morph at="Φ.l/.e3">
-      <evaluate λ="L_entry" by="morph" at="Φ.l/.e3">
+    <dataize at="Φ.l/.e3">
+      <boxed meta="𝑛·0·1">Φ.l/.e3.φ</boxed>
+      <morph at="𝑛·0·1">
         <morph at="Φ.a🌵1">
           <applied meta="𝑛·1·3" of="Φ.string"><symbol attr="φ">𝜎1</symbol></applied>
           <applied meta="𝑛·1·4" by="morph" at="Φ.a🌵1" of="Φ.l/.throw"><meta attr="message">𝑛·1·3</meta></applied>
         </morph>
-        <bound meta="𝑛1·1">𝑛·1·4</bound>
-        <dataize at="Φ.a🌵2">
-          <unanswered λ="L_throw" by="dataize">𝑛·1·4</unanswered>
-        </dataize>
-        <stuck λ="L_throw"/>
-      </evaluate>
-    </morph>
+        <morphed meta="𝑛·0·2">𝑛·1·4</morphed>
+      </morph>
+      <unanswered λ="L_throw" by="dataize">𝑛·1·4</unanswered>
+      <stuck λ="L_throw"/>
+    </dataize>
     <msec>1</msec>
     <firings>1</firings>
     <fps>2000</fps>

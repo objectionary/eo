@@ -23,44 +23,38 @@ provides: |
   </provides>
 protocol: |
   <protocol>
-    <morph at="Φ.l/.e8">
-      <evaluate λ="L_entry" by="morph" at="Φ.l/.e8">
-        <evaluate λ="L_bytes_eq" by="morph" at="Φ.a🌵1">
-          <dataize at="Φ.a🌵7">
-            <manufactured meta="𝛿·2·1">𝜎10</manufactured>
-          </dataize>
-          <bound meta="𝛿1·2">𝛿·2·1</bound>
-          <dataize at="Φ.a🌵8">
-            <dataized meta="𝛿·2·2">FF-</dataized>
-          </dataize>
-          <bound meta="𝛿2·2">𝛿·2·2</bound>
-          <minted symbol="𝜎752">𝜎10 FF-</minted>
-        </evaluate>
-        <dataize at="Φ.a🌵2">
-          <evaluate λ="L_fork" by="dataize" at="Φ.a🌵2">
-            <dataize at="Φ.a🌵9">
-              <manufactured meta="𝛿·3·1">𝜎752</manufactured>
-            </dataize>
-            <bound meta="𝛿1·3">𝛿·3·1</bound>
-            <morph at="Φ.a🌵3">
-              <applied meta="𝑛·3·1" by="morph" at="Φ.a🌵3" of="Φ.bytes"><datum attr="φ">FF-</datum></applied>
-            </morph>
-            <forked on="𝜎752">
-              <left>
-                <answered meta="𝑛·3·2">𝑛·3·1</answered>
-                <dataized meta="𝛿·2·1">FF-</dataized>
-                <bound meta="𝛿1·2">𝛿·2·1</bound>
-              </left>
-              <right>
-                <answered meta="𝑛·6·2">𝑛·6·1</answered>
-                <dataized meta="𝛿·5·1">00-</dataized>
-                <bound meta="𝛿1·5">𝛿·5·1</bound>
-              </right>
-            </forked>
-          </evaluate>
+    <dataize at="Φ.l/.e8">
+      <evaluate λ="L_bytes_eq" by="morph" at="Φ.a🌵1">
+        <dataize at="Φ.a🌵7">
+          <manufactured meta="𝛿·2·1">𝜎10</manufactured>
         </dataize>
+        <bound meta="𝛿1·2">𝛿·2·1</bound>
+        <dataize at="Φ.a🌵8">
+          <dataized meta="𝛿·2·2">FF-</dataized>
+        </dataize>
+        <bound meta="𝛿2·2">𝛿·2·2</bound>
+        <minted symbol="𝜎752">𝜎10 FF-</minted>
       </evaluate>
-    </morph>
+      <evaluate λ="L_fork" by="dataize" at="Φ.a🌵2">
+        <dataize at="Φ.a🌵9">
+          <manufactured meta="𝛿·3·1">𝜎752</manufactured>
+        </dataize>
+        <bound meta="𝛿1·3">𝛿·3·1</bound>
+        <morph at="Φ.a🌵3">
+          <applied meta="𝑛·3·1" by="morph" at="Φ.a🌵3" of="Φ.bytes"><datum attr="φ">FF-</datum></applied>
+        </morph>
+        <forked on="𝜎752">
+          <left>
+            <answered meta="𝑛·3·2">𝑛·3·1</answered>
+            <dataized meta="𝛿·2·1">FF-</dataized>
+          </left>
+          <right>
+            <answered meta="𝑛·6·2">𝑛·6·1</answered>
+            <dataized meta="𝛿·5·1">00-</dataized>
+          </right>
+        </forked>
+      </evaluate>
+    </dataize>
     <msec>120</msec>
     <firings>5</firings>
     <fps>50</fps>

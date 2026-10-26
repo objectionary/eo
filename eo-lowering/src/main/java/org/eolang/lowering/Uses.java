@@ -112,7 +112,7 @@ final class Uses {
         try {
             for (final XML node : this.entries.value().nodes(
                 String.format(
-                    "/object/o/o[@name='e%d' or @name='mark' or @name='throw']",
+                    "/object/o/o[@name='e%d' or @name='throw']",
                     number
                 )
             )) {

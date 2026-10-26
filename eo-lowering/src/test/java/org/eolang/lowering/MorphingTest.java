@@ -109,7 +109,7 @@ final class MorphingTest {
                 String.join(
                     " ",
                     "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
-                    "echo '<protocol><morph><timeout limit=\"1\"/></morph><msec>1000</msec></protocol>' > \"$p\"; exit 1"
+                    "echo '<protocol><dataize><timeout limit=\"1\"/></dataize><msec>1000</msec></protocol>' > \"$p\"; exit 1"
                 )
             ),
             new GlobalCache.GcFresh(),
@@ -178,7 +178,7 @@ final class MorphingTest {
                 String.join(
                     " ",
                     "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
-                    "echo '<protocol><morph><timeout limit=\"1\"/></morph><msec>1000</msec></protocol>' > \"$p\"; exit 1"
+                    "echo '<protocol><dataize><timeout limit=\"1\"/></dataize><msec>1000</msec></protocol>' > \"$p\"; exit 1"
                 )
             ),
             new GcShared(temp.resolve("cache"), "0.5.6"),
@@ -357,7 +357,7 @@ final class MorphingTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void aimsTheRunOfAnEntryAtItsMark(@Mktmp final Path temp) throws IOException {
+    void aimsTheRunAtItsEntry(@Mktmp final Path temp) throws IOException {
         MorphingTest.merged(temp, 1, 2);
         final Path protocols = temp.resolve("2-protocols");
         new Morphing(
@@ -365,7 +365,7 @@ final class MorphingTest {
             new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
         ).exec(temp);
         MatcherAssert.assertThat(
-            "the run of an entry must be aimed at the mark of that entry, but it isnt",
+            "the run of an entry must be aimed at that entry, but it isnt",
             MorphingTest.text(protocols.resolve("e2.xml")),
             Matchers.containsString("--locator=Q.l/.e2")
         );
@@ -373,7 +373,7 @@ final class MorphingTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void morphsEveryEntryOverTheWorldWithTheTable(@Mktmp final Path temp) throws IOException {
+    void dataizesEveryEntryOverTheWorldWithTheTable(@Mktmp final Path temp) throws IOException {
         final Path home = MorphingTest.merged(temp, 1);
         final Path protocols = temp.resolve("2-protocols");
         new Morphing(
@@ -381,10 +381,10 @@ final class MorphingTest {
             new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
         ).exec(temp);
         MatcherAssert.assertThat(
-            "the run must morph the entry of the world with the table, but it doesnt",
+            "the run must dataize the entry of the world with the table, but it doesnt",
             MorphingTest.text(protocols.resolve("e1.xml")),
             Matchers.stringContainsInOrder(
-                "morph",
+                "dataize",
                 String.format("--symbolic=%s", home.resolve("atoms.yaml")),
                 home.resolve("world.phi").toString()
             )
@@ -501,9 +501,9 @@ final class MorphingTest {
             new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
         ).exec(temp);
         MatcherAssert.assertThat(
-            "the table must name the mark the entries fire, but it doesnt",
+            "the table must name the operations phino may write down, but it doesnt",
             MorphingTest.text(home.resolve("atoms.yaml")),
-            Matchers.containsString("L_entry")
+            Matchers.containsString("L_number_gt")
         );
     }
 
@@ -576,7 +576,7 @@ final class MorphingTest {
         MatcherAssert.assertThat(
             "the protocol must record the firing of the atom the body reached, but it doesnt",
             MorphingTest.text(temp.resolve("2-protocols/gap.xml")),
-            Matchers.stringContainsInOrder("L_entry", "L_number_plus")
+            Matchers.stringContainsInOrder("<dataize at=\"Φ.l/.e", "L_number_plus")
         );
     }
 
@@ -595,7 +595,7 @@ final class MorphingTest {
         MatcherAssert.assertThat(
             "the text must record the firing of the atom the body reached, but it doesnt",
             MorphingTest.text(temp.resolve("texts/gap.txt")),
-            Matchers.stringContainsInOrder("𝔼(L_entry)", "𝔼(L_number_plus)")
+            Matchers.stringContainsInOrder("𝔻(Φ.l/.e", "𝔼(L_number_plus)")
         );
     }
 
@@ -686,7 +686,7 @@ final class MorphingTest {
             Matchers.stringContainsInOrder(
                 "- λ: L_fork", "dataize:", "𝛿1: $.on🌵", "morph:", "𝑛1: $.left🌵", "𝑛2: $.right🌵",
                 "stay:", "evaluate:", "rewrite:", "symbolize:", "defer:",
-                "join:", "on: 𝛿1", "left: 𝑛13", "right: 𝑛14", "otherwise: L_fork", "- λ: L_entry"
+                "join:", "on: 𝛿1", "left: 𝑛13", "right: 𝑛14", "otherwise: L_fork"
             )
         );
     }

@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# The root is a number the atom computed, and the answer of "L_entry" names
-# the object the body is: `Φ.number` applied to its `φ` alone. That is the
+# The root is a number the atom computed, and the answer of the morph of
+# the body names the object the body is: `Φ.number` applied to its `φ` alone. That is the
 # object "Data.ToPhi" makes of a double, so the atom returns the double bare
 # and asks the tables nothing.
 locator: Φ.neg
@@ -16,8 +16,9 @@ voids:
   - "𝜎1\t1\tx\tnumber"
 protocol: |
   <protocol>
-    <morph at="Φ.l/.e1">
-      <evaluate λ="L_entry" by="morph" at="Φ.l/.e1">
+    <dataize at="Φ.l/.e1">
+      <boxed meta="𝑛·0·1">Φ.l/.e1.φ</boxed>
+      <morph at="𝑛·0·1">
         <evaluate λ="L_number_times" by="morph" at="Φ.a🌵1">
           <dataize at="Φ.a🌵2">
             <manufactured meta="𝛿·2·1">𝜎1</manufactured>
@@ -36,13 +37,10 @@ protocol: |
           </morph>
           <answered meta="𝑛·2·8">𝑛·2·7</answered>
         </evaluate>
-        <bound meta="𝑛1·1">𝑛·2·7</bound>
-        <dataize at="Φ.a🌵4">
-          <manufactured meta="𝛿·3·1">𝜎2</manufactured>
-        </dataize>
-        <bound meta="𝛿1·3">𝛿·3·1</bound>
-      </evaluate>
-    </morph>
+        <morphed meta="𝑛·0·2">𝑛·2·7</morphed>
+      </morph>
+      <manufactured meta="𝛿·3·1">𝜎2</manufactured>
+    </dataize>
     <msec>43</msec>
     <firings>2</firings>
     <fps>70</fps>

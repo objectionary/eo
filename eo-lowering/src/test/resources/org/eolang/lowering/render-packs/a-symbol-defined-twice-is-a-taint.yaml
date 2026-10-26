@@ -17,36 +17,31 @@ voids:
   - "𝜎200\t217\tρ\tnumber"
 protocol: |
   <protocol>
-    <morph at="Φ.l/.e217">
-      <evaluate λ="L_entry" by="morph" at="Φ.l/.e217">
-        <evaluate λ="L_number_gt" by="morph" at="Φ.a🌵3">
-          <dataize at="Φ.a🌵4">
-            <manufactured meta="𝛿·2·1">𝜎200</manufactured>
-          </dataize>
-          <bound meta="𝛿1·2">𝛿·2·1</bound>
-          <dataize at="Φ.a🌵5">
-            <dataized meta="𝛿·2·2">40-20-00-00-00-00-00-00</dataized>
-          </dataize>
-          <bound meta="𝛿2·2">𝛿·2·2</bound>
-          <minted symbol="𝜎752">𝜎200 40-20-00-00-00-00-00-00</minted>
-        </evaluate>
-        <evaluate λ="L_number_times" by="morph" at="Φ.a🌵1">
-          <dataize at="Φ.a🌵6">
-            <manufactured meta="𝛿·3·1">𝜎200</manufactured>
-          </dataize>
-          <bound meta="𝛿1·3">𝛿·3·1</bound>
-          <dataize at="Φ.a🌵7">
-            <dataized meta="𝛿·3·2">BF-F0-00-00-00-00-00-00</dataized>
-          </dataize>
-          <bound meta="𝛿2·3">𝛿·3·2</bound>
-          <minted symbol="𝜎752">𝜎200 BF-F0-00-00-00-00-00-00</minted>
-        </evaluate>
-        <dataize at="Φ.a🌵8">
-          <manufactured meta="𝛿·4·1">𝜎752</manufactured>
+    <dataize at="Φ.l/.e217">
+      <evaluate λ="L_number_gt" by="morph" at="Φ.a🌵3">
+        <dataize at="Φ.a🌵4">
+          <manufactured meta="𝛿·2·1">𝜎200</manufactured>
         </dataize>
-        <bound meta="𝛿1·4">𝛿·4·1</bound>
+        <bound meta="𝛿1·2">𝛿·2·1</bound>
+        <dataize at="Φ.a🌵5">
+          <dataized meta="𝛿·2·2">40-20-00-00-00-00-00-00</dataized>
+        </dataize>
+        <bound meta="𝛿2·2">𝛿·2·2</bound>
+        <minted symbol="𝜎752">𝜎200 40-20-00-00-00-00-00-00</minted>
       </evaluate>
-    </morph>
+      <evaluate λ="L_number_times" by="morph" at="Φ.a🌵1">
+        <dataize at="Φ.a🌵6">
+          <manufactured meta="𝛿·3·1">𝜎200</manufactured>
+        </dataize>
+        <bound meta="𝛿1·3">𝛿·3·1</bound>
+        <dataize at="Φ.a🌵7">
+          <dataized meta="𝛿·3·2">BF-F0-00-00-00-00-00-00</dataized>
+        </dataize>
+        <bound meta="𝛿2·3">𝛿·3·2</bound>
+        <minted symbol="𝜎752">𝜎200 BF-F0-00-00-00-00-00-00</minted>
+      </evaluate>
+      <manufactured meta="𝛿·4·1">𝜎752</manufactured>
+    </dataize>
     <msec>103</msec>
     <firings>2</firings>
     <fps>29</fps>

@@ -29,53 +29,47 @@ links: |
   </links>
 protocol: |
   <protocol>
-    <morph at="Φ.l/.e54">
-      <evaluate λ="L_entry" by="morph" at="Φ.l/.e54">
-        <evaluate λ="L_bytes_eq" by="morph" at="Φ.a🌵1">
-          <dataize at="Φ.a🌵8">
-            <manufactured meta="𝛿·2·1">𝜎53</manufactured>
-          </dataize>
-          <bound meta="𝛿1·2">𝛿·2·1</bound>
-          <dataize at="Φ.a🌵9">
-            <dataized meta="𝛿·2·2">00-00-00-00-00-00-00-00</dataized>
-          </dataize>
-          <bound meta="𝛿2·2">𝛿·2·2</bound>
-          <minted symbol="𝜎133">𝜎53 00-00-00-00-00-00-00-00</minted>
-        </evaluate>
-        <deferred symbol="𝜎135" by="morph" at="Φ.a🌵1.φ" of="Φ.joined.with-delimiter"><with><symbol attr="acc">𝜎54</symbol><symbol attr="tup">𝜎55</symbol></with></deferred>
-        <dataize at="Φ.a🌵4">
-          <evaluate λ="L_fork" by="dataize" at="Φ.a🌵4">
-            <dataize at="Φ.a🌵11">
-              <manufactured meta="𝛿·4·1">𝜎133</manufactured>
-            </dataize>
-            <bound meta="𝛿1·4">𝛿·4·1</bound>
-            <evaluate λ="L_number_plus" by="morph" at="Φ.a🌵5">
-              <dataize at="Φ.a🌵12">
-                <manufactured meta="𝛿·5·1">𝜎53</manufactured>
-              </dataize>
-              <bound meta="𝛿1·5">𝛿·5·1</bound>
-              <dataize at="Φ.a🌵13">
-                <dataized meta="𝛿·5·2">3F-F0-00-00-00-00-00-00</dataized>
-              </dataize>
-              <bound meta="𝛿2·5">𝛿·5·2</bound>
-              <minted symbol="𝜎134">𝜎53 3F-F0-00-00-00-00-00-00</minted>
-            </evaluate>
-            <forked on="𝜎133">
-              <left>
-                <answered meta="𝑛·4·2">𝑛·4·1</answered>
-                <manufactured meta="𝛿·3·1">𝜎134</manufactured>
-                <bound meta="𝛿1·3">𝛿·3·1</bound>
-              </left>
-              <right>
-                <answered meta="𝑛·7·2">𝑛·7·1</answered>
-                <manufactured meta="𝛿·6·1">𝜎135</manufactured>
-                <bound meta="𝛿1·6">𝛿·6·1</bound>
-              </right>
-            </forked>
-          </evaluate>
+    <dataize at="Φ.l/.e54">
+      <evaluate λ="L_bytes_eq" by="morph" at="Φ.a🌵1">
+        <dataize at="Φ.a🌵8">
+          <manufactured meta="𝛿·2·1">𝜎53</manufactured>
         </dataize>
+        <bound meta="𝛿1·2">𝛿·2·1</bound>
+        <dataize at="Φ.a🌵9">
+          <dataized meta="𝛿·2·2">00-00-00-00-00-00-00-00</dataized>
+        </dataize>
+        <bound meta="𝛿2·2">𝛿·2·2</bound>
+        <minted symbol="𝜎133">𝜎53 00-00-00-00-00-00-00-00</minted>
       </evaluate>
-    </morph>
+      <deferred symbol="𝜎135" by="morph" at="Φ.a🌵1.φ" of="Φ.joined.with-delimiter"><with><symbol attr="acc">𝜎54</symbol><symbol attr="tup">𝜎55</symbol></with></deferred>
+      <evaluate λ="L_fork" by="dataize" at="Φ.a🌵4">
+        <dataize at="Φ.a🌵11">
+          <manufactured meta="𝛿·4·1">𝜎133</manufactured>
+        </dataize>
+        <bound meta="𝛿1·4">𝛿·4·1</bound>
+        <evaluate λ="L_number_plus" by="morph" at="Φ.a🌵5">
+          <dataize at="Φ.a🌵12">
+            <manufactured meta="𝛿·5·1">𝜎53</manufactured>
+          </dataize>
+          <bound meta="𝛿1·5">𝛿·5·1</bound>
+          <dataize at="Φ.a🌵13">
+            <dataized meta="𝛿·5·2">3F-F0-00-00-00-00-00-00</dataized>
+          </dataize>
+          <bound meta="𝛿2·5">𝛿·5·2</bound>
+          <minted symbol="𝜎134">𝜎53 3F-F0-00-00-00-00-00-00</minted>
+        </evaluate>
+        <forked on="𝜎133">
+          <left>
+            <answered meta="𝑛·4·2">𝑛·4·1</answered>
+            <manufactured meta="𝛿·3·1">𝜎134</manufactured>
+          </left>
+          <right>
+            <answered meta="𝑛·7·2">𝑛·7·1</answered>
+            <manufactured meta="𝛿·6·1">𝜎135</manufactured>
+          </right>
+        </forked>
+      </evaluate>
+    </dataize>
     <msec>400</msec>
     <firings>6</firings>
     <fps>17</fps>

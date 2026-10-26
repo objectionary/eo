@@ -142,11 +142,11 @@ final class MergingTest {
         new Planting(tables).exec(temp);
         new Merging(phino).exec(temp);
         MatcherAssert.assertThat(
-            "the world must hold the object and the marks of the entries, but it doesnt",
+            "the world must hold the object and its entry beside the throw, but it doesnt",
             new String(
                 Files.readAllBytes(temp.resolve("world.phi")), StandardCharsets.UTF_8
             ),
-            Matchers.stringContainsInOrder("gap", "l/", "L_entry")
+            Matchers.stringContainsInOrder("gap", "l/", "L_throw", "e1")
         );
     }
 

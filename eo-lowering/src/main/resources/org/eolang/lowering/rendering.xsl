@@ -43,7 +43,7 @@
   The copy is made where phino defers it, and dataized only where a λ reads
   it as an operand, since phino read it as data right there. The root of a flow is
   returned inside the object the protocol names around it, when the answer
-  of "L_entry" for the body is an object of the world applied to its "φ"
+  of the morph of the body is an object of the world applied to its "φ"
   alone, since such an object dataizes through its "φ" and the data of the
   root is the data of that "φ": a string, for example, is "Φ.string" applied
   to its bytes again, and a number is what "Data.ToPhi" makes of its double.
@@ -131,6 +131,18 @@
     </xsl:map>
   </xsl:variable>
   <xsl:variable name="eo:doc" select="/"/>
+  <!--
+  The dataization of the entry, which is the whole run: phino morphs the
+  entry, takes its "φ", morphs that, which is the body, and goes on until it
+  comes down to data, which is the root.
+  -->
+  <xsl:variable name="eo:run" as="element()?" select="$eo:doc/protocol/dataize"/>
+  <!--
+  The answer of the morph of the body, or nothing: the morph that phino
+  starts on the object the first box of the run binds, since that box takes
+  the "φ" of the entry, which is the body.
+  -->
+  <xsl:variable name="eo:answer" as="element()?" select="$eo:run/morph[@at = $eo:run/boxed[1]/@meta]/morphed[last()]"/>
   <!-- The sign a decision is spelled with, for every side a fork may take. -->
   <xsl:variable name="eo:signs" as="map(xs:string, xs:string)" select="map {'left': '+', 'right': '-'}"/>
   <!--
@@ -138,7 +150,7 @@
   again, and the run itself when nothing forked, by the place it ends at,
   which is all of the decisions above it spelled one after another.
   -->
-  <xsl:variable name="eo:leaves" as="map(xs:string, element())" select="map:merge(for $leaf in ($eo:doc/protocol/morph | $eo:doc//forked[@on]/(left | right))[not(.//forked[@on])] return map {eo:place(eo:where($leaf)): $leaf}, map {'duplicates': 'use-first'})"/>
+  <xsl:variable name="eo:leaves" as="map(xs:string, element())" select="map:merge(for $leaf in ($eo:run | $eo:doc//forked[@on]/(left | right))[not(.//forked[@on])] return map {eo:place(eo:where($leaf)): $leaf}, map {'duplicates': 'use-first'})"/>
   <!-- The forks of the tree of ifs: for every place a flow forked at, the condition it forked on there. -->
   <xsl:variable name="eo:nodes" as="map(xs:string, xs:string)" select="map:merge($eo:doc//forked[@on] ! map {eo:place(eo:where(.)): string(@on)}, map {'duplicates': 'use-first'})"/>
   <xsl:template match="/">
@@ -244,8 +256,8 @@
     <xsl:if test="exists($timeout)">
       <xsl:sequence select="eo:taint(concat('The entry ', $number, ' ran out of ', $timeout/@limit, ' seconds at ', $timeout/@at))"/>
     </xsl:if>
-    <xsl:if test="empty($eo:doc/protocol/morph)">
-      <xsl:sequence select="eo:taint(concat('The protocol of the entry ', $number, ' holds no run, while phino writes the morph of every run'))"/>
+    <xsl:if test="empty($eo:run)">
+      <xsl:sequence select="eo:taint(concat('The protocol of the entry ', $number, ' holds no run, while phino writes the dataization of every run'))"/>
     </xsl:if>
     <xsl:for-each-group select="$eo:doc//(minted | joined | symbolized | deferred)/@symbol" group-by=".">
       <xsl:if test="count(current-group()) &gt; 1">
@@ -296,7 +308,7 @@
     <xsl:variable name="stuck" select="($eo:doc//stuck[@λ][eo:on(., $leaf)])[last()]"/>
     <xsl:variable name="prefix" select="concat('The entry ', $number, ' came to no root on ', eo:flow($leaf), ', because ')"/>
     <xsl:choose>
-      <xsl:when test="empty(eo:dataization($leaf)) and eo:answer($leaf) = '⊥'">
+      <xsl:when test="normalize-space($eo:answer) = '⊥' or exists($eo:run/boxed[1]/following-sibling::*[1][self::unanswered][@λ = '⊥'])">
         <xsl:sequence select="eo:taint(concat('The body of the entry ', $number, ' reduced to ⊥ before phino computed anything, so its root was never dataized'))"/>
       </xsl:when>
       <xsl:when test="$unanswered = '⊥'">
@@ -306,7 +318,7 @@
         <xsl:sequence select="eo:taint(concat($prefix, 'phino got no answer for ', $unanswered))"/>
       </xsl:when>
       <xsl:when test="exists($looped)">
-        <xsl:sequence select="eo:taint(concat($prefix, 'phino cut a loop at ', $looped/@of, ' and got stuck at ', ($stuck/@λ, 'nothing')[1]))"/>
+        <xsl:sequence select="eo:taint(concat($prefix, 'phino cut a loop at ', $looped/@of, $stuck/@λ ! concat(' and got stuck at ', .)))"/>
       </xsl:when>
       <xsl:when test="exists($stuck)">
         <xsl:sequence select="eo:taint(concat($prefix, 'phino got stuck at ', $stuck/@λ))"/>
@@ -316,22 +328,8 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-  <!-- The answer of "L_entry" for the body, which stands on the flow of a leaf, or nothing. -->
-  <xsl:function name="eo:answer" as="element()?">
-    <xsl:param name="leaf" as="element()"/>
-    <xsl:sequence select="($eo:doc//bound[@meta = '𝑛1·1'][eo:on(., $leaf)])[1]"/>
-  </xsl:function>
   <!--
-  The dataization of the root on the flow of a leaf, or nothing. "L_entry"
-  dataizes two things: the number of the entry, which it binds to its second
-  meta right after, and then the body it morphed, which is the root.
-  -->
-  <xsl:function name="eo:dataization" as="element()?">
-    <xsl:param name="leaf" as="element()"/>
-    <xsl:sequence select="($eo:doc//evaluate[@λ = 'L_entry'][eo:on(., $leaf)])[1]/dataize[not(following-sibling::*[1][self::bound][starts-with(@meta, '𝛿2·')])][1]"/>
-  </xsl:function>
-  <!--
-  Whether the dataization of the root is still open where a leaf starts,
+  Whether the run is still open where a leaf starts,
   as it is when a fork split the flow inside it, so that it closes inside
   the leaf. Every dataization still open inside it where the leaf starts
   closes inside the leaf as well, each with the record of what it came
@@ -340,12 +338,12 @@
   -->
   <xsl:function name="eo:split" as="xs:boolean">
     <xsl:param name="leaf" as="element()"/>
-    <xsl:sequence select="exists(eo:dataization($leaf) intersect $leaf/ancestor::*)"/>
+    <xsl:sequence select="exists($eo:run intersect $leaf/ancestor::*)"/>
   </xsl:function>
-  <!-- The number of dataizations still open inside the dataization of the root where a leaf starts. -->
+  <!-- The number of dataizations still open inside the run where a leaf starts. -->
   <xsl:function name="eo:opened" as="xs:integer">
     <xsl:param name="leaf" as="element()"/>
-    <xsl:sequence select="count(eo:open($leaf) intersect eo:dataization($leaf)//dataize)"/>
+    <xsl:sequence select="count(eo:open($leaf) intersect $eo:run//dataize)"/>
   </xsl:function>
   <!--
   The dataizations still open where a side starts, innermost first. A side
@@ -406,7 +404,7 @@
         <xsl:sequence select="($leaf/unanswered[@λ = 'L_throw'][count(preceding-sibling::*[self::manufactured or self::dataized]) = eo:opened($leaf)])[1]"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:sequence select="(eo:dataization($leaf)/unanswered[@λ = 'L_throw'])[1]"/>
+        <xsl:sequence select="($eo:run/unanswered[@λ = 'L_throw'])[1]"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -516,7 +514,7 @@
     <xsl:choose>
       <xsl:when test="exists($root)">
         <xsl:variable name="symbol" select="string($root)"/>
-        <xsl:if test="not(eo:constant($symbol)) and ((map:contains($eo:voids, $symbol) and exists(eo:returns($locator))) or (not(map:contains($eo:voids, $symbol)) and not(eo:type($symbol) = 'Phi'))) and empty(eo:around($leaf))">
+        <xsl:if test="not(eo:constant($symbol)) and ((map:contains($eo:voids, $symbol) and exists(eo:returns($locator))) or (not(map:contains($eo:voids, $symbol)) and not(eo:type($symbol) = 'Phi'))) and empty($eo:around)">
           <xsl:sequence select="eo:bare($symbol)"/>
         </xsl:if>
         <xsl:sequence select="$symbol"/>
@@ -529,8 +527,7 @@
   </xsl:function>
   <!--
   The record of what the root of a flow came down to, a symbol or its
-  bytes, which "L_entry" binds to its first meta right after, or
-  nothing when the flow stopped inside the dataization of the root. The
+  bytes, which closes the run, or nothing when the flow stopped inside the dataization of the root. The
   record is the last child of that dataization when the dataization is
   whole, and stands inside the leaf after the records of the dataizations
   that opened inside it when it closes there.
@@ -539,10 +536,10 @@
     <xsl:param name="leaf" as="element()"/>
     <xsl:choose>
       <xsl:when test="eo:split($leaf)">
-        <xsl:sequence select="($leaf/(manufactured | dataized))[eo:opened($leaf) + 1][following-sibling::*[1][self::bound][starts-with(@meta, '𝛿1·')]]"/>
+        <xsl:sequence select="($leaf/(manufactured | dataized))[eo:opened($leaf) + 1]"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:sequence select="eo:dataization($leaf)[following-sibling::*[1][self::bound][starts-with(@meta, '𝛿1·')]]/(manufactured | dataized)[last()]"/>
+        <xsl:sequence select="$eo:run/(manufactured | dataized)[last()]"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -611,23 +608,21 @@
   </xsl:function>
   <!--
   The object the body puts around its data, which the protocol names in
-  the answer of "L_entry" for the body, or nothing: an object of the world,
+  the answer of the morph of the body, or nothing: an object of the world,
   outside the entry, applied to its "φ" alone. Such an object dataizes
   through its "φ", so the data of the root is the data of that "φ", and the
   atom gives the object back by applying it to the root again. An answer
   that names anything else, an object with more arguments, one inside the
   entry, the carrier of a bool, or the application of a dispatch, names no
   such object, and then the root is returned the way its own type tells.
-  The answer stands on the flow of the leaf, before the fork that opened
-  the side the leaf is, when the body answered before the run forked.
+  The body is morphed before the run forks, so every flow has the same one.
   -->
-  <xsl:function name="eo:around" as="xs:string?">
-    <xsl:param name="leaf" as="element()"/>
-    <xsl:variable name="applied" select="($eo:doc//(applied | formed)[@meta = normalize-space(eo:answer($leaf))])[1]"/>
+  <xsl:variable name="eo:around" as="xs:string?">
+    <xsl:variable name="applied" select="($eo:doc//(applied | formed)[@meta = normalize-space($eo:answer)])[1]"/>
     <xsl:if test="exists($applied) and count($applied/*) = 1 and $applied/*/@attr = 'φ' and matches($applied/@of, '^Φ(\.[^.\s()]+)+$') and not(starts-with($applied/@of, concat($locator, '.')))">
       <xsl:sequence select="string($applied/@of)"/>
     </xsl:if>
-  </xsl:function>
+  </xsl:variable>
   <!-- The objects "Data.ToPhi" makes of a Java value, each with the type of that value. -->
   <xsl:variable name="eo:carriers" as="map(xs:string, xs:string)" select="map {'Φ.number': 'double', 'Φ.bytes': 'byte[]'}"/>
   <!--
@@ -637,17 +632,15 @@
   -->
   <xsl:function name="eo:returned" as="xs:string">
     <xsl:param name="root" as="xs:string"/>
-    <xsl:param name="leaf" as="element()"/>
-    <xsl:variable name="around" select="eo:around($leaf)"/>
     <xsl:choose>
-      <xsl:when test="empty($around)">
+      <xsl:when test="empty($eo:around)">
         <xsl:sequence select="eo:argument($root)"/>
       </xsl:when>
-      <xsl:when test="map:contains($eo:carriers, $around) and not(map:contains($eo:voids, $root)) and not(eo:type($root) = 'Phi')">
-        <xsl:sequence select="concat('new Data.ToPhi(', eo:value($root, $eo:carriers($around)), ')')"/>
+      <xsl:when test="map:contains($eo:carriers, $eo:around) and not(map:contains($eo:voids, $root)) and not(eo:type($root) = 'Phi')">
+        <xsl:sequence select="concat('new Data.ToPhi(', eo:value($root, $eo:carriers($eo:around)), ')')"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:sequence select="concat('new PhApplication(', eo:global($around), ', &quot;φ&quot;, ', eo:argument($root), ')')"/>
+        <xsl:sequence select="concat('new PhApplication(', eo:global($eo:around), ', &quot;φ&quot;, ', eo:argument($root), ')')"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -659,17 +652,15 @@
   -->
   <xsl:function name="eo:constant-returned" as="xs:string">
     <xsl:param name="bytes" as="xs:string"/>
-    <xsl:param name="leaf" as="element()"/>
-    <xsl:variable name="around" select="eo:around($leaf)"/>
     <xsl:choose>
-      <xsl:when test="empty($around)">
+      <xsl:when test="empty($eo:around)">
         <xsl:sequence select="concat('new Data.ToPhi(', eo:literal-of($bytes, eo:carrier($bytes)), ')')"/>
       </xsl:when>
-      <xsl:when test="map:contains($eo:carriers, $around)">
-        <xsl:sequence select="concat('new Data.ToPhi(', eo:literal-of($bytes, $eo:carriers($around)), ')')"/>
+      <xsl:when test="map:contains($eo:carriers, $eo:around)">
+        <xsl:sequence select="concat('new Data.ToPhi(', eo:literal-of($bytes, $eo:carriers($eo:around)), ')')"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:sequence select="concat('new PhApplication(', eo:global($around), ', &quot;φ&quot;, ', eo:literal-of($bytes, 'Phi'), ')')"/>
+        <xsl:sequence select="concat('new PhApplication(', eo:global($eo:around), ', &quot;φ&quot;, ', eo:literal-of($bytes, 'Phi'), ')')"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -693,13 +684,13 @@
         <xsl:sequence select="concat($indent, 'throw new ExFailure(&quot;%s&quot;, &quot;', $thrown, '&quot;);&#10;')"/>
       </xsl:when>
       <xsl:when test="exists($root) and eo:constant($root)">
-        <xsl:sequence select="concat($indent, 'return ', eo:constant-returned(eo:bytes($root), $leaf), ';&#10;')"/>
+        <xsl:sequence select="concat($indent, 'return ', eo:constant-returned(eo:bytes($root)), ';&#10;')"/>
       </xsl:when>
       <xsl:when test="exists($root)">
-        <xsl:sequence select="concat($indent, 'return ', eo:returned($root, $leaf), ';&#10;')"/>
+        <xsl:sequence select="concat($indent, 'return ', eo:returned($root), ';&#10;')"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:sequence select="concat($indent, 'return ', eo:constant-returned(eo:fixed($leaf), $leaf), ';&#10;')"/>
+        <xsl:sequence select="concat($indent, 'return ', eo:constant-returned(eo:fixed($leaf)), ';&#10;')"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -790,10 +781,15 @@
     <xsl:param name="token" as="xs:string"/>
     <xsl:sequence select="if (starts-with($token, '𝜎')) then normalize-space(key('eo:symbolized', $token, $eo:doc)[1]) else $token"/>
   </xsl:function>
-  <!-- The condition a joined symbol depends on. -->
+  <!--
+  The condition a joined symbol depends on. phino names it by the meta its
+  dataization was bound to, so the condition is the symbol or the bytes
+  that dataization came down to.
+  -->
   <xsl:function name="eo:condition" as="xs:string">
     <xsl:param name="joined" as="element()"/>
-    <xsl:sequence select="normalize-space($joined)"/>
+    <xsl:variable name="bound" select="($joined/preceding::bound[@meta = $joined/@on])[last()]"/>
+    <xsl:sequence select="if (exists($bound)) then normalize-space(($bound/preceding::*[self::manufactured or self::dataized][@meta = normalize-space($bound)])[last()]) else string($joined/@on)"/>
   </xsl:function>
   <!-- The symbol a joined symbol stands for on one side, left or right. -->
   <xsl:function name="eo:branch" as="xs:string">

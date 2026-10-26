@@ -3,12 +3,11 @@
 ---
 # yamllint disable rule:line-length
 # The body calls an object of its own again and again, and phino cut the
-# loop it found itself in and got stuck at the root, so the flow came to no
-# root, and a cut loop gets no symbol for the atom to read: the entry stays
+# loop it found itself in, so the flow came to no root, and a cut loop gets no symbol for the atom to read: the entry stays
 # in EO.
 locator: Φ.joined
 number: 54
-taint: The entry 54 came to no root on the only flow, because phino cut a loop at Φ.joined.with-delimiter and got stuck at L_entry
+taint: The entry 54 came to no root on the only flow, because phino cut a loop at Φ.joined.with-delimiter
 eo:
   joined.eo: |
     [items] > joined
@@ -26,18 +25,16 @@ links: |
   </links>
 protocol: |
   <protocol>
-    <morph at="Φ.l/.e54">
-      <evaluate λ="L_entry" by="morph" at="Φ.l/.e54">
-        <bound meta="𝑛1·1">𝑛·1·4</bound>
-        <answered meta="𝑛·1·6">𝑛·1·5</answered>
-        <dataize at="Φ.a🌵4">
-          <morph at="Φ.a🌵4">
-            <looped by="morph" match="𝑛·1·4" at="Φ.a🌵4" of="Φ.joined.with-delimiter"/>
-          </morph>
-        </dataize>
-        <stuck λ="L_entry"/>
-      </evaluate>
-    </morph>
+    <dataize at="Φ.l/.e54">
+      <boxed meta="𝑛·0·1">Φ.l/.e54.φ</boxed>
+      <morph at="𝑛·0·1">
+        <morphed meta="𝑛·0·2">𝑛·1·4</morphed>
+      </morph>
+      <answered meta="𝑛·1·6">𝑛·1·5</answered>
+      <morph at="Φ.a🌵4">
+        <looped by="morph" match="𝑛·1·4" at="Φ.a🌵4" of="Φ.joined.with-delimiter"/>
+      </morph>
+    </dataize>
     <msec>400</msec>
     <firings>6</firings>
     <fps>17</fps>

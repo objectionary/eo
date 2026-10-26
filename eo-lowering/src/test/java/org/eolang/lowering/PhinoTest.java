@@ -62,7 +62,7 @@ final class PhinoTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void handsPhinoTheBudgetInSeconds(@Mktmp final Path temp) throws IOException {
-        new Phino(PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\""), "1.9.27").morph(
+        new Phino(PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\""), "1.9.27").dataize(
             temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 4,
             temp.resolve("4.xml"), 32, 2, Duration.ofSeconds(7L)
         );
@@ -76,7 +76,7 @@ final class PhinoTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void handsPhinoTheLoopsItWasGiven(@Mktmp final Path temp) throws IOException {
-        new Phino(PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\""), "1.9.27").morph(
+        new Phino(PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\""), "1.9.27").dataize(
             temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 8,
             temp.resolve("8.xml"), 32, 6, Duration.ofSeconds(3L)
         );
@@ -89,17 +89,17 @@ final class PhinoTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void pinsTheMorphingToTheVersionItWasGiven(@Mktmp final Path temp) throws IOException {
+    void pinsTheDataizationToTheVersionItWasGiven(@Mktmp final Path temp) throws IOException {
         new Phino(
             PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\""), "3.1.7"
-        ).morph(
+        ).dataize(
             temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 2,
             temp.resolve("2.xml"), 32, 2, Duration.ofSeconds(3L)
         );
         MatcherAssert.assertThat(
             "phino must be pinned to the version it was given before its command, but it isnt",
             new String(Files.readAllBytes(temp.resolve("args.txt")), StandardCharsets.UTF_8),
-            Matchers.startsWith("--pin=3.1.7 morph ")
+            Matchers.startsWith("--pin=3.1.7 dataize ")
         );
     }
 
@@ -128,7 +128,7 @@ final class PhinoTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void roundsABudgetShorterThanASecondUpToOne(@Mktmp final Path temp) throws IOException {
-        new Phino(PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\""), "1.9.27").morph(
+        new Phino(PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\""), "1.9.27").dataize(
             temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 9,
             temp.resolve("9.xml"), 16, 2, Duration.ofMillis(300L)
         );
@@ -144,7 +144,7 @@ final class PhinoTest {
     void letsPhinoWorkPastItsBudget(@Mktmp final Path temp) throws IOException {
         final Phino phino = new Phino(PhinoTest.binary(temp, "sleep 2"), "1.9.27");
         Assertions.assertDoesNotThrow(
-            () -> phino.morph(
+            () -> phino.dataize(
                 temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 5,
                 temp.resolve("5.xml"), 32, 2, Duration.ofMillis(500L)
             ),
@@ -154,12 +154,12 @@ final class PhinoTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void reportsAMorphingThatRanOutOfItsBudget(@Mktmp final Path temp) throws IOException {
+    void reportsADataizationThatRanOutOfItsBudget(@Mktmp final Path temp) throws IOException {
         final Phino phino = new Phino(
             PhinoTest.binary(
                 temp,
                 "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
-                "echo '<protocol><morph><timeout limit=\"2\"/></morph><msec>2000</msec></protocol>' > \"$p\"; exit 1"
+                "echo '<protocol><dataize><timeout limit=\"2\"/></dataize><msec>2000</msec></protocol>' > \"$p\"; exit 1"
             ),
             "3.3.15"
         );
@@ -167,7 +167,7 @@ final class PhinoTest {
             "the failure must name the budget the run ran out of, but it doesnt",
             Assertions.assertThrows(
                 KilledException.class,
-                () -> phino.morph(
+                () -> phino.dataize(
                     temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 3,
                     temp.resolve("3.xml"), 32, 2, Duration.ofSeconds(2L)
                 ),
@@ -179,7 +179,7 @@ final class PhinoTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void reportsAMorphingThatRanOutOfItsBudgetIntoAText(@Mktmp final Path temp)
+    void reportsADataizationThatRanOutOfItsBudgetIntoAText(@Mktmp final Path temp)
         throws IOException {
         final Phino phino = new Phino(
             PhinoTest.binary(
@@ -191,7 +191,7 @@ final class PhinoTest {
         );
         Assertions.assertThrows(
             KilledException.class,
-            () -> phino.morph(
+            () -> phino.dataize(
                 temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 4,
                 temp.resolve("4.txt"), 32, 2, Duration.ofSeconds(3L)
             ),
@@ -201,11 +201,11 @@ final class PhinoTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void failsAMorphingThatBreaksWithinItsBudget(@Mktmp final Path temp) throws IOException {
+    void failsADataizationThatBreaksWithinItsBudget(@Mktmp final Path temp) throws IOException {
         final Phino phino = new Phino(PhinoTest.binary(temp, "echo broken >&2; exit 3"), "1.9.27");
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> phino.morph(
+            () -> phino.dataize(
                 temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 6,
                 temp.resolve("6.xml"), 32, 2, Duration.ofSeconds(4L)
             ),

@@ -14,6 +14,6 @@ eo:
           left > @
 xmir:
   - "/object/o[@name='l/'][count(o[starts-with(@name, 'e')]) = 1]"
-  - "//o[@name='e1']/o/o[@as='v' and @base='Φ.true']"
+  - "//o[@name='e1' and @base='Φ.true']"
 entries:
   - "1\tΦ.true"

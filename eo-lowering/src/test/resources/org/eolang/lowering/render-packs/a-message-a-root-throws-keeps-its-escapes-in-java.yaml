@@ -16,20 +16,19 @@ eo:
       T "tab\there, \"quoted\" \\x41 and \u0001" > @
 protocol: |
   <protocol>
-    <morph at="Φ.l/.e2">
-      <evaluate λ="L_entry" by="morph" at="Φ.l/.e2">
+    <dataize at="Φ.l/.e2">
+      <boxed meta="𝑛·0·1">Φ.l/.e2.φ</boxed>
+      <morph at="𝑛·0·1">
         <morph at="Φ.a🌵1">
           <applied meta="𝑛·1·3" of="Φ.bytes"><datum attr="φ">74-61-62-09-68-65-72-65-2C-20-22-71-75-6F-74-65-64-22-20-5C-78-34-31-20-61-6E-64-20-01</datum></applied>
           <applied meta="𝑛·1·4" of="Φ.string"><meta attr="φ">𝑛·1·3</meta></applied>
           <applied meta="𝑛·1·5" by="morph" at="Φ.a🌵1" of="Φ.l/.throw"><meta attr="message">𝑛·1·4</meta></applied>
         </morph>
-        <bound meta="𝑛1·1">𝑛·1·5</bound>
-        <dataize at="Φ.a🌵2">
-          <unanswered λ="L_throw" by="dataize">𝑛·1·5</unanswered>
-        </dataize>
-        <stuck λ="L_throw"/>
-      </evaluate>
-    </morph>
+        <morphed meta="𝑛·0·2">𝑛·1·5</morphed>
+      </morph>
+      <unanswered λ="L_throw" by="dataize">𝑛·1·5</unanswered>
+      <stuck λ="L_throw"/>
+    </dataize>
     <msec>1</msec>
     <firings>1</firings>
     <fps>2000</fps>

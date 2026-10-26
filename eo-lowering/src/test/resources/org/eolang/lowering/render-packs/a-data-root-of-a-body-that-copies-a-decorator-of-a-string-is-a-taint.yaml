@@ -4,8 +4,8 @@
 # yamllint disable rule:line-length
 # The root is bytes the atom computed, and the protocol does not name the
 # object around them: the body copies `Φ.string.joined`, a formation of the
-# world that binds nothing but its body and voids, and the answer of
-# "L_entry" is that copy, not `Φ.string` applied to its `φ`. The tables say
+# world that binds nothing but its body and voids, and the answer of the
+# morph of the body is that copy, not `Φ.string` applied to its `φ`. The tables say
 # the body behaves as a string, and bare bytes are no string, since they
 # lose every attribute of one, so the entry stays in EO (#9248).
 locator: Φ.slashed
@@ -40,25 +40,20 @@ links: |
   </links>
 protocol: |
   <protocol>
-    <morph at="Φ.l/.e1">
-      <evaluate λ="L_entry" by="morph" at="Φ.l/.e1">
-        <evaluate λ="L_bytes_concat" by="morph" at="Φ.a🌵1">
-          <dataize at="Φ.a🌵2">
-            <manufactured meta="𝛿·2·1">𝜎2</manufactured>
-          </dataize>
-          <bound meta="𝛿1·2">𝛿·2·1</bound>
-          <dataize at="Φ.a🌵3">
-            <dataized meta="𝛿·2·2">2F-</dataized>
-          </dataize>
-          <bound meta="𝛿2·2">𝛿·2·2</bound>
-          <minted symbol="𝜎4">𝜎2 2F-</minted>
-        </evaluate>
-        <dataize at="Φ.a🌵4">
-          <manufactured meta="𝛿·3·1">𝜎4</manufactured>
+    <dataize at="Φ.l/.e1">
+      <evaluate λ="L_bytes_concat" by="morph" at="Φ.a🌵1">
+        <dataize at="Φ.a🌵2">
+          <manufactured meta="𝛿·2·1">𝜎2</manufactured>
         </dataize>
-        <bound meta="𝛿1·3">𝛿·3·1</bound>
+        <bound meta="𝛿1·2">𝛿·2·1</bound>
+        <dataize at="Φ.a🌵3">
+          <dataized meta="𝛿·2·2">2F-</dataized>
+        </dataize>
+        <bound meta="𝛿2·2">𝛿·2·2</bound>
+        <minted symbol="𝜎4">𝜎2 2F-</minted>
       </evaluate>
-    </morph>
+      <manufactured meta="𝛿·3·1">𝜎4</manufactured>
+    </dataize>
     <msec>130</msec>
     <firings>2</firings>
     <fps>23</fps>
