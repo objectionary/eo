@@ -320,11 +320,16 @@ final class Bound {
         for (final String application : this.args.keySet()) {
             final Collection<String> kept = new LinkedHashSet<>(0);
             for (final String step : this.copies(application, landed)) {
-                final String arrival = this.arrival(application, step, binds);
-                if (arrival.isEmpty()) {
-                    kept.addAll(fillers.getOrDefault(step, Collections.emptyList()));
-                } else {
+                final Collection<String> fill =
+                    fillers.getOrDefault(step, Collections.emptyList());
+                String arrival = "";
+                if (fill.size() > 1) {
+                    arrival = this.arrival(application, step, binds);
+                }
+                if (fill.contains(arrival)) {
                     kept.add(arrival);
+                } else {
+                    kept.addAll(fill);
                 }
             }
             found.put(application, kept);
@@ -337,7 +342,9 @@ final class Bound {
     // `if` of a `true` is the picker `true` put there, while the picker of a
     // `false` is filled by its own callers alone. The walk goes through the
     // bodies as well as through the pairs, since a receiver fills the void
-    // where it delegates and not where it is named (#9363).
+    // where it delegates and not where it is named (#9363). It is made only
+    // where the void holds more than one formation, since where it holds one
+    // there is nothing to choose between.
     private String arrival(
         final String application, final String hollow,
         final Map<String, Map<String, String>> binds

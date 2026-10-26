@@ -31,8 +31,8 @@ eo:
       true.if oak elm > x
       false.if elm oak > y
 links:
-  - "//type[@id='Φ.app.x']/ref[@loc='Φ.true.φ.α0'][not(bind[starts-with(@void, 'Φ.false.')])]"
-  - "//type[@id='Φ.app.y']/ref[@loc='Φ.false.φ.α0'][not(bind[starts-with(@void, 'Φ.true.')])]"
+  - "//type[@id='Φ.app.x']/ref[@loc='Φ.true.φ.α0'][not(bind[starts-with(@void,'Φ.false.')])]"
+  - "//type[@id='Φ.app.y']/ref[@loc='Φ.false.φ.α0'][not(bind[starts-with(@void,'Φ.true.')])]"
 provides:
   - "//type[@id='Φ.true.φ.α0']/attr[@name='left']/witnessed[ref[@loc='Φ.oak']][not(ref[@loc='Φ.elm'])]"
   - "//type[@id='Φ.false.φ.α0']/attr[@name='left']/witnessed[ref[@loc='Φ.elm']][not(ref[@loc='Φ.oak'])]"
