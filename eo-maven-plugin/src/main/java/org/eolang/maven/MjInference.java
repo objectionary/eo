@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -66,14 +67,14 @@ public final class MjInference extends MjSafe {
 
     /**
      * The directory where the XMIR prepared for the rules is saved, falling
-     * back to a directory {@link Subdir} numbers "pre-inference" when unset.
+     * back to a directory {@code Seqdir} numbers "pre-inference" when unset.
      */
     @Parameter(alias = "preInferenceDir", property = "eo.preInferenceDir")
     private File prepared;
 
     /**
      * The directory where the tables are saved, falling back to a directory
-     * {@link Subdir} numbers "inference" when unset.
+     * {@code Seqdir} numbers "inference" when unset.
      */
     @Parameter(alias = "inferenceDir", property = "eo.inferenceDir")
     private File tables;
@@ -87,7 +88,19 @@ public final class MjInference extends MjSafe {
 
     @Override
     void exec() throws IOException {
-        final Path parsed = new Subdir(this.target, "parse").path();
+        final Path parsed = new Seqdir(this.target.toPath(), 2).dirs().once("parse");
+        final Path prepped;
+        if (this.prepared == null) {
+            prepped = new Seqdir(this.target.toPath(), 2).dirs().once("pre-inference");
+        } else {
+            prepped = this.prepared.toPath();
+        }
+        final Path inference;
+        if (this.tables == null) {
+            inference = new Seqdir(this.target.toPath(), 2).dirs().once("inference");
+        } else {
+            inference = this.tables.toPath();
+        }
         try (TjsForeign tojos = this.tojos()) {
             new Inferring(
                 new Mapped<>(
@@ -95,8 +108,8 @@ public final class MjInference extends MjSafe {
                     tojos.withXmir()
                 ),
                 parsed,
-                new Subdir(this.target, "pre-inference").orConfigured(this.prepared),
-                new Subdir(this.target, "inference").orConfigured(this.tables)
+                prepped,
+                inference
             ).exec();
         }
     }
