@@ -22,8 +22,6 @@ protocol: |
     <morph at="Φ.l/.e54">
       <evaluate λ="L_entry" by="morph" at="Φ.l/.e54">
         <deferred symbol="𝜎134" by="morph" at="Φ.l/.e54.φ" of="Φ.joined.with-delimiter"><with><symbol attr="acc">𝜎54</symbol><symbol attr="tup">𝜎55</symbol></with></deferred>
-      </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l/.e54">
         <dataize at="Φ.a🌵1">
           <manufactured meta="𝛿·5·1">𝜎134</manufactured>
         </dataize>
@@ -31,7 +29,7 @@ protocol: |
       </evaluate>
     </morph>
     <msec>400</msec>
-    <firings>3</firings>
+    <firings>2</firings>
     <fps>7</fps>
   </protocol>
 file: org/eolang/EOjoined$EOφ.java

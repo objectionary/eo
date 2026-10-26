@@ -44,8 +44,6 @@ protocol: |
           <bound meta="𝛿2·2">𝛿·2·2</bound>
           <minted symbol="𝜎2">𝜎1 40-28-00-00-00-00-00-00</minted>
         </evaluate>
-      </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
         <dataize at="Φ.a🌵4">
           <manufactured meta="𝛿·3·1">𝜎2</manufactured>
         </dataize>
@@ -53,7 +51,7 @@ protocol: |
       </evaluate>
     </morph>
     <msec>115</msec>
-    <firings>3</firings>
+    <firings>2</firings>
     <fps>26</fps>
   </protocol>
 file: org/eolang/EOdozen$EOφ.java

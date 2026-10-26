@@ -426,9 +426,9 @@ final class MjLowerTest {
             "<bind meta='𝛿1·2'>40-00-00-00-00-00-00-00</bind>",
             "<bind meta='𝛿2·2'>40-08-00-00-00-00-00-00</bind>",
             "<minted symbol='𝜎9'>40-00-00-00-00-00-00-00 40-08-00-00-00-00-00-00</minted>",
-            "</evaluate></evaluate><evaluate λ='L_root'>",
-            "<dataize meta='𝛿1·3'>𝜎9</dataize></evaluate></morph>",
-            "<msec>13</msec><firings>2</firings><fps>153</fps></protocol>"
+            "</evaluate>",
+            "<dataize meta='𝛿1·1'>𝜎9</dataize></evaluate></morph>",
+            "<msec>13</msec><firings>1</firings><fps>153</fps></protocol>"
         );
     }
 

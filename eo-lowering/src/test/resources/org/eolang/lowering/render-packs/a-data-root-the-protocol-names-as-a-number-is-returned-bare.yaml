@@ -37,10 +37,6 @@ protocol: |
           <answered meta="𝑛·2·8">𝑛·2·7</answered>
         </evaluate>
         <bound meta="𝑛1·1">𝑛·2·7</bound>
-        <applied meta="𝑛·1·12" of="Φ.l/.root"><meta attr="α0">𝑛·2·7</meta></applied>
-        <built meta="𝑛·1·13">𝑛·1·12</built>
-      </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
         <dataize at="Φ.a🌵4">
           <manufactured meta="𝛿·3·1">𝜎2</manufactured>
         </dataize>
@@ -48,7 +44,7 @@ protocol: |
       </evaluate>
     </morph>
     <msec>43</msec>
-    <firings>3</firings>
+    <firings>2</firings>
     <fps>70</fps>
   </protocol>
 file: org/eolang/EOneg$EOφ.java

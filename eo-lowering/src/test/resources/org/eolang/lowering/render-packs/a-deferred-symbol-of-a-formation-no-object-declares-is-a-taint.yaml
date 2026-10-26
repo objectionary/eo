@@ -44,8 +44,6 @@ protocol: |
         </evaluate>
         <formed meta="𝑛·1·5"><symbol attr="acc">𝜎54</symbol><symbol attr="tup">𝜎55</symbol><ref attr="φ">acc</ref></formed>
         <deferred symbol="𝜎134" by="morph" at="Φ.a🌵1.φ" of="𝑛·1·5"/>
-      </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l/.e54">
         <dataize at="Φ.a🌵4">
           <evaluate λ="L_fork" by="dataize" at="Φ.a🌵4">
             <dataize at="Φ.a🌵10">
@@ -72,6 +70,6 @@ protocol: |
       </evaluate>
     </morph>
     <msec>400</msec>
-    <firings>7</firings>
+    <firings>6</firings>
     <fps>17</fps>
   </protocol>

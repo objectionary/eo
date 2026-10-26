@@ -321,10 +321,14 @@
     <xsl:param name="leaf" as="element()"/>
     <xsl:sequence select="($eo:doc//bound[@meta = '𝑛1·1'][eo:on(., $leaf)])[1]"/>
   </xsl:function>
-  <!-- The dataization of the root on the flow of a leaf, which is the one the λ of the root makes, or nothing. -->
+  <!--
+  The dataization of the root on the flow of a leaf, or nothing. "L_entry"
+  dataizes two things: the number of the entry, which it binds to its second
+  meta right after, and then the body it morphed, which is the root.
+  -->
   <xsl:function name="eo:dataization" as="element()?">
     <xsl:param name="leaf" as="element()"/>
-    <xsl:sequence select="($eo:doc//evaluate[@λ = 'L_root'][eo:on(., $leaf)])[1]/dataize[1]"/>
+    <xsl:sequence select="($eo:doc//evaluate[@λ = 'L_entry'][eo:on(., $leaf)])[1]/dataize[not(following-sibling::*[1][self::bound][starts-with(@meta, '𝛿2·')])][1]"/>
   </xsl:function>
   <!--
   Whether the dataization of the root is still open where a leaf starts,
@@ -525,7 +529,7 @@
   </xsl:function>
   <!--
   The record of what the root of a flow came down to, a symbol or its
-  bytes, which the λ of the root binds to its first meta right after, or
+  bytes, which "L_entry" binds to its first meta right after, or
   nothing when the flow stopped inside the dataization of the root. The
   record is the last child of that dataization when the dataization is
   whole, and stands inside the leaf after the records of the dataizations

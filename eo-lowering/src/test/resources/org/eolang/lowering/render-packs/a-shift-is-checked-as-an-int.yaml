@@ -33,8 +33,6 @@ protocol: |
         <evaluate λ="L_bytes_right" by="morph" at="Φ.a🌵3">
           <minted symbol="𝜎5">𝜎3 𝜎4</minted>
         </evaluate>
-      </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l/.e6">
         <dataize at="Φ.a🌵4">
           <manufactured meta="𝛿·4·1">𝜎5</manufactured>
         </dataize>
@@ -42,7 +40,7 @@ protocol: |
       </evaluate>
     </morph>
     <msec>190</msec>
-    <firings>5</firings>
+    <firings>4</firings>
     <fps>20</fps>
   </protocol>
 file: org/eolang/EOshifted$EOφ.java

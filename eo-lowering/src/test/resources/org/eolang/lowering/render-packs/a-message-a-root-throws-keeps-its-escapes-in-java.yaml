@@ -24,14 +24,6 @@ protocol: |
           <applied meta="𝑛·1·5" by="morph" at="Φ.a🌵1" of="Φ.l/.throw"><meta attr="message">𝑛·1·4</meta></applied>
         </morph>
         <bound meta="𝑛1·1">𝑛·1·5</bound>
-        <applied meta="𝑛·1·6" of="Φ.l/.root"><meta attr="α0">𝑛·1·5</meta></applied>
-        <built meta="𝑛·1·7">𝑛·1·6</built>
-        <morph at="𝑛·1·7">
-          <applied meta="𝑛·1·8" by="morph" at="𝑛·1·7" of="Φ.l/.root"><meta attr="v">𝑛·1·5</meta></applied>
-        </morph>
-        <answered meta="𝑛·1·9">𝑛·1·8</answered>
-      </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l/.e2">
         <dataize at="Φ.a🌵2">
           <unanswered λ="L_throw" by="dataize">𝑛·1·5</unanswered>
         </dataize>
@@ -39,7 +31,7 @@ protocol: |
       </evaluate>
     </morph>
     <msec>1</msec>
-    <firings>2</firings>
+    <firings>1</firings>
     <fps>2000</fps>
   </protocol>
 file: org/eolang/EOodd$EOφ.java

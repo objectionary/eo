@@ -24,11 +24,7 @@ protocol: |
         <dataize at="Φ.a🌵2">
           <dataized meta="𝛿·1·1">40-52-C0-00-00-00-00-00</dataized>
         </dataize>
-        <bound meta="𝛿1·1">𝛿·1·1</bound>
-        <formed meta="𝑛·1·1" of="Φ.l/.root"><meta attr="v">𝑒1</meta></formed>
-        <answered meta="𝑛·1·2">𝑛·1·1</answered>
-      </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l/.e75">
+        <bound meta="𝛿2·1">𝛿·1·1</bound>
         <dataize at="Φ.a🌵1">
           <morph at="Φ.a🌵1">
             <applied meta="𝑛·2·1" by="morph" at="Φ.a🌵1" of="Φ.bytes"><datum attr="φ">FF-</datum></applied>
@@ -42,7 +38,7 @@ protocol: |
       </evaluate>
     </morph>
     <msec>268</msec>
-    <firings>2</firings>
+    <firings>1</firings>
     <fps>7</fps>
   </protocol>
 file: org/eolang/EOyes$EOφ.java

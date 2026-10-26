@@ -64,8 +64,6 @@ protocol: |
         <applied meta="𝑛·1·21" of="Φ.string"><meta attr="φ">𝑛·1·20</meta></applied>
         <applied meta="𝑛·1·22" of="Φ.l/.throw"><meta attr="message">𝑛·1·21</meta></applied>
         <bound meta="𝑛1·1">𝑛·1·30</bound>
-      </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l/.e7">
         <dataize at="Φ.a🌵5">
           <evaluate λ="L_fork" by="dataize" at="Φ.a🌵6">
             <dataize at="Φ.a🌵21">
@@ -123,7 +121,7 @@ protocol: |
       </evaluate>
     </morph>
     <msec>32</msec>
-    <firings>16</firings>
+    <firings>15</firings>
     <fps>281</fps>
   </protocol>
 file: org/eolang/EObytes$EOxor$EOφ.java

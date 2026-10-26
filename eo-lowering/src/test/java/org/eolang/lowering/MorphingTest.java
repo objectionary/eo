@@ -576,7 +576,7 @@ final class MorphingTest {
         MatcherAssert.assertThat(
             "the protocol must record the firing of the atom the body reached, but it doesnt",
             MorphingTest.text(temp.resolve("2-protocols/gap.xml")),
-            Matchers.stringContainsInOrder("L_entry", "L_root", "L_number_plus")
+            Matchers.stringContainsInOrder("L_entry", "L_number_plus")
         );
     }
 

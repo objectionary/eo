@@ -23,7 +23,7 @@ links: |
 protocol: |
   <protocol>
     <morph at="Φ.l/.e1">
-      <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
+      <evaluate λ="L_entry" by="morph" at="Φ.l/.e1">
         <dataize at="Φ.a🌵1">
           <manufactured meta="𝛿·2·1">𝜎1</manufactured>
         </dataize>
@@ -31,6 +31,6 @@ protocol: |
       </evaluate>
     </morph>
     <msec>100</msec>
-    <firings>2</firings>
+    <firings>1</firings>
     <fps>20</fps>
   </protocol>

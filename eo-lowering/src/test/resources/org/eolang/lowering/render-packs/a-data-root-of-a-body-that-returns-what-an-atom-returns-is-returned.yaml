@@ -40,8 +40,6 @@ protocol: |
           <bound meta="𝛿2·2">𝛿·2·2</bound>
           <minted symbol="𝜎3">𝜎1 𝜎2</minted>
         </evaluate>
-      </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
         <dataize at="Φ.a🌵4">
           <manufactured meta="𝛿·3·1">𝜎3</manufactured>
         </dataize>
@@ -49,7 +47,7 @@ protocol: |
       </evaluate>
     </morph>
     <msec>110</msec>
-    <firings>3</firings>
+    <firings>2</firings>
     <fps>27</fps>
   </protocol>
 file: org/eolang/EOsum$EOφ.java

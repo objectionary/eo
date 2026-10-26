@@ -122,7 +122,7 @@ import org.cactoos.text.TextOf;
  *  returns the void bare, as bytes, and the {@code i8} around it is lost.
  *  A body that copies a decorator of a string, like {@code separator.joined
  *  parts}, is a taint now for the same reason. Once phino names, in the
- *  formations of {@code L_root}, the object each root reduced to, read the
+ *  firing of {@code L_entry}, the object each root reduced to, read the
  *  object around the root there as well.
  * @todo #9373:45min Write an atom for an entry that throws a message it
  *  computes. When the message of a {@code T} is not a string literal, like

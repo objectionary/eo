@@ -26,8 +26,6 @@ protocol: |
         <evaluate λ="L_clock_now" by="morph" at="Φ.a🌵1">
           <minted symbol="𝜎2">𝜎1</minted>
         </evaluate>
-      </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l/.e9">
         <dataize at="Φ.a🌵2">
           <manufactured meta="𝛿·3·1">𝜎2</manufactured>
         </dataize>
@@ -35,6 +33,6 @@ protocol: |
       </evaluate>
     </morph>
     <msec>168</msec>
-    <firings>3</firings>
+    <firings>2</firings>
     <fps>17</fps>
   </protocol>

@@ -58,8 +58,6 @@ protocol: |
         <applied meta="𝑛·1·18" of="Φ.string"><meta attr="φ">𝑛·1·17</meta></applied>
         <applied meta="𝑛·1·19" of="Φ.l/.throw"><meta attr="message">𝑛·1·18</meta></applied>
         <bound meta="𝑛1·1">𝑛·1·30</bound>
-      </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l/.e7">
         <dataize at="Φ.a🌵6">
           <evaluate λ="L_fork" by="dataize" at="Φ.a🌵7">
             <dataize at="Φ.a🌵14">
@@ -88,6 +86,6 @@ protocol: |
       </evaluate>
     </morph>
     <msec>32</msec>
-    <firings>5</firings>
+    <firings>4</firings>
     <fps>281</fps>
   </protocol>

@@ -28,8 +28,6 @@ protocol: |
       <evaluate λ="L_entry" by="morph" at="Φ.l/.e3">
         <bound meta="𝑛1·1">𝑛·1·6</bound>
         <answered meta="𝑛·1·10">𝑛·1·9</answered>
-      </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l/.e3">
         <dataize at="Φ.a🌵2">
           <evaluate λ="L_bytes_eq" by="dataize" at="Φ.a🌵2">
             <dataize at="Φ.a🌵3">
@@ -73,7 +71,7 @@ protocol: |
       </evaluate>
     </morph>
     <msec>22</msec>
-    <firings>4</firings>
+    <firings>3</firings>
     <fps>182</fps>
   </protocol>
 file: org/eolang/EObytes$EOas_bool$EOφ.java

@@ -30,8 +30,6 @@ protocol: |
           <minted symbol="𝜎57">𝜎40 BF-F0-00-00-00-00-00-00</minted>
         </evaluate>
         <timeout limit="60" by="morph" at="Φ.a🌵2"/>
-      </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l/.e31">
         <dataize at="Φ.a🌵5">
           <manufactured meta="𝛿·3·1">𝜎57</manufactured>
         </dataize>
@@ -39,6 +37,6 @@ protocol: |
       </evaluate>
     </morph>
     <msec>284</msec>
-    <firings>3</firings>
+    <firings>2</firings>
     <fps>10</fps>
   </protocol>

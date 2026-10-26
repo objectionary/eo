@@ -17,8 +17,7 @@ voids:
 protocol: |
   <protocol>
     <morph at="Φ.l/.e3">
-      <evaluate λ="L_entry" by="morph" at="Φ.l/.e3"/>
-      <evaluate λ="L_root" by="morph" at="Φ.l/.e3">
+      <evaluate λ="L_entry" by="morph" at="Φ.l/.e3">
         <dataize at="Φ.a🌵1">
           <manufactured meta="𝛿·2·1">𝜎9</manufactured>
         </dataize>
@@ -26,7 +25,7 @@ protocol: |
       </evaluate>
     </morph>
     <msec>595</msec>
-    <firings>2</firings>
+    <firings>1</firings>
     <fps>3</fps>
   </protocol>
 file: org/eolang/EO_foo/EO_b_ar/EOa_b$EOc$u00005Fd$EOφ.java

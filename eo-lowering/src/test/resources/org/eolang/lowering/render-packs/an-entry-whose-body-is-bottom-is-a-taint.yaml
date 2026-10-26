@@ -18,12 +18,10 @@ protocol: |
         <dataize at="Φ.a🌵1">
           <dataized meta="𝛿·1·1">40-26-00-00-00-00-00-00</dataized>
         </dataize>
-        <bound meta="𝛿1·1">𝛿·1·1</bound>
+        <bound meta="𝛿2·1">𝛿·1·1</bound>
         <bound meta="𝑛1·1">⊥</bound>
-        <applied meta="𝑛·1·1" of="Φ.l/.root"><bottom attr="α0"/></applied>
-        <built meta="𝑛·1·2">𝑛·1·1</built>
-        <formed meta="𝑛·1·3" of="Φ.l/.root"><bottom attr="v"/></formed>
-        <answered meta="𝑛·1·4">𝑛·1·3</answered>
+        <unanswered λ="⊥" by="dataize">⊥</unanswered>
+        <stuck λ="⊥"/>
       </evaluate>
     </morph>
     <msec>225</msec>

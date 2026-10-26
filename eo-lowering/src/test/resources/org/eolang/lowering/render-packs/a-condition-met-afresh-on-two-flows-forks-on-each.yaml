@@ -42,8 +42,6 @@ protocol: |
         <evaluate λ="L_number_gt" by="morph" at="Φ.a🌵2">
           <minted symbol="𝜎6">𝜎3 00-00-00-00-00-00-00-00</minted>
         </evaluate>
-      </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l/.e1">
         <dataize at="Φ.a🌵3">
           <evaluate λ="L_number_plus" by="dataize" at="Φ.a🌵3">
             <dataize at="Φ.a🌵4">
@@ -123,7 +121,7 @@ protocol: |
       </evaluate>
     </morph>
     <msec>90</msec>
-    <firings>16</firings>
+    <firings>15</firings>
     <fps>177</fps>
   </protocol>
 file: org/eolang/EOboth$EOφ.java
