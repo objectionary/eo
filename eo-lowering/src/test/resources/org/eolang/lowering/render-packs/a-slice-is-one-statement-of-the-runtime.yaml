@@ -28,11 +28,11 @@ protocol: |
         </dataize>
         <bound meta="𝛿1·2">𝛿·2·1</bound>
         <dataize at="Φ.a🌵3">
-          <dataized meta="𝛿·2·2">3F-F0-00-00-00-00-00-00</dataized>
+          <dataized meta="𝛿·2·2" number="1.0">3F-F0-00-00-00-00-00-00</dataized>
         </dataize>
         <bound meta="𝛿2·2">𝛿·2·2</bound>
         <dataize at="Φ.a🌵4">
-          <dataized meta="𝛿·2·3">40-00-00-00-00-00-00-00</dataized>
+          <dataized meta="𝛿·2·3" number="2.0">40-00-00-00-00-00-00-00</dataized>
         </dataize>
         <bound meta="𝛿3·2">𝛿·2·3</bound>
         <minted symbol="𝜎2">𝜎1 3F-F0-00-00-00-00-00-00 40-00-00-00-00-00-00-00</minted>
@@ -65,7 +65,7 @@ java: |
       @Override
       public Phi lambda() {
           final byte[] s1 = new Dataized(this.take("ρ").take("x")).take();
-          final byte[] s2 = new Slice(s1, Double.longBitsToDouble(0x3FF0000000000000L), Double.longBitsToDouble(0x4000000000000000L)).delta();
+          final byte[] s2 = new Slice(s1, 1.0, 2.0).delta();
           return new Data.ToPhi(s2);
       }
   }

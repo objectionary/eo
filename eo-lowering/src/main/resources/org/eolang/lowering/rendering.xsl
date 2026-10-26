@@ -120,6 +120,7 @@
   <xsl:key name="eo:minted" match="minted" use="@symbol"/>
   <xsl:key name="eo:joined" match="joined" use="@symbol"/>
   <xsl:key name="eo:symbolized" match="symbolized" use="@symbol"/>
+  <xsl:key name="eo:number" match="dataized[@number] | symbolized[@number]" use="upper-case(normalize-space(.))"/>
   <xsl:key name="eo:deferred" match="deferred" use="@symbol"/>
   <!-- The voids of this entry, by symbol, each as its path and its carrier. -->
   <xsl:variable name="eo:voids" as="map(xs:string, xs:string+)">
@@ -912,7 +913,12 @@
     <xsl:param name="want" as="xs:string"/>
     <xsl:sequence select="if (eo:constant($token)) then eo:literal-of(eo:bytes($token), $want) else eo:cast(eo:local($token), eo:type($token), $want)"/>
   </xsl:function>
-  <!-- The Java literal of bytes, as a value of a type. -->
+  <!--
+  The Java literal of bytes, as a value of a type. A double is the number
+  phino wrote next to the same bytes in the protocol, the shortest decimal
+  that reads back as the same double. It is the bits themselves when phino
+  wrote no such number, or wrote one that is not finite.
+  -->
   <xsl:function name="eo:literal-of" as="xs:string">
     <xsl:param name="bytes" as="xs:string"/>
     <xsl:param name="want" as="xs:string"/>
@@ -925,7 +931,8 @@
         <xsl:sequence select="concat('new Data.ToPhi(', eo:literal-of($bytes, 'byte[]'), ')')"/>
       </xsl:when>
       <xsl:when test="$want = 'double' and count($octets) = 8">
-        <xsl:sequence select="concat('Double.longBitsToDouble(0x', upper-case(string-join($octets, '')), 'L)')"/>
+        <xsl:variable name="number" select="string(key('eo:number', upper-case($bytes), $eo:doc)[1]/@number)"/>
+        <xsl:sequence select="if (matches($number, '^-?[0-9]+\.[0-9]+(e-?[0-9]+)?$')) then $number else concat('Double.longBitsToDouble(0x', upper-case(string-join($octets, '')), 'L)')"/>
       </xsl:when>
       <xsl:when test="$want = 'boolean' and upper-case($bytes) = ('FF-', '00-')">
         <xsl:sequence select="if (upper-case($bytes) = 'FF-') then 'true' else 'false'"/>

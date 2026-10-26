@@ -86,7 +86,7 @@ java: |
               final double s3 = (double) new BytesOf(s1).asNumber() + Double.longBitsToDouble(0x3FF0000000000000L);
               return new Data.ToPhi(s3);
           } else {
-              return new Data.ToPhi(Double.longBitsToDouble(0x4000000000000000L));
+              return new Data.ToPhi(2.0);
           }
       }
   }

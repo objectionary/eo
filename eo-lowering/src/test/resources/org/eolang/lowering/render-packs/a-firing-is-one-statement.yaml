@@ -4,8 +4,8 @@
 # yamllint disable rule:line-length
 # The body of neg is one firing of times over its receiver and the literal
 # minus one, so the atom reads the void as its bytes, multiplies them as a
-# double by the bits of minus one in one statement, and returns the product
-# as a number.
+# double by minus one in one statement, and returns the product as a
+# number.
 locator: Φ.number.neg
 number: 217
 eo:
@@ -30,7 +30,7 @@ protocol: |
         </dataize>
         <bound meta="𝛿1·2">𝛿·2·1</bound>
         <dataize at="Φ.a🌵3">
-          <dataized meta="𝛿·2·2">BF-F0-00-00-00-00-00-00</dataized>
+          <dataized meta="𝛿·2·2" number="-1.0">BF-F0-00-00-00-00-00-00</dataized>
         </dataize>
         <bound meta="𝛿2·2">𝛿·2·2</bound>
         <minted symbol="𝜎752">𝜎200 BF-F0-00-00-00-00-00-00</minted>
@@ -63,7 +63,7 @@ java: |
       @Override
       public Phi lambda() {
           final byte[] s200 = new Dataized(this.take("ρ").take("ρ")).take();
-          final double s752 = (double) new BytesOf(s200).asNumber() * Double.longBitsToDouble(0xBFF0000000000000L);
+          final double s752 = (double) new BytesOf(s200).asNumber() * -1.0;
           return new Data.ToPhi(s752);
       }
   }

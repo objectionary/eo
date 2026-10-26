@@ -38,7 +38,7 @@ protocol: |
         </dataize>
         <bound meta="𝛿1·2">𝛿·2·1</bound>
         <dataize at="Φ.a🌵3">
-          <dataized meta="𝛿·2·2">40-28-00-00-00-00-00-00</dataized>
+          <dataized meta="𝛿·2·2" number="12.0">40-28-00-00-00-00-00-00</dataized>
         </dataize>
         <bound meta="𝛿2·2">𝛿·2·2</bound>
         <minted symbol="𝜎2">𝜎1 40-28-00-00-00-00-00-00</minted>
@@ -71,7 +71,7 @@ java: |
       @Override
       public Phi lambda() {
           final byte[] s1 = new Dataized(this.take("ρ").take("k")).take();
-          final double s2 = (double) new BytesOf(s1).asNumber() * Double.longBitsToDouble(0x4028000000000000L);
+          final double s2 = (double) new BytesOf(s1).asNumber() * 12.0;
           return new Data.ToPhi(s2);
       }
   }

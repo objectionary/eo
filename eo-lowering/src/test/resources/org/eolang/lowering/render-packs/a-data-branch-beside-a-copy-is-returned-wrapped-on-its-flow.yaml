@@ -36,7 +36,7 @@ protocol: |
         </dataize>
         <bound meta="𝛿1·2">𝛿·2·1</bound>
         <dataize at="Φ.a🌵9">
-          <dataized meta="𝛿·2·2">00-00-00-00-00-00-00-00</dataized>
+          <dataized meta="𝛿·2·2" number="0.0">00-00-00-00-00-00-00-00</dataized>
         </dataize>
         <bound meta="𝛿2·2">𝛿·2·2</bound>
         <minted symbol="𝜎133">𝜎53 00-00-00-00-00-00-00-00</minted>
@@ -53,7 +53,7 @@ protocol: |
           </dataize>
           <bound meta="𝛿1·5">𝛿·5·1</bound>
           <dataize at="Φ.a🌵13">
-            <dataized meta="𝛿·5·2">3F-F0-00-00-00-00-00-00</dataized>
+            <dataized meta="𝛿·5·2" number="1.0">3F-F0-00-00-00-00-00-00</dataized>
           </dataize>
           <bound meta="𝛿2·5">𝛿·5·2</bound>
           <minted symbol="𝜎134">𝜎53 3F-F0-00-00-00-00-00-00</minted>
@@ -98,7 +98,7 @@ java: |
           final byte[] s53 = new Dataized(this.take("ρ").take("items").take("length")).take();
           final boolean s133 = java.util.Arrays.equals(s53, new byte[] {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00});
           if (s133) {
-              final double s134 = (double) new BytesOf(s53).asNumber() + Double.longBitsToDouble(0x3FF0000000000000L);
+              final double s134 = (double) new BytesOf(s53).asNumber() + 1.0;
               return new Data.ToPhi(s134);
           } else {
               final Phi s135 = new PhApplication(this.take("ρ").take("with-delimiter"), new Bind("acc", this.take("ρ").take("items").take("head")), new Bind("tup", this.take("ρ").take("items").take("tail")));

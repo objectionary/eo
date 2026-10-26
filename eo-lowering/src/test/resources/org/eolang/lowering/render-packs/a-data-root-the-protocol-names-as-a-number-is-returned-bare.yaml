@@ -25,7 +25,7 @@ protocol: |
           </dataize>
           <bound meta="𝛿1·2">𝛿·2·1</bound>
           <dataize at="Φ.a🌵3">
-            <dataized meta="𝛿·2·2">BF-F0-00-00-00-00-00-00</dataized>
+            <dataized meta="𝛿·2·2" number="-1.0">BF-F0-00-00-00-00-00-00</dataized>
           </dataize>
           <bound meta="𝛿2·2">𝛿·2·2</bound>
           <minted symbol="𝜎2">𝜎1 BF-F0-00-00-00-00-00-00</minted>
@@ -67,7 +67,7 @@ java: |
       @Override
       public Phi lambda() {
           final byte[] s1 = new Dataized(this.take("ρ").take("x")).take();
-          final double s2 = (double) new BytesOf(s1).asNumber() * Double.longBitsToDouble(0xBFF0000000000000L);
+          final double s2 = (double) new BytesOf(s1).asNumber() * -1.0;
           return new Data.ToPhi(s2);
       }
   }
