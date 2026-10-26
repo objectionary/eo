@@ -29,8 +29,8 @@ links: |
   </links>
 protocol: |
   <protocol>
-    <dataize at="Φ.l/.e7">
-      <boxed meta="𝑛·0·1">Φ.l/.e7.φ</boxed>
+    <dataize at="Φ.l🌵.e7">
+      <boxed meta="𝑛·0·1">Φ.l🌵.e7.φ</boxed>
       <morph at="𝑛·0·1">
         <evaluate λ="L_bytes_size" by="morph" at="Φ.a🌵1">
           <dataize at="Φ.a🌵17">
@@ -59,10 +59,10 @@ protocol: |
         </evaluate>
         <applied meta="𝑛·1·17" of="Φ.bytes"><datum attr="φ">62-79-74-65-73-2E-78-6F-72-20-72-65-71-75-69-72-65-73-20-6F-70-65-72-61-6E-64-73-20-6F-66-20-74-68-65-20-73-61-6D-65-20-6C-65-6E-67-74-68</datum></applied>
         <applied meta="𝑛·1·18" of="Φ.string"><meta attr="φ">𝑛·1·17</meta></applied>
-        <applied meta="𝑛·1·19" of="Φ.l/.throw"><meta attr="message">𝑛·1·18</meta></applied>
+        <applied meta="𝑛·1·19" of="Φ.l🌵.throw"><meta attr="message">𝑛·1·18</meta></applied>
         <applied meta="𝑛·1·20" of="Φ.bytes"><datum attr="φ">62-79-74-65-73-2E-78-6F-72-20-72-65-71-75-69-72-65-73-20-61-6E-20-65-6D-70-74-79-20-6F-70-65-72-61-6E-64</datum></applied>
         <applied meta="𝑛·1·21" of="Φ.string"><meta attr="φ">𝑛·1·20</meta></applied>
-        <applied meta="𝑛·1·22" of="Φ.l/.throw"><meta attr="message">𝑛·1·21</meta></applied>
+        <applied meta="𝑛·1·22" of="Φ.l🌵.throw"><meta attr="message">𝑛·1·21</meta></applied>
         <morphed meta="𝑛·0·2">𝑛·1·30</morphed>
       </morph>
       <evaluate λ="L_fork" by="dataize" at="Φ.a🌵6">

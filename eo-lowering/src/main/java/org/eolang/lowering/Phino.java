@@ -126,7 +126,7 @@ final class Phino {
      * <p>The stage that calls this is named "morphing", since phino
      * dataizes an object by morphing it first, and the morphs are most of
      * what the protocol holds. The stage {@link Planting} put every entry
-     * into an object named {@code l/}, under the name {@code e} plus the
+     * into an object named {@code l🌵}, under the name {@code e} plus the
      * number of the entry, and this method asks phino to dataize exactly
      * that one. The name of that object holds nothing but ASCII,
      * because Java writes the arguments of a child process in the encoding
@@ -178,7 +178,7 @@ final class Phino {
                     "--hide-rho",
                     "--abridged",
                     String.format("--symbolic=%s", atoms),
-                    String.format("--locator=Q.l/.e%d", entry),
+                    String.format("--locator=Q.l🌵.e%d", entry),
                     String.format("--protocol=%s", protocol),
                     String.format("--max-steps=%d", steps),
                     String.format(

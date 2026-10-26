@@ -367,7 +367,7 @@ final class MorphingTest {
         MatcherAssert.assertThat(
             "the run of an entry must be aimed at that entry, but it isnt",
             MorphingTest.text(protocols.resolve("e2.xml")),
-            Matchers.containsString("--locator=Q.l/.e2")
+            Matchers.containsString("--locator=Q.l🌵.e2")
         );
     }
 
@@ -576,7 +576,7 @@ final class MorphingTest {
         MatcherAssert.assertThat(
             "the protocol must record the firing of the atom the body reached, but it doesnt",
             MorphingTest.text(temp.resolve("2-protocols/gap.xml")),
-            Matchers.stringContainsInOrder("<dataize at=\"Φ.l/.e", "L_number_plus")
+            Matchers.stringContainsInOrder("<dataize at=\"Φ.l🌵.e", "L_number_plus")
         );
     }
 
@@ -595,7 +595,7 @@ final class MorphingTest {
         MatcherAssert.assertThat(
             "the text must record the firing of the atom the body reached, but it doesnt",
             MorphingTest.text(temp.resolve("texts/gap.txt")),
-            Matchers.stringContainsInOrder("𝔻(Φ.l/.e", "𝔼(L_number_plus)")
+            Matchers.stringContainsInOrder("𝔻(Φ.l🌵.e", "𝔼(L_number_plus)")
         );
     }
 

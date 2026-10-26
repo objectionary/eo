@@ -5,7 +5,7 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="entries" version="3.0">
   <!--
-  Here we write the entries of the whole build: one object, "l/", holding an
+  Here we write the entries of the whole build: one object, "l🌵", holding an
   application of every formation that has a body to a symbol for each of its
   voids, so that one run of the calculus over that object folds every
   formation of the world.
@@ -221,7 +221,7 @@
   <xsl:template match="/">
     <planted entries="{count($eo:plan/entry)}" symbols="{count($eo:plan//sym)}" atom="{count($eo:reasons[. = 'atom'])}" bodiless="{count($eo:reasons[. = 'bodiless'])}" placed="{count($eo:reasons[. = 'placed'])}" opaque="{count($eo:reasons[. = 'opaque'])}">
       <object author="eo-lowering">
-        <o name="l/">
+        <o name="l🌵">
           <o name="throw">
             <o base="∅" name="message"/>
             <o name="λ">L_throw</o>

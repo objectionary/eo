@@ -16,12 +16,12 @@ voids:
   - "𝜎1\t3\tb\tbytes"
 protocol: |
   <protocol>
-    <dataize at="Φ.l/.e3">
-      <boxed meta="𝑛·0·1">Φ.l/.e3.φ</boxed>
+    <dataize at="Φ.l🌵.e3">
+      <boxed meta="𝑛·0·1">Φ.l🌵.e3.φ</boxed>
       <morph at="𝑛·0·1">
         <morph at="Φ.a🌵1">
           <applied meta="𝑛·1·3" of="Φ.string"><symbol attr="φ">𝜎1</symbol></applied>
-          <applied meta="𝑛·1·4" by="morph" at="Φ.a🌵1" of="Φ.l/.throw"><meta attr="message">𝑛·1·3</meta></applied>
+          <applied meta="𝑛·1·4" by="morph" at="Φ.a🌵1" of="Φ.l🌵.throw"><meta attr="message">𝑛·1·3</meta></applied>
         </morph>
         <morphed meta="𝑛·0·2">𝑛·1·4</morphed>
       </morph>

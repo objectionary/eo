@@ -15,15 +15,15 @@ eo:
       T "oops" > @
 protocol: |
   <protocol>
-    <dataize at="Φ.l/.e1">
-      <morph at="Φ.l/.e1">
+    <dataize at="Φ.l🌵.e1">
+      <morph at="Φ.l🌵.e1">
         <morphed meta="𝑛·0·1">Φ.broken</morphed>
       </morph>
       <boxed meta="𝑛·0·2">Φ.broken.φ</boxed>
       <morph at="𝑛·0·2">
         <applied meta="𝑛·0·3" of="Φ.bytes"><datum attr="φ">6F-6F-70-73</datum></applied>
         <applied meta="𝑛·0·4" of="Φ.string"><meta attr="φ">𝑛·0·3</meta></applied>
-        <applied meta="𝑛·0·5" by="morph" at="𝑛·0·2" of="Φ.l/.throw"><meta attr="message">𝑛·0·4</meta></applied>
+        <applied meta="𝑛·0·5" by="morph" at="𝑛·0·2" of="Φ.l🌵.throw"><meta attr="message">𝑛·0·4</meta></applied>
         <morphed meta="𝑛·0·6">𝑛·0·5</morphed>
       </morph>
       <unanswered λ="L_throw" by="dataize">𝑛·0·5</unanswered>

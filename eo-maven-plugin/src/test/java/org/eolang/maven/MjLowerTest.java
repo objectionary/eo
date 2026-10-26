@@ -422,7 +422,7 @@ final class MjLowerTest {
     private static String rooted() {
         return String.join(
             "",
-            "<protocol><dataize at='Φ.l/.e1'><evaluate λ='L_number_times'>",
+            "<protocol><dataize at='Φ.l🌵.e1'><evaluate λ='L_number_times'>",
             "<bind meta='𝛿1·2'>40-00-00-00-00-00-00-00</bind>",
             "<bind meta='𝛿2·2'>40-08-00-00-00-00-00-00</bind>",
             "<minted symbol='𝜎9'>40-00-00-00-00-00-00-00 40-08-00-00-00-00-00-00</minted>",
