@@ -140,23 +140,23 @@ java: |
           final byte[] s1 = new Dataized(this.take("ρ").take("x")).take();
           final byte[] s3 = new Dataized(this.take("ρ").take("p")).take();
           final byte[] s4 = new Dataized(this.take("ρ").take("q")).take();
-          final boolean s5 = (double) new BytesOf(s1).asNumber() > Double.longBitsToDouble(0x0000000000000000L);
-          final boolean s6 = (double) new BytesOf(s3).asNumber() > Double.longBitsToDouble(0x0000000000000000L);
+          final boolean s5 = java.nio.ByteBuffer.wrap(s1).getDouble() > Double.longBitsToDouble(0x0000000000000000L);
+          final boolean s6 = java.nio.ByteBuffer.wrap(s3).getDouble() > Double.longBitsToDouble(0x0000000000000000L);
           if (s5) {
               if (s6) {
-                  final double s7 = (double) new BytesOf(s1).asNumber() + (double) new BytesOf(s3).asNumber();
+                  final double s7 = java.nio.ByteBuffer.wrap(s1).getDouble() + java.nio.ByteBuffer.wrap(s3).getDouble();
                   return new Data.ToPhi(s7);
               } else {
-                  final double s9 = (double) new BytesOf(s1).asNumber() + (double) new BytesOf(s4).asNumber();
+                  final double s9 = java.nio.ByteBuffer.wrap(s1).getDouble() + java.nio.ByteBuffer.wrap(s4).getDouble();
                   return new Data.ToPhi(s9);
               }
           } else {
               final byte[] s2 = new Dataized(this.take("ρ").take("y")).take();
               if (s6) {
-                  final double s8 = (double) new BytesOf(s2).asNumber() + (double) new BytesOf(s3).asNumber();
+                  final double s8 = java.nio.ByteBuffer.wrap(s2).getDouble() + java.nio.ByteBuffer.wrap(s3).getDouble();
                   return new Data.ToPhi(s8);
               } else {
-                  final double s10 = (double) new BytesOf(s2).asNumber() + (double) new BytesOf(s4).asNumber();
+                  final double s10 = java.nio.ByteBuffer.wrap(s2).getDouble() + java.nio.ByteBuffer.wrap(s4).getDouble();
                   return new Data.ToPhi(s10);
               }
           }

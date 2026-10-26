@@ -62,7 +62,7 @@ java: |
       @Override
       public Phi lambda() {
           final byte[] s200 = new Dataized(this.take("ρ").take("ρ")).take();
-          final double s752 = (double) new BytesOf(s200).asNumber() * Double.longBitsToDouble(0x7FF0000000000000L);
+          final double s752 = java.nio.ByteBuffer.wrap(s200).getDouble() * Double.longBitsToDouble(0x7FF0000000000000L);
           return new Data.ToPhi(s752);
       }
   }

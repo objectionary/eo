@@ -63,7 +63,7 @@ java: |
           final byte[] s2 = new Dataized(this.take("ρ").take("b")).take();
           final byte[] s3 = s1;
           final byte[] s4 = s2;
-          final byte[] s5 = new BytesOf(s3).shift(new Int("b", new Data.ToPhi((double) new BytesOf(s4).asNumber())).it()).take();
+          final byte[] s5 = new BytesOf(s3).shift(new Int("b", new Data.ToPhi(java.nio.ByteBuffer.wrap(s4).getDouble())).it()).take();
           return new Data.ToPhi(s5);
       }
   }

@@ -965,7 +965,7 @@
         <xsl:sequence select="concat('new Dataized(', $java, ').', map {'byte[]': 'take()', 'double': 'asNumber()', 'boolean': 'asBool()'}($to))"/>
       </xsl:when>
       <xsl:when test="$from = 'byte[]' and $to = 'double'">
-        <xsl:sequence select="concat('(double) new BytesOf(', $java, ').asNumber()')"/>
+        <xsl:sequence select="concat('java.nio.ByteBuffer.wrap(', $java, ').getDouble()')"/>
       </xsl:when>
       <xsl:when test="$from = 'double' and $to = 'byte[]'">
         <xsl:sequence select="concat('new BytesOf(', $java, ').take()')"/>

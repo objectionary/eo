@@ -56,7 +56,7 @@ java: |
       public Phi lambda() {
           final byte[] s1 = new Dataized(this.take("ρ").take("x")).take();
           final byte[] s2 = s1;
-          final double s3 = (double) new BytesOf(s2).asNumber() + (double) new BytesOf(s2).asNumber();
+          final double s3 = java.nio.ByteBuffer.wrap(s2).getDouble() + java.nio.ByteBuffer.wrap(s2).getDouble();
           return new Data.ToPhi(s3);
       }
   }

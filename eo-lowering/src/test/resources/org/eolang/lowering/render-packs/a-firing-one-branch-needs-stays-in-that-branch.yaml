@@ -101,14 +101,14 @@ java: |
       @Override
       public Phi lambda() {
           final byte[] s1 = new Dataized(this.take("ρ").take("t")).take();
-          final boolean s2 = (double) new BytesOf(s1).asNumber() > Double.longBitsToDouble(0x0000000000000000L);
-          final double s6 = (double) new BytesOf(s1).asNumber() + Double.longBitsToDouble(0x3FF0000000000000L);
+          final boolean s2 = java.nio.ByteBuffer.wrap(s1).getDouble() > Double.longBitsToDouble(0x0000000000000000L);
+          final double s6 = java.nio.ByteBuffer.wrap(s1).getDouble() + Double.longBitsToDouble(0x3FF0000000000000L);
           if (s2) {
-              final double s3 = (double) new BytesOf(s1).asNumber() + Double.longBitsToDouble(0x3FF0000000000000L);
+              final double s3 = java.nio.ByteBuffer.wrap(s1).getDouble() + Double.longBitsToDouble(0x3FF0000000000000L);
               final double s7 = s3 + s6;
               return new Data.ToPhi(s7);
           } else {
-              final double s4 = (double) new BytesOf(s1).asNumber() + Double.longBitsToDouble(0x4000000000000000L);
+              final double s4 = java.nio.ByteBuffer.wrap(s1).getDouble() + Double.longBitsToDouble(0x4000000000000000L);
               final double s8 = s4 + s6;
               return new Data.ToPhi(s8);
           }
