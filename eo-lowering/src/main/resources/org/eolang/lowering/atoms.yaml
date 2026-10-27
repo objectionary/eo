@@ -16,7 +16,10 @@
 # into a symbol, so that a side computed and a side written out compare
 # as one shape, and the "defer" lines turn a copy over a bare symbol,
 # which nobody can work out, into a symbol that stands for it, so that a
-# side ends in the symbol instead of getting stuck inside the copy. Two
+# side ends in the symbol instead of getting stuck inside the copy, and the
+# "cast" lines put a side that is a bare symbol at the end of the φ chain of
+# the other side, so that data meets data even when one side still wraps
+# it. Two
 # formations that do not join are answered by a formation of copies of
 # the fork, one per attribute, each holding the condition and the two
 # sides under the names "on🌵", "left🌵" and "right🌵" phino gives them;
@@ -106,8 +109,11 @@
   defer:
     𝑛13: 𝑛11
     𝑛14: 𝑛12
+  cast:
+    𝑛19: 𝑛13
+    𝑛20: 𝑛14
   join:
     on: 𝛿1
-    left: 𝑛13
-    right: 𝑛14
+    left: 𝑛19
+    right: 𝑛20
     otherwise: L_fork
