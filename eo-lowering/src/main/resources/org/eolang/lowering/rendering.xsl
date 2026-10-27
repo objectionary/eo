@@ -324,10 +324,15 @@
       <xsl:sequence select="$bytes"/>
     </xsl:if>
   </xsl:function>
+  <!-- The value of a byte written as two hexadecimal digits. -->
+  <xsl:function name="eo:octet" as="xs:integer">
+    <xsl:param name="octet" as="xs:string"/>
+    <xsl:sequence select="fold-left(string-to-codepoints(upper-case($octet)), 0, function($n, $c) { $n * 16 + string-length(substring-before('0123456789ABCDEF', codepoints-to-string($c))) })"/>
+  </xsl:function>
   <!-- The code points of bytes read as text in UTF-8, with -1 where they are no such text. -->
   <xsl:function name="eo:text" as="xs:integer*">
     <xsl:param name="bytes" as="xs:string"/>
-    <xsl:sequence select="eo:utf8(tokenize($bytes, '-')[. != ''] ! fold-left(string-to-codepoints(upper-case(.)), 0, function($n, $c) { $n * 16 + string-length(substring-before('0123456789ABCDEF', codepoints-to-string($c))) }))"/>
+    <xsl:sequence select="eo:utf8(tokenize($bytes, '-')[. != ''] ! eo:octet(.))"/>
   </xsl:function>
   <!--
   The code points of octets in UTF-8, ending with -1 where the octets stop
@@ -554,6 +559,15 @@
     <xsl:param name="symbol" as="xs:string"/>
     <xsl:sequence select="concat('s', substring($symbol, 2))"/>
   </xsl:function>
+  <!--
+  The local that holds a constant an operation names more than once, so that
+  the constant is written into the method once, however large it is.
+  -->
+  <xsl:function name="eo:held" as="xs:string">
+    <xsl:param name="local" as="xs:string"/>
+    <xsl:param name="index" as="xs:integer"/>
+    <xsl:sequence select="concat($local, '$', $index)"/>
+  </xsl:function>
   <!-- A token is a constant when it is bytes written out, or a known symbol. -->
   <xsl:function name="eo:constant" as="xs:boolean">
     <xsl:param name="token" as="xs:string"/>
@@ -698,6 +712,28 @@
     <xsl:param name="want" as="xs:string"/>
     <xsl:sequence select="if (eo:constant($token)) then eo:literal-of(eo:bytes($token), $want) else eo:cast(eo:local($token), eo:type($token), $want)"/>
   </xsl:function>
+  <!--
+  The longest data written as an array literal. Java compiles every element
+  of such an array to about seven bytes of bytecode, and a method can hold
+  no more than 64KB of it, so a longer one goes into string constants and is
+  turned back into bytes at runtime, the way the transpiler does it (#9344).
+  -->
+  <xsl:variable name="eo:inline" select="256"/>
+  <!--
+  How many bytes go into one string constant. A constant takes at most two
+  bytes of the class file per byte of data, and must fit into 65535 of them.
+  -->
+  <xsl:variable name="eo:chunk" select="1024"/>
+  <!--
+  One byte of data, written as a character of a Java string literal. Any
+  character the source cannot hold becomes an octal escape of three digits,
+  since Java reads a "\u" escape before it splits the source into lines.
+  -->
+  <xsl:function name="eo:java-char" as="xs:string">
+    <xsl:param name="octet" as="xs:string"/>
+    <xsl:variable name="code" select="eo:octet($octet)"/>
+    <xsl:sequence select="if ($code = (34, 92)) then concat('\', codepoints-to-string($code)) else if ($code ge 32 and $code le 126) then codepoints-to-string($code) else concat('\', $code idiv 64, $code idiv 8 mod 8, $code mod 8)"/>
+  </xsl:function>
   <!-- The Java literal of bytes, as a value of a type. -->
   <xsl:function name="eo:literal-of" as="xs:string">
     <xsl:param name="bytes" as="xs:string"/>
@@ -718,6 +754,9 @@
       </xsl:when>
       <xsl:when test="$want = 'byte[]' and empty($octets)">
         <xsl:sequence select="'new byte[0]'"/>
+      </xsl:when>
+      <xsl:when test="$want = 'byte[]' and count($octets) gt $eo:inline">
+        <xsl:sequence select="concat('String.join(&quot;&quot;, ', string-join((0 to (count($octets) - 1) idiv $eo:chunk) ! concat('&quot;', string-join(subsequence($octets, . * $eo:chunk + 1, $eo:chunk) ! eo:java-char(.), ''), '&quot;'), ', '), ').getBytes(java.nio.charset.StandardCharsets.ISO_8859_1)')"/>
       </xsl:when>
       <xsl:when test="$want = 'byte[]'">
         <xsl:sequence select="concat('new byte[] {', string-join($octets ! concat('(byte) 0x', upper-case(.)), ', '), '}')"/>
@@ -808,7 +847,8 @@
         <xsl:if test="count($operands) != count($wants)">
           <xsl:sequence select="eo:taint(concat('The symbol ', $symbol, ' of the entry ', $number, ' has ', count($operands), ' operands, while ', $op/@λ, ' takes ', count($wants)))"/>
         </xsl:if>
-        <xsl:sequence select="concat($indent, 'final ', $type, ' ', $local, ' = ', fold-left(1 to count($wants), string($op), function($java, $i) { replace($java, concat('⟨', $i, '⟩'), eo:value($operands[$i], $wants[$i]), 'q') }), ';&#10;')"/>
+        <xsl:variable name="held" as="xs:integer*" select="for $i in 1 to count($wants) return (if (eo:constant($operands[$i]) and count(tokenize(string($op), concat('⟨', $i, '⟩'))) gt 2) then $i else ())"/>
+        <xsl:sequence select="concat(string-join(for $i in $held return concat($indent, 'final ', $wants[$i], ' ', eo:held($local, $i), ' = ', eo:value($operands[$i], $wants[$i]), ';&#10;'), ''), $indent, 'final ', $type, ' ', $local, ' = ', fold-left(1 to count($wants), string($op), function($java, $i) { replace($java, concat('⟨', $i, '⟩'), if ($i = $held) then eo:held($local, $i) else eo:value($operands[$i], $wants[$i]), 'q') }), ';&#10;')"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
