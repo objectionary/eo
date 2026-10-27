@@ -54,9 +54,18 @@ java: |
 
       @Override
       public Phi lambda() {
-          final byte[] s1 = new Dataized(this.take("ρ").take("x")).take();
-          final byte[] s2 = s1;
-          final double s3 = java.nio.ByteBuffer.wrap(s2).getDouble() + java.nio.ByteBuffer.wrap(s2).getDouble();
-          return new Data.ToPhi(s3);
+          return new Data.ToPhi(this.𝜎3());
+      }
+
+      private byte[] 𝜎1() {
+          return new Dataized(this.take("ρ").take("x")).take();
+      }
+
+      private byte[] 𝜎2() {
+          return this.𝜎1();
+      }
+
+      private double 𝜎3() {
+          return java.nio.ByteBuffer.wrap(this.𝜎2()).getDouble() + java.nio.ByteBuffer.wrap(this.𝜎2()).getDouble();
       }
   }

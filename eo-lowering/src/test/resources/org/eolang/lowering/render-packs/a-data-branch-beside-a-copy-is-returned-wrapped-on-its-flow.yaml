@@ -95,14 +95,26 @@ java: |
 
       @Override
       public Phi lambda() {
-          final byte[] s53 = new Dataized(this.take("ρ").take("items").take("length")).take();
-          final boolean s133 = java.util.Arrays.equals(s53, new byte[] {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00});
-          if (s133) {
-              final double s134 = java.nio.ByteBuffer.wrap(s53).getDouble() + 1.0d;
-              return new Data.ToPhi(s134);
+          if (this.𝜎133()) {
+              return new Data.ToPhi(this.𝜎134());
           } else {
-              final Phi s135 = new PhApplication(this.take("ρ").take("with-delimiter"), new Bind("acc", this.take("ρ").take("items").take("head")), new Bind("tup", this.take("ρ").take("items").take("tail")));
-              return s135;
+              return this.𝜎135();
           }
+      }
+
+      private byte[] 𝜎53() {
+          return new Dataized(this.take("ρ").take("items").take("length")).take();
+      }
+
+      private boolean 𝜎133() {
+          return java.util.Arrays.equals(this.𝜎53(), new byte[] {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00});
+      }
+
+      private double 𝜎134() {
+          return java.nio.ByteBuffer.wrap(this.𝜎53()).getDouble() + 1.0d;
+      }
+
+      private Phi 𝜎135() {
+          return new PhApplication(this.take("ρ").take("with-delimiter"), new Bind("acc", this.take("ρ").take("items").take("head")), new Bind("tup", this.take("ρ").take("items").take("tail")));
       }
   }

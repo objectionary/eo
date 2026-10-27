@@ -59,8 +59,14 @@ java: |
 
       @Override
       public Phi lambda() {
-          final byte[] s751 = System.getProperty("os.name").getBytes(java.nio.charset.StandardCharsets.UTF_8);
-          final double s752 = s751.length;
-          return new Data.ToPhi(s752);
+          return new Data.ToPhi(this.𝜎752());
+      }
+
+      private byte[] 𝜎751() {
+          return System.getProperty("os.name").getBytes(java.nio.charset.StandardCharsets.UTF_8);
+      }
+
+      private double 𝜎752() {
+          return this.𝜎751().length;
       }
   }

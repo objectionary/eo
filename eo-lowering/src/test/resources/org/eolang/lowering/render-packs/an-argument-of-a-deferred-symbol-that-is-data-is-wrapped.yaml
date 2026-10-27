@@ -85,13 +85,22 @@ java: |
 
       @Override
       public Phi lambda() {
-          final byte[] s53 = new Dataized(this.take("ρ").take("items").take("length")).take();
-          final boolean s133 = java.util.Arrays.equals(s53, new byte[] {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00});
-          if (s133) {
+          if (this.𝜎133()) {
               return new Data.ToPhi(new byte[0]);
           } else {
-              final Phi s134 = new PhApplication(this.take("ρ").take("with-delimiter"), new Bind("acc", new Data.ToPhi(s133)), new Bind("tup", this.take("ρ").take("items").take("tail")));
-              return s134;
+              return this.𝜎134();
           }
+      }
+
+      private byte[] 𝜎53() {
+          return new Dataized(this.take("ρ").take("items").take("length")).take();
+      }
+
+      private boolean 𝜎133() {
+          return java.util.Arrays.equals(this.𝜎53(), new byte[] {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00});
+      }
+
+      private Phi 𝜎134() {
+          return new PhApplication(this.take("ρ").take("with-delimiter"), new Bind("acc", new Data.ToPhi(this.𝜎133())), new Bind("tup", this.take("ρ").take("items").take("tail")));
       }
   }

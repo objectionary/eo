@@ -93,14 +93,22 @@ java: |
 
       @Override
       public Phi lambda() {
-          final byte[] s3 = new Dataized(this.take("ρ").take("ρ")).take();
-          final boolean s133 = java.util.Arrays.equals(s3, new byte[] {(byte) 0xFF});
-          final boolean s136;
-          if (s133) {
-              s136 = true;
+          return new Data.ToPhi(this.𝜎136());
+      }
+
+      private byte[] 𝜎3() {
+          return new Dataized(this.take("ρ").take("ρ")).take();
+      }
+
+      private boolean 𝜎133() {
+          return java.util.Arrays.equals(this.𝜎3(), new byte[] {(byte) 0xFF});
+      }
+
+      private boolean 𝜎136() {
+          if (this.𝜎133()) {
+              return true;
           } else {
-              s136 = false;
+              return false;
           }
-          return new Data.ToPhi(s136);
       }
   }

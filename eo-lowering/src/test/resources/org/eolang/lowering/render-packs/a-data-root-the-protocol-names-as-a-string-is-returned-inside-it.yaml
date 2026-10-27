@@ -59,8 +59,14 @@ java: |
 
       @Override
       public Phi lambda() {
-          final byte[] s1 = new Dataized(this.take("ρ").take("text")).take();
-          final byte[] s2 = s1;
-          return new PhApplication(Phi.Φ.take("string"), "φ", new Data.ToPhi(s2));
+          return new PhApplication(Phi.Φ.take("string"), "φ", new Data.ToPhi(this.𝜎2()));
+      }
+
+      private byte[] 𝜎1() {
+          return new Dataized(this.take("ρ").take("text")).take();
+      }
+
+      private byte[] 𝜎2() {
+          return this.𝜎1();
       }
   }

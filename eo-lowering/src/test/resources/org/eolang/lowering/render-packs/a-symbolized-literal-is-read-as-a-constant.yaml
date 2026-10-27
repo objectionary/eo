@@ -80,13 +80,22 @@ java: |
 
       @Override
       public Phi lambda() {
-          final byte[] s1 = new Dataized(this.take("ρ").take("x")).take();
-          final boolean s2 = java.nio.ByteBuffer.wrap(s1).getDouble() > Double.longBitsToDouble(0x0000000000000000L);
-          if (s2) {
-              final double s3 = java.nio.ByteBuffer.wrap(s1).getDouble() + Double.longBitsToDouble(0x3FF0000000000000L);
-              return new Data.ToPhi(s3);
+          if (this.𝜎2()) {
+              return new Data.ToPhi(this.𝜎3());
           } else {
               return new Data.ToPhi(2.0d);
           }
+      }
+
+      private byte[] 𝜎1() {
+          return new Dataized(this.take("ρ").take("x")).take();
+      }
+
+      private boolean 𝜎2() {
+          return java.nio.ByteBuffer.wrap(this.𝜎1()).getDouble() > Double.longBitsToDouble(0x0000000000000000L);
+      }
+
+      private double 𝜎3() {
+          return java.nio.ByteBuffer.wrap(this.𝜎1()).getDouble() + Double.longBitsToDouble(0x3FF0000000000000L);
       }
   }

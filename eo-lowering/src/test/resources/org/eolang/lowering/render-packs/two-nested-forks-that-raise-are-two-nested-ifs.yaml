@@ -143,21 +143,42 @@ java: |
 
       @Override
       public Phi lambda() {
-          final byte[] s7 = new Dataized(this.take("ρ").take("ρ")).take();
-          final byte[] s8 = new Dataized(this.take("ρ").take("b")).take();
-          final double s135 = s7.length;
-          final double s136 = s8.length;
-          final boolean s137 = java.util.Arrays.equals(java.nio.ByteBuffer.allocate(8).putDouble(s135).array(), java.nio.ByteBuffer.allocate(8).putDouble(s136).array());
-          if (s137) {
-              final boolean s138 = java.util.Arrays.equals(java.nio.ByteBuffer.allocate(8).putDouble(s135).array(), new byte[] {(byte) 0x40, (byte) 0x20, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00});
-              if (s138) {
-                  final byte[] s139 = new BytesOf(s7).or(new BytesOf(s8)).take();
-                  return new Data.ToPhi(s139);
+          if (this.𝜎137()) {
+              if (this.𝜎138()) {
+                  return new Data.ToPhi(this.𝜎139());
               } else {
                   throw new ExFailure("%s", "bytes.xor requires eight bytes");
               }
           } else {
               throw new ExFailure("%s", "bytes.xor requires operands of the same length");
           }
+      }
+
+      private byte[] 𝜎7() {
+          return new Dataized(this.take("ρ").take("ρ")).take();
+      }
+
+      private byte[] 𝜎8() {
+          return new Dataized(this.take("ρ").take("b")).take();
+      }
+
+      private double 𝜎135() {
+          return this.𝜎7().length;
+      }
+
+      private double 𝜎136() {
+          return this.𝜎8().length;
+      }
+
+      private boolean 𝜎137() {
+          return java.util.Arrays.equals(java.nio.ByteBuffer.allocate(8).putDouble(this.𝜎135()).array(), java.nio.ByteBuffer.allocate(8).putDouble(this.𝜎136()).array());
+      }
+
+      private boolean 𝜎138() {
+          return java.util.Arrays.equals(java.nio.ByteBuffer.allocate(8).putDouble(this.𝜎135()).array(), new byte[] {(byte) 0x40, (byte) 0x20, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00});
+      }
+
+      private byte[] 𝜎139() {
+          return new BytesOf(this.𝜎7()).or(new BytesOf(this.𝜎8())).take();
       }
   }

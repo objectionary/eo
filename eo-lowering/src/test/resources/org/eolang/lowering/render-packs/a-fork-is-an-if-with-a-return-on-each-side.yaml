@@ -80,12 +80,18 @@ java: |
 
       @Override
       public Phi lambda() {
-          final byte[] s10 = new Dataized(this.take("ρ").take("ρ")).take();
-          final boolean s752 = java.util.Arrays.equals(s10, new byte[] {(byte) 0xFF});
-          if (s752) {
+          if (this.𝜎752()) {
               return new Data.ToPhi(true);
           } else {
               return new Data.ToPhi(false);
           }
+      }
+
+      private byte[] 𝜎10() {
+          return new Dataized(this.take("ρ").take("ρ")).take();
+      }
+
+      private boolean 𝜎752() {
+          return java.util.Arrays.equals(this.𝜎10(), new byte[] {(byte) 0xFF});
       }
   }

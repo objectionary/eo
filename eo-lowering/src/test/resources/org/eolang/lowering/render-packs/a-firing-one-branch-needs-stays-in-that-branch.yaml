@@ -100,17 +100,38 @@ java: |
 
       @Override
       public Phi lambda() {
-          final byte[] s1 = new Dataized(this.take("ρ").take("t")).take();
-          final boolean s2 = java.nio.ByteBuffer.wrap(s1).getDouble() > Double.longBitsToDouble(0x0000000000000000L);
-          final double s6 = java.nio.ByteBuffer.wrap(s1).getDouble() + Double.longBitsToDouble(0x3FF0000000000000L);
-          if (s2) {
-              final double s3 = java.nio.ByteBuffer.wrap(s1).getDouble() + Double.longBitsToDouble(0x3FF0000000000000L);
-              final double s7 = s3 + s6;
-              return new Data.ToPhi(s7);
+          if (this.𝜎2()) {
+              return new Data.ToPhi(this.𝜎7());
           } else {
-              final double s4 = java.nio.ByteBuffer.wrap(s1).getDouble() + Double.longBitsToDouble(0x4000000000000000L);
-              final double s8 = s4 + s6;
-              return new Data.ToPhi(s8);
+              return new Data.ToPhi(this.𝜎8());
           }
+      }
+
+      private byte[] 𝜎1() {
+          return new Dataized(this.take("ρ").take("t")).take();
+      }
+
+      private boolean 𝜎2() {
+          return java.nio.ByteBuffer.wrap(this.𝜎1()).getDouble() > Double.longBitsToDouble(0x0000000000000000L);
+      }
+
+      private double 𝜎3() {
+          return java.nio.ByteBuffer.wrap(this.𝜎1()).getDouble() + Double.longBitsToDouble(0x3FF0000000000000L);
+      }
+
+      private double 𝜎4() {
+          return java.nio.ByteBuffer.wrap(this.𝜎1()).getDouble() + Double.longBitsToDouble(0x4000000000000000L);
+      }
+
+      private double 𝜎6() {
+          return java.nio.ByteBuffer.wrap(this.𝜎1()).getDouble() + Double.longBitsToDouble(0x3FF0000000000000L);
+      }
+
+      private double 𝜎7() {
+          return this.𝜎3() + this.𝜎6();
+      }
+
+      private double 𝜎8() {
+          return this.𝜎4() + this.𝜎6();
       }
   }

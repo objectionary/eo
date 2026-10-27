@@ -70,8 +70,14 @@ java: |
 
       @Override
       public Phi lambda() {
-          final byte[] s1 = new Dataized(this.take("ρ").take("k")).take();
-          final double s2 = java.nio.ByteBuffer.wrap(s1).getDouble() * 12.0d;
-          return new Data.ToPhi(s2);
+          return new Data.ToPhi(this.𝜎2());
+      }
+
+      private byte[] 𝜎1() {
+          return new Dataized(this.take("ρ").take("k")).take();
+      }
+
+      private double 𝜎2() {
+          return java.nio.ByteBuffer.wrap(this.𝜎1()).getDouble() * 12.0d;
       }
   }
