@@ -685,7 +685,8 @@ final class MorphingTest {
             MorphingTest.text(home.resolve("atoms.yaml")),
             Matchers.stringContainsInOrder(
                 "- λ: L_fork", "dataize:", "𝛿1: $.on🌵", "morph:", "𝑛1: $.left🌵", "𝑛2: $.right🌵",
-                "undress:", "𝑛15: 𝑛9", "𝑛16: 𝑛10", "stay:", "evaluate:", "rewrite:", "symbolize:", "defer:",
+                "undress:", "𝑛15: 𝑛9", "𝑛16: 𝑛10", "stay:", "evaluate:", "𝑛17: 𝑛15", "𝑛18: 𝑛16", "rewrite:",
+                "symbolize:", "𝑛11: 𝑛17", "𝑛12: 𝑛18", "defer:",
                 "join:", "on: 𝛿1", "left: 𝑛13", "right: 𝑛14", "otherwise: L_fork"
             )
         );
