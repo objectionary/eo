@@ -168,7 +168,7 @@ final class Xmirs {
      */
     Collection<Site> reads() throws IOException {
         return this.sites(
-            "//o[starts-with(@base, 'ξ.') and o[starts-with(@as, 'α')]]"
+            "//o[starts-with(@base, 'ξ.') and o[@as]]"
         );
     }
 
@@ -180,12 +180,19 @@ final class Xmirs {
      * into. That is the only place in the text where a void is answered, so
      * it is where a name taken from one stops being a question.</p>
      *
+     * <p>Every child that carries an {@code @as} is an argument, whether
+     * the name is the {@code α} of a place or the void itself, as in
+     * {@code pick oak:x}. The parser forbids mixing the two, so an
+     * application written with names has no {@code α} child at all and used
+     * to be left out of here, and with it out of every void it fills
+     * (#9360).</p>
+     *
      * @return The applications, file by file, in the order they appear in
      *  the code
      * @throws IOException If a file cannot be read
      */
     Collection<XML> applications() throws IOException {
-        return this.matching("//o[@loc][o[starts-with(@as, 'α')][@loc]]");
+        return this.matching("//o[@loc][o[@as][@loc]]");
     }
 
     /**
@@ -195,14 +202,18 @@ final class Xmirs {
      * one: {@code ξ.t} names something bound nearby, {@code Φ.number}
      * names what the whole program knows. Both carry exactly one name,
      * since a longer path was split into dispatches before any clue looked
-     * at the XMIR.</p>
+     * at the XMIR. A bare {@code ξ}, written {@code $}, names no attribute
+     * at all but still names an object, the one being formed around it, and
+     * leaving it out of here lost every read through it (#9361).</p>
      *
      * @return The references, file by file, in the order they appear in
      *  the code
      * @throws IOException If a file cannot be read
      */
     Collection<XML> references() throws IOException {
-        return this.matching("//o[starts-with(@base, 'ξ.') or starts-with(@base, 'Φ.')]");
+        return this.matching(
+            "//o[@base = 'ξ' or starts-with(@base, 'ξ.') or starts-with(@base, 'Φ.')]"
+        );
     }
 
     /**

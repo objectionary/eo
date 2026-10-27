@@ -214,7 +214,7 @@ public class PhDefault implements Phi, Cloneable {
             throw new ExUnset(
                 String.format(
                     "Can't #put(\"%s\", %s) to %s, because the attribute is absent",
-                    name, object, this
+                    name, object.forma(), this.forma()
                 )
             );
         }
@@ -254,8 +254,8 @@ public class PhDefault implements Phi, Cloneable {
                         "%s𝔸('%s' for %s) ➜ %s",
                         PhDefault.padding(),
                         name,
-                        this,
-                        resolved
+                        this.forma(),
+                        resolved.forma()
                     )
                 );
             }
@@ -422,11 +422,15 @@ public class PhDefault implements Phi, Cloneable {
             throw new ExReadOnly(
                 String.format(
                     "%s has just %d void attribute(s), can't put the %d-th one",
-                    this.forma(), pos, pos
+                    this.forma(), this.voids(), pos
                 )
             );
         }
         return name;
+    }
+
+    private long voids() {
+        return this.loaded().values().stream().filter(Attribute::voided).count();
     }
 
     private String attr(final int pos) {
@@ -446,7 +450,7 @@ public class PhDefault implements Phi, Cloneable {
         if (pos >= this.order.size()) {
             throw new ExFailure(
                 "%s has just %d attribute(s), can't read the %d-th one",
-                this,
+                this.forma(),
                 this.order.size(),
                 pos
             );

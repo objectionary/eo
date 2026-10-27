@@ -6,8 +6,8 @@ package org.eolang.lowering;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import io.github.sekator778.seqdir.Seqdir;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -34,9 +34,10 @@ import org.cactoos.text.UncheckedText;
  * to, the objects those refer to, and so on. One top object refers to
  * another by its full locator, so this class follows such references from
  * the entry through the copies until nothing new is found. The hash is made
- * of the entry, the objects that wrap it, the hash of every copy reached,
- * and every reference no copy holds, since a copy that holds it later must
- * change the hash too. {@link Morphing} keeps every protocol in the cache
+ * of the entry, the objects that wrap it, the {@code throw} that every
+ * {@code T} of the copies became, the hash of every copy reached, and every
+ * reference no copy holds, since a copy that holds it later must change the
+ * hash too. {@link Morphing} keeps every protocol in the cache
  * under this hash.</p>
  *
  * @since 0.64.0
@@ -72,7 +73,7 @@ final class Uses {
                     () -> {
                         final Map<String, Map.Entry<String, Collection<String>>> all =
                             new HashMap<>(0);
-                        if (Files.exists(home.resolve("1-planting"))) {
+                        if (new Seqdir(home, 1).dirs().find("planting").isPresent()) {
                             for (final Path copy : new Copies(home)) {
                                 final XML xmir = new XMLDocument(copy);
                                 all.put(
@@ -110,7 +111,10 @@ final class Uses {
         this.lock.lock();
         try {
             for (final XML node : this.entries.value().nodes(
-                String.format("/object/o/o[@name='e%d' or @name='mark' or @name='root']", number)
+                String.format(
+                    "/object/o/o[@name='e%d' or @name='mark' or @name='root' or @name='throw']",
+                    number
+                )
             )) {
                 parts.add(node.toString());
                 todo.addAll(node.xpath("descendant-or-self::o/@base[starts-with(., 'Φ.')]"));

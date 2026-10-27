@@ -9,6 +9,8 @@ import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.Set;
 import org.cactoos.io.ResourceOf;
 import org.eolang.cache.Saved;
 import org.hamcrest.MatcherAssert;
@@ -69,6 +71,27 @@ final class MjRegisterTest {
                 "sourcesDir should not be set and the %s should fail, but didn't",
                 MjRegister.class
             )
+        );
+    }
+
+    @Test
+    void numbersEveryStageOfOneBuildDifferently(@Mktmp final Path temp) throws IOException {
+        new Saved(
+            new ResourceOf("org/eolang/maven/file-name/abc-def.eo"),
+            temp.resolve("src/eo/org/eolang/maven/abc-def.eo")
+        ).value();
+        final FakeMaven maven = new FakeMaven(temp)
+            .with("sourcesDir", temp.resolve("src/eo").toFile());
+        maven.execute(new PpRegister());
+        final Set<String> numbers = new HashSet<>(3);
+        for (final String stage : new String[]{"raw", "parse", "resolve"}) {
+            final String dir = maven.dirName(stage);
+            numbers.add(dir.substring(0, dir.indexOf('-')));
+        }
+        MatcherAssert.assertThat(
+            "two stages of one build cannot be given the same number, but they were",
+            numbers,
+            Matchers.hasSize(3)
         );
     }
 

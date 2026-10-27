@@ -8,6 +8,7 @@ import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -78,7 +79,7 @@ public final class MjFormat extends MjPenalties {
             final Collection<TjForeign> sources = tojos.withSources();
             final Raws raws = new Raws(
                 this.caching(Parsing.CACHE).with("raws"),
-                new Subdir(this.target, "raw").path()
+                new Seqdir(this.target.toPath(), 2).dirs().once("raw")
             );
             this.report(
                 sources.size(),

@@ -30,6 +30,23 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class PruningTest {
 
     @Test
+    void prunesIntoThePlantingOfAnEarlierBuild(@Mktmp final Path temp) throws IOException {
+        Files.createDirectories(temp.resolve("3-planting"));
+        new Pruning(
+            Collections.singletonList(
+                PruningTest.parsed(
+                    temp.resolve("calm.xmir"), String.format("[] > calm%n  42 > @%n")
+                )
+            )
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "the copy must land in the planting of an earlier build, but it didnt",
+            temp.resolve("3-planting/calm.xmir").toFile(),
+            FileMatchers.anExistingFile()
+        );
+    }
+
+    @Test
     void cutsACheckOutOfAnObject(@Mktmp final Path temp) throws IOException {
         new Pruning(
             Collections.singletonList(
@@ -123,6 +140,52 @@ final class PruningTest {
             new XMLDocument(temp.resolve("1-planting/pair.xmir"))
                 .nodes("/object/o[@name='pair'][o[@name='φ']][o[@name='gap']][count(o) = 4]"),
             Matchers.not(Matchers.empty())
+        );
+    }
+
+    @Test
+    void turnsATerminatorIntoACopyOfTheThrow(@Mktmp final Path temp) throws IOException {
+        new Pruning(
+            Collections.singletonList(
+                PruningTest.parsed(
+                    temp.resolve("broken.xmir"),
+                    String.format("[x] > broken%n  T \"no way\" > @%n")
+                )
+            )
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "the terminator must become a copy of the throw with its message, but it doesnt",
+            new XMLDocument(temp.resolve("1-planting/broken.xmir"))
+                .nodes("//o[@base='Φ.l/.throw']/o[@as='message' and @base='Φ.string']"),
+            Matchers.hasSize(1)
+        );
+    }
+
+    @Test
+    void leavesNoTerminatorInTheCopy(@Mktmp final Path temp) throws IOException {
+        new Pruning(
+            Collections.singletonList(
+                PruningTest.parsed(
+                    temp.resolve("guard.xmir"),
+                    String.format(
+                        String.join(
+                            "%n",
+                            "[a] > guard",
+                            "  if. > @",
+                            "    a.gt 0",
+                            "    a",
+                            "    T \"negative\"",
+                            "  T > nothing",
+                            ""
+                        )
+                    )
+                )
+            )
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "the copy must hold no terminator, but it does",
+            new XMLDocument(temp.resolve("1-planting/guard.xmir")).nodes("//o[@base='⊥']"),
+            Matchers.empty()
         );
     }
 

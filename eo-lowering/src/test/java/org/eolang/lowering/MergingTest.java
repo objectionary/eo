@@ -103,7 +103,7 @@ final class MergingTest {
             "the failure must name the entries that are missing, but it doesnt",
             Assertions.assertThrows(
                 IllegalStateException.class,
-                () -> new Merging(new Phino("absent")).exec(temp),
+                () -> new Merging(new Phino("absent", "1.3.8")).exec(temp),
                 "a home without entries must fail the merging"
             ).getMessage(),
             Matchers.containsString(temp.resolve("entries.xmir").toString())
@@ -112,7 +112,7 @@ final class MergingTest {
 
     @Test
     void mergesAWorldThePinnedPhinoReads(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino");
+        final Phino phino = new Phino("phino", "0.0.156");
         Assumptions.assumeTrue(
             MergingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be merged here"
@@ -123,7 +123,16 @@ final class MergingTest {
                 .toString().getBytes(StandardCharsets.UTF_8)
         );
         final Path tables = Files.createDirectories(temp.resolve("tables"));
-        Files.write(tables.resolve("provides.xml"), "<provides/>".getBytes(StandardCharsets.UTF_8));
+        Files.write(
+            tables.resolve("provides.xml"),
+            String.join(
+                "",
+                "<provides><type id='Φ.gap'>",
+                "<attr name='a' void='true' holds='Φ.number'/>",
+                "<attr name='b' void='true' holds='Φ.number'/>",
+                "</type></provides>"
+            ).getBytes(StandardCharsets.UTF_8)
+        );
         Files.write(
             tables.resolve("links.xml"),
             "<links><type id='Φ.gap.φ'><ref loc='Φ.number'/></type></links>"
@@ -137,7 +146,7 @@ final class MergingTest {
             new String(
                 Files.readAllBytes(temp.resolve("world.phi")), StandardCharsets.UTF_8
             ),
-            Matchers.stringContainsInOrder("gap", "l🌵", "L_entry")
+            Matchers.stringContainsInOrder("gap", "l/", "L_entry")
         );
     }
 
@@ -170,6 +179,6 @@ final class MergingTest {
             temp.resolve("phino"), new ListOf<>("#!/bin/sh", body)
         );
         Files.setPosixFilePermissions(binary, PosixFilePermissions.fromString("rwxr-xr-x"));
-        return new Phino(binary.toString());
+        return new Phino(binary.toString(), "2.6.4");
     }
 }

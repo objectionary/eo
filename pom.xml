@@ -218,7 +218,7 @@
       <dependency>
         <groupId>net.sf.saxon</groupId>
         <artifactId>Saxon-HE</artifactId>
-        <version>13.0</version>
+        <version>13.1</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
@@ -468,6 +468,7 @@
       <activation>
         <property>
           <name>skipTests</name>
+          <value>true</value>
         </property>
       </activation>
       <properties>
@@ -480,6 +481,7 @@
       <activation>
         <property>
           <name>skipITs</name>
+          <value>true</value>
         </property>
       </activation>
       <properties>
@@ -491,6 +493,7 @@
       <activation>
         <property>
           <name>skipUTs</name>
+          <value>true</value>
         </property>
       </activation>
       <properties>
@@ -577,7 +580,7 @@
               <dependency>
                 <groupId>net.sf.saxon</groupId>
                 <artifactId>Saxon-HE</artifactId>
-                <version>13.0</version>
+                <version>13.1</version>
               </dependency>
             </dependencies>
           </plugin>

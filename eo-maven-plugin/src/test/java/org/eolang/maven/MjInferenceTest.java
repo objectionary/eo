@@ -9,8 +9,11 @@ import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -42,6 +45,45 @@ final class MjInferenceTest {
                     .resolve("provides.xml")
             ),
             XhtmlMatchers.hasXPath("/provides/type[@id='Φ.app.t']/attr[@name='next']")
+        );
+    }
+
+    @Test
+    void readsOnlyTheXmirOfARegisteredSource(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(System.lineSeparator(), "[] > app", "")
+        );
+        maven.execute(MjParse.class);
+        Files.writeString(
+            maven.targetPath().resolve(maven.dirName("parse")).resolve("bee.xmir"),
+            new EoSyntax(
+                String.join(System.lineSeparator(), "[] > bee", "")
+            ).parsed().toString()
+        );
+        maven.execute(MjInference.class);
+        MatcherAssert.assertThat(
+            "an XMIR that no tojo names must stay out of the tables, but it didnt",
+            new XMLDocument(
+                maven.targetPath()
+                    .resolve(maven.dirName("inference"))
+                    .resolve("provides.xml")
+            ).nodes("/provides/type[@id='Φ.bee']"),
+            Matchers.empty()
+        );
+    }
+
+    @Test
+    void writesTablesForModuleWithoutSources(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.execute(MjParse.class).execute(MjInference.class);
+        MatcherAssert.assertThat(
+            "the tables must be written for a module with no sources, but they werent",
+            new XMLDocument(
+                maven.targetPath()
+                    .resolve(maven.dirName("inference"))
+                    .resolve("provides.xml")
+            ),
+            XhtmlMatchers.hasXPath("/provides[not(*)]")
         );
     }
 

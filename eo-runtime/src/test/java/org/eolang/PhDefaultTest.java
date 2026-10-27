@@ -574,6 +574,36 @@ final class PhDefaultTest {
     }
 
     @Test
+    void namesTheObjectWhenTheAttributePositionIsTooBig() {
+        MatcherAssert.assertThat(
+            "the message must name the object by its forma, while it named a Java class",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Data.ToPhi(5.0).take("plus").put(1, new Data.ToPhi(1.0)),
+                "putting into a position past the last attribute must fail"
+            ).getMessage(),
+            Matchers.containsString(
+                "Φ.number.plus has just 1 attribute(s), can't read the 1-th one"
+            )
+        );
+    }
+
+    @Test
+    void namesBothObjectsWhenTheAttributeIsAbsent() {
+        MatcherAssert.assertThat(
+            "the message must name both objects by their forma, while it named Java classes",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Data.ToPhi(5.0).take("plus").put("zz", new Data.ToPhi(1.0)),
+                "putting into an absent attribute must fail"
+            ).getMessage(),
+            Matchers.containsString(
+                "Can't #put(\"zz\", Φ.number) to Φ.number.plus, because the attribute is absent"
+            )
+        );
+    }
+
+    @Test
     void failsCorrectlyWhenTooManyAttributesPut() {
         MatcherAssert.assertThat(
             "the message explains what's going on",
@@ -584,6 +614,29 @@ final class PhDefaultTest {
             ).getMessage(),
             Matchers.equalTo(
                 "Φ.PhCached has just 1 void attribute(s), can't put the 1-th one"
+            )
+        );
+    }
+
+    @Test
+    void countsVoidAttributesWhenRefusingToPut() {
+        final Phi phi = new PhDefault(
+            new Attrs(
+                new Attr("alpha", new AtVoid("alpha")),
+                new Attr("beta", new AtVoid("beta"))
+            )
+        );
+        phi.put(0, new Data.ToPhi(1L));
+        phi.put(1, new Data.ToPhi(2L));
+        MatcherAssert.assertThat(
+            "the message must count the void attributes of the object, but it didnt",
+            Assertions.assertThrows(
+                ExReadOnly.class,
+                () -> phi.put(0, new Data.ToPhi(3L)),
+                "putting into an object with no vacant void must fail"
+            ).getMessage(),
+            Matchers.equalTo(
+                "[] has just 2 void attribute(s), can't put the 0-th one"
             )
         );
     }

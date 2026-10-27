@@ -1,8 +1,8 @@
 # Returns the string padded on the left with zeros until it counts `width`
-# characters, keeping a leading minus sign in front of them, so that `-42`
-# padded to five characters becomes `-0042` and not `00-42`. Characters are
-# counted, and not bytes. A string of `width` characters or longer is
-# returned unchanged.
+# characters, keeping a leading sign in front of them, so that `-42`
+# padded to five characters becomes `-0042` and not `00-42`, and `+42`
+# becomes `+0042` and not `00+42`. Characters are counted, and not bytes.
+# A string of `width` characters or longer is returned unchanged.
 # If `width` is not a finite non-negative integer (negative, fractional, nan
 # or infinite), the `cant-pad` fallback is returned, or the terminator
 # when unbound.
@@ -30,10 +30,13 @@
       and.
         0.lt
           text.length >> len!
-        "-".eq
-          text.slice 0 1
+        or.
+          "-".eq sign
+          "+".eq sign
       string
-        2D-.concat
+        concat.
+          as-bytes.
+            text.slice 0 1 >> sign
           as-bytes.
             padded-left.
               text.slice 1 ((number len).minus 1).as-number
@@ -68,6 +71,10 @@
   eq. ++> can-keep-a-minus-sign-in-front-of-the-zeros
     "-0042"
     "-42".padded-zeros 5
+
+  eq. ++> can-keep-a-plus-sign-in-front-of-the-zeros
+    "+0042"
+    "+42".padded-zeros 5
 
   eq. ++> can-pad-a-positive-number-with-leading-zeros
     "00042"
