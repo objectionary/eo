@@ -185,7 +185,7 @@ final class PhinoTest {
             PhinoTest.binary(
                 temp,
                 "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
-                "printf '𝕄(Φ.l🌵.e4)\\n  timeout(3)  # 𝕄(Φ.a🌵7)\\nmsec(3000)\\n' > \"$p\"; exit 1"
+                "printf '𝕄(Φ.l🌵.e4)\\n  timeout 3  # 𝕄(Φ.a🌵7)\\nmsec 3000\\n' > \"$p\"; exit 1"
             ),
             "3.3.16"
         );

@@ -297,7 +297,7 @@ final class MorphingTest {
                     " ",
                     "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
                     "case $p in *.xml) echo '<protocol><timeout limit=\"1\"/></protocol>' > \"$p\";;",
-                    "*) echo '  timeout(1)' > \"$p\";; esac; exit 1"
+                    "*) echo '  timeout 1' > \"$p\";; esac; exit 1"
                 )
             ),
             new GlobalCache.GcFresh(),

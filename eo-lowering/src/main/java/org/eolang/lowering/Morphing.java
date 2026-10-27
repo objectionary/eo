@@ -106,7 +106,7 @@ import org.eolang.cache.GlobalCache;
  * the build reads them. The cache keeps them the same way as the
  * protocols, so a later build with the same four things does not run
  * phino for them either. The text of a run that was stopped stays on the
- * disk for study, with a {@code timeout(…)} line where the time ran out.
+ * disk for study, with a {@code timeout …} line where the time ran out.
  * The texts of an earlier build are deleted before the runs, even when
  * this build does not ask for them, so that no text outlives its
  * protocol.</p>

@@ -141,7 +141,7 @@ final class Phino {
      * nothing else. One entry that never ends must not stop the whole build,
      * so phino is told how many seconds it may work, and it stops by itself
      * when they are over. Then it closes the protocol with a {@code timeout}
-     * element, or with a {@code timeout(…)} line when the protocol is
+     * element, or with a {@code timeout …} line when the protocol is
      * indented text, and fails. This class never kills phino, because a
      * killed phino leaves a protocol cut in the middle, which nobody can
      * read.</p>
@@ -195,7 +195,7 @@ final class Phino {
             }
             try (Stream<String> lines = Files.lines(protocol)) {
                 if (lines.noneMatch(
-                    line -> line.contains("<timeout ") || line.trim().startsWith("timeout(")
+                    line -> line.contains("<timeout ") || line.trim().startsWith("timeout ")
                 )) {
                     throw ex;
                 }
