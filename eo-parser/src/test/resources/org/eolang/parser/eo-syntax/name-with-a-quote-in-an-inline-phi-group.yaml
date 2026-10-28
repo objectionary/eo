@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 # A name holding a quote on the left of an inline-phi suffix inside a
 # parenthesised group. The scans that look for the "> [" of such a group read
 # the quote as the start of a string literal and walked past the suffix, so
