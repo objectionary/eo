@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A formation whose body the tables say is anything but a number, a
+# string, a bool or bytes gets an entry but no row: a row answers a fresh
+# symbol wrapped as data, and the body of this one gives back an object
+# with attributes of its own. The copy keeps its `φ` and gets no λ, and
+# the entry applies the formation as it is.
+eo:
+  flipped.eo: |
+    [x] > flipped
+      x.not > @
+provides: |
+  <provides>
+    <type id="Φ.flipped">
+      <attr name="x" type="Φ.flipped.x" void="true" holds="Φ.bool"/>
+      <attr name="φ" type="Φ.flipped.φ"/>
+    </type>
+  </provides>
+links: |
+  <links>
+    <type id="Φ.flipped.φ">
+      <ref loc="Φ.bool.not"/>
+    </type>
+  </links>
+xmir:
+  - "//o[@name='e1' and @base='Φ.flipped'][not(o[@name='φ'])]"
+copies:
+  - "//o[@loc='Φ.flipped'][not(o[@name='λ'])]/o[@name='φ']"
+entries:
+  - "1\tΦ.flipped"

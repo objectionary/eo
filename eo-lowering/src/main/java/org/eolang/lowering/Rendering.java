@@ -62,7 +62,11 @@ import org.cactoos.text.TextOf;
  * only by the stylesheet {@code rendering.xsl}, one protocol at a time.
  * This class only finds what the stylesheet needs to know about the
  * entry: its number, its locator, the top object it is inside, and the
- * package of that object.</p>
+ * package of that object. The stylesheet also reads {@code rows.tsv},
+ * which {@link Planting} writes: a symbol that the λ of a row made is
+ * turned into a call of the object the row is about, with its inputs
+ * wrapped back into their types, and that call dataizes the object,
+ * whether it became an atom or stayed in EO.</p>
  *
  * <p>An entry that phino did not run has no protocol, so it is skipped.
  * When the stylesheet finds that an entry is a taint, this class only
@@ -192,6 +196,7 @@ final class Rendering implements Proc<Path> {
             "/org/eolang/lowering/rendering.xsl"
         ).with(new Hrefs())
             .with("voids", home.resolve("voids.tsv").toUri().toString())
+            .with("rows", home.resolve("rows.tsv").toUri().toString())
             .with("inference", this.tables.toUri().toString());
         this.clean();
         final Collection<String> rendered = new ArrayList<>(0);
