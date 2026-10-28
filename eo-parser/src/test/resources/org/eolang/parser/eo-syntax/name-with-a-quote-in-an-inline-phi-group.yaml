@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A name holding a quote on the left of an inline-phi suffix inside a
+# parenthesised group. The scans that look for the "> [" of such a group read
+# the quote as the start of a string literal and walked past the suffix, so
+# the group was taken for a plain application (#9427).
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@base='Φ.f' and @name='x']/o[o[@base='∅' and @name='n'] and o[@name='φ' and @base='Φ.a"b']]
+input: |
+  +package foo
+
+  [] > foo
+    f (a"b > [n]) > x
+    x > @

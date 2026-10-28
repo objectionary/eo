@@ -642,6 +642,36 @@ final class Tokens {
     }
 
     /**
+     * The index of the {@code > [} that opens an inline-phi suffix at the
+     * top level of this text, or {@code -1} when there is none. A quote
+     * standing inside a name is no literal (#9378), so the scan steps over
+     * it instead of looking for a closing one to the end of the text
+     * (#9427).
+     *
+     * @param text Text being scanned
+     * @return Index of the suffix, or -1
+     */
+    static int inlinePhi(final String text) {
+        int depth = 0;
+        int found = -1;
+        int idx = 0;
+        while (idx < text.length() - 2 && found < 0) {
+            final char glyph = text.charAt(idx);
+            if (glyph == '"' && Tokens.opensString(text, idx)) {
+                idx = Tokens.closingQuote(text, idx);
+            } else if (glyph == '(') {
+                depth = depth + 1;
+            } else if (glyph == ')') {
+                depth = depth - 1;
+            } else if (depth == 0 && Tokens.opensPhi(text, idx)) {
+                found = idx;
+            }
+            idx = idx + 1;
+        }
+        return found;
+    }
+
+    /**
      * Whether the glyph ends the token a reader is on. Shared with
      * {@link Bytes}, so a BYTES literal owns exactly the characters
      * every other reader of this class would leave to it. The slash is
@@ -724,7 +754,7 @@ final class Tokens {
         int idx = 0;
         while (idx < inside.length()) {
             final char glyph = inside.charAt(idx);
-            if (glyph == '"') {
+            if (glyph == '"' && Tokens.opensString(inside, idx)) {
                 idx = Tokens.closingQuote(inside, idx);
             } else if (" ()[]".indexOf(glyph) >= 0) {
                 single = false;
@@ -790,6 +820,11 @@ final class Tokens {
         return glyph == '+' || glyph == '-';
     }
 
+    private static boolean opensPhi(final String text, final int idx) {
+        return text.charAt(idx) == '>' && text.charAt(idx + 1) == ' '
+            && text.charAt(idx + 2) == '[';
+    }
+
     private static boolean cactus(final String text) {
         return text.codePoints().anyMatch(cp -> cp == 0x1F335);
     }
@@ -815,7 +850,7 @@ final class Tokens {
         this.cursor = this.cursor + 1;
         while (this.cursor < this.body.length() && depth > 0) {
             final char glyph = this.body.charAt(this.cursor);
-            if (glyph == '"') {
+            if (glyph == '"' && Tokens.opensString(this.body, this.cursor)) {
                 this.cursor = Tokens.closingQuote(this.body, this.cursor);
                 if (this.cursor >= this.body.length()) {
                     throw new ParseError(
