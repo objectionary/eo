@@ -49,14 +49,14 @@
               shrink > @
                 grow divisor.abs
                 dividend.abs
-              if. > [^ chunk] >> grow
+              if. > [^ chunk] > grow
                 or.
                   chunk.gte dividend.abs
                   not. (chunk.plus chunk).is-finite
                 chunk
                 ^.grow
                   chunk.plus chunk
-              if. > [^ chunk rest] >> shrink
+              if. > [^ chunk rest] > shrink
                 chunk.lt divisor.abs
                 rest
                 ^.shrink

@@ -78,11 +78,11 @@
                     received.code.eq -1
                     T
                       "Failed to read from standard input"
-                    received.data
+                    data.
+                      called. >> received
+                        ^.^.^.sys.input.read ^.^.^.sys.input.descriptor size
                   received
                   ^.^.input-block chunk
-                called. >> received
-                  ^.^.^.sys.input.read ^.^.^.sys.input.descriptor size
             | --
             size
       [^ buffer] > write
@@ -99,15 +99,12 @@
                     ^.^.output-block
                   code
                   if.
-                    code.lt buffer.size
+                    lt.
+                      number (^.^.^.sys.output.write ^.^.^.sys.output.descriptor buffer buffer.size)! >> code
+                      buffer.size
                     ^.^.output-block.write
                       buffer.slice code (buffer.size.minus code)
                     ^.^.output-block
-                as-number. >> code
-                  ^.^.^.sys.output.write >>!
-                    ^.^.^.sys.output.descriptor
-                    buffer
-                    buffer.size
             buffer
     |
       []
