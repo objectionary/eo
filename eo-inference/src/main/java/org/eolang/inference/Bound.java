@@ -66,6 +66,14 @@ import java.util.Map;
  * another one, and filling the second fills the first, so the formations are
  * gathered along the whole chain of copies rather than off its end alone.</p>
  *
+ * <p>Which formation the call arrives at is sometimes known, though, and then
+ * the others are left out of it. The {@code if} of a {@code bool} is a void,
+ * and the program fills it twice, once with the picker of {@code true} and
+ * once with the picker of {@code false}; the receiver of {@code true.if} says
+ * which of the two this call lands on, so the arguments go into the voids of
+ * that picker and into no other. Relaying them into both made the census of
+ * each picker list what only the other one was ever handed (#9363).</p>
+ *
  * <p>A read off a choice copies nothing one can name, since its pair is rooted
  * at a void, and yet the formations it copies are known: they are the arms.
  * {@code n.wide.div m}, where {@code wide} comes back as a {@code big} or as
@@ -283,8 +291,10 @@ final class Bound {
     ) {
         final Map<String, Collection<String>> fillers = this.puts(found);
         fillers.putAll(this.arms);
+        final Map<String, Collection<String>> held = this.held(fillers, found, landed);
         for (final Map.Entry<String, List<String>> application : this.args.entrySet()) {
-            for (final String filler : this.held(fillers, application.getKey(), landed)) {
+            for (final String filler
+                : held.getOrDefault(application.getKey(), Collections.emptyList())) {
                 final Map<String, String> passed = this.passed(filler, application.getValue());
                 if (!passed.isEmpty()) {
                     final Map<String, String> filled = found.computeIfAbsent(
@@ -302,13 +312,59 @@ final class Bound {
         }
     }
 
-    private Collection<String> held(
-        final Map<String, Collection<String>> fillers, final String application,
-        final Map<String, String> landed
+    private Map<String, Collection<String>> held(
+        final Map<String, Collection<String>> fillers,
+        final Map<String, Map<String, String>> binds, final Map<String, String> landed
     ) {
-        final Collection<String> found = new LinkedHashSet<>(0);
-        for (final String step : this.copies(application, landed)) {
-            found.addAll(fillers.getOrDefault(step, Collections.emptyList()));
+        final Map<String, Collection<String>> found = new LinkedHashMap<>(0);
+        for (final String application : this.args.keySet()) {
+            final Collection<String> kept = new LinkedHashSet<>(0);
+            for (final String step : this.copies(application, landed)) {
+                final Collection<String> fill =
+                    fillers.getOrDefault(step, Collections.emptyList());
+                String arrival = "";
+                if (fill.size() > 1) {
+                    arrival = this.arrival(application, step, binds);
+                }
+                if (fill.contains(arrival)) {
+                    kept.add(arrival);
+                } else {
+                    kept.addAll(fill);
+                }
+            }
+            found.put(application, kept);
+        }
+        return found;
+    }
+
+    // The receiver of a call on a void says which of the formations that void
+    // holds the call arrives at, and the others never see these arguments: the
+    // `if` of a `true` is the picker `true` put there, while the picker of a
+    // `false` is filled by its own callers alone. The walk goes through the
+    // bodies as well as through the pairs, since a receiver fills the void
+    // where it delegates and not where it is named (#9363). It is made only
+    // where the void holds more than one formation, since where it holds one
+    // there is nothing to choose between.
+    private String arrival(
+        final String application, final String hollow,
+        final Map<String, Map<String, String>> binds
+    ) {
+        final Ends ends = new Ends(this.pairs);
+        final Collection<String> seen = new HashSet<>(0);
+        String walked = ends.name(this.receivers.getOrDefault(application, ""));
+        String found = "";
+        while (!walked.isEmpty() && seen.add(walked)) {
+            final String filler = binds.getOrDefault(walked, Collections.emptyMap())
+                .getOrDefault(hollow, "");
+            if (!filler.isEmpty()) {
+                found = ends.name(filler);
+                break;
+            }
+            if (this.pairs.containsKey(walked)) {
+                walked = this.pairs.get(walked);
+            } else {
+                walked = this.owned.body(walked);
+            }
         }
         return found;
     }
