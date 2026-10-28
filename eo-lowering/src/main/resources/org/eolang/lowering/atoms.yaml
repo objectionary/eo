@@ -38,7 +38,9 @@
   dataize:
     𝛿1: $.ρ
     𝛿2: $.b
-  𝑛: ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧
+  𝑛: >-
+    ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
+    on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧
 - λ: L_bytes_size
   dataize:
     𝛿1: $.ρ
@@ -47,7 +49,9 @@
   dataize:
     𝛿1: $.ρ
     𝛿2: $.b
-  𝑛: ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧
+  𝑛: >-
+    ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
+    on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧
 - λ: L_bytes_(and|or|concat|right)
   dataize:
     𝛿1: $.ρ
@@ -94,12 +98,14 @@
           pattern: >-
             ⟦ 𝐵1, φ ↦ Φ.bool( if ↦ ⟦ ρ ↦ ∅, 𝜏1 ↦ ∅, 𝜏2 ↦ ∅, φ ↦ ξ.𝜏1 ⟧ ) ⟧
           result: >-
-            ⟦ 𝐵1, φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, on🌵 ↦ ⟦ Δ ⤍ FF- ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧
+            ⟦ 𝐵1, φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
+            on🌵 ↦ ⟦ Δ ⤍ FF- ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧
         - name: false-literal
           pattern: >-
             ⟦ 𝐵1, φ ↦ Φ.bool( if ↦ ⟦ ρ ↦ ∅, 𝜏1 ↦ ∅, 𝜏2 ↦ ∅, φ ↦ ξ.𝜏2 ⟧ ) ⟧
           result: >-
-            ⟦ 𝐵1, φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, on🌵 ↦ ⟦ Δ ⤍ 00- ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧
+            ⟦ 𝐵1, φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
+            on🌵 ↦ ⟦ Δ ⤍ 00- ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧
     𝑛10:
       of: 𝑛6
       rules: *bool
@@ -113,7 +119,7 @@
     𝑛19: 𝑛13
     𝑛20: 𝑛14
   join:
-    on: 𝛿1
+    'on': 𝛿1
     left: 𝑛19
     right: 𝑛20
     otherwise: L_fork

@@ -688,7 +688,7 @@ final class MorphingTest {
                 "undress:", "𝑛15: 𝑛9", "𝑛16: 𝑛10", "stay:", "evaluate:", "𝑛17: 𝑛15", "𝑛18: 𝑛16", "rewrite:",
                 "symbolize:", "𝑛11: 𝑛17", "𝑛12: 𝑛18", "defer:",
                 "cast:", "𝑛19: 𝑛13", "𝑛20: 𝑛14",
-                "join:", "on: 𝛿1", "left: 𝑛19", "right: 𝑛20", "otherwise: L_fork"
+                "join:", "'on': 𝛿1", "left: 𝑛19", "right: 𝑛20", "otherwise: L_fork"
             )
         );
     }
@@ -704,11 +704,11 @@ final class MorphingTest {
         MatcherAssert.assertThat(
             "every bool the table answers must be the formation wrapping it, but one is bare",
             Files.readAllLines(home.resolve("atoms.yaml")).stream()
-                .filter(line -> line.startsWith("  𝑛: ") && line.contains("Φ.bool("))
+                .filter(line -> line.matches("(  𝑛: |    )[^ ].*Φ\\.bool\\(.*"))
                 .collect(Collectors.toList()),
             Matchers.<List<String>>allOf(
                 Matchers.not(Matchers.empty()),
-                Matchers.everyItem(Matchers.startsWith("  𝑛: ⟦ φ ↦ Φ.bool("))
+                Matchers.everyItem(Matchers.matchesRegex("(  𝑛: |    )⟦ φ ↦ Φ\\.bool\\(.*"))
             )
         );
     }
