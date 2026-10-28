@@ -563,7 +563,7 @@ final class MorphingTest {
 
     @Test
     void morphsTheWorldThePinnedPhinoFolds(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.156");
+        final Phino phino = new Phino("phino", "0.0.160");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -582,7 +582,7 @@ final class MorphingTest {
 
     @Test
     void writesTheTextThePinnedPhinoFolds(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.156");
+        final Phino phino = new Phino("phino", "0.0.160");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -602,7 +602,7 @@ final class MorphingTest {
     @Test
     void stopsAtTheThrowWithTheWholeMessageThePinnedPhinoKeeps(@Mktmp final Path temp)
         throws IOException {
-        final Phino phino = new Phino("phino", "0.0.156");
+        final Phino phino = new Phino("phino", "0.0.160");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -638,7 +638,7 @@ final class MorphingTest {
             MorphingTest.text(temp.resolve("2-protocols/broken.xml")),
             Matchers.stringContainsInOrder(
                 String.format(
-                    "<attr name=\"φ\">%s</attr>",
+                    "<datum attr=\"φ\">%s</datum>",
                     message.chars().mapToObj(code -> String.format("%02X", code))
                         .collect(Collectors.joining("-"))
                 ),
@@ -715,7 +715,7 @@ final class MorphingTest {
 
     @Test
     void answersTheAtomOfBytesThePinnedPhinoReaches(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.156");
+        final Phino phino = new Phino("phino", "0.0.160");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
