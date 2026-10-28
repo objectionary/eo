@@ -57,6 +57,12 @@
 # termination instead of declaring it with `-->`, because a returned text of
 # more than one byte fails to dataize as a boolean exactly as a termination
 # does, and a `-->` test would pass either way.
+#
+# An argument of `%f` whose bytes are not eight is turned down before that,
+# saying it is not a number, the way `%b` says what it got is not a boolean.
+# Eight bytes is as far as the check reaches: the bytes of a number are the
+# bytes of any other object of the same length, so a text of eight bytes is
+# written as the number they spell.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -210,11 +216,16 @@
             number numeric
         if.
           66-.eq conv
-          as-fixed.
-            number numeric
-            precise.as-bool.if
-              number precision
-              6
+          if.
+            8.eq datum.size
+            as-fixed.
+              number numeric
+              precise.as-bool.if
+                number precision
+                6
+            T
+              "The argument %x is not a number, the %%f conversion takes a number".printf
+                * datum
           if.
             78-.eq conv
             capped (bytes datum).as-hex
@@ -584,6 +595,13 @@
     "stopped"
     recovered
       "%b".printf
+        * "x"
+      "stopped"
+
+  eq. ++> can-stop-formatting-a-text-as-a-fixed-point
+    "stopped"
+    recovered
+      "%f".printf
         * "x"
       "stopped"
 
