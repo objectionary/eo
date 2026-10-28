@@ -47,8 +47,7 @@ java: |
    * 1, which is Φ.wrap.
    * This code is not optimized, on purpose: it keeps a method for every
    * symbol and a branch for every fork, even a branch that can never be
-   * taken. The Java compiler is expected to optimize it while it turns it
-   * into bytecode.
+   * taken. The Java compiler and the JIT are expected to optimize it.
    */
   package org.eolang;
 
