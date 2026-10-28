@@ -332,8 +332,8 @@ through the wrapper's body and the runtime stamps `made` with the directory
 it was found on, not with the wrapper. The source declares this in `holds`,
 and anything else seen there is a bug in the tool.
 
-**Rule 4. An arm that is the `^` of an anonymous formation is what its
-readers put there.** A formation written as an argument belongs to nobody:
+**Rule 4. An arm that is the `^` of an anonymous formation is what it was
+handed to.** A formation written as an argument belongs to nobody:
 
 ```eo
 [] > foo
@@ -344,9 +344,10 @@ readers put there.** A formation written as an argument belongs to nobody:
     $.y.five > @
 ```
 
-The `[^]` sits inside `foo`, but its `^` is filled by the first dotted read
-of it, `$.y` inside `x`, so it is an `x` and not a `foo`. Nothing is declared
-for it, and the answer comes from the readers alone.
+The `[^]` sits inside `foo`, but `$.y` inside `x` reads it off the `x` that
+holds `y`, and the runtime fills its `^` with that `x` on every such read, so
+it is an `x` and not a `foo`, whoever reads it. Nothing is declared for it,
+and the answer comes from the application that put it there.
 
 **Rule 5. An arm that is an input is what this call passed,** and is dead
 where this call passed nothing:
