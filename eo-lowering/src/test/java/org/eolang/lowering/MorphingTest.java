@@ -109,7 +109,7 @@ final class MorphingTest {
                 String.join(
                     " ",
                     "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
-                    "echo '<protocol><morph><timeout limit=\"1\"/></morph><msec>1000</msec></protocol>' > \"$p\"; exit 1"
+                    "echo '<protocol><dataize><timeout limit=\"1\"/></dataize><msec>1000</msec></protocol>' > \"$p\"; exit 1"
                 )
             ),
             new GlobalCache.GcFresh(),
@@ -178,7 +178,7 @@ final class MorphingTest {
                 String.join(
                     " ",
                     "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
-                    "echo '<protocol><morph><timeout limit=\"1\"/></morph><msec>1000</msec></protocol>' > \"$p\"; exit 1"
+                    "echo '<protocol><dataize><timeout limit=\"1\"/></dataize><msec>1000</msec></protocol>' > \"$p\"; exit 1"
                 )
             ),
             new GcShared(temp.resolve("cache"), "0.5.6"),
@@ -297,7 +297,7 @@ final class MorphingTest {
                     " ",
                     "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
                     "case $p in *.xml) echo '<protocol><timeout limit=\"1\"/></protocol>' > \"$p\";;",
-                    "*) echo '  timeout(1)' > \"$p\";; esac; exit 1"
+                    "*) echo '  timeout 1' > \"$p\";; esac; exit 1"
                 )
             ),
             new GlobalCache.GcFresh(),
@@ -357,7 +357,7 @@ final class MorphingTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void aimsTheRunOfAnEntryAtItsMark(@Mktmp final Path temp) throws IOException {
+    void aimsTheRunAtItsEntry(@Mktmp final Path temp) throws IOException {
         MorphingTest.merged(temp, 1, 2);
         final Path protocols = temp.resolve("2-protocols");
         new Morphing(
@@ -365,15 +365,15 @@ final class MorphingTest {
             new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
         ).exec(temp);
         MatcherAssert.assertThat(
-            "the run of an entry must be aimed at the mark of that entry, but it isnt",
+            "the run of an entry must be aimed at that entry, but it isnt",
             MorphingTest.text(protocols.resolve("e2.xml")),
-            Matchers.containsString("--locator=Q.l/.e2")
+            Matchers.containsString("--locator=Q.l🌵.e2")
         );
     }
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void morphsEveryEntryOverTheWorldWithTheTable(@Mktmp final Path temp) throws IOException {
+    void dataizesEveryEntryOverTheWorldWithTheTable(@Mktmp final Path temp) throws IOException {
         final Path home = MorphingTest.merged(temp, 1);
         final Path protocols = temp.resolve("2-protocols");
         new Morphing(
@@ -381,10 +381,10 @@ final class MorphingTest {
             new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
         ).exec(temp);
         MatcherAssert.assertThat(
-            "the run must morph the entry of the world with the table, but it doesnt",
+            "the run must dataize the entry of the world with the table, but it doesnt",
             MorphingTest.text(protocols.resolve("e1.xml")),
             Matchers.stringContainsInOrder(
-                "morph",
+                "dataize",
                 String.format("--symbolic=%s", home.resolve("atoms.yaml")),
                 home.resolve("world.phi").toString()
             )
@@ -501,9 +501,9 @@ final class MorphingTest {
             new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
         ).exec(temp);
         MatcherAssert.assertThat(
-            "the table must name the mark the entries fire, but it doesnt",
+            "the table must name the operations phino may write down, but it doesnt",
             MorphingTest.text(home.resolve("atoms.yaml")),
-            Matchers.containsString("L_entry")
+            Matchers.containsString("L_number_gt")
         );
     }
 
@@ -563,7 +563,7 @@ final class MorphingTest {
 
     @Test
     void morphsTheWorldThePinnedPhinoFolds(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.156");
+        final Phino phino = new Phino("phino", "0.0.160");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -576,13 +576,13 @@ final class MorphingTest {
         MatcherAssert.assertThat(
             "the protocol must record the firing of the atom the body reached, but it doesnt",
             MorphingTest.text(temp.resolve("2-protocols/gap.xml")),
-            Matchers.stringContainsInOrder("L_entry", "L_root", "L_number_plus")
+            Matchers.stringContainsInOrder("<dataize at=\"Φ.l🌵.e", "L_number_plus")
         );
     }
 
     @Test
     void writesTheTextThePinnedPhinoFolds(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.156");
+        final Phino phino = new Phino("phino", "0.0.160");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -595,14 +595,14 @@ final class MorphingTest {
         MatcherAssert.assertThat(
             "the text must record the firing of the atom the body reached, but it doesnt",
             MorphingTest.text(temp.resolve("texts/gap.txt")),
-            Matchers.stringContainsInOrder("𝔼(L_entry)", "𝔼(L_number_plus)")
+            Matchers.stringContainsInOrder("𝔻(Φ.l🌵.e", "𝔼(L_number_plus)")
         );
     }
 
     @Test
     void stopsAtTheThrowWithTheWholeMessageThePinnedPhinoKeeps(@Mktmp final Path temp)
         throws IOException {
-        final Phino phino = new Phino("phino", "0.0.156");
+        final Phino phino = new Phino("phino", "0.0.160");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -638,7 +638,7 @@ final class MorphingTest {
             MorphingTest.text(temp.resolve("2-protocols/broken.xml")),
             Matchers.stringContainsInOrder(
                 String.format(
-                    "<attr name=\"φ\">%s</attr>",
+                    "<datum attr=\"φ\">%s</datum>",
                     message.chars().mapToObj(code -> String.format("%02X", code))
                         .collect(Collectors.joining("-"))
                 ),
@@ -673,7 +673,7 @@ final class MorphingTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void bringsTheBranchesOfAForkToOneShapeBeforeTheJoin(@Mktmp final Path temp)
+    void forksOnTheConditionInsteadOfAnsweringAnIf(@Mktmp final Path temp)
         throws IOException {
         final Path home = MorphingTest.merged(temp);
         new Morphing(
@@ -681,29 +681,15 @@ final class MorphingTest {
             new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
         ).exec(temp);
         MatcherAssert.assertThat(
-            "the fork must rewrite its branches before it symbolizes and joins them, but it doesnt",
+            "the fork must read a fabricated copy by the names phino gives it and name itself when a join fails, but it doesnt",
             MorphingTest.text(home.resolve("atoms.yaml")),
             Matchers.stringContainsInOrder(
-                "- λ: L_fork", "morph:", "rewrite:",
-                "false-literal", "true-literal", "bool-without-rho", "decorated-bool",
-                "symbolize:", "join:"
+                "- λ: L_fork", "dataize:", "𝛿1: $.on🌵", "morph:", "𝑛1: $.left🌵", "𝑛2: $.right🌵",
+                "undress:", "𝑛15: 𝑛9", "𝑛16: 𝑛10", "stay:", "evaluate:", "𝑛17: 𝑛15", "𝑛18: 𝑛16", "rewrite:",
+                "symbolize:", "𝑛11: 𝑛17", "𝑛12: 𝑛18", "defer:",
+                "cast:", "𝑛19: 𝑛13", "𝑛20: 𝑛14",
+                "join:", "'on': 𝛿1", "left: 𝑛19", "right: 𝑛20", "otherwise: L_fork"
             )
-        );
-    }
-
-    @Test
-    @DisabledOnOs(OS.WINDOWS)
-    void letsAForkRaiseThroughTheThrowInOneOfItsBranches(@Mktmp final Path temp)
-        throws IOException {
-        final Path home = MorphingTest.merged(temp);
-        new Morphing(
-            MorphingTest.recording(temp), new GlobalCache.GcFresh(),
-            new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
-        ).exec(temp);
-        MatcherAssert.assertThat(
-            "the fork must end at the throw of a branch, but it doesnt",
-            MorphingTest.text(home.resolve("atoms.yaml")),
-            Matchers.stringContainsInOrder("- λ: L_fork", "terminators: [L_throw]", "- λ: L_entry")
         );
     }
 
@@ -718,18 +704,18 @@ final class MorphingTest {
         MatcherAssert.assertThat(
             "every bool the table answers must be the formation wrapping it, but one is bare",
             Files.readAllLines(home.resolve("atoms.yaml")).stream()
-                .filter(line -> line.startsWith("  𝑛: ") && line.contains("Φ.bool("))
+                .filter(line -> line.matches("(  𝑛: |    )[^ ].*Φ\\.bool\\(.*"))
                 .collect(Collectors.toList()),
             Matchers.<List<String>>allOf(
                 Matchers.not(Matchers.empty()),
-                Matchers.everyItem(Matchers.startsWith("  𝑛: ⟦ φ ↦ Φ.bool("))
+                Matchers.everyItem(Matchers.matchesRegex("(  𝑛: |    )⟦ φ ↦ Φ\\.bool\\(.*"))
             )
         );
     }
 
     @Test
     void answersTheAtomOfBytesThePinnedPhinoReaches(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.156");
+        final Phino phino = new Phino("phino", "0.0.160");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"

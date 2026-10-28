@@ -22,9 +22,9 @@ provides: |
     </type>
   </provides>
 xmir:
-  - "//o[@name='e1']/o/o[@as='v' and @base='Φ.one']/o[@as='a']/\
+  - "//o[@name='e1' and @base='Φ.one']/o[@as='a']/\
     /o[@name='λ' and text()='𝜎1']"
-  - "//o[@name='e2']/o/o[@as='v' and @base='Φ.two']/o[@as='c']/\
+  - "//o[@name='e2' and @base='Φ.two']/o[@as='c']/\
     /o[@name='λ' and text()='𝜎2']"
 entries:
   - "1\tΦ.one"
