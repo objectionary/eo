@@ -25,6 +25,8 @@
           info.mode.div 4096
         4
       cant-check
+        "Can't check whether '%s' is a directory: %s".printf
+          * entry.path info.message
     called. > info
       os.is-windows.if
         win32.stat64 entry.path
@@ -275,6 +277,13 @@
         true > [f]
     12
 
+  ++> can-name-the-file-whose-kind-it-cannot-check
+    starts-with. > @
+      f.is-directory I
+      "Can't check whether '%s' is a directory: ".printf
+        * f.path
+    mktemp.tmpfile.deleted > f
+
   ++> can-read-from-a-file
     eq. > @
       malloc.of
@@ -333,7 +342,7 @@
     mktemp.tmpfile.deleted.is-symlink true > @
 
   mktemp.tmpfile.deleted.is-directory ++> can-recover-from-checking-an-absent-file
-    true
+    true > [message]
 
   eq. ++> can-recover-from-opening-a-missing-file
     "recovered"
@@ -534,7 +543,7 @@
     I
 
   tmpfile. --> stops-on-touching-a-temp-file-in-an-absent-directory
-    @.
+    as-dir.
       mktemp.as-path.resolved "foo"
 
   mktemp.tmpfile.open --> stops-on-writing-with-a-wrong-mode

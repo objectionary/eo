@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A row whose body the tables say is a bool answers the formation that
+# wraps a bool around a fork, the same shape a bool void is planted as, so
+# that whoever takes the answer forks on the fresh symbol. The dash of the
+# name becomes an underscore, since a λ is spelled with letters, digits
+# and underscores only.
+eo:
+  is-finite.eo: |
+    +package number
+
+    [^] > is-finite
+      ^.gt 0 > @
+provides: |
+  <provides>
+    <type id="Φ.number.is-finite" reduced="Φ.bool">
+      <attr name="ρ" type="Φ.number.is-finite.ρ" void="true" holds="Φ.number"/>
+      <attr name="φ" type="Φ.number.is-finite.φ"/>
+    </type>
+  </provides>
+copies:
+  - "//o[@loc='Φ.number.is-finite']/o[@name='λ' and text()='L_number_is_finite']"
+rows:
+  - "L_number_is_finite\tΦ.number.is-finite\tΦ.number.is-finite\tρ:number"
+table:
+  - "- λ: L_number_is_finite"
+  - "    𝛿1: $.ρ"
+  - "  𝑛: ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧"

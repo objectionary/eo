@@ -97,10 +97,11 @@ one after another:
     [Xembly](https://www.xembly.org). The output of the parser you can find
     in the `target/eo/NN-raw` directory, where `NN` is the number the stage
     got when it first ran, like `02-raw`, unless the program was taken from
-    the cache. Parsed objects which are versioned
-    (normally pulled from
-    [Objectionary](https://github.com/objectionary/home)) are cached in
-    `.eo/parsed` folder.
+    the cache. The result of parsing every source,
+    the ones of the project included, is also kept in `~/.eo/parsed`, or
+    under the directory `eo.cache` names, keyed by the version of the plugin
+    and by the hash of the source. Set `eo.cacheEnabled` to `false` to turn
+    that off.
 
 * **Optimization**.
     There are a number of [XSL transformations](https://en.wikipedia.org/wiki/XSLT)

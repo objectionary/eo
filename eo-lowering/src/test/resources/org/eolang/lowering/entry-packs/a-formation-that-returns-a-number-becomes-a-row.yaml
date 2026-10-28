@@ -1,0 +1,42 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A formation whose voids are all carriers and whose body the tables say is
+# a number becomes a row of the table of operations: a λ named after its
+# path, which dataizes its `ρ` and answers a fresh symbol wrapped as a
+# number. In the copy, the body moves under `body🌵` and the λ stands beside
+# it, so that every reference to the formation fires the row instead of
+# folding the body, while the entry of the formation itself takes `body🌵`
+# off the planted object, so that its own body is still spelled out.
+eo:
+  twice.eo: |
+    +package number
+
+    [^] > twice
+      ^.plus ^ > @
+provides: |
+  <provides>
+    <type id="Φ.number.twice" reduced="Φ.number">
+      <attr name="ρ" type="Φ.number.twice.ρ" void="true" holds="Φ.number"/>
+      <attr name="φ" type="Φ.number.twice.φ"/>
+    </type>
+  </provides>
+xmir:
+  - "//o[@name='e1' and not(@base)]/o[@name='φ' and @base='.body🌵']\
+    /o[@base='.twice']/o[1][@base='Φ.number' and not(@as)]\
+    //o[@name='λ' and text()='𝜎1']"
+copies:
+  - "//o[@loc='Φ.number.twice']/o[@name='λ' and text()='L_number_twice']"
+  - "//o[@loc='Φ.number.twice']/o[@name='body🌵' and @base='ξ.ρ.plus']"
+  - "//o[@loc='Φ.number.twice'][not(o[@name='φ'])]"
+voids:
+  - "𝜎1\t1\tρ\tnumber"
+entries:
+  - "1\tΦ.number.twice"
+rows:
+  - "L_number_twice\tΦ.number.twice\tΦ.number.twice\tρ:number"
+table:
+  - "- λ: L_number_twice"
+  - "    𝛿1: $.ρ"
+  - "  𝑛: Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )"

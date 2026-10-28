@@ -17,19 +17,21 @@ voids:
   - "𝜎200\t217\tρ\tnumber"
 protocol: |
   <protocol>
-    <morph at="Φ.l/.e217">
-      <evaluate λ="L_entry" by="morph" at="Φ.l/.e217">
-        <evaluate λ="L_number_times" by="morph" at="Φ.a🌵1">
-          <dataize meta="𝛿1·2">𝜎200</dataize>
-          <bind meta="𝛿2·2">BF-F0-00-00-00-00-00-00</bind>
-          <minted symbol="𝜎752">𝜎200 BF-F0-00-00-00-00-00-00</minted>
-        </evaluate>
+    <dataize at="Φ.l🌵.e217">
+      <evaluate λ="L_number_times" by="morph" at="Φ.a🌵1">
+        <dataize at="Φ.a🌵2">
+          <manufactured meta="𝛿·2·1">𝜎200</manufactured>
+        </dataize>
+        <bound meta="𝛿1·2">𝛿·2·1</bound>
+        <dataize at="Φ.a🌵3">
+          <dataized meta="𝛿·2·2">BF-F0-00-00-00-00-00-00</dataized>
+        </dataize>
+        <bound meta="𝛿2·2">𝛿·2·2</bound>
+        <minted symbol="𝜎752">𝜎200 BF-F0-00-00-00-00-00-00</minted>
       </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l/.e217">
-        <dataize meta="𝛿1·3">𝜎752</dataize>
-      </evaluate>
-    </morph>
+      <manufactured meta="𝛿·3·1">𝜎752</manufactured>
+    </dataize>
     <msec>113</msec>
-    <firings>3</firings>
+    <firings>2</firings>
     <fps>26</fps>
   </protocol>

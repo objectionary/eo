@@ -1,0 +1,214 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A symbol minted by the λ of a row stands for the dataization of the
+# object the row is about, built from the operands the row dataized: the
+# receiver wrapped back into its carrier, with the name of the formation
+# taken off it. Whether the formation behind the row became an atom or
+# stayed in EO, the atom of this entry computes the same bytes, and a
+# nested call tree is never folded into it.
+locator: Φ.number.both
+number: 2
+eo:
+  number.eo: |
+    [] > number
+      [b] > both
+        (^.twice).plus b.twice > @
+      [] > twice
+        ^.plus ^ > @
+voids:
+  - "𝜎2\t2\tρ\tnumber"
+  - "𝜎3\t2\tb\tnumber"
+rows:
+  - "L_number_twice\tΦ.number.twice\tΦ.number.twice\tρ:number"
+provides: |
+  <provides>
+    <type id="Φ.number.both" reduced="Φ.number">
+      <attr name="ρ" type="Φ.number.both.ρ" void="true" holds="Φ.number"/>
+      <attr name="b" type="Φ.number.both.b" void="true" holds="Φ.number"/>
+    </type>
+  </provides>
+protocol: |
+  <protocol>
+    <dataize at="Φ.l🌵.e2">
+      <morph at="Φ.l🌵.e2">
+        <applied meta="𝑒·0·1" of="Φ.bytes"><symbol attr="φ">𝜎2</symbol></applied>
+        <applied meta="𝑛·0·1" by="morph" at="Φ.l🌵.e2" of="Φ.number"><meta attr="φ">𝑒·0·1</meta></applied>
+        <formed meta="𝑛·0·2" of="Φ.number"><meta attr="φ">𝑒·0·1</meta></formed>
+        <applied meta="𝑒·0·2" of="Φ.bytes"><symbol attr="φ">𝜎3</symbol></applied>
+        <applied meta="𝑒·0·3" of="Φ.number"><meta attr="φ">𝑒·0·2</meta></applied>
+        <applied meta="𝑛·0·3" by="morph" at="Φ.l🌵.e2" of="𝑛·0·1.both"><meta attr="b">𝑒·0·3</meta></applied>
+        <formed meta="𝑛·0·4" of="𝑛·0·1.both"><meta attr="b">𝑒·0·3</meta></formed>
+        <morphed meta="𝑛·0·5">𝑛·0·4</morphed>
+      </morph>
+      <boxed meta="𝑛·0·6">𝑛·0·5.φ</boxed>
+      <morph at="𝑛·0·6">
+        <applied meta="𝑛·0·7" by="morph" at="𝑛·0·6" of="Φ.number"><meta attr="φ">𝑒·0·1</meta></applied>
+        <formed meta="𝑛·0·8" of="Φ.number"><meta attr="φ">𝑒·0·1</meta></formed>
+        <evaluate λ="L_number_twice" by="morph" at="𝑛·0·6">
+          <dataize at="ξ.ρ">
+            <morph at="ξ.ρ">
+              <applied meta="𝑛·1·1" by="morph" at="ξ.ρ" of="Φ.number"><meta attr="φ">𝑒·0·1</meta></applied>
+              <formed meta="𝑛·1·2" of="Φ.number"><meta attr="φ">𝑒·0·1</meta></formed>
+              <morphed meta="𝑛·1·3">𝑛·1·2</morphed>
+            </morph>
+            <boxed meta="𝑛·1·4">𝑛·1·3.φ</boxed>
+            <morph at="𝑛·1·4">
+              <applied meta="𝑛·1·5" by="morph" at="𝑛·1·4" of="Φ.bytes"><symbol attr="φ">𝜎2</symbol></applied>
+              <formed meta="𝑛·1·6" of="Φ.bytes"><symbol attr="φ">𝜎2</symbol></formed>
+              <morphed meta="𝑛·1·7">𝑛·1·6</morphed>
+            </morph>
+            <boxed meta="𝑛·1·8">𝑛·1·7.φ</boxed>
+            <manufactured meta="𝛿·1·1">𝜎2</manufactured>
+          </dataize>
+          <bound meta="𝛿1·1">𝛿·1·1</bound>
+          <minted symbol="𝜎5">𝜎2</minted>
+          <applied meta="𝑒·1·1" of="Φ.bytes"><symbol attr="φ">𝜎5</symbol></applied>
+          <applied meta="𝑒·1·2" of="Φ.number"><meta attr="φ">𝑒·1·1</meta></applied>
+          <built meta="𝑛·1·9">𝑒·1·2</built>
+          <morph at="𝑛·1·9">
+            <applied meta="𝑛·1·10" by="morph" at="𝑛·1·9" of="Φ.number"><meta attr="φ">𝑒·1·1</meta></applied>
+            <formed meta="𝑛·1·11" of="Φ.number"><meta attr="φ">𝑒·1·1</meta></formed>
+            <morphed meta="𝑛·1·12">𝑛·1·11</morphed>
+          </morph>
+          <answered meta="𝑛·1·13">𝑛·1·12</answered>
+        </evaluate>
+        <formed meta="𝑒·0·4"><meta attr="ρ">𝑛·1·1</meta><meta attr="b">𝑒·0·3</meta></formed>
+        <applied meta="𝑒·0·5" of="𝑒·0·3"><meta attr="ρ">𝑒·0·4</meta></applied>
+        <applied meta="𝑛·0·9" by="morph" at="𝑛·0·6" of="𝑛·1·10.plus"><ref attr="b">𝑒·0·5.twice</ref></applied>
+        <formed meta="𝑛·0·10" of="𝑛·1·10.plus"><ref attr="b">𝑒·0·5.twice</ref></formed>
+        <morphed meta="𝑛·0·11">𝑛·0·10</morphed>
+      </morph>
+      <evaluate λ="L_number_plus" by="dataize" at="𝑛·0·6">
+        <dataize at="ξ.ρ">
+          <morph at="ξ.ρ">
+            <applied meta="𝑛·2·1" by="morph" at="ξ.ρ" of="Φ.number"><meta attr="φ">𝑒·1·1</meta></applied>
+            <formed meta="𝑛·2·2" of="Φ.number"><meta attr="φ">𝑒·1·1</meta></formed>
+            <morphed meta="𝑛·2·3">𝑛·2·2</morphed>
+          </morph>
+          <boxed meta="𝑛·2·4">𝑛·2·3.φ</boxed>
+          <morph at="𝑛·2·4">
+            <applied meta="𝑛·2·5" by="morph" at="𝑛·2·4" of="Φ.bytes"><symbol attr="φ">𝜎5</symbol></applied>
+            <formed meta="𝑛·2·6" of="Φ.bytes"><symbol attr="φ">𝜎5</symbol></formed>
+            <morphed meta="𝑛·2·7">𝑛·2·6</morphed>
+          </morph>
+          <boxed meta="𝑛·2·8">𝑛·2·7.φ</boxed>
+          <manufactured meta="𝛿·2·1">𝜎5</manufactured>
+        </dataize>
+        <bound meta="𝛿1·2">𝛿·2·1</bound>
+        <dataize at="ξ.b">
+          <morph at="ξ.b">
+            <applied meta="𝑛·2·9" by="morph" at="ξ.b" of="Φ.number"><meta attr="φ">𝑒·0·2</meta></applied>
+            <formed meta="𝑛·2·10" of="Φ.number"><meta attr="φ">𝑒·0·2</meta></formed>
+            <morphed meta="𝑛·2·11">𝑛·2·9.twice</morphed>
+          </morph>
+          <evaluate λ="L_number_twice" by="dataize" at="ξ.b">
+            <dataize at="ξ.ρ">
+              <morph at="ξ.ρ">
+                <applied meta="𝑛·3·1" by="morph" at="ξ.ρ" of="Φ.number"><meta attr="φ">𝑒·0·2</meta></applied>
+                <formed meta="𝑛·3·2" of="Φ.number"><meta attr="φ">𝑒·0·2</meta></formed>
+                <morphed meta="𝑛·3·3">𝑛·3·2</morphed>
+              </morph>
+              <boxed meta="𝑛·3·4">𝑛·3·3.φ</boxed>
+              <morph at="𝑛·3·4">
+                <applied meta="𝑛·3·5" by="morph" at="𝑛·3·4" of="Φ.bytes"><symbol attr="φ">𝜎3</symbol></applied>
+                <formed meta="𝑛·3·6" of="Φ.bytes"><symbol attr="φ">𝜎3</symbol></formed>
+                <morphed meta="𝑛·3·7">𝑛·3·6</morphed>
+              </morph>
+              <boxed meta="𝑛·3·8">𝑛·3·7.φ</boxed>
+              <manufactured meta="𝛿·3·1">𝜎3</manufactured>
+            </dataize>
+            <bound meta="𝛿1·3">𝛿·3·1</bound>
+            <minted symbol="𝜎6">𝜎3</minted>
+            <applied meta="𝑒·3·1" of="Φ.bytes"><symbol attr="φ">𝜎6</symbol></applied>
+            <applied meta="𝑒·3·2" of="Φ.number"><meta attr="φ">𝑒·3·1</meta></applied>
+            <built meta="𝑛·3·9">𝑒·3·2</built>
+            <morph at="𝑛·3·9">
+              <applied meta="𝑛·3·10" by="morph" at="𝑛·3·9" of="Φ.number"><meta attr="φ">𝑒·3·1</meta></applied>
+              <formed meta="𝑛·3·11" of="Φ.number"><meta attr="φ">𝑒·3·1</meta></formed>
+              <morphed meta="𝑛·3·12">𝑛·3·11</morphed>
+            </morph>
+            <answered meta="𝑛·3·13">𝑛·3·12</answered>
+          </evaluate>
+          <boxed meta="𝑛·2·12">𝑛·3·13.φ</boxed>
+          <morph at="𝑛·2·12">
+            <applied meta="𝑛·2·13" by="morph" at="𝑛·2·12" of="Φ.bytes"><symbol attr="φ">𝜎6</symbol></applied>
+            <formed meta="𝑛·2·14" of="Φ.bytes"><symbol attr="φ">𝜎6</symbol></formed>
+            <morphed meta="𝑛·2·15">𝑛·2·14</morphed>
+          </morph>
+          <boxed meta="𝑛·2·16">𝑛·2·15.φ</boxed>
+          <manufactured meta="𝛿·2·2">𝜎6</manufactured>
+        </dataize>
+        <bound meta="𝛿2·2">𝛿·2·2</bound>
+        <minted symbol="𝜎7">𝜎5 𝜎6</minted>
+        <applied meta="𝑒·2·1" of="Φ.bytes"><symbol attr="φ">𝜎7</symbol></applied>
+        <applied meta="𝑒·2·2" of="Φ.number"><meta attr="φ">𝑒·2·1</meta></applied>
+        <built meta="𝑛·2·17">𝑒·2·2</built>
+        <morph at="𝑛·2·17">
+          <applied meta="𝑛·2·18" by="morph" at="𝑛·2·17" of="Φ.number"><meta attr="φ">𝑒·2·1</meta></applied>
+          <formed meta="𝑛·2·19" of="Φ.number"><meta attr="φ">𝑒·2·1</meta></formed>
+          <morphed meta="𝑛·2·20">𝑛·2·19</morphed>
+        </morph>
+        <answered meta="𝑛·2·21">𝑛·2·20</answered>
+      </evaluate>
+      <boxed meta="𝑛·0·12">𝑛·2·21.φ</boxed>
+      <morph at="𝑛·0·12">
+        <applied meta="𝑛·0·13" by="morph" at="𝑛·0·12" of="Φ.bytes"><symbol attr="φ">𝜎7</symbol></applied>
+        <formed meta="𝑛·0·14" of="Φ.bytes"><symbol attr="φ">𝜎7</symbol></formed>
+        <morphed meta="𝑛·0·15">𝑛·0·14</morphed>
+      </morph>
+      <boxed meta="𝑛·0·16">𝑛·0·15.φ</boxed>
+      <manufactured meta="𝛿·0·1">𝜎7</manufactured>
+    </dataize>
+    <msec>2</msec>
+    <firings>3</firings>
+    <fps>1500</fps>
+  </protocol>
+file: org/eolang/EOnumber$EOboth$EOφ.java
+java: |
+  /*
+   * This file was generated by eo-lowering, from the protocol of the entry
+   * 2, which is {@code Φ.number.both}.
+   * This code is not optimized, on purpose: it keeps a method for every
+   * symbol and a branch for every fork, even a branch that can never be
+   * taken. The Java compiler and the JIT are expected to optimize it.
+   */
+  package org.eolang;
+
+  import org.eolang.*;
+
+  /**
+   * The atom that took the place of the body of {@code Φ.number.both}.
+   */
+  @XmirObject(oname = "number.both.φ")
+  public final class EOnumber$EOboth$EOφ extends PhDefault implements Atom {
+      public EOnumber$EOboth$EOφ() {
+          super(new Attrs(new Attr(Phi.RHO, new AtRho())));
+      }
+
+      @Override
+      public Phi lambda() {
+          return new Data.ToPhi(java.nio.ByteBuffer.wrap(this.𝜎7()).getDouble());
+      }
+
+      private byte[] 𝜎2() {
+          return new Dataized(this.take("ρ").take("ρ")).take();
+      }
+
+      private byte[] 𝜎3() {
+          return new Dataized(this.take("ρ").take("b")).take();
+      }
+
+      private byte[] 𝜎5() {
+          return new Dataized(new Data.ToPhi(java.nio.ByteBuffer.wrap(this.𝜎2()).getDouble()).take("twice")).take();
+      }
+
+      private byte[] 𝜎6() {
+          return new Dataized(new Data.ToPhi(java.nio.ByteBuffer.wrap(this.𝜎3()).getDouble()).take("twice")).take();
+      }
+
+      private byte[] 𝜎7() {
+          return java.nio.ByteBuffer.allocate(8).putDouble(java.nio.ByteBuffer.wrap(this.𝜎5()).getDouble() + java.nio.ByteBuffer.wrap(this.𝜎6()).getDouble()).array();
+      }
+  }

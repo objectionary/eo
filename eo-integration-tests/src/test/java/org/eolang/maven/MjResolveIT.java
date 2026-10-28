@@ -76,10 +76,10 @@ final class MjResolveIT {
         final String version = "0.38.0";
         new Farea(temp).together(
             f -> {
-                MjResolveIT.configureFarea(f, version);
+                MjResolveIT.configureFarea(f, "${runtime.version}");
+                f.properties().set("runtime.version", version);
                 f.exec("process-classes");
-                f.dependencies()
-                    .append("org.eolang", "eo-runtime", "0.40.0");
+                f.properties().set("runtime.version", "0.40.0");
                 f.exec("process-classes");
                 MjResolveIT.succeeds(f);
                 MatcherAssert.assertThat(
