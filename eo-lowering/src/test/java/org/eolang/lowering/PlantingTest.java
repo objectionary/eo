@@ -113,7 +113,6 @@ final class PlantingTest {
 
     @Test
     void answersEveryAtomOfBytesInTheTable(@Mktmp final Path temp) throws IOException {
-        final Path home = PlantingTest.planted(temp);
         MatcherAssert.assertThat(
             "the table must answer every atom of bytes, but it leaves one standing",
             Stream.of("and", "concat", "eq", "not", "or", "right", "size", "slice")
@@ -121,7 +120,7 @@ final class PlantingTest {
                 .collect(Collectors.toList()),
             Matchers.everyItem(
                 Matchers.matchesPattern(
-                    Files.readAllLines(home.resolve("atoms.yaml")).stream()
+                    Files.readAllLines(PlantingTest.planted(temp).resolve("atoms.yaml")).stream()
                         .filter(line -> line.startsWith("- λ: "))
                         .map(line -> String.format("(?:%s)", line.substring(5)))
                         .collect(Collectors.joining("|"))
@@ -148,10 +147,9 @@ final class PlantingTest {
 
     @Test
     void answersEveryBoolAsTheFormationWrappingIt(@Mktmp final Path temp) throws IOException {
-        final Path home = PlantingTest.planted(temp);
         MatcherAssert.assertThat(
             "every bool the table answers must be the formation wrapping it, but one is bare",
-            Files.readAllLines(home.resolve("atoms.yaml")).stream()
+            Files.readAllLines(PlantingTest.planted(temp).resolve("atoms.yaml")).stream()
                 .filter(line -> line.matches("(  𝑛: |    )[^ ].*Φ\\.bool\\(.*"))
                 .collect(Collectors.toList()),
             Matchers.<List<String>>allOf(
@@ -343,7 +341,9 @@ final class PlantingTest {
         private Collection<String> missing(final Path home, final String key, final String file)
             throws IOException {
             final Collection<String> failed = new ArrayList<>(0);
-            final List<String> rows = Files.readAllLines(home.resolve(file), StandardCharsets.UTF_8);
+            final List<String> rows = Files.readAllLines(
+                home.resolve(file), StandardCharsets.UTF_8
+            );
             for (final Object row : this.demands(key)) {
                 if (!rows.contains(row.toString())) {
                     failed.add(String.format("%s: %s", file, row));
