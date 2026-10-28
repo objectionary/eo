@@ -728,19 +728,7 @@ final class MorphingTest {
                 String.format("+package number%n%n[^ b] > both%n  ^.twice.plus b.twice > @%n")
             ).parsed().toString().getBytes(StandardCharsets.UTF_8)
         );
-        MorphingTest.xmir(
-            temp,
-            "number",
-            "<o name=\"φ\" base=\"∅\" loc=\"Φ.number.φ\"/>",
-            "<o name=\"plus\" loc=\"Φ.number.plus\">",
-            "<o name=\"b\" base=\"∅\" loc=\"Φ.number.plus.b\"/>",
-            "<o name=\"λ\" loc=\"Φ.number.plus.λ\"/>",
-            "</o>"
-        );
-        MorphingTest.xmir(
-            temp, "bytes", "<o name=\"φ\" base=\"∅\" loc=\"Φ.bytes.φ\"/>"
-        );
-        final Path tables = Files.createDirectories(temp.resolve("tables"));
+        final Path tables = this.library(temp);
         Files.write(
             tables.resolve("provides.xml"),
             String.join(
@@ -813,19 +801,7 @@ final class MorphingTest {
             new EoSyntax(String.format("[a b] > gap%n  a.plus b > @%n")).parsed()
                 .toString().getBytes(StandardCharsets.UTF_8)
         );
-        MorphingTest.xmir(
-            temp,
-            "number",
-            "<o name=\"φ\" base=\"∅\" loc=\"Φ.number.φ\"/>",
-            "<o name=\"plus\" loc=\"Φ.number.plus\">",
-            "<o name=\"b\" base=\"∅\" loc=\"Φ.number.plus.b\"/>",
-            "<o name=\"λ\" loc=\"Φ.number.plus.λ\"/>",
-            "</o>"
-        );
-        MorphingTest.xmir(
-            temp, "bytes", "<o name=\"φ\" base=\"∅\" loc=\"Φ.bytes.φ\"/>"
-        );
-        final Path tables = Files.createDirectories(temp.resolve("tables"));
+        final Path tables = this.library(temp);
         Files.write(
             tables.resolve("provides.xml"),
             String.join(
@@ -844,6 +820,20 @@ final class MorphingTest {
         Files.write(tables.resolve("atoms.xml"), "<atoms/>".getBytes(StandardCharsets.UTF_8));
         new Planting(tables).exec(temp);
         new Merging(phino).exec(temp);
+    }
+
+    private Path library(final Path temp) throws IOException {
+        MorphingTest.xmir(
+            temp,
+            "number",
+            "<o name=\"φ\" base=\"∅\" loc=\"Φ.number.φ\"/>",
+            "<o name=\"plus\" loc=\"Φ.number.plus\">",
+            "<o name=\"b\" base=\"∅\" loc=\"Φ.number.plus.b\"/>",
+            "<o name=\"λ\" loc=\"Φ.number.plus.λ\"/>",
+            "</o>"
+        );
+        MorphingTest.xmir(temp, "bytes", "<o name=\"φ\" base=\"∅\" loc=\"Φ.bytes.φ\"/>");
+        return Files.createDirectories(temp.resolve("tables"));
     }
 
     private static Path xmir(final Path temp, final String name, final String... body)

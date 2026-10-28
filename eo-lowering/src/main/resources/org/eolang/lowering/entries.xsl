@@ -304,7 +304,7 @@
       </entries>
       <rows>
         <xsl:for-each select="$eo:plan/entry[@λ != '']">
-          <xsl:value-of select="concat(@λ, '&#9;', @loc, '&#9;', @path, string-join((receiver/plant ! concat('&#9;ρ:', @carrier), arg ! concat('&#9;', @name, ':', plant/@carrier)), ''), '&#10;')"/>
+          <xsl:value-of select="@λ || '&#9;' || @loc || '&#9;' || @path || string-join((receiver/plant ! ('&#9;ρ:' || @carrier), arg ! ('&#9;' || @name || ':' || plant/@carrier)), '') || '&#10;'"/>
         </xsl:for-each>
       </rows>
       <table>
