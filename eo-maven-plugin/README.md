@@ -11,19 +11,21 @@ Here is a simple program that gets a year from a command line and tells you
 whether it's leap or not:
 
 ```eo
-[args...] > main
+# Tells whether the year given on the command line is leap.
+
+[args] > main
   [y] > leap
     or. > @
       and.
-        eq. (mod. y 4) 0
-        not. (eq. (mod. y 100) 0)
-      eq. (mod. y 400) 0
-  Q.io.stdout > @
-    Q.string.sprintf
-      "%d is %sa leap year!"
-      (args.get 0).as-int > year!
-      if (leap year:y) "" "not "
-
+        (y.mod 4).eq 0
+        ((y.mod 100).eq 0).not
+      (y.mod 400).eq 0
+  (args.at 0).as-number > year
+  stdout > @
+    "%d is %sa leap year!\n".printf
+      *
+        year
+        (leap year).if "" "not "
 ```
 
 To compile this program, put it into `src/main/eo/main.eo` and then
