@@ -116,9 +116,10 @@
     ? > protocol /Q.number
   [] > stat /Q.posix.stat-return
     ? > path /Q.string
-  [code mode size] > stat-return
+  [code message mode size] > stat-return
     posix.stat-return > called
       code
+      message
       mode
       size
   [code message] > status-return

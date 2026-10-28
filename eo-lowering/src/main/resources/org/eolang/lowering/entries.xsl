@@ -5,7 +5,7 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="entries" version="3.0">
   <!--
-  Here we write the entries of the whole build: one object, "l/", holding an
+  Here we write the entries of the whole build: one object, "l🌵", holding an
   application of every formation that has a body to a symbol for each of its
   voids, so that one run of the calculus over that object folds every
   formation of the world.
@@ -60,8 +60,8 @@
   bound by name: XMIR has no "as" of "ρ". So a formation whose "ρ" is filled
   is written as a dispatch off the planted object, "⟨𝜎5⟩.minus(…)" rather than
   "Φ.number.minus(…)", which binds the same thing the way the calculus does.
-  Next to the mark and the root stands "throw", which every "T" of the copies
-  is a copy of by now. Its λ is in no table of operations, so the calculus
+  Next to the entries stands "throw", which every "T" of the copies is a
+  copy of by now. Its λ is in no table of operations, so the calculus
   stops there, with the message the copy was given still in its protocol.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
@@ -179,42 +179,6 @@
     </xsl:choose>
   </xsl:function>
   <!--
-  The power of two, as a whole number, since XSLT 2.0 has no such function
-  and the bytes of a number are made of them.
-  -->
-  <xsl:function name="eo:two" as="xs:integer">
-    <xsl:param name="k" as="xs:integer"/>
-    <xsl:sequence select="if ($k = 0) then 1 else 2 * eo:two($k - 1)"/>
-  </xsl:function>
-  <!--
-  The whole binary logarithm of a positive whole number, the exponent the
-  double of it carries.
-  -->
-  <xsl:function name="eo:log" as="xs:integer">
-    <xsl:param name="n" as="xs:integer"/>
-    <xsl:sequence select="if ($n lt 2) then 0 else 1 + eo:log($n idiv 2)"/>
-  </xsl:function>
-  <!--
-  A whole number written in hexadecimal, padded on the left to the given
-  count of digits.
-  -->
-  <xsl:function name="eo:hex" as="xs:string">
-    <xsl:param name="v" as="xs:integer"/>
-    <xsl:param name="digits" as="xs:integer"/>
-    <xsl:sequence select="if ($digits = 0) then '' else concat(eo:hex($v idiv 16, $digits - 1), substring('0123456789ABCDEF', ($v mod 16) + 1, 1))"/>
-  </xsl:function>
-  <!--
-  The eight bytes of a positive whole number, as the parser writes the data
-  of a literal: the IEEE 754 double of it, sign zero, the exponent biased by
-  1023, and the mantissa without its leading one.
-  -->
-  <xsl:function name="eo:bytes" as="xs:string">
-    <xsl:param name="n" as="xs:integer"/>
-    <xsl:variable name="log" as="xs:integer" select="eo:log($n)"/>
-    <xsl:variable name="hex" as="xs:string" select="eo:hex((1022 + $log) * eo:two(52) + $n * eo:two(52 - $log), 16)"/>
-    <xsl:sequence select="string-join(for $i in 1 to 8 return substring($hex, $i * 2 - 1, 2), '-')"/>
-  </xsl:function>
-  <!--
   The plan of the whole build, one entry per formation, before a single
   symbol is numbered. The symbols are numbered afterwards by where they stand
   in this tree, which is why the planting is worked out once and written down
@@ -257,16 +221,7 @@
   <xsl:template match="/">
     <planted entries="{count($eo:plan/entry)}" symbols="{count($eo:plan//sym)}" atom="{count($eo:reasons[. = 'atom'])}" bodiless="{count($eo:reasons[. = 'bodiless'])}" placed="{count($eo:reasons[. = 'placed'])}" opaque="{count($eo:reasons[. = 'opaque'])}">
       <object author="eo-lowering">
-        <o name="l/">
-          <o name="mark">
-            <o base="∅" name="n"/>
-            <o base="∅" name="v"/>
-            <o name="λ">L_entry</o>
-          </o>
-          <o name="root">
-            <o base="∅" name="v"/>
-            <o name="λ">L_root</o>
-          </o>
+        <o name="l🌵">
           <o name="throw">
             <o base="∅" name="message"/>
             <o name="λ">L_throw</o>
@@ -287,25 +242,13 @@
     </planted>
   </xsl:template>
   <!--
-  One entry: the formation, applied to what was planted, wrapped in the mark,
-  with the φ of the mark taken. The calculus fires a λ only where a dispatch
-  reads the formation carrying it, so without the dispatch the mark would stay
-  as it was written.
+  One entry: the formation, applied to what was planted. phino dataizes the
+  entry as it is, so it morphs the body on the way and writes every step of
+  the run into the protocol.
   -->
   <xsl:template match="entry" mode="eo:xmir">
-    <o base=".φ" name="e{@n}">
-      <o base="Φ.l/.mark">
-        <o as="n" base="Φ.number">
-          <o as="α0" base="Φ.bytes">
-            <o as="α0">
-              <xsl:value-of select="eo:bytes(xs:integer(@n))"/>
-            </o>
-          </o>
-        </o>
-        <o as="v" base="{@base}">
-          <xsl:apply-templates select="receiver|arg" mode="eo:xmir"/>
-        </o>
-      </o>
+    <o base="{@base}" name="e{@n}">
+      <xsl:apply-templates select="receiver|arg" mode="eo:xmir"/>
     </o>
   </xsl:template>
   <!-- The receiver of a dispatch stands first and carries no name. -->
@@ -343,7 +286,10 @@
   <!--
   A bool carries its symbol inside the fork of its "if", because "bool.eo"
   routes "and", "or", "not" and dataization through that attribute, and a
-  fork is what the run has to see when a branch is taken.
+  fork is what the run has to see when a branch is taken. The fork holds
+  the symbol and its two sides under the names phino gives the copies it
+  fabricates when a join fails, so that one entry of the table answers a
+  planted fork and a fabricated copy alike.
   -->
   <xsl:template match="plant[@carrier = 'bool']" mode="eo:xmir">
     <xsl:param name="as" as="xs:string" select="''"/>
@@ -355,11 +301,13 @@
         <o name="λ">L_fork</o>
         <o base="∅" name="left"/>
         <o base="∅" name="right"/>
-        <o name="φ">
+        <o name="on🌵">
           <o name="λ">
             <xsl:value-of select="concat('𝜎', index-of($eo:symbols, generate-id(sym[1])))"/>
           </o>
         </o>
+        <o base="ξ.left" name="left🌵"/>
+        <o base="ξ.right" name="right🌵"/>
       </o>
     </o>
   </xsl:template>
