@@ -127,18 +127,18 @@
     seq * > @
       o1
       o1.write
-        "part two.\n"
+        "part two.\n".as-bytes
     console.write > o1
-      "part one, "
+      "part one, ".as-bytes
 
   console.write ++> can-write-a-non-ascii-string-to-the-console
-    "héllo, wörld! 日本語\n"
+    "héllo, wörld! 日本語\n".as-bytes
 
-  console.write "" ++> can-write-an-empty-string-to-the-console
+  console.write "".as-bytes ++> can-write-an-empty-string-to-the-console
 
   console.write 48-65-6C-6C-6F-0A ++> can-write-raw-bytes-to-the-console
 
   console.write ++> can-write-to-the-console
-    "Hello, console-test!\n"
+    "Hello, console-test!\n".as-bytes
 
   console --> cannot-dataize-console-directly

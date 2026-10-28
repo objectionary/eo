@@ -301,7 +301,7 @@
 
   posix.send --> stops-on-send-size-exceeding-buffer-length
     0
-    "ab"
+    "ab".as-bytes
     4096
     0
 

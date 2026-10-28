@@ -43,7 +43,7 @@
         seq *
           ^.closed descriptor
           path
-      ^.opened path > descriptor!
+      number (^.opened path)! > descriptor
       os.is-windows.if win32.errno posix.errno > errno
       ^.candidate index > path!
     | 0 > @

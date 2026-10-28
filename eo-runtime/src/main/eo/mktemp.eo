@@ -40,7 +40,7 @@
                   temp.eq ""
                   if.
                     userprofile.eq ""
-                    "C:\\Windows"
+                    "C:\\Windows".as-bytes
                     getenv "USERPROFILE" "" >> userprofile!
                   getenv "TEMP" "" >> temp!
                 getenv "TMP" "" >> tmp!
@@ -52,7 +52,7 @@
                     temp.eq ""
                     if.
                       tempdir.eq ""
-                      "/tmp"
+                      "/tmp".as-bytes
                       getenv "TEMPDIR" "" >> tempdir!
                     temp
                   tmp

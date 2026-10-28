@@ -128,11 +128,11 @@
                   ^.driveless.size.eq 0
                   if.
                     ^.drive.size.eq 0
-                    "."
-                    ^.drive
+                    ".".as-bytes
+                    ^.drive.as-bytes
                   if.
                     core.size.eq 0
-                    "."
+                    ".".as-bytes
                     if.
                       and.
                         body.size.eq 0
@@ -154,7 +154,7 @@
                                       concat. >> core!
                                         ^.drive.concat
                                           ^.is-absolute.if
-                                            ^.unc.if (^.separator.concat ^.separator) ^.separator
+                                            ^.unc.if (^.separator.concat ^.separator) ^.separator.as-bytes
                                             --
                                         ^.separator.joined >> body!
                                           (^.driveless.split ^.separator).reduced
@@ -177,7 +177,7 @@
                                       core.size.plus -1
                                       1
                                     ^.separator
-                            ^.separator
+                            ^.separator.as-bytes
                             --
                       core.concat closing
     [^ other] > resolved
@@ -187,28 +187,26 @@
           string
             if.
               valid.size.eq 0
-              ^.uri
+              ^.uri.as-bytes
               if.
                 gt. (^.sys.drive valid).size 0
-                valid
+                as-bytes.
+                  string (^.sys.sanitized other)! >> valid
                 if.
                   starts-with.
                     string valid
-                    ^.separator.concat ^.separator
-                  valid
+                    string (^.separator.concat ^.separator)
+                  valid.as-bytes
                   if.
                     eq.
-                      slice.
-                        string (^.sys.sanitized other)! >> valid
-                        0
-                        1
+                      valid.slice 0 1
                       ^.separator
                     ^.unc.if
                       ^.share.concat valid
                       ^.drive.concat valid
                     if.
                       ^.uri.size.eq 0
-                      valid
+                      valid.as-bytes
                       concat. (^.uri.concat ^.separator) valid
     sys.separator > separator
     if. > share
@@ -219,7 +217,7 @@
           chunks.at 2
         separator.concat
           chunks.at 3
-      uri
+      uri.as-bytes
     if. > [^ tail] > stripped
       or.
         tail.size.eq 0
@@ -240,7 +238,8 @@
       and.
         driveless.size.gt 1
         driveless.starts-with
-          separator.concat separator
+          string
+            separator.concat separator
   [^location paths] > joined
     normalized. > @
       os.is-windows.if

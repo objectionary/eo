@@ -294,7 +294,7 @@
 
   win32.send --> stops-on-send-size-being-negative
     0
-    "ab"
+    "ab".as-bytes
     -0.5
     0
 

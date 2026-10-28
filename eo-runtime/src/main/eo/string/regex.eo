@@ -2180,8 +2180,8 @@
 
   checked. ++> can-apply-the-fallback-to-the-construct-and-its-offset
     regex.pattern
-      "a**"
-      ""
+      "a**".as-bytes
+      --
     and. > [reason offset]
       reason.eq
         "Dangling meta character '*'"
@@ -2308,8 +2308,8 @@
 
   matches. ++> can-hand-the-checked-pattern-back
     checked.
-      regex.pattern "[a-z]+" ""
-      regex.pattern "fallback" "" > [reason offset]
+      regex.pattern "[a-z]+".as-bytes --
+      regex.pattern "fallback".as-bytes -- > [reason offset]
     "abc"
 
   matches. ++> can-ignore-a-trailing-comment-after-an-inline-flag
@@ -2431,7 +2431,7 @@
   exists. ++> can-match-with-a-pattern-built-from-a-body-and-flags
     next.
       match.
-        regex.pattern "h.LLO" "i"
+        regex.pattern "h.LLO".as-bytes "i".as-bytes
         "hello"
 
   matches. ++> can-match-with-an-inline-flag-switched-off
@@ -2468,222 +2468,222 @@
 
   matches. ++> can-recover-from-a-back-reference
     "/(a)\\1/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-a-braced-hexadecimal-escape
     "/\\x{41}/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-a-character-class-intersection
     "/[a&&b]/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-a-control-escape
     "/\\cA/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-a-dangling-quantifier
     "/a**/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-a-dangling-quantifier-after-a-multibyte-character
     "/ж**/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-a-dangling-quantifier-at-a-two-digit-offset
     "/abcdefghij**/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-a-dangling-quantifier-in-a-pattern-with-flags
     "/a**/i".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-a-flag-letter-it-does-not-read
     "/b/z".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-a-leading-unmatched-closing-parenthesis
     "/)/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-a-look-ahead-group
     "/a(?=b)/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-a-look-behind-group
     "/(?<=a)b/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-a-lowercase-horizontal-whitespace-escape
     "/ab\\h/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-a-missing-closing-slash
     "/pattern".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-a-named-group
     "/(?<n>a)/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-a-nested-character-class
     "/[a[b]]/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-a-pattern-with-a-missing-slash
     "(.)+".regex.compile
-      regex.pattern "no-slash" "" > [message]
+      regex.pattern "no-slash".as-bytes -- > [message]
     "no-slash"
 
   matches. ++> can-recover-from-a-quantifier-after-an-empty-quote
     "/\\Q\\E*/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-a-repetition-count-past-an-int
     "/a{2147483648}/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-a-repetition-maximum-past-an-int
     "/a{1,2147483648}/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-a-trailing-backslash
     "/a\\/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-a-unicode-escape
     "/\\u0041/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-a-unicode-property-class
     "/\\p{L}/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-an-atomic-group
     "/(?>a)/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-an-escape-letter-it-does-not-read
     "/\\R/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-an-illegal-character-range
     "/[z-a]/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-an-illegal-hexadecimal-escape
     "/\\xZ1/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-an-illegal-repetition
     "/a{x}/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-an-illegal-repetition-range
     "/a{3,2}/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-an-octal-escape
     "/\\0101/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-an-unclosed-counted-closure
     "/a{2/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-an-unclosed-group
     "/(/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-an-unknown-group-type
     "/(?$/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-an-unknown-inline-modifier
     "/(?z)/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-an-unmatched-closing-parenthesis
     "/a)/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-an-unsupported-escape-letter
     "/\\g/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-an-unsupported-escape-letter-after-a-literal
     "/ab\\g/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-an-uppercase-horizontal-whitespace-escape
     "/\\H/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-an-uppercase-horizontal-whitespace-escape-after-a-literal
     "/ab\\H/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-an-uppercase-horizontal-whitespace-escape-inside-a-character-class
     "/[\\H]/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-flags-that-carry-regex-syntax
     "/b/i)|(?:a".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-invalid-regex-syntax
     "/[a-z/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-quoting-inside-a-character-class
     "/[\\Qa\\E]/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-recover-from-the-unicode-character-class-modifier
     "/(?U)a/".regex.compile
-      regex.pattern "recovered" "" > [message]
+      regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
   matches. ++> can-repeat-nothing-before-a-leading-brace
@@ -2825,7 +2825,7 @@
   exists. --> stops-on-matching-with-a-body-that-does-not-compile
     next.
       match.
-        regex.pattern "[a-z" ""
+        regex.pattern "[a-z".as-bytes --
         "hello"
 
   searched. --> stops-on-searching-beyond-the-text-length
