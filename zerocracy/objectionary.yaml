@@ -2,12 +2,11 @@
 - added: 8
   cycles: 1
   deleted: 8
-  error: 'Judge find-all-issues stopped by timeout after 9m11s: execution expired'
   inserted: 8
-  seconds: 2451.218724768
+  seconds: 2366.567791656
   version: 0.61.1
   what: judges-summary
-  when: 2026-10-27 22:08:27.685830977 Z
+  when: 2026-10-28 07:54:11.860837845 Z
 - _id: 671
   _job: 12319
   _time: 2024-12-26 02:13:44.824637213 Z
@@ -228304,7 +228303,7 @@
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 46
-  min_issue_was_found: 14
+  min_issue_was_found: 15
   repository: 531151981
   types_were_scanned: 0
   what: iterate
@@ -246700,7 +246699,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 151
   merges_were_scanned: 0
-  min_issue_was_found: 63
+  min_issue_was_found: 199
   min_pull_was_found: 0
   repository: 552394123
   types_were_scanned: 0
@@ -249050,10 +249049,10 @@
   _job: 28730971104
   _time: 2026-07-05 05:47:35.803851951 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1122
+  assignees_were_scanned: 1238
   closures_were_checked: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 25331395277
+  events_were_scanned: 25398963308
   issues_were_scanned: 1226
   labels_were_scanned: 0
   latest_issue_was_found: 347
@@ -249061,7 +249060,7 @@
   min_issue_was_found: 1118
   min_pull_was_found: 335
   repository: 840332960
-  types_were_scanned: 757
+  types_were_scanned: 931
   what: iterate
   where: github
 - _id: 1107889
@@ -250021,7 +250020,7 @@
   assignees_were_scanned: 0
   closures_were_checked: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 25206615619
+  events_were_scanned: 18412017215
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 110
@@ -251436,7 +251435,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 34
   merges_were_scanned: 0
-  min_issue_was_found: 52
+  min_issue_was_found: 53
   min_pull_was_found: 0
   repository: 570457023
   types_were_scanned: 0
@@ -255936,18 +255935,18 @@
   _job: 28918253257
   _time: 2026-07-08 04:55:42.766793739 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1762
+  assignees_were_scanned: 2020
   closures_were_checked: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 25362398824
+  events_were_scanned: 18424612173
   issues_were_scanned: 0
-  labels_were_scanned: 1876
+  labels_were_scanned: 0
   latest_issue_was_found: 365
   merges_were_scanned: 0
-  min_issue_was_found: 1954
+  min_issue_was_found: 2005
   min_pull_was_found: 0
   repository: 977982682
-  types_were_scanned: 2000
+  types_were_scanned: 2094
   what: iterate
   where: github
 - _id: 1108618
@@ -256092,7 +256091,7 @@
   _version: 0.19.9/0.60.2/0.17.17
   assignees_were_scanned: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 25331652294
+  events_were_scanned: 25398251166
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 13
@@ -256619,7 +256618,7 @@
   assignees_were_scanned: 0
   closures_were_checked: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 25332409506
+  events_were_scanned: 25378517701
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 160
@@ -258955,7 +258954,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 480
   merges_were_scanned: 0
-  min_issue_was_found: 249
+  min_issue_was_found: 274
   min_pull_was_found: 306
   repository: 721146770
   types_were_scanned: 0
@@ -258965,10 +258964,10 @@
   _job: 29014863301
   _time: 2026-07-09 11:37:47.706636349 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1076
-  closures_were_checked: 1226
+  assignees_were_scanned: 1380
+  closures_were_checked: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 18351416299
+  events_were_scanned: 18422313719
   issues_were_scanned: 1532
   labels_were_scanned: 0
   latest_issue_was_found: 765
@@ -258976,7 +258975,7 @@
   min_issue_was_found: 1374
   min_pull_was_found: 1018
   repository: 889819508
-  types_were_scanned: 1295
+  types_were_scanned: 1450
   what: iterate
   where: github
 - _id: 1108989
@@ -261110,7 +261109,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 6
   merges_were_scanned: 0
-  min_issue_was_found: 4
+  min_issue_was_found: 5
   min_pull_was_found: 0
   repository: 1219806055
   types_were_scanned: 0
@@ -261128,7 +261127,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 236
   merges_were_scanned: 0
-  min_issue_was_found: 305
+  min_issue_was_found: 306
   min_pull_was_found: 213
   repository: 543969974
   types_were_scanned: 0
@@ -261141,7 +261140,7 @@
   assignees_were_scanned: 0
   closures_were_checked: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 24102624123
+  events_were_scanned: 25375086468
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 63
@@ -261159,12 +261158,12 @@
   assignees_were_scanned: 0
   closures_were_checked: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 25347164761
+  events_were_scanned: 25393617924
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 34
   merges_were_scanned: 0
-  min_issue_was_found: 83
+  min_issue_was_found: 84
   min_pull_was_found: 31
   repository: 396732517
   types_were_scanned: 0
@@ -261174,18 +261173,18 @@
   _job: 29023948844
   _time: 2026-07-09 14:12:52.022407415 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 1690
   closures_were_checked: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 18324289489
+  events_were_scanned: 25376896432
   issues_were_scanned: 1808
   labels_were_scanned: 0
   latest_issue_was_found: 1356
-  merges_were_scanned: 1867
+  merges_were_scanned: 0
   min_issue_was_found: 1717
   min_pull_was_found: 1573
   repository: 671896902
-  types_were_scanned: 1913
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109041
@@ -261198,7 +261197,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 5
   merges_were_scanned: 0
-  min_issue_was_found: 0
+  min_issue_was_found: 6
   min_pull_was_found: 1
   repository: 1260338737
   types_were_scanned: 0
@@ -261229,7 +261228,7 @@
   assignees_were_scanned: 0
   closures_were_checked: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 25330761602
+  events_were_scanned: 25391094926
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 361
@@ -261264,7 +261263,7 @@
   assignees_were_scanned: 0
   closures_were_checked: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 25199597280
+  events_were_scanned: 25373498420
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 69
@@ -261287,7 +261286,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 77
   merges_were_scanned: 0
-  min_issue_was_found: 97
+  min_issue_was_found: 103
   min_pull_was_found: 0
   repository: 492899189
   types_were_scanned: 0
@@ -261300,7 +261299,7 @@
   assignees_were_scanned: 0
   closures_were_checked: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 25335126158
+  events_were_scanned: 25395746843
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 184
@@ -261340,7 +261339,7 @@
   labels_were_scanned: 0
   latest_issue_was_found: 51
   merges_were_scanned: 0
-  min_issue_was_found: 0
+  min_issue_was_found: 21
   min_pull_was_found: 56
   repository: 499536612
   types_were_scanned: 0
@@ -261660,25 +261659,25 @@
   _job: 29023948844
   _time: 2026-07-09 14:18:00.602003022 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 1124
-  closures_were_checked: 1383
+  assignees_were_scanned: 1314
+  closures_were_checked: 0
   earliest_issue_was_found: 1
-  events_were_scanned: 18377207024
+  events_were_scanned: 25401003242
   issues_were_scanned: 0
   labels_were_scanned: 0
   latest_issue_was_found: 686
-  merges_were_scanned: 1414
-  min_issue_was_found: 1259
+  merges_were_scanned: 0
+  min_issue_was_found: 1260
   min_pull_was_found: 1040
   repository: 489321585
-  types_were_scanned: 1411
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109065
   _job: 29023948844
   _time: 2026-07-09 14:18:00.843773666 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 0
+  assignees_were_scanned: 475
   closures_were_checked: 0
   earliest_issue_was_found: 1
   events_were_scanned: 25325105392
@@ -261689,25 +261688,25 @@
   min_issue_was_found: 477
   min_pull_was_found: 410
   repository: 970961472
-  types_were_scanned: 474
+  types_were_scanned: 0
   what: iterate
   where: github
 - _id: 1109066
   _job: 29023948844
   _time: 2026-07-09 14:18:01.067950396 Z
   _version: 0.19.9/0.60.2/0.17.17
-  assignees_were_scanned: 8067
-  closures_were_checked: 7160
+  assignees_were_scanned: 8326
+  closures_were_checked: 8173
   earliest_issue_was_found: 1
-  events_were_scanned: 25361138515
+  events_were_scanned: 18425462756
   issues_were_scanned: 9112
-  labels_were_scanned: 8616
+  labels_were_scanned: 0
   latest_issue_was_found: 4591
-  merges_were_scanned: 9624
+  merges_were_scanned: 0
   min_issue_was_found: 9320
   min_pull_was_found: 5338
   repository: 73056727
-  types_were_scanned: 8410
+  types_were_scanned: 8561
   what: iterate
   where: github
 - _id: 1109067
@@ -868687,6 +868686,7 @@
     \ -->"
   is_human: 1
   issue: 9275
+  receipt: receipt-#102864
   repository: 73056727
   what: bug-report-was-rewarded
   when: 2026-10-23 02:27:33.448353325 Z
@@ -868717,6 +868717,7 @@
     \ -->"
   is_human: 1
   issue: 9276
+  receipt: receipt-#102863
   repository: 73056727
   what: bug-report-was-rewarded
   when: 2026-10-23 02:27:38.207112550 Z
@@ -868736,6 +868737,7 @@
     <!-- Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+5544](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  -->
   is_human: 1
   issue: 9278
+  receipt: receipt-#102862
   repository: 73056727
   what: bug-report-was-rewarded
   when: 2026-10-23 02:27:42.038353607 Z
@@ -871496,6 +871498,7 @@
     \ -->"
   is_human: 1
   issue: 1908
+  receipt: receipt-#102861
   repository: 977982682
   what: bug-report-was-rewarded
   when: 2026-10-23 14:24:08.326603961 Z
@@ -871515,6 +871518,7 @@
     <!-- Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+66](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  -->
   is_human: 1
   issue: 1920
+  receipt: receipt-#102860
   repository: 977982682
   what: bug-report-was-rewarded
   when: 2026-10-23 14:24:13.833884890 Z
@@ -878835,6 +878839,7 @@
   hoc: 221
   is_human: 1
   issue: 8992
+  receipt: receipt-#102865
   repository: 73056727
   review_comments: 0
   seconds: 951
@@ -880185,7 +880190,7 @@
   succeeded_builds: 24
   suggestions: 0
   what: pull-was-merged
-  when: 2026-10-26 15:07:06.000000000 Z
+  when: &9309 2026-10-26 15:07:06.000000000 Z
   where: github
   who: 526301
 - _id: 1144478
@@ -880211,7 +880216,7 @@
   succeeded_builds: 25
   suggestions: 0
   what: pull-was-merged
-  when: 2026-10-26 15:37:47.000000000 Z
+  when: &9310 2026-10-26 15:37:47.000000000 Z
   where: github
   who: 526301
 - _id: 1144479
@@ -880237,7 +880242,7 @@
   succeeded_builds: 19
   suggestions: 0
   what: pull-was-merged
-  when: 2026-10-26 15:53:08.000000000 Z
+  when: &9311 2026-10-26 15:53:08.000000000 Z
   where: github
   who: 526301
 - _id: 1144480
@@ -880263,7 +880268,7 @@
   succeeded_builds: 25
   suggestions: 0
   what: pull-was-merged
-  when: 2026-10-26 16:06:29.000000000 Z
+  when: &9312 2026-10-26 16:06:29.000000000 Z
   where: github
   who: 526301
 - _id: 1144481
@@ -880289,7 +880294,7 @@
   succeeded_builds: 18
   suggestions: 0
   what: pull-was-merged
-  when: 2026-10-26 17:02:00.000000000 Z
+  when: &9313 2026-10-26 17:02:00.000000000 Z
   where: github
   who: 526301
 - _id: 1144482
@@ -880315,7 +880320,7 @@
   succeeded_builds: 17
   suggestions: 0
   what: pull-was-merged
-  when: 2026-10-26 17:20:25.000000000 Z
+  when: &9314 2026-10-26 17:20:25.000000000 Z
   where: github
   who: 526301
 - _id: 1144483
@@ -880341,7 +880346,7 @@
   succeeded_builds: 25
   suggestions: 0
   what: pull-was-merged
-  when: 2026-10-26 18:20:35.000000000 Z
+  when: &9315 2026-10-26 18:20:35.000000000 Z
   where: github
   who: 526301
 - _id: 1144484
@@ -880367,7 +880372,7 @@
   succeeded_builds: 25
   suggestions: 0
   what: pull-was-merged
-  when: 2026-10-26 19:00:08.000000000 Z
+  when: &9316 2026-10-26 19:00:08.000000000 Z
   where: github
   who: 526301
 - _id: 1144485
@@ -880681,7 +880686,7 @@
   repository: 73056727
   review_comments: 0
   what: pull-was-reviewed
-  when: 2026-10-27 16:50:44.000000000 Z
+  when: &9308 2026-10-27 16:50:44.000000000 Z
   where: github
   who: 526301
 - _id: 1144500
@@ -880703,6 +880708,7 @@
   issue: 9558
   repository: 73056727
   review: 2026-10-27 16:50:43.000000000 Z
+  review_comments: 0
   succeeded_builds: 10
   suggestions: 0
   what: pull-was-merged
@@ -880843,6 +880849,702 @@
   label: bug
   repository: 889819508
   what: label-was-attached
-  when: 2026-10-27 06:20:12.000000000 Z
+  when: &9317 2026-10-27 06:20:12.000000000 Z
+  where: github
+  who: 526301
+- _id: 1144512
+  _job: 102575
+  _time: 2026-10-27 22:09:46.723963543 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  author: 29139614
+  comments: 4
+  details: The pull request objectionary/eo#9558 with 2 HoC created by @renovate[bot]
+    was reviewed by @yegor256 after 1w and 4 comments.
+  hoc: 2
+  is_human: 1
+  issue: 9558
+  repository: 73056727
+  review_comments: 0
+  seconds: 625040
+  what: code-was-reviewed
+  when: *9308
+  where: github
+  who: 526301
+- _id: 1144513
+  _job: 102575
+  _time: 2026-10-27 22:09:58.758151538 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  comments: 1
+  details: The pull request objectionary/phino#2143 with 40 HoC created by @yegor256
+    was merged by @yegor256 after 9m30s of being in review and 1 comments.
+  hoc: 40
+  is_human: 1
+  issue: 2143
+  merger: 526301
+  repository: 977982682
+  review_comments: 0
+  seconds: 570
+  what: code-was-contributed
+  when: *9309
+  where: github
+  who: 526301
+- _id: 1144514
+  _job: 102575
+  _time: 2026-10-27 22:09:59.552629955 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  comments: 1
+  details: The pull request objectionary/phino#2146 with 2273 HoC created by @yegor256
+    was merged by @yegor256 after 7m24s of being in review and 1 comments.
+  hoc: 2273
+  is_human: 1
+  issue: 2146
+  merger: 526301
+  repository: 977982682
+  review_comments: 0
+  seconds: 444
+  what: code-was-contributed
+  when: *9310
+  where: github
+  who: 526301
+- _id: 1144515
+  _job: 102575
+  _time: 2026-10-27 22:10:00.101774302 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  comments: 0
+  details: The pull request objectionary/phino#2148 with 783 HoC created by @yegor256
+    was merged by @yegor256 after 9m30s of being in review and 0 comments.
+  hoc: 783
+  is_human: 1
+  issue: 2148
+  merger: 526301
+  repository: 977982682
+  review_comments: 0
+  seconds: 570
+  what: code-was-contributed
+  when: *9311
+  where: github
+  who: 526301
+- _id: 1144516
+  _job: 102575
+  _time: 2026-10-27 22:10:00.650906824 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  comments: 2
+  details: The pull request objectionary/phino#2149 with 848 HoC created by @yegor256
+    was merged by @yegor256 after 3m37s of being in review and 2 comments.
+  hoc: 848
+  is_human: 1
+  issue: 2149
+  merger: 526301
+  repository: 977982682
+  review_comments: 0
+  seconds: 217
+  what: code-was-contributed
+  when: *9312
+  where: github
+  who: 526301
+- _id: 1144517
+  _job: 102575
+  _time: 2026-10-27 22:10:01.198534130 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  comments: 1
+  details: The pull request objectionary/phino#2154 with 347 HoC created by @yegor256
+    was merged by @yegor256 after 3m55s of being in review and 1 comments.
+  hoc: 347
+  is_human: 1
+  issue: 2154
+  merger: 526301
+  repository: 977982682
+  review_comments: 0
+  seconds: 235
+  what: code-was-contributed
+  when: *9313
+  where: github
+  who: 526301
+- _id: 1144518
+  _job: 102575
+  _time: 2026-10-27 22:10:01.768728530 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  comments: 2
+  details: The pull request objectionary/phino#2155 with 19 HoC created by @yegor256
+    was merged by @yegor256 after 3m55s of being in review and 2 comments.
+  hoc: 19
+  is_human: 1
+  issue: 2155
+  merger: 526301
+  repository: 977982682
+  review_comments: 0
+  seconds: 235
+  what: code-was-contributed
+  when: *9314
+  where: github
+  who: 526301
+- _id: 1144519
+  _job: 102575
+  _time: 2026-10-27 22:10:02.320405817 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  comments: 2
+  details: The pull request objectionary/phino#2156 with 78 HoC created by @yegor256
+    was merged by @yegor256 after 4m45s of being in review and 2 comments.
+  hoc: 78
+  is_human: 1
+  issue: 2156
+  merger: 526301
+  repository: 977982682
+  review_comments: 0
+  seconds: 285
+  what: code-was-contributed
+  when: *9315
+  where: github
+  who: 526301
+- _id: 1144520
+  _job: 102575
+  _time: 2026-10-27 22:10:02.875366339 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  comments: 2
+  details: The pull request objectionary/phino#2157 with 2797 HoC created by @yegor256
+    was merged by @yegor256 after 4m19s of being in review and 2 comments.
+  hoc: 2797
+  is_human: 1
+  issue: 2157
+  merger: 526301
+  repository: 977982682
+  review_comments: 0
+  seconds: 259
+  what: code-was-contributed
+  when: *9316
+  where: github
+  who: 526301
+- _id: 1144521
+  _job: 102575
+  _time: 2026-10-27 22:10:07.845898588 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  details: "@yegor256 attached the '#bug' label to objectionary/lints#1598 reported
+    by @opusstudiohq-max; this means that a bug was accepted as valid, by the project
+    team."
+  is_human: 1
+  issue: 1598
+  reporter: 276356426
+  repository: 889819508
+  what: bug-was-accepted
+  when: *9317
+  where: github
+  who: 526301
+- _id: 1144522
+  _job: 102575
+  _time: 2026-10-27 22:10:33.799331561 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  award: 12
+  details: It's time to reward @morphqdd for the bug reported in objectionary/phino#2098,
+    the reward amount is 12.
+  greeting: "Hey, nice catch on that bug! \U0001F389 Since it got accepted, you've
+    earned **+12** points, as per our policy of rewarding every accepted bug report.
+    Keep an eye out for anything that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html)
+    right in the repo — [don't hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html)
+    to [report it](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html),
+    it genuinely helps us keep quality high. You're now sitting at [+5832](https://www.eolang.org/zerocracy/objectionary-vitals.html)
+    overall, so go check your [Zerocracy account](https://www.zerocracy.com/) to see
+    it reflected there too!\n\n<!-- Thanks for reporting a new bug! You've earned
+    +12 points. By reporting bugs, you help our project improve its quality. If you
+    find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html)
+    as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html)
+    to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
+    it. Your running score is [+5832](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).
+    \ -->"
+  is_human: 1
+  issue: 2098
+  repository: 977982682
+  what: bug-report-was-rewarded
+  when: 2026-10-27 22:10:33.801471285 Z
+  where: github
+  who: 125282851
+  why: Reported bug in objectionary/phino#2098
+- _id: 1144523
+  _job: 102575
+  _time: 2026-10-27 22:10:39.020140962 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  award: 12
+  details: It's time to reward @morphqdd for the bug reported in objectionary/phino#2099,
+    the reward amount is 12.
+  greeting: |-
+    Thanks for reporting a new bug! As [our policy](#) states, every accepted bug report earns a flat **12** points, and you've got them. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+5844](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too.
+
+    <!-- Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+5844](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  -->
+  is_human: 1
+  issue: 2099
+  repository: 977982682
+  what: bug-report-was-rewarded
+  when: 2026-10-27 22:10:39.022092309 Z
+  where: github
+  who: 125282851
+  why: Reported bug in objectionary/phino#2099
+- _id: 1144524
+  _job: 102575
+  _time: 2026-10-27 22:10:42.961304137 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  award: 12
+  details: It's time to reward @morphqdd for the bug reported in objectionary/phino#2100,
+    the reward amount is 12.
+  greeting: |-
+    Thanks for reporting a new bug! Per our [work policy](#), accepted bug reports earn a flat **+12** points bonus, and you've just received it. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+5856](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too.
+
+    <!-- Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you help our project improve its quality. If you find anything else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html) as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html) to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html) it. Your running score is [+5856](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  -->
+  is_human: 1
+  issue: 2100
+  repository: 977982682
+  what: bug-report-was-rewarded
+  when: 2026-10-27 22:10:42.963328464 Z
+  where: github
+  who: 125282851
+  why: Reported bug in objectionary/phino#2100
+- _id: 1144525
+  _job: 102575
+  _time: 2026-10-27 22:10:47.224446323 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  award: 12
+  details: It's time to reward @morphqdd for the bug reported in objectionary/phino#2101,
+    the reward amount is 12.
+  greeting: "\U0001F389 Thanks for reporting a new bug! You've earned **+12 points**.
+    Bug reports like yours help keep our project healthy — if you spot anything else
+    that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html)
+    right, [don't hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html)
+    to [report it](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html).
+    Your running score is now [+5868](https://www.eolang.org/zerocracy/objectionary-vitals.html)
+    — check your [Zerocracy account](https://www.zerocracy.com/) for details.\n\n<!--
+    Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you
+    help our project improve its quality. If you find anything else in the repository
+    that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html)
+    as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html)
+    to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
+    it. Your running score is [+5868](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).
+    \ -->"
+  is_human: 1
+  issue: 2101
+  repository: 977982682
+  what: bug-report-was-rewarded
+  when: 2026-10-27 22:10:47.258155977 Z
+  where: github
+  who: 125282851
+  why: Reported bug in objectionary/phino#2101
+- _id: 1144526
+  _job: 102575
+  _time: 2026-10-27 22:10:50.813425644 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  award: 12
+  details: It's time to reward @renyamamoto2026-cmyk for the bug reported in objectionary/phino#2102,
+    the reward amount is 12.
+  greeting: "Hey, nice catch on that bug! \U0001F389 Since it was accepted by the
+    team, you've just earned **+12** points, easy as that. Bug reports like yours
+    genuinely help keep our project in good shape, so if you spot anything else that
+    [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html)
+    quite right, [don't hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html)
+    to [report it](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html).
+    You're now sitting at [+72](https://www.eolang.org/zerocracy/objectionary-vitals.html)
+    overall, keep an eye on your [Zerocracy account](https://www.zerocracy.com/) for
+    the full picture!\n\n<!-- Thanks for reporting a new bug! You've earned +12 points.
+    By reporting bugs, you help our project improve its quality. If you find anything
+    else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html)
+    as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html)
+    to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
+    it. Your running score is [+72](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).
+    \ -->"
+  is_human: 1
+  issue: 2102
+  repository: 977982682
+  what: bug-report-was-rewarded
+  when: 2026-10-27 22:10:50.815384873 Z
+  where: github
+  who: 344213295
+  why: Reported bug in objectionary/phino#2102
+- _id: 1144527
+  _job: 102575
+  _time: 2026-10-27 22:10:54.775844676 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  award: 12
+  details: It's time to reward @renyamamoto2026-cmyk for the bug reported in objectionary/phino#2104,
+    the reward amount is 12.
+  greeting: "\U0001F389 Thanks for reporting a new bug! You've earned **+12 points**.
+    Bug reports like yours help keep our project in top shape. If you spot anything
+    else in the repository that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html)
+    quite right, [don't hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html)
+    to [report it](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html).
+    Your running score is now [+84](https://www.eolang.org/zerocracy/objectionary-vitals.html)
+    — don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too!\n\n<!--
+    Thanks for reporting a new bug! You've earned +12 points. By reporting bugs, you
+    help our project improve its quality. If you find anything else in the repository
+    that [doesn't look](https://www.yegor256.com/2018/02/06/where-to-find-more-bugs.html)
+    as good as you might expect, [do not hesitate](https://www.yegor256.com/2014/04/13/bugs-are-welcome.html)
+    to [report](https://www.yegor256.com/2018/04/24/right-way-to-report-bugs.html)
+    it. Your running score is [+84](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).
+    \ -->"
+  is_human: 1
+  issue: 2104
+  repository: 977982682
+  what: bug-report-was-rewarded
+  when: 2026-10-27 22:10:54.777883385 Z
+  where: github
+  who: 344213295
+  why: Reported bug in objectionary/phino#2104
+- _id: 1144528
+  _job: 102575
+  _time: 2026-10-27 22:11:01.449412142 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  award: 4
+  comments: 1
+  details: It's time to reward @yegor256 for the code contributed in objectionary/hone-maven-plugin#1173,
+    the reward amount is 4.
+  greeting: 'Thanks for the contribution! You''ve earned +4 points for this: +16 as
+    a basis; -8 for the lack of code review; -4 for too few (27) hits-of-code. Please,
+    [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming.
+    Your running score is [+2180](https://www.eolang.org/zerocracy/objectionary-vitals.html);
+    don''t forget to check your [Zerocracy account](https://www.zerocracy.com/) too). '
+  hoc: 27
+  is_human: 1
+  issue: 1173
+  repository: 840332960
+  review_comments: 0
+  seconds: 287
+  what: code-contribution-was-rewarded
+  when: 2026-10-27 22:11:01.454573199 Z
+  where: github
+  who: 526301
+  why: Contributed code in objectionary/hone-maven-plugin#1173
+- _id: 1144529
+  _job: 102575
+  _time: 2026-10-27 22:11:13.234023672 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  award: 4
+  comments: 0
+  details: It's time to reward @yegor256 for the code contributed in objectionary/hone-maven-plugin#1174,
+    the reward amount is 4.
+  greeting: |-
+    Hey, nice work on this one! Here's the breakdown of your **+4** points: you start with **16** as the base, get a tiny **+0.2** for your **4** hits-of-code (0.05 each), but lose **8** for skipping [code review](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) and another **4** since you're under the **40** hits-of-code threshold — and since the total dipped below the **4**-point floor, that's where it lands. Next time, try pairing up for a review and pushing a bit more code to boost your score! Your running total is now [+2184](https://www.eolang.org/zerocracy/objectionary-vitals.html) — keep it up, and don't forget to peek at your [Zerocracy account](https://www.zerocracy.com/) too.
+
+    <!-- Thanks for the contribution! You've earned +4 points for this: +16 as a basis; -8 for the lack of code review; -4 for too few (4) hits-of-code. Please, [keep](https://www.yegor256.com/2018/03/06/speed-vs-quality.html) them coming. Your running score is [+2184](https://www.eolang.org/zerocracy/objectionary-vitals.html); don't forget to check your [Zerocracy account](https://www.zerocracy.com/) too).  -->
+  hoc: 4
+  is_human: 1
+  issue: 1174
+  repository: 840332960
+  review_comments: 0
+  seconds: 68
+  what: code-contribution-was-rewarded
+  when: 2026-10-27 22:11:13.240494379 Z
+  where: github
+  who: 526301
+  why: Contributed code in objectionary/hone-maven-plugin#1174
+- _id: 1144530
+  _job: 40648694710
+  _time: 2026-10-28 07:16:14.153508576 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  commit: 1ecfa9de518455f799c0bfd4565caf7d9e79ddab
+  default_branch: master
+  details: 'A new Git push #47960810528 has arrived to objectionary/proof, made by
+    @yegor256 (default branch is "master"), not associated with any pull request.'
+  event_id: 25375086468
+  event_type: PushEvent
+  is_human: 1
+  push_id: 47960810528
+  ref: refs/heads/master
+  repository: 731516758
+  to_master: 1
+  what: git-was-pushed
+  when: 2026-10-27 13:05:47.000000000 Z
+  where: github
+  who: 526301
+- _id: 1144531
+  _job: 40648694710
+  _time: 2026-10-28 07:16:27.964571520 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  commit: c51fb697400a9b4b402d0926b15fe14a218668d9
+  default_branch: master
+  details: 'A new Git push #47964784915 has arrived to objectionary/calculus-paper,
+    made by @yegor256 (default branch is "master"), not associated with any pull request.'
+  event_id: 25398251166
+  event_type: PushEvent
+  is_human: 1
+  push_id: 47964784915
+  ref: refs/heads/master
+  repository: 784310467
+  to_master: 1
+  what: git-was-pushed
+  when: 2026-10-27 13:40:55.000000000 Z
+  where: github
+  who: 526301
+- _id: 1144532
+  _job: 40648694710
+  _time: 2026-10-28 07:25:54.387593500 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  branch: renovate/trufflesecurity-trufflehog-digest
+  comments: 4
+  comments_appreciated: 1
+  comments_by_author: 0
+  comments_by_reviewers: 4
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/eo#9626 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 2
+  is_human: 0
+  issue: 9626
+  repository: 73056727
+  review: 2026-10-28 02:36:38.000000000 Z
+  succeeded_builds: 10
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-10-28 03:06:33.000000000 Z
+  where: github
+  who: 8086956
+- _id: 1144533
+  _job: 40648694710
+  _time: 2026-10-28 07:27:44.670512547 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  branch: '2158'
+  comments: 2
+  comments_appreciated: 0
+  comments_by_author: 1
+  comments_by_reviewers: 1
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/phino#2159 has been "pull-was-merged".
+  failed_builds: 0
+  files: 37
+  hoc: 653
+  is_human: 1
+  issue: 2159
+  repository: 977982682
+  review: 2026-10-26 19:28:13.000000000 Z
+  succeeded_builds: 25
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-10-26 19:45:57.000000000 Z
+  where: github
+  who: 526301
+- _id: 1144534
+  _job: 40648694710
+  _time: 2026-10-28 07:28:08.970862373 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  branch: '2160'
+  comments: 0
+  comments_appreciated: 0
+  comments_by_author: 0
+  comments_by_reviewers: 0
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/phino#2161 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 1715
+  is_human: 1
+  issue: 2161
+  repository: 977982682
+  review: 2026-10-26 19:34:25.000000000 Z
+  succeeded_builds: 19
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-10-26 19:36:00.000000000 Z
+  where: github
+  who: 526301
+- _id: 1144535
+  _job: 40648694710
+  _time: 2026-10-28 07:28:27.878975294 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  branch: version-up
+  comments: 3
+  comments_appreciated: 1
+  comments_by_author: 0
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/phino#2162 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 4
+  is_human: 1
+  issue: 2162
+  repository: 977982682
+  succeeded_builds: 0
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-10-27 08:31:01.000000000 Z
+  where: github
+  who: 526301
+- _id: 1144536
+  _job: 40648694710
+  _time: 2026-10-28 07:28:50.971784359 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  branch: renovate/reviewdog-action-actionlint-1.x
+  comments: 3
+  comments_appreciated: 1
+  comments_by_author: 0
+  comments_by_reviewers: 3
+  comments_resolved: 0
+  comments_to_code: 0
+  details: Apparently, objectionary/hone-maven-plugin#1334 has been "pull-was-merged".
+  failed_builds: 0
+  files: 1
+  hoc: 2
+  is_human: 0
+  issue: 1334
+  repository: 840332960
+  review: 2026-10-28 02:28:28.000000000 Z
+  succeeded_builds: 14
+  suggestions: 0
+  what: pull-was-merged
+  when: 2026-10-28 02:34:34.000000000 Z
+  where: github
+  who: 8086956
+- _id: 1144537
+  _job: 40648694710
+  _time: 2026-10-28 07:35:13.508574460 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  details: 'We found out that the user #49488521 is known in GitHub as @stanislavkozachenko.'
+  is_human: 1
+  name: stanislavkozachenko
+  what: who-has-name
+  when: 2026-10-28 07:35:13.511988148 Z
+  where: github
+  who: 49488521
+- _id: 1144538
+  _job: 40648694710
+  _time: 2026-10-28 07:36:32.623296738 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  details: The "bug" label was attached by @yegor256 to the issue objectionary/phino#2160.
+  is_human: 1
+  issue: 2160
+  label: bug
+  repository: 977982682
+  what: label-was-attached
+  when: 2026-10-26 19:29:14.000000000 Z
+  where: github
+  who: 526301
+- _id: 1144539
+  _job: 40648694710
+  _time: 2026-10-28 07:39:29.254898680 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  details: The "bug" label was attached by @yegor256 to the issue objectionary/lints#1599.
+  is_human: 1
+  issue: 1599
+  label: bug
+  repository: 889819508
+  what: label-was-attached
+  when: 2026-10-28 07:34:59.000000000 Z
+  where: github
+  who: 526301
+- _id: 1144540
+  _job: 40648694710
+  _time: 2026-10-28 07:39:30.897053731 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  details: The "bug" label was attached by @yegor256 to the issue objectionary/lints#1600.
+  is_human: 1
+  issue: 1600
+  label: bug
+  repository: 889819508
+  what: label-was-attached
+  when: 2026-10-28 07:34:57.000000000 Z
+  where: github
+  who: 526301
+- _id: 1144541
+  _job: 40648694710
+  _time: 2026-10-28 07:39:32.347179524 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  details: The "bug" label was attached by @yegor256 to the issue objectionary/lints#1601.
+  is_human: 1
+  issue: 1601
+  label: bug
+  repository: 889819508
+  what: label-was-attached
+  when: 2026-10-28 07:34:56.000000000 Z
+  where: github
+  who: 526301
+- _id: 1144542
+  _job: 40648694710
+  _time: 2026-10-28 07:44:18.257069943 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  details: The issue objectionary/phino#2196 has been earlier opened by @yegor256.
+  issue: 2196
+  repository: 977982682
+  what: issue-was-opened
+  when: 2026-10-28 05:09:14.000000000 Z
+  where: github
+  who: 526301
+- _id: 1144543
+  _job: 40648694710
+  _time: 2026-10-28 07:44:18.887587509 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  details: The issue objectionary/phino#2195 has been earlier opened by @yegor256.
+  issue: 2195
+  repository: 977982682
+  what: issue-was-opened
+  when: 2026-10-28 04:55:31.000000000 Z
+  where: github
+  who: 526301
+- _id: 1144544
+  _job: 40648694710
+  _time: 2026-10-28 07:44:19.459358567 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  details: The issue objectionary/phino#2192 has been earlier opened by @yegor256.
+  issue: 2192
+  repository: 977982682
+  what: issue-was-opened
+  when: 2026-10-28 03:18:52.000000000 Z
+  where: github
+  who: 526301
+- _id: 1144545
+  _job: 40648694710
+  _time: 2026-10-28 07:44:19.969910755 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  details: The issue objectionary/phino#2187 has been earlier opened by @yegor256.
+  issue: 2187
+  repository: 977982682
+  what: issue-was-opened
+  when: 2026-10-27 15:58:02.000000000 Z
+  where: github
+  who: 526301
+- _id: 1144546
+  _job: 40648694710
+  _time: 2026-10-28 07:44:20.514767325 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  details: The issue objectionary/phino#2180 has been earlier opened by @stanislavkozachenko.
+  issue: 2180
+  repository: 977982682
+  what: issue-was-opened
+  when: 2026-10-27 13:29:09.000000000 Z
+  where: github
+  who: 49488521
+- _id: 1144547
+  _job: 40648694710
+  _time: 2026-10-28 07:44:21.079866562 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  details: The issue objectionary/phino#2174 has been earlier opened by @yegor256.
+  issue: 2174
+  repository: 977982682
+  what: issue-was-opened
+  when: 2026-10-27 12:40:38.000000000 Z
+  where: github
+  who: 526301
+- _id: 1144548
+  _job: 40648694710
+  _time: 2026-10-28 07:44:21.655349236 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  details: The issue objectionary/phino#2169 has been earlier opened by @yegor256.
+  issue: 2169
+  repository: 977982682
+  what: issue-was-opened
+  when: 2026-10-27 12:05:32.000000000 Z
+  where: github
+  who: 526301
+- _id: 1144549
+  _job: 40648694710
+  _time: 2026-10-28 07:44:22.208639447 Z
+  _version: 0.19.16/0.61.1/0.17.23
+  details: The issue objectionary/phino#2168 has been earlier opened by @yegor256.
+  issue: 2168
+  repository: 977982682
+  what: issue-was-opened
+  when: 2026-10-27 12:05:03.000000000 Z
   where: github
   who: 526301
