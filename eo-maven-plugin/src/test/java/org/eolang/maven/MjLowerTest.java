@@ -7,6 +7,7 @@ package org.eolang.maven;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -72,7 +73,7 @@ final class MjLowerTest {
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "a goal with no phino to run must skip and write nothing, but it wrote something",
-            new Subdir(temp.resolve("target"), "lowering").path().toFile().list(),
+            new Seqdir(temp.resolve("target"), 2).dirs().once("lowering").toFile().list(),
             Matchers.emptyArray()
         );
     }
@@ -81,7 +82,7 @@ final class MjLowerTest {
     @DisabledOnOs(OS.WINDOWS)
     void createsItsFolderWhenPhinoReportsThePinnedVersion(@Mktmp final Path temp)
         throws IOException {
-        final Path home = new Subdir(temp.resolve("target"), "lowering").path();
+        final Path home = new Seqdir(temp.resolve("target"), 2).dirs().once("lowering");
         new FakeMaven(temp)
             .with("lowering", true)
             .with("binary", MjLowerTest.binary(temp))
@@ -110,7 +111,7 @@ final class MjLowerTest {
             "the goal must hand its atoms to javac as a source root, but it didnt",
             project.getCompileSourceRoots(),
             Matchers.hasItem(
-                new Subdir(temp.resolve("target"), "lowering").path()
+                new Seqdir(temp.resolve("target"), 2).dirs().once("lowering")
                     .resolve("3-atoms")
                     .toAbsolutePath()
                     .toString()
@@ -134,7 +135,7 @@ final class MjLowerTest {
                 .find("foo.x.main")
                 .xmir(),
             Matchers.equalTo(
-                new Subdir(temp.resolve("target"), "lowering").path()
+                new Seqdir(temp.resolve("target"), 2).dirs().once("lowering")
                     .resolve("4-patched/main.xmir")
                     .toAbsolutePath()
             )
@@ -149,7 +150,7 @@ final class MjLowerTest {
             .execute(MjParse.class);
         Files.write(
             Files.createDirectories(
-                new Subdir(temp.resolve("target"), "lowering").path().resolve("4-patched")
+                new Seqdir(temp.resolve("target"), 2).dirs().once("lowering").resolve("4-patched")
             ).resolve("main.xmir"),
             "<object/>".getBytes(StandardCharsets.UTF_8)
         );
@@ -165,7 +166,7 @@ final class MjLowerTest {
                 .xmir(),
             Matchers.not(
                 Matchers.equalTo(
-                    new Subdir(temp.resolve("target"), "lowering").path()
+                    new Seqdir(temp.resolve("target"), 2).dirs().once("lowering")
                         .resolve("4-patched/main.xmir")
                         .toAbsolutePath()
                 )
@@ -187,7 +188,7 @@ final class MjLowerTest {
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "a run out of its budget must keep its protocol for study, but it doesnt",
-            new Subdir(temp.resolve("target"), "lowering").path()
+            new Seqdir(temp.resolve("target"), 2).dirs().once("lowering")
                 .resolve("2-protocols/gap.xml")
                 .toFile(),
             FileMatchers.anExistingFile()
@@ -207,7 +208,7 @@ final class MjLowerTest {
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "the goal must save the text of an entry when asked, but it didnt",
-            new Subdir(temp.resolve("target"), "lowering").path()
+            new Seqdir(temp.resolve("target"), 2).dirs().once("lowering")
                 .resolve("texts/gap.txt")
                 .toFile(),
             FileMatchers.anExistingFile()
@@ -311,7 +312,7 @@ final class MjLowerTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void plantsTheEntriesOfTheProgramItCompiled(@Mktmp final Path temp) throws IOException {
-        final Path home = new Subdir(temp.resolve("target"), "lowering").path();
+        final Path home = new Seqdir(temp.resolve("target"), 2).dirs().once("lowering");
         new FakeMaven(temp)
             .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
             .execute(MjParse.class)
