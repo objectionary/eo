@@ -19,11 +19,9 @@ import java.util.stream.Stream;
 import org.cactoos.Proc;
 import org.cactoos.Scalar;
 import org.cactoos.Text;
-import org.cactoos.bytes.BytesOf;
 import org.cactoos.bytes.Sha256DigestOf;
 import org.cactoos.experimental.Threads;
 import org.cactoos.io.InputOf;
-import org.cactoos.io.ResourceOf;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
@@ -55,13 +53,13 @@ import org.eolang.cache.GlobalCache;
  * line from {@link Progress} that says how much work is done.</p>
  *
  * <p>phino is allowed to write down only the operations that are listed in
- * the file {@code atoms.yaml}, such as adding two numbers. Before the runs,
- * this stage copies that file from the resources of the module into the
- * directory of the world, so that anybody can see what phino was told,
- * next to what phino answered. When phino meets an atom that is not in the
- * file, it leaves that atom as it is. Then the entry becomes a taint:
- * nothing is guessed about it, and nothing about it is turned into
- * Java.</p>
+ * the file {@code atoms.yaml}, such as adding two numbers. {@link Planting}
+ * writes that file into the directory of the world, next to where phino
+ * answers: the operations of the atoms of the library, from the resources
+ * of the module, and one row for every object the planting gave a row
+ * to. When phino meets an atom that is not in the file, it leaves that
+ * atom as it is. Then the entry becomes a taint: nothing is guessed about
+ * it, and nothing about it is turned into Java.</p>
  *
  * <p>Every run has two limits. The first limit is the largest number of
  * steps phino may take inside one another. This limit is needed because
@@ -194,12 +192,15 @@ final class Morphing implements Proc<Path> {
                 )
             );
         }
-        final Path atoms = Files.write(
-            home.resolve("atoms.yaml"),
-            new IoChecked<>(
-                () -> new BytesOf(new ResourceOf("org/eolang/lowering/atoms.yaml")).asBytes()
-            ).value()
-        );
+        final Path atoms = home.resolve("atoms.yaml");
+        if (!Files.exists(atoms)) {
+            throw new IllegalStateException(
+                String.format(
+                    "There is no '%s', while morphing needs the table of operations the planting writes",
+                    atoms
+                )
+            );
+        }
         final Path protocols = new Seqdir(home, 1).dirs().once("protocols");
         final Path texts = home.resolve("texts");
         for (final Path dir : new ListOf<>(protocols, texts)) {

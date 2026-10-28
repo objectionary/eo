@@ -322,8 +322,8 @@ final class MjLowerTest {
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "the goal must plant the formations of the program it compiled, but it didnt",
-            new XMLDocument(home.resolve("entries.xmir")).xpath("//o[@name='e1']/@base"),
-            Matchers.contains("Φ.gap")
+            new XMLDocument(home.resolve("entries.xmir")).xpath("//o[@name='e1']//o/@base"),
+            Matchers.hasItem("Φ.gap")
         );
     }
 

@@ -50,12 +50,29 @@
   renamed its "as" after the void it lands in, and a name is a step the
   calculus can take where an index is not. The tables are still asked by the
   locator, since that is what their rows are keyed on.
-  What the body of a formation returns is not asked here. A formation gets
-  an entry whatever its body is, since the atom may return the root as the
-  object it is, a copy of another object for example, and only the
-  rendering, when the root turns out to be bare data, asks the tables
-  about the body. Every formation left out is counted by the reason it is
-  left out for.
+  A formation gets an entry whatever its body returns, since the atom may
+  return the root as the object it is, a copy of another object for
+  example, and only the rendering, when the root turns out to be bare
+  data, asks the tables about the body. Every formation left out is
+  counted by the reason it is left out for.
+  What the body returns is asked here for one thing only: whether the
+  formation becomes a row of the table of operations, which is written
+  here as well, after the rows of the atoms of the library. Without rows
+  a run folds the whole tree of calls under a body into one atom, and the
+  atom of "floor" would compute "is-finite" inside it, so every reference
+  to a formation that has a row fires the row instead: the body of the
+  formation moves under "body🌵" in its copy, with a λ named after the
+  path beside it, and the row dataizes the "ρ" and every void of the
+  formation once and answers a fresh symbol wrapped in the carrier the
+  tables say the body returns. Only a formation whose body the tables say
+  is a number, a string, a bool or bytes gets a row, since a row answers
+  data and nothing else, and only one whose voids all hold such data, since
+  a tuple is three attributes no one dataization carries. The formation
+  must stand right inside formations, so that the atom of a caller reaches
+  it by its names at run time, and its λ must be spelled with letters,
+  digits and underscores only, and by no other formation. The entry of a
+  formation that has a row takes "body🌵" off the planted object, so that
+  its own body is still spelled out in its own protocol.
   The "ρ" of a nested formation is a void like the others, but it cannot be
   bound by name: XMIR has no "as" of "ρ". So a formation whose "ρ" is filled
   is written as a dispatch off the planted object, "⟨𝜎5⟩.minus(…)" rather than
@@ -73,12 +90,11 @@
   <xsl:param name="inference" as="xs:string" select="''"/>
   <xsl:variable name="eo:tables" as="xs:string" select="if (ends-with($inference, '/')) then $inference else concat($inference, '/')"/>
   <xsl:variable name="eo:provides" as="document-node()" select="document(concat($eo:tables, 'provides.xml'))"/>
-  <!--
-  The rows of the table, by the type each one is about. Without the index
-  every question about a void walks the whole table, and the table of
-  eo-runtime holds tens of thousands of rows.
-  -->
-  <xsl:key name="eo:type" match="type" use="@id"/>
+  <xsl:variable name="eo:links" as="document-node()" select="document(concat($eo:tables, 'links.xml'))"/>
+  <xsl:variable name="eo:atoms" as="document-node()" select="document(concat($eo:tables, 'atoms.xml'))"/>
+  <xsl:include href="/org/eolang/lowering/_returns.xsl"/>
+  <!-- A source that holds a formation with a row is copied again, with the row in it. -->
+  <xsl:mode name="eo:rowing" on-no-match="shallow-copy"/>
   <!-- The sources of the build, in the order of the manifest. -->
   <xsl:variable name="eo:sources" as="element(source)*" select="/sources/source"/>
   <!--
@@ -89,6 +105,8 @@
   <xsl:variable name="eo:formations" as="element(o)*" select="for $s in $eo:sources return document($s)//o[eo:formation(.)][eo:reason(.) = '']"/>
   <!-- The reason why each of the other formations of the build is left out. -->
   <xsl:variable name="eo:reasons" as="xs:string*" select="for $s in $eo:sources return document($s)//o[eo:formation(.)]/eo:reason(.)[. != '']"/>
+  <!-- The λ of every formation that may have a row, so that a λ two of them ask for is given to neither. -->
+  <xsl:variable name="eo:lambdas" as="xs:string*" select="$eo:formations ! eo:lambda(.)"/>
   <!--
   Whether this object is a formation: it copies nothing and it is not data
   or a "λ", which are the other objects of XMIR that copy nothing and that
@@ -130,6 +148,15 @@
     <xsl:param name="o" as="element(o)"/>
     <xsl:sequence select="if ($o/parent::o) then concat(eo:path($o/parent::o), '.', (if ($o/@as) then string($o/@as) else if ($o/@name) then string($o/@name) else 'ρ')) else string($o/@loc)"/>
   </xsl:function>
+  <!--
+  The path the calculus walks to reach an object once the rows are in the
+  world: the same path, but through "body🌵" wherever it takes the "φ" of a
+  formation that has a row, since that is where the body stands then.
+  -->
+  <xsl:function name="eo:walk" as="xs:string">
+    <xsl:param name="o" as="element(o)"/>
+    <xsl:sequence select="if ($o/parent::o) then concat(eo:walk($o/parent::o), '.', (if ($o/@as) then string($o/@as) else if ($o/@name = 'φ' and eo:rowed($o/parent::o)) then 'body🌵' else if ($o/@name) then string($o/@name) else 'ρ')) else string($o/@loc)"/>
+  </xsl:function>
   <!-- Whether every step of a path is a name, with no place left in it. -->
   <xsl:function name="eo:walkable" as="xs:boolean">
     <xsl:param name="path" as="xs:string"/>
@@ -153,6 +180,39 @@
   <xsl:function name="eo:carrier" as="xs:string">
     <xsl:param name="holds" as="xs:string"/>
     <xsl:sequence select="if ($holds = 'Φ.number') then 'number' else if ($holds = 'Φ.string') then 'string' else if ($holds = 'Φ.bytes') then 'bytes' else if ($holds = ('Φ.bool', 'Φ.true', 'Φ.false')) then 'bool' else if ($holds = 'Φ.tuple') then 'tuple' else ''"/>
+  </xsl:function>
+  <!--
+  The carrier the body of the formation with this locator returns, as the
+  tables say, or an empty string where they say nothing, name an object
+  that is no carrier, or name more than one.
+  -->
+  <xsl:function name="eo:answer" as="xs:string">
+    <xsl:param name="loc" as="xs:string"/>
+    <xsl:variable name="carriers" as="xs:string*" select="distinct-values(eo:returns($loc) ! eo:carrier(.))"/>
+    <xsl:sequence select="if (count($carriers) = 1 and $carriers = ('number', 'string', 'bytes', 'bool')) then $carriers else ''"/>
+  </xsl:function>
+  <!--
+  The λ a row about this formation would be named after, or an empty
+  string when the formation can have no row: its path with every dot and
+  dash turned into an underscore, since a λ is spelled with a capital
+  letter first and lowercase letters, digits and underscores after it.
+  -->
+  <xsl:function name="eo:lambda" as="xs:string">
+    <xsl:param name="o" as="element(o)"/>
+    <xsl:variable name="loc" as="xs:string" select="string($o/@loc)"/>
+    <xsl:variable name="lambda" as="xs:string" select="concat('L_', replace(substring-after(eo:path($o), 'Φ.'), '[.\-]', '_'))"/>
+    <xsl:sequence select="if (matches($lambda, '^L_[a-z0-9_]+$') and empty($o/ancestor-or-self::o[@base or @name = 'φ']) and eo:answer($loc) != '' and (every $v in eo:voids($o) satisfies eo:carrier(eo:holds($loc, string($v/@name))) = ('number', 'string', 'bytes', 'bool'))) then $lambda else ''"/>
+  </xsl:function>
+  <!-- Whether this formation has a row: it may have one, and no other formation asks for its λ. -->
+  <xsl:function name="eo:rowed" as="xs:boolean">
+    <xsl:param name="o" as="element(o)"/>
+    <xsl:variable name="lambda" as="xs:string" select="if (eo:formation($o) and eo:reason($o) = '') then eo:lambda($o) else ''"/>
+    <xsl:sequence select="$lambda != '' and count($eo:lambdas[. = $lambda]) = 1"/>
+  </xsl:function>
+  <!-- The answer of a row, as the library shapes the carrier it is wrapped in: a fresh symbol where the bytes of a literal would be. -->
+  <xsl:function name="eo:shape" as="xs:string">
+    <xsl:param name="carrier" as="xs:string"/>
+    <xsl:sequence select="map {'number': 'Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )', 'string': 'Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )', 'bytes': 'Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )', 'bool': '⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧'}($carrier)"/>
   </xsl:function>
   <!--
   The plan for one void: what is planted in it and which symbols that
@@ -188,10 +248,10 @@
     <plan>
       <xsl:for-each select="$eo:formations">
         <xsl:variable name="loc" as="xs:string" select="string(@loc)"/>
-        <xsl:variable name="path" as="xs:string" select="eo:path(.)"/>
+        <xsl:variable name="path" as="xs:string" select="eo:walk(.)"/>
         <xsl:variable name="voids" as="element(o)*" select="eo:voids(.)"/>
         <xsl:variable name="held" as="xs:string" select="if (exists($voids[@name = 'ρ'])) then eo:holds($loc, 'ρ') else ''"/>
-        <entry n="{position()}" loc="{$loc}" base="{if ($held = '') then $path else concat('.', tokenize($path, '\.')[last()])}">
+        <entry n="{position()}" loc="{$loc}" path="{$path}" base="{if ($held = '') then $path else concat('.', tokenize($path, '\.')[last()])}" λ="{if (eo:rowed(.)) then eo:lambda(.) else ''}" answer="{eo:answer($loc)}">
           <xsl:if test="$held != ''">
             <receiver>
               <xsl:sequence select="eo:plant($held, 'ρ')"/>
@@ -214,12 +274,15 @@
   -->
   <xsl:variable name="eo:symbols" as="xs:string*" select="for $s in $eo:plan//sym return generate-id($s)"/>
   <!--
-  The three files, in one document, since one reading of the build has to
+  The files, in one document, since one reading of the build has to
   answer for all of them: the XMIR of the entries, the table of the symbols,
-  and the table of the formations behind the numbers.
+  the table of the formations behind the numbers, the table of the rows,
+  the rows themselves as the table of operations lists them, and every
+  source that holds a formation with a row, copied again with the row in
+  it, under the URI the manifest gave it.
   -->
   <xsl:template match="/">
-    <planted entries="{count($eo:plan/entry)}" symbols="{count($eo:plan//sym)}" atom="{count($eo:reasons[. = 'atom'])}" bodiless="{count($eo:reasons[. = 'bodiless'])}" placed="{count($eo:reasons[. = 'placed'])}" opaque="{count($eo:reasons[. = 'opaque'])}">
+    <planted entries="{count($eo:plan/entry)}" symbols="{count($eo:plan//sym)}" rows="{count($eo:plan/entry[@λ != ''])}" atom="{count($eo:reasons[. = 'atom'])}" bodiless="{count($eo:reasons[. = 'bodiless'])}" placed="{count($eo:reasons[. = 'placed'])}" opaque="{count($eo:reasons[. = 'opaque'])}">
       <object author="eo-lowering">
         <o name="l🌵">
           <o name="throw">
@@ -239,17 +302,73 @@
           <xsl:value-of select="concat(@n, '&#9;', @loc, '&#10;')"/>
         </xsl:for-each>
       </entries>
+      <rows>
+        <xsl:for-each select="$eo:plan/entry[@λ != '']">
+          <xsl:value-of select="@λ || '&#9;' || @loc || '&#9;' || @path || string-join((receiver/plant ! ('&#9;ρ:' || @carrier), arg ! ('&#9;' || @name || ':' || plant/@carrier)), '') || '&#10;'"/>
+        </xsl:for-each>
+      </rows>
+      <table>
+        <xsl:for-each select="$eo:plan/entry[@λ != '']">
+          <xsl:value-of select="concat('- λ: ', @λ, '&#10;')"/>
+          <xsl:if test="exists(receiver | arg)">
+            <xsl:value-of select="'  dataize:&#10;'"/>
+            <xsl:for-each select="receiver | arg">
+              <xsl:value-of select="concat('    𝛿', position(), ': $.', (if (self::receiver) then 'ρ' else string(@name)), '&#10;')"/>
+            </xsl:for-each>
+          </xsl:if>
+          <xsl:value-of select="concat('  𝑛: ', eo:shape(@answer), '&#10;')"/>
+        </xsl:for-each>
+      </table>
+      <copies>
+        <xsl:for-each select="$eo:sources[exists(document(.)//o[eo:formation(.)][eo:rowed(.)])]">
+          <copy href="{.}">
+            <xsl:apply-templates select="document(.)/object" mode="eo:rowing"/>
+          </copy>
+        </xsl:for-each>
+      </copies>
     </planted>
   </xsl:template>
   <!--
   One entry: the formation, applied to what was planted. phino dataizes the
   entry as it is, so it morphs the body on the way and writes every step of
-  the run into the protocol.
+  the run into the protocol. The entry of a formation that has a row takes
+  "body🌵" off that application, since the formation itself is an atom by
+  then, and holds that inside a "φ" of its own, so that the run still
+  starts by boxing the "φ" of the entry and morphing the body.
   -->
   <xsl:template match="entry" mode="eo:xmir">
-    <o base="{@base}" name="e{@n}">
-      <xsl:apply-templates select="receiver|arg" mode="eo:xmir"/>
-    </o>
+    <xsl:choose>
+      <xsl:when test="@λ != ''">
+        <o name="e{@n}">
+          <o base=".body🌵" name="φ">
+            <o base="{@base}">
+              <xsl:apply-templates select="receiver|arg" mode="eo:xmir"/>
+            </o>
+          </o>
+        </o>
+      </xsl:when>
+      <xsl:otherwise>
+        <o base="{@base}" name="e{@n}">
+          <xsl:apply-templates select="receiver|arg" mode="eo:xmir"/>
+        </o>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+  <!-- A formation with a row keeps its body under "body🌵" and gets the λ of the row. -->
+  <xsl:template match="o[eo:formation(.)][eo:rowed(.)]" mode="eo:rowing">
+    <xsl:copy>
+      <xsl:apply-templates select="@* | node()" mode="eo:rowing"/>
+      <o name="λ">
+        <xsl:value-of select="eo:lambda(.)"/>
+      </o>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="o[eo:formation(.)][eo:rowed(.)]/o[@name = 'φ']" mode="eo:rowing">
+    <xsl:copy>
+      <xsl:apply-templates select="@* except @name" mode="eo:rowing"/>
+      <xsl:attribute name="name" select="'body🌵'"/>
+      <xsl:apply-templates select="node()" mode="eo:rowing"/>
+    </xsl:copy>
   </xsl:template>
   <!-- The receiver of a dispatch stands first and carries no name. -->
   <xsl:template match="receiver" mode="eo:xmir">

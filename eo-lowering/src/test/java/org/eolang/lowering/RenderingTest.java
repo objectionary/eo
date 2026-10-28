@@ -312,7 +312,7 @@ final class RenderingTest {
             final Collection<String> failed = new ArrayList<>(0);
             for (final Object key : this.story.map().keySet()) {
                 if (!Arrays.asList(
-                    "locator", "number", "eo", "voids", "links", "atoms", "provides",
+                    "locator", "number", "eo", "voids", "rows", "links", "atoms", "provides",
                     "protocol", "file", "java", "taint"
                 ).contains(key)) {
                     failed.add(String.format("unknown key: %s", key));
@@ -365,13 +365,15 @@ final class RenderingTest {
                 String.format("%s\t%s%n", this.story.map().get("number"), locator)
                     .getBytes(StandardCharsets.UTF_8)
             );
-            Files.write(
-                home.resolve("voids.tsv"),
-                this.demands("voids").stream()
-                    .map(row -> String.format("%s%n", row))
-                    .collect(Collectors.joining())
-                    .getBytes(StandardCharsets.UTF_8)
-            );
+            for (final String table : new ListOf<>("voids", "rows")) {
+                Files.write(
+                    home.resolve(String.format("%s.tsv", table)),
+                    this.demands(table).stream()
+                        .map(row -> String.format("%s%n", row))
+                        .collect(Collectors.joining())
+                        .getBytes(StandardCharsets.UTF_8)
+                );
+            }
             final Path sources = Files.createDirectories(
                 this.temp.resolve("1-planting")
             );

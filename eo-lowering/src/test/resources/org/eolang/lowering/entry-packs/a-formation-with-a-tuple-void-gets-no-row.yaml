@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A formation with a tuple among its voids gets an entry but no row: a row
+# dataizes every void it takes, and a tuple is three attributes that no one
+# dataization carries.
+eo:
+  count.eo: |
+    [t] > count
+      t.length > @
+provides: |
+  <provides>
+    <type id="Φ.count" reduced="Φ.number">
+      <attr name="t" type="Φ.count.t" void="true" holds="Φ.tuple"/>
+      <attr name="φ" type="Φ.count.φ"/>
+    </type>
+  </provides>
+xmir:
+  - "//o[@name='e1' and @base='Φ.count'][not(o[@name='φ'])]"
+copies:
+  - "//o[@loc='Φ.count'][not(o[@name='λ'])]/o[@name='φ']"

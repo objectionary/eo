@@ -78,6 +78,8 @@
   <xsl:param name="source" as="xs:string" select="''"/>
   <!-- The table of voids the planting wrote, as a URI. -->
   <xsl:param name="voids" as="xs:string" select="''"/>
+  <!-- The table of rows the planting wrote, as a URI. -->
+  <xsl:param name="rows" as="xs:string" select="''"/>
   <!--
   The directory with the tables of "eo:inference", as a URI. The tables are
   opened only when the root of a flow is data, since the table of
@@ -128,6 +130,19 @@
       <xsl:for-each select="unparsed-text-lines($voids)[tokenize(., '&#9;')[2] = $number]">
         <xsl:variable name="cells" select="tokenize(., '&#9;')"/>
         <xsl:map-entry key="$cells[1]" select="($cells[3], $cells[4])"/>
+      </xsl:for-each>
+    </xsl:map>
+  </xsl:variable>
+  <!--
+  The rows of the table of operations the planting wrote for the formations
+  of the world, by λ, each as the path of its formation and the name and
+  the carrier of every operand it dataizes, with a colon between them.
+  -->
+  <xsl:variable name="eo:rows" as="map(xs:string, xs:string+)">
+    <xsl:map>
+      <xsl:for-each select="unparsed-text-lines($rows)[. != '']">
+        <xsl:variable name="cells" select="tokenize(., '&#9;')"/>
+        <xsl:map-entry key="$cells[1]" select="$cells[position() ge 3]"/>
       </xsl:for-each>
     </xsl:map>
   </xsl:variable>
@@ -836,7 +851,7 @@
       <xsl:when test="empty($names)">
         <xsl:sequence select="eo:taint(concat('The deferred symbol ', $deferred/@symbol, ' of the entry ', $number, ' copies ', $of, ', which is not inside ', $locator))"/>
       </xsl:when>
-      <xsl:when test="$names[1] = 'φ'">
+      <xsl:when test="$names[1] = ('φ', 'body🌵')">
         <xsl:sequence select="eo:taint(concat('The deferred symbol ', $deferred/@symbol, ' of the entry ', $number, ' copies ', $of, ', which the atom replaces'))"/>
       </xsl:when>
       <xsl:otherwise>
@@ -852,10 +867,60 @@
     <xsl:param name="symbol" as="xs:string"/>
     <xsl:sequence select="if (map:contains($eo:voids, $symbol)) then eo:object($symbol) else eo:value($symbol, 'Phi')"/>
   </xsl:function>
+  <!-- The λ a minted symbol was minted by. -->
+  <xsl:function name="eo:lambda" as="xs:string">
+    <xsl:param name="symbol" as="xs:string"/>
+    <xsl:sequence select="string(eo:firing(key('eo:minted', $symbol, $eo:doc)[1])/@λ)"/>
+  </xsl:function>
+  <!--
+  The Java of the object a symbol the λ of a row minted stands for the
+  dataization of: the formation of the row, reached from the root of the
+  universe, or taken off its "ρ" when the row dataized one, with every
+  void of it bound to the operand the row dataized for it. An operand is
+  wrapped back into the carrier the row names for it, the way the planting
+  wraps a void, so that the body of the formation dispatches on it as it
+  would on a literal, and the call computes the same bytes whether that
+  formation became an atom or stayed in EO.
+  -->
+  <xsl:function name="eo:rowed" as="xs:string">
+    <xsl:param name="symbol" as="xs:string"/>
+    <xsl:variable name="row" select="$eo:rows(eo:lambda($symbol))"/>
+    <xsl:variable name="takes" select="$row[position() gt 1]"/>
+    <xsl:variable name="operands" select="eo:operands($symbol)"/>
+    <xsl:if test="count($operands) != count($takes)">
+      <xsl:sequence select="eo:taint(concat('The symbol ', $symbol, ' of the entry ', $number, ' has ', count($operands), ' operands, while ', eo:lambda($symbol), ' takes ', count($takes)))"/>
+    </xsl:if>
+    <xsl:variable name="held" select="starts-with($takes[1], 'ρ:')"/>
+    <xsl:variable name="object" select="if ($held) then concat(eo:wrapped($operands[1], substring-after($takes[1], ':')), '.take(&quot;', eo:literal(tokenize($row[1], '\.')[last()]), '&quot;)') else eo:global($row[1])"/>
+    <xsl:variable name="binds" select="for $i in (if ($held) then 2 else 1) to count($takes) return concat('new Bind(&quot;', eo:literal(substring-before($takes[$i], ':')), '&quot;, ', eo:wrapped($operands[$i], substring-after($takes[$i], ':')), ')')"/>
+    <xsl:sequence select="if (empty($binds)) then $object else concat('new PhApplication(', string-join(($object, $binds), ', '), ')')"/>
+  </xsl:function>
+  <!-- The Java of a token as the object of a carrier, the way "Data.ToPhi" and the library make one of data. -->
+  <xsl:function name="eo:wrapped" as="xs:string">
+    <xsl:param name="token" as="xs:string"/>
+    <xsl:param name="carrier" as="xs:string"/>
+    <xsl:choose>
+      <xsl:when test="$carrier = 'number'">
+        <xsl:sequence select="concat('new Data.ToPhi(', eo:value($token, 'double'), ')')"/>
+      </xsl:when>
+      <xsl:when test="$carrier = 'bool'">
+        <xsl:sequence select="concat('new Data.ToPhi(', eo:value($token, 'boolean'), ')')"/>
+      </xsl:when>
+      <xsl:when test="$carrier = 'bytes'">
+        <xsl:sequence select="eo:value($token, 'Phi')"/>
+      </xsl:when>
+      <xsl:when test="$carrier = 'string'">
+        <xsl:sequence select="concat('new PhApplication(', eo:global('Φ.string'), ', &quot;φ&quot;, ', eo:value($token, 'Phi'), ')')"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="eo:taint(concat('The operand ', $token, ' of the entry ', $number, ' is wrapped as a ', $carrier, ', which is no carrier'))"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
   <!-- The operation a minted symbol was minted by. -->
   <xsl:function name="eo:operation" as="element()">
     <xsl:param name="symbol" as="xs:string"/>
-    <xsl:variable name="lambda" select="string(eo:firing(key('eo:minted', $symbol, $eo:doc)[1])/@λ)"/>
+    <xsl:variable name="lambda" select="eo:lambda($symbol)"/>
     <xsl:variable name="op" select="$eo:operations[@λ = $lambda]"/>
     <xsl:if test="empty($op)">
       <xsl:sequence select="eo:taint(concat('The symbol ', $symbol, ' of the entry ', $number, ' is minted by ', $lambda, ', which has no Java'))"/>
@@ -985,7 +1050,9 @@
   The private method that computes a symbol, which runs only when a reader
   calls it, so that a symbol only one side of an if reads is computed on
   that side alone. A joined symbol asks its condition and computes the
-  branch of the side it takes, and nothing of the other side.
+  branch of the side it takes, and nothing of the other side. A symbol the
+  λ of a row minted dataizes the object of the row, and a symbol any other
+  λ minted is the operation of that λ over its operands.
   -->
   <xsl:function name="eo:method" as="xs:string">
     <xsl:param name="symbol" as="xs:string"/>
@@ -1002,6 +1069,9 @@
         <xsl:when test="exists(key('eo:deferred', $symbol, $eo:doc))">
           <xsl:variable name="deferred" select="key('eo:deferred', $symbol, $eo:doc)[1]"/>
           <xsl:sequence select="concat('        return new PhApplication(', string-join((eo:copied($deferred), eo:arguments($deferred) ! ('new Bind(&quot;' || eo:literal(substring-before(., ':')) || '&quot;, ' || eo:argument(substring-after(., ':')) || ')')), ', '), ');&#10;')"/>
+        </xsl:when>
+        <xsl:when test="map:contains($eo:rows, eo:lambda($symbol))">
+          <xsl:sequence select="concat('        return new Dataized(', eo:rowed($symbol), ').take();&#10;')"/>
         </xsl:when>
         <xsl:otherwise>
           <xsl:variable name="op" select="eo:operation($symbol)"/>
