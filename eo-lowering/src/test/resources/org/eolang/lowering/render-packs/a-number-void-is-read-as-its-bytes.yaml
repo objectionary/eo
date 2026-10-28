@@ -51,7 +51,7 @@ java: |
   import org.eolang.*;
 
   /**
-   * The atom that took the place of the body of Φ.number.width.
+   * The atom that took the place of the body of {@code Φ.number.width}.
    */
   @XmirObject(oname = "number.width.φ")
   public final class EOnumber$EOwidth$EOφ extends PhDefault implements Atom {

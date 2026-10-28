@@ -41,7 +41,7 @@ java: |
   import org.eolang.*;
 
   /**
-   * The atom that took the place of the body of Φ.joined.
+   * The atom that took the place of the body of {@code Φ.joined}.
    */
   @XmirObject(oname = "joined.φ")
   public final class EOjoined$EOφ extends PhDefault implements Atom {

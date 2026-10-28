@@ -34,7 +34,7 @@ java: |
   import org.eolang.*;
 
   /**
-   * The atom that took the place of the body of Φ.foo.φ.α0.inner.
+   * The atom that took the place of the body of {@code Φ.foo.φ.α0.inner}.
    */
   @XmirObject(oname = "foo.inner.φ")
   public final class EOfoo$EOinner$EOφ extends PhDefault implements Atom {

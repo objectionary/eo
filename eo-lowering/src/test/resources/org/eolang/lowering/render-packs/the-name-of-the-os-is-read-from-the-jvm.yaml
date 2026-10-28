@@ -52,7 +52,7 @@ java: |
   import org.eolang.*;
 
   /**
-   * The atom that took the place of the body of Φ.span.
+   * The atom that took the place of the body of {@code Φ.span}.
    */
   @XmirObject(oname = "span.φ")
   public final class EOspan$EOφ extends PhDefault implements Atom {

@@ -130,7 +130,7 @@ java: |
   import org.eolang.*;
 
   /**
-   * The atom that took the place of the body of Φ.both.
+   * The atom that took the place of the body of {@code Φ.both}.
    */
   @XmirObject(oname = "both.φ")
   public final class EOboth$EOφ extends PhDefault implements Atom {

@@ -37,7 +37,7 @@ java: |
   import org.eolang.*;
 
   /**
-   * The atom that took the place of the body of Φ.foo.b-ar.a-b.c_d.
+   * The atom that took the place of the body of {@code Φ.foo.b-ar.a-b.c_d}.
    */
   @XmirObject(oname = "a-b.c_d.φ")
   public final class EOa_b$EOc$u00005Fd$EOφ extends PhDefault implements Atom {

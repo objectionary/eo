@@ -64,7 +64,7 @@ java: |
   import org.eolang.*;
 
   /**
-   * The atom that took the place of the body of Φ.pick.
+   * The atom that took the place of the body of {@code Φ.pick}.
    */
   @XmirObject(oname = "pick.φ")
   public final class EOpick$EOφ extends PhDefault implements Atom {

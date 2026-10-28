@@ -54,7 +54,7 @@ java: |
   import org.eolang.*;
 
   /**
-   * The atom that took the place of the body of Φ.wrap.
+   * The atom that took the place of the body of {@code Φ.wrap}.
    */
   @XmirObject(oname = "wrap.φ")
   public final class EOwrap$EOφ extends PhDefault implements Atom {

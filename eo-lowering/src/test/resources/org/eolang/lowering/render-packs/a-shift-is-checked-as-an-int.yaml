@@ -52,7 +52,7 @@ java: |
   import org.eolang.*;
 
   /**
-   * The atom that took the place of the body of Φ.shifted.
+   * The atom that took the place of the body of {@code Φ.shifted}.
    */
   @XmirObject(oname = "shifted.φ")
   public final class EOshifted$EOφ extends PhDefault implements Atom {

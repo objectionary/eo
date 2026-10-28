@@ -59,7 +59,7 @@ java: |
   import org.eolang.*;
 
   /**
-   * The atom that took the place of the body of Φ.neg.
+   * The atom that took the place of the body of {@code Φ.neg}.
    */
   @XmirObject(oname = "neg.φ")
   public final class EOneg$EOφ extends PhDefault implements Atom {

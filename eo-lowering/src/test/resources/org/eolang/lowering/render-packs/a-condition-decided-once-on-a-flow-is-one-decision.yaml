@@ -115,7 +115,7 @@ java: |
   import org.eolang.*;
 
   /**
-   * The atom that took the place of the body of Φ.bytes.xor.
+   * The atom that took the place of the body of {@code Φ.bytes.xor}.
    */
   @XmirObject(oname = "bytes.xor.φ")
   public final class EObytes$EOxor$EOφ extends PhDefault implements Atom {

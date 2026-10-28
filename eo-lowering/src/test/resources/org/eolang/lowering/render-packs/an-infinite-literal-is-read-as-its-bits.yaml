@@ -54,7 +54,7 @@ java: |
   import org.eolang.*;
 
   /**
-   * The atom that took the place of the body of Φ.number.grown.
+   * The atom that took the place of the body of {@code Φ.number.grown}.
    */
   @XmirObject(oname = "number.grown.φ")
   public final class EOnumber$EOgrown$EOφ extends PhDefault implements Atom {

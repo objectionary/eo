@@ -47,7 +47,7 @@ java: |
   import org.eolang.*;
 
   /**
-   * The atom that took the place of the body of Φ.sum.
+   * The atom that took the place of the body of {@code Φ.sum}.
    */
   @XmirObject(oname = "sum.φ")
   public final class EOsum$EOφ extends PhDefault implements Atom {

@@ -93,7 +93,7 @@ java: |
   import org.eolang.*;
 
   /**
-   * The atom that took the place of the body of Φ.twice.
+   * The atom that took the place of the body of {@code Φ.twice}.
    */
   @XmirObject(oname = "twice.φ")
   public final class EOtwice$EOφ extends PhDefault implements Atom {
