@@ -77,14 +77,14 @@ java: |
 
       @Override
       public Phi lambda() {
-          if (this.𝜎1()) {
+          if (this.𝜎1()[0] == -1) {
               return new Data.ToPhi(false);
           } else {
               return new Data.ToPhi(true);
           }
       }
 
-      private boolean 𝜎1() {
-          return new Dataized(this.take("ρ").take("x")).asBool();
+      private byte[] 𝜎1() {
+          return new Dataized(this.take("ρ").take("x")).take();
       }
   }

@@ -115,7 +115,7 @@ java: |
 
       @Override
       public Phi lambda() {
-          if (this.𝜎137()) {
+          if (this.𝜎137()[0] == -1) {
               return new Data.ToPhi(this.𝜎138());
           } else {
               throw new ExFailure("%s", "say \"hi\" \\ → é 😀\n\t\001");
@@ -130,16 +130,16 @@ java: |
           return new Dataized(this.take("ρ").take("b")).take();
       }
 
-      private double 𝜎135() {
-          return this.𝜎7().length;
+      private byte[] 𝜎135() {
+          return java.nio.ByteBuffer.allocate(8).putDouble(this.𝜎7().length).array();
       }
 
-      private double 𝜎136() {
-          return this.𝜎8().length;
+      private byte[] 𝜎136() {
+          return java.nio.ByteBuffer.allocate(8).putDouble(this.𝜎8().length).array();
       }
 
-      private boolean 𝜎137() {
-          return java.util.Arrays.equals(java.nio.ByteBuffer.allocate(8).putDouble(this.𝜎135()).array(), java.nio.ByteBuffer.allocate(8).putDouble(this.𝜎136()).array());
+      private byte[] 𝜎137() {
+          return new byte[] {(byte) (java.util.Arrays.equals(this.𝜎135(), this.𝜎136()) ? 0xFF : 0x00)};
       }
 
       private byte[] 𝜎138() {

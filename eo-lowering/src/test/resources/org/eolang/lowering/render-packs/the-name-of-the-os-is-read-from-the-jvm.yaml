@@ -59,14 +59,14 @@ java: |
 
       @Override
       public Phi lambda() {
-          return new Data.ToPhi(this.𝜎752());
+          return new Data.ToPhi(java.nio.ByteBuffer.wrap(this.𝜎752()).getDouble());
       }
 
       private byte[] 𝜎751() {
           return System.getProperty("os.name").getBytes(java.nio.charset.StandardCharsets.UTF_8);
       }
 
-      private double 𝜎752() {
-          return this.𝜎751().length;
+      private byte[] 𝜎752() {
+          return java.nio.ByteBuffer.allocate(8).putDouble(this.𝜎751().length).array();
       }
   }

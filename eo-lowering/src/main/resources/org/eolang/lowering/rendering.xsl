@@ -91,9 +91,11 @@
   <xsl:variable name="eo:alpha" select="'α'"/>
   <xsl:variable name="eo:phi" select="'φ'"/>
   <!--
-  What every λ the atom can spell is: the type of what it mints, the types of
-  its operands in the order phino lists them, and the Java of the operation
-  with a numbered hole for each operand. Out of its range, the atom of
+  What every λ the atom can spell is: the Java type of what its operation
+  computes, the Java types its operation reads its operands as, in the
+  order phino lists them, and the Java of the operation with a numbered
+  hole for each operand. These types live inside the operation alone: the
+  symbol it mints is bytes, like every other symbol. Out of its range, the atom of
   "L_bytes_slice" returns the "cant-slice" its caller binds, which the
   protocol does not hold. No object of eo-runtime binds it, so reading it
   fails, and "Slice" fails the same way. A caller that binds it loses its
@@ -622,13 +624,18 @@
   <!--
   The Java of the root of a flow as the object the atom returns: inside the
   object the protocol names around it, or, when the protocol names none, a
-  void and a copy as they are, and data wrapped into the carrier of its type.
+  void and a copy as they are, and data wrapped into the carrier the tables
+  of "eo:inference" give the body, since bytes alone do not say what they
+  are.
   -->
   <xsl:function name="eo:returned" as="xs:string">
     <xsl:param name="root" as="xs:string"/>
     <xsl:choose>
-      <xsl:when test="empty($eo:around)">
+      <xsl:when test="empty($eo:around) and (map:contains($eo:voids, $root) or eo:type($root) = 'Phi')">
         <xsl:sequence select="eo:argument($root)"/>
+      </xsl:when>
+      <xsl:when test="empty($eo:around)">
+        <xsl:sequence select="concat('new Data.ToPhi(', eo:value($root, eo:carrier($root)), ')')"/>
       </xsl:when>
       <xsl:when test="map:contains($eo:carriers, $eo:around) and not(map:contains($eo:voids, $root)) and not(eo:type($root) = 'Phi')">
         <xsl:sequence select="concat('new Data.ToPhi(', eo:value($root, $eo:carriers($eo:around)), ')')"/>
@@ -856,48 +863,25 @@
     <xsl:sequence select="$op"/>
   </xsl:function>
   <!--
-  The Java type of a symbol. A void that holds a number is bytes, like a
-  void of any carrier but a bool, since a number may hold any bytes and a
-  double holds exactly eight. The bytes are read as a double only where an
-  operation wants one, which is where EO reads them as a number too. A
-  copy is an object, and so is a joined symbol with a copy in one of its
-  branches, since it holds the object of the branch taken; a joined symbol
-  of two constants is a bool when both are the bytes of one, and bytes
-  otherwise.
+  The Java type of a symbol. A symbol is data, and data in EO is bytes, so
+  every symbol is bytes, whatever minted it: an operation reads its bytes
+  as a double or a bool only inside its own Java, and writes what it
+  computes back into bytes. A copy is an object, and so is a joined symbol
+  with a copy in one of its branches, since it holds the object of the
+  branch taken.
   -->
   <xsl:function name="eo:type" as="xs:string">
     <xsl:param name="symbol" as="xs:string"/>
     <xsl:variable name="joined" select="key('eo:joined', $symbol, $eo:doc)[1]"/>
     <xsl:choose>
-      <xsl:when test="map:contains($eo:voids, $symbol)">
-        <xsl:sequence select="(map {'bool': 'boolean'}($eo:voids($symbol)[2]), 'byte[]')[1]"/>
-      </xsl:when>
       <xsl:when test="exists(key('eo:deferred', $symbol, $eo:doc))">
         <xsl:sequence select="'Phi'"/>
       </xsl:when>
-      <xsl:when test="exists($joined)">
-        <xsl:variable name="branches" select="(eo:branch($joined, 'left'), eo:branch($joined, 'right'))"/>
-        <xsl:variable name="types" select="distinct-values($branches[not(eo:constant(.))] ! eo:type(.))"/>
-        <xsl:choose>
-          <xsl:when test="$types = 'Phi'">
-            <xsl:sequence select="'Phi'"/>
-          </xsl:when>
-          <xsl:when test="count($types) = 1">
-            <xsl:sequence select="$types"/>
-          </xsl:when>
-          <xsl:when test="count($types) &gt; 1">
-            <xsl:sequence select="eo:taint(concat('The branches of the joined symbol ', $symbol, ' of the entry ', $number, ' are ', string-join($types, ' and ')))"/>
-          </xsl:when>
-          <xsl:when test="every $b in $branches satisfies upper-case(eo:bytes($b)) = ('FF-', '00-')">
-            <xsl:sequence select="'boolean'"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:sequence select="'byte[]'"/>
-          </xsl:otherwise>
-        </xsl:choose>
+      <xsl:when test="exists($joined) and (eo:branch($joined, 'left'), eo:branch($joined, 'right'))[not(eo:constant(.))] ! eo:type(.) = 'Phi'">
+        <xsl:sequence select="'Phi'"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:sequence select="string(eo:operation($symbol)/@type)"/>
+        <xsl:sequence select="'byte[]'"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -1010,7 +994,7 @@
     <xsl:variable name="body">
       <xsl:choose>
         <xsl:when test="map:contains($eo:voids, $symbol)">
-          <xsl:sequence select="concat('        return new Dataized(', eo:object($symbol), ').', (map {'boolean': 'asBool()'}($type), 'take()')[1], ';&#10;')"/>
+          <xsl:sequence select="concat('        return new Dataized(', eo:object($symbol), ').take();&#10;')"/>
         </xsl:when>
         <xsl:when test="exists($joined)">
           <xsl:sequence select="concat('        if (', eo:value(eo:condition($joined), 'boolean'), ') {&#10;', '            return ', eo:value(eo:branch($joined, 'left'), $type), ';&#10;', '        } else {&#10;', '            return ', eo:value(eo:branch($joined, 'right'), $type), ';&#10;', '        }&#10;')"/>
@@ -1026,7 +1010,7 @@
           <xsl:if test="count($operands) != count($wants)">
             <xsl:sequence select="eo:taint(concat('The symbol ', $symbol, ' of the entry ', $number, ' has ', count($operands), ' operands, while ', $op/@λ, ' takes ', count($wants)))"/>
           </xsl:if>
-          <xsl:sequence select="concat('        return ', fold-left(1 to count($wants), string($op), function($java, $i) { replace($java, concat('⟨', $i, '⟩'), eo:value($operands[$i], $wants[$i]), 'q') }), ';&#10;')"/>
+          <xsl:sequence select="concat('        return ', eo:cast(fold-left(1 to count($wants), string($op), function($java, $i) { replace($java, concat('⟨', $i, '⟩'), eo:value($operands[$i], $wants[$i]), 'q') }), string($op/@type), $type), ';&#10;')"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>

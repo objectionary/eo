@@ -85,7 +85,7 @@ java: |
 
       @Override
       public Phi lambda() {
-          if (this.𝜎133()) {
+          if (this.𝜎133()[0] == -1) {
               return new Data.ToPhi(new byte[0]);
           } else {
               return this.𝜎134();
@@ -96,8 +96,8 @@ java: |
           return new Dataized(this.take("ρ").take("items").take("length")).take();
       }
 
-      private boolean 𝜎133() {
-          return java.util.Arrays.equals(this.𝜎53(), new byte[] {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00});
+      private byte[] 𝜎133() {
+          return new byte[] {(byte) (java.util.Arrays.equals(this.𝜎53(), new byte[] {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00}) ? 0xFF : 0x00)};
       }
 
       private Phi 𝜎134() {

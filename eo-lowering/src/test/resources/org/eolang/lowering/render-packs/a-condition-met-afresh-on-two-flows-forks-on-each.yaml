@@ -137,17 +137,17 @@ java: |
 
       @Override
       public Phi lambda() {
-          if (this.𝜎5()) {
-              if (this.𝜎6()) {
-                  return new Data.ToPhi(this.𝜎7());
+          if (this.𝜎5()[0] == -1) {
+              if (this.𝜎6()[0] == -1) {
+                  return new Data.ToPhi(java.nio.ByteBuffer.wrap(this.𝜎7()).getDouble());
               } else {
-                  return new Data.ToPhi(this.𝜎9());
+                  return new Data.ToPhi(java.nio.ByteBuffer.wrap(this.𝜎9()).getDouble());
               }
           } else {
-              if (this.𝜎6()) {
-                  return new Data.ToPhi(this.𝜎8());
+              if (this.𝜎6()[0] == -1) {
+                  return new Data.ToPhi(java.nio.ByteBuffer.wrap(this.𝜎8()).getDouble());
               } else {
-                  return new Data.ToPhi(this.𝜎10());
+                  return new Data.ToPhi(java.nio.ByteBuffer.wrap(this.𝜎10()).getDouble());
               }
           }
       }
@@ -168,27 +168,27 @@ java: |
           return new Dataized(this.take("ρ").take("q")).take();
       }
 
-      private boolean 𝜎5() {
-          return java.nio.ByteBuffer.wrap(this.𝜎1()).getDouble() > Double.longBitsToDouble(0x0000000000000000L);
+      private byte[] 𝜎5() {
+          return new byte[] {(byte) (java.nio.ByteBuffer.wrap(this.𝜎1()).getDouble() > Double.longBitsToDouble(0x0000000000000000L) ? 0xFF : 0x00)};
       }
 
-      private boolean 𝜎6() {
-          return java.nio.ByteBuffer.wrap(this.𝜎3()).getDouble() > Double.longBitsToDouble(0x0000000000000000L);
+      private byte[] 𝜎6() {
+          return new byte[] {(byte) (java.nio.ByteBuffer.wrap(this.𝜎3()).getDouble() > Double.longBitsToDouble(0x0000000000000000L) ? 0xFF : 0x00)};
       }
 
-      private double 𝜎7() {
-          return java.nio.ByteBuffer.wrap(this.𝜎1()).getDouble() + java.nio.ByteBuffer.wrap(this.𝜎3()).getDouble();
+      private byte[] 𝜎7() {
+          return java.nio.ByteBuffer.allocate(8).putDouble(java.nio.ByteBuffer.wrap(this.𝜎1()).getDouble() + java.nio.ByteBuffer.wrap(this.𝜎3()).getDouble()).array();
       }
 
-      private double 𝜎8() {
-          return java.nio.ByteBuffer.wrap(this.𝜎2()).getDouble() + java.nio.ByteBuffer.wrap(this.𝜎3()).getDouble();
+      private byte[] 𝜎8() {
+          return java.nio.ByteBuffer.allocate(8).putDouble(java.nio.ByteBuffer.wrap(this.𝜎2()).getDouble() + java.nio.ByteBuffer.wrap(this.𝜎3()).getDouble()).array();
       }
 
-      private double 𝜎9() {
-          return java.nio.ByteBuffer.wrap(this.𝜎1()).getDouble() + java.nio.ByteBuffer.wrap(this.𝜎4()).getDouble();
+      private byte[] 𝜎9() {
+          return java.nio.ByteBuffer.allocate(8).putDouble(java.nio.ByteBuffer.wrap(this.𝜎1()).getDouble() + java.nio.ByteBuffer.wrap(this.𝜎4()).getDouble()).array();
       }
 
-      private double 𝜎10() {
-          return java.nio.ByteBuffer.wrap(this.𝜎2()).getDouble() + java.nio.ByteBuffer.wrap(this.𝜎4()).getDouble();
+      private byte[] 𝜎10() {
+          return java.nio.ByteBuffer.allocate(8).putDouble(java.nio.ByteBuffer.wrap(this.𝜎2()).getDouble() + java.nio.ByteBuffer.wrap(this.𝜎4()).getDouble()).array();
       }
   }

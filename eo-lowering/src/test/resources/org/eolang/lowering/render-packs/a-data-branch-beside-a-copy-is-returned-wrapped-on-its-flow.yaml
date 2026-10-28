@@ -95,8 +95,8 @@ java: |
 
       @Override
       public Phi lambda() {
-          if (this.𝜎133()) {
-              return new Data.ToPhi(this.𝜎134());
+          if (this.𝜎133()[0] == -1) {
+              return new Data.ToPhi(java.nio.ByteBuffer.wrap(this.𝜎134()).getDouble());
           } else {
               return this.𝜎135();
           }
@@ -106,12 +106,12 @@ java: |
           return new Dataized(this.take("ρ").take("items").take("length")).take();
       }
 
-      private boolean 𝜎133() {
-          return java.util.Arrays.equals(this.𝜎53(), new byte[] {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00});
+      private byte[] 𝜎133() {
+          return new byte[] {(byte) (java.util.Arrays.equals(this.𝜎53(), new byte[] {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00}) ? 0xFF : 0x00)};
       }
 
-      private double 𝜎134() {
-          return java.nio.ByteBuffer.wrap(this.𝜎53()).getDouble() + 1.0d;
+      private byte[] 𝜎134() {
+          return java.nio.ByteBuffer.allocate(8).putDouble(java.nio.ByteBuffer.wrap(this.𝜎53()).getDouble() + 1.0d).array();
       }
 
       private Phi 𝜎135() {
