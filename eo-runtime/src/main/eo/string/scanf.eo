@@ -242,12 +242,8 @@
       ^.read
     found.next > matched
   | > @
-    tokens.at
-      0
-      T
-    tokens.at
-      1
-      T
+    tokens.at 0 T
+    tokens.at 1 T
   if. > [ch] >> escaped
     contains.
       *
@@ -334,9 +330,7 @@
                   escaped ch
               found
               false
-    ^.text.slice > ch
-      position
-      1
+    ^.text.slice position 1 > ch
   | >> tokens
     0
     ""
