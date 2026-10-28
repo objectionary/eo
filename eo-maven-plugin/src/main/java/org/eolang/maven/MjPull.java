@@ -13,7 +13,7 @@ import org.apache.maven.plugins.annotations.Mojo;
  *
  * <p>This goal goes through all objects from "foreign" catalog and looks for those without
  * sources and pulls them from Objectionary remote repository.
- * The pulled sources are stored in a directory {@link Subdir} numbers "pull".</p>
+ * The pulled sources are stored in a directory {@code Seqdir} numbers "pull".</p>
  *
  * @since 0.1
  */
