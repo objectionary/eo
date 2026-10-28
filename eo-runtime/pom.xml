@@ -284,7 +284,7 @@
           <!-- Tests assert on precise .eo locations in panics (off by default). -->
           <trackLocations>true</trackLocations>
           <!-- The seconds one run of phino may take on one entry of 'eo:lower'. -->
-          <loweringBudget>900</loweringBudget>
+          <loweringBudget>30</loweringBudget>
           <!-- The largest number of nested steps one run of phino may take in 'eo:lower'. -->
           <maxMorphingSteps>1000</maxMorphingSteps>
           <!-- Save every phino protocol of 'eo:lower' as indented text too, for a reader to study. -->
