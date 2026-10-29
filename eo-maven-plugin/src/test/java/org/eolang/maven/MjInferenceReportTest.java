@@ -23,6 +23,45 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class MjInferenceReportTest {
 
     @Test
+    void drawsAPagePerSourceFromTheAnswers(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(System.lineSeparator(), "[] > app", "  [] > t", "")
+        );
+        maven.execute(MjParse.class).execute(MjInference.class);
+        Files.writeString(
+            maven.targetPath().resolve(maven.dirName("inference")).resolve("answers.xml"),
+            "<answers><o loc='Φ.foo.x.main' copies='1'><is loc='Φ.foo.x.main'/></o></answers>"
+        );
+        maven.execute(MjInferenceReport.class);
+        MatcherAssert.assertThat(
+            "a page of the program must be drawn from answers.xml, but it wasnt",
+            Files.exists(
+                maven.targetPath().getParent().resolve("site/inference/foo/x/main.eo.html")
+            ),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void drawsNothingWithoutAnswers(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "no page may be drawn when the engine wrote no answers, but one was",
+            Files.exists(
+                new FakeMaven(temp).withProgram(
+                    String.join(System.lineSeparator(), "[] > app", "  [] > t", "")
+                )
+                    .execute(MjParse.class)
+                    .execute(MjInference.class)
+                    .execute(MjInferenceReport.class)
+                    .targetPath()
+                    .getParent()
+                    .resolve("site/inference/index.html")
+            ),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void createsNoStageDirectoryWhenInferenceNeverRan(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp).execute(MjInferenceReport.class);
         MatcherAssert.assertThat(

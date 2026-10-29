@@ -26,6 +26,10 @@
  * every chain, and every call with its arguments. Nothing is worked out
  * there, and nothing fails the build.</p>
  *
+ * <p>{@link org.eolang.inference.Report} draws a page per source file from
+ * the prepared XMIR and the {@code answers.xml} the engine writes, with a
+ * mark on every object coloured by what the engine answers there.</p>
+ *
  * @since 0.67.0
  * @see <a href="https://www.eolang.org">Project site www.eolang.org</a>
  * @see <a href="https://github.com/objectionary/eo">GitHub project</a>

@@ -11,7 +11,7 @@ EO has no types. It has objects, and every object is a copy of some other one,
 which is a copy of another, and so on until the chain arrives at a formation
 written in the source. The engine that follows those chains, copy by copy, is
 being ported here from Python (#9650). Until it lands, this module writes the
-facts the engine reads and nothing more.
+facts the engine reads, and draws the report of the `answers.xml` it writes.
 
 ## What it writes
 
@@ -37,6 +37,26 @@ becomes `.foo` read off `.next`, read off `.x`, read off a bare `ξ`, and the
 locators are set again on the objects the split made. The prepared files are
 kept in `target/eo/NN-pre-inference`, since every row of `facts.xml` points
 into them.
+
+## The report
+
+The `inference-report` goal reads the prepared files and the `answers.xml` in
+`target/eo/NN-inference`, and writes a page per source file into
+`target/site/inference`, with an index. A page shows the source with a mark
+on every object, coloured by one of ten bands of what the engine answers
+there: green for one name and nothing else, then names with gaps, two names,
+mixed names, lost track, voids an atom fills, voids nobody fills, only an
+error, not reached, and red where a read fails. The goal logs how many
+objects fall in each band.
+
+`Report` draws the same bytes as `report.py`, the Python report it is ported
+from, with the same `page.xsl` and `index.xsl`. `ReportTest` compares the two
+on a whole run when given its files:
+
+```bash
+mvn test -pl eo-inference -Dtest=ReportTest \
+  -Dreport.xmirs=pre -Dreport.answers=answers.xml -Dreport.html=html
+```
 
 ## How the behaviour is described
 
