@@ -32,6 +32,11 @@ final class Pool {
     private final State state;
 
     /**
+     * The world the walk goes over.
+     */
+    private final World world;
+
+    /**
      * What EO code puts into each void, by formation and void.
      */
     private final Map<List<String>, Ints> rows;
@@ -50,9 +55,11 @@ final class Pool {
      * Ctor.
      *
      * @param walk The state of the walk
+     * @param world The world the walk goes over
      */
-    Pool(final State walk) {
+    Pool(final State walk, final World world) {
         this.state = walk;
+        this.world = world;
         this.rows = new HashMap<>(0);
         this.nobody = new HashSet<>(0);
         this.decided = new HashSet<>(0);
@@ -68,9 +75,9 @@ final class Pool {
      *  waits
      */
     Ints read(final int copy, final String name, final Site site) {
-        final String form = this.state.values().get(copy).form();
+        final String form = this.world.value(copy).form();
         final List<String> pair = List.of(form, name);
-        this.state.memo().depend(new Key('p', 0, name, form, "", 0));
+        this.state.depend(new Key('p', 0, name, form, "", 0));
         final int[] got = this.rows.getOrDefault(pair, new Ints()).array();
         final boolean told = this.decided.contains(pair);
         final Ints out = new Ints();
@@ -81,8 +88,8 @@ final class Pool {
                 out.add(Values.JGAP);
             }
             for (final int val : got) {
-                final int stamped = this.state.rows().stamp(val, copy, site);
-                this.state.passes().remember(stamped);
+                final int stamped = this.state.stamp(val, copy, site);
+                this.state.remember(stamped);
                 out.add(stamped);
             }
         }
@@ -105,8 +112,8 @@ final class Pool {
             }
         }
         if (grew) {
-            this.state.passes().change();
-            this.state.memo().spoil(new Key('p', 0, name, form, "", 0));
+            this.state.change();
+            this.state.spoil(new Key('p', 0, name, form, "", 0));
         }
     }
 
@@ -118,7 +125,7 @@ final class Pool {
      */
     List<List<String>> waiting() {
         final List<List<String>> out = new ArrayList<>(0);
-        for (final List<String> pair : this.state.roles().javaVoids()) {
+        for (final List<String> pair : this.world.javaVoids()) {
             if (!this.decided.contains(pair) && this.nobody.contains(pair) && this.empty(pair)) {
                 out.add(pair);
             }
@@ -134,24 +141,21 @@ final class Pool {
     void decide(final List<List<String>> pairs) {
         this.decided.addAll(pairs);
         for (final List<String> pair : pairs) {
-            this.state.memo().spoil(new Key('p', 0, pair.get(1), pair.get(0), "", 0));
+            this.state.spoil(new Key('p', 0, pair.get(1), pair.get(0), "", 0));
         }
     }
 
     /**
-     * The voids nobody fills: read with nothing in the pool and never
-     * decided.
+     * Whether nobody fills a void: it was read with nothing in the pool and
+     * never decided.
      *
-     * @return The voids, as formation and void
+     * @param form The formation
+     * @param name The void
+     * @return TRUE if nobody fills it
      */
-    Set<List<String>> unfilled() {
-        final Set<List<String>> out = new HashSet<>(0);
-        for (final List<String> pair : this.nobody) {
-            if (this.empty(pair) && !this.decided.contains(pair)) {
-                out.add(pair);
-            }
-        }
-        return out;
+    boolean unfilled(final String form, final String name) {
+        final List<String> pair = List.of(form, name);
+        return this.nobody.contains(pair) && this.empty(pair) && !this.decided.contains(pair);
     }
 
     private boolean empty(final List<String> pair) {

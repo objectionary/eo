@@ -125,17 +125,14 @@ final class Sources {
     }
 
     /**
-     * The state of a walk over the program, with the canon made and the
-     * passes run.
+     * The world a walk over the program goes over, with the names of
+     * eo-runtime.
      *
-     * @return The state
+     * @return The world
      * @throws IOException If a file cannot be written or read
      */
-    State settled() throws IOException {
-        final State state = new State(this.program(), new Names());
-        state.copies().seed();
-        state.passes().settle();
-        return state;
+    World world() throws IOException {
+        return new World(this.program(), new Names());
     }
 
     private static XML prepared(final String source, final String objects) throws IOException {

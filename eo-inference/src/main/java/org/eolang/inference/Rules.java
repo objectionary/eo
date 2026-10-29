@@ -57,8 +57,8 @@ final class Rules {
      */
     void wish(final Wish wish) {
         final int owner;
-        if (this.state.memo().busy()) {
-            owner = this.state.memo().owner();
+        if (this.state.busy()) {
+            owner = this.state.owner();
         } else {
             owner = -1;
         }

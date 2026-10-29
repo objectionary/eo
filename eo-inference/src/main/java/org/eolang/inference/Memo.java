@@ -333,16 +333,16 @@ final class Memo {
      * so do the answers that read those.
      */
     void invalidate() {
-        final long tally = this.state.counting().tally();
+        final long tally = this.state.tally();
         if (this.seen.get() != tally) {
             this.recount();
             this.seen.set(tally);
         }
-        this.state.passes().queued(this);
+        this.state.queued();
         this.ties.loosen(
             node -> {
                 this.valid.clear(node);
-                this.state.rules().forget(node);
+                this.state.forget(node);
             }
         );
     }
@@ -409,7 +409,7 @@ final class Memo {
     }
 
     private void grown(final int node) {
-        this.state.passes().change();
+        this.state.change();
         this.ties.spoil(node);
     }
 
@@ -417,7 +417,7 @@ final class Memo {
         final Pile changed = new Pile();
         for (int node = this.watch.nextSetBit(0); node >= 0;
             node = this.watch.nextSetBit(node + 1)) {
-            if (this.state.counting().turned(this.keys.get(node))) {
+            if (this.state.turned(this.keys.get(node))) {
                 changed.push(node);
             }
         }

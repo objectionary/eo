@@ -33,6 +33,11 @@ final class Rows {
     private final State state;
 
     /**
+     * The world the walk goes over.
+     */
+    private final World world;
+
+    /**
      * The rows, by copy and void.
      */
     private final Map<Slot, Ints> table;
@@ -41,9 +46,11 @@ final class Rows {
      * Ctor.
      *
      * @param walk The state of the walk
+     * @param world The world the walk goes over
      */
-    Rows(final State walk) {
+    Rows(final State walk, final World world) {
         this.state = walk;
+        this.world = world;
         this.table = new HashMap<>(0);
     }
 
@@ -72,17 +79,17 @@ final class Rows {
         for (final int value : values) {
             int put = value;
             if (rho) {
-                put = this.state.copies().joined(value);
+                put = this.state.joined(value);
             }
             if (row.add(put)) {
-                this.state.passes().change();
+                this.state.change();
                 if (rho) {
-                    this.state.counting().grow();
+                    this.state.grow();
                 }
             }
         }
         if (row.size() > size) {
-            this.state.memo().spoil(new Key('r', copy, name, "", "", 0));
+            this.state.spoil(new Key('r', copy, name, "", "", 0));
         }
     }
 
@@ -94,7 +101,7 @@ final class Rows {
      * @return The values
      */
     int[] cell(final int copy, final String name) {
-        this.state.memo().depend(new Key('r', copy, name, "", "", 0));
+        this.state.depend(new Key('r', copy, name, "", "", 0));
         return this.row(copy, name).array();
     }
 
@@ -138,23 +145,23 @@ final class Rows {
      * @return The value on its holder
      */
     int stamp(final int item, final int holder, final Site site) {
-        final Value value = this.state.values().get(item);
+        final Value value = this.world.value(item);
         final int result;
         if (value.kind() == 'B') {
-            result = this.state.reduction().await(this.stamp(value.base(), holder, site));
+            result = this.state.await(this.stamp(value.base(), holder, site));
         } else if (value.kind() == 'A') {
-            result = this.state.reduction().mark(
+            result = this.state.mark(
                 this.stamp(value.base(), holder, site), value.count()
             );
         } else if (value.kind() == 'O' && (value.bound() & Formation.RHO) == 0) {
             final Map<String, int[]> rows = new LinkedHashMap<>(0);
-            for (final String name : this.state.values().bound(value)) {
+            for (final String name : this.world.bound(value)) {
                 rows.put(name, this.cell(item, name));
             }
             rows.put("ρ", new int[] {holder});
-            result = this.state.copies().copy(
+            result = this.state.copy(
                 new Value(
-                    value.form(), this.state.tags().born(site, value.form()),
+                    value.form(), this.world.born(site, value.form()),
                     value.bound() | Formation.RHO
                 ),
                 rows

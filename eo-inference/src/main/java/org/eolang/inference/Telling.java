@@ -42,6 +42,11 @@ final class Telling {
     private final State state;
 
     /**
+     * The world the walk goes over.
+     */
+    private final World world;
+
+    /**
      * What each value is named, once worked out.
      */
     private final Map<Integer, Set<String>> finals;
@@ -55,9 +60,11 @@ final class Telling {
      * Ctor.
      *
      * @param walk The state of the walk
+     * @param world The world the walk goes over
      */
-    Telling(final State walk) {
+    Telling(final State walk, final World world) {
         this.state = walk;
+        this.world = world;
         this.finals = new LinkedHashMap<>(0);
         this.walking = new BitSet();
     }
@@ -69,15 +76,14 @@ final class Telling {
      */
     Told told() {
         final Map<Key, Ids> answers = new LinkedHashMap<>(0);
-        for (final Key key : this.state.memo().questions()) {
-            if (key.kind() == 'e' && this.state.counting().counts(key.value())) {
-                answers.put(key, this.state.memo().stored(key));
+        for (final Key key : this.state.questions()) {
+            if (key.kind() == 'e' && this.state.counts(key.value())) {
+                answers.put(key, this.state.stored(key));
             }
         }
         final List<Integer> copies = new ArrayList<>(0);
-        final BitSet known = this.state.passes().known();
-        for (int ctx = known.nextSetBit(0); ctx >= 0; ctx = known.nextSetBit(ctx + 1)) {
-            if (this.state.values().get(ctx).kind() == 'O' && this.state.counting().counts(ctx)) {
+        for (int ctx = 0; ctx < this.world.size(); ++ctx) {
+            if (this.counted(ctx)) {
                 copies.add(ctx);
             }
         }
@@ -95,15 +101,20 @@ final class Telling {
         for (final Map.Entry<String, Map<String, Integer>> entry : groups.entrySet()) {
             sets.putIfAbsent(entry.getKey(), entry.getValue());
         }
-        return new Told(sets, this.reduction(), this.state.calls().lands());
+        return new Told(sets, this.reduction(), this.state.lands());
+    }
+
+    private boolean counted(final int ctx) {
+        return this.state.known(ctx) && this.world.value(ctx).kind() == 'O'
+            && this.state.counts(ctx);
     }
 
     private Set<String> labels(final Key key, final Ids answer) {
-        final Ints got = this.state.end().untidy(key, answer);
+        final Ints got = this.state.untidy(key, answer);
         final Set<String> labels = new TreeSet<>(new CodeOrder());
         if (got.isEmpty()) {
             labels.add(this.missing(key));
-        } else if (this.state.program().formation(key.place())) {
+        } else if (this.world.formation(key.place())) {
             for (int pos = 0; pos < got.size(); ++pos) {
                 labels.add(this.word(got.get(pos)));
             }
@@ -117,7 +128,7 @@ final class Telling {
 
     private String missing(final Key key) {
         final String label;
-        if (EndStep.NOBODY.equals(this.state.end().mark(key.place(), key.value()))) {
+        if (EndStep.NOBODY.equals(this.state.token(key.place(), key.value()))) {
             label = "?open-void-atom";
         } else {
             label = "?can't-tell";
@@ -128,7 +139,7 @@ final class Telling {
     private Map<String, Map<String, Integer>> reduction() {
         final Map<String, Map<String, Integer>> reduction = new HashMap<>(0);
         for (final Map.Entry<Integer, Set<String>> entry : this.finals.entrySet()) {
-            final Value value = this.state.values().get(entry.getKey());
+            final Value value = this.world.value(entry.getKey());
             if (value.kind() == 'O') {
                 final Set<String> sorted = new TreeSet<>(new CodeOrder());
                 sorted.addAll(entry.getValue());
@@ -139,8 +150,8 @@ final class Telling {
     }
 
     private void group(final int copy, final Map<String, Map<String, Integer>> groups) {
-        final String form = this.state.values().get(copy).form();
-        final Formation shape = this.state.program().form(form);
+        final String form = this.world.value(copy).form();
+        final Formation shape = this.world.form(form);
         Telling.count(groups, form, form);
         for (final String name : shape.order()) {
             Telling.count(
@@ -158,14 +169,14 @@ final class Telling {
     }
 
     private Set<String> said(final int copy, final String name) {
-        final Value value = this.state.values().get(copy);
-        final Formation shape = this.state.program().form(value.form());
+        final Value value = this.world.value(copy);
+        final Formation shape = this.world.form(value.form());
         final String holds = shape.holds(name);
         final Set<String> said = new TreeSet<>(new CodeOrder());
         if (Values.JBORN.equals(value.birth()) || (value.bound() & shape.bit(name)) == 0) {
             said.add(Telling.vacant(value, holds));
         } else {
-            for (final int val : this.state.end().untidy(copy, name).array()) {
+            for (final int val : this.state.untidy(copy, name).array()) {
                 said.addAll(this.last(val));
             }
             if (!holds.isEmpty()) {
@@ -179,14 +190,14 @@ final class Telling {
     }
 
     private Set<String> rho(final int copy) {
-        final Value value = this.state.values().get(copy);
+        final Value value = this.world.value(copy);
         final Set<String> said = new TreeSet<>(new CodeOrder());
-        if (this.state.callbacks().handedToJava(copy)) {
+        if (this.state.handedToJava(copy)) {
             said.add(Telling.ONLY_JAVA);
         } else if (Values.JBORN.equals(value.birth()) || (value.bound() & Formation.RHO) == 0) {
             said.add(Telling.vacant(value, ""));
         } else {
-            for (final int val : this.state.end().untidy(copy, "ρ").array()) {
+            for (final int val : this.state.untidy(copy, "ρ").array()) {
                 said.addAll(this.last(val));
             }
             if (said.isEmpty()) {
@@ -197,7 +208,7 @@ final class Telling {
     }
 
     private Set<String> last(final int num) {
-        final int inside = this.state.values().bare(num);
+        final int inside = this.world.bare(num);
         Set<String> got = this.finals.get(inside);
         if (got == null) {
             got = this.walked(inside);
@@ -207,9 +218,9 @@ final class Telling {
     }
 
     private Set<String> walked(final int num) {
-        final Value value = this.state.values().get(num);
+        final Value value = this.world.value(num);
         final Set<String> result;
-        if (value.kind() == 'O' && this.state.copies().canon(value.form())) {
+        if (value.kind() == 'O' && this.state.canon(value.form())) {
             result = new HashSet<>(1);
             result.add(value.form());
         } else if (value.kind() == 'O') {
@@ -222,11 +233,11 @@ final class Telling {
     }
 
     private Set<String> named(final int num) {
-        final String form = this.state.values().get(num).form();
-        final Formation shape = this.state.program().form(form);
+        final String form = this.world.value(num).form();
+        final Formation shape = this.world.form(form);
         final Set<String> result = new HashSet<>(1);
-        if (!this.state.roles().decorator(form) && !shape.returns().isEmpty()
-            && !shape.has("φ") && this.state.program().formation(shape.returns())) {
+        if (!this.world.decorator(form) && !shape.returns().isEmpty()
+            && !shape.has("φ") && this.world.formation(shape.returns())) {
             result.add(shape.returns());
         } else {
             final List<String> voids = this.behind(num);
@@ -240,27 +251,27 @@ final class Telling {
     }
 
     private List<String> behind(final int num) {
-        final String form = this.state.values().get(num).form();
-        final Formation shape = this.state.program().form(form);
+        final String form = this.world.value(num).form();
+        final Formation shape = this.world.form(form);
         final List<String> voids;
-        if (this.state.roles().decorator(form) && this.state.counting().counts(num)) {
+        if (this.world.decorator(form) && this.state.counts(num)) {
             voids = List.of("φ");
-        } else if (this.state.roles().decorator(form)
+        } else if (this.world.decorator(form)
             || shape.returns().isEmpty() || shape.has("φ")) {
             voids = List.of();
         } else {
-            voids = this.state.roles().own(form);
+            voids = this.world.own(form);
         }
         return voids;
     }
 
     private Set<String> followed(final int num, final List<String> voids) {
-        final Value value = this.state.values().get(num);
+        final Value value = this.world.value(num);
         this.walking.set(num);
         final Set<String> said = new HashSet<>(1);
         try {
             for (final String name : voids) {
-                final Ids got = this.state.reads().attr(
+                final Ids got = this.state.attr(
                     num, name, new Site(String.join(".", value.form(), name), value.tag())
                 );
                 for (int idx = 0; idx < got.size(); ++idx) {
@@ -281,8 +292,8 @@ final class Telling {
     }
 
     private String word(final int num) {
-        final int inside = this.state.values().bare(num);
-        final Value value = this.state.values().get(inside);
+        final int inside = this.world.bare(num);
+        final Value value = this.world.value(inside);
         final String label;
         if (inside == Values.JGAP) {
             label = "?open-void-atom";

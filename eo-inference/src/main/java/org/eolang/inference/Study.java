@@ -37,6 +37,11 @@ final class Study {
     private final State state;
 
     /**
+     * The world the walk goes over.
+     */
+    private final World world;
+
+    /**
      * The copy as written of each formation, in the order of the facts.
      */
     private final Map<String, Integer> written;
@@ -65,9 +70,11 @@ final class Study {
      * Ctor.
      *
      * @param walk The state of the walk
+     * @param world The world the walk goes over
      */
-    Study(final State walk) {
+    Study(final State walk, final World world) {
         this.state = walk;
+        this.world = world;
         this.written = new LinkedHashMap<>(0);
         this.studied = new LinkedHashMap<>(0);
         this.stays = new BitSet();
@@ -96,41 +103,15 @@ final class Study {
     }
 
     /**
-     * Stop w: the formations no copy calls with a void no copy fills, each
-     * with those voids.
+     * Stop w: pick the formations no copy calls with a void no copy fills,
+     * each with those voids.
      *
-     * @return The formations, in the order of the facts
+     * @return TRUE if it picked any
      */
-    Map<String, List<String>> stays() {
-        final Map<String, Long> filled = this.filled();
-        final Map<String, Ints> real = this.reals();
-        final Map<String, List<String>> out = new LinkedHashMap<>(0);
-        for (final Map.Entry<String, Integer> entry : this.written.entrySet()) {
-            final String form = entry.getKey();
-            if (this.lonely(form, entry.getValue(), real)) {
-                final List<String> never = new ArrayList<>(0);
-                final Formation shape = this.state.program().form(form);
-                final long mask = filled.getOrDefault(form, 0L);
-                for (final String name : shape.order()) {
-                    if ((mask & shape.bit(name)) == 0) {
-                        never.add(name);
-                    }
-                }
-                if (!never.isEmpty()) {
-                    out.put(form, never);
-                }
-            }
-        }
-        return out;
-    }
-
-    /**
-     * Note the formations stop w picked.
-     *
-     * @param picked The formations, each with the voids no copy fills
-     */
-    void pick(final Map<String, List<String>> picked) {
+    boolean pick() {
+        final Map<String, List<String>> picked = this.stays();
         this.studied.putAll(picked);
+        return !picked.isEmpty();
     }
 
     /**
@@ -150,7 +131,7 @@ final class Study {
         final Pile out = new Pile();
         for (final String form : forms) {
             final List<Integer> hosts = this.hosts(form, real);
-            hosts.sort(Comparator.comparing(this.state.values()::full, order));
+            hosts.sort(Comparator.comparing(this.world::full, order));
             if (hosts.isEmpty()) {
                 this.keep(this.written.get(form), out);
             }
@@ -159,23 +140,46 @@ final class Study {
             }
         }
         for (int idx = 0; idx < out.size(); ++idx) {
-            this.state.counting().grow();
-            this.state.passes().requeue(out.get(idx));
+            this.state.grow();
+            this.state.requeue(out.get(idx));
         }
         return out.size();
     }
 
+    private Map<String, List<String>> stays() {
+        final Map<String, Long> filled = this.filled();
+        final Map<String, Ints> real = this.reals();
+        final Map<String, List<String>> out = new LinkedHashMap<>(0);
+        for (final Map.Entry<String, Integer> entry : this.written.entrySet()) {
+            final String form = entry.getKey();
+            if (this.lonely(form, entry.getValue(), real)) {
+                final List<String> never = new ArrayList<>(0);
+                final Formation shape = this.world.form(form);
+                final long mask = filled.getOrDefault(form, 0L);
+                for (final String name : shape.order()) {
+                    if ((mask & shape.bit(name)) == 0) {
+                        never.add(name);
+                    }
+                }
+                if (!never.isEmpty()) {
+                    out.put(form, never);
+                }
+            }
+        }
+        return out;
+    }
+
     private Map<String, Long> filled() {
         final Map<String, Long> filled = new HashMap<>(0);
-        final Pile all = this.state.passes().contexts();
+        final Pile all = this.state.contexts();
         for (int idx = 0; idx < all.size(); ++idx) {
-            final Value value = this.state.values().get(all.get(idx));
+            final Value value = this.world.value(all.get(idx));
             if (value.kind() == 'O' && value.placed()) {
                 filled.merge(value.form(), value.bound(), (left, right) -> left | right);
             } else if (value.kind() == 'O' && Values.JBORN.equals(value.birth())
-                && this.state.roles().returned(value.form())) {
+                && this.world.returned(value.form())) {
                 filled.merge(
-                    value.form(), this.state.copies().mask(value.form()),
+                    value.form(), this.state.mask(value.form()),
                     (left, right) -> left | right
                 );
             }
@@ -185,11 +189,11 @@ final class Study {
 
     private boolean lonely(final String form, final int copy, final Map<String, Ints> real) {
         return !this.studied.containsKey(form) && !real.containsKey(form)
-            && this.state.counting().bare(copy) && !this.state.counting().alone(copy);
+            && this.state.bare(copy) && !this.state.alone(copy);
     }
 
     private List<Integer> hosts(final String form, final Map<String, Ints> real) {
-        final String outer = this.state.program().nearest(form);
+        final String outer = this.world.nearest(form);
         final List<Integer> hosts = new ArrayList<>(0);
         final Ints got = real.getOrDefault(outer, new Ints());
         if (!outer.isEmpty() && got.isEmpty()) {
@@ -210,18 +214,18 @@ final class Study {
     }
 
     private void sample(final String form, final int host, final Pile out) {
-        final int copy = this.state.copies().copy(
+        final int copy = this.state.copy(
             new Value(
                 form,
                 new Site(
-                    String.format("in:%s", this.state.values().full(host)),
-                    this.state.values().get(host).tag()
+                    String.format("in:%s", this.world.full(host)),
+                    this.world.value(host).tag()
                 ),
                 Formation.RHO
             ),
             Map.of("ρ", new int[] {host})
         );
-        if (this.state.values().get(copy).kind() == 'O' && !this.stays.get(copy)) {
+        if (this.world.value(copy).kind() == 'O' && !this.stays.get(copy)) {
             this.stays.set(copy);
             this.samples.set(copy);
             this.grouped.computeIfAbsent(form, key -> new ArrayList<>(1)).add(copy);
@@ -231,14 +235,14 @@ final class Study {
 
     private Map<String, Ints> reals() {
         final Map<String, Ints> found = new HashMap<>(0);
-        final Pile all = this.state.passes().contexts();
+        final Pile all = this.state.contexts();
         for (int idx = 0; idx < all.size(); ++idx) {
             final int ctx = all.get(idx);
-            final Value value = this.state.values().get(ctx);
+            final Value value = this.world.value(ctx);
             if (value.kind() == 'O' && Study.real(value)
-                && !this.samples.get(ctx) && this.state.counting().counts(ctx)) {
+                && !this.samples.get(ctx) && this.state.counts(ctx)) {
                 found.computeIfAbsent(value.form(), key -> new Ints())
-                    .add(this.state.copies().joined(ctx));
+                    .add(this.state.joined(ctx));
             }
         }
         return found;

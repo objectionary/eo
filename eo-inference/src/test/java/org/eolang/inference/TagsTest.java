@@ -96,7 +96,7 @@ final class TagsTest {
     }
 
     private static Tags tags(final Path temp) throws IOException {
-        return new State(
+        return new Tags(
             new Sources(temp).with(
                 "tuple.eo",
                 "[item rest] > tuple",
@@ -122,8 +122,7 @@ final class TagsTest {
                 "  [] > plus /Q.number",
                 "    ? > ^",
                 "    ? > b"
-            ).program(),
-            new Names()
-        ).tags();
+            ).world()
+        );
     }
 }

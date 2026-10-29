@@ -25,9 +25,9 @@ final class StopsTest {
     void decidesNothingOnceSettled(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "a stop after the run settled must decide nothing, but it decided something",
-            new Sources(temp)
-                .with("kite.eo", "[wind] > kite", "  wind > @")
-                .settled().stops().decide(),
+            new Settled(
+                new Sources(temp).with("kite.eo", "[wind] > kite", "  wind > @").world()
+            ).state().decide(),
             Matchers.is(false)
         );
     }
@@ -35,14 +35,14 @@ final class StopsTest {
     @Test
     void decidesWhatWaitsBeforeStudyingAnything(@Mktmp final Path temp) throws IOException {
         final State state = new State(
-            new Sources(temp).with("kite.eo", "[wind] > kite", "  wind > @").program(), new Names()
+            new Sources(temp).with("kite.eo", "[wind] > kite", "  wind > @").world()
         );
-        state.copies().seed();
-        state.rules().wish(new Wish('3', "Φ.kite.φ", 9, 0));
-        state.stops().decide();
+        state.seed();
+        state.wish(new Wish('3', "Φ.kite.φ", 9, 0));
+        state.decide();
         MatcherAssert.assertThat(
             "a stop with a rule waiting must decide that rule, but it didnt",
-            state.rules().taken(new Wish('3', "Φ.kite.φ", 9, 0)),
+            state.taken(new Wish('3', "Φ.kite.φ", 9, 0)),
             Matchers.is(true)
         );
     }

@@ -33,12 +33,19 @@ final class Reduction {
     private final State state;
 
     /**
+     * The world the walk goes over.
+     */
+    private final World world;
+
+    /**
      * Ctor.
      *
      * @param walk The state of the walk
+     * @param world The world the walk goes over
      */
-    Reduction(final State walk) {
+    Reduction(final State walk, final World world) {
         this.state = walk;
+        this.world = world;
     }
 
     /**
@@ -48,7 +55,7 @@ final class Reduction {
      * @return The values it stands for
      */
     Ids kind(final int num) {
-        return this.state.memo().ask(new Key('k', num, "", "", "", 0), () -> this.now(num));
+        return this.state.ask(new Key('k', num, "", "", "", 0), () -> this.now(num));
     }
 
     /**
@@ -58,7 +65,7 @@ final class Reduction {
      * @return The values reduced, in the order of their numbers
      */
     int[] reduced(final int... set) {
-        final int cant = this.state.values().unknown("can't tell");
+        final int cant = this.world.unknown("can't tell");
         final Ints all = new Ints();
         for (final int num : set) {
             final Ids kinds = this.kind(num);
@@ -68,7 +75,7 @@ final class Reduction {
         }
         final Ints out = new Ints();
         for (int idx = 0; idx < all.size(); ++idx) {
-            if (this.state.values().get(all.get(idx)).kind() == 'U') {
+            if (this.world.value(all.get(idx)).kind() == 'U') {
                 out.add(cant);
             } else {
                 out.add(all.get(idx));
@@ -90,13 +97,13 @@ final class Reduction {
      * @return The marked value
      */
     int mark(final int base, final int count) {
-        final Value value = this.state.values().get(base);
+        final Value value = this.world.value(base);
         int inside = base;
         if (value.kind() == 'A') {
             inside = value.base();
         }
-        this.state.passes().remember(inside);
-        return this.state.values().intern(new Value('A', "", "", 0L, "", inside, count));
+        this.state.remember(inside);
+        return this.world.intern(new Value('A', "", "", 0L, "", inside, count));
     }
 
     /**
@@ -106,8 +113,8 @@ final class Reduction {
      * @return The value
      */
     int await(final int head) {
-        this.state.passes().remember(head);
-        return this.state.values().intern(new Value('B', "", "", 0L, "", head, 0));
+        this.state.remember(head);
+        return this.world.intern(new Value('B', "", "", 0L, "", head, 0));
     }
 
     /**
@@ -117,16 +124,16 @@ final class Reduction {
      * @return What it stands for
      */
     Ids unwrapped(final int num) {
-        final Value value = this.state.values().get(num);
+        final Value value = this.world.value(num);
         final Ids out;
         if (value.kind() == 'B') {
             out = this.kind(value.base());
             for (int idx = 0; idx < out.size(); ++idx) {
-                if (this.state.values().get(out.get(idx)).kind() == 'B') {
+                if (this.world.value(out.get(idx)).kind() == 'B') {
                     throw new IllegalStateException(
                         String.format(
                             "%s reduces to another value of rule b",
-                            this.state.values().full(num)
+                            this.world.full(num)
                         )
                     );
                 }
@@ -138,15 +145,15 @@ final class Reduction {
     }
 
     private Ints now(final int num) {
-        final Value value = this.state.values().get(num);
+        final Value value = this.world.value(num);
         final boolean copy = value.kind() == 'O';
         final Ints result;
-        if (copy && this.state.copies().canon(value.form())) {
-            result = new Ints(this.state.copies().shared(value.form()));
-        } else if (copy && this.state.values().opened(value).isEmpty()) {
+        if (copy && this.state.canon(value.form())) {
+            result = new Ints(this.state.shared(value.form()));
+        } else if (copy && this.world.opened(value).isEmpty()) {
             result = this.closed(num);
-        } else if (copy && this.state.roles().decorator(value.form())) {
-            result = this.holed(num, this.state.values().opened(value).size());
+        } else if (copy && this.world.decorator(value.form())) {
+            result = this.holed(num, this.world.opened(value).size());
         } else {
             result = new Ints(num);
         }
@@ -154,12 +161,12 @@ final class Reduction {
     }
 
     private Ints closed(final int num) {
-        final String form = this.state.values().get(num).form();
-        final Formation shape = this.state.program().form(form);
+        final String form = this.world.value(num).form();
+        final Formation shape = this.world.form(form);
         final Ints result;
-        if (this.state.roles().decorator(form) && this.state.counting().counts(num)) {
+        if (this.world.decorator(form) && this.state.counts(num)) {
             result = this.decorated(num);
-        } else if (this.state.roles().decorator(form)
+        } else if (this.world.decorator(form)
             || shape.returns().isEmpty() || shape.has("φ")) {
             result = new Ints(num);
         } else {
@@ -183,9 +190,9 @@ final class Reduction {
     }
 
     private Ints holed(final int num, final int holes) {
-        final boolean own = this.state.counting().bare(num);
+        final boolean own = this.state.bare(num);
         final Ints result;
-        if (own && !this.state.counting().counts(num)) {
+        if (own && !this.state.counts(num)) {
             result = new Ints(num);
         } else if (own) {
             final Ints out = this.phi(num);
@@ -217,13 +224,13 @@ final class Reduction {
         final Ints got = this.typed(out);
         final Wish wish = new Wish('e', "", -1, num);
         final Ints result = new Ints();
-        if (this.unknowns(got) && (out.isEmpty() || this.state.rules().taken(wish))) {
+        if (this.unknowns(got) && (out.isEmpty() || this.state.taken(wish))) {
             result.add(num);
         } else if (this.unknowns(got)) {
-            this.state.rules().wish(wish);
+            this.state.wish(wish);
         } else {
             result.addAll(this.marked(got, holes));
-            if (this.state.rules().taken(wish)) {
+            if (this.state.taken(wish)) {
                 result.add(num);
             }
         }
@@ -231,18 +238,18 @@ final class Reduction {
     }
 
     private Ints atom(final int num) {
-        final Value value = this.state.values().get(num);
-        final String ret = this.state.program().form(value.form()).returns();
+        final Value value = this.world.value(num);
+        final String ret = this.world.form(value.form()).returns();
         final Ints result = new Ints();
-        if (this.state.program().formation(ret)) {
-            final int made = this.state.copies().java(ret);
-            this.state.passes().remember(made);
+        if (this.world.formation(ret)) {
+            final int made = this.state.java(ret);
+            this.state.remember(made);
             result.add(made);
-        } else if (this.state.roles().own(value.form()).isEmpty()) {
+        } else if (this.world.own(value.form()).isEmpty()) {
             result.add(num);
         } else {
-            for (final String own : this.state.roles().own(value.form())) {
-                final Ids got = this.state.reads().attr(
+            for (final String own : this.world.own(value.form())) {
+                final Ids got = this.state.attr(
                     num, own, new Site(String.join(".", value.form(), own), value.tag())
                 );
                 for (int idx = 0; idx < got.size(); ++idx) {
@@ -254,9 +261,9 @@ final class Reduction {
     }
 
     private Ints phi(final int num) {
-        final Value value = this.state.values().get(num);
+        final Value value = this.world.value(num);
         final Ints out = new Ints();
-        final Ids got = this.state.reads().attr(
+        final Ids got = this.state.attr(
             num, "φ", new Site(String.join(".", value.form(), "φ"), value.tag())
         );
         for (int idx = 0; idx < got.size(); ++idx) {
@@ -269,8 +276,8 @@ final class Reduction {
         final Ints got = new Ints();
         for (int idx = 0; idx < out.size(); ++idx) {
             final int val = out.get(idx);
-            final char kind = this.state.values().get(val).kind();
-            if (kind != 'T' && kind != 'B' && !this.state.values().gap(val)) {
+            final char kind = this.world.value(val).kind();
+            if (kind != 'T' && kind != 'B' && !this.world.gap(val)) {
                 got.add(val);
             }
         }
@@ -280,7 +287,7 @@ final class Reduction {
     private boolean unknowns(final Ints got) {
         boolean all = true;
         for (int idx = 0; idx < got.size(); ++idx) {
-            if (this.state.values().get(got.get(idx)).kind() != 'U') {
+            if (this.world.value(got.get(idx)).kind() != 'U') {
                 all = false;
                 break;
             }
@@ -292,7 +299,7 @@ final class Reduction {
         final Ints out = new Ints();
         for (int idx = 0; idx < got.size(); ++idx) {
             final int val = got.get(idx);
-            if (this.state.values().get(val).kind() == 'U') {
+            if (this.world.value(val).kind() == 'U') {
                 out.add(val);
             } else {
                 out.add(this.mark(val, holes));

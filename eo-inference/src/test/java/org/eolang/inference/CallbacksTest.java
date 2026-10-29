@@ -24,7 +24,7 @@ final class CallbacksTest {
     @Test
     void fillsEmptyVoidOfFormationCalledBackWithWhatJavaMakes(@Mktmp final Path temp)
         throws IOException {
-        final State state = new Sources(temp).with(
+        final World world = new Sources(temp).with(
             "memory.eo",
             "[] > memory",
             "  [] > use /Q.number",
@@ -41,12 +41,12 @@ final class CallbacksTest {
             "    5",
             "    [b]",
             "      b.size > @"
-        ).settled();
+        ).world();
         MatcherAssert.assertThat(
             "the formation called back must get a copy with Java's block in its void, but it didnt",
-            state.values().full(
-                state.rows().row(
-                    state.values().intern(
+            world.full(
+                new Settled(world).state().row(
+                    world.intern(
                         new Value('O', "Φ.app.φ.α1", "Φ.app.φ", 1L | Formation.RHO, "", -1, 0)
                     ),
                     "b"
@@ -58,14 +58,14 @@ final class CallbacksTest {
 
     @Test
     void notesCopyWhoseRhoOnlyJavaFills(@Mktmp final Path temp) throws IOException {
-        final State state = new Sources(temp)
+        final World world = new Sources(temp)
             .with("jobs.eo", "[] > jobs", "  [] > run /Q.number", "    ? > job")
             .with("app.eo", "[] > app", "  jobs.run > @", "    [^]", "      42 > @")
-            .settled();
+            .world();
         MatcherAssert.assertThat(
             "a copy handed to an atom with a declared ^ nobody binds must be noted, but it wasnt",
-            state.callbacks().handedToJava(
-                state.values().intern(
+            new Settled(world).state().handedToJava(
+                world.intern(
                     new Value('O', "Φ.app.φ.α0", "Φ.app.φ.α0", 0L, "", -1, 0)
                 )
             ),

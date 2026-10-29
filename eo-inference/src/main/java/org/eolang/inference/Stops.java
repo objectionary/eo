@@ -6,7 +6,6 @@ package org.eolang.inference;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -59,35 +58,30 @@ final class Stops {
      */
     boolean decide() {
         this.count.incrementAndGet();
-        final Set<Wish> fresh = this.state.rules().pending();
+        final Set<Wish> fresh = this.state.wishes();
         final List<List<String>> java;
         if (fresh.isEmpty()) {
-            java = this.state.pool().waiting();
+            java = this.state.waiting();
         } else {
             java = Collections.emptyList();
         }
         final boolean quiet = fresh.isEmpty() && java.isEmpty();
-        final Map<String, List<String>> nobody;
-        if (quiet) {
-            nobody = this.state.study().stays();
-        } else {
-            nobody = Collections.emptyMap();
-        }
-        this.state.pool().decide(java);
-        this.state.rules().take(fresh);
+        this.state.decide(java);
+        this.state.take(fresh);
         for (final Wish wish : fresh) {
             if (wish.rule() == 'e') {
-                this.state.memo().stale(new Key('k', wish.value(), "", "", "", 0));
+                this.state.stale(new Key('k', wish.value(), "", "", "", 0));
             } else {
-                this.state.memo().stale(new Key('e', wish.ctx(), "", wish.place(), "", 0));
+                this.state.stale(new Key('e', wish.ctx(), "", wish.place(), "", 0));
             }
         }
-        this.state.study().pick(nobody);
+        boolean picked = false;
         int kept = 0;
         if (quiet) {
-            kept = this.state.study().studied();
+            picked = this.state.pick();
+            kept = this.state.studied();
         }
-        return !fresh.isEmpty() || !java.isEmpty() || !nobody.isEmpty() || kept > 0;
+        return !fresh.isEmpty() || !java.isEmpty() || picked || kept > 0;
     }
 
     /**
@@ -96,7 +90,7 @@ final class Stops {
      * @return TRUE if something does
      */
     boolean pending() {
-        return !this.state.rules().pending().isEmpty() || !this.state.pool().waiting().isEmpty();
+        return !this.state.wishes().isEmpty() || !this.state.waiting().isEmpty();
     }
 
     /**

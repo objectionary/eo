@@ -5,9 +5,7 @@
 package org.eolang.inference;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.IntUnaryOperator;
 
 /**
@@ -41,6 +39,11 @@ final class EndStep {
     private final State state;
 
     /**
+     * The world the walk goes over.
+     */
+    private final World world;
+
+    /**
      * The mark of each read with no answer, by place and copy.
      */
     private final Map<Slot, String> marks;
@@ -59,9 +62,11 @@ final class EndStep {
      * Ctor.
      *
      * @param walk The state of the walk
+     * @param world The world the walk goes over
      */
-    EndStep(final State walk) {
+    EndStep(final State walk, final World world) {
         this.state = walk;
+        this.world = world;
         this.marks = new HashMap<>(0);
         this.answers = new HashMap<>(0);
         this.rows = new HashMap<>(0);
@@ -118,30 +123,29 @@ final class EndStep {
         if (this.rows.containsKey(slot)) {
             out = this.rows.get(slot);
         } else {
-            out = this.state.rows().row(copy, name);
+            out = this.state.row(copy, name);
         }
         return out;
     }
 
     private void marked() {
-        final Set<List<String>> nobody = this.state.pool().unfilled();
-        for (final Key key : this.state.memo().questions()) {
-            if (key.kind() != 'e' || !this.state.memo().stored(key).isEmpty()
-                || !this.state.counting().counts(key.value())) {
+        for (final Key key : this.state.questions()) {
+            if (key.kind() != 'e' || !this.state.stored(key).isEmpty()
+                || !this.state.counts(key.value())) {
                 continue;
             }
             String token = EndStep.CANT;
-            if (this.state.program().reads(key.place())) {
-                final Read read = this.state.program().read(key.place());
-                final Ids got = this.state.memo().stored(
+            if (this.world.reads(key.place())) {
+                final Read read = this.world.read(key.place());
+                final Ids got = this.state.stored(
                     new Key('e', key.value(), "", read.of(), "", 0)
                 );
                 for (int idx = 0; idx < got.size(); ++idx) {
-                    final Value value = this.state.values().get(
-                        this.state.values().bare(got.get(idx))
+                    final Value value = this.world.value(
+                        this.world.bare(got.get(idx))
                     );
                     if (value.kind() == 'O' && Values.JBORN.equals(value.birth())
-                        && nobody.contains(List.of(value.form(), read.name()))) {
+                        && this.state.unfilled(value.form(), read.name())) {
                         token = EndStep.NOBODY;
                     }
                 }
@@ -151,14 +155,14 @@ final class EndStep {
     }
 
     private void keep() {
-        for (final Key key : this.state.memo().questions()) {
-            if (key.kind() == 'e' && this.state.memo().stored(key).contains(Values.JGAP)) {
+        for (final Key key : this.state.questions()) {
+            if (key.kind() == 'e' && this.state.stored(key).contains(Values.JGAP)) {
                 final Ints got = new Ints();
-                got.addAll(this.state.memo().stored(key));
+                got.addAll(this.state.stored(key));
                 this.answers.put(key, got);
             }
         }
-        for (final Map.Entry<Slot, Ints> row : this.state.rows().all().entrySet()) {
+        for (final Map.Entry<Slot, Ints> row : this.state.table().entrySet()) {
             if (row.getValue().contains(Values.JGAP)) {
                 this.rows.put(row.getKey(), row.getValue());
             }
@@ -166,19 +170,19 @@ final class EndStep {
     }
 
     private void tidied() {
-        for (final Key key : this.state.memo().questions()) {
-            final Ids got = this.state.memo().stored(key);
+        for (final Key key : this.state.questions()) {
+            final Ids got = this.state.stored(key);
             if (key.kind() == 'e' && got.contains(Values.JGAP)) {
-                this.state.memo().replace(key, EndStep.tidy(got.size(), got::get));
+                this.state.replace(key, EndStep.tidy(got.size(), got::get));
             }
         }
-        for (final Map.Entry<Slot, Ints> row : this.state.rows().all().entrySet()) {
+        for (final Map.Entry<Slot, Ints> row : this.state.table().entrySet()) {
             final Ints got = row.getValue();
             if (got.contains(Values.JGAP)) {
                 row.setValue(EndStep.tidy(got.size(), got::get));
             }
         }
-        this.state.counting().grow();
+        this.state.grow();
     }
 
     private static Ints tidy(final int size, final IntUnaryOperator values) {

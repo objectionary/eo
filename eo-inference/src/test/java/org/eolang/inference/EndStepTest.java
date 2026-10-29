@@ -23,15 +23,16 @@ final class EndStepTest {
 
     @Test
     void marksReadWithNoAnswer(@Mktmp final Path temp) throws IOException {
-        final State state = new Sources(temp)
+        final World world = new Sources(temp)
             .with("loop.eo", "[] > loop", "  ^.loop.value > value", "  value > @")
-            .settled();
-        state.end().step();
+            .world();
+        final State state = new Settled(world).state();
+        state.step();
         MatcherAssert.assertThat(
             "a read with no answer must be marked at the end, but it wasnt",
-            state.end().mark(
+            state.token(
                 "Φ.loop.value",
-                state.values().intern(new Value('O', "Φ.loop", "Φ.loop", Formation.RHO, "", -1, 0))
+                world.intern(new Value('O', "Φ.loop", "Φ.loop", Formation.RHO, "", -1, 0))
             ),
             Matchers.equalTo(EndStep.CANT)
         );
@@ -39,37 +40,39 @@ final class EndStepTest {
 
     @Test
     void makesDecidedOpenVoidPlainInAnswers(@Mktmp final Path temp) throws IOException {
-        final State state = EndStepTest.settled(temp);
-        state.end().step();
+        final World world = EndStepTest.world(temp);
+        final State state = new Settled(world).state();
+        state.step();
         MatcherAssert.assertThat(
             "an answer with a decided open void must hold a plain one after the end step, but it didnt",
-            state.memo().stored(EndStepTest.read(state)),
+            state.stored(EndStepTest.read(world)),
             Matchers.equalTo(new Ids(Values.GAP))
         );
     }
 
     @Test
     void keepsAsideAnswerWithDecidedOpenVoid(@Mktmp final Path temp) throws IOException {
-        final State state = EndStepTest.settled(temp);
-        state.end().step();
+        final World world = EndStepTest.world(temp);
+        final State state = new Settled(world).state();
+        state.step();
         MatcherAssert.assertThat(
             "the answer as it was before the end step must be kept aside, but it wasnt",
-            state.end().untidy(
-                EndStepTest.read(state), state.memo().stored(EndStepTest.read(state))
+            state.untidy(
+                EndStepTest.read(world), state.stored(EndStepTest.read(world))
             ).array(),
             Matchers.equalTo(new int[] {Values.JGAP})
         );
     }
 
-    private static Key read(final State state) {
+    private static Key read(final World world) {
         return new Key(
             'e',
-            state.values().intern(new Value('O', "Φ.app", "Φ.app", Formation.RHO, "", -1, 0)),
+            world.intern(new Value('O', "Φ.app", "Φ.app", Formation.RHO, "", -1, 0)),
             "", "Φ.app.φ", "", 0
         );
     }
 
-    private static State settled(final Path temp) throws IOException {
+    private static World world(final Path temp) throws IOException {
         return new Sources(temp).with(
             "os.eo",
             "[] > os",
@@ -80,6 +83,6 @@ final class EndStepTest {
             "app.eo",
             "[] > app",
             "  os.check.code > @"
-        ).settled();
+        ).world();
     }
 }

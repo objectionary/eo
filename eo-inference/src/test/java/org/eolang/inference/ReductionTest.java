@@ -23,35 +23,37 @@ final class ReductionTest {
 
     @Test
     void reducesBlankNumberToSharedOne(@Mktmp final Path temp) throws IOException {
-        final State state = ReductionTest.settled(temp);
+        final State state = new Settled(ReductionTest.world(temp)).state();
         MatcherAssert.assertThat(
             "the blank number must reduce to the shared one, but it didnt",
-            state.reduction().kind(
-                state.copies().fresh("Φ.number", new Site("Φ.app.x", ""), Values.ROOT)
+            state.kind(
+                state.fresh("Φ.number", new Site("Φ.app.x", ""), Values.ROOT)
             ),
-            Matchers.equalTo(new Ids(state.copies().shared("Φ.number")))
+            Matchers.equalTo(new Ids(state.shared("Φ.number")))
         );
     }
 
     @Test
     void reducesDecoratorToWhatItsAtGives(@Mktmp final Path temp) throws IOException {
-        final State state = ReductionTest.settled(temp);
+        final World world = ReductionTest.world(temp);
+        final State state = new Settled(world).state();
         MatcherAssert.assertThat(
             "a decorator must reduce to what its @ gives, but it didnt",
-            state.reduction().kind(
-                state.values().intern(new Value('O', "Φ.five", "Φ.five", Formation.RHO, "", -1, 0))
+            state.kind(
+                world.intern(new Value('O', "Φ.five", "Φ.five", Formation.RHO, "", -1, 0))
             ),
-            Matchers.equalTo(new Ids(state.copies().shared("Φ.number")))
+            Matchers.equalTo(new Ids(state.shared("Φ.number")))
         );
     }
 
     @Test
     void keepsMarkOfEmptyVoidsWhenMarkingAgain(@Mktmp final Path temp) throws IOException {
-        final State state = ReductionTest.settled(temp);
+        final World world = ReductionTest.world(temp);
+        final State state = new Settled(world).state();
         MatcherAssert.assertThat(
             "a new mark must replace the old one, but it didnt",
-            state.values().get(
-                state.reduction().mark(state.reduction().mark(Values.ROOT, 2), 1)
+            world.value(
+                state.mark(state.mark(Values.ROOT, 2), 1)
             ),
             Matchers.equalTo(new Value('A', "", "", 0L, "", Values.ROOT, 1))
         );
@@ -59,15 +61,15 @@ final class ReductionTest {
 
     @Test
     void reducesUnknownArgumentToOneCantTell(@Mktmp final Path temp) throws IOException {
-        final State state = ReductionTest.settled(temp);
+        final World world = ReductionTest.world(temp);
         MatcherAssert.assertThat(
             "every unknown going into a void must be one can't tell, but it wasnt",
-            state.reduction().reduced(new int[] {Values.GAP, state.values().unknown("odd")}),
-            Matchers.equalTo(new int[] {state.values().unknown("can't tell")})
+            new Settled(world).state().reduced(new int[] {Values.GAP, world.unknown("odd")}),
+            Matchers.equalTo(new int[] {world.unknown("can't tell")})
         );
     }
 
-    private static State settled(final Path temp) throws IOException {
-        return new Sources(temp).with("five.eo", "[] > five", "  5 > @").settled();
+    private static World world(final Path temp) throws IOException {
+        return new Sources(temp).with("five.eo", "[] > five", "  5 > @").world();
     }
 }

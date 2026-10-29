@@ -53,6 +53,11 @@ final class Counting {
     private final State state;
 
     /**
+     * The world the walk goes over.
+     */
+    private final World world;
+
+    /**
      * The copies code uses as they are.
      */
     private final BitSet used;
@@ -79,9 +84,11 @@ final class Counting {
      * Ctor.
      *
      * @param walk The state of the walk
+     * @param world The world the walk goes over
      */
-    Counting(final State walk) {
+    Counting(final State walk, final World world) {
         this.state = walk;
+        this.world = world;
         this.used = new BitSet();
         this.bares = new Marks();
         this.counted = new Marks();
@@ -114,9 +121,9 @@ final class Counting {
     boolean bare(final int num) {
         int got = this.bares.get(num);
         if (got == 0) {
-            final Value value = this.state.values().get(num);
+            final Value value = this.world.value(num);
             if (value.kind() == 'O' && value.placed()
-                && !this.state.values().opened(value).isEmpty()) {
+                && !this.world.opened(value).isEmpty()) {
                 got = 2;
             } else {
                 got = 1;
@@ -134,7 +141,7 @@ final class Counting {
      * @return TRUE if it does
      */
     boolean alone(final int num) {
-        return !this.bare(num) || this.used.get(num) || this.state.study().kept(num);
+        return !this.bare(num) || this.used.get(num) || this.state.kept(num);
     }
 
     /**
@@ -154,8 +161,8 @@ final class Counting {
             this.counted.put(num, got);
         }
         final int result = (got - 1) % 2;
-        if (this.state.memo().busy()) {
-            this.state.memo().watch(new Key('c', num, "", "", "", result));
+        if (this.state.busy()) {
+            this.state.watch(new Key('c', num, "", "", "", result));
         }
         return result == 1;
     }
@@ -180,12 +187,12 @@ final class Counting {
      * @param met The copies met on this chain of {@code @} so far
      */
     void use(final int num, final Usage usage, final Ints met) {
-        if (!this.state.passes().frozen()) {
+        if (!this.state.frozen()) {
             final Key walk = new Key(
                 'u', num, usage.name(), usage.site().place(), usage.site().tag(), usage.how()
             );
-            this.state.memo().depend(walk);
-            if (!this.state.memo().done(walk)) {
+            this.state.depend(walk);
+            if (!this.state.done(walk)) {
                 this.walk(walk, usage, met);
             }
         }
@@ -199,10 +206,10 @@ final class Counting {
      * @return TRUE if it does
      */
     boolean upheld(final int num, final Ints chain) {
-        final Ints row = this.state.rows().row(num, "ρ");
+        final Ints row = this.state.row(num, "ρ");
         boolean result = row.isEmpty();
         for (int idx = 0; idx < row.size() && !result; ++idx) {
-            result = this.state.values().get(row.get(idx)).kind() != 'O';
+            result = this.world.value(row.get(idx)).kind() != 'O';
         }
         for (int idx = 0; idx < row.size() && !result; ++idx) {
             result = this.holds(row.get(idx), chain);
@@ -211,26 +218,26 @@ final class Counting {
     }
 
     private void walk(final Key walk, final Usage usage, final Ints met) {
-        final long hits = this.state.memo().hits();
-        this.state.memo().enter(walk);
+        final long hits = this.state.hits();
+        this.state.enter(walk);
         try {
             this.now(walk.value(), usage, met);
         } finally {
-            this.state.memo().leave();
+            this.state.leave();
         }
-        if (this.state.memo().hits() == hits) {
-            this.state.memo().finish(walk);
+        if (this.state.hits() == hits) {
+            this.state.finish(walk);
         }
     }
 
     private boolean fresh(final int num) {
-        return this.state.values().get(num).kind() != 'O'
+        return this.world.value(num).kind() != 'O'
             || this.alone(num) && (this.kept(num) || this.upheld(num, new Ints(num)));
     }
 
     private boolean kept(final int num) {
-        return this.state.roles().test(this.state.values().get(num).form())
-            || this.state.study().kept(num);
+        return this.world.test(this.world.value(num).form())
+            || this.state.kept(num);
     }
 
     private boolean holds(final int outer, final Ints chain) {
@@ -239,8 +246,8 @@ final class Counting {
     }
 
     private void now(final int num, final Usage usage, final Ints met) {
-        final int inside = this.state.copies().joined(this.state.values().bare(num));
-        final Value value = this.state.values().get(inside);
+        final int inside = this.state.joined(this.world.bare(num));
+        final Value value = this.world.value(inside);
         if (value.kind() == 'O') {
             if (this.bare(inside)) {
                 this.touch(inside);
@@ -256,18 +263,18 @@ final class Counting {
     private void touch(final int inside) {
         if (!this.alone(inside)) {
             this.grow();
-            this.state.passes().change();
-            this.state.passes().requeue(inside);
+            this.state.change();
+            this.state.requeue(inside);
         }
         this.used.set(inside);
     }
 
     private void dataized(final int inside, final Usage usage, final Ints met) {
-        final Value value = this.state.values().get(inside);
-        if (value.placed() && this.state.program().form(value.form()).has("φ")
+        final Value value = this.world.value(inside);
+        if (value.placed() && this.world.form(value.form()).has("φ")
             && met.add(inside)) {
             this.further(
-                this.state.reads().attr(
+                this.state.attr(
                     inside, "φ", new Site(String.join(".", value.form(), "φ"), value.tag())
                 ),
                 usage, met
@@ -276,18 +283,18 @@ final class Counting {
     }
 
     private void read(final int inside, final Usage usage, final Ints met) {
-        final Value value = this.state.values().get(inside);
-        final Formation shape = this.state.program().form(value.form());
+        final Value value = this.world.value(inside);
+        final Formation shape = this.world.form(value.form());
         if (!"ρ".equals(usage.name()) && !Values.JBORN.equals(value.birth())
             && !shape.has(usage.name()) && met.add(inside)) {
             final List<String> behind;
             if (shape.has("φ")) {
                 behind = List.of("φ");
             } else {
-                behind = this.state.roles().own(value.form());
+                behind = this.world.own(value.form());
             }
             for (final String own : behind) {
-                this.further(this.state.reads().attr(inside, own, usage.site()), usage, met);
+                this.further(this.state.attr(inside, own, usage.site()), usage, met);
             }
         }
     }

@@ -36,6 +36,11 @@ final class Copies {
     private final State state;
 
     /**
+     * The world the walk goes over.
+     */
+    private final World world;
+
+    /**
      * The shared copy of each kind of the canon.
      */
     private final Map<String, Integer> canon;
@@ -54,9 +59,11 @@ final class Copies {
      * Ctor.
      *
      * @param walk The state of the walk
+     * @param world The world the walk goes over
      */
-    Copies(final State walk) {
+    Copies(final State walk, final World world) {
         this.state = walk;
+        this.world = world;
         this.canon = new LinkedHashMap<>(0);
         this.blank = new LinkedHashMap<>(0);
         this.joins = new Ints();
@@ -71,10 +78,10 @@ final class Copies {
      * same.</p>
      */
     void seed() {
-        final List<String> kinds = this.state.names().canon();
+        final List<String> kinds = this.world.canon();
         boolean all = !kinds.isEmpty();
         for (final String kind : kinds) {
-            if (!this.state.program().formation(kind)) {
+            if (!this.world.formation(kind)) {
                 all = false;
                 break;
             }
@@ -105,13 +112,13 @@ final class Copies {
                 made = this.canon.get(form);
             }
         } else {
-            made = this.state.values().intern(
+            made = this.world.intern(
                 new Value(
                     'O', form, name.birth(), name.bound() & this.mask(form), name.tag(), -1, 0
                 )
             );
             for (final Map.Entry<String, int[]> row : rows.entrySet()) {
-                this.state.rows().gather(made, row.getKey(), row.getValue());
+                this.state.gather(made, row.getKey(), row.getValue());
             }
         }
         return made;
@@ -203,7 +210,7 @@ final class Copies {
      * @return The bits
      */
     long mask(final String form) {
-        return (1L << this.state.program().form(form).order().size()) - 1L | Formation.RHO;
+        return (1L << this.world.form(form).order().size()) - 1L | Formation.RHO;
     }
 
     /**
@@ -214,7 +221,7 @@ final class Copies {
      * @return The bits
      */
     long bits(final String form, final List<String> names) {
-        final Formation shape = this.state.program().form(form);
+        final Formation shape = this.world.form(form);
         long bits = 0L;
         for (final String name : names) {
             bits |= shape.bit(name);
@@ -224,14 +231,14 @@ final class Copies {
 
     private void share(final List<String> kinds) {
         for (final String kind : kinds) {
-            if (!List.of("φ").equals(this.state.program().form(kind).order())) {
+            if (!List.of("φ").equals(this.world.form(kind).order())) {
                 throw new IllegalStateException(
                     String.format("%s must have one void, φ, to be one of the canon", kind)
                 );
             }
             this.canon.put(
                 kind,
-                this.state.values().intern(
+                this.world.intern(
                     new Value('O', kind, "canon", 1L | Formation.RHO, "", -1, 0)
                 )
             );
@@ -240,18 +247,18 @@ final class Copies {
         for (final String kind : kinds) {
             final int shared = this.canon.get(kind);
             if (shared == datum) {
-                this.state.rows().seed(shared, "φ", Values.DATA);
+                this.state.seed(shared, "φ", Values.DATA);
             } else {
-                this.state.rows().seed(shared, "φ", datum);
+                this.state.seed(shared, "φ", datum);
             }
-            this.state.rows().seed(shared, "ρ", Values.ROOT);
+            this.state.seed(shared, "ρ", Values.ROOT);
         }
         for (final String kind : kinds) {
-            final int empty = this.state.values().intern(
+            final int empty = this.world.intern(
                 new Value('O', kind, "blank", Formation.RHO, "", -1, 0)
             );
             this.blank.put(kind, empty);
-            this.state.rows().seed(empty, "ρ", Values.ROOT);
+            this.state.seed(empty, "ρ", Values.ROOT);
         }
         for (final String kind : kinds) {
             this.joins.add(this.blank.get(kind));

@@ -32,12 +32,19 @@ final class Reads {
     private final State state;
 
     /**
+     * The world the walk goes over.
+     */
+    private final World world;
+
+    /**
      * Ctor.
      *
      * @param walk The state of the walk
+     * @param world The world the walk goes over
      */
-    Reads(final State walk) {
+    Reads(final State walk, final World world) {
         this.state = walk;
+        this.world = world;
     }
 
     /**
@@ -49,15 +56,15 @@ final class Reads {
      * @return What it gives
      */
     Ids attr(final int num, final String name, final Site site) {
-        final int joined = this.state.copies().joined(num);
-        return this.state.memo().ask(
+        final int joined = this.state.joined(num);
+        return this.state.ask(
             new Key('a', joined, name, site.place(), site.tag(), 0),
             () -> this.now(joined, name, site)
         );
     }
 
     private Ints now(final int num, final String name, final Site site) {
-        final Value value = this.state.values().get(num);
+        final Value value = this.world.value(num);
         final Ints out = new Ints();
         final char kind = value.kind();
         if (kind == 'A' || kind == 'B') {
@@ -65,7 +72,7 @@ final class Reads {
         } else if (kind == 'Φ') {
             out.addAll(this.root(name, site));
         } else if (kind == 'D') {
-            out.add(this.state.values().conflict(String.join(".", "data", name)));
+            out.add(this.world.conflict(String.join(".", "data", name)));
         } else if (kind == 'T') {
             out.add(Values.TERM);
         } else if (kind == 'U') {
@@ -76,7 +83,7 @@ final class Reads {
             throw new IllegalStateException(
                 String.format(
                     "%s has nothing to read %s off at %s",
-                    this.state.values().full(num), name, site.place()
+                    this.world.full(num), name, site.place()
                 )
             );
         }
@@ -86,25 +93,25 @@ final class Reads {
     private Ints root(final String name, final Site site) {
         final String target = String.join(".", "Φ", name);
         final Ints out = new Ints();
-        if (this.state.program().formation(target)) {
+        if (this.world.formation(target)) {
             out.add(
                 this.made(
-                    this.state.copies().fresh(
-                        target, this.state.tags().born(site, target), Values.ROOT
+                    this.state.fresh(
+                        target, this.world.born(site, target), Values.ROOT
                     )
                 )
             );
-        } else if (this.state.program().place(target)) {
-            out.addAll(this.state.places().evaluate(target, Values.ROOT));
+        } else if (this.world.place(target)) {
+            out.addAll(this.state.evaluate(target, Values.ROOT));
         } else {
-            out.add(this.state.values().conflict(target));
+            out.add(this.world.conflict(target));
         }
         return out;
     }
 
     private Ints copy(final int num, final String name, final Site site) {
-        final Value value = this.state.values().get(num);
-        final Formation shape = this.state.program().form(value.form());
+        final Value value = this.world.value(num);
+        final Formation shape = this.world.form(value.form());
         final Ints out;
         if ("ρ".equals(name)) {
             out = this.rho(num, site);
@@ -125,26 +132,26 @@ final class Reads {
     }
 
     private Ints rho(final int num, final Site site) {
-        final Value value = this.state.values().get(num);
+        final Value value = this.world.value(num);
         final Ints out = new Ints();
         if ((value.bound() & Formation.RHO) == 0 || Values.JBORN.equals(value.birth())) {
-            final String rho = this.state.program().form(value.form()).rho();
+            final String rho = this.world.form(value.form()).rho();
             if (rho.isEmpty()) {
                 throw new IllegalStateException(
                     String.format(
-                        "%s has no ρ to read at %s", this.state.values().full(num), site.place()
+                        "%s has no ρ to read at %s", this.world.full(num), site.place()
                     )
                 );
             }
             out.add(
                 this.made(
-                    this.state.copies().fresh(
-                        rho, this.state.tags().born(site, rho), Copies.NO_RHO
+                    this.state.fresh(
+                        rho, this.world.born(site, rho), Copies.NO_RHO
                     )
                 )
             );
         } else {
-            for (final int outer : this.state.rows().cell(num, "ρ")) {
+            for (final int outer : this.state.cell(num, "ρ")) {
                 out.add(outer);
             }
         }
@@ -152,8 +159,7 @@ final class Reads {
     }
 
     private Ints unbound(final int num, final String name, final Site site) {
-        final String holds = this.state.program()
-            .form(this.state.values().get(num).form()).holds(name);
+        final String holds = this.world.form(this.world.value(num).form()).holds(name);
         final Ints out;
         if (holds.isEmpty()) {
             out = this.vacant(num, name, site);
@@ -164,11 +170,11 @@ final class Reads {
     }
 
     private Ints vacant(final int num, final String name, final Site site) {
-        final Value value = this.state.values().get(num);
+        final Value value = this.world.value(num);
         final Ints out;
-        if (Values.JBORN.equals(value.birth()) && this.state.roles().returned(value.form())) {
-            out = this.state.pool().read(num, name, site);
-        } else if (this.state.study().kept(num)) {
+        if (Values.JBORN.equals(value.birth()) && this.world.returned(value.form())) {
+            out = this.state.read(num, name, site);
+        } else if (this.state.kept(num)) {
             out = new Ints(Values.GAP);
         } else {
             out = new Ints(Values.TERM);
@@ -177,11 +183,10 @@ final class Reads {
     }
 
     private Ints bound(final int num, final String name, final Site site) {
-        final String holds = this.state.program()
-            .form(this.state.values().get(num).form()).holds(name);
+        final String holds = this.world.form(this.world.value(num).form()).holds(name);
         final Ints out = new Ints();
-        for (final int held : this.state.rows().cell(num, name)) {
-            out.add(this.made(this.state.rows().stamp(held, num, site)));
+        for (final int held : this.state.cell(num, name)) {
+            out.add(this.made(this.state.stamp(held, num, site)));
         }
         if (!holds.isEmpty()) {
             out.add(this.declared(holds, site));
@@ -190,18 +195,18 @@ final class Reads {
     }
 
     private Ints nested(final int num, final String name, final Site site) {
-        final String target = String.join(".", this.state.values().get(num).form(), name);
+        final String target = String.join(".", this.world.value(num).form(), name);
         final Ints out = new Ints();
-        if (this.state.program().formation(target)) {
+        if (this.world.formation(target)) {
             out.add(
                 this.made(
-                    this.state.copies().fresh(target, this.state.tags().born(site, target), num)
+                    this.state.fresh(target, this.world.born(site, target), num)
                 )
             );
         } else {
-            final Ids got = this.state.places().evaluate(target, num);
+            final Ids got = this.state.evaluate(target, num);
             for (int idx = 0; idx < got.size(); ++idx) {
-                out.add(this.made(this.state.rows().stamp(got.get(idx), num, site)));
+                out.add(this.made(this.state.stamp(got.get(idx), num, site)));
             }
         }
         return out;
@@ -217,28 +222,28 @@ final class Reads {
     }
 
     private Ints lacking(final int num, final String name, final Site site) {
-        final String form = this.state.values().get(num).form();
-        if (!this.state.program().form(form).complete()) {
+        final String form = this.world.value(num).form();
+        if (!this.world.form(form).complete()) {
             throw new IllegalStateException(
                 String.format("atom %s says nothing of %s at %s", form, name, site.place())
             );
         }
-        return new Ints(this.state.values().conflict(String.join(".", form, name)));
+        return new Ints(this.world.conflict(String.join(".", form, name)));
     }
 
     private Ints returned(final int num, final String name, final Site site) {
-        final String form = this.state.values().get(num).form();
-        final String ret = this.state.program().form(form).returns();
-        if (!this.state.program().formation(ret) && this.state.roles().own(form).isEmpty()) {
+        final String form = this.world.value(num).form();
+        final String ret = this.world.form(form).returns();
+        if (!this.world.formation(ret) && this.world.own(form).isEmpty()) {
             throw new IllegalStateException(
                 String.format("atom %s returns %s, which it lacks, at %s", form, ret, site.place())
             );
         }
         final Ints out = new Ints();
-        if (this.state.program().formation(ret)) {
-            out.addAll(this.attr(this.made(this.state.copies().java(ret)), name, site));
+        if (this.world.formation(ret)) {
+            out.addAll(this.attr(this.made(this.state.java(ret)), name, site));
         } else {
-            for (final String own : this.state.roles().own(form)) {
+            for (final String own : this.world.own(form)) {
                 out.addAll(this.through(num, own, name, site));
             }
         }
@@ -247,12 +252,12 @@ final class Reads {
 
     private int declared(final String holds, final Site site) {
         return this.made(
-            this.state.copies().fresh(holds, this.state.tags().born(site, holds), Copies.NO_RHO)
+            this.state.fresh(holds, this.world.born(site, holds), Copies.NO_RHO)
         );
     }
 
     private int made(final int copy) {
-        this.state.passes().remember(copy);
+        this.state.remember(copy);
         return copy;
     }
 }

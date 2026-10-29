@@ -59,7 +59,7 @@ final class TellingTest {
     }
 
     private static Told told(final Path temp) throws IOException {
-        final State state = new Sources(temp).with(
+        final World world = new Sources(temp).with(
             "five.eo",
             "[] > five",
             "  5 > @"
@@ -74,8 +74,9 @@ final class TellingTest {
             "  five > @",
             "  (box 1).other > one",
             "  (box \"a\").other > word"
-        ).settled();
-        state.end().step();
-        return new Telling(state).told();
+        ).world();
+        final State state = new Settled(world).state();
+        state.step();
+        return new Telling(state, world).told();
     }
 }

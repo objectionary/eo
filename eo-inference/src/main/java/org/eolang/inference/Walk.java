@@ -97,16 +97,17 @@ public final class Walk {
 
     private static Told run(final Program program, final Names names) {
         final long start = System.currentTimeMillis();
-        final State state = new State(program, names);
-        state.copies().seed();
-        state.passes().settle();
-        state.end().step();
-        final Told told = new Telling(state).told();
+        final World world = new World(program, names);
+        final State state = new State(world);
+        state.seed();
+        state.settle();
+        state.step();
+        final Told told = new Telling(state, world).told();
         Logger.info(
             Walk.class,
             "The walk settled after %d passes and %d stops in %[ms]s: %d values, %d answers",
-            state.passes().size(), state.stops().size(), System.currentTimeMillis() - start,
-            state.values().size(), state.memo().size()
+            state.passes(), state.stops(), System.currentTimeMillis() - start,
+            world.size(), state.answers()
         );
         return told;
     }

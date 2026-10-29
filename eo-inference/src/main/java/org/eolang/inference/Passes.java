@@ -35,6 +35,11 @@ final class Passes {
     private final State state;
 
     /**
+     * The world the walk goes over.
+     */
+    private final World world;
+
+    /**
      * The values ever remembered, the copies to walk.
      */
     private final BitSet known;
@@ -68,9 +73,11 @@ final class Passes {
      * Ctor.
      *
      * @param walk The state of the walk
+     * @param world The world the walk goes over
      */
-    Passes(final State walk) {
+    Passes(final State walk, final World world) {
         this.state = walk;
+        this.world = world;
         this.known = new BitSet();
         this.contexts = new Pile();
         this.queue = new Pile();
@@ -131,12 +138,13 @@ final class Passes {
     }
 
     /**
-     * The values remembered, in the order of their numbers.
+     * Whether the passes walk a value: it was remembered.
      *
-     * @return The values
+     * @param num The value
+     * @return TRUE if it was
      */
-    BitSet known() {
-        return this.known;
+    boolean known(final int num) {
+        return this.known.get(num);
     }
 
     /**
@@ -150,12 +158,10 @@ final class Passes {
 
     /**
      * Mark the copies queued at a stop as walks to do again.
-     *
-     * @param memo The memo
      */
-    void queued(final Memo memo) {
+    void queued() {
         for (int idx = 0; idx < this.queue.size(); ++idx) {
-            memo.stale(new Key('w', this.queue.get(idx), "", "", "", 0));
+            this.state.stale(new Key('w', this.queue.get(idx), "", "", "", 0));
         }
     }
 
@@ -163,10 +169,10 @@ final class Passes {
      * Walk until nothing grows and no stop decides anything.
      */
     void settle() {
-        for (final String form : this.state.program().formations()) {
+        for (final String form : this.world.formations()) {
             final int copy = this.written(form);
             this.remember(copy);
-            this.state.study().write(form, copy);
+            this.state.write(form, copy);
         }
         this.remember(Values.ROOT);
         boolean whole = true;
@@ -177,15 +183,15 @@ final class Passes {
             if (this.changed.get()) {
                 whole = false;
                 settled = false;
-            } else if (whole && settled && !this.state.stops().pending()) {
+            } else if (whole && settled && !this.state.pending()) {
                 done = true;
             } else {
-                settled = !this.state.stops().decide();
+                settled = !this.state.decide();
                 done = whole && settled;
                 whole = settled;
             }
         }
-        this.state.memo().drop();
+        this.state.drop();
         this.over.set(true);
     }
 
@@ -194,11 +200,11 @@ final class Passes {
         String around = form;
         while (!around.isEmpty()) {
             chain.push(around);
-            around = this.state.program().nearest(around);
+            around = this.world.nearest(around);
         }
         int rho = Values.ROOT;
         for (final String step : chain) {
-            rho = this.state.copies().fresh(step, new Site(step, ""), rho);
+            rho = this.state.fresh(step, new Site(step, ""), rho);
         }
         return rho;
     }
@@ -207,15 +213,14 @@ final class Passes {
         this.count.incrementAndGet();
         this.changed.set(false);
         if (whole) {
-            this.state.memo().clear();
-            this.state.rules().clear();
+            this.state.clear();
         } else {
-            this.state.memo().invalidate();
+            this.state.invalidate();
         }
         final Pile order = new Pile();
         for (int ctx = this.known.nextSetBit(0); ctx >= 0;
             ctx = this.known.nextSetBit(ctx + 1)) {
-            if (!this.state.memo().done(new Key('w', ctx, "", "", "", 0))) {
+            if (!this.state.done(new Key('w', ctx, "", "", "", 0))) {
                 order.push(ctx);
             }
         }
@@ -235,25 +240,25 @@ final class Passes {
 
     private void walk(final int ctx) {
         final Key key = new Key('w', ctx, "", "", "", 0);
-        this.state.memo().enter(key);
+        this.state.enter(key);
         try {
-            if (this.state.counting().counts(ctx)) {
+            if (this.state.counts(ctx)) {
                 this.body(ctx);
             }
         } finally {
-            this.state.memo().leave();
-            this.state.memo().finish(key);
+            this.state.leave();
+            this.state.finish(key);
         }
     }
 
     private void body(final int ctx) {
-        final Value value = this.state.values().get(ctx);
+        final Value value = this.world.value(ctx);
         if (value.kind() == 'O') {
-            for (final String place : this.state.program().body(value.form())) {
-                this.state.places().evaluate(place, ctx);
+            for (final String place : this.world.body(value.form())) {
+                this.state.evaluate(place, ctx);
             }
-            if (this.state.roles().test(value.form())) {
-                this.state.counting().use(
+            if (this.world.test(value.form())) {
+                this.state.use(
                     ctx,
                     new Usage(
                         "φ", new Site(String.join(".", value.form(), "φ"), value.tag()),
@@ -263,8 +268,8 @@ final class Passes {
                 );
             }
         } else if (ctx == Values.ROOT) {
-            for (final String place : this.state.program().body("")) {
-                this.state.places().evaluate(place, ctx);
+            for (final String place : this.world.body("")) {
+                this.state.evaluate(place, ctx);
             }
         }
     }

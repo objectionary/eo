@@ -26,15 +26,15 @@ final class CopiesTest {
     @Test
     void sharesOneNumberAmongCallsAtDifferentPlaces(@Mktmp final Path temp)
         throws IOException {
-        final State state = new State(new Sources(temp).program(), new Names());
-        state.copies().seed();
+        final State state = new State(new Sources(temp).world());
+        state.seed();
         MatcherAssert.assertThat(
             "two numbers made at two places must be the one shared copy, but they werent",
-            state.copies().copy(
+            state.copy(
                 new Value("Φ.number", new Site("Φ.kiosk.φ", ""), 1L | Formation.RHO), Map.of()
             ),
             Matchers.equalTo(
-                state.copies().copy(
+                state.copy(
                     new Value("Φ.number", new Site("Φ.till.φ.α0", ""), 1L | Formation.RHO),
                     Map.of()
                 )
@@ -44,12 +44,13 @@ final class CopiesTest {
 
     @Test
     void givesBlankCopyToBareNameReadOffRoot(@Mktmp final Path temp) throws IOException {
-        final State state = new State(new Sources(temp).program(), new Names());
-        state.copies().seed();
+        final World world = new Sources(temp).world();
+        final State state = new State(world);
+        state.seed();
         MatcherAssert.assertThat(
             "the bare name read off Φ must be the blank copy, but it wasnt",
-            state.values().get(
-                state.copies().fresh("Φ.string", new Site("Φ.shop.φ.ρ", ""), Values.ROOT)
+            world.value(
+                state.fresh("Φ.string", new Site("Φ.shop.φ.ρ", ""), Values.ROOT)
             ).birth(),
             Matchers.equalTo("blank")
         );
@@ -57,27 +58,29 @@ final class CopiesTest {
 
     @Test
     void joinsBlankCopyToSharedOne(@Mktmp final Path temp) throws IOException {
-        final State state = new State(new Sources(temp).program(), new Names());
-        state.copies().seed();
+        final State state = new State(new Sources(temp).world());
+        state.seed();
         MatcherAssert.assertThat(
             "the blank copy must join the shared one, but it didnt",
-            state.copies().joined(
-                state.copies().fresh("Φ.bytes", new Site("Φ.box.φ", ""), Values.ROOT)
+            state.joined(
+                state.fresh("Φ.bytes", new Site("Φ.box.φ", ""), Values.ROOT)
             ),
-            Matchers.equalTo(state.copies().shared("Φ.bytes"))
+            Matchers.equalTo(state.shared("Φ.bytes"))
         );
     }
 
     @Test
     void keepsNoCanonWhenProgramLacksKindOfIt(@Mktmp final Path temp) throws IOException {
         final State state = new State(
-            new Sources(temp).program(),
-            new Names(List.of("Φ.bytes", "Φ.money"), List.of(), List.of())
+            new World(
+                new Sources(temp).program(),
+                new Names(List.of("Φ.bytes", "Φ.money"), List.of(), List.of())
+            )
         );
-        state.copies().seed();
+        state.seed();
         MatcherAssert.assertThat(
             "a program that lacks a kind of the canon must have no canon, but it had one",
-            state.copies().canon("Φ.bytes"),
+            state.canon("Φ.bytes"),
             Matchers.is(false)
         );
     }
@@ -85,17 +88,17 @@ final class CopiesTest {
     @Test
     void namesCopyByWhatItIsMadeOf(@Mktmp final Path temp) throws IOException {
         final State state = new State(
-            new Sources(temp).with("cup.eo", "[tea milk] > cup", "  tea > @").program(), new Names()
+            new Sources(temp).with("cup.eo", "[tea milk] > cup", "  tea > @").world()
         );
-        state.copies().seed();
+        state.seed();
         MatcherAssert.assertThat(
             "a copy made twice of the same things must be one copy, but it wasnt",
-            state.copies().copy(
+            state.copy(
                 new Value("Φ.cup", new Site("Φ.tray.φ", "Φ.t"), 1L),
                 Map.of("tea", new int[] {Values.DATA})
             ),
             Matchers.equalTo(
-                state.copies().copy(new Value("Φ.cup", new Site("Φ.tray.φ", "Φ.t"), 1L), Map.of())
+                state.copy(new Value("Φ.cup", new Site("Φ.tray.φ", "Φ.t"), 1L), Map.of())
             )
         );
     }

@@ -4,327 +4,869 @@
  */
 package org.eolang.inference;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Supplier;
+
 /**
- * Everything one walk works out and keeps, in the parts the design doc
- * describes, each part a class that owns its tables.
+ * Everything one walk works out and keeps, as the operations its parts ask
+ * of each other.
  *
- * <p>The parts call each other the way the sections of the doc refer to
- * each other: a read (attr) answers through rows and stamps (3.2), makes
- * copies (3.1) with tags (3.6), counts copies (3.3) and reduces values
- * (4.2), all of it through the memo of answers (6.5), while the passes
- * (4.1) and the stops (4.4) drive the whole. The state belongs to the walk
- * alone, and nothing outside it sees a part.</p>
+ * <p>The parts call each other the way the sections of the design doc refer
+ * to each other: a read (attr) answers through rows and stamps (3.2), makes
+ * copies (3.1), counts copies (3.3) and reduces values (4.2), all of it
+ * through the memo of answers (6.5), while the passes (4.1) and the stops
+ * (4.4) drive the whole. No part reaches another one: each asks the state,
+ * and the state passes the call on to the part that owns it. The parts sit
+ * in three areas, the copies ({@link Population}), the course of the walk
+ * ({@link Course}) and the questions with their memo ({@link Inquiry}), so
+ * that no class couples to all of them at once. What never asks the walk
+ * back, the program, its roles, the values and their tags, is the
+ * {@link World}, which every part asks the same way.</p>
  *
  * @since 0.76.0
  */
 final class State {
 
     /**
-     * The program, as {@code facts.xml} states it.
+     * The copies (3.1 to 3.5).
      */
-    private final Program program;
+    private final Population population;
 
     /**
-     * The names the engine has to know.
+     * The course of the walk (4.1 to 4.6).
      */
-    private final Names names;
+    private final Course course;
 
     /**
-     * The roles the formations play.
+     * The questions and their memo (6.5).
      */
-    private final Roles roles;
-
-    /**
-     * The values (3.1).
-     */
-    private final Values values;
-
-    /**
-     * The copies (3.1).
-     */
-    private final Copies copies;
-
-    /**
-     * The rows of the voids, and stamps (3.2).
-     */
-    private final Rows rows;
-
-    /**
-     * The tags (3.6).
-     */
-    private final Tags tags;
-
-    /**
-     * Which copies count (3.3).
-     */
-    private final Counting counting;
-
-    /**
-     * The study copies (3.4).
-     */
-    private final Study study;
-
-    /**
-     * The copies made for calls back (3.5).
-     */
-    private final Callbacks callbacks;
-
-    /**
-     * The memo of answers (6.5).
-     */
-    private final Memo memo;
-
-    /**
-     * The reads of a name off a value.
-     */
-    private final Reads reads;
-
-    /**
-     * The answers at places.
-     */
-    private final Places places;
-
-    /**
-     * The calls.
-     */
-    private final Calls calls;
-
-    /**
-     * Reduction (4.2).
-     */
-    private final Reduction reduction;
-
-    /**
-     * The rules that wait for a stop (4.3).
-     */
-    private final Rules rules;
-
-    /**
-     * The stops (4.4).
-     */
-    private final Stops stops;
-
-    /**
-     * The pool (4.5).
-     */
-    private final Pool pool;
-
-    /**
-     * The passes (4.1).
-     */
-    private final Passes passes;
-
-    /**
-     * The end step (4.6).
-     */
-    private final EndStep end;
+    private final Inquiry inquiry;
 
     /**
      * Ctor.
      *
-     * @param prog The program
-     * @param known The names the engine has to know
+     * @param world The world the walk goes over
      */
-    State(final Program prog, final Names known) {
-        this.program = prog;
-        this.names = known;
-        this.roles = new Roles(prog);
-        this.values = new Values(prog);
-        this.copies = new Copies(this);
-        this.rows = new Rows(this);
-        this.tags = new Tags(this);
-        this.counting = new Counting(this);
-        this.study = new Study(this);
-        this.callbacks = new Callbacks(this);
-        this.memo = new Memo(this);
-        this.reads = new Reads(this);
-        this.places = new Places(this);
-        this.calls = new Calls(this);
-        this.reduction = new Reduction(this);
-        this.rules = new Rules(this);
-        this.stops = new Stops(this);
-        this.pool = new Pool(this);
-        this.passes = new Passes(this);
-        this.end = new EndStep(this);
+    State(final World world) {
+        this.population = new Population(this, world);
+        this.course = new Course(this, world);
+        this.inquiry = new Inquiry(this, world);
     }
 
     /**
-     * The program, as {@code facts.xml} states it.
-     *
-     * @return The part
+     * Make the shared and the blank copies of the canon, with their rows.
      */
-    Program program() {
-        return this.program;
+    void seed() {
+        this.population.seed();
     }
 
     /**
-     * The names the engine has to know.
+     * A copy of a formation: the shared or blank one of a kind of the
+     * canon, or else the copy of this name, with these rows gathered into
+     * it.
      *
-     * @return The part
+     * @param name The name of the copy: its formation, birthplace, tag and
+     *  the bits of its bound voids
+     * @param rows What goes into each void, by void
+     * @return The copy
      */
-    Names names() {
-        return this.names;
+    int copy(final Value name, final Map<String, int[]> rows) {
+        return this.population.copy(name, rows);
     }
 
     /**
-     * The roles the formations play.
+     * A copy with nothing in its voids, and its {@code ρ} only if given:
+     * none, Java's own, or a value.
      *
-     * @return The part
+     * @param form The formation
+     * @param born Where it is born, with its tag
+     * @param rho The {@code ρ}: {@link Copies#NO_RHO}, {@link Values#JAVA}
+     *  or a value
+     * @return The copy
      */
-    Roles roles() {
-        return this.roles;
+    int fresh(final String form, final Site born, final int rho) {
+        return this.population.fresh(form, born, rho);
     }
 
     /**
-     * The values (3.1).
+     * The copy of a formation Java makes, with Java's own {@code ρ}.
      *
-     * @return The part
+     * @param form The formation
+     * @return The copy
      */
-    Values values() {
-        return this.values;
+    int java(final String form) {
+        return this.population.java(form);
     }
 
     /**
-     * The copies (3.1).
+     * The shared copy a blank one joins, or the value itself.
      *
-     * @return The part
+     * @param num The value
+     * @return The shared copy, or the value
      */
-    Copies copies() {
-        return this.copies;
+    int joined(final int num) {
+        return this.population.joined(num);
     }
 
     /**
-     * The rows of the voids, and stamps (3.2).
+     * Whether a formation is a kind of the canon.
      *
-     * @return The part
+     * @param form The formation
+     * @return TRUE if it is
      */
-    Rows rows() {
-        return this.rows;
+    boolean canon(final String form) {
+        return this.population.canon(form);
     }
 
     /**
-     * The tags (3.6).
+     * The shared copy of a kind of the canon.
      *
-     * @return The part
+     * @param form The formation
+     * @return The copy
      */
-    Tags tags() {
-        return this.tags;
+    int shared(final String form) {
+        return this.population.shared(form);
     }
 
     /**
-     * Which copies count (3.3).
+     * Whether a value is the shared copy of a kind of the canon.
      *
-     * @return The part
+     * @param num The value
+     * @return TRUE if it is
      */
-    Counting counting() {
-        return this.counting;
+    boolean shared(final int num) {
+        return this.population.shared(num);
     }
 
     /**
-     * The study copies (3.4).
+     * The bits of every void of a formation, {@code ρ} too.
      *
-     * @return The part
+     * @param form The formation
+     * @return The bits
      */
-    Study study() {
-        return this.study;
+    long mask(final String form) {
+        return this.population.mask(form);
     }
 
     /**
-     * The copies made for calls back (3.5).
+     * The bits of these voids of a formation.
      *
-     * @return The part
+     * @param form The formation
+     * @param names The voids
+     * @return The bits
      */
-    Callbacks callbacks() {
-        return this.callbacks;
+    long bits(final String form, final List<String> names) {
+        return this.population.bits(form, names);
     }
 
     /**
-     * The memo of answers (6.5).
+     * Put a value into a row before the walk starts.
      *
-     * @return The part
+     * @param copy The copy
+     * @param name The void
+     * @param value The value
      */
-    Memo memo() {
-        return this.memo;
+    void seed(final int copy, final String name, final int value) {
+        this.population.seed(copy, name, value);
     }
 
     /**
-     * The reads of a name off a value.
+     * Gather values into a row, which grows.
      *
-     * @return The part
+     * @param copy The copy
+     * @param name The void
+     * @param values The values
      */
-    Reads reads() {
-        return this.reads;
+    void gather(final int copy, final String name, final int... values) {
+        this.population.gather(copy, name, values);
     }
 
     /**
-     * The answers at places.
+     * What a row holds now, as read by whoever is being asked.
      *
-     * @return The part
+     * @param copy The copy
+     * @param name The void
+     * @return The values
      */
-    Places places() {
-        return this.places;
+    int[] cell(final int copy, final String name) {
+        return this.population.cell(copy, name);
     }
 
     /**
-     * The calls.
+     * A row, read by nobody.
      *
-     * @return The part
+     * @param copy The copy
+     * @param name The void
+     * @return The row, empty when there is none
      */
-    Calls calls() {
-        return this.calls;
+    Ints row(final int copy, final String name) {
+        return this.population.row(copy, name);
     }
 
     /**
-     * Reduction (4.2).
+     * Every row, by copy and void.
      *
-     * @return The part
+     * @return The rows
      */
-    Reduction reduction() {
-        return this.reduction;
+    Map<Slot, Ints> table() {
+        return this.population.table();
     }
 
     /**
-     * The rules that wait for a stop (4.3).
+     * Put a value read out of a row onto its holder.
      *
-     * @return The part
+     * @param item The value
+     * @param holder The holder
+     * @param site The site of the read, under the tag of the reader
+     * @return The value on its holder
      */
-    Rules rules() {
-        return this.rules;
+    int stamp(final int item, final int holder, final Site site) {
+        return this.population.stamp(item, holder, site);
     }
 
     /**
-     * The stops (4.4).
+     * The tally of changes that may change which copies count.
      *
-     * @return The part
+     * @return The tally
      */
-    Stops stops() {
-        return this.stops;
+    long tally() {
+        return this.population.tally();
     }
 
     /**
-     * The pool (4.5).
-     *
-     * @return The part
+     * Move the tally.
      */
-    Pool pool() {
-        return this.pool;
+    void grow() {
+        this.population.grow();
     }
 
     /**
-     * The passes (4.1).
+     * Whether a value is a copy made in EO code with an empty void of its
+     * own.
      *
-     * @return The part
+     * @param num The value
+     * @return TRUE if it is
      */
-    Passes passes() {
-        return this.passes;
+    boolean bare(final int num) {
+        return this.population.bare(num);
     }
 
     /**
-     * The end step (4.6).
+     * Whether a value counts by itself: it has no empty void of its own, or
+     * code uses it, or a stop keeps it.
      *
-     * @return The part
+     * @param num The value
+     * @return TRUE if it does
      */
-    EndStep end() {
-        return this.end;
+    boolean alone(final int num) {
+        return this.population.alone(num);
+    }
+
+    /**
+     * Whether a value counts.
+     *
+     * @param num The value
+     * @return TRUE if it does
+     */
+    boolean counts(final int num) {
+        return this.population.counts(num);
+    }
+
+    /**
+     * Whether a count told before has turned since.
+     *
+     * @param told The count, with what it was
+     * @return TRUE if it turned
+     */
+    boolean turned(final Key told) {
+        return this.population.turned(told);
+    }
+
+    /**
+     * Use a value as it is: read off, dataized by an atom, or dataized by
+     * a test, down the chain of {@code @}.
+     *
+     * @param num The value
+     * @param usage How it is used, and where
+     * @param met The copies met on this chain of {@code @} so far
+     */
+    void use(final int num, final Usage usage, final Ints met) {
+        this.population.use(num, usage, met);
+    }
+
+    /**
+     * Note the copy as written of a formation.
+     *
+     * @param form The formation
+     * @param copy Its copy as written
+     */
+    void write(final String form, final int copy) {
+        this.population.write(form, copy);
+    }
+
+    /**
+     * Whether a stop keeps a copy.
+     *
+     * @param num The copy
+     * @return TRUE if it does
+     */
+    boolean kept(final int num) {
+        return this.population.kept(num);
+    }
+
+    /**
+     * Stop w: pick the formations no copy calls with a void no copy fills,
+     * each with those voids.
+     *
+     * @return TRUE if it picked any
+     */
+    boolean pick() {
+        return this.population.pick();
+    }
+
+    /**
+     * Give each formation stop w picked its study copies, or keep its copy
+     * as written.
+     *
+     * @return How many copies were kept
+     */
+    int studied() {
+        return this.population.studied();
+    }
+
+    /**
+     * Make the copy an atom calls a value back with.
+     *
+     * @param num The value handed
+     * @param types The types the atom calls it back with
+     * @param site The site of the call, under the tag of the caller
+     */
+    void called(final int num, final List<String> types, final Site site) {
+        this.population.called(num, types, site);
+    }
+
+    /**
+     * Note a value handed to an atom.
+     *
+     * @param num The value
+     */
+    void handed(final int num) {
+        this.population.handed(num);
+    }
+
+    /**
+     * Whether only Java fills the {@code ρ} of a copy handed to an atom.
+     *
+     * @param num The copy
+     * @return TRUE if only Java does
+     */
+    boolean handedToJava(final int num) {
+        return this.population.handedToJava(num);
+    }
+
+    /**
+     * Remember a value, so the passes walk it.
+     *
+     * @param num The value
+     */
+    void remember(final int num) {
+        this.course.remember(num);
+    }
+
+    /**
+     * Walk a value again in this pass, or for the first time.
+     *
+     * @param num The value
+     */
+    void requeue(final int num) {
+        this.course.requeue(num);
+    }
+
+    /**
+     * Note that something grew.
+     */
+    void change() {
+        this.course.change();
+    }
+
+    /**
+     * Whether the passes are over and nothing may be used any more.
+     *
+     * @return TRUE if they are
+     */
+    boolean frozen() {
+        return this.course.frozen();
+    }
+
+    /**
+     * The values remembered, in the order they came.
+     *
+     * @return The values
+     */
+    Pile contexts() {
+        return this.course.contexts();
+    }
+
+    /**
+     * Whether the passes walk a value: it was remembered.
+     *
+     * @param num The value
+     * @return TRUE if it was
+     */
+    boolean known(final int num) {
+        return this.course.known(num);
+    }
+
+    /**
+     * How many passes there were.
+     *
+     * @return The count
+     */
+    int passes() {
+        return this.course.passes();
+    }
+
+    /**
+     * Mark the copies queued at a stop as walks to do again.
+     */
+    void queued() {
+        this.course.queued();
+    }
+
+    /**
+     * Walk until nothing grows and no stop decides anything.
+     */
+    void settle() {
+        this.course.settle();
+    }
+
+    /**
+     * What a value reduces to.
+     *
+     * @param num The value
+     * @return The values it stands for
+     */
+    Ids kind(final int num) {
+        return this.course.kind(num);
+    }
+
+    /**
+     * The values of an argument, reduced: unknowns as one "can't tell".
+     *
+     * @param set The values, as worked out
+     * @return The values reduced, in the order of their numbers
+     */
+    int[] reduced(final int... set) {
+        return this.course.reduced(set);
+    }
+
+    /**
+     * A value with rule A's mark: the number of its empty voids.
+     *
+     * @param base The value, whose own mark is replaced
+     * @param count The number of empty voids
+     * @return The marked value
+     */
+    int mark(final int base, final int count) {
+        return this.course.mark(base, count);
+    }
+
+    /**
+     * Rule b's head, kept as is.
+     *
+     * @param head The head
+     * @return The value
+     */
+    int await(final int head) {
+        return this.course.await(head);
+    }
+
+    /**
+     * Note that something waits for a stop.
+     *
+     * @param wish What waits
+     */
+    void wish(final Wish wish) {
+        this.course.wish(wish);
+    }
+
+    /**
+     * Whether a stop decided something.
+     *
+     * @param wish What waited
+     * @return TRUE if a stop decided it
+     */
+    boolean taken(final Wish wish) {
+        return this.course.taken(wish);
+    }
+
+    /**
+     * What waits now and no stop decided yet.
+     *
+     * @return What waits
+     */
+    Set<Wish> wishes() {
+        return this.course.wishes();
+    }
+
+    /**
+     * Decide what waits, for good.
+     *
+     * @param decided What waits
+     */
+    void take(final Set<Wish> decided) {
+        this.course.take(decided);
+    }
+
+    /**
+     * Forget what an answer found waiting, since it lost its answer.
+     *
+     * @param owner The answer
+     */
+    void forget(final int owner) {
+        this.course.forget(owner);
+    }
+
+    /**
+     * Forget every mark, reader and wish, before a full pass.
+     */
+    void clear() {
+        this.inquiry.clear();
+        this.course.clear();
+    }
+
+    /**
+     * Decide at a stop.
+     *
+     * @return TRUE if anything was decided
+     */
+    boolean decide() {
+        return this.course.decide();
+    }
+
+    /**
+     * Whether anything waits for a stop.
+     *
+     * @return TRUE if something does
+     */
+    boolean pending() {
+        return this.course.pending();
+    }
+
+    /**
+     * How many stops there were.
+     *
+     * @return The count
+     */
+    int stops() {
+        return this.course.stops();
+    }
+
+    /**
+     * Read an empty void of a copy Java made, from its pool.
+     *
+     * @param copy The copy
+     * @param name The void
+     * @param site The site of the read, under the tag of the reader
+     * @return What it holds, the decided open void too, nothing while it
+     *  waits
+     */
+    Ints read(final int copy, final String name, final Site site) {
+        return this.course.read(copy, name, site);
+    }
+
+    /**
+     * Put what a call hands to a void of what Java makes into its pool.
+     *
+     * @param form The formation
+     * @param name The void
+     * @param values The values
+     */
+    void fill(final String form, final String name, final int... values) {
+        this.course.fill(form, name, values);
+    }
+
+    /**
+     * Change a: the voids of objects atoms return that were read with
+     * nothing in their pool, and are not decided yet.
+     *
+     * @return The voids, as formation and void, in order
+     */
+    List<List<String>> waiting() {
+        return this.course.waiting();
+    }
+
+    /**
+     * Decide that Java alone fills these voids.
+     *
+     * @param pairs The voids, as formation and void
+     */
+    void decide(final List<List<String>> pairs) {
+        this.course.decide(pairs);
+    }
+
+    /**
+     * Whether nobody fills a void of what Java makes: it was read with
+     * nothing in the pool and never decided.
+     *
+     * @param form The formation
+     * @param name The void
+     * @return TRUE if nobody fills it
+     */
+    boolean unfilled(final String form, final String name) {
+        return this.course.unfilled(form, name);
+    }
+
+    /**
+     * Mark the reads with no answer, keep aside what holds a decided open
+     * void, and make it a plain one everywhere else.
+     */
+    void step() {
+        this.course.step();
+    }
+
+    /**
+     * The mark of a read with no answer.
+     *
+     * @param place The place
+     * @param ctx The copy
+     * @return The mark, empty when there is none
+     */
+    String token(final String place, final int ctx) {
+        return this.course.token(place, ctx);
+    }
+
+    /**
+     * An answer as it was before the end step.
+     *
+     * @param key The question
+     * @param answer The answer now
+     * @return The answer it had
+     */
+    Ints untidy(final Key key, final Ids answer) {
+        return this.course.untidy(key, answer);
+    }
+
+    /**
+     * A row as it was before the end step.
+     *
+     * @param copy The copy
+     * @param name The void
+     * @return The row it was
+     */
+    Ints untidy(final int copy, final String name) {
+        return this.course.untidy(copy, name);
+    }
+
+    /**
+     * Ask a question: its stored answer if it is good, else the answer
+     * worked out now and joined to the one stored.
+     *
+     * @param key The question
+     * @param compute How to work it out
+     * @return The answer
+     */
+    Ids ask(final Key key, final Supplier<Ints> compute) {
+        return this.inquiry.ask(key, compute);
+    }
+
+    /**
+     * The stored answer of a question, asked of nobody.
+     *
+     * @param key The question
+     * @return The answer, none when there is none
+     */
+    Ids stored(final Key key) {
+        return this.inquiry.stored(key);
+    }
+
+    /**
+     * The questions with stored answers, in the order they were first
+     * stored.
+     *
+     * @return The questions
+     */
+    List<Key> questions() {
+        return this.inquiry.questions();
+    }
+
+    /**
+     * Put another answer in place of a stored one, after the passes.
+     *
+     * @param key The question
+     * @param answer The answer
+     */
+    void replace(final Key key, final Ints answer) {
+        this.inquiry.replace(key, answer);
+    }
+
+    /**
+     * Note that whoever is being asked now reads a thing watched.
+     *
+     * @param key The thing watched
+     */
+    void depend(final Key key) {
+        this.inquiry.depend(key);
+    }
+
+    /**
+     * Whoever read a thing watched loses the answer, since the thing grew.
+     *
+     * @param key The thing watched
+     */
+    void spoil(final Key key) {
+        this.inquiry.spoil(key);
+    }
+
+    /**
+     * A question loses its answer before the next cheap pass.
+     *
+     * @param key The question
+     */
+    void stale(final Key key) {
+        this.inquiry.stale(key);
+    }
+
+    /**
+     * Watch a count: whoever is being asked now reads it.
+     *
+     * @param key The count, with what it was
+     */
+    void watch(final Key key) {
+        this.inquiry.watch(key);
+    }
+
+    /**
+     * Whether a walk is done in this pass.
+     *
+     * @param key The walk
+     * @return TRUE if it is
+     */
+    boolean done(final Key key) {
+        return this.inquiry.done(key);
+    }
+
+    /**
+     * Note a walk as done in this pass.
+     *
+     * @param key The walk
+     */
+    void finish(final Key key) {
+        this.inquiry.finish(key);
+    }
+
+    /**
+     * Start a walk: what is asked from now on is read by it.
+     *
+     * @param key The walk
+     */
+    void enter(final Key key) {
+        this.inquiry.enter(key);
+    }
+
+    /**
+     * End the walk started last.
+     */
+    void leave() {
+        this.inquiry.leave();
+    }
+
+    /**
+     * Whether anything is being asked or walked now.
+     *
+     * @return TRUE if something is
+     */
+    boolean busy() {
+        return this.inquiry.busy();
+    }
+
+    /**
+     * What is being asked or walked now, the innermost.
+     *
+     * @return Its number
+     */
+    int owner() {
+        return this.inquiry.owner();
+    }
+
+    /**
+     * How many cycle hits there were so far.
+     *
+     * @return The count
+     */
+    long hits() {
+        return this.inquiry.hits();
+    }
+
+    /**
+     * Forget who reads what, once the passes are over.
+     */
+    void drop() {
+        this.inquiry.drop();
+    }
+
+    /**
+     * Before a cheap pass: the answers that read a count that changed, a
+     * copy queued at a stop, or a question a stop decided, lose theirs, and
+     * so do the answers that read those.
+     */
+    void invalidate() {
+        this.inquiry.invalidate();
+    }
+
+    /**
+     * How many questions the memo holds an answer for.
+     *
+     * @return The count
+     */
+    int answers() {
+        return this.inquiry.answers();
+    }
+
+    /**
+     * Read a name off a value.
+     *
+     * @param num The value
+     * @param name The name
+     * @param site The site of the read, under the tag of the reader
+     * @return What it gives
+     */
+    Ids attr(final int num, final String name, final Site site) {
+        return this.inquiry.attr(num, name, site);
+    }
+
+    /**
+     * The answer at a place in a copy.
+     *
+     * @param place The place
+     * @param ctx The copy around
+     * @return The answer
+     */
+    Ids evaluate(final String place, final int ctx) {
+        return this.inquiry.evaluate(place, ctx);
+    }
+
+    /**
+     * Apply heads to the arguments of the call at a place.
+     *
+     * @param heads What the place gives before the call
+     * @param ctx The copy around
+     * @param place The place of the call
+     * @return What the call gives
+     */
+    Ints apply(final Ints heads, final int ctx, final String place) {
+        return this.inquiry.apply(heads, ctx, place);
+    }
+
+    /**
+     * Where the arguments of each call land, over the copies around that
+     * count: the one void each lands in, for those that land in one.
+     *
+     * @return The voids, by the place of the argument
+     */
+    Map<String, String> lands() {
+        return this.inquiry.lands();
     }
 }

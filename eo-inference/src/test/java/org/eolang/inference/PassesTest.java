@@ -23,13 +23,13 @@ final class PassesTest {
 
     @Test
     void walksFormationAsWrittenInsideCopiesAround(@Mktmp final Path temp) throws IOException {
-        final State state = new Sources(temp)
+        final World world = new Sources(temp)
             .with("house.eo", "[] > house", "  [] > room", "    42 > @")
-            .settled();
+            .world();
         MatcherAssert.assertThat(
             "a nested formation must be walked as written, inside the copy of the one around, but it wasnt",
-            state.passes().known().get(
-                state.values().intern(
+            new Settled(world).state().known(
+                world.intern(
                     new Value('O', "Φ.house.room", "Φ.house.room", Formation.RHO, "", -1, 0)
                 )
             ),
@@ -39,12 +39,12 @@ final class PassesTest {
 
     @Test
     void remembersValueOnce(@Mktmp final Path temp) throws IOException {
-        final State state = new State(new Sources(temp).program(), new Names());
-        state.passes().remember(Values.TERM);
-        state.passes().remember(Values.TERM);
+        final State state = new State(new Sources(temp).world());
+        state.remember(Values.TERM);
+        state.remember(Values.TERM);
         MatcherAssert.assertThat(
             "a value remembered twice must be among the copies once, but it wasnt",
-            state.passes().contexts().size(),
+            state.contexts().size(),
             Matchers.equalTo(1)
         );
     }
@@ -53,9 +53,9 @@ final class PassesTest {
     void stopsUsingCopiesOnceSettled(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "the passes must be over once settled, but they werent",
-            new Sources(temp)
-                .with("house.eo", "[] > house", "  42 > @")
-                .settled().passes().frozen(),
+            new Settled(
+                new Sources(temp).with("house.eo", "[] > house", "  42 > @").world()
+            ).state().frozen(),
             Matchers.is(true)
         );
     }

@@ -23,39 +23,41 @@ final class RowsTest {
 
     @Test
     void gathersValuesIntoRow(@Mktmp final Path temp) throws IOException {
-        final State state = RowsTest.state(temp);
-        final int cup = RowsTest.cup(state, 0L);
-        state.rows().gather(cup, "tea", new int[] {Values.DATA});
-        state.rows().gather(cup, "tea", new int[] {Values.TERM, Values.DATA});
+        final World world = RowsTest.world(temp);
+        final State state = RowsTest.state(world);
+        final int cup = RowsTest.cup(world, 0L);
+        state.gather(cup, "tea", new int[] {Values.DATA});
+        state.gather(cup, "tea", new int[] {Values.TERM, Values.DATA});
         MatcherAssert.assertThat(
             "a row must hold every value gathered into it, each once, but it didnt",
-            state.rows().row(cup, "tea").frozen(),
+            state.row(cup, "tea").frozen(),
             Matchers.equalTo(new Ids(Values.DATA, Values.TERM))
         );
     }
 
     @Test
     void joinsBlankCopyPutIntoRho(@Mktmp final Path temp) throws IOException {
-        final State state = RowsTest.state(temp);
-        final int cup = RowsTest.cup(state, Formation.RHO);
-        state.rows().gather(
-            cup, "ρ", new int[] {state.copies().fresh("Φ.number", new Site("Φ.x", ""), Values.ROOT)}
+        final World world = RowsTest.world(temp);
+        final State state = RowsTest.state(world);
+        final int cup = RowsTest.cup(world, Formation.RHO);
+        state.gather(
+            cup, "ρ", new int[] {state.fresh("Φ.number", new Site("Φ.x", ""), Values.ROOT)}
         );
         MatcherAssert.assertThat(
             "a blank copy put into ρ must join the shared one, but it didnt",
-            state.rows().row(cup, "ρ").frozen(),
-            Matchers.equalTo(new Ids(state.copies().shared("Φ.number")))
+            state.row(cup, "ρ").frozen(),
+            Matchers.equalTo(new Ids(state.shared("Φ.number")))
         );
     }
 
     @Test
     void stampsCopyWithNoRhoOntoHolder(@Mktmp final Path temp) throws IOException {
-        final State state = RowsTest.state(temp);
+        final World world = RowsTest.world(temp);
         MatcherAssert.assertThat(
             "a copy with no ρ must be stamped onto its holder at the place of the read, but it wasnt",
-            state.values().full(
-                state.rows().stamp(
-                    RowsTest.cup(state, 0L), RowsTest.cup(state, Formation.RHO),
+            world.full(
+                RowsTest.state(world).stamp(
+                    RowsTest.cup(world, 0L), RowsTest.cup(world, Formation.RHO),
                     new Site("Φ.tray.ρ", "")
                 )
             ),
@@ -65,24 +67,26 @@ final class RowsTest {
 
     @Test
     void leavesCopyWithRhoAsItIs(@Mktmp final Path temp) throws IOException {
-        final State state = RowsTest.state(temp);
-        final int cup = RowsTest.cup(state, Formation.RHO);
+        final World world = RowsTest.world(temp);
+        final int cup = RowsTest.cup(world, Formation.RHO);
         MatcherAssert.assertThat(
             "a copy that has its ρ must stay as it is when read out of a row, but it didnt",
-            state.rows().stamp(cup, Values.ROOT, new Site("Φ.tray.ρ", "")),
+            RowsTest.state(world).stamp(cup, Values.ROOT, new Site("Φ.tray.ρ", "")),
             Matchers.equalTo(cup)
         );
     }
 
-    private static State state(final Path temp) throws IOException {
-        final State state = new State(
-            new Sources(temp).with("cup.eo", "[tea] > cup", "  tea > @").program(), new Names()
-        );
-        state.copies().seed();
+    private static State state(final World world) {
+        final State state = new State(world);
+        state.seed();
         return state;
     }
 
-    private static int cup(final State state, final long bound) {
-        return state.values().intern(new Value('O', "Φ.cup", "Φ.cup", bound, "", -1, 0));
+    private static World world(final Path temp) throws IOException {
+        return new Sources(temp).with("cup.eo", "[tea] > cup", "  tea > @").world();
+    }
+
+    private static int cup(final World world, final long bound) {
+        return world.intern(new Value('O', "Φ.cup", "Φ.cup", bound, "", -1, 0));
     }
 }

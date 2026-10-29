@@ -23,11 +23,11 @@ final class CountingTest {
 
     @Test
     void countsCopyWithNoEmptyVoid(@Mktmp final Path temp) throws IOException {
-        final State state = CountingTest.settled(temp);
+        final World world = CountingTest.world(temp);
         MatcherAssert.assertThat(
             "a copy with no empty void must count, but it didnt",
-            state.counting().counts(
-                state.values().intern(new Value('O', "Φ.app", "Φ.app", Formation.RHO, "", -1, 0))
+            new Settled(world).state().counts(
+                world.intern(new Value('O', "Φ.app", "Φ.app", Formation.RHO, "", -1, 0))
             ),
             Matchers.is(true)
         );
@@ -35,11 +35,11 @@ final class CountingTest {
 
     @Test
     void doesNotCountCopyWithEmptyVoidNobodyUses(@Mktmp final Path temp) throws IOException {
-        final State state = CountingTest.settled(temp);
+        final World world = CountingTest.world(temp);
         MatcherAssert.assertThat(
             "a copy with an empty void that nobody uses must not count, but it did",
-            state.counting().counts(
-                state.values().intern(new Value('O', "Φ.box", "Φ.box", Formation.RHO, "", -1, 0))
+            new Settled(world).state().counts(
+                world.intern(new Value('O', "Φ.box", "Φ.box", Formation.RHO, "", -1, 0))
             ),
             Matchers.is(false)
         );
@@ -47,11 +47,11 @@ final class CountingTest {
 
     @Test
     void countsCopyCodeReadsFromOutside(@Mktmp final Path temp) throws IOException {
-        final State state = CountingTest.settled(temp);
+        final World world = CountingTest.world(temp);
         MatcherAssert.assertThat(
             "a copy read from outside must count, but it didnt",
-            state.counting().counts(
-                state.values().intern(
+            new Settled(world).state().counts(
+                world.intern(
                     new Value('O', "Φ.box", "Φ.app.φ.ρ", 1L | Formation.RHO, "", -1, 0)
                 )
             ),
@@ -63,15 +63,15 @@ final class CountingTest {
     void countsValueThatIsNoCopy(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "a value that is not a copy must count, but it didnt",
-            CountingTest.settled(temp).counting().counts(Values.TERM),
+            new Settled(CountingTest.world(temp)).state().counts(Values.TERM),
             Matchers.is(true)
         );
     }
 
-    private static State settled(final Path temp) throws IOException {
+    private static World world(final Path temp) throws IOException {
         return new Sources(temp)
             .with("box.eo", "[item other] > box", "  item > @", "  other > size")
             .with("app.eo", "[] > app", "  (box 5).size > @", "  box 1 2 > full")
-            .settled();
+            .world();
     }
 }

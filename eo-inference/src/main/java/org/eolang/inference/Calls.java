@@ -41,6 +41,11 @@ final class Calls {
     private final State state;
 
     /**
+     * The world the walk goes over.
+     */
+    private final World world;
+
+    /**
      * Where the arguments land, by call place and copy around.
      */
     private final Map<Slot, Set<Landing>> lands;
@@ -54,9 +59,11 @@ final class Calls {
      * Ctor.
      *
      * @param walk The state of the walk
+     * @param world The world the walk goes over
      */
-    Calls(final State walk) {
+    Calls(final State walk, final World world) {
         this.state = walk;
+        this.world = world;
         this.lands = new LinkedHashMap<>(0);
         this.landings = new HashMap<>(0);
     }
@@ -70,22 +77,22 @@ final class Calls {
      * @return What the call gives
      */
     Ints apply(final Ints heads, final int ctx, final String place) {
-        final List<String> args = this.state.program().args(place);
+        final List<String> args = this.world.args(place);
         final List<int[]> raw = new ArrayList<>(args.size());
         for (int arg = 0; arg < args.size(); ++arg) {
             raw.add(this.argument(args.get(arg), arg, ctx, place));
         }
         final List<int[]> argsets = new ArrayList<>(args.size());
         for (final int[] set : raw) {
-            argsets.add(this.state.reduction().reduced(set));
+            argsets.add(this.state.reduced(set));
         }
         for (final int[] set : argsets) {
             for (final int val : set) {
-                this.state.passes().remember(val);
+                this.state.remember(val);
             }
         }
         final Call call = new Call(
-            new Site(place, this.state.tags().carried(ctx)), ctx, raw, argsets
+            new Site(place, this.world.carried(ctx)), ctx, raw, argsets
         );
         final Ints out = new Ints();
         final Set<Landing> landed = new HashSet<>(0);
@@ -105,8 +112,8 @@ final class Calls {
     Map<String, String> lands() {
         final Map<String, Set<String>> voids = new LinkedHashMap<>(0);
         for (final Map.Entry<Slot, Set<Landing>> entry : this.lands.entrySet()) {
-            if (this.state.counting().counts(entry.getKey().copy())) {
-                final List<String> args = this.state.program().args(entry.getKey().name());
+            if (this.state.counts(entry.getKey().copy())) {
+                final List<String> args = this.world.args(entry.getKey().name());
                 for (final Landing landing : entry.getValue()) {
                     voids.computeIfAbsent(args.get(landing.arg()), key -> new HashSet<>(1))
                         .add(landing.name());
@@ -123,28 +130,28 @@ final class Calls {
     }
 
     private int[] argument(final String arg, final int pos, final int ctx, final String place) {
-        final Ids got = this.state.places().evaluate(arg, ctx);
+        final Ids got = this.state.evaluate(arg, ctx);
         final Ints kept = new Ints();
         for (int idx = 0; idx < got.size(); ++idx) {
-            if (this.state.values().get(got.get(idx)).kind() != 'X') {
+            if (this.world.value(got.get(idx)).kind() != 'X') {
                 kept.add(got.get(idx));
             }
         }
         final Wish wish = new Wish('3', place, ctx, pos);
-        if (!got.isEmpty() && this.state.rules().taken(wish)) {
-            kept.add(this.state.values().unknown("can't tell"));
+        if (!got.isEmpty() && this.state.taken(wish)) {
+            kept.add(this.world.unknown("can't tell"));
         } else if (!got.isEmpty() && kept.isEmpty()) {
-            this.state.rules().wish(wish);
+            this.state.wish(wish);
         }
         return kept.array();
     }
 
     private Ints head(final int num, final Call call, final Set<Landing> landed) {
         int head = num;
-        Value value = this.state.values().get(head);
+        Value value = this.world.value(head);
         if (value.kind() == 'B') {
             head = value.base();
-            value = this.state.values().get(head);
+            value = this.world.value(head);
         }
         this.land(head, value, call.size(), landed);
         final char kind = value.kind();
@@ -154,7 +161,7 @@ final class Calls {
         } else if (kind == 'O') {
             out.addAll(this.object(head, value, call));
         } else if (kind == 'D') {
-            out.add(this.state.values().conflict("data()"));
+            out.add(this.world.conflict("data()"));
         } else if (kind != 'X') {
             out.add(head);
         }
@@ -166,7 +173,7 @@ final class Calls {
     ) {
         final char kind = value.kind();
         if (kind == 'O' && this.fits(head, value, args)) {
-            final List<String> free = this.state.values().opened(value);
+            final List<String> free = this.world.opened(value);
             for (int arg = 0; arg < args; ++arg) {
                 landed.add(new Landing(arg, free.get(arg)));
             }
@@ -178,18 +185,18 @@ final class Calls {
     }
 
     private boolean fits(final int head, final Value value, final int args) {
-        return !Values.JBORN.equals(value.birth()) && !this.state.copies().shared(head)
-            && args <= this.state.values().opened(value).size();
+        return !Values.JBORN.equals(value.birth()) && !this.state.shared(head)
+            && args <= this.world.opened(value).size();
     }
 
     private int marked(final Value value, final int args) {
         final int result;
         if (args < value.count()) {
-            result = this.state.reduction().mark(value.base(), value.count() - args);
+            result = this.state.mark(value.base(), value.count() - args);
         } else if (args == value.count()) {
-            final Value base = this.state.values().get(value.base());
-            if (base.kind() == 'O' && !this.state.values().opened(base).isEmpty()) {
-                result = this.state.reduction().mark(value.base(), 0);
+            final Value base = this.world.value(value.base());
+            if (base.kind() == 'O' && !this.world.opened(base).isEmpty()) {
+                result = this.state.mark(value.base(), 0);
             } else {
                 result = value.base();
             }
@@ -200,24 +207,24 @@ final class Calls {
     }
 
     private Ints object(final int head, final Value value, final Call call) {
-        final List<String> free = this.state.values().opened(value);
-        final String passed = this.state.roles().passes(value.form());
+        final List<String> free = this.world.opened(value);
+        final String passed = this.world.passes(value.form());
         final Ints out;
-        if ((Values.JBORN.equals(value.birth()) || this.state.copies().shared(head))
+        if ((Values.JBORN.equals(value.birth()) || this.state.shared(head))
             && call.size() > 0 || call.size() > free.size()) {
             out = new Ints(Values.TERM);
         } else if (passed.isEmpty()) {
             out = this.made(head, value, call, false);
-        } else if ((value.bound() & this.state.program().form(value.form()).bit(passed)) == 0) {
+        } else if ((value.bound() & this.world.form(value.form()).bit(passed)) == 0) {
             out = this.narrowed(head, value, call, free.indexOf(passed));
         } else {
-            out = new Ints(this.state.rows().cell(head, passed));
+            out = new Ints(this.state.cell(head, passed));
         }
         return out;
     }
 
     private Ints narrowed(final int head, final Value value, final Call call, final int pos) {
-        final int free = this.state.values().opened(value).size();
+        final int free = this.world.opened(value).size();
         final Ints out = new Ints();
         if (pos < call.size()) {
             for (final int val : call.sets().get(pos)) {
@@ -233,28 +240,28 @@ final class Calls {
     }
 
     private Ints made(final int head, final Value value, final Call call, final boolean narrowed) {
-        final List<String> free = this.state.values().opened(value);
+        final List<String> free = this.world.opened(value);
         final Wish wish = new Wish('b', call.site().place(), call.ctx(), head);
         final Ints out = new Ints();
-        if (this.state.rules().taken(wish)) {
-            out.add(this.state.reduction().await(head));
+        if (this.state.taken(wish)) {
+            out.add(this.state.await(head));
         }
         if (this.gapped(call.raw(), free.size())) {
-            if (!this.state.rules().taken(wish)) {
-                this.state.rules().wish(wish);
+            if (!this.state.taken(wish)) {
+                this.state.wish(wish);
             }
         } else if (!call.lacking(free.size())) {
             this.bind(value, free, call);
-            final int copy = this.state.copies().copy(
+            final int copy = this.state.copy(
                 new Value(
-                    value.form(), this.state.tags().born(call.site(), value.form()),
-                    value.bound() | this.state.copies().bits(
+                    value.form(), this.world.born(call.site(), value.form()),
+                    value.bound() | this.state.bits(
                         value.form(), free.subList(0, Math.min(call.size(), free.size()))
                     )
                 ),
                 this.rows(head, value, free, call.sets())
             );
-            this.state.passes().remember(copy);
+            this.state.remember(copy);
             if (!narrowed) {
                 out.add(copy);
             }
@@ -265,18 +272,18 @@ final class Calls {
     private void bind(final Value value, final List<String> free, final Call call) {
         final String form = value.form();
         final int count = Math.min(free.size(), call.size());
-        if (this.state.roles().returned(form)) {
+        if (this.world.returned(form)) {
             for (int arg = 0; arg < count; ++arg) {
-                this.state.pool().fill(form, free.get(arg), call.sets().get(arg));
+                this.state.fill(form, free.get(arg), call.sets().get(arg));
             }
         }
-        final Formation shape = this.state.program().form(form);
+        final Formation shape = this.world.form(form);
         for (int arg = 0; arg < count; ++arg) {
             if (shape.back(free.get(arg))) {
                 this.back(free.get(arg), arg, shape, call);
             }
         }
-        if (this.state.roles().atom(form)) {
+        if (this.world.atom(form)) {
             for (int arg = 0; arg < count; ++arg) {
                 if (!shape.back(free.get(arg))) {
                     this.dataized(free.get(arg), arg, call);
@@ -287,21 +294,21 @@ final class Calls {
 
     private void back(final String name, final int arg, final Formation shape, final Call call) {
         for (final int val : call.raw().get(arg)) {
-            this.state.callbacks().handed(val);
-            this.state.callbacks().called(val, shape.args(name), call.site());
+            this.state.handed(val);
+            this.state.called(val, shape.args(name), call.site());
         }
     }
 
     private void dataized(final String name, final int arg, final Call call) {
         final Usage usage = new Usage(name, call.site(), Counting.DATAIZED);
         for (final int val : call.raw().get(arg)) {
-            this.state.callbacks().handed(val);
+            this.state.handed(val);
         }
         for (final int val : call.raw().get(arg)) {
-            this.state.counting().use(val, usage, new Ints());
+            this.state.use(val, usage, new Ints());
         }
         for (final int val : call.sets().get(arg)) {
-            this.state.counting().use(val, usage, new Ints());
+            this.state.use(val, usage, new Ints());
         }
     }
 
@@ -309,8 +316,8 @@ final class Calls {
         final int head, final Value value, final List<String> free, final List<int[]> argsets
     ) {
         final Map<String, int[]> rows = new LinkedHashMap<>(0);
-        for (final String name : this.state.values().bound(value)) {
-            rows.put(name, this.state.rows().cell(head, name));
+        for (final String name : this.world.bound(value)) {
+            rows.put(name, this.state.cell(head, name));
         }
         final int count = Math.min(free.size(), argsets.size());
         for (int arg = 0; arg < count; ++arg) {
@@ -330,7 +337,7 @@ final class Calls {
     private boolean gaps(final int... set) {
         boolean all = set.length > 0;
         for (final int val : set) {
-            if (!this.state.values().gap(val)) {
+            if (!this.world.gap(val)) {
                 all = false;
                 break;
             }
@@ -339,12 +346,13 @@ final class Calls {
     }
 
     private void landing(final String place, final int ctx, final Set<Landing> landed) {
-        final Slot key = new Slot(ctx, place);
-        final Set<Landing> old = this.lands.getOrDefault(key, Collections.emptySet());
+        final Set<Landing> old = this.lands.getOrDefault(
+            new Slot(ctx, place), Collections.emptySet()
+        );
         if (!old.containsAll(landed)) {
             final Set<Landing> got = new HashSet<>(old);
             got.addAll(landed);
-            this.lands.put(key, this.landings.computeIfAbsent(got, set -> set));
+            this.lands.put(new Slot(ctx, place), this.landings.computeIfAbsent(got, set -> set));
         }
     }
 }

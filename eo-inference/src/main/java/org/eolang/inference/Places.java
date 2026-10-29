@@ -27,12 +27,19 @@ final class Places {
     private final State state;
 
     /**
+     * The world the walk goes over.
+     */
+    private final World world;
+
+    /**
      * Ctor.
      *
      * @param walk The state of the walk
+     * @param world The world the walk goes over
      */
-    Places(final State walk) {
+    Places(final State walk, final World world) {
         this.state = walk;
+        this.world = world;
     }
 
     /**
@@ -43,7 +50,7 @@ final class Places {
      * @return The answer
      */
     Ids evaluate(final String place, final int ctx) {
-        return this.state.memo().ask(
+        return this.state.ask(
             new Key('e', ctx, "", place, "", 0),
             () -> this.now(place, ctx)
         );
@@ -51,37 +58,37 @@ final class Places {
 
     private Ints now(final String place, final int ctx) {
         final Ints out;
-        if (this.state.program().formation(place)) {
+        if (this.world.formation(place)) {
             out = new Ints(this.formation(place, ctx));
-        } else if (this.state.program().args(place).isEmpty()) {
+        } else if (this.world.args(place).isEmpty()) {
             out = this.chain(place, ctx);
         } else {
-            out = this.state.calls().apply(this.chain(place, ctx), ctx, place);
+            out = this.state.apply(this.chain(place, ctx), ctx, place);
         }
         return out;
     }
 
     private int formation(final String place, final int ctx) {
         final int rho;
-        if (this.state.program().form(place).has("ρ")) {
+        if (this.world.form(place).has("ρ")) {
             rho = Copies.NO_RHO;
         } else {
             rho = ctx;
         }
-        final int copy = this.state.copies().fresh(
+        final int copy = this.state.fresh(
             place,
-            this.state.tags().born(new Site(place, this.state.tags().carried(ctx)), place),
+            this.world.born(new Site(place, this.world.carried(ctx)), place),
             rho
         );
-        this.state.passes().remember(copy);
+        this.state.remember(copy);
         return copy;
     }
 
     private Ints chain(final String place, final int ctx) {
         final Ints out;
-        if (this.state.program().starts(place)) {
+        if (this.world.starts(place)) {
             out = this.heads(place, ctx);
-        } else if (this.state.program().reads(place)) {
+        } else if (this.world.reads(place)) {
             out = this.read(place, ctx);
         } else {
             throw new IllegalStateException(
@@ -93,7 +100,7 @@ final class Places {
 
     private Ints heads(final String place, final int ctx) {
         final Ints out = new Ints();
-        for (final Head head : this.state.program().heads(place)) {
+        for (final Head head : this.world.heads(place)) {
             if ("data".equals(head.tag())) {
                 out.add(Values.DATA);
             } else if ("terminator".equals(head.tag())) {
@@ -108,17 +115,17 @@ final class Places {
     }
 
     private Ints read(final String place, final int ctx) {
-        final Read read = this.state.program().read(place);
-        final boolean outside = !this.state.roles().inner(place);
-        final Site site = new Site(place, this.state.tags().carried(ctx));
+        final Read read = this.world.read(place);
+        final boolean outside = !this.world.inner(place);
+        final Site site = new Site(place, this.world.carried(ctx));
         final Usage usage = new Usage(read.name(), site, Counting.READ);
         final Ints out = new Ints();
         final Ids got = this.evaluate(read.of(), ctx);
         for (int idx = 0; idx < got.size(); ++idx) {
             if (outside) {
-                this.state.counting().use(got.get(idx), usage, new Ints());
+                this.state.use(got.get(idx), usage, new Ints());
             }
-            out.addAll(this.state.reads().attr(got.get(idx), read.name(), site));
+            out.addAll(this.state.attr(got.get(idx), read.name(), site));
         }
         return out;
     }
@@ -133,7 +140,7 @@ final class Places {
                 continue;
             }
             met.set(here);
-            final Value value = this.state.values().get(here);
+            final Value value = this.world.value(here);
             if (value.kind() == 'O' && value.form().equals(loc)) {
                 out.add(here);
                 continue;
@@ -143,11 +150,11 @@ final class Places {
                 throw new IllegalStateException(
                     String.format(
                         "the walk from %s out to %s lost its way at %s",
-                        place, loc, this.state.values().full(here)
+                        place, loc, this.world.full(here)
                     )
                 );
             }
-            for (final int outer : this.state.rows().cell(here, "ρ")) {
+            for (final int outer : this.state.cell(here, "ρ")) {
                 todo.push(outer);
             }
         }

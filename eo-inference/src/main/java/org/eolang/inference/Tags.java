@@ -24,9 +24,9 @@ import java.util.Map;
 final class Tags {
 
     /**
-     * The state of the walk.
+     * The world the walk goes over.
      */
-    private final State state;
+    private final World world;
 
     /**
      * The package of each name, worked out once, empty for a name inside a
@@ -42,10 +42,10 @@ final class Tags {
     /**
      * Ctor.
      *
-     * @param walk The state of the walk
+     * @param world The world the walk goes over
      */
-    Tags(final State walk) {
-        this.state = walk;
+    Tags(final World world) {
+        this.world = world;
         this.packages = new HashMap<>(0);
         this.plain = new HashMap<>(0);
     }
@@ -65,13 +65,13 @@ final class Tags {
         if (this.untagged(form)) {
             result = "";
         } else if (tag.isEmpty()) {
-            if (this.state.names().root(this.pkg(form))) {
+            if (this.world.root(this.pkg(form))) {
                 result = place;
             } else {
                 result = "";
             }
-        } else if (this.state.names().root(this.pkg(form))
-            && this.state.names().root(this.pkg(place))
+        } else if (this.world.root(this.pkg(form))
+            && this.world.root(this.pkg(place))
             && !this.pkg(place).equals(this.pkg(form))
             && this.fresh(tag, this.pkg(place))) {
             result = String.join("/", tag, place);
@@ -100,7 +100,7 @@ final class Tags {
      * @return The tag, empty when none
      */
     String carried(final int num) {
-        final Value value = this.state.values().get(num);
+        final Value value = this.world.value(num);
         final String tag;
         if (value.kind() == 'O') {
             tag = value.tag();
@@ -154,7 +154,7 @@ final class Tags {
     private boolean untagged(final String form) {
         return this.plain.computeIfAbsent(
             form,
-            key -> !this.state.roles().passes(key).isEmpty() || this.state.names().scalar(key)
+            key -> !this.world.passes(key).isEmpty() || this.world.scalar(key)
         );
     }
 }
