@@ -12,10 +12,12 @@ import java.util.Map;
 /**
  * The pairs, asked for again until asking brings nothing.
  *
- * <p>Answering {@code a.b.c} needs {@code a.b} answered first, and one pass
- * cannot put them in that order, so the passes run until one of them adds
- * nothing. Pairs are only ever added, of which there are finitely many, so it
- * settles.</p>
+ * <p>Answering {@code a.b.c} needs {@code a.b} answered first. A pass puts
+ * the two in that order itself, since {@link Dispatched#answers(Map, Map)}
+ * reads a chain to its end rather than one hop at a time, and the passes run
+ * until one of them adds nothing all the same: a void filled by a later pass
+ * opens dispatches no earlier one could answer. Pairs are only ever added, of
+ * which there are finitely many, so it settles.</p>
  *
  * <p>There are three things to ask, and each is asked only when the one before
  * it has nothing left to say. A dispatch is answered from what the tables hold
@@ -40,20 +42,6 @@ import java.util.Map;
  * passes go round again before anything is given up on.</p>
  *
  * @since 0.69.0
- * @todo #8274:90min Settle a chain in fewer passes than it has hops.
- *  On eo-runtime this runs 128 passes of {@link Dispatched} and 44 of
- *  {@link Promoted} to settle 41,192 pairs, 77 of the passes adding one pair
- *  apiece, which is 30s of the 40s the tables take to build. The count is the
- *  cost and not the pass: of the 18.7s the dispatches take, {@link Bound} is
- *  9.4s and the rest of what a pass builds 6.5s, while the loop over all
- *  13,325 dispatches is 2.8s and already asks none but the ones left
- *  unanswered. So narrowing that loop further buys 7% and would need an index
- *  of what every answer was read off to be sound, since an answer changes when
- *  the fillings of a void change and not only when the end of its bearer does.
- *  What makes the passes is that a chain is read one hop to a pass, and
- *  bool.eo nests 40 formations that call each other. Read more than one hop, or
- *  ask again only what a new pair reaches, and mind that both change the order
- *  the pairs are learnt in, which {@link Dispatched} is not indifferent to.
  */
 final class Settled {
 

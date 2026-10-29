@@ -228,6 +228,21 @@ final class Dispatched {
     /**
      * The pairs that follow from what is known, beyond what is known already.
      *
+     * <p>A chain is read to its end here and not one hop to a pass. The second
+     * hop of {@code a.b.c} waits on the first and on nothing else the pass
+     * knows: what the calls put into the voids, which is {@link Puts} and the
+     * greater half of what a pass costs, says no more about {@code c} than it
+     * has already said about {@code b}. So the dispatches are walked again
+     * over the pairs the walk before them wrote down, for as long as a walk
+     * writes any, and the forty formations of {@code bool.eo} settle in one
+     * pass where they took forty (#8274).</p>
+     *
+     * <p>Every walk but the first reads the fillings the pass began with. What
+     * a void holds only grows while the passes run, so such a walk answers
+     * what the pass it belongs to would have answered and never more than
+     * that, and the dispatches it leaves are what the pass after it is asked
+     * about.</p>
+     *
      * @param pairs The pairs, each name against the one it is a copy of
      * @param copied The arms every read off a choice is a copy of, from
      *  {@link #copies(Map, Map)}
@@ -237,29 +252,17 @@ final class Dispatched {
     Map<String, String> answers(
         final Map<String, String> pairs, final Map<String, Collection<String>> copied
     ) {
-        final Map<String, String> names = new Ends(pairs).names();
-        final Provided owned = new Provided(this.given, names, this.hollows);
-        final Filled filled = this.filled(pairs, owned, copied);
+        final Puts puts = this.puts(
+            pairs, new Provided(this.given, new Ends(pairs).names(), this.hollows), copied
+        );
         final Map<String, String> found = new HashMap<>(0);
-        for (final Site dispatch : this.all) {
-            final String made = dispatch.made();
-            final String known = pairs.getOrDefault(made, "");
-            if (known.isEmpty() || this.rooted(known)) {
-                final String bearer = dispatch.bearer();
-                final String kept;
-                if (bearer.isEmpty()) {
-                    kept = filled.instead(known, made, made);
-                } else {
-                    kept = filled.instead(
-                        owned.attribute(names.getOrDefault(bearer, bearer), dispatch.name()),
-                        bearer,
-                        made
-                    );
-                }
-                if (new Improved(this.hollows, known, made).on(kept)) {
-                    found.put(made, kept);
-                }
-            }
+        final Map<String, String> reached = new HashMap<>(pairs);
+        boolean more = true;
+        while (more) {
+            final Map<String, String> hopped = this.hopped(reached, puts);
+            more = !hopped.isEmpty();
+            found.putAll(hopped);
+            reached.putAll(hopped);
         }
         return found;
     }
@@ -400,6 +403,34 @@ final class Dispatched {
         return found;
     }
 
+    private Map<String, String> hopped(final Map<String, String> pairs, final Puts puts) {
+        final Map<String, String> names = new Ends(pairs).names();
+        final Provided owned = new Provided(this.given, names, this.hollows);
+        final Filled filled = new Filled(pairs, owned, puts, this.hollows);
+        final Map<String, String> found = new HashMap<>(0);
+        for (final Site dispatch : this.all) {
+            final String made = dispatch.made();
+            final String known = pairs.getOrDefault(made, "");
+            if (known.isEmpty() || this.rooted(known)) {
+                final String bearer = dispatch.bearer();
+                final String kept;
+                if (bearer.isEmpty()) {
+                    kept = filled.instead(known, made, made);
+                } else {
+                    kept = filled.instead(
+                        owned.attribute(names.getOrDefault(bearer, bearer), dispatch.name()),
+                        bearer,
+                        made
+                    );
+                }
+                if (new Improved(this.hollows, known, made).on(kept)) {
+                    found.put(made, kept);
+                }
+            }
+        }
+        return found;
+    }
+
     private boolean spread(
         final Map<String, Collection<String>> found,
         final Map<String, String> pairs,
@@ -427,19 +458,21 @@ final class Dispatched {
         final Map<String, String> pairs, final Provided owned,
         final Map<String, Collection<String>> copied
     ) {
+        return new Filled(pairs, owned, this.puts(pairs, owned, copied), this.hollows);
+    }
+
+    private Puts puts(
+        final Map<String, String> pairs, final Provided owned,
+        final Map<String, Collection<String>> copied
+    ) {
         final Map<String, Map<String, String>> bound = new Bound(
             this.args, this.named, this.receivers, this.all, pairs, owned, copied
         ).all();
-        return new Filled(
-            pairs,
-            owned,
-            new Puts(
-                bound,
-                new Fillings(this.written.with(pairs, bound), this.given, this.hollows).holders(),
-                this.dead,
-                this.vacant
-            ),
-            this.hollows
+        return new Puts(
+            bound,
+            new Fillings(this.written.with(pairs, bound), this.given, this.hollows).holders(),
+            this.dead,
+            this.vacant
         );
     }
 
