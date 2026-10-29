@@ -9,12 +9,18 @@
 # above U+10FFFF (`F4` with a `90`-`BF` second byte, and `F5`-`FF` leads) are
 # rejected. A sequence that is incomplete or malformed terminates the
 # computation, exactly like `slice` does for a truncated character.
+#
+# @todo #9650:30min Remove `+unlint too-deep-object:93-111` from the
+#  metas below. It hides how deep `reclen` nests the checks of a four-byte
+#  character, up to 14 levels where the lint allows 12. Move those checks
+#  into objects of their own, so that `reclen` nests no deeper.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint too-deep-object:93-111
 +version 0.0.0
 
 [^text] > length
