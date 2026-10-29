@@ -463,9 +463,6 @@ final class FakeMaven {
             "cache", this.workspace.resolve("eo/cache/parsed").toFile()
         );
         this.params.putIfAbsent("generated", this.generatedPath().toFile());
-        this.params.putIfAbsent(
-            "pages", this.targetPath().getParent().resolve("site/inference").toFile()
-        );
         this.params.putIfAbsent("placedFormat", "csv");
         this.params.putIfAbsent("plugin", FakeMaven.pluginDescriptor());
         this.params.putIfAbsent(

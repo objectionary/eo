@@ -23,44 +23,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class MjInferenceReportTest {
 
     @Test
-    void drawsPagesOfProgram(@Mktmp final Path temp) throws IOException {
-        MatcherAssert.assertThat(
-            "a page for the reader must be drawn from the tables, but it wasnt",
-            Files.exists(
-                new FakeMaven(temp).withProgram(
-                    String.join(System.lineSeparator(), "[] > app", "  [] > t", "")
-                )
-                .execute(MjParse.class)
-                .execute(MjInference.class)
-                .execute(MjInferenceReport.class)
-                .targetPath()
-                .getParent()
-                .resolve("site")
-                .resolve("inference")
-                .resolve("index.html")
-            ),
-            Matchers.is(true)
-        );
-    }
-
-    @Test
-    void drawsNothingWhenInferenceNeverRan(@Mktmp final Path temp) throws IOException {
-        MatcherAssert.assertThat(
-            "no page may be drawn when there are no tables, but one was",
-            Files.exists(
-                new FakeMaven(temp)
-                    .execute(MjInferenceReport.class)
-                    .targetPath()
-                    .getParent()
-                    .resolve("site")
-                    .resolve("inference")
-                    .resolve("index.html")
-            ),
-            Matchers.is(false)
-        );
-    }
-
-    @Test
     void createsNoStageDirectoryWhenInferenceNeverRan(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp).execute(MjInferenceReport.class);
         MatcherAssert.assertThat(

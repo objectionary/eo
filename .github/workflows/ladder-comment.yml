@@ -24,8 +24,13 @@ jobs:
   # checked out here and nothing from it is run: the table comes out of the
   # artifact and is written as text, while the pull request it is written on
   # is asked of GitHub rather than read out of the artifact.
+  #
+  # @todo #9650:30min Turn this job back on together with the job of
+  #  'ladder.yml', which is off since the 'inference' goal writes no
+  #  'ladder.txt'. Put back the condition that the run is of a pull request
+  #  and succeeded, in place of 'false'.
   comment:
-    if: ${{ github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success' }}
+    if: false
     timeout-minutes: 15
     runs-on: ubuntu-24.04
     steps:

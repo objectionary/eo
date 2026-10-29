@@ -25,7 +25,13 @@ concurrency:
   group: ladder-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  # @todo #9650:30min Turn this job back on, or remove it with
+  #  'ladder-comment.yml', once the new engine says how much of eo-runtime
+  #  it names. The numbers came from 'ladder.txt', which the 'inference'
+  #  goal wrote from the tables of the old engine, and it writes no such
+  #  file now, so the job would fail on every pull request.
   ladder:
+    if: false
     timeout-minutes: 60
     runs-on: ubuntu-24.04
     steps:

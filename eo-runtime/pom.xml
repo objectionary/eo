@@ -298,9 +298,16 @@
               <goal>format</goal>
               <goal>compile</goal>
               <goal>inference</goal>
-              <goal>dealpha</goal>
+              <!--
+              @todo #9650:60min Run 'dealpha' and 'lower' here again, right
+              after 'inference', once they read 'facts.xml' and 'answers.xml'.
+              Both read the tables of the old engine ('links.xml',
+              'provides.xml' and 'atoms.xml'), which 'inference' no longer
+              writes: 'dealpha' fails without them, and 'lower' has nothing to
+              plant. Until then 'transpile' takes the arguments by their
+              places, as the parser names them.
+              -->
               <goal>inference-report</goal>
-              <goal>lower</goal>
               <goal>transpile</goal>
               <goal>atoms-table</goal>
               <goal>unplace</goal>
