@@ -125,8 +125,9 @@ public final class Resolved implements Clue {
             given, said, asked, args, named, receivers, Collections.emptyList(), ends
         );
         final Map<String, String> plain = new Settled(outside, promoted).from(written.all());
-        final Dispatched strict = into.striking(new Emptied(into, promoted).from(plain));
-        final Map<String, String> pairs = new Settled(strict, promoted).from(plain);
+        final Struck struck = new Emptied(into, promoted).from(plain);
+        final Dispatched strict = struck.dispatches();
+        final Map<String, String> pairs = struck.pairs();
         final Promoted none = new Promoted(
             woven, given, said, Collections.emptyList(), args
         );

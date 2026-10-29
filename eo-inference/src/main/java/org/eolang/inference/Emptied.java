@@ -49,28 +49,34 @@ final class Emptied {
     }
 
     /**
-     * The voids nothing fills.
+     * The run that no void disagrees with.
+     *
+     * <p>The pairs of that run come back with it, and not only the voids it
+     * left unfilled, because whoever asks for the voids goes on to settle the
+     * pairs against the dispatches that strike them — which is the run this
+     * has just ended on. Asking for it again cost 85 of the 467 passes a
+     * build of {@code eo-runtime} makes (#9648).</p>
      *
      * @param pairs The pairs to run the passes from
-     * @return The locators of the voids, none of which a run striking every
-     *  arm that reads one of them fills
+     * @return The last run, whose voids are the ones nothing fills
      */
-    Collection<String> from(final Map<String, String> pairs) {
+    Struck from(final Map<String, String> pairs) {
         final Collection<String> found = new LinkedHashSet<>(
             this.made.empty(new Settled(this.made, this.more).from(pairs))
         );
-        Collection<String> left = this.left(found, pairs);
-        while (!left.containsAll(found)) {
-            found.retainAll(left);
-            left = this.left(found, pairs);
+        Struck struck = this.struck(found, pairs);
+        while (!struck.empty().containsAll(found)) {
+            found.retainAll(struck.empty());
+            struck = this.struck(found, pairs);
         }
-        return found;
+        return struck;
     }
 
-    private Collection<String> left(
+    private Struck struck(
         final Collection<String> empty, final Map<String, String> pairs
     ) {
         final Dispatched strict = this.made.striking(empty);
-        return strict.empty(new Settled(strict, this.more).from(pairs));
+        final Map<String, String> settled = new Settled(strict, this.more).from(pairs);
+        return new Struck(strict, settled, strict.empty(settled));
     }
 }
