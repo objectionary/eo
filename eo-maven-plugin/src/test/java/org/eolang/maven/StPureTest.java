@@ -27,7 +27,6 @@ import org.eolang.xax.XtYaml;
 import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -50,12 +49,6 @@ import org.junit.jupiter.params.ParameterizedTest;
  * #5165).</p>
  *
  * @since 0.75.0
- * @todo #9650:60min Turn the tests that run the inference back on once
- *  "purify.xsl" reads "facts.xml" and "answers.xml" instead of
- *  "provides.xml" and "links.xml" of the old engine. The "inference" goal
- *  writes neither of those any more, so nothing is marked pure: the packs
- *  that expect a mark fail, and the ones that expect none pass for the
- *  wrong reason.
  */
 @ExtendWith(MktmpResolver.class)
 final class StPureTest {
@@ -67,7 +60,6 @@ final class StPureTest {
     @Mktmp
     private Path dir;
 
-    @Disabled("purify.xsl reads tables the inference goal no longer writes (#9650)")
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/maven/purify-packs/", glob = "**.yaml")
     void labelsFormationsOfPack(final String yaml) throws IOException {
@@ -95,7 +87,6 @@ final class StPureTest {
         );
     }
 
-    @Disabled("purify.xsl reads tables the inference goal no longer writes (#9650)")
     @Test
     void wrapsApplicationOfDataInPhSticky(@Mktmp final Path temp) throws IOException {
         final Path parsed = Files.createDirectories(temp.resolve("parsed"));
@@ -118,6 +109,7 @@ final class StPureTest {
                 )
             ).parsed().toString()
         );
+        Files.writeString(parsed.resolve("bytes.xmir"), StPureTest.xmir("[@] > bytes"));
         final Path tables = temp.resolve("tables");
         new Inferring(parsed, temp.resolve("pre"), tables).exec();
         MatcherAssert.assertThat(
@@ -136,7 +128,6 @@ final class StPureTest {
         );
     }
 
-    @Disabled("purify.xsl reads tables the inference goal no longer writes (#9650)")
     @Test
     void wrapsDispatchWithoutArgumentsInPhSticky(@Mktmp final Path temp) throws IOException {
         final Path parsed = Files.createDirectories(temp.resolve("parsed"));
@@ -159,6 +150,7 @@ final class StPureTest {
                 )
             ).parsed().toString()
         );
+        Files.writeString(parsed.resolve("bytes.xmir"), StPureTest.xmir("[@] > bytes"));
         final Path tables = temp.resolve("tables");
         new Inferring(parsed, temp.resolve("pre"), tables).exec();
         MatcherAssert.assertThat(
@@ -177,7 +169,6 @@ final class StPureTest {
         );
     }
 
-    @Disabled("purify.xsl reads tables the inference goal no longer writes (#9650)")
     @Test
     void readsTablesAgainAfterTheyAreRewritten(@Mktmp final Path temp) throws IOException {
         final Path parsed = Files.createDirectories(temp.resolve("parsed"));
@@ -191,10 +182,11 @@ final class StPureTest {
                 "[as-bytes] > number", "  as-bytes > @", "  [x] > plus", "    x > @"
             )
         );
+        Files.writeString(parsed.resolve("bytes.xmir"), StPureTest.xmir("[@] > bytes"));
         final Path tables = temp.resolve("tables");
         new Inferring(parsed, temp.resolve("pre"), tables).exec();
         StPureTest.stamped(tables, source);
-        Files.writeString(tables.resolve("links.xml"), "<links/>");
+        Files.writeString(tables.resolve("answers.xml"), "<answers/>");
         MatcherAssert.assertThat(
             "the second stamping must read the table that was rewritten under it, while it reads the one it parsed before",
             StPureTest.stamped(tables, source).nodes("//o[@base='.plus'][@pure]"),

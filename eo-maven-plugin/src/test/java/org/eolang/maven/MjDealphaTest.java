@@ -15,7 +15,6 @@ import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -23,14 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Test cases for {@link MjDealpha}.
  *
  * @since 0.69.0
- * @todo #9650:60min Turn these tests back on once {@link Landings} reads
- *  the void each argument lands in off "answers.xml", where the new engine
- *  writes it as "@lands", instead of off "links.xml" of the old engine. The
- *  "inference" goal writes no "links.xml" any more, so "dealpha" fails on
- *  every program here, and the test that expects it to fail passes for the
- *  wrong reason.
  */
-@Disabled("dealpha reads links.xml, which the inference goal no longer writes (#9650)")
 @ExtendWith(MktmpResolver.class)
 final class MjDealphaTest {
 
@@ -63,11 +55,12 @@ final class MjDealphaTest {
                 System.lineSeparator(),
                 "[] > app",
                 "  [left right] > pair",
-                "    left > @",
+                "    right > @",
                 "  pair 1 > half",
                 "  half 2 > @"
             )
-        );
+        ).withProgram("[@] > bytes", "bytes", "bytes.eo")
+            .withProgram("[@] > number", "number", "number.eo");
         MatcherAssert.assertThat(
             "the argument of a curried copy must fill the void left vacant, but it doesnt",
             new XMLDocument(
@@ -190,7 +183,8 @@ final class MjDealphaTest {
                     ),
                     "number",
                     "number.eo"
-                ).execute(new PpDealpha())
+                ).withProgram("[@] > bytes", "bytes", "bytes.eo")
+                    .execute(new PpDealpha())
                     .execute(MjTranspile.class)
                     .result()
                     .get("target/generated/org/eolang/EO_examples/EOapp.java")

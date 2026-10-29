@@ -1,10 +1,10 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# A receiver has to be handed over for the table to have seen it, and nobody
-# dispatches on this one: "halved" is written and never called, so the row
-# for its "^" stays empty and the formation is left alone. The one that is
-# dispatched on a number is marked.
+# What a declared "^" holds is read off the locator of the formation and not
+# off its callers: "halved" is written in "number" and never called, so
+# nobody dispatches on it, and it is marked all the same, like "doubled",
+# which is dispatched on a number.
 eo:
   app.eo: |
     [] > app
@@ -18,6 +18,8 @@ eo:
         ^.plus 0 > @
       [^] > halved
         ^.plus 0 > @
+  bytes.eo: |
+    [@] > bytes
 pure:
-  - "//o[@name='halved' and not(@pure)]"
+  - "//o[@name='halved' and @pure='true']"
   - "//o[@name='doubled' and @pure='true']"

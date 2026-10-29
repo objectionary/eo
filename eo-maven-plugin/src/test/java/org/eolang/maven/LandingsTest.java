@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.SecureRandom;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -24,77 +25,63 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class LandingsTest {
 
     @Test
-    void namesArgumentAfterVoidOfCopiedFormation(@Mktmp final Path temp) throws IOException {
+    void namesArgumentAfterVoidItLandsIn(@Mktmp final Path temp) throws IOException {
+        final String hollow = String.format("lid%d", new SecureRandom().nextInt(10_000));
         MatcherAssert.assertThat(
             "the argument must take the name of the void it lands in, but it didnt",
             new Landings(
                 LandingsTest.table(
                     temp,
-                    "<type id='Φ.k.φ'><ref loc='Φ.k.jar'>",
-                    "<bind void='Φ.k.jar.lid'><ref loc='Φ.k.φ.α0'/></bind>",
-                    "</ref></type>"
+                    String.format(
+                        "<o loc='Φ.k.φ.α0' copies='3' lands='%s'><is loc='Φ.number'/></o>",
+                        hollow
+                    )
                 )
             ).names(),
-            Matchers.hasEntry("Φ.k.φ.α0", "lid")
+            Matchers.hasEntry("Φ.k.φ.α0", hollow)
         );
     }
 
     @Test
-    void skipsWitnessedBind(@Mktmp final Path temp) throws IOException {
+    void leavesArgumentThatLandsNowhereUnnamed(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
-            "a bind put there only by what a void was seen to hold must not name the argument, but it did",
+            "an argument whose row names no void must keep its place, but it was named",
             new Landings(
                 LandingsTest.table(
                     temp,
-                    "<type id='Φ.q.φ'><ref loc='Φ.q.box'>",
-                    "<bind void='Φ.q.box.pin' witnessed='true'><ref loc='Φ.q.φ.α0'/></bind>",
-                    "</ref></type>"
+                    "<o loc='Φ.q.φ.α1' copies='2'>",
+                    "<set copies='1'><terminator/></set>",
+                    "<set copies='1'><is loc='Φ.q.box'/></set>",
+                    "</o>"
                 )
             ).names(),
-            Matchers.not(Matchers.hasKey("Φ.q.φ.α0"))
+            Matchers.not(Matchers.hasKey("Φ.q.φ.α1"))
         );
     }
 
     @Test
-    void skipsBindOfWitnessedCopy(@Mktmp final Path temp) throws IOException {
+    void tellsArgumentsOfOneCallApart(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
-            "a copy reached through what a void was seen to hold must not name its arguments, but it did",
+            "the second argument of a call must take the name of its own void, but it didnt",
             new Landings(
                 LandingsTest.table(
                     temp,
-                    "<type id='Φ.w.φ'><ref loc='Φ.w.refused' witnessed='true'>",
-                    "<bind void='Φ.w.refused.message'><ref loc='Φ.w.φ.α0'/></bind>",
-                    "</ref></type>"
+                    "<o loc='Φ.z.φ' copies='1'><is loc='Φ.z.pair'/></o>",
+                    "<o loc='Φ.z.φ.α0' copies='1' lands='left'><data/></o>",
+                    "<o loc='Φ.z.φ.α1' copies='1' lands='a🌵14-6'><data/></o>"
                 )
             ).names(),
-            Matchers.not(Matchers.hasKey("Φ.w.φ.α0"))
-        );
-    }
-
-    @Test
-    void skipsBindReachedThroughWitnessedCopy(@Mktmp final Path temp) throws IOException {
-        MatcherAssert.assertThat(
-            "an argument must not be named when its chain of copies passes through a witnessed one, but it was",
-            new Landings(
-                LandingsTest.table(
-                    temp,
-                    "<type id='Φ.z.half'><ref loc='Φ.z.pair' witnessed='true'/></type>",
-                    "<type id='Φ.z.φ'><ref loc='Φ.z.half'>",
-                    "<bind void='Φ.z.pair.right'><ref loc='Φ.z.φ.α0'/></bind>",
-                    "</ref></type>"
-                )
-            ).names(),
-            Matchers.not(Matchers.hasKey("Φ.z.φ.α0"))
+            Matchers.hasEntry("Φ.z.φ.α1", "a🌵14-6")
         );
     }
 
     private static Path table(final Path dir, final String... rows) throws IOException {
-        final Path links = dir.resolve("links.xml");
+        final Path answers = dir.resolve("answers.xml");
         Files.write(
-            links,
-            String.format("<links>%s</links>", String.join("", rows))
+            answers,
+            String.format("<answers>%s</answers>", String.join("", rows))
                 .getBytes(StandardCharsets.UTF_8)
         );
-        return links;
+        return answers;
     }
 }
