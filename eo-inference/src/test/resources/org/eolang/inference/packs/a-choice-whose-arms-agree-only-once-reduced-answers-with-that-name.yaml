@@ -1,0 +1,438 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# and hands FF-.eq x and false to the if of its bool. FF-.eq x is what
+# bytes.eq returns, a bool, and false reduces to the bool its @ gives, so both
+# arms are a bool, and so is and.
+sources:
+  bool.eo: |
+    [if] > bool
+      if > @
+        FF-
+        00-
+      ^.if > [^ x] > and
+        FF-.eq x
+        false
+  true.eo: |
+    [^] > true
+      bool > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  false.eo: |
+    [^] > false
+      bool > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  bytes.eo: |
+    [@] > bytes
+      [] > eq /Q.bool
+        ? > ^
+        ? > b
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="false" complete="false" id="Φ.bool">
+           <attr name="if" type="Φ.bool.if" void="true"/>
+           <attr name="φ" type="Φ.bool.φ"/>
+           <attr name="and" type="Φ.bool.and"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.bool.and">
+           <attr name="ρ" rho="Φ.bool" type="Φ.bool.and.ρ" void="true"/>
+           <attr name="x" type="Φ.bool.and.x" void="true"/>
+           <attr name="φ" type="Φ.bool.and.φ"/>
+        </type>
+        <type bare="false" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+           <attr name="eq" type="Φ.bytes.eq"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.bytes.eq" returns="Φ.bool">
+           <attr name="ρ" rho="Φ.bytes" type="Φ.bytes.eq.ρ" void="true"/>
+           <attr name="b" type="Φ.bytes.eq.b" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.false">
+           <attr name="ρ" rho="Φ" type="Φ.false.ρ" void="true"/>
+           <attr name="φ" type="Φ.false.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.false.φ.α0">
+           <attr name="ρ" type="Φ.false.φ.α0.ρ" void="true"/>
+           <attr name="a🌵4-6" type="Φ.false.φ.α0.a🌵4-6" void="true"/>
+           <attr name="a🌵5-6" type="Φ.false.φ.α0.a🌵5-6" void="true"/>
+           <attr name="φ" type="Φ.false.φ.α0.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.true">
+           <attr name="ρ" rho="Φ" type="Φ.true.ρ" void="true"/>
+           <attr name="φ" type="Φ.true.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.true.φ.α0">
+           <attr name="ρ" type="Φ.true.φ.α0.ρ" void="true"/>
+           <attr name="a🌵4-6" type="Φ.true.φ.α0.a🌵4-6" void="true"/>
+           <attr name="a🌵5-6" type="Φ.true.φ.α0.a🌵5-6" void="true"/>
+           <attr name="φ" type="Φ.true.φ.α0.φ"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="bool" type="Φ.bool"/>
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="false" type="Φ.false"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="string" type="Φ.string"/>
+           <attr name="true" type="Φ.true"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.bool.φ" name="if" of="Φ.bool.φ.ρ"/>
+        <read id="Φ.bool.φ.α0" name="bytes" of="Φ.bool.φ.α0.ρ"/>
+        <read id="Φ.bool.φ.α1" name="bytes" of="Φ.bool.φ.α1.ρ"/>
+        <read id="Φ.bool.and.φ" name="if" of="Φ.bool.and.φ.ρ"/>
+        <read id="Φ.bool.and.φ.ρ" name="ρ" of="Φ.bool.and.φ.ρ.ρ"/>
+        <read id="Φ.bool.and.φ.α0" name="eq" of="Φ.bool.and.φ.α0.ρ"/>
+        <read id="Φ.bool.and.φ.α0.ρ" name="bytes" of="Φ.bool.and.φ.α0.ρ.ρ"/>
+        <read id="Φ.bool.and.φ.α0.α0" name="x" of="Φ.bool.and.φ.α0.α0.ρ"/>
+        <read id="Φ.bool.and.φ.α1" name="false" of="Φ.bool.and.φ.α1.ρ"/>
+        <read id="Φ.false.φ" name="bool" of="Φ.false.φ.ρ"/>
+        <read id="Φ.false.φ.α0.φ" name="a🌵5-6" of="Φ.false.φ.α0.φ.ρ"/>
+        <read id="Φ.true.φ" name="bool" of="Φ.true.φ.ρ"/>
+        <read id="Φ.true.φ.α0.φ" name="a🌵4-6" of="Φ.true.φ.α0.φ.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.bool.φ.ρ">
+           <ref loc="Φ.bool"/>
+        </type>
+        <type id="Φ.bool.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.bool.φ.α1.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.bool.and.φ.ρ.ρ">
+           <ref loc="Φ.bool.and"/>
+        </type>
+        <type id="Φ.bool.and.φ.α0.ρ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.bool.and.φ.α0.α0.ρ">
+           <ref loc="Φ.bool.and"/>
+        </type>
+        <type id="Φ.bool.and.φ.α1.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.false.φ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.false.φ.α0.φ.ρ">
+           <ref loc="Φ.false.φ.α0"/>
+        </type>
+        <type id="Φ.true.φ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.true.φ.α0.φ.ρ">
+           <ref loc="Φ.true.φ.α0"/>
+        </type>
+        <type id="Φ.bool.φ.α0.α0">
+           <data/>
+        </type>
+        <type id="Φ.bool.φ.α1.α0">
+           <data/>
+        </type>
+        <type id="Φ.bool.and.φ.α0.ρ.α0">
+           <data/>
+        </type>
+     </heads>
+     <calls>
+        <call loc="Φ.bool.φ">
+           <arg loc="Φ.bool.φ.α0" n="0"/>
+           <arg loc="Φ.bool.φ.α1" n="1"/>
+        </call>
+        <call loc="Φ.bool.φ.α0">
+           <arg loc="Φ.bool.φ.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.bool.φ.α1">
+           <arg loc="Φ.bool.φ.α1.α0" n="0"/>
+        </call>
+        <call loc="Φ.bool.and.φ">
+           <arg loc="Φ.bool.and.φ.α0" n="0"/>
+           <arg loc="Φ.bool.and.φ.α1" n="1"/>
+        </call>
+        <call loc="Φ.bool.and.φ.α0">
+           <arg loc="Φ.bool.and.φ.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.bool.and.φ.α0.ρ">
+           <arg loc="Φ.bool.and.φ.α0.ρ.α0" n="0"/>
+        </call>
+        <call loc="Φ.false.φ">
+           <arg loc="Φ.false.φ.α0" n="0"/>
+        </call>
+        <call loc="Φ.true.φ">
+           <arg loc="Φ.true.φ.α0" n="0"/>
+        </call>
+     </calls>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+      <reduced copies="1">
+        <is loc="Φ"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bool" copies="2">
+      <is loc="Φ.bool"/>
+      <reduced copies="2">
+        <is loc="Φ.bool"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bool.and" copies="2">
+      <is loc="Φ.bool.and"/>
+      <reduced copies="2">
+        <is loc="Φ.bool"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bool.and.x" copies="2">
+      <open/>
+    </o>
+    <o loc="Φ.bool.and.ρ" copies="2">
+      <is loc="Φ.bool"/>
+    </o>
+    <o loc="Φ.bool.and.φ" copies="2">
+      <is loc="Φ.bool"/>
+    </o>
+    <o loc="Φ.bool.and.φ.α0" copies="2" lands="a🌵4-6">
+      <is loc="Φ.bool"/>
+    </o>
+    <o loc="Φ.bool.and.φ.α0.α0" copies="2" lands="b">
+      <open/>
+    </o>
+    <o loc="Φ.bool.and.φ.α0.α0.ρ" copies="2">
+      <is loc="Φ.bool"/>
+    </o>
+    <o loc="Φ.bool.and.φ.α0.ρ" copies="2">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.bool.and.φ.α0.ρ.α0" copies="2" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.bool.and.φ.α0.ρ.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bool.and.φ.α1" copies="2" lands="a🌵5-6">
+      <is loc="Φ.bool"/>
+    </o>
+    <o loc="Φ.bool.and.φ.α1.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bool.and.φ.ρ" copies="2">
+      <is loc="Φ.bool"/>
+    </o>
+    <o loc="Φ.bool.and.φ.ρ.ρ" copies="2">
+      <is loc="Φ.bool"/>
+    </o>
+    <o loc="Φ.bool.if" copies="2">
+      <set copies="1">
+        <is loc="Φ.false.φ.α0"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.true.φ.α0"/>
+      </set>
+    </o>
+    <o loc="Φ.bool.φ" copies="2">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.bool.φ.α0" copies="2" lands="a🌵4-6">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.bool.φ.α0.α0" copies="2" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.bool.φ.α0.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bool.φ.α1" copies="2" lands="a🌵5-6">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.bool.φ.α1.α0" copies="2" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.bool.φ.α1.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bool.φ.ρ" copies="2">
+      <is loc="Φ.bool"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.eq" copies="1">
+      <is loc="Φ.bytes.eq"/>
+      <reduced copies="1">
+        <is loc="Φ.bool"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.eq.b" copies="1">
+      <open/>
+    </o>
+    <o loc="Φ.bytes.eq.λ" copies="1">
+      <is loc="Φ.bool"/>
+    </o>
+    <o loc="Φ.bytes.eq.ρ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.false" copies="2">
+      <is loc="Φ.false"/>
+      <reduced copies="1">
+        <is loc="Φ.bool"/>
+      </reduced>
+    </o>
+    <o loc="Φ.false.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.false.φ" copies="2">
+      <is loc="Φ.bool"/>
+    </o>
+    <o loc="Φ.false.φ.α0" copies="2" lands="if">
+      <is loc="Φ.false.φ.α0"/>
+      <reduced copies="3">
+        <set copies="1">
+          <is loc="Φ.bool"/>
+        </set>
+        <set copies="1">
+          <is loc="Φ.bytes"/>
+        </set>
+        <set copies="1">
+          <is loc="Φ.false.φ.α0"/>
+        </set>
+      </reduced>
+    </o>
+    <o loc="Φ.false.φ.α0.a🌵4-6" copies="2">
+      <set copies="1">
+        <is loc="Φ.bool"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.bytes"/>
+      </set>
+    </o>
+    <o loc="Φ.false.φ.α0.a🌵5-6" copies="2">
+      <set copies="1">
+        <is loc="Φ.bool"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.bytes"/>
+      </set>
+    </o>
+    <o loc="Φ.false.φ.α0.ρ" copies="2">
+      <is loc="Φ.bool"/>
+    </o>
+    <o loc="Φ.false.φ.α0.φ" copies="2">
+      <set copies="1">
+        <is loc="Φ.bool"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.bytes"/>
+      </set>
+    </o>
+    <o loc="Φ.false.φ.α0.φ.ρ" copies="2">
+      <set copies="1">
+        <is loc="Φ.bool"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.bytes"/>
+      </set>
+    </o>
+    <o loc="Φ.false.φ.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.true" copies="1">
+      <is loc="Φ.true"/>
+    </o>
+    <o loc="Φ.true.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.true.φ" copies="1">
+      <is loc="Φ.bool"/>
+    </o>
+    <o loc="Φ.true.φ.α0" copies="1" lands="if">
+      <is loc="Φ.true.φ.α0"/>
+      <reduced copies="3">
+        <set copies="1">
+          <is loc="Φ.bool"/>
+        </set>
+        <set copies="1">
+          <is loc="Φ.bytes"/>
+        </set>
+        <set copies="1">
+          <is loc="Φ.true.φ.α0"/>
+        </set>
+      </reduced>
+    </o>
+    <o loc="Φ.true.φ.α0.a🌵4-6" copies="2">
+      <set copies="1">
+        <is loc="Φ.bool"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.bytes"/>
+      </set>
+    </o>
+    <o loc="Φ.true.φ.α0.a🌵5-6" copies="2">
+      <set copies="1">
+        <is loc="Φ.bool"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.bytes"/>
+      </set>
+    </o>
+    <o loc="Φ.true.φ.α0.ρ" copies="2">
+      <is loc="Φ.bool"/>
+    </o>
+    <o loc="Φ.true.φ.α0.φ" copies="2">
+      <set copies="1">
+        <is loc="Φ.bool"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.bytes"/>
+      </set>
+    </o>
+    <o loc="Φ.true.φ.α0.φ.ρ" copies="2">
+      <set copies="1">
+        <is loc="Φ.bool"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.bytes"/>
+      </set>
+    </o>
+    <o loc="Φ.true.φ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+  </answers>

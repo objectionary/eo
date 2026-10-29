@@ -1,0 +1,142 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls grow or inc, so each is walked with x open. The ^ of grow holds
+# the tree it is an attribute of, and the ^ of inc, written at the top of its
+# file, holds Φ.
+sources:
+  tree.eo: |
+    [] > tree
+      [^ x] > grow
+        x > @
+  inc.eo: |
+    [^ x] > inc
+      x > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.inc">
+           <attr name="ρ" rho="Φ" type="Φ.inc.ρ" void="true"/>
+           <attr name="x" type="Φ.inc.x" void="true"/>
+           <attr name="φ" type="Φ.inc.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.tree">
+           <attr name="grow" type="Φ.tree.grow"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.tree.grow">
+           <attr name="ρ" rho="Φ.tree" type="Φ.tree.grow.ρ" void="true"/>
+           <attr name="x" type="Φ.tree.grow.x" void="true"/>
+           <attr name="φ" type="Φ.tree.grow.φ"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="inc" type="Φ.inc"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="string" type="Φ.string"/>
+           <attr name="tree" type="Φ.tree"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.inc.φ" name="x" of="Φ.inc.φ.ρ"/>
+        <read id="Φ.tree.grow.φ" name="x" of="Φ.tree.grow.φ.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.inc.φ.ρ">
+           <ref loc="Φ.inc"/>
+        </type>
+        <type id="Φ.tree.grow.φ.ρ">
+           <ref loc="Φ.tree.grow"/>
+        </type>
+     </heads>
+     <calls/>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+      <reduced copies="1">
+        <is loc="Φ"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.inc" copies="1">
+      <is loc="Φ.inc"/>
+      <reduced copies="1">
+        <is loc="Φ.inc"/>
+      </reduced>
+    </o>
+    <o loc="Φ.inc.x" copies="1">
+      <open/>
+    </o>
+    <o loc="Φ.inc.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.inc.φ" copies="1">
+      <open/>
+    </o>
+    <o loc="Φ.inc.φ.ρ" copies="1">
+      <is loc="Φ.inc"/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.tree" copies="1">
+      <is loc="Φ.tree"/>
+      <reduced copies="1">
+        <is loc="Φ.tree"/>
+      </reduced>
+    </o>
+    <o loc="Φ.tree.grow" copies="1">
+      <is loc="Φ.tree.grow"/>
+      <reduced copies="1">
+        <is loc="Φ.tree.grow"/>
+      </reduced>
+    </o>
+    <o loc="Φ.tree.grow.x" copies="1">
+      <open/>
+    </o>
+    <o loc="Φ.tree.grow.ρ" copies="1">
+      <is loc="Φ.tree"/>
+    </o>
+    <o loc="Φ.tree.grow.φ" copies="1">
+      <open/>
+    </o>
+    <o loc="Φ.tree.grow.φ.ρ" copies="1">
+      <is loc="Φ.tree.grow"/>
+    </o>
+  </answers>

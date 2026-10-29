@@ -1,0 +1,235 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# 42.halved puts the number into the ^ of halved, so ^.plus there is the plus
+# of number and gives back the 0 it is handed, a number. as-bytes read off
+# that is the bytes number.as-bytes returns.
+sources:
+  app.eo: |
+    [] > app
+      42.halved.as-bytes > @
+  number.eo: |
+    [@] > number
+      [] > as-bytes /Q.bytes
+        ? > ^
+      [x] > plus
+        x > @
+      [^] > halved
+        ^.plus 0 > @
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="true" complete="false" id="Φ.app">
+           <attr name="φ" type="Φ.app.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="false" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+           <attr name="as-bytes" type="Φ.number.as-bytes"/>
+           <attr name="plus" type="Φ.number.plus"/>
+           <attr name="halved" type="Φ.number.halved"/>
+        </type>
+        <type bare="true"
+              complete="false"
+              id="Φ.number.as-bytes"
+              returns="Φ.bytes">
+           <attr name="ρ" rho="Φ.number" type="Φ.number.as-bytes.ρ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number.plus">
+           <attr name="x" type="Φ.number.plus.x" void="true"/>
+           <attr name="φ" type="Φ.number.plus.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number.halved">
+           <attr name="ρ" rho="Φ.number" type="Φ.number.halved.ρ" void="true"/>
+           <attr name="φ" type="Φ.number.halved.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="app" type="Φ.app"/>
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="string" type="Φ.string"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.app.φ" name="as-bytes" of="Φ.app.φ.ρ"/>
+        <read id="Φ.app.φ.ρ" name="halved" of="Φ.app.φ.ρ.ρ"/>
+        <read id="Φ.app.φ.ρ.ρ" name="number" of="Φ.app.φ.ρ.ρ.ρ"/>
+        <read id="Φ.app.φ.ρ.ρ.α0" name="bytes" of="Φ.app.φ.ρ.ρ.α0.ρ"/>
+        <read id="Φ.number.plus.φ" name="x" of="Φ.number.plus.φ.ρ"/>
+        <read id="Φ.number.halved.φ" name="plus" of="Φ.number.halved.φ.ρ"/>
+        <read id="Φ.number.halved.φ.ρ" name="ρ" of="Φ.number.halved.φ.ρ.ρ"/>
+        <read id="Φ.number.halved.φ.α0" name="number" of="Φ.number.halved.φ.α0.ρ"/>
+        <read id="Φ.number.halved.φ.α0.α0"
+              name="bytes"
+              of="Φ.number.halved.φ.α0.α0.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.app.φ.ρ.ρ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.φ.ρ.ρ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.number.plus.φ.ρ">
+           <ref loc="Φ.number.plus"/>
+        </type>
+        <type id="Φ.number.halved.φ.ρ.ρ">
+           <ref loc="Φ.number.halved"/>
+        </type>
+        <type id="Φ.number.halved.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.number.halved.φ.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.φ.ρ.ρ.α0.α0">
+           <data/>
+        </type>
+        <type id="Φ.number.halved.φ.α0.α0.α0">
+           <data/>
+        </type>
+     </heads>
+     <calls>
+        <call loc="Φ.app.φ.ρ.ρ">
+           <arg loc="Φ.app.φ.ρ.ρ.α0" n="0"/>
+        </call>
+        <call loc="Φ.app.φ.ρ.ρ.α0">
+           <arg loc="Φ.app.φ.ρ.ρ.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.number.halved.φ">
+           <arg loc="Φ.number.halved.φ.α0" n="0"/>
+        </call>
+        <call loc="Φ.number.halved.φ.α0">
+           <arg loc="Φ.number.halved.φ.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.number.halved.φ.α0.α0">
+           <arg loc="Φ.number.halved.φ.α0.α0.α0" n="0"/>
+        </call>
+     </calls>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app" copies="1">
+      <is loc="Φ.app"/>
+    </o>
+    <o loc="Φ.app.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.app.φ.ρ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.ρ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.ρ.α0" copies="1" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.ρ.α0.α0" copies="1" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.app.φ.ρ.ρ.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.ρ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.as-bytes" copies="2">
+      <is loc="Φ.number.as-bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.as-bytes.λ" copies="2">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.number.as-bytes.ρ" copies="2">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.halved" copies="2">
+      <is loc="Φ.number.halved"/>
+      <reduced copies="2">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.halved.ρ" copies="2">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.halved.φ" copies="2">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.halved.φ.α0" copies="2" lands="x">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.halved.φ.α0.α0" copies="2" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.number.halved.φ.α0.α0.α0" copies="2" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.number.halved.φ.α0.α0.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.number.halved.φ.α0.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.number.halved.φ.ρ" copies="2">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.halved.φ.ρ.ρ" copies="2">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.plus" copies="1">
+      <is loc="Φ.number.plus"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.plus.x" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.plus.φ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.plus.φ.ρ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+  </answers>

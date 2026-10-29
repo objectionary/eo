@@ -1,0 +1,261 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# knot is nothing but a @ that gives a rope, so knot.ends is the ends of rope:
+# its ^ holds the rope, never the knot, its tail holds 42, and it is the bool
+# number.eq returns.
+sources:
+  rope.eo: |
+    [] > rope
+  ends.eo: |
+    +package rope
+
+    [^ tail] > ends
+      tail.eq > @
+        ^ >> me
+  knot.eo: |
+    [] > knot
+      rope > @
+  app.eo: |
+    [] > app
+      knot.ends 42 > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+      [] > eq /Q.bool
+        ? > ^
+        ? > b
+  bool.eo: |
+    [@] > bool
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="true" complete="false" id="Φ.app">
+           <attr name="φ" type="Φ.app.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.bool">
+           <attr name="φ" type="Φ.bool.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.rope.ends">
+           <attr name="ρ" rho="Φ.rope" type="Φ.rope.ends.ρ" void="true"/>
+           <attr name="tail" type="Φ.rope.ends.tail" void="true"/>
+           <attr name="φ" type="Φ.rope.ends.φ"/>
+           <attr name="a🌵5-4" type="Φ.rope.ends.a🌵5-4"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.knot">
+           <attr name="φ" type="Φ.knot.φ"/>
+        </type>
+        <type bare="false" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+           <attr name="eq" type="Φ.number.eq"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number.eq" returns="Φ.bool">
+           <attr name="ρ" rho="Φ.number" type="Φ.number.eq.ρ" void="true"/>
+           <attr name="b" type="Φ.number.eq.b" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.rope">
+           <attr name="ends" type="Φ.rope.ends"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="app" type="Φ.app"/>
+           <attr name="bool" type="Φ.bool"/>
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="knot" type="Φ.knot"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="rope" type="Φ.rope"/>
+           <attr name="string" type="Φ.string"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.app.φ" name="ends" of="Φ.app.φ.ρ"/>
+        <read id="Φ.app.φ.ρ" name="knot" of="Φ.app.φ.ρ.ρ"/>
+        <read id="Φ.app.φ.α0" name="number" of="Φ.app.φ.α0.ρ"/>
+        <read id="Φ.app.φ.α0.α0" name="bytes" of="Φ.app.φ.α0.α0.ρ"/>
+        <read id="Φ.rope.ends.φ" name="eq" of="Φ.rope.ends.φ.ρ"/>
+        <read id="Φ.rope.ends.φ.ρ" name="tail" of="Φ.rope.ends.φ.ρ.ρ"/>
+        <read id="Φ.rope.ends.φ.α0" name="a🌵5-4" of="Φ.rope.ends.φ.α0.ρ"/>
+        <read id="Φ.rope.ends.a🌵5-4" name="ρ" of="Φ.rope.ends.a🌵5-4.ρ"/>
+        <read id="Φ.knot.φ" name="rope" of="Φ.knot.φ.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.app.φ.ρ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.φ.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.rope.ends.φ.ρ.ρ">
+           <ref loc="Φ.rope.ends"/>
+        </type>
+        <type id="Φ.rope.ends.φ.α0.ρ">
+           <ref loc="Φ.rope.ends"/>
+        </type>
+        <type id="Φ.rope.ends.a🌵5-4.ρ">
+           <ref loc="Φ.rope.ends"/>
+        </type>
+        <type id="Φ.knot.φ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.φ.α0.α0.α0">
+           <data/>
+        </type>
+     </heads>
+     <calls>
+        <call loc="Φ.app.φ">
+           <arg loc="Φ.app.φ.α0" n="0"/>
+        </call>
+        <call loc="Φ.app.φ.α0">
+           <arg loc="Φ.app.φ.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.app.φ.α0.α0">
+           <arg loc="Φ.app.φ.α0.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.rope.ends.φ">
+           <arg loc="Φ.rope.ends.φ.α0" n="0"/>
+        </call>
+     </calls>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app" copies="1">
+      <is loc="Φ.app"/>
+    </o>
+    <o loc="Φ.app.φ" copies="1">
+      <is loc="Φ.bool"/>
+    </o>
+    <o loc="Φ.app.φ.α0" copies="1" lands="tail">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.app.φ.α0.α0" copies="1" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.app.φ.α0.α0.α0" copies="1" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.app.φ.α0.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.φ.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.φ.ρ" copies="1">
+      <is loc="Φ.rope"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bool" copies="1">
+      <is loc="Φ.bool"/>
+    </o>
+    <o loc="Φ.bool.φ" copies="1">
+      <open/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.knot" copies="2">
+      <is loc="Φ.knot"/>
+      <reduced copies="1">
+        <is loc="Φ.rope"/>
+      </reduced>
+    </o>
+    <o loc="Φ.knot.φ" copies="2">
+      <is loc="Φ.rope"/>
+    </o>
+    <o loc="Φ.knot.φ.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.eq" copies="1">
+      <is loc="Φ.number.eq"/>
+      <reduced copies="1">
+        <is loc="Φ.bool"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.eq.b" copies="1">
+      <is loc="Φ.rope"/>
+    </o>
+    <o loc="Φ.number.eq.λ" copies="1">
+      <is loc="Φ.bool"/>
+    </o>
+    <o loc="Φ.number.eq.ρ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.rope" copies="2">
+      <is loc="Φ.rope"/>
+      <reduced copies="1">
+        <is loc="Φ.rope"/>
+      </reduced>
+    </o>
+    <o loc="Φ.rope.ends" copies="1">
+      <is loc="Φ.rope.ends"/>
+      <reduced copies="1">
+        <is loc="Φ.bool"/>
+      </reduced>
+    </o>
+    <o loc="Φ.rope.ends.a🌵5-4" copies="1">
+      <is loc="Φ.rope"/>
+    </o>
+    <o loc="Φ.rope.ends.a🌵5-4.ρ" copies="1">
+      <is loc="Φ.bool"/>
+    </o>
+    <o loc="Φ.rope.ends.tail" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.rope.ends.ρ" copies="1">
+      <is loc="Φ.rope"/>
+    </o>
+    <o loc="Φ.rope.ends.φ" copies="1">
+      <is loc="Φ.bool"/>
+    </o>
+    <o loc="Φ.rope.ends.φ.α0" copies="1" lands="b">
+      <is loc="Φ.rope"/>
+    </o>
+    <o loc="Φ.rope.ends.φ.α0.ρ" copies="1">
+      <is loc="Φ.bool"/>
+    </o>
+    <o loc="Φ.rope.ends.φ.ρ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.rope.ends.φ.ρ.ρ" copies="1">
+      <is loc="Φ.bool"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+  </answers>

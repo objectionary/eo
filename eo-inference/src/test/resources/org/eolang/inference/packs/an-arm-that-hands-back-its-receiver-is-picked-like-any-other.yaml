@@ -1,0 +1,640 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# choice has a not besides its pick, as bool does. held fills the flag and
+# full of made with yes, so full.pick picks ^, the cabinet that made is read
+# off, and flag.pick picks that: held is a cabinet. other fills both with no,
+# so flag.pick picks dial 03-, and other is a dial. made is a cabinet in one
+# copy and a dial in the other.
+sources:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+      [] > not
+        ^.pick no yes > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^ left right]
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^ left right]
+          right > @
+  dial.eo: |
+    [^ sys] > dial
+      [^ size] > listen
+        size > @
+  cabinet.eo: |
+    [] > cabinet
+      [^ flag full] > made
+        flag.pick > @
+          full.pick
+            ^
+            T
+              "the cabinet is full"
+          dial 03-
+  held.eo: |
+    [] > held
+      cabinet.made yes yes > @
+  other.eo: |
+    [] > other
+      cabinet.made no no > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.cabinet">
+           <attr name="made" type="Φ.cabinet.made"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.cabinet.made">
+           <attr name="ρ" rho="Φ.cabinet" type="Φ.cabinet.made.ρ" void="true"/>
+           <attr name="flag" type="Φ.cabinet.made.flag" void="true"/>
+           <attr name="full" type="Φ.cabinet.made.full" void="true"/>
+           <attr name="φ" type="Φ.cabinet.made.φ"/>
+        </type>
+        <type bare="false" complete="false" id="Φ.choice">
+           <attr name="pick" type="Φ.choice.pick" void="true"/>
+           <attr name="φ" type="Φ.choice.φ"/>
+           <attr name="not" type="Φ.choice.not"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.choice.not">
+           <attr name="φ" type="Φ.choice.not.φ"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.dial">
+           <attr name="ρ" rho="Φ" type="Φ.dial.ρ" void="true"/>
+           <attr name="sys" type="Φ.dial.sys" void="true"/>
+           <attr name="listen" type="Φ.dial.listen"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.dial.listen">
+           <attr name="ρ" rho="Φ.dial" type="Φ.dial.listen.ρ" void="true"/>
+           <attr name="size" type="Φ.dial.listen.size" void="true"/>
+           <attr name="φ" type="Φ.dial.listen.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.held">
+           <attr name="φ" type="Φ.held.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.no">
+           <attr name="ρ" rho="Φ" type="Φ.no.ρ" void="true"/>
+           <attr name="φ" type="Φ.no.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.no.φ.α0">
+           <attr name="ρ" type="Φ.no.φ.α0.ρ" void="true"/>
+           <attr name="left" type="Φ.no.φ.α0.left" void="true"/>
+           <attr name="right" type="Φ.no.φ.α0.right" void="true"/>
+           <attr name="φ" type="Φ.no.φ.α0.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.other">
+           <attr name="φ" type="Φ.other.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.yes">
+           <attr name="ρ" rho="Φ" type="Φ.yes.ρ" void="true"/>
+           <attr name="φ" type="Φ.yes.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.yes.φ.α0">
+           <attr name="ρ" type="Φ.yes.φ.α0.ρ" void="true"/>
+           <attr name="left" type="Φ.yes.φ.α0.left" void="true"/>
+           <attr name="right" type="Φ.yes.φ.α0.right" void="true"/>
+           <attr name="φ" type="Φ.yes.φ.α0.φ"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="cabinet" type="Φ.cabinet"/>
+           <attr name="choice" type="Φ.choice"/>
+           <attr name="dial" type="Φ.dial"/>
+           <attr name="held" type="Φ.held"/>
+           <attr name="no" type="Φ.no"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="other" type="Φ.other"/>
+           <attr name="string" type="Φ.string"/>
+           <attr name="yes" type="Φ.yes"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.cabinet.made.φ" name="pick" of="Φ.cabinet.made.φ.ρ"/>
+        <read id="Φ.cabinet.made.φ.ρ" name="flag" of="Φ.cabinet.made.φ.ρ.ρ"/>
+        <read id="Φ.cabinet.made.φ.α0" name="pick" of="Φ.cabinet.made.φ.α0.ρ"/>
+        <read id="Φ.cabinet.made.φ.α0.ρ" name="full" of="Φ.cabinet.made.φ.α0.ρ.ρ"/>
+        <read id="Φ.cabinet.made.φ.α0.α0" name="ρ" of="Φ.cabinet.made.φ.α0.α0.ρ"/>
+        <read id="Φ.cabinet.made.φ.α0.α1.α0"
+              name="string"
+              of="Φ.cabinet.made.φ.α0.α1.α0.ρ"/>
+        <read id="Φ.cabinet.made.φ.α0.α1.α0.α0"
+              name="bytes"
+              of="Φ.cabinet.made.φ.α0.α1.α0.α0.ρ"/>
+        <read id="Φ.cabinet.made.φ.α1" name="dial" of="Φ.cabinet.made.φ.α1.ρ"/>
+        <read id="Φ.cabinet.made.φ.α1.α0"
+              name="bytes"
+              of="Φ.cabinet.made.φ.α1.α0.ρ"/>
+        <read id="Φ.choice.φ" name="pick" of="Φ.choice.φ.ρ"/>
+        <read id="Φ.choice.not.φ" name="pick" of="Φ.choice.not.φ.ρ"/>
+        <read id="Φ.choice.not.φ.ρ" name="ρ" of="Φ.choice.not.φ.ρ.ρ"/>
+        <read id="Φ.choice.not.φ.α0" name="no" of="Φ.choice.not.φ.α0.ρ"/>
+        <read id="Φ.choice.not.φ.α1" name="yes" of="Φ.choice.not.φ.α1.ρ"/>
+        <read id="Φ.dial.listen.φ" name="size" of="Φ.dial.listen.φ.ρ"/>
+        <read id="Φ.held.φ" name="made" of="Φ.held.φ.ρ"/>
+        <read id="Φ.held.φ.ρ" name="cabinet" of="Φ.held.φ.ρ.ρ"/>
+        <read id="Φ.held.φ.α0" name="yes" of="Φ.held.φ.α0.ρ"/>
+        <read id="Φ.held.φ.α1" name="yes" of="Φ.held.φ.α1.ρ"/>
+        <read id="Φ.no.φ" name="choice" of="Φ.no.φ.ρ"/>
+        <read id="Φ.no.φ.α0.φ" name="right" of="Φ.no.φ.α0.φ.ρ"/>
+        <read id="Φ.other.φ" name="made" of="Φ.other.φ.ρ"/>
+        <read id="Φ.other.φ.ρ" name="cabinet" of="Φ.other.φ.ρ.ρ"/>
+        <read id="Φ.other.φ.α0" name="no" of="Φ.other.φ.α0.ρ"/>
+        <read id="Φ.other.φ.α1" name="no" of="Φ.other.φ.α1.ρ"/>
+        <read id="Φ.yes.φ" name="choice" of="Φ.yes.φ.ρ"/>
+        <read id="Φ.yes.φ.α0.φ" name="left" of="Φ.yes.φ.α0.φ.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.cabinet.made.φ.ρ.ρ">
+           <ref loc="Φ.cabinet.made"/>
+        </type>
+        <type id="Φ.cabinet.made.φ.α0.ρ.ρ">
+           <ref loc="Φ.cabinet.made"/>
+        </type>
+        <type id="Φ.cabinet.made.φ.α0.α0.ρ">
+           <ref loc="Φ.cabinet.made"/>
+        </type>
+        <type id="Φ.cabinet.made.φ.α0.α1.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.cabinet.made.φ.α0.α1.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.cabinet.made.φ.α1.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.cabinet.made.φ.α1.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.choice.φ.ρ">
+           <ref loc="Φ.choice"/>
+        </type>
+        <type id="Φ.choice.not.φ.ρ.ρ">
+           <ref loc="Φ.choice.not"/>
+        </type>
+        <type id="Φ.choice.not.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.choice.not.φ.α1.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.dial.listen.φ.ρ">
+           <ref loc="Φ.dial.listen"/>
+        </type>
+        <type id="Φ.held.φ.ρ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.held.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.held.φ.α1.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.no.φ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.no.φ.α0.φ.ρ">
+           <ref loc="Φ.no.φ.α0"/>
+        </type>
+        <type id="Φ.other.φ.ρ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.other.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.other.φ.α1.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.yes.φ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.yes.φ.α0.φ.ρ">
+           <ref loc="Φ.yes.φ.α0"/>
+        </type>
+        <type id="Φ.cabinet.made.φ.α0.α1.α0.α0.α0">
+           <data/>
+        </type>
+        <type id="Φ.cabinet.made.φ.α1.α0.α0">
+           <data/>
+        </type>
+        <type id="Φ.cabinet.made.φ.α0.α1">
+           <terminator/>
+        </type>
+     </heads>
+     <calls>
+        <call loc="Φ.cabinet.made.φ">
+           <arg loc="Φ.cabinet.made.φ.α0" n="0"/>
+           <arg loc="Φ.cabinet.made.φ.α1" n="1"/>
+        </call>
+        <call loc="Φ.cabinet.made.φ.α0">
+           <arg loc="Φ.cabinet.made.φ.α0.α0" n="0"/>
+           <arg loc="Φ.cabinet.made.φ.α0.α1" n="1"/>
+        </call>
+        <call loc="Φ.cabinet.made.φ.α0.α1">
+           <arg loc="Φ.cabinet.made.φ.α0.α1.α0" n="0"/>
+        </call>
+        <call loc="Φ.cabinet.made.φ.α0.α1.α0">
+           <arg loc="Φ.cabinet.made.φ.α0.α1.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.cabinet.made.φ.α0.α1.α0.α0">
+           <arg loc="Φ.cabinet.made.φ.α0.α1.α0.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.cabinet.made.φ.α1">
+           <arg loc="Φ.cabinet.made.φ.α1.α0" n="0"/>
+        </call>
+        <call loc="Φ.cabinet.made.φ.α1.α0">
+           <arg loc="Φ.cabinet.made.φ.α1.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.choice.not.φ">
+           <arg loc="Φ.choice.not.φ.α0" n="0"/>
+           <arg loc="Φ.choice.not.φ.α1" n="1"/>
+        </call>
+        <call loc="Φ.held.φ">
+           <arg loc="Φ.held.φ.α0" n="0"/>
+           <arg loc="Φ.held.φ.α1" n="1"/>
+        </call>
+        <call loc="Φ.no.φ">
+           <arg loc="Φ.no.φ.α0" n="0"/>
+        </call>
+        <call loc="Φ.other.φ">
+           <arg loc="Φ.other.φ.α0" n="0"/>
+           <arg loc="Φ.other.φ.α1" n="1"/>
+        </call>
+        <call loc="Φ.yes.φ">
+           <arg loc="Φ.yes.φ.α0" n="0"/>
+        </call>
+     </calls>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+      <reduced copies="1">
+        <is loc="Φ"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.cabinet" copies="3">
+      <is loc="Φ.cabinet"/>
+      <reduced copies="2">
+        <is loc="Φ.cabinet"/>
+      </reduced>
+    </o>
+    <o loc="Φ.cabinet.made" copies="2">
+      <is loc="Φ.cabinet.made"/>
+      <reduced copies="2">
+        <set copies="1">
+          <is loc="Φ.cabinet"/>
+        </set>
+        <set copies="1">
+          <is loc="Φ.dial"/>
+        </set>
+      </reduced>
+    </o>
+    <o loc="Φ.cabinet.made.flag" copies="2">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.cabinet.made.full" copies="2">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.cabinet.made.ρ" copies="2">
+      <is loc="Φ.cabinet"/>
+    </o>
+    <o loc="Φ.cabinet.made.φ" copies="2">
+      <set copies="1">
+        <is loc="Φ.cabinet"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.dial"/>
+      </set>
+    </o>
+    <o loc="Φ.cabinet.made.φ.α0" copies="2" lands="left">
+      <set copies="1">
+        <terminator/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.cabinet"/>
+      </set>
+    </o>
+    <o loc="Φ.cabinet.made.φ.α0.α0" copies="2" lands="left">
+      <is loc="Φ.cabinet"/>
+    </o>
+    <o loc="Φ.cabinet.made.φ.α0.α0.ρ" copies="2">
+      <set copies="1">
+        <is loc="Φ.cabinet"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.dial"/>
+      </set>
+    </o>
+    <o loc="Φ.cabinet.made.φ.α0.α1" copies="2" lands="right">
+      <terminator/>
+    </o>
+    <o loc="Φ.cabinet.made.φ.α0.α1.α0" copies="2">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.cabinet.made.φ.α0.α1.α0.α0" copies="2" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.cabinet.made.φ.α0.α1.α0.α0.α0" copies="2" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.cabinet.made.φ.α0.α1.α0.α0.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.cabinet.made.φ.α0.α1.α0.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.cabinet.made.φ.α0.ρ" copies="2">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.cabinet.made.φ.α0.ρ.ρ" copies="2">
+      <set copies="1">
+        <is loc="Φ.cabinet"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.dial"/>
+      </set>
+    </o>
+    <o loc="Φ.cabinet.made.φ.α1" copies="2" lands="right">
+      <is loc="Φ.dial"/>
+    </o>
+    <o loc="Φ.cabinet.made.φ.α1.α0" copies="2" lands="sys">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.cabinet.made.φ.α1.α0.α0" copies="2" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.cabinet.made.φ.α1.α0.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.cabinet.made.φ.α1.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.cabinet.made.φ.ρ" copies="2">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.cabinet.made.φ.ρ.ρ" copies="2">
+      <set copies="1">
+        <is loc="Φ.cabinet"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.dial"/>
+      </set>
+    </o>
+    <o loc="Φ.choice" copies="2">
+      <is loc="Φ.choice"/>
+      <reduced copies="2">
+        <is loc="Φ.choice"/>
+      </reduced>
+    </o>
+    <o loc="Φ.choice.pick" copies="2">
+      <set copies="1">
+        <is loc="Φ.no.φ.α0"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.yes.φ.α0"/>
+      </set>
+    </o>
+    <o loc="Φ.choice.φ" copies="2">
+      <set copies="1">
+        <is loc="Φ.no.φ.α0"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.yes.φ.α0"/>
+      </set>
+    </o>
+    <o loc="Φ.choice.φ.ρ" copies="2">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.dial" copies="1">
+      <is loc="Φ.dial"/>
+      <reduced copies="1">
+        <is loc="Φ.dial"/>
+      </reduced>
+    </o>
+    <o loc="Φ.dial.listen" copies="1">
+      <is loc="Φ.dial.listen"/>
+      <reduced copies="1">
+        <is loc="Φ.dial.listen"/>
+      </reduced>
+    </o>
+    <o loc="Φ.dial.listen.size" copies="1">
+      <open/>
+    </o>
+    <o loc="Φ.dial.listen.ρ" copies="1">
+      <is loc="Φ.dial"/>
+    </o>
+    <o loc="Φ.dial.listen.φ" copies="1">
+      <open/>
+    </o>
+    <o loc="Φ.dial.listen.φ.ρ" copies="1">
+      <is loc="Φ.dial.listen"/>
+    </o>
+    <o loc="Φ.dial.sys" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.dial.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.held" copies="1">
+      <is loc="Φ.held"/>
+    </o>
+    <o loc="Φ.held.φ" copies="1">
+      <is loc="Φ.cabinet"/>
+    </o>
+    <o loc="Φ.held.φ.α0" copies="1" lands="flag">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.held.φ.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.held.φ.α1" copies="1" lands="full">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.held.φ.α1.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.held.φ.ρ" copies="1">
+      <is loc="Φ.cabinet"/>
+    </o>
+    <o loc="Φ.held.φ.ρ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.no" copies="3">
+      <is loc="Φ.no"/>
+      <reduced copies="2">
+        <is loc="Φ.choice"/>
+      </reduced>
+    </o>
+    <o loc="Φ.no.ρ" copies="3">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.no.φ" copies="3">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.no.φ.α0" copies="3" lands="pick">
+      <is loc="Φ.no.φ.α0"/>
+      <reduced copies="4">
+        <set copies="2">
+          <is loc="Φ.no.φ.α0"/>
+        </set>
+        <set copies="1">
+          <terminator/>
+        </set>
+        <set copies="1">
+          <is loc="Φ.dial"/>
+        </set>
+      </reduced>
+    </o>
+    <o loc="Φ.no.φ.α0.left" copies="2">
+      <set copies="1">
+        <terminator/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.cabinet"/>
+      </set>
+    </o>
+    <o loc="Φ.no.φ.α0.right" copies="2">
+      <set copies="1">
+        <terminator/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.dial"/>
+      </set>
+    </o>
+    <o loc="Φ.no.φ.α0.ρ" copies="2">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.no.φ.α0.φ" copies="2">
+      <set copies="1">
+        <terminator/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.dial"/>
+      </set>
+    </o>
+    <o loc="Φ.no.φ.α0.φ.ρ" copies="2">
+      <set copies="1">
+        <terminator/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.dial"/>
+      </set>
+    </o>
+    <o loc="Φ.no.φ.ρ" copies="3">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.other" copies="1">
+      <is loc="Φ.other"/>
+    </o>
+    <o loc="Φ.other.φ" copies="1">
+      <is loc="Φ.dial"/>
+    </o>
+    <o loc="Φ.other.φ.α0" copies="1" lands="flag">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.other.φ.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.other.φ.α1" copies="1" lands="full">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.other.φ.α1.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.other.φ.ρ" copies="1">
+      <is loc="Φ.cabinet"/>
+    </o>
+    <o loc="Φ.other.φ.ρ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+      <reduced copies="1">
+        <is loc="Φ.string"/>
+      </reduced>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.yes" copies="3">
+      <is loc="Φ.yes"/>
+      <reduced copies="2">
+        <is loc="Φ.choice"/>
+      </reduced>
+    </o>
+    <o loc="Φ.yes.ρ" copies="3">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.yes.φ" copies="3">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.yes.φ.α0" copies="3" lands="pick">
+      <is loc="Φ.yes.φ.α0"/>
+      <reduced copies="4">
+        <set copies="2">
+          <is loc="Φ.cabinet"/>
+        </set>
+        <set copies="2">
+          <is loc="Φ.yes.φ.α0"/>
+        </set>
+      </reduced>
+    </o>
+    <o loc="Φ.yes.φ.α0.left" copies="2">
+      <is loc="Φ.cabinet"/>
+    </o>
+    <o loc="Φ.yes.φ.α0.right" copies="2">
+      <set copies="1">
+        <terminator/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.dial"/>
+      </set>
+    </o>
+    <o loc="Φ.yes.φ.α0.ρ" copies="2">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.yes.φ.α0.φ" copies="2">
+      <is loc="Φ.cabinet"/>
+    </o>
+    <o loc="Φ.yes.φ.α0.φ.ρ" copies="2">
+      <is loc="Φ.cabinet"/>
+    </o>
+    <o loc="Φ.yes.φ.ρ" copies="3">
+      <is loc="Φ"/>
+    </o>
+  </answers>
