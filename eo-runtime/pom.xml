@@ -289,6 +289,41 @@
           <maxMorphingSteps>1000</maxMorphingSteps>
           <!-- Save every phino protocol of 'eo:lower' as indented text too, for a reader to study. -->
           <saveTextProtocols>true</saveTextProtocols>
+          <!--
+          The names of eo-runtime that the engine of 'eo:inference' has to
+          know. Each kind of the canon is one shared copy, the first of them
+          holding the data and the others holding the first. A copy of list
+          code that other code makes starts a tag, which keeps apart the lists
+          of different callers. A formation in one of the scalar packages
+          gives back new data and takes no tag.
+          -->
+          <inferenceCanon>
+            <kind>Φ.bytes</kind>
+            <kind>Φ.number</kind>
+            <kind>Φ.string</kind>
+          </inferenceCanon>
+          <inferenceRoots>
+            <root>Φ.tuple</root>
+            <root>Φ.map</root>
+            <root>Φ.set</root>
+          </inferenceRoots>
+          <inferenceScalars>
+            <scalar>Φ.number</scalar>
+            <scalar>Φ.bytes</scalar>
+            <scalar>Φ.string</scalar>
+            <scalar>Φ.bool</scalar>
+            <scalar>Φ.true</scalar>
+            <scalar>Φ.false</scalar>
+            <scalar>Φ.i8</scalar>
+            <scalar>Φ.i16</scalar>
+            <scalar>Φ.i32</scalar>
+            <scalar>Φ.i64</scalar>
+            <scalar>Φ.u8</scalar>
+            <scalar>Φ.u16</scalar>
+            <scalar>Φ.u32</scalar>
+            <scalar>Φ.u64</scalar>
+            <scalar>Φ.dataized</scalar>
+          </inferenceScalars>
         </configuration>
         <executions>
           <execution>

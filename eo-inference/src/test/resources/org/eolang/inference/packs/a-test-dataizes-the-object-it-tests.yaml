@@ -1,0 +1,173 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The test dataizes what its @ gives, so the copy of half it builds counts,
+# though rest is still empty, and its whole is a number.
+sources:
+  half.eo: |
+    [whole rest] > half
+      whole > @
+      rest > other
+
+      half 8 ++> can-take-a-whole
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="false" complete="false" id="Φ.half">
+           <attr name="whole" type="Φ.half.whole" void="true"/>
+           <attr name="rest" type="Φ.half.rest" void="true"/>
+           <attr name="φ" type="Φ.half.φ"/>
+           <attr name="other" type="Φ.half.other"/>
+           <attr name="p🌵can-take-a-whole" type="Φ.half.p🌵can-take-a-whole"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.half.p🌵can-take-a-whole">
+           <attr name="φ" type="Φ.half.p🌵can-take-a-whole.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="half" type="Φ.half"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="string" type="Φ.string"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.half.φ" name="whole" of="Φ.half.φ.ρ"/>
+        <read id="Φ.half.other" name="rest" of="Φ.half.other.ρ"/>
+        <read id="Φ.half.p🌵can-take-a-whole.φ"
+              name="half"
+              of="Φ.half.p🌵can-take-a-whole.φ.ρ"/>
+        <read id="Φ.half.p🌵can-take-a-whole.φ.α0"
+              name="number"
+              of="Φ.half.p🌵can-take-a-whole.φ.α0.ρ"/>
+        <read id="Φ.half.p🌵can-take-a-whole.φ.α0.α0"
+              name="bytes"
+              of="Φ.half.p🌵can-take-a-whole.φ.α0.α0.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.half.φ.ρ">
+           <ref loc="Φ.half"/>
+        </type>
+        <type id="Φ.half.other.ρ">
+           <ref loc="Φ.half"/>
+        </type>
+        <type id="Φ.half.p🌵can-take-a-whole.φ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.half.p🌵can-take-a-whole.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.half.p🌵can-take-a-whole.φ.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.half.p🌵can-take-a-whole.φ.α0.α0.α0">
+           <data/>
+        </type>
+     </heads>
+     <calls>
+        <call loc="Φ.half.p🌵can-take-a-whole.φ">
+           <arg loc="Φ.half.p🌵can-take-a-whole.φ.α0" n="0"/>
+        </call>
+        <call loc="Φ.half.p🌵can-take-a-whole.φ.α0">
+           <arg loc="Φ.half.p🌵can-take-a-whole.φ.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.half.p🌵can-take-a-whole.φ.α0.α0">
+           <arg loc="Φ.half.p🌵can-take-a-whole.φ.α0.α0.α0" n="0"/>
+        </call>
+     </calls>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.half" copies="1">
+      <is loc="Φ.half"/>
+      <reduced copies="1">
+        <is loc="Φ.half"/>
+      </reduced>
+    </o>
+    <o loc="Φ.half.other" copies="1">
+      <terminator/>
+    </o>
+    <o loc="Φ.half.other.ρ" copies="1">
+      <is loc="Φ.half"/>
+    </o>
+    <o loc="Φ.half.p🌵can-take-a-whole" copies="1">
+      <is loc="Φ.half.p🌵can-take-a-whole"/>
+    </o>
+    <o loc="Φ.half.p🌵can-take-a-whole.φ" copies="1">
+      <is loc="Φ.half"/>
+    </o>
+    <o loc="Φ.half.p🌵can-take-a-whole.φ.α0" copies="1" lands="whole">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.half.p🌵can-take-a-whole.φ.α0.α0" copies="1" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.half.p🌵can-take-a-whole.φ.α0.α0.α0" copies="1" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.half.p🌵can-take-a-whole.φ.α0.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.half.p🌵can-take-a-whole.φ.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.half.p🌵can-take-a-whole.φ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.half.rest" copies="1">
+      <open/>
+    </o>
+    <o loc="Φ.half.whole" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.half.φ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.half.φ.ρ" copies="1">
+      <is loc="Φ.half"/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+  </answers>

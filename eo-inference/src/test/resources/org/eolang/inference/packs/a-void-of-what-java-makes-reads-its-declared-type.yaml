@@ -1,0 +1,144 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Java makes status, and its code declares it holds a number, so a read of code
+# off what check returns is a number, though nothing is in its pool.
+sources:
+  os.eo: |
+    [] > os
+      [] > check /Q.os.status
+      [] > status /Q.number
+        ? > code /Q.number
+  app.eo: |
+    [] > app
+      os.check.code > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="true" complete="false" id="Φ.app">
+           <attr name="φ" type="Φ.app.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.os">
+           <attr name="check" type="Φ.os.check"/>
+           <attr name="status" type="Φ.os.status"/>
+        </type>
+        <type bare="true"
+              complete="false"
+              id="Φ.os.check"
+              returns="Φ.os.status"/>
+        <type bare="true"
+              complete="false"
+              id="Φ.os.status"
+              returns="Φ.number">
+           <attr holds="Φ.number"
+                 name="code"
+                 type="Φ.os.status.code"
+                 void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="app" type="Φ.app"/>
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="os" type="Φ.os"/>
+           <attr name="string" type="Φ.string"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.app.φ" name="code" of="Φ.app.φ.ρ"/>
+        <read id="Φ.app.φ.ρ" name="check" of="Φ.app.φ.ρ.ρ"/>
+        <read id="Φ.app.φ.ρ.ρ" name="os" of="Φ.app.φ.ρ.ρ.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.app.φ.ρ.ρ.ρ">
+           <ref loc="Φ"/>
+        </type>
+     </heads>
+     <calls/>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app" copies="1">
+      <is loc="Φ.app"/>
+    </o>
+    <o loc="Φ.app.φ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.app.φ.ρ" copies="1">
+      <is loc="Φ.os.status"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.ρ" copies="1">
+      <is loc="Φ.os"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.ρ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.os" copies="2">
+      <is loc="Φ.os"/>
+      <reduced copies="1">
+        <is loc="Φ.os"/>
+      </reduced>
+    </o>
+    <o loc="Φ.os.check" copies="2">
+      <is loc="Φ.os.check"/>
+      <reduced copies="1">
+        <is loc="Φ.os.status"/>
+      </reduced>
+    </o>
+    <o loc="Φ.os.check.λ" copies="2">
+      <is loc="Φ.os.status"/>
+    </o>
+    <o loc="Φ.os.status" copies="1">
+      <is loc="Φ.os.status"/>
+    </o>
+    <o loc="Φ.os.status.code" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.os.status.λ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+  </answers>

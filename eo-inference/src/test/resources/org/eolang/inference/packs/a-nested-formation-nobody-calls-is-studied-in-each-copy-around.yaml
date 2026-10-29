@@ -1,0 +1,261 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls inner, and its m is filled by no copy, so a stop gives it one
+# study copy inside each of the two copies of outer. Each reads its own n off
+# ^, a number, while m stays open.
+sources:
+  outer.eo: |
+    [n] > outer
+      [m] > inner
+        ^.n.plus m > @
+  app.eo: |
+    [] > app
+      outer 1 > a
+      outer 2 > b
+  number.eo: |
+    [@] > number
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="false" complete="true" id="Φ.app">
+           <attr name="a" type="Φ.app.a"/>
+           <attr name="b" type="Φ.app.b"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="false" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+           <attr name="plus" type="Φ.number.plus"/>
+        </type>
+        <type bare="true"
+              complete="false"
+              id="Φ.number.plus"
+              returns="Φ.number">
+           <attr name="ρ" rho="Φ.number" type="Φ.number.plus.ρ" void="true"/>
+           <attr holds="Φ.number" name="b" type="Φ.number.plus.b" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.outer">
+           <attr name="n" type="Φ.outer.n" void="true"/>
+           <attr name="inner" type="Φ.outer.inner"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.outer.inner">
+           <attr name="m" type="Φ.outer.inner.m" void="true"/>
+           <attr name="φ" type="Φ.outer.inner.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="app" type="Φ.app"/>
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="outer" type="Φ.outer"/>
+           <attr name="string" type="Φ.string"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.app.a" name="outer" of="Φ.app.a.ρ"/>
+        <read id="Φ.app.a.α0" name="number" of="Φ.app.a.α0.ρ"/>
+        <read id="Φ.app.a.α0.α0" name="bytes" of="Φ.app.a.α0.α0.ρ"/>
+        <read id="Φ.app.b" name="outer" of="Φ.app.b.ρ"/>
+        <read id="Φ.app.b.α0" name="number" of="Φ.app.b.α0.ρ"/>
+        <read id="Φ.app.b.α0.α0" name="bytes" of="Φ.app.b.α0.α0.ρ"/>
+        <read id="Φ.outer.inner.φ" name="plus" of="Φ.outer.inner.φ.ρ"/>
+        <read id="Φ.outer.inner.φ.ρ" name="n" of="Φ.outer.inner.φ.ρ.ρ"/>
+        <read id="Φ.outer.inner.φ.ρ.ρ" name="ρ" of="Φ.outer.inner.φ.ρ.ρ.ρ"/>
+        <read id="Φ.outer.inner.φ.α0" name="m" of="Φ.outer.inner.φ.α0.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.app.a.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.a.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.a.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.b.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.b.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.b.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.outer.inner.φ.ρ.ρ.ρ">
+           <ref loc="Φ.outer.inner"/>
+        </type>
+        <type id="Φ.outer.inner.φ.α0.ρ">
+           <ref loc="Φ.outer.inner"/>
+        </type>
+        <type id="Φ.app.a.α0.α0.α0">
+           <data/>
+        </type>
+        <type id="Φ.app.b.α0.α0.α0">
+           <data/>
+        </type>
+     </heads>
+     <calls>
+        <call loc="Φ.app.a">
+           <arg loc="Φ.app.a.α0" n="0"/>
+        </call>
+        <call loc="Φ.app.a.α0">
+           <arg loc="Φ.app.a.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.app.a.α0.α0">
+           <arg loc="Φ.app.a.α0.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.app.b">
+           <arg loc="Φ.app.b.α0" n="0"/>
+        </call>
+        <call loc="Φ.app.b.α0">
+           <arg loc="Φ.app.b.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.app.b.α0.α0">
+           <arg loc="Φ.app.b.α0.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.outer.inner.φ">
+           <arg loc="Φ.outer.inner.φ.α0" n="0"/>
+        </call>
+     </calls>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app" copies="1">
+      <is loc="Φ.app"/>
+    </o>
+    <o loc="Φ.app.a" copies="1">
+      <is loc="Φ.outer"/>
+    </o>
+    <o loc="Φ.app.a.α0" copies="1" lands="n">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.app.a.α0.α0" copies="1" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.app.a.α0.α0.α0" copies="1" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.app.a.α0.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.a.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.a.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.b" copies="1">
+      <is loc="Φ.outer"/>
+    </o>
+    <o loc="Φ.app.b.α0" copies="1" lands="n">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.app.b.α0.α0" copies="1" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.app.b.α0.α0.α0" copies="1" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.app.b.α0.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.b.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.b.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.plus" copies="1">
+      <is loc="Φ.number.plus"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.plus.b" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.plus.λ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.plus.ρ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.outer" copies="2">
+      <is loc="Φ.outer"/>
+      <reduced copies="2">
+        <is loc="Φ.outer"/>
+      </reduced>
+    </o>
+    <o loc="Φ.outer.inner" copies="2">
+      <is loc="Φ.outer.inner"/>
+      <reduced copies="2">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.outer.inner.m" copies="2">
+      <open/>
+    </o>
+    <o loc="Φ.outer.inner.φ" copies="2">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.outer.inner.φ.α0" copies="2" lands="b">
+      <open/>
+    </o>
+    <o loc="Φ.outer.inner.φ.α0.ρ" copies="2">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.outer.inner.φ.ρ" copies="2">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.outer.inner.φ.ρ.ρ" copies="2">
+      <is loc="Φ.outer"/>
+    </o>
+    <o loc="Φ.outer.inner.φ.ρ.ρ.ρ" copies="2">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.outer.n" copies="2">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+  </answers>

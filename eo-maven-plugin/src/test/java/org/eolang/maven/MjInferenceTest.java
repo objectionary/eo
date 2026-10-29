@@ -49,6 +49,29 @@ final class MjInferenceTest {
     }
 
     @Test
+    void writesAnswersBesideFacts(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > app",
+                "  [] > t",
+                "    [] > next",
+                ""
+            )
+        );
+        maven.execute(MjParse.class).execute(MjInference.class);
+        MatcherAssert.assertThat(
+            "the answers must name what each place is, but they dont",
+            new XMLDocument(
+                maven.targetPath()
+                    .resolve(maven.dirName("inference"))
+                    .resolve("answers.xml")
+            ),
+            XhtmlMatchers.hasXPath("/answers/o[@loc='Φ.app.t']/is[@loc='Φ.app.t']")
+        );
+    }
+
+    @Test
     void readsOnlyTheXmirOfARegisteredSource(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             String.join(System.lineSeparator(), "[] > app", "")

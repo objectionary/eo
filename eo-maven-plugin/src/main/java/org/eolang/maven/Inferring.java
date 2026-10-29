@@ -13,8 +13,11 @@ import java.nio.file.Path;
 import org.cactoos.io.Directory;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Sorted;
+import org.eolang.inference.Answers;
 import org.eolang.inference.Facts;
+import org.eolang.inference.Names;
 import org.eolang.inference.Prepared;
+import org.eolang.inference.Walk;
 
 /**
  * Read what a program says about its own objects and write it down.
@@ -38,6 +41,11 @@ import org.eolang.inference.Prepared;
  * locators are set again on the objects the split made. That is what the
  * prepared files hold, and they are worth keeping, since every row of
  * {@code facts.xml} points into them.</p>
+ *
+ * <p>The engine then reads {@code facts.xml} alone and writes
+ * {@code answers.xml} beside it: for every place, which objects it can be
+ * when Java runs the program. It knows a few names of the program, the
+ * {@link Names}, and nothing else of it.</p>
  *
  * @since 0.67.0
  */
@@ -63,9 +71,14 @@ final class Inferring implements Step {
     private final Path prepared;
 
     /**
-     * The directory for {@code facts.xml}.
+     * The directory for {@code facts.xml} and {@code answers.xml}.
      */
     private final Path tables;
+
+    /**
+     * The names of the program the engine has to know.
+     */
+    private final Names names;
 
     /**
      * Ctor, for a caller that owns the directory and wants every XMIR in it.
@@ -73,10 +86,10 @@ final class Inferring implements Step {
      * @param parsed The directory with XMIR files, as the parser leaves them
      *  after its canonical pipeline (see {@code org.eolang.parser.Canonical})
      * @param pre The directory for the prepared XMIR files
-     * @param rows The directory for {@code facts.xml}
+     * @param rows The directory for {@code facts.xml} and {@code answers.xml}
      */
     Inferring(final Path parsed, final Path pre, final Path rows) {
-        this(new Directory(parsed), parsed, pre, rows);
+        this(new Directory(parsed), parsed, pre, rows, new Names());
     }
 
     /**
@@ -85,15 +98,19 @@ final class Inferring implements Step {
      * @param xmirs The XMIR files the facts are read from
      * @param parsed The directory those files come from
      * @param pre The directory for the prepared XMIR files
-     * @param rows The directory for {@code facts.xml}
+     * @param rows The directory for {@code facts.xml} and {@code answers.xml}
+     * @param known The names of the program the engine has to know
+     * @checkstyle ParameterNumberCheck (5 lines)
      */
     Inferring(
-        final Iterable<Path> xmirs, final Path parsed, final Path pre, final Path rows
+        final Iterable<Path> xmirs, final Path parsed, final Path pre, final Path rows,
+        final Names known
     ) {
         this.sources = xmirs;
         this.input = parsed;
         this.prepared = pre;
         this.tables = rows;
+        this.names = known;
     }
 
     @Override
@@ -111,9 +128,13 @@ final class Inferring implements Step {
             Files.createDirectories(this.prepared);
             this.ready();
             new Facts().follow(this.prepared, this.tables);
+            final long start = System.currentTimeMillis();
+            new Answers(new Walk(this.tables.resolve("facts.xml"), this.names))
+                .write(this.tables.resolve("answers.xml"));
             Logger.info(
-                this, "The facts of the program are in %[file]s (%s)",
-                this.tables, new Tabled(this.tables).asString()
+                this, "The facts and the answers of the program are in %[file]s (%s), the answers took %[ms]s",
+                this.tables, new Tabled(this.tables).asString(),
+                System.currentTimeMillis() - start
             );
         } else {
             Logger.info(

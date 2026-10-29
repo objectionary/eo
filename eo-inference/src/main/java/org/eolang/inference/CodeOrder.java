@@ -6,7 +6,6 @@ package org.eolang.inference;
 
 import java.io.Serializable;
 import java.util.Comparator;
-import java.util.PrimitiveIterator;
 
 /**
  * The order of two strings by their code points, one by one.
@@ -14,9 +13,10 @@ import java.util.PrimitiveIterator;
  * <p>{@link String#compareTo(String)} compares UTF-16 units, and a character
  * outside the basic plane, such as the {@code 🌵} of a name the parser made,
  * is two units that start below {@code U+E000}, so it lands before
- * {@code U+FF01}, where its code point lands after. The report is drawn the
- * way the Python one is, which compares code points, so every list it sorts
- * is sorted this way.</p>
+ * {@code U+FF01}, where its code point lands after. The engine writes its
+ * answers and the report draws its pages the way the Python ones do, which
+ * compare code points, so every list either of them sorts is sorted this
+ * way.</p>
  *
  * @since 0.76.0
  */
@@ -29,14 +29,15 @@ final class CodeOrder implements Comparator<String>, Serializable {
 
     @Override
     public int compare(final String first, final String second) {
-        final PrimitiveIterator.OfInt left = first.codePoints().iterator();
-        final PrimitiveIterator.OfInt right = second.codePoints().iterator();
+        int pos = 0;
         int found = 0;
-        while (found == 0 && left.hasNext() && right.hasNext()) {
-            found = Integer.compare(left.nextInt(), right.nextInt());
+        while (found == 0 && pos < first.length() && pos < second.length()) {
+            final int point = first.codePointAt(pos);
+            found = Integer.compare(point, second.codePointAt(pos));
+            pos += Character.charCount(point);
         }
         if (found == 0) {
-            found = Boolean.compare(left.hasNext(), right.hasNext());
+            found = Integer.compare(first.length(), second.length());
         }
         return found;
     }

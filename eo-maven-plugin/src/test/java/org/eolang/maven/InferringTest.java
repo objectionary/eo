@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Collections;
+import org.eolang.inference.Names;
 import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -64,6 +65,23 @@ final class InferringTest {
     }
 
     @Test
+    void writesAnswersOfProgramBesideItsFacts(@Mktmp final Path temp) throws IOException {
+        final Path sources = Files.createDirectories(temp.resolve("garden"));
+        Files.writeString(
+            sources.resolve("pond.xmir"),
+            new EoSyntax(
+                String.join(System.lineSeparator(), "[] > pond", "  [] > frog", "")
+            ).parsed().toString()
+        );
+        new Inferring(sources, temp.resolve("pre"), temp.resolve("tables")).exec();
+        MatcherAssert.assertThat(
+            "the answers must be written beside the facts and tell what the frog is, but they werent",
+            new XMLDocument(temp.resolve("tables").resolve("answers.xml")),
+            XhtmlMatchers.hasXPath("/answers/o[@loc='Φ.pond.frog']/is[@loc='Φ.pond.frog']")
+        );
+    }
+
+    @Test
     void leavesOutAnXmirTheCallerDidNotName(@Mktmp final Path temp) throws IOException {
         final Path parsed = Files.createDirectories(temp.resolve("parsed"));
         Files.writeString(
@@ -78,7 +96,8 @@ final class InferringTest {
             Collections.singletonList(parsed.resolve("app.xmir")),
             parsed,
             temp.resolve("pre"),
-            temp.resolve("tables")
+            temp.resolve("tables"),
+            new Names()
         ).exec();
         MatcherAssert.assertThat(
             "a file left behind by a deleted source must stay out of the facts, but it didnt",

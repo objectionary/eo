@@ -37,6 +37,15 @@ final class CodeOrderTest {
     }
 
     @Test
+    void findsTwoEqualLocatorsEqual() {
+        MatcherAssert.assertThat(
+            "two equal locators must compare equal, but they didnt",
+            new CodeOrder().compare("Φ.p🌵can-add", "Φ.p🌵can-add"),
+            Matchers.equalTo(0)
+        );
+    }
+
+    @Test
     void sortsLocatorsTheWayPythonSortsThem() {
         final List<String> sorted = new ArrayList<>(
             Arrays.asList("Φ.oak.p🌵12-4", "Φ.oak.pｚ", "Φ.oak", "Φ.oak.α1")

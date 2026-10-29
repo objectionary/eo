@@ -44,19 +44,17 @@ final class MjInferenceReportTest {
 
     @Test
     void drawsNothingWithoutAnswers(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(System.lineSeparator(), "[] > app", "  [] > t", "")
+        );
+        maven.execute(MjParse.class).execute(MjInference.class);
+        Files.delete(
+            maven.targetPath().resolve(maven.dirName("inference")).resolve("answers.xml")
+        );
+        maven.execute(MjInferenceReport.class);
         MatcherAssert.assertThat(
             "no page may be drawn when the engine wrote no answers, but one was",
-            Files.exists(
-                new FakeMaven(temp).withProgram(
-                    String.join(System.lineSeparator(), "[] > app", "  [] > t", "")
-                )
-                    .execute(MjParse.class)
-                    .execute(MjInference.class)
-                    .execute(MjInferenceReport.class)
-                    .targetPath()
-                    .getParent()
-                    .resolve("site/inference/index.html")
-            ),
+            Files.exists(maven.targetPath().getParent().resolve("site/inference/index.html")),
             Matchers.is(false)
         );
     }

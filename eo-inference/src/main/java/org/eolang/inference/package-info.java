@@ -26,9 +26,14 @@
  * every chain, and every call with its arguments. Nothing is worked out
  * there, and nothing fails the build.</p>
  *
+ * <p>{@link org.eolang.inference.Walk} then reads {@code facts.xml} alone and
+ * works out, copy by copy, which objects every place can be when Java runs
+ * the program, and {@link org.eolang.inference.Answers} writes that into
+ * {@code answers.xml}.</p>
+ *
  * <p>{@link org.eolang.inference.Report} draws a page per source file from
- * the prepared XMIR and the {@code answers.xml} the engine writes, with a
- * mark on every object coloured by what the engine answers there.</p>
+ * the prepared XMIR and that {@code answers.xml}, with a mark on every
+ * object coloured by what the engine answers there.</p>
  *
  * @since 0.67.0
  * @see <a href="https://www.eolang.org">Project site www.eolang.org</a>
