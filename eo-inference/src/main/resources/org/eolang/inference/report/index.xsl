@@ -70,7 +70,7 @@ mean.
           <dt>name</dt>
           <dd>The object an answer is copied from, like Φ.number. A formation with no name of its own counts as one name per shape: its voids and what its @ gives, then a line per attribute it binds, with the attribute's own voids and what it gives, like [∅] → Φ.string.</dd>
           <dt>→ and ↺</dt>
-          <dd>In a shape, → is what an @ gives, and ↺ is the object the shape is of: [^] → Φ.bytes with a line [^ ∅] > read ↺ is an object of bytes whose read gives the object back.</dd>
+          <dd>In a shape, → is what an @ gives, and ↺ is the object the shape is of: [^] → Φ.bytes with a line [^ ∅] &gt; read ↺ is an object of bytes whose read gives the object back.</dd>
           <dt>error</dt>
           <dd>The copy gives T.</dd>
           <dt>lost track</dt>
@@ -167,8 +167,8 @@ mean.
         function shown() {
           var picked = chips.filter(function (chip) { return chip.classList.contains('on'); }).map(function (chip) { return chip.dataset.band; });
           rows.forEach(function (row) {
-            var some = picked.some(function (band) { return Number(row.dataset[band]) > 0; });
-            row.classList.toggle('hidden', picked.length > 0 ? !some : false);
+            var some = picked.some(function (band) { return Number(row.dataset[band]) &gt; 0; });
+            row.classList.toggle('hidden', picked.length &gt; 0 ? !some : false);
           });
           try { localStorage.setItem('bands', picked.join(' ')); } catch (ignored) {}
         }

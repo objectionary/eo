@@ -264,13 +264,13 @@ stays lit until the next scroll, click or key press.
         function shown() {
           var picked = chips.filter(function (chip) { return chip.classList.contains('on'); }).map(function (chip) { return chip.dataset.band; });
           marks.forEach(function (mark) {
-            mark.classList.toggle('off', picked.length > 0 ? picked.indexOf(mark.dataset.band) === -1 : false);
+            mark.classList.toggle('off', picked.length &gt; 0 ? picked.indexOf(mark.dataset.band) === -1 : false);
           });
           var previous = -1;
           lines.forEach(function (line, at) {
             var kept = picked.length === 0 || line.querySelector('.mark:not(.off)') !== null;
             line.classList.toggle('hidden', !kept);
-            line.classList.toggle('cut', kept &amp;&amp; previous >= 0 &amp;&amp; at > previous + 1);
+            line.classList.toggle('cut', kept &amp;&amp; previous &gt;= 0 &amp;&amp; at &gt; previous + 1);
             if (kept) { previous = at; }
           });
           try { localStorage.setItem('bands', picked.join(' ')); } catch (ignored) {}

@@ -15,14 +15,8 @@ concurrency:
   group: inference-${{ github.ref }}
   cancel-in-progress: false
 jobs:
-  # @todo #9650:30min Turn this job back on once the 'inference' goal writes
-  #  answers.xml. The 'inference-report' goal draws its pages from that file,
-  #  and until the engine is ported the goal writes facts.xml alone, so
-  #  'eo-runtime/target/site/inference' is never written and there is nothing
-  #  to publish. Put back the condition
-  #  "github.repository_owner == 'objectionary'" in place of 'false'.
   inference:
-    if: false
+    if: github.repository_owner == 'objectionary'
     timeout-minutes: 30
     runs-on: ubuntu-24.04
     steps:
