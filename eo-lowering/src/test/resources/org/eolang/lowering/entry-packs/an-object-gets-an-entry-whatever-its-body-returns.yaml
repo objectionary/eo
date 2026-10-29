@@ -1,7 +1,8 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# The planting does not ask what the body of an object returns: an object
+# The planting asks what the body of an object returns only to decide
+# whether the object gets a row of the table of operations: an object
 # gets an entry whatever its body is, since the atom may return the root as
 # the object it is, a copy of another object for example, and only the
 # rendering, when the root turns out to be data the atom would return bare,

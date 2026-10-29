@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import com.yegor256.tojos.TjSmart;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -198,8 +199,8 @@ final class FakeMaven {
      * @param name Stage name, e.g. "parse"
      * @return Directory name, e.g. "01-parse"
      */
-    String dirName(final String name) {
-        return new Subdir(this.targetPath(), name).path().getFileName().toString();
+    String dirName(final String name) throws IOException {
+        return new Seqdir(this.targetPath(), 2).dirs().once(name).getFileName().toString();
     }
 
     /**
@@ -443,7 +444,7 @@ final class FakeMaven {
         this.params.putIfAbsent("cacheEnabled", true);
         this.params.putIfAbsent("budget", 10);
         this.params.putIfAbsent("steps", 32);
-        this.params.putIfAbsent("pin", "0.0.156");
+        this.params.putIfAbsent("pin", "0.0.160");
         this.params.putIfAbsent("only", ".*");
         this.params.putIfAbsent("never", "(?!)");
         this.params.putIfAbsent("discover", false);

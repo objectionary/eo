@@ -25,4 +25,4 @@ provides: |
     </type>
   </provides>
 xmir:
-  - "//o[@name='e2']/o/o[@as='v' and @base='Φ.true.φ.if'][not(o[not(@as)])]"
+  - "//o[@name='e2' and @base='Φ.true.φ.if'][not(o[not(@as)])]"

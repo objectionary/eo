@@ -46,6 +46,13 @@
 # one-character text of U+0000 is accepted as a boolean, since its byte is
 # the byte of `false`.
 #
+# The `%d` conversion refuses an argument whose bytes are not eight wide,
+# naming the argument and the conversion the way `%b` does. Without that
+# guard the bytes were read as a number anyway and the comparison that met
+# them answered for its own receiver, so a text or a boolean came back
+# naming the receiver of that comparison, which says neither which argument
+# nor which conversion was wrong (#9036).
+#
 # The `%d` guard names the number it rejects through `as-scientific` and not
 # through `%f`, because every magnitude it rejects is past the range `as-fixed`
 # writes, and a reason rendered with `%f` destroyed itself instead of arriving.
@@ -194,20 +201,25 @@
           capped datum
       if.
         64-.eq conv
-        as-decimal.
-          if.
-            or.
-              gte.
-                number numeric
-                9.223372036854776e18
-              lt.
-                number numeric
-                -9223372036854775808
-            T
-              "The number %s doesn't fit into the long range of the '%%d' conversion".printf
-                *
-                  string (number numeric).as-scientific
-            number numeric
+        if.
+          datum.size.eq 8
+          as-decimal.
+            if.
+              or.
+                gte.
+                  number numeric
+                  9.223372036854776e18
+                lt.
+                  number numeric
+                  -9223372036854775808
+              T
+                "The number %s doesn't fit into the long range of the '%%d' conversion".printf
+                  *
+                    string (number numeric).as-scientific
+              number numeric
+          T
+            "The argument %x is not a number, the %%d conversion takes one".printf
+              * datum
         if.
           66-.eq conv
           as-fixed.
@@ -607,6 +619,10 @@
     "%d".printf
       * -9223372036854775808
 
+  printf. --> stops-on-a-boolean-as-a-decimal
+    "%d"
+    * true
+
   printf. --> stops-on-a-boolean-as-a-string
     "%s"
     * true
@@ -654,6 +670,10 @@
   printf. --> stops-on-a-precision-with-d
     "%.2d"
     * 5
+
+  printf. --> stops-on-a-string-as-a-decimal
+    "%d"
+    * "x"
 
   printf. --> stops-on-a-width-before-an-escaped-percent
     "%5%s"

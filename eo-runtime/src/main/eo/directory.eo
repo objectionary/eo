@@ -97,7 +97,8 @@
             picked ^.accum ^.prefix
           if.
             and.
-              entry.is-directory false
+              entry.is-directory
+                false > [message]
               not.
                 entry.is-symlink false
             ^.^.walked earlier sub child.as-dir
@@ -353,7 +354,7 @@
 
   is-directory. ++> can-recover-from-checking-an-absent-directory
     directory mktemp.tmpfile.deleted
-    true
+    true > [message]
 
   ++> can-retry-tmpfile-creation-after-a-collision
     seq * > @
@@ -393,7 +394,8 @@
 
   ++> can-tell-that-a-deleted-directory-is-no-longer-a-directory
     not. > @
-      d.deleted.is-directory false
+      d.deleted.is-directory
+        false > [message]
     made. > d
       as-dir.
         mktemp.tmpfile.deleted.as-path.resolved "gone"
@@ -401,12 +403,12 @@
   is-directory. ++> can-tell-that-a-directory-is-a-directory
     directory
       Q.file "."
-    false
+    false > [message]
 
   not. ++> can-tell-that-a-regular-file-is-not-a-directory
     is-directory.
       directory mktemp.tmpfile
-      true
+      true > [message]
 
   ++> can-walk-a-directory-before-its-children
     seq * > @
@@ -777,7 +779,7 @@
     mktemp.tmpfile.deleted.as-path.as-dir > parent
 
   tmpfile. --> stops-on-a-tmpfile-in-an-absent-directory
-    @.
+    as-dir.
       mktemp.tmpfile.deleted.as-path.resolved "child"
 
   is-directory. --> stops-on-checking-an-absent-directory

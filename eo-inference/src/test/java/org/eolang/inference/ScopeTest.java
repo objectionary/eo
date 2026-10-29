@@ -111,4 +111,28 @@ final class ScopeTest {
             Matchers.equalTo("Φ.number")
         );
     }
+
+    @Test
+    void findsPackageNobodyFormedAnObjectAt() {
+        MatcherAssert.assertThat(
+            "a package prefix must name itself, but it named nothing",
+            new Scope(
+                Arrays.asList("Φ.foo.oak", "Φ.app", "Φ.app.x", "Φ.app.x.ρ"),
+                Arrays.asList("Φ.foo.oak", "Φ.app")
+            ).target("Φ.app.x.ρ", "Φ.foo"),
+            Matchers.equalTo("Φ.foo")
+        );
+    }
+
+    @Test
+    void keepsQuietAboutRootNameNobodyWrote() {
+        MatcherAssert.assertThat(
+            "a Φ-rooted name of no object and no package must resolve to nothing",
+            new Scope(
+                Arrays.asList("Φ.foo.oak", "Φ.app", "Φ.app.φ"),
+                Arrays.asList("Φ.foo.oak", "Φ.app")
+            ).target("Φ.app.φ", "Φ.bar"),
+            Matchers.emptyString()
+        );
+    }
 }

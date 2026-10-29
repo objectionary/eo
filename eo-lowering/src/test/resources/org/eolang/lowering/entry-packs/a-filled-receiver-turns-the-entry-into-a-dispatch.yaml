@@ -19,8 +19,8 @@ provides: |
     </type>
   </provides>
 xmir:
-  - "//o[@name='e1']/o/o[@as='v' and @base='.twice']"
-  - "//o[@name='e1']/o/o[@as='v']/o[1][@base='Φ.number' and not(@as)]/\
+  - "//o[@name='e1' and @base='.twice']"
+  - "//o[@name='e1']/o[1][@base='Φ.number' and not(@as)]/\
     /o[@name='λ' and text()='𝜎1']"
 voids:
   - "𝜎1\t1\tρ\tnumber"

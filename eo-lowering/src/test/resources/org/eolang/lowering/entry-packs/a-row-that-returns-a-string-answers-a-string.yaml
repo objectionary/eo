@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A row whose body the tables say is a string answers `string` around the
+# bytes around the fresh symbol, the way a string void is planted, so that
+# every attribute of a string dispatches on the answer as it would on a
+# literal.
+eo:
+  shout.eo: |
+    [s] > shout
+      s.up > @
+provides: |
+  <provides>
+    <type id="Φ.shout" reduced="Φ.string">
+      <attr name="s" type="Φ.shout.s" void="true" holds="Φ.string"/>
+      <attr name="φ" type="Φ.shout.φ"/>
+    </type>
+  </provides>
+rows:
+  - "L_shout\tΦ.shout\tΦ.shout\ts:string"
+table:
+  - "- λ: L_shout"
+  - "    𝛿1: $.s"
+  - "  𝑛: Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )"

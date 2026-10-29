@@ -4,8 +4,10 @@
  */
 package org.eolang.maven;
 
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -46,7 +48,7 @@ public final class MjInferenceReport extends MjSafe {
 
     /**
      * The directory where the XMIR prepared for the rules was saved, falling
-     * back to the "pre-inference" directory {@link Subdir} already found
+     * back to the "pre-inference" directory {@code Seqdir} already found
      * when unset.
      */
     @Parameter(alias = "preInferenceDir", property = "eo.preInferenceDir")
@@ -54,7 +56,7 @@ public final class MjInferenceReport extends MjSafe {
 
     /**
      * The directory where the tables were saved, falling back to the
-     * "inference" directory {@link Subdir} already found when unset.
+     * "inference" directory {@code Seqdir} already found when unset.
      */
     @Parameter(alias = "inferenceDir", property = "eo.inferenceDir")
     private File tables;
@@ -68,9 +70,23 @@ public final class MjInferenceReport extends MjSafe {
 
     @Override
     void exec() throws IOException {
+        final Path prepped;
+        if (this.prepared == null) {
+            prepped = new Seqdir(this.target.toPath(), 2).dirs().find("pre-inference")
+                .orElse(this.target.toPath().resolve("pre-inference"));
+        } else {
+            prepped = this.prepared.toPath();
+        }
+        final Path inference;
+        if (this.tables == null) {
+            inference = new Seqdir(this.target.toPath(), 2).dirs().find("inference")
+                .orElse(this.target.toPath().resolve("inference"));
+        } else {
+            inference = this.tables.toPath();
+        }
         new Reporting(
-            new Subdir(this.target, "pre-inference").foundOrConfigured(this.prepared),
-            new Subdir(this.target, "inference").foundOrConfigured(this.tables),
+            prepped,
+            inference,
             this.pages.toPath()
         ).exec();
     }
