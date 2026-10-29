@@ -30,9 +30,28 @@ package org.eolang.inference;
  * @param base The value a {@code B} or an {@code A} wraps, or -1
  * @param count The empty voids of an {@code A}
  * @since 0.76.0
- * @checkstyle ParameterNumberCheck (5 lines)
  */
 record Value(
     char kind, String form, String birth, long bound, String tag, int base, int count
 ) {
+
+    /**
+     * Ctor of a copy.
+     *
+     * @param form The formation
+     * @param born Where it is born, with its tag
+     * @param bound The bits of its bound voids
+     */
+    Value(final String form, final Site born, final long bound) {
+        this('O', form, born.place(), bound, born.tag(), -1, 0);
+    }
+
+    /**
+     * Whether it is a copy made in EO code, not by Java and not shared.
+     *
+     * @return TRUE if it is
+     */
+    boolean placed() {
+        return !Values.JBORN.equals(this.birth) && !"canon".equals(this.birth);
+    }
 }

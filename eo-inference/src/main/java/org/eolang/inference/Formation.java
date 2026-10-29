@@ -65,7 +65,6 @@ final class Formation {
      *  empty when it says nothing
      * @param back The types an atom calls each void back with
      * @param places The places an atom gives back
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
     Formation(
         final Map<String, Attribute> attributes, final List<String> voids,

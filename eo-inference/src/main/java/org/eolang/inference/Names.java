@@ -10,16 +10,16 @@ import java.util.List;
  * The few names of the program the engine has to know.
  *
  * <ul>
- *   <li>The canon (design doc 3.1): the kinds that are one shared copy
- *   each, born {@code canon}. The first holds the data, and every other
- *   one holds the first: {@code Φ.bytes}, then {@code Φ.number} and
- *   {@code Φ.string}.</li>
- *   <li>The roots of list code (3.6): every formation under one of these
- *   packages is list code, and a tag starts where other code makes a copy
- *   of it: {@code Φ.tuple}, {@code Φ.map} and {@code Φ.set}.</li>
- *   <li>The scalars (3.6): the packages whose formations give back new
- *   data and take no tag: {@code Φ.number}, {@code Φ.bytes} and so
- *   on.</li>
+ * <li>The canon (design doc 3.1): the kinds that are one shared copy
+ * each, born {@code canon}. The first holds the data, and every other
+ * one holds the first: {@code Φ.bytes}, then {@code Φ.number} and
+ * {@code Φ.string}.</li>
+ * <li>The roots of list code (3.6): every formation under one of these
+ * packages is list code, and a tag starts where other code makes a copy
+ * of it: {@code Φ.tuple}, {@code Φ.map} and {@code Φ.set}.</li>
+ * <li>The scalars (3.6): the packages whose formations give back new
+ * data and take no tag: {@code Φ.number}, {@code Φ.bytes} and so
+ * on.</li>
  * </ul>
  *
  * @since 0.76.0
@@ -95,10 +95,10 @@ public final class Names {
      * @return TRUE if it is
      */
     boolean scalar(final String form) {
-        final String dotted = form + ".";
+        final String dotted = form.concat(".");
         boolean found = false;
         for (final String pkg : this.scalars) {
-            if (dotted.startsWith(pkg + ".")) {
+            if (dotted.startsWith(pkg.concat("."))) {
                 found = true;
                 break;
             }

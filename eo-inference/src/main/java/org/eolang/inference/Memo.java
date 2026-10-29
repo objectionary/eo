@@ -6,7 +6,6 @@ package org.eolang.inference;
 
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,11 +39,6 @@ final class Memo {
     private static final Ids NONE = new Ids();
 
     /**
-     * Nobody reads it.
-     */
-    private static final Ints NOBODY = new Ints();
-
-    /**
      * The state of the walk.
      */
     private final State state;
@@ -65,9 +59,14 @@ final class Memo {
     private final List<Ids> answers;
 
     /**
-     * Who reads each answer or thing watched, by number.
+     * The questions with an answer stored, by number.
      */
-    private final List<Ints> readers;
+    private final BitSet present;
+
+    /**
+     * Who reads each answer or thing watched.
+     */
+    private final Ties ties;
 
     /**
      * The questions whose answers are good for this pass, and the walks
@@ -84,17 +83,6 @@ final class Memo {
      * The counts watched, as their numbers.
      */
     private final BitSet watch;
-
-    /**
-     * The questions that lost their answers and wait to lose the answers
-     * that read them, and their marks.
-     */
-    private final Pile stale;
-
-    /**
-     * The marks of {@link #stale}.
-     */
-    private final BitSet staled;
 
     /**
      * The questions being asked and the walks being made, one inside the
@@ -132,12 +120,11 @@ final class Memo {
         this.nodes = new HashMap<>(0);
         this.keys = new ArrayList<>(0);
         this.answers = new ArrayList<>(0);
-        this.readers = new ArrayList<>(0);
+        this.present = new BitSet();
+        this.ties = new Ties();
         this.valid = new BitSet();
         this.stack = new BitSet();
         this.watch = new BitSet();
-        this.stale = new Pile();
-        this.staled = new BitSet();
         this.frame = new Pile();
         this.stored = new Pile();
         this.shared = new HashMap<>(0);
@@ -164,34 +151,7 @@ final class Memo {
             this.depend(node);
             result = this.answer(node);
         } else {
-            this.stack.set(node);
-            this.frame.push(node);
-            final Ints got;
-            try {
-                got = compute.get();
-            } finally {
-                this.stack.clear(node);
-                this.frame.pop();
-            }
-            final Ids old = this.answers.get(node);
-            final boolean absent = old == Memo.NONE;
-            if (absent && !got.isEmpty() || !absent && !old.holds(got)) {
-                if (absent) {
-                    result = this.shared(got.frozen());
-                    this.stored.push(node);
-                } else {
-                    result = this.shared(old.with(got));
-                }
-                this.state.passes.change();
-                this.answers.set(node, result);
-                this.spoil(node);
-            } else if (absent) {
-                result = this.shared(got.frozen());
-                this.answers.set(node, result);
-                this.stored.push(node);
-            } else {
-                result = old;
-            }
+            result = this.computed(node, compute);
             this.valid.set(node);
             this.depend(node);
         }
@@ -236,7 +196,9 @@ final class Memo {
      * @param answer The answer
      */
     void replace(final Key key, final Ints answer) {
-        this.answers.set(this.find(key), this.shared(answer.frozen()));
+        final int node = this.find(key);
+        this.answers.set(node, this.shared(answer.frozen()));
+        this.present.set(node);
     }
 
     /**
@@ -258,7 +220,7 @@ final class Memo {
     void spoil(final Key key) {
         final int node = this.find(key);
         if (node >= 0) {
-            this.spoil(node);
+            this.ties.spoil(node);
         }
     }
 
@@ -270,7 +232,7 @@ final class Memo {
     void stale(final Key key) {
         final int node = this.find(key);
         if (node >= 0) {
-            this.stale(node);
+            this.ties.stale(node);
         }
     }
 
@@ -353,9 +315,7 @@ final class Memo {
      */
     void clear() {
         this.valid.clear();
-        Collections.fill(this.readers, Memo.NOBODY);
-        this.stale.clear();
-        this.staled.clear();
+        this.ties.clear();
         this.watch.clear();
     }
 
@@ -363,10 +323,8 @@ final class Memo {
      * Forget who reads what, once the passes are over.
      */
     void drop() {
-        Collections.fill(this.readers, Memo.NOBODY);
+        this.ties.clear();
         this.watch.clear();
-        this.stale.clear();
-        this.staled.clear();
     }
 
     /**
@@ -375,41 +333,18 @@ final class Memo {
      * so do the answers that read those.
      */
     void invalidate() {
-        final long tally = this.state.counting.tally();
+        final long tally = this.state.counting().tally();
         if (this.seen.get() != tally) {
-            final Pile changed = new Pile();
-            for (int node = this.watch.nextSetBit(0); node >= 0;
-                node = this.watch.nextSetBit(node + 1)) {
-                final Key key = this.keys.get(node);
-                if (this.state.counting.counts(key.value()) != (key.how() == 1)) {
-                    changed.push(node);
-                }
-            }
-            for (int idx = 0; idx < changed.size(); ++idx) {
-                this.watch.clear(changed.get(idx));
-                this.spoil(changed.get(idx));
-            }
+            this.recount();
             this.seen.set(tally);
         }
-        this.state.passes.queued(this);
-        final Pile todo = new Pile();
-        for (int idx = 0; idx < this.stale.size(); ++idx) {
-            todo.push(this.stale.get(idx));
-        }
-        this.stale.clear();
-        this.staled.clear();
-        while (!todo.isEmpty()) {
-            final int node = todo.pop();
-            this.valid.clear(node);
-            this.state.rules.forget(node);
-            final Ints got = this.readers.get(node);
-            if (!got.isEmpty()) {
-                this.readers.set(node, Memo.NOBODY);
-                for (int idx = 0; idx < got.size(); ++idx) {
-                    todo.push(got.get(idx));
-                }
+        this.state.passes().queued(this);
+        this.ties.loosen(
+            node -> {
+                this.valid.clear(node);
+                this.state.rules().forget(node);
             }
-        }
+        );
     }
 
     /**
@@ -421,12 +356,6 @@ final class Memo {
         return this.stored.size();
     }
 
-    /**
-     * The number of a question or thing watched, given now if it has none.
-     *
-     * @param key The question
-     * @return The number
-     */
     private int node(final Key key) {
         Integer num = this.nodes.get(key);
         if (num == null) {
@@ -434,17 +363,11 @@ final class Memo {
             this.nodes.put(key, num);
             this.keys.add(key);
             this.answers.add(Memo.NONE);
-            this.readers.add(Memo.NOBODY);
+            this.ties.grow();
         }
         return num;
     }
 
-    /**
-     * The number of a question or thing watched, if it has one.
-     *
-     * @param key The question
-     * @return The number, or -1
-     */
     private int find(final Key key) {
         final Integer num = this.nodes.get(key);
         final int found;
@@ -456,72 +379,70 @@ final class Memo {
         return found;
     }
 
-    /**
-     * The stored answer of a question, none when there is none.
-     *
-     * @param node The number of the question
-     * @return The answer
-     */
-    private Ids answer(final int node) {
-        final Ids got = this.answers.get(node);
+    private Ids computed(final int node, final Supplier<Ints> compute) {
+        this.stack.set(node);
+        this.frame.push(node);
+        final Ints got;
+        try {
+            got = compute.get();
+        } finally {
+            this.stack.clear(node);
+            this.frame.pop();
+        }
         final Ids result;
-        if (got == Memo.NONE) {
-            result = this.shared(new Ids());
+        if (this.present.get(node) && this.answers.get(node).holds(got)) {
+            result = this.answers.get(node);
+        } else if (this.present.get(node)) {
+            result = this.shared(this.answers.get(node).with(got));
+            this.answers.set(node, result);
+            this.grown(node);
         } else {
-            result = got;
+            result = this.shared(got.frozen());
+            this.answers.set(node, result);
+            this.present.set(node);
+            this.stored.push(node);
+            if (!got.isEmpty()) {
+                this.grown(node);
+            }
         }
         return result;
     }
 
-    /**
-     * Note that whoever is being asked now reads a number.
-     *
-     * @param node The number
-     */
+    private void grown(final int node) {
+        this.state.passes().change();
+        this.ties.spoil(node);
+    }
+
+    private void recount() {
+        final Pile changed = new Pile();
+        for (int node = this.watch.nextSetBit(0); node >= 0;
+            node = this.watch.nextSetBit(node + 1)) {
+            if (this.state.counting().turned(this.keys.get(node))) {
+                changed.push(node);
+            }
+        }
+        for (int idx = 0; idx < changed.size(); ++idx) {
+            this.watch.clear(changed.get(idx));
+            this.ties.spoil(changed.get(idx));
+        }
+    }
+
+    private Ids answer(final int node) {
+        final Ids result;
+        if (this.present.get(node)) {
+            result = this.answers.get(node);
+        } else {
+            result = this.shared(new Ids());
+        }
+        return result;
+    }
+
     private void depend(final int node) {
         if (!this.frame.isEmpty()) {
-            Ints got = this.readers.get(node);
-            if (got == Memo.NOBODY) {
-                got = new Ints();
-                this.readers.set(node, got);
-            }
-            got.add(this.frame.top());
+            this.ties.tie(node, this.frame.top());
         }
     }
 
-    /**
-     * Whoever read a number loses the answer.
-     *
-     * @param node The number
-     */
-    private void spoil(final int node) {
-        final Ints got = this.readers.get(node);
-        if (!got.isEmpty()) {
-            this.readers.set(node, Memo.NOBODY);
-            for (int idx = 0; idx < got.size(); ++idx) {
-                this.stale(got.get(idx));
-            }
-        }
-    }
-
-    /**
-     * A number loses its answer before the next cheap pass.
-     *
-     * @param node The number
-     */
-    private void stale(final int node) {
-        if (!this.staled.get(node)) {
-            this.staled.set(node);
-            this.stale.push(node);
-        }
-    }
-
-    /**
-     * The one object of an answer equal to this one.
-     *
-     * @param got The answer
-     * @return The shared answer
-     */
     private Ids shared(final Ids got) {
         final Ids old = this.shared.putIfAbsent(got, got);
         final Ids result;

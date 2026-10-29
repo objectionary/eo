@@ -16,20 +16,20 @@ import java.util.Set;
  * What the facts say of the role each formation plays, before any walk.
  *
  * <ul>
- *   <li>A <b>decorator</b> (4.2) has only voids, a {@code @} and hidden
- *   {@code >>} helpers of its own, and reduces to what its {@code @}
- *   gives.</li>
- *   <li>An <b>atom</b> has no {@code @} and says what Java returns: a
- *   formation, or its own voids it names, which it gives back.</li>
- *   <li>A <b>test</b> is a formation named {@code p🌵…} or {@code n🌵…}.</li>
- *   <li>An object whose {@code @} is one of its own voids (3.5, call then
- *   narrow) passes that void on, and its call answers what goes in
- *   there.</li>
- *   <li>A formation an atom <b>returns</b> is made by Java, and its voids
- *   with no declared type are read from the pool (4.5).</li>
- *   <li>A read is <b>inner</b> when it reads through {@code ξ}, {@code ^}
- *   or {@code ^.^} into the copy's own formations, which is the copy's own
- *   code and does not make it count (3.3).</li>
+ * <li>A <b>decorator</b> (4.2) has only voids, a {@code @} and hidden
+ * {@code >>} helpers of its own, and reduces to what its {@code @}
+ * gives.</li>
+ * <li>An <b>atom</b> has no {@code @} and says what Java returns: a
+ * formation, or its own voids it names, which it gives back.</li>
+ * <li>A <b>test</b> is a formation named {@code p🌵…} or {@code n🌵…}.</li>
+ * <li>An object whose {@code @} is one of its own voids (3.5, call then
+ * narrow) passes that void on, and its call answers what goes in
+ * there.</li>
+ * <li>A formation an atom <b>returns</b> is made by Java, and its voids
+ * with no declared type are read from the pool (4.5).</li>
+ * <li>A read is <b>inner</b> when it reads through {@code ξ}, {@code ^}
+ * or {@code ^.^} into the copy's own formations, which is the copy's own
+ * code and does not make it count (3.3).</li>
  * </ul>
  *
  * @since 0.76.0
@@ -73,6 +73,11 @@ final class Roles {
     private final Map<Boolean, List<List<String>>> voids;
 
     /**
+     * Whether each formation is a test, worked out once.
+     */
+    private final Map<String, Boolean> tests;
+
+    /**
      * Ctor.
      *
      * @param prog The program
@@ -85,6 +90,7 @@ final class Roles {
         this.inners = new HashMap<>(0);
         this.returned = new HashMap<>(1);
         this.voids = new HashMap<>(1);
+        this.tests = new HashMap<>(0);
     }
 
     /**
@@ -94,22 +100,7 @@ final class Roles {
      * @return TRUE if it is
      */
     boolean decorator(final String form) {
-        Boolean known = this.decor.get(form);
-        if (known == null) {
-            final Formation shape = this.program.form(form);
-            boolean found = shape.has("φ") && !shape.open("φ");
-            if (found) {
-                for (final String name : shape.names()) {
-                    if (!shape.open(name) && !"φ".equals(name) && !Roles.hidden(name, true)) {
-                        found = false;
-                        break;
-                    }
-                }
-            }
-            known = found;
-            this.decor.put(form, known);
-        }
-        return known;
+        return this.decor.computeIfAbsent(form, this::decorates);
     }
 
     /**
@@ -130,25 +121,7 @@ final class Roles {
      * @return The voids, none when it is no atom or gives back none of its own
      */
     List<String> own(final String form) {
-        List<String> known = this.owns.get(form);
-        if (known == null) {
-            known = new ArrayList<>(0);
-            if (this.atom(form)) {
-                final Formation shape = this.program.form(form);
-                List<String> locs = shape.gives();
-                if (locs.isEmpty()) {
-                    locs = Collections.singletonList(shape.returns());
-                }
-                for (final String loc : locs) {
-                    if (loc.startsWith(form + ".")
-                        && shape.has(loc.substring(form.length() + 1))) {
-                        known.add(loc.substring(form.length() + 1));
-                    }
-                }
-            }
-            this.owns.put(form, known);
-        }
-        return known;
+        return this.owns.computeIfAbsent(form, this::owned);
     }
 
     /**
@@ -158,7 +131,9 @@ final class Roles {
      * @return TRUE if it is
      */
     boolean test(final String form) {
-        return Roles.hidden(form.substring(form.lastIndexOf('.') + 1), false);
+        return this.tests.computeIfAbsent(
+            form, key -> Roles.hidden(key.substring(key.lastIndexOf('.') + 1), false)
+        );
     }
 
     /**
@@ -169,23 +144,7 @@ final class Roles {
      * @return The void, empty when it passes none on
      */
     String passes(final String form) {
-        String known = this.pass.get(form);
-        if (known == null) {
-            known = "";
-            final Formation shape = this.program.form(form);
-            final String at = form + ".φ";
-            if (shape.has("φ") && !this.program.calls(at) && this.program.reads(at)) {
-                final Read read = this.program.read(at);
-                final List<Head> heads = this.program.heads(read.of());
-                if (this.program.starts(read.of()) && heads.size() == 1
-                    && "ref".equals(heads.get(0).tag()) && form.equals(heads.get(0).loc())
-                    && shape.order().contains(read.name()) && Roles.plain(shape)) {
-                    known = read.name();
-                }
-            }
-            this.pass.put(form, known);
-        }
-        return known;
+        return this.pass.computeIfAbsent(form, this::passed);
     }
 
     /**
@@ -205,31 +164,7 @@ final class Roles {
      * @return The pairs
      */
     List<List<String>> javaVoids() {
-        return this.voids.computeIfAbsent(
-            true,
-            key -> {
-                final List<List<String>> pairs = new ArrayList<>(0);
-                for (final String form : this.returns()) {
-                    final Formation shape = this.program.form(form);
-                    for (final String name : shape.names()) {
-                        if (shape.open(name) && shape.holds(name).isEmpty()) {
-                            pairs.add(List.of(form, name));
-                        }
-                    }
-                }
-                final CodeOrder order = new CodeOrder();
-                pairs.sort(
-                    (left, right) -> {
-                        int cmp = order.compare(left.get(0), right.get(0));
-                        if (cmp == 0) {
-                            cmp = order.compare(left.get(1), right.get(1));
-                        }
-                        return cmp;
-                    }
-                );
-                return pairs;
-            }
-        );
+        return this.voids.computeIfAbsent(true, key -> this.collected());
     }
 
     /**
@@ -240,40 +175,106 @@ final class Roles {
      * @return TRUE if it is
      */
     boolean inner(final String place) {
-        Boolean known = this.inners.get(place);
-        if (known == null) {
-            String of = this.program.read(place).of();
-            boolean found = false;
-            while (!this.program.calls(of)) {
-                if (this.program.starts(of)) {
-                    final List<Head> heads = this.program.heads(of);
-                    found = !heads.isEmpty();
-                    for (final Head head : heads) {
-                        if (!"ref".equals(head.tag()) || "Φ".equals(head.loc())
-                            || !this.program.formation(head.loc())) {
-                            found = false;
-                            break;
-                        }
-                    }
-                    break;
-                }
-                if (this.program.reads(of) && "ρ".equals(this.program.read(of).name())) {
-                    of = this.program.read(of).of();
-                    continue;
-                }
-                break;
+        return this.inners.computeIfAbsent(place, this::through);
+    }
+
+    private boolean decorates(final String form) {
+        final Formation shape = this.program.form(form);
+        return shape.has("φ") && !shape.open("φ")
+            && shape.names().stream().allMatch(name -> Roles.fits(shape, name));
+    }
+
+    private List<String> owned(final String form) {
+        final List<String> known = new ArrayList<>(0);
+        if (this.atom(form)) {
+            final Formation shape = this.program.form(form);
+            List<String> locs = shape.gives();
+            if (locs.isEmpty()) {
+                locs = Collections.singletonList(shape.returns());
             }
-            known = found;
-            this.inners.put(place, known);
+            final String prefix = form.concat(".");
+            for (final String loc : locs) {
+                if (loc.startsWith(prefix) && shape.has(loc.substring(prefix.length()))) {
+                    known.add(loc.substring(prefix.length()));
+                }
+            }
         }
         return known;
     }
 
-    /**
-     * The formations atoms return.
-     *
-     * @return The formations
-     */
+    private String passed(final String form) {
+        final String phi = String.join(".", form, "φ");
+        final String found;
+        if (this.program.form(form).has("φ") && !this.program.calls(phi)
+            && this.program.reads(phi)) {
+            found = this.narrowed(form, this.program.read(phi));
+        } else {
+            found = "";
+        }
+        return found;
+    }
+
+    private String narrowed(final String form, final Read read) {
+        final Formation shape = this.program.form(form);
+        final String found;
+        if (this.self(form, read.of()) && shape.order().contains(read.name())
+            && Roles.plain(shape)) {
+            found = read.name();
+        } else {
+            found = "";
+        }
+        return found;
+    }
+
+    private boolean self(final String form, final String place) {
+        final List<Head> heads = this.program.heads(place);
+        return this.program.starts(place) && heads.size() == 1
+            && "ref".equals(heads.get(0).tag()) && form.equals(heads.get(0).loc());
+    }
+
+    private List<List<String>> collected() {
+        final List<List<String>> pairs = new ArrayList<>(0);
+        for (final String form : this.returns()) {
+            final Formation shape = this.program.form(form);
+            for (final String name : shape.names()) {
+                if (shape.open(name) && shape.holds(name).isEmpty()) {
+                    pairs.add(List.of(form, name));
+                }
+            }
+        }
+        final CodeOrder order = new CodeOrder();
+        pairs.sort(
+            (left, right) -> {
+                int cmp = order.compare(left.get(0), right.get(0));
+                if (cmp == 0) {
+                    cmp = order.compare(left.get(1), right.get(1));
+                }
+                return cmp;
+            }
+        );
+        return pairs;
+    }
+
+    private boolean through(final String place) {
+        String from = this.program.read(place).of();
+        while (!this.program.calls(from) && !this.program.starts(from) && this.upward(from)) {
+            from = this.program.read(from).of();
+        }
+        return !this.program.calls(from) && this.program.starts(from) && this.owning(from);
+    }
+
+    private boolean upward(final String place) {
+        return this.program.reads(place) && "ρ".equals(this.program.read(place).name());
+    }
+
+    private boolean owning(final String place) {
+        final List<Head> heads = this.program.heads(place);
+        return !heads.isEmpty() && heads.stream().allMatch(
+            head -> "ref".equals(head.tag()) && !"Φ".equals(head.loc())
+                && this.program.formation(head.loc())
+        );
+    }
+
     private Set<String> returns() {
         return this.returned.computeIfAbsent(
             true,
@@ -290,13 +291,6 @@ final class Roles {
         );
     }
 
-    /**
-     * Whether every attribute of a formation, but its {@code @} and its
-     * tests, is a void.
-     *
-     * @param shape The formation
-     * @return TRUE if every one is
-     */
     private static boolean plain(final Formation shape) {
         boolean all = true;
         for (final String name : shape.names()) {
@@ -308,14 +302,10 @@ final class Roles {
         return all;
     }
 
-    /**
-     * Whether a name is one the parser hides: a test, or with {@code more}
-     * an object written with {@code >>} too.
-     *
-     * @param name The name
-     * @param more Whether a {@code >>} object counts too
-     * @return TRUE if it is
-     */
+    private static boolean fits(final Formation shape, final String name) {
+        return shape.open(name) || "φ".equals(name) || Roles.hidden(name, true);
+    }
+
     private static boolean hidden(final String name, final boolean more) {
         return name.startsWith("p🌵") || name.startsWith("n🌵")
             || more && name.startsWith("a🌵");

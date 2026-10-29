@@ -83,7 +83,7 @@ public final class Report {
      * @throws IOException If a file cannot be read or written
      */
     public Map<String, Integer> written(final Path out) throws IOException {
-        this.wiped(out);
+        Report.wiped(out);
         Files.createDirectories(out);
         final Map<String, Xnav> roots = this.roots();
         final Map<String, Xnav> formations = new HashMap<>(0);
@@ -101,24 +101,24 @@ public final class Report {
         }
         final Table table = new Table(new Xnav(this.answers));
         final Shapes shapes = new Shapes(formations, files, table);
-        final Templates sheet = this.sheet("page.xsl");
+        final Templates sheet = Report.sheet("page.xsl");
         final Map<String, Map<String, Integer>> tallies = new LinkedHashMap<>(0);
         for (final Map.Entry<String, Xnav> root : roots.entrySet()) {
-            final Document page = this.document();
+            final Document page = Report.document();
             final Element drawn = new Page(root.getValue(), root.getKey(), table, shapes)
                 .drawn(page);
             page.appendChild(drawn);
-            this.styled(sheet, page, out.resolve(root.getKey().concat(".html")));
-            tallies.put(root.getKey(), this.tally(drawn));
+            Report.styled(sheet, page, out.resolve(root.getKey().concat(".html")));
+            tallies.put(root.getKey(), Report.tally(drawn));
         }
-        final Document index = this.document();
-        final Element listed = this.listed(index, tallies);
+        final Document index = Report.document();
+        final Element listed = Report.listed(index, tallies);
         index.appendChild(listed);
-        this.styled(this.sheet("index.xsl"), index, out.resolve("index.html"));
-        return this.tally(listed);
+        Report.styled(Report.sheet("index.xsl"), index, out.resolve("index.html"));
+        return Report.tally(listed);
     }
 
-    private void wiped(final Path out) throws IOException {
+    private static void wiped(final Path out) throws IOException {
         if (Files.exists(out)) {
             final List<Path> all;
             try (Stream<Path> walked = Files.walk(out)) {
@@ -154,15 +154,19 @@ public final class Report {
     private Stream<Xnav> objects(final Xnav node) {
         return node.elements()
             .filter(kid -> kid.node().getNodeType() == Node.ELEMENT_NODE)
-            .flatMap(
-                kid -> Stream.concat(
-                    Stream.of(kid).filter(object -> "o".equals(object.node().getNodeName())),
-                    this.objects(kid)
-                )
-            );
+            .flatMap(this::within);
     }
 
-    private Element listed(final Document index, final Map<String, Map<String, Integer>> pages) {
+    private Stream<Xnav> within(final Xnav kid) {
+        return Stream.concat(
+            Stream.of(kid).filter(object -> "o".equals(object.node().getNodeName())),
+            this.objects(kid)
+        );
+    }
+
+    private static Element listed(
+        final Document index, final Map<String, Map<String, Integer>> pages
+    ) {
         final Map<String, List<String>> folders = new LinkedHashMap<>(0);
         for (final String name : pages.keySet()) {
             final int slash = name.lastIndexOf('/');
@@ -175,24 +179,25 @@ public final class Report {
             folders.computeIfAbsent(folder, key -> new ArrayList<>(1)).add(name);
         }
         final Element found = index.createElement("index");
-        this.counted(found, new ArrayList<>(pages.keySet()), pages);
+        Report.counted(found, new ArrayList<>(pages.keySet()), pages);
         final List<String> sorted = new ArrayList<>(folders.keySet());
         sorted.sort(new CodeOrder());
         for (final String folder : sorted) {
             if (!folder.isEmpty()) {
                 final Element dir = index.createElement("dir");
                 dir.setAttribute("name", folder);
-                this.counted(dir, folders.get(folder), pages);
-                this.rows(dir, folders.get(folder), pages);
+                Report.counted(dir, folders.get(folder), pages);
+                Report.rows(dir, folders.get(folder), pages);
                 found.appendChild(dir);
             }
         }
-        this.rows(found, folders.getOrDefault("", new ArrayList<>(0)), pages);
+        Report.rows(found, folders.getOrDefault("", new ArrayList<>(0)), pages);
         return found;
     }
 
-    private void rows(
-        final Element parent, final List<String> names, final Map<String, Map<String, Integer>> pages
+    private static void rows(
+        final Element parent, final List<String> names,
+        final Map<String, Map<String, Integer>> pages
     ) {
         for (final String name : names) {
             final Element file = parent.getOwnerDocument().createElement("file");
@@ -205,8 +210,9 @@ public final class Report {
         }
     }
 
-    private void counted(
-        final Element parent, final List<String> names, final Map<String, Map<String, Integer>> pages
+    private static void counted(
+        final Element parent, final List<String> names,
+        final Map<String, Map<String, Integer>> pages
     ) {
         for (final String band : Band.ORDER) {
             parent.setAttribute(
@@ -216,7 +222,7 @@ public final class Report {
         }
     }
 
-    private Map<String, Integer> tally(final Element counted) {
+    private static Map<String, Integer> tally(final Element counted) {
         final Map<String, Integer> found = new LinkedHashMap<>(Band.ORDER.size());
         for (final String band : Band.ORDER) {
             found.put(band, Integer.parseInt(counted.getAttribute(band)));
@@ -224,7 +230,7 @@ public final class Report {
         return found;
     }
 
-    private Document document() {
+    private static Document document() {
         try {
             return DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
         } catch (final ParserConfigurationException ex) {
@@ -232,7 +238,7 @@ public final class Report {
         }
     }
 
-    private Templates sheet(final String name) {
+    private static Templates sheet(final String name) {
         final String path = String.format("/org/eolang/inference/report/%s", name);
         try {
             return new TransformerFactoryImpl().newTemplates(
@@ -245,7 +251,7 @@ public final class Report {
         }
     }
 
-    private void styled(final Templates sheet, final Document page, final Path target)
+    private static void styled(final Templates sheet, final Document page, final Path target)
         throws IOException {
         final ByteArrayOutputStream html = new ByteArrayOutputStream();
         try {

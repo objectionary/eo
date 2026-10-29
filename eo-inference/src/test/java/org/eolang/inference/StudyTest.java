@@ -23,11 +23,13 @@ final class StudyTest {
 
     @Test
     void keepsCopyAsWrittenOfFormationNobodyCalls(@Mktmp final Path temp) throws IOException {
-        final State state = new Sources(temp, "kite.eo", "[wind] > kite\n  wind > @\n").settled();
+        final State state = new Sources(temp)
+            .with("kite.eo", "[wind] > kite", "  wind > @")
+            .settled();
         MatcherAssert.assertThat(
             "the copy as written of a formation nobody calls must be kept, but it wasnt",
-            state.study.kept(
-                state.values.intern(new Value('O', "Φ.kite", "Φ.kite", Formation.RHO, "", -1, 0))
+            state.study().kept(
+                state.values().intern(new Value('O', "Φ.kite", "Φ.kite", Formation.RHO, "", -1, 0))
             ),
             Matchers.is(true)
         );
@@ -36,15 +38,14 @@ final class StudyTest {
     @Test
     void doesNotKeepCopyAsWrittenOfFormationSomeoneCalls(@Mktmp final Path temp)
         throws IOException {
-        final State state = new Sources(
-            temp,
-            "kite.eo", "[wind] > kite\n  wind > @\n",
-            "beach.eo", "[] > beach\n  kite 5 > @\n"
-        ).settled();
+        final State state = new Sources(temp)
+            .with("kite.eo", "[wind] > kite", "  wind > @")
+            .with("beach.eo", "[] > beach", "  kite 5 > @")
+            .settled();
         MatcherAssert.assertThat(
             "the copy as written of a formation someone calls must not be kept, but it was",
-            state.study.kept(
-                state.values.intern(new Value('O', "Φ.kite", "Φ.kite", Formation.RHO, "", -1, 0))
+            state.study().kept(
+                state.values().intern(new Value('O', "Φ.kite", "Φ.kite", Formation.RHO, "", -1, 0))
             ),
             Matchers.is(false)
         );
@@ -52,20 +53,26 @@ final class StudyTest {
 
     @Test
     void givesStudyCopyInsideRealCopyAround(@Mktmp final Path temp) throws IOException {
-        final State state = new Sources(
-            temp,
-            "kite.eo", "[wind] > kite\n  [knot] > tail\n    knot > @\n  wind > @\n",
-            "beach.eo", "[] > beach\n  kite 5 > @\n"
-        ).settled();
-        final int host = state.values.intern(
-            new Value('O', "Φ.kite", "Φ.beach.φ", 1L | Formation.RHO, "", -1, 0)
-        );
+        final State state = new Sources(temp)
+            .with("kite.eo", "[wind] > kite", "  [knot] > tail", "    knot > @", "  wind > @")
+            .with("beach.eo", "[] > beach", "  kite 5 > @")
+            .settled();
         MatcherAssert.assertThat(
             "a formation nobody calls must get a study copy inside the real copy around it, but it didnt",
-            state.study.kept(
-                state.values.intern(
+            state.study().kept(
+                state.values().intern(
                     new Value(
-                        'O', "Φ.kite.tail", String.format("in:%s", state.values.full(host)),
+                        'O', "Φ.kite.tail",
+                        String.format(
+                            "in:%s",
+                            state.values().full(
+                                state.values().intern(
+                                    new Value(
+                                        'O', "Φ.kite", "Φ.beach.φ", 1L | Formation.RHO, "", -1, 0
+                                    )
+                                )
+                            )
+                        ),
                         Formation.RHO, "", -1, 0
                     )
                 )

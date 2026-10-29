@@ -84,7 +84,7 @@ final class Entries {
                 final Label label = new Label(answer.getKey());
                 entries.put(
                     answer.getKey(),
-                    this.entry(page, label.kind(), answer.getValue(), label.words())
+                    Entries.entry(page, label.kind(), answer.getValue(), label.words())
                 );
                 copies.put(answer.getKey(), answer.getValue());
             }
@@ -92,7 +92,7 @@ final class Entries {
         for (final List<String> members : shaped.values()) {
             final String first = members.stream().min(new CodeOrder()).orElseThrow();
             final int count = this.table.joined(loc, members);
-            final Element entry = this.entry(
+            final Element entry = Entries.entry(
                 page, "object", count, this.shapes.shown(members.get(0), true)
             );
             this.sites(entry, members);
@@ -101,14 +101,14 @@ final class Entries {
         }
         final List<String> order = new ArrayList<>(entries.keySet());
         order.sort(
-            Comparator.comparing((String key) -> -copies.get(key)).thenComparing(new CodeOrder())
+            Comparator.comparingInt((String key) -> -copies.get(key)).thenComparing(new CodeOrder())
         );
         for (final String key : order) {
             told.appendChild(entries.get(key));
         }
     }
 
-    private Element entry(
+    private static Element entry(
         final Document page, final String kind, final int count, final String words
     ) {
         final Element said = page.createElement("said");
@@ -156,12 +156,12 @@ final class Entries {
 
     private String lead(final String file, final int count) {
         final String found;
-        if (!file.equals(this.name)) {
-            found = file.concat(":");
-        } else if (count == 1) {
+        if (file.equals(this.name) && count == 1) {
             found = "line ";
-        } else {
+        } else if (file.equals(this.name)) {
             found = "lines ";
+        } else {
+            found = file.concat(":");
         }
         return found;
     }

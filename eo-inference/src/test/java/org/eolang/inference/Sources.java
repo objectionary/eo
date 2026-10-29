@@ -51,13 +51,12 @@ final class Sources {
     private final Map<String, String> files;
 
     /**
-     * Ctor.
+     * Ctor, with no sources.
      *
      * @param home The directory to work in
-     * @param pairs Paths and texts of the sources, one after the other
      */
-    Sources(final Path home, final String... pairs) {
-        this(home, Sources.map(pairs));
+    Sources(final Path home) {
+        this(home, new LinkedHashMap<>(0));
     }
 
     /**
@@ -72,6 +71,19 @@ final class Sources {
     }
 
     /**
+     * The same sources and one more.
+     *
+     * @param path The path of the source
+     * @param lines Its lines, each of them ended with a line feed
+     * @return The sources
+     */
+    Sources with(final String path, final String... lines) {
+        final Map<String, String> more = new LinkedHashMap<>(this.files);
+        more.put(path, Sources.text(lines));
+        return new Sources(this.dir, more);
+    }
+
+    /**
      * The file {@code facts.xml} of the program.
      *
      * @return The file
@@ -79,9 +91,9 @@ final class Sources {
      */
     Path facts() throws IOException {
         final Map<String, String> all = new LinkedHashMap<>(this.files);
-        all.putIfAbsent("bytes.eo", "[@] > bytes\n");
-        all.putIfAbsent("number.eo", "[@] > number\n");
-        all.putIfAbsent("string.eo", "[@] > string\n");
+        all.putIfAbsent("bytes.eo", Sources.text("[@] > bytes"));
+        all.putIfAbsent("number.eo", Sources.text("[@] > number"));
+        all.putIfAbsent("string.eo", Sources.text("[@] > string"));
         final String objects = all.keySet().stream()
             .filter(name -> name.contains("/"))
             .map(name -> name.replaceAll("\\.eo$", "").replace('/', '.'))
@@ -121,19 +133,11 @@ final class Sources {
      */
     State settled() throws IOException {
         final State state = new State(this.program(), new Names());
-        state.copies.seed();
-        state.passes.settle();
+        state.copies().seed();
+        state.passes().settle();
         return state;
     }
 
-    /**
-     * The XMIR of one source, made ready.
-     *
-     * @param source The text of the source
-     * @param objects The dotted names of the files in subfolders
-     * @return The prepared XMIR
-     * @throws IOException If the source cannot be parsed
-     */
     private static XML prepared(final String source, final String objects) throws IOException {
         final StringWriter raw = new StringWriter();
         try {
@@ -157,17 +161,11 @@ final class Sources {
         );
     }
 
-    /**
-     * Paths and texts, one after the other, as a map in their order.
-     *
-     * @param pairs The paths and texts
-     * @return The map
-     */
-    private static Map<String, String> map(final String... pairs) {
-        final Map<String, String> sources = new LinkedHashMap<>(0);
-        for (int idx = 0; idx < pairs.length; idx += 2) {
-            sources.put(pairs[idx], pairs[idx + 1]);
+    private static String text(final String... lines) {
+        final StringBuilder text = new StringBuilder(64);
+        for (final String line : lines) {
+            text.append(line).append('\n');
         }
-        return sources;
+        return text.toString();
     }
 }

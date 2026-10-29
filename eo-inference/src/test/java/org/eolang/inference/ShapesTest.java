@@ -64,7 +64,7 @@ final class ShapesTest {
                 ),
                 "<answers><o loc='Φ.mill.α0.read' copies='2'><is loc='Φ.mill.α0'/></o></answers>"
             ).shown("Φ.mill.α0", false),
-            Matchers.equalTo("[∅]\n  read ↺")
+            Matchers.equalTo(String.join(String.valueOf('\n'), "[∅]", "  read ↺"))
         );
     }
 
@@ -145,7 +145,7 @@ final class ShapesTest {
                 ),
                 "<answers/>"
             ).shown("Φ.mill.α1", true),
-            Matchers.endsWith("\n  and 1 more")
+            Matchers.endsWith(String.valueOf('\n').concat("  and 1 more"))
         );
     }
 
@@ -195,8 +195,9 @@ final class ShapesTest {
     void showsAFormationWithANameByItsLocator() {
         MatcherAssert.assertThat(
             "a formation with a name of its own must be shown by its locator, but it wasnt",
-            ShapesTest.shapes("<object><o loc='Φ.mill' name='mill' line='1'/></object>", "<answers/>")
-                .hidden("Φ.mill", "Φ.mill.sack"),
+            ShapesTest.shapes(
+                "<object><o loc='Φ.mill' name='mill' line='1'/></object>", "<answers/>"
+            ).hidden("Φ.mill", "Φ.mill.sack"),
             Matchers.is(false)
         );
     }

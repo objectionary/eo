@@ -26,7 +26,7 @@ final class PlacesTest {
         final State state = PlacesTest.settled(temp);
         MatcherAssert.assertThat(
             "a chain that starts at a datum must answer the datum, but it didnt",
-            state.places.evaluate("Φ.garden.φ.α0.α0", PlacesTest.garden(state)),
+            state.places().evaluate("Φ.garden.φ.α0.α0", PlacesTest.garden(state)),
             Matchers.equalTo(new Ids(Values.DATA))
         );
     }
@@ -37,7 +37,7 @@ final class PlacesTest {
         final int bed = PlacesTest.bed(state, PlacesTest.garden(state));
         MatcherAssert.assertThat(
             "a bare ξ inside bed must be the copy of bed, but it wasnt",
-            state.places.evaluate("Φ.garden.bed.φ.ρ", bed),
+            state.places().evaluate("Φ.garden.bed.φ.ρ", bed),
             Matchers.equalTo(new Ids(bed))
         );
     }
@@ -48,7 +48,7 @@ final class PlacesTest {
         final int garden = PlacesTest.garden(state);
         MatcherAssert.assertThat(
             "^ read inside bed must be the copy of garden around it, but it wasnt",
-            state.places.evaluate("Φ.garden.bed.φ", PlacesTest.bed(state, garden)),
+            state.places().evaluate("Φ.garden.bed.φ", PlacesTest.bed(state, garden)),
             Matchers.equalTo(new Ids(garden))
         );
     }
@@ -59,29 +59,30 @@ final class PlacesTest {
         final int garden = PlacesTest.garden(state);
         MatcherAssert.assertThat(
             "a formation at a place must answer its copy born there, but it didnt",
-            state.places.evaluate("Φ.garden.bed", garden),
+            state.places().evaluate("Φ.garden.bed", garden),
             Matchers.equalTo(new Ids(PlacesTest.bed(state, garden)))
         );
     }
 
     private static int garden(final State state) {
-        return state.values.intern(new Value('O', "Φ.garden", "Φ.garden", Formation.RHO, "", -1, 0));
+        return state.values().intern(
+            new Value('O', "Φ.garden", "Φ.garden", Formation.RHO, "", -1, 0)
+        );
     }
 
     private static int bed(final State state, final int garden) {
-        final int bed = state.values.intern(
+        final int bed = state.values().intern(
             new Value('O', "Φ.garden.bed", "Φ.garden.bed", Formation.RHO, "", -1, 0)
         );
-        if (state.rows.row(bed, "ρ").isEmpty() || !state.rows.row(bed, "ρ").contains(garden)) {
+        if (state.rows().row(bed, "ρ").isEmpty() || !state.rows().row(bed, "ρ").contains(garden)) {
             throw new IllegalStateException("the bed of the garden is not inside it");
         }
         return bed;
     }
 
     private static State settled(final Path temp) throws IOException {
-        return new Sources(
-            temp,
-            "garden.eo", "[] > garden\n  5 > @\n  [] > bed\n    ^ > @\n"
-        ).settled();
+        return new Sources(temp)
+            .with("garden.eo", "[] > garden", "  5 > @", "  [] > bed", "    ^ > @")
+            .settled();
     }
 }

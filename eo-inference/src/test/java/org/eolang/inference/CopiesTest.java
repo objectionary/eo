@@ -27,12 +27,17 @@ final class CopiesTest {
     void sharesOneNumberAmongCallsAtDifferentPlaces(@Mktmp final Path temp)
         throws IOException {
         final State state = new State(new Sources(temp).program(), new Names());
-        state.copies.seed();
+        state.copies().seed();
         MatcherAssert.assertThat(
             "two numbers made at two places must be the one shared copy, but they werent",
-            state.copies.copy("Φ.number", "Φ.kiosk.φ", 1L | Formation.RHO, Map.of(), ""),
+            state.copies().copy(
+                new Value("Φ.number", new Site("Φ.kiosk.φ", ""), 1L | Formation.RHO), Map.of()
+            ),
             Matchers.equalTo(
-                state.copies.copy("Φ.number", "Φ.till.φ.α0", 1L | Formation.RHO, Map.of(), "")
+                state.copies().copy(
+                    new Value("Φ.number", new Site("Φ.till.φ.α0", ""), 1L | Formation.RHO),
+                    Map.of()
+                )
             )
         );
     }
@@ -40,11 +45,11 @@ final class CopiesTest {
     @Test
     void givesBlankCopyToBareNameReadOffRoot(@Mktmp final Path temp) throws IOException {
         final State state = new State(new Sources(temp).program(), new Names());
-        state.copies.seed();
+        state.copies().seed();
         MatcherAssert.assertThat(
             "the bare name read off Φ must be the blank copy, but it wasnt",
-            state.values.get(
-                state.copies.fresh("Φ.string", "Φ.shop.φ.ρ", Values.ROOT, "")
+            state.values().get(
+                state.copies().fresh("Φ.string", new Site("Φ.shop.φ.ρ", ""), Values.ROOT)
             ).birth(),
             Matchers.equalTo("blank")
         );
@@ -53,11 +58,13 @@ final class CopiesTest {
     @Test
     void joinsBlankCopyToSharedOne(@Mktmp final Path temp) throws IOException {
         final State state = new State(new Sources(temp).program(), new Names());
-        state.copies.seed();
+        state.copies().seed();
         MatcherAssert.assertThat(
             "the blank copy must join the shared one, but it didnt",
-            state.copies.joined(state.copies.fresh("Φ.bytes", "Φ.box.φ", Values.ROOT, "")),
-            Matchers.equalTo(state.copies.shared("Φ.bytes"))
+            state.copies().joined(
+                state.copies().fresh("Φ.bytes", new Site("Φ.box.φ", ""), Values.ROOT)
+            ),
+            Matchers.equalTo(state.copies().shared("Φ.bytes"))
         );
     }
 
@@ -67,10 +74,10 @@ final class CopiesTest {
             new Sources(temp).program(),
             new Names(List.of("Φ.bytes", "Φ.money"), List.of(), List.of())
         );
-        state.copies.seed();
+        state.copies().seed();
         MatcherAssert.assertThat(
             "a program that lacks a kind of the canon must have no canon, but it had one",
-            state.copies.canon("Φ.bytes"),
+            state.copies().canon("Φ.bytes"),
             Matchers.is(false)
         );
     }
@@ -78,13 +85,18 @@ final class CopiesTest {
     @Test
     void namesCopyByWhatItIsMadeOf(@Mktmp final Path temp) throws IOException {
         final State state = new State(
-            new Sources(temp, "cup.eo", "[tea milk] > cup\n  tea > @\n").program(), new Names()
+            new Sources(temp).with("cup.eo", "[tea milk] > cup", "  tea > @").program(), new Names()
         );
-        state.copies.seed();
+        state.copies().seed();
         MatcherAssert.assertThat(
             "a copy made twice of the same things must be one copy, but it wasnt",
-            state.copies.copy("Φ.cup", "Φ.tray.φ", 1L, Map.of("tea", new int[] {Values.DATA}), "Φ.t"),
-            Matchers.equalTo(state.copies.copy("Φ.cup", "Φ.tray.φ", 1L, Map.of(), "Φ.t"))
+            state.copies().copy(
+                new Value("Φ.cup", new Site("Φ.tray.φ", "Φ.t"), 1L),
+                Map.of("tea", new int[] {Values.DATA})
+            ),
+            Matchers.equalTo(
+                state.copies().copy(new Value("Φ.cup", new Site("Φ.tray.φ", "Φ.t"), 1L), Map.of())
+            )
         );
     }
 }

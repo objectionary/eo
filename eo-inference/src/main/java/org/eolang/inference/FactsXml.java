@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
@@ -31,6 +32,12 @@ import javax.xml.stream.XMLStreamReader;
  * @since 0.76.0
  */
 final class FactsXml {
+
+    /**
+     * The spaces between the types of the arguments an atom calls a void
+     * back with.
+     */
+    private static final Pattern SPACES = Pattern.compile("\\s+");
 
     /**
      * The file.
@@ -62,111 +69,165 @@ final class FactsXml {
         }
     }
 
-    /**
-     * The program a stream of elements states.
-     *
-     * @param xml The stream
-     * @return The program
-     * @throws XMLStreamException If the stream breaks
-     * @checkstyle CyclomaticComplexityCheck (100 lines)
-     * @checkstyle ExecutableStatementCountCheck (100 lines)
-     */
-    @SuppressWarnings("PMD.CognitiveComplexity")
     private static Program program(final XMLStreamReader xml) throws XMLStreamException {
         final Map<String, Formation> forms = new LinkedHashMap<>(0);
         final Map<String, Read> reads = new LinkedHashMap<>(0);
         final Map<String, List<Head>> heads = new LinkedHashMap<>(0);
         final Map<String, List<String>> calls = new LinkedHashMap<>(0);
-        String section = "";
-        String id = "";
-        Map<String, Attribute> attrs = new LinkedHashMap<>(0);
-        List<String> order = new ArrayList<>(0);
-        Map<String, String> notes = new HashMap<>(0);
-        Map<String, List<String>> back = new HashMap<>(0);
-        List<String> gives = new ArrayList<>(0);
-        List<Head> starts = new ArrayList<>(0);
-        List<String[]> args = new ArrayList<>(0);
         while (xml.hasNext()) {
-            final int event = xml.next();
-            if (event == XMLStreamConstants.START_ELEMENT) {
+            if (xml.next() == XMLStreamConstants.START_ELEMENT) {
                 final String tag = xml.getLocalName();
-                if (Arrays.asList("objects", "reads", "heads", "calls").contains(tag)) {
-                    section = tag;
-                } else if ("objects".equals(section) && "type".equals(tag)) {
-                    id = FactsXml.attr(xml, "id");
-                    attrs = new LinkedHashMap<>(0);
-                    order = new ArrayList<>(0);
-                    notes = new HashMap<>(0);
-                    back = new HashMap<>(0);
-                    gives = new ArrayList<>(0);
-                    if (!FactsXml.attr(xml, "returns").isEmpty()) {
-                        notes.put("returns", FactsXml.attr(xml, "returns"));
-                    }
-                    notes.put("complete", FactsXml.attr(xml, "complete"));
-                } else if ("objects".equals(section) && "attr".equals(tag)) {
-                    final String name = FactsXml.attr(xml, "name");
-                    final boolean open = "true".equals(FactsXml.attr(xml, "void"));
-                    attrs.put(name, new Attribute(open, FactsXml.attr(xml, "holds")));
-                    if (open && !FactsXml.attr(xml, "args").isEmpty()) {
-                        back.put(
-                            name,
-                            Arrays.asList(
-                                FactsXml.attr(xml, "args").replace(',', ' ').trim().split("\\s+")
-                            )
-                        );
-                    }
-                    if ("ρ".equals(name)) {
-                        notes.remove("rho");
-                        if (!FactsXml.attr(xml, "rho").isEmpty()) {
-                            notes.put("rho", FactsXml.attr(xml, "rho"));
-                        }
-                    } else if (open) {
-                        order.add(name);
-                    }
-                } else if ("objects".equals(section) && "return".equals(tag)) {
-                    gives.add(FactsXml.attr(xml, "loc"));
-                } else if ("reads".equals(section) && "read".equals(tag)) {
-                    reads.put(
-                        FactsXml.attr(xml, "id"),
-                        new Read(FactsXml.attr(xml, "name"), FactsXml.attr(xml, "of"))
-                    );
-                } else if ("heads".equals(section) && "type".equals(tag)) {
-                    id = FactsXml.attr(xml, "id");
-                    starts = new ArrayList<>(1);
-                } else if ("heads".equals(section)) {
-                    starts.add(new Head(tag, FactsXml.attr(xml, "loc")));
-                } else if ("calls".equals(section) && "call".equals(tag)) {
-                    id = FactsXml.attr(xml, "loc");
-                    args = new ArrayList<>(1);
-                } else if ("calls".equals(section) && "arg".equals(tag)) {
-                    args.add(new String[] {FactsXml.attr(xml, "n"), FactsXml.attr(xml, "loc")});
-                }
-            } else if (event == XMLStreamConstants.END_ELEMENT) {
-                final String tag = xml.getLocalName();
-                if ("objects".equals(section) && "type".equals(tag)) {
-                    forms.put(id, new Formation(attrs, order, notes, back, gives));
-                } else if ("heads".equals(section) && "type".equals(tag)) {
-                    heads.put(id, starts);
-                } else if ("calls".equals(section) && "call".equals(tag)) {
-                    args.sort(Comparator.comparingInt(arg -> Integer.parseInt(arg[0])));
-                    final List<String> locs = new ArrayList<>(args.size());
-                    for (final String[] arg : args) {
-                        locs.add(arg[1]);
-                    }
-                    calls.put(id, locs);
+                if ("objects".equals(tag)) {
+                    FactsXml.objects(xml, forms);
+                } else if ("reads".equals(tag)) {
+                    FactsXml.reads(xml, reads);
+                } else if ("heads".equals(tag)) {
+                    FactsXml.heads(xml, heads);
+                } else if ("calls".equals(tag)) {
+                    FactsXml.calls(xml, calls);
                 }
             }
         }
         return new Program(forms, reads, heads, calls);
     }
 
-    /**
-     * An attribute of the element the stream stands at.
-     *
-     * @param xml The stream
-     * @param name The name of the attribute
-     * @return Its value, empty when it is absent
-     */
+    private static void objects(
+        final XMLStreamReader xml, final Map<String, Formation> forms
+    ) throws XMLStreamException {
+        int event = xml.next();
+        while (!FactsXml.closes(xml, event, "objects")) {
+            if (FactsXml.opens(xml, event, "type")) {
+                forms.put(FactsXml.attr(xml, "id"), FactsXml.formation(xml));
+            }
+            event = xml.next();
+        }
+    }
+
+    private static Formation formation(final XMLStreamReader xml) throws XMLStreamException {
+        final Map<String, Attribute> attrs = new LinkedHashMap<>(0);
+        final List<String> order = new ArrayList<>(0);
+        final Map<String, String> notes = new HashMap<>(0);
+        final Map<String, List<String>> back = new HashMap<>(0);
+        final List<String> gives = new ArrayList<>(0);
+        if (!FactsXml.attr(xml, "returns").isEmpty()) {
+            notes.put("returns", FactsXml.attr(xml, "returns"));
+        }
+        notes.put("complete", FactsXml.attr(xml, "complete"));
+        int event = xml.next();
+        while (!FactsXml.closes(xml, event, "type")) {
+            if (FactsXml.opens(xml, event, "attr")) {
+                FactsXml.attribute(xml, attrs, order, notes, back);
+            } else if (FactsXml.opens(xml, event, "return")) {
+                gives.add(FactsXml.attr(xml, "loc"));
+            }
+            event = xml.next();
+        }
+        return new Formation(attrs, order, notes, back, gives);
+    }
+
+    private static void attribute(
+        final XMLStreamReader xml, final Map<String, Attribute> attrs, final List<String> order,
+        final Map<String, String> notes, final Map<String, List<String>> back
+    ) {
+        final String name = FactsXml.attr(xml, "name");
+        final boolean open = "true".equals(FactsXml.attr(xml, "void"));
+        attrs.put(name, new Attribute(open, FactsXml.attr(xml, "holds")));
+        if (open && !FactsXml.attr(xml, "args").isEmpty()) {
+            back.put(
+                name,
+                Arrays.asList(
+                    FactsXml.SPACES.split(
+                        FactsXml.attr(xml, "args").replace(',', ' ').trim()
+                    )
+                )
+            );
+        }
+        if ("ρ".equals(name)) {
+            notes.remove("rho");
+            if (!FactsXml.attr(xml, "rho").isEmpty()) {
+                notes.put("rho", FactsXml.attr(xml, "rho"));
+            }
+        } else if (open) {
+            order.add(name);
+        }
+    }
+
+    private static void reads(
+        final XMLStreamReader xml, final Map<String, Read> reads
+    ) throws XMLStreamException {
+        int event = xml.next();
+        while (!FactsXml.closes(xml, event, "reads")) {
+            if (FactsXml.opens(xml, event, "read")) {
+                reads.put(
+                    FactsXml.attr(xml, "id"),
+                    new Read(FactsXml.attr(xml, "name"), FactsXml.attr(xml, "of"))
+                );
+            }
+            event = xml.next();
+        }
+    }
+
+    private static void heads(
+        final XMLStreamReader xml, final Map<String, List<Head>> heads
+    ) throws XMLStreamException {
+        int event = xml.next();
+        while (!FactsXml.closes(xml, event, "heads")) {
+            if (FactsXml.opens(xml, event, "type")) {
+                heads.put(FactsXml.attr(xml, "id"), FactsXml.starts(xml));
+            }
+            event = xml.next();
+        }
+    }
+
+    private static List<Head> starts(final XMLStreamReader xml) throws XMLStreamException {
+        final List<Head> starts = new ArrayList<>(1);
+        int event = xml.next();
+        while (!FactsXml.closes(xml, event, "type")) {
+            if (event == XMLStreamConstants.START_ELEMENT) {
+                starts.add(new Head(xml.getLocalName(), FactsXml.attr(xml, "loc")));
+            }
+            event = xml.next();
+        }
+        return starts;
+    }
+
+    private static void calls(
+        final XMLStreamReader xml, final Map<String, List<String>> calls
+    ) throws XMLStreamException {
+        int event = xml.next();
+        while (!FactsXml.closes(xml, event, "calls")) {
+            if (FactsXml.opens(xml, event, "call")) {
+                calls.put(FactsXml.attr(xml, "loc"), FactsXml.args(xml));
+            }
+            event = xml.next();
+        }
+    }
+
+    private static List<String> args(final XMLStreamReader xml) throws XMLStreamException {
+        final List<String[]> args = new ArrayList<>(1);
+        int event = xml.next();
+        while (!FactsXml.closes(xml, event, "call")) {
+            if (FactsXml.opens(xml, event, "arg")) {
+                args.add(new String[] {FactsXml.attr(xml, "n"), FactsXml.attr(xml, "loc")});
+            }
+            event = xml.next();
+        }
+        args.sort(Comparator.comparingInt(arg -> Integer.parseInt(arg[0])));
+        final List<String> locs = new ArrayList<>(args.size());
+        for (final String[] arg : args) {
+            locs.add(arg[1]);
+        }
+        return locs;
+    }
+
+    private static boolean opens(final XMLStreamReader xml, final int event, final String tag) {
+        return event == XMLStreamConstants.START_ELEMENT && tag.equals(xml.getLocalName());
+    }
+
+    private static boolean closes(final XMLStreamReader xml, final int event, final String tag) {
+        return event == XMLStreamConstants.END_ELEMENT && tag.equals(xml.getLocalName());
+    }
+
     private static String attr(final XMLStreamReader xml, final String name) {
         final String value = xml.getAttributeValue(null, name);
         final String found;

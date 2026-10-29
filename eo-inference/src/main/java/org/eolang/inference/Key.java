@@ -29,7 +29,6 @@ package org.eolang.inference;
  * @param tag The tag, empty when none
  * @param how What a walk does, or what a count was
  * @since 0.76.0
- * @checkstyle ParameterNumberCheck (5 lines)
  */
 record Key(char kind, int value, String name, String place, String tag, int how) {
 }

@@ -15,7 +15,7 @@ package org.eolang.inference;
  * read off, or a number and the bytes inside it, and a mark over the word
  * there tells only one of them: the one the source spells. That is the one
  * whose base is the word ({@code T}, {@code ^}, {@code Q} and {@code $} are
- * {@code ⊥}, {@code ρ}, {@code Φ} and {@code ξ} there), else the one with
+ * <code>&#x22A5;</code>, {@code ρ}, {@code Φ} and {@code ξ} there), else the one with
  * that name, else the outermost, whose locator is the shortest.</p>
  *
  * @since 0.70.0

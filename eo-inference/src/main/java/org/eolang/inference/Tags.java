@@ -51,25 +51,27 @@ final class Tags {
     }
 
     /**
-     * The tag of a copy made of a formation at a place by code with a tag.
+     * The tag of a copy made of a formation by code at a site.
      *
-     * @param tag The tag of the code that makes it, empty when none
+     * @param site The site of the call or read, under the tag of the code
+     *  that makes it
      * @param form The formation
-     * @param place The place of the call or read
      * @return The tag, empty when none
      */
-    String tagged(final String tag, final String form, final String place) {
+    String tagged(final Site site, final String form) {
+        final String tag = site.tag();
+        final String place = site.place();
         final String result;
         if (this.untagged(form)) {
             result = "";
         } else if (tag.isEmpty()) {
-            if (this.state.names.root(this.pkg(form))) {
+            if (this.state.names().root(this.pkg(form))) {
                 result = place;
             } else {
                 result = "";
             }
-        } else if (this.state.names.root(this.pkg(form))
-            && this.state.names.root(this.pkg(place))
+        } else if (this.state.names().root(this.pkg(form))
+            && this.state.names().root(this.pkg(place))
             && !this.pkg(place).equals(this.pkg(form))
             && this.fresh(tag, this.pkg(place))) {
             result = String.join("/", tag, place);
@@ -80,13 +82,25 @@ final class Tags {
     }
 
     /**
+     * Where a copy of a formation made by code at a site is born: at the
+     * same place, under the tag it takes.
+     *
+     * @param site The site of the call or read
+     * @param form The formation
+     * @return The site it is born at
+     */
+    Site born(final Site site, final String form) {
+        return new Site(site.place(), this.tagged(site, form));
+    }
+
+    /**
      * The tag a value carries: its own if it is a copy.
      *
      * @param num The value
      * @return The tag, empty when none
      */
     String carried(final int num) {
-        final Value value = this.state.values.get(num);
+        final Value value = this.state.values().get(num);
         final String tag;
         if (value.kind() == 'O') {
             tag = value.tag();
@@ -125,13 +139,6 @@ final class Tags {
         return found;
     }
 
-    /**
-     * Whether a tag added no place of a package yet.
-     *
-     * @param tag The tag
-     * @param pkg The package
-     * @return TRUE if none of its places past the first is in the package
-     */
     private boolean fresh(final String tag, final String pkg) {
         final String[] links = tag.split("/", -1);
         boolean none = true;
@@ -144,17 +151,10 @@ final class Tags {
         return none;
     }
 
-    /**
-     * Whether a formation takes no tag: it passes its void on, or it is in a
-     * package that gives back new data.
-     *
-     * @param form The formation
-     * @return TRUE if it takes none
-     */
     private boolean untagged(final String form) {
         return this.plain.computeIfAbsent(
             form,
-            key -> !this.state.roles.passes(key).isEmpty() || this.state.names.scalar(key)
+            key -> !this.state.roles().passes(key).isEmpty() || this.state.names().scalar(key)
         );
     }
 }

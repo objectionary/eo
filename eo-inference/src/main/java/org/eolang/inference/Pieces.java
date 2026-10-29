@@ -87,13 +87,13 @@ final class Pieces {
             final int width = reach.from(column);
             if (column >= cursor && width > 0) {
                 if (column > cursor) {
-                    row.appendChild(this.plain(page, this.line.substring(cursor, column)));
+                    row.appendChild(Pieces.plain(page, this.line.substring(cursor, column)));
                 }
                 final String text = this.line.substring(
                     column, Math.min(column + width, this.line.length())
                 );
                 final Element bit = page.createElement("bit");
-                entries.told(bit, this.spelled(laid.get(column), text).loc());
+                entries.told(bit, Pieces.spelled(laid.get(column), text).loc());
                 final Element said = page.createElement("text");
                 said.appendChild(page.createTextNode(text));
                 bit.appendChild(said);
@@ -102,25 +102,23 @@ final class Pieces {
             }
         }
         if (cursor < this.line.length()) {
-            row.appendChild(this.plain(page, this.line.substring(cursor)));
+            row.appendChild(Pieces.plain(page, this.line.substring(cursor)));
         }
     }
 
-    private Element plain(final Document page, final String text) {
+    private static Element plain(final Document page, final String text) {
         final Element bit = page.createElement("bit");
         bit.appendChild(page.createTextNode(text));
         return bit;
     }
 
-    private Written spelled(final List<Written> said, final String text) {
+    private static Written spelled(final List<Written> said, final String text) {
         final String word = text.replaceFirst("^\\.+", "");
         final String spelt = Pieces.SPELLED.getOrDefault(word, word);
-        return said.stream()
-            .min(
-                Comparator.comparingInt((Written object) -> object.spelling(spelt))
-                    .thenComparingInt(Written::depth)
-            )
-            .orElseThrow();
+        return said.stream().min(
+            Comparator.comparingInt((Written object) -> object.spelling(spelt))
+                .thenComparingInt(Written::depth)
+        ).orElseThrow();
     }
 
     private Map<Integer, List<Written>> laid() {
@@ -163,7 +161,7 @@ final class Pieces {
     private int leftward(final int column) {
         final int edge = Math.min(column, this.line.length());
         int start = edge;
-        while (start > 0 && this.wordy(this.line.charAt(start - 1))) {
+        while (start > 0 && Pieces.wordy(this.line.charAt(start - 1))) {
             start = start - 1;
         }
         if (start == edge && start > 0 && this.line.charAt(start - 1) == '^') {
@@ -180,7 +178,7 @@ final class Pieces {
         return found;
     }
 
-    private boolean wordy(final char glyph) {
+    private static boolean wordy(final char glyph) {
         return Character.isLetterOrDigit(glyph) || glyph == '_' || glyph == '-';
     }
 }

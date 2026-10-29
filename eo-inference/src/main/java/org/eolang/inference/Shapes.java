@@ -21,17 +21,18 @@ import java.util.stream.Collectors;
  * <p>An answer may name a formation that has no name of its own: a
  * {@code φ}, an {@code αN}, or a name the parser made, {@code a🌵},
  * {@code p🌵} or {@code n🌵}. Its locator tells a reader nothing, so a page
- * shows its shape instead: its voids in brackets, {@code ∅} for each and
- * {@code ^} for {@code ρ}, what its {@code @} answers after {@code →}, and a
- * line for each attribute it binds under a name the parser did not make. The
- * line of an attribute that is a formation has its voids, its name and what
- * its {@code @} answers; any other attribute's line has its name and what it
- * answers. The formation being shown is {@code ↺} wherever it is an answer,
- * and any other answer that is such a formation shows its voids and what its
- * {@code @} answers, one step and no further:</p>
+ * shows its shape instead: its voids in brackets, <code>&#x2205;</code> for
+ * each and {@code ^} for {@code ρ}, what its {@code @} answers after
+ * <code>&#x2192;</code>, and a line for each attribute it binds under a name
+ * the parser did not make. The line of an attribute that is a formation has
+ * its voids, its name and what its {@code @} answers; any other attribute's
+ * line has its name and what it answers. The formation being shown is
+ * <code>&#x21BA;</code> wherever it is an answer, and any other answer that
+ * is such a formation shows its voids and what its {@code @} answers, one
+ * step and no further:</p>
  *
- * <pre> [∅] → Φ.string
- *   [^ ∅] &gt; read ↺</pre>
+ * <pre> [&#x2205;] &#x2192; Φ.string
+ *   [^ &#x2205;] &gt; read &#x21BA;</pre>
  *
  * <p>Formations of one shape are one answer, and one name when a place is
  * put in a {@link Band}; what their voids are called does not count, since a
@@ -52,6 +53,11 @@ final class Shapes {
      * What the formation being shown is called inside its own shape.
      */
     private static final String ITSELF = "↺";
+
+    /**
+     * What goes between the lines of a shape: a new line and an indent.
+     */
+    private static final String BREAK = String.valueOf('\n').concat("  ");
 
     /**
      * The formations, by locator.
@@ -104,7 +110,9 @@ final class Shapes {
      */
     String shown(final String label, final boolean cap) {
         final List<String> lines = new ArrayList<>(1);
-        lines.add(this.head(label).concat(this.arrow(this.gives(label.concat(".φ"), label), cap)));
+        lines.add(
+            this.head(label).concat(Shapes.arrow(this.gives(label.concat(".φ"), label), cap))
+        );
         final List<Xnav> bound = this.kids(label).stream()
             .filter(kid -> !"∅".equals(new Noted(kid).says("base")))
             .filter(kid -> !new Noted(kid).says("name").isEmpty())
@@ -122,17 +130,17 @@ final class Shapes {
             if (this.formations.containsKey(loc)) {
                 lines.add(
                     String.format("%s > %s", this.head(loc), name).concat(
-                        this.arrow(this.gives(loc.concat(".φ"), label), cap)
+                        Shapes.arrow(this.gives(loc.concat(".φ"), label), cap)
                     )
                 );
             } else {
-                lines.add(name.concat(this.arrow(this.gives(loc, label), cap)));
+                lines.add(name.concat(Shapes.arrow(this.gives(loc, label), cap)));
             }
         }
         if (cap && bound.size() > 4) {
             lines.add(String.format("and %d more", bound.size() - 4));
         }
-        return String.join("\n  ", lines);
+        return String.join(Shapes.BREAK, lines);
     }
 
     /**
@@ -187,11 +195,11 @@ final class Shapes {
     private String head(final String label) {
         return this.kids(label).stream()
             .filter(kid -> "∅".equals(new Noted(kid).says("base")))
-            .map(kid -> this.mark(new Noted(kid).says("name")))
+            .map(kid -> Shapes.mark(new Noted(kid).says("name")))
             .collect(Collectors.joining(" ", "[", "]"));
     }
 
-    private String mark(final String name) {
+    private static String mark(final String name) {
         final String found;
         if ("ρ".equals(name)) {
             found = "^";
@@ -251,15 +259,13 @@ final class Shapes {
 
     private List<String> ordered(final String place) {
         final Map<String, Integer> said = this.table.said(place);
-        return said.keySet().stream()
-            .sorted(
-                Comparator.comparing((String label) -> -said.get(label))
-                    .thenComparing(new CodeOrder())
-            )
-            .collect(Collectors.toList());
+        return said.keySet().stream().sorted(
+            Comparator.comparingInt((String label) -> -said.get(label))
+                .thenComparing(new CodeOrder())
+        ).collect(Collectors.toList());
     }
 
-    private String arrow(final List<String> said, final boolean cap) {
+    private static String arrow(final List<String> said, final boolean cap) {
         final String found;
         if (said.isEmpty()) {
             found = "";
@@ -271,13 +277,13 @@ final class Shapes {
             found = String.format(" → %s", said.get(0));
         } else {
             found = said.stream()
-                .map(what -> this.wrapped(what))
+                .map(Shapes::wrapped)
                 .collect(Collectors.joining(" or ", " → ", ""));
         }
         return found;
     }
 
-    private String wrapped(final String answer) {
+    private static String wrapped(final String answer) {
         final String found;
         if (answer.contains(" → ")) {
             found = String.format("(%s)", answer);

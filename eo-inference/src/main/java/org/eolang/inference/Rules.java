@@ -25,11 +25,6 @@ import java.util.Set;
 final class Rules {
 
     /**
-     * No answer is being asked.
-     */
-    private static final int NOBODY = -1;
-
-    /**
      * The state of the walk.
      */
     private final State state;
@@ -62,10 +57,10 @@ final class Rules {
      */
     void wish(final Wish wish) {
         final int owner;
-        if (this.state.memo.busy()) {
-            owner = this.state.memo.owner();
+        if (this.state.memo().busy()) {
+            owner = this.state.memo().owner();
         } else {
-            owner = Rules.NOBODY;
+            owner = -1;
         }
         this.wishes.computeIfAbsent(owner, key -> new HashSet<>(1)).add(wish);
     }

@@ -75,23 +75,17 @@ public final class Walk {
         final AtomicReference<Told> told = new AtomicReference<>();
         final AtomicReference<Throwable> failure = new AtomicReference<>();
         final Thread thread = new Thread(
-            Thread.currentThread().getThreadGroup(),
-            () -> {
-                try {
-                    told.set(Walk.run(program, this.names));
-                } catch (final RuntimeException | StackOverflowError ex) {
-                    failure.set(ex);
-                }
-            },
-            "eo-inference-walk",
-            Walk.STACK
+            null, () -> told.set(Walk.run(program, this.names)), "eo-inference-walk", Walk.STACK
         );
+        thread.setUncaughtExceptionHandler((source, ex) -> failure.set(ex));
         thread.start();
         try {
             thread.join();
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
-            throw new IOException(String.format("The walk over %s was interrupted", this.facts), ex);
+            throw new IOException(
+                String.format("The walk over %s was interrupted", this.facts), ex
+            );
         }
         if (told.get() == null) {
             throw new IllegalStateException(
@@ -101,25 +95,18 @@ public final class Walk {
         return told.get();
     }
 
-    /**
-     * Walk the program.
-     *
-     * @param program The program
-     * @param names The names the engine has to know
-     * @return What is told
-     */
     private static Told run(final Program program, final Names names) {
         final long start = System.currentTimeMillis();
         final State state = new State(program, names);
-        state.copies.seed();
-        state.passes.settle();
-        state.end.step();
+        state.copies().seed();
+        state.passes().settle();
+        state.end().step();
         final Told told = new Telling(state).told();
         Logger.info(
             Walk.class,
             "The walk settled after %d passes and %d stops in %[ms]s: %d values, %d answers",
-            state.passes.size(), state.stops.size(), System.currentTimeMillis() - start,
-            state.values.size(), state.memo.size()
+            state.passes().size(), state.stops().size(), System.currentTimeMillis() - start,
+            state.values().size(), state.memo().size()
         );
         return told;
     }

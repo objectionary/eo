@@ -16,111 +16,108 @@ package org.eolang.inference;
  * alone, and nothing outside it sees a part.</p>
  *
  * @since 0.76.0
- * @checkstyle VisibilityModifierCheck (200 lines)
- * @checkstyle MemberNameCheck (200 lines)
  */
-@SuppressWarnings({"PMD.TooManyFields", "PMD.CouplingBetweenObjects"})
 final class State {
 
     /**
      * The program, as {@code facts.xml} states it.
      */
-    final Program program;
+    private final Program program;
 
     /**
      * The names the engine has to know.
      */
-    final Names names;
+    private final Names names;
 
     /**
      * The roles the formations play.
      */
-    final Roles roles;
+    private final Roles roles;
 
     /**
      * The values (3.1).
      */
-    final Values values;
+    private final Values values;
 
     /**
      * The copies (3.1).
      */
-    final Copies copies;
+    private final Copies copies;
 
     /**
      * The rows of the voids, and stamps (3.2).
      */
-    final Rows rows;
+    private final Rows rows;
 
     /**
      * The tags (3.6).
      */
-    final Tags tags;
+    private final Tags tags;
 
     /**
      * Which copies count (3.3).
      */
-    final Counting counting;
+    private final Counting counting;
 
     /**
      * The study copies (3.4).
      */
-    final Study study;
+    private final Study study;
 
     /**
      * The copies made for calls back (3.5).
      */
-    final Callbacks callbacks;
+    private final Callbacks callbacks;
 
     /**
      * The memo of answers (6.5).
      */
-    final Memo memo;
+    private final Memo memo;
 
     /**
      * The reads of a name off a value.
      */
-    final Reads reads;
+    private final Reads reads;
 
     /**
      * The answers at places.
      */
-    final Places places;
+    private final Places places;
 
     /**
      * The calls.
      */
-    final Calls calls;
+    private final Calls calls;
 
     /**
      * Reduction (4.2).
      */
-    final Reduction reduction;
+    private final Reduction reduction;
 
     /**
      * The rules that wait for a stop (4.3).
      */
-    final Rules rules;
+    private final Rules rules;
 
     /**
      * The stops (4.4).
      */
-    final Stops stops;
+    private final Stops stops;
 
     /**
      * The pool (4.5).
      */
-    final Pool pool;
+    private final Pool pool;
 
     /**
      * The passes (4.1).
      */
-    final Passes passes;
+    private final Passes passes;
 
     /**
      * The end step (4.6).
      */
-    final EndStep end;
+    private final EndStep end;
 
     /**
      * Ctor.
@@ -149,5 +146,185 @@ final class State {
         this.pool = new Pool(this);
         this.passes = new Passes(this);
         this.end = new EndStep(this);
+    }
+
+    /**
+     * The program, as {@code facts.xml} states it.
+     *
+     * @return The part
+     */
+    Program program() {
+        return this.program;
+    }
+
+    /**
+     * The names the engine has to know.
+     *
+     * @return The part
+     */
+    Names names() {
+        return this.names;
+    }
+
+    /**
+     * The roles the formations play.
+     *
+     * @return The part
+     */
+    Roles roles() {
+        return this.roles;
+    }
+
+    /**
+     * The values (3.1).
+     *
+     * @return The part
+     */
+    Values values() {
+        return this.values;
+    }
+
+    /**
+     * The copies (3.1).
+     *
+     * @return The part
+     */
+    Copies copies() {
+        return this.copies;
+    }
+
+    /**
+     * The rows of the voids, and stamps (3.2).
+     *
+     * @return The part
+     */
+    Rows rows() {
+        return this.rows;
+    }
+
+    /**
+     * The tags (3.6).
+     *
+     * @return The part
+     */
+    Tags tags() {
+        return this.tags;
+    }
+
+    /**
+     * Which copies count (3.3).
+     *
+     * @return The part
+     */
+    Counting counting() {
+        return this.counting;
+    }
+
+    /**
+     * The study copies (3.4).
+     *
+     * @return The part
+     */
+    Study study() {
+        return this.study;
+    }
+
+    /**
+     * The copies made for calls back (3.5).
+     *
+     * @return The part
+     */
+    Callbacks callbacks() {
+        return this.callbacks;
+    }
+
+    /**
+     * The memo of answers (6.5).
+     *
+     * @return The part
+     */
+    Memo memo() {
+        return this.memo;
+    }
+
+    /**
+     * The reads of a name off a value.
+     *
+     * @return The part
+     */
+    Reads reads() {
+        return this.reads;
+    }
+
+    /**
+     * The answers at places.
+     *
+     * @return The part
+     */
+    Places places() {
+        return this.places;
+    }
+
+    /**
+     * The calls.
+     *
+     * @return The part
+     */
+    Calls calls() {
+        return this.calls;
+    }
+
+    /**
+     * Reduction (4.2).
+     *
+     * @return The part
+     */
+    Reduction reduction() {
+        return this.reduction;
+    }
+
+    /**
+     * The rules that wait for a stop (4.3).
+     *
+     * @return The part
+     */
+    Rules rules() {
+        return this.rules;
+    }
+
+    /**
+     * The stops (4.4).
+     *
+     * @return The part
+     */
+    Stops stops() {
+        return this.stops;
+    }
+
+    /**
+     * The pool (4.5).
+     *
+     * @return The part
+     */
+    Pool pool() {
+        return this.pool;
+    }
+
+    /**
+     * The passes (4.1).
+     *
+     * @return The part
+     */
+    Passes passes() {
+        return this.passes;
+    }
+
+    /**
+     * The end step (4.6).
+     *
+     * @return The part
+     */
+    EndStep end() {
+        return this.end;
     }
 }

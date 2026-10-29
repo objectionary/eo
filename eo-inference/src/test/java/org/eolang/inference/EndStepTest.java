@@ -23,15 +23,15 @@ final class EndStepTest {
 
     @Test
     void marksReadWithNoAnswer(@Mktmp final Path temp) throws IOException {
-        final State state = new Sources(
-            temp, "loop.eo", "[] > loop\n  ^.loop.value > value\n  value > @\n"
-        ).settled();
-        state.end.step();
+        final State state = new Sources(temp)
+            .with("loop.eo", "[] > loop", "  ^.loop.value > value", "  value > @")
+            .settled();
+        state.end().step();
         MatcherAssert.assertThat(
             "a read with no answer must be marked at the end, but it wasnt",
-            state.end.mark(
+            state.end().mark(
                 "Φ.loop.value",
-                state.values.intern(new Value('O', "Φ.loop", "Φ.loop", Formation.RHO, "", -1, 0))
+                state.values().intern(new Value('O', "Φ.loop", "Φ.loop", Formation.RHO, "", -1, 0))
             ),
             Matchers.equalTo(EndStep.CANT)
         );
@@ -40,10 +40,10 @@ final class EndStepTest {
     @Test
     void makesDecidedOpenVoidPlainInAnswers(@Mktmp final Path temp) throws IOException {
         final State state = EndStepTest.settled(temp);
-        state.end.step();
+        state.end().step();
         MatcherAssert.assertThat(
             "an answer with a decided open void must hold a plain one after the end step, but it didnt",
-            state.memo.stored(EndStepTest.read(state)),
+            state.memo().stored(EndStepTest.read(state)),
             Matchers.equalTo(new Ids(Values.GAP))
         );
     }
@@ -51,11 +51,12 @@ final class EndStepTest {
     @Test
     void keepsAsideAnswerWithDecidedOpenVoid(@Mktmp final Path temp) throws IOException {
         final State state = EndStepTest.settled(temp);
-        state.end.step();
+        state.end().step();
         MatcherAssert.assertThat(
             "the answer as it was before the end step must be kept aside, but it wasnt",
-            state.end.untidy(EndStepTest.read(state), state.memo.stored(EndStepTest.read(state)))
-                .array(),
+            state.end().untidy(
+                EndStepTest.read(state), state.memo().stored(EndStepTest.read(state))
+            ).array(),
             Matchers.equalTo(new int[] {Values.JGAP})
         );
     }
@@ -63,16 +64,22 @@ final class EndStepTest {
     private static Key read(final State state) {
         return new Key(
             'e',
-            state.values.intern(new Value('O', "Φ.app", "Φ.app", Formation.RHO, "", -1, 0)),
+            state.values().intern(new Value('O', "Φ.app", "Φ.app", Formation.RHO, "", -1, 0)),
             "", "Φ.app.φ", "", 0
         );
     }
 
     private static State settled(final Path temp) throws IOException {
-        return new Sources(
-            temp,
-            "os.eo", "[] > os\n  [] > check /Q.os.status\n  [code] > status\n    code > @\n",
-            "app.eo", "[] > app\n  os.check.code > @\n"
+        return new Sources(temp).with(
+            "os.eo",
+            "[] > os",
+            "  [] > check /Q.os.status",
+            "  [code] > status",
+            "    code > @"
+        ).with(
+            "app.eo",
+            "[] > app",
+            "  os.check.code > @"
         ).settled();
     }
 }

@@ -65,24 +65,24 @@ final class Rows {
      * @param name The void
      * @param values The values
      */
-    void gather(final int copy, final String name, final int[] values) {
+    void gather(final int copy, final String name, final int... values) {
         final Ints row = this.table.computeIfAbsent(new Slot(copy, name), key -> new Ints());
         final int size = row.size();
         final boolean rho = "ρ".equals(name);
         for (final int value : values) {
             int put = value;
             if (rho) {
-                put = this.state.copies.joined(value);
+                put = this.state.copies().joined(value);
             }
             if (row.add(put)) {
-                this.state.passes.change();
+                this.state.passes().change();
                 if (rho) {
-                    this.state.counting.grow();
+                    this.state.counting().grow();
                 }
             }
         }
         if (row.size() > size) {
-            this.state.memo.spoil(new Key('r', copy, name, "", "", 0));
+            this.state.memo().spoil(new Key('r', copy, name, "", "", 0));
         }
     }
 
@@ -94,7 +94,7 @@ final class Rows {
      * @return The values
      */
     int[] cell(final int copy, final String name) {
-        this.state.memo.depend(new Key('r', copy, name, "", "", 0));
+        this.state.memo().depend(new Key('r', copy, name, "", "", 0));
         return this.row(copy, name).array();
     }
 
@@ -132,35 +132,35 @@ final class Rows {
     /**
      * Put a value read out of a row onto its holder.
      *
-     * @param num The value
+     * @param item The value
      * @param holder The holder
-     * @param place The place of the read
-     * @param tag The tag of the reader, empty when none
+     * @param site The site of the read, under the tag of the reader
      * @return The value on its holder
      */
-    int stamp(final int num, final int holder, final String place, final String tag) {
-        final Value value = this.state.values.get(num);
+    int stamp(final int item, final int holder, final Site site) {
+        final Value value = this.state.values().get(item);
         final int result;
         if (value.kind() == 'B') {
-            result = this.state.reduction.await(
-                this.stamp(value.base(), holder, place, tag)
-            );
+            result = this.state.reduction().await(this.stamp(value.base(), holder, site));
         } else if (value.kind() == 'A') {
-            result = this.state.reduction.mark(
-                this.stamp(value.base(), holder, place, tag), value.count()
+            result = this.state.reduction().mark(
+                this.stamp(value.base(), holder, site), value.count()
             );
         } else if (value.kind() == 'O' && (value.bound() & Formation.RHO) == 0) {
             final Map<String, int[]> rows = new LinkedHashMap<>(0);
-            for (final String name : this.state.values.bound(value)) {
-                rows.put(name, this.cell(num, name));
+            for (final String name : this.state.values().bound(value)) {
+                rows.put(name, this.cell(item, name));
             }
             rows.put("ρ", new int[] {holder});
-            result = this.state.copies.copy(
-                value.form(), place, value.bound() | Formation.RHO, rows,
-                this.state.tags.tagged(tag, value.form(), place)
+            result = this.state.copies().copy(
+                new Value(
+                    value.form(), this.state.tags().born(site, value.form()),
+                    value.bound() | Formation.RHO
+                ),
+                rows
             );
         } else {
-            result = num;
+            result = item;
         }
         return result;
     }

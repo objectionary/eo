@@ -118,30 +118,27 @@ final class EndStep {
         if (this.rows.containsKey(slot)) {
             out = this.rows.get(slot);
         } else {
-            out = this.state.rows.row(copy, name);
+            out = this.state.rows().row(copy, name);
         }
         return out;
     }
 
-    /**
-     * Mark every read with no answer in a copy that counts.
-     */
     private void marked() {
-        final Set<List<String>> nobody = this.state.pool.unfilled();
-        for (final Key key : this.state.memo.questions()) {
-            if (key.kind() != 'e' || !this.state.memo.stored(key).isEmpty()
-                || !this.state.counting.counts(key.value())) {
+        final Set<List<String>> nobody = this.state.pool().unfilled();
+        for (final Key key : this.state.memo().questions()) {
+            if (key.kind() != 'e' || !this.state.memo().stored(key).isEmpty()
+                || !this.state.counting().counts(key.value())) {
                 continue;
             }
             String token = EndStep.CANT;
-            if (this.state.program.reads(key.place())) {
-                final Read read = this.state.program.read(key.place());
-                final Ids got = this.state.memo.stored(
+            if (this.state.program().reads(key.place())) {
+                final Read read = this.state.program().read(key.place());
+                final Ids got = this.state.memo().stored(
                     new Key('e', key.value(), "", read.of(), "", 0)
                 );
                 for (int idx = 0; idx < got.size(); ++idx) {
-                    final Value value = this.state.values.get(
-                        this.state.values.bare(got.get(idx))
+                    final Value value = this.state.values().get(
+                        this.state.values().bare(got.get(idx))
                     );
                     if (value.kind() == 'O' && Values.JBORN.equals(value.birth())
                         && nobody.contains(List.of(value.form(), read.name()))) {
@@ -153,50 +150,37 @@ final class EndStep {
         }
     }
 
-    /**
-     * Keep aside the answers and rows that hold a decided open void.
-     */
     private void keep() {
-        for (final Key key : this.state.memo.questions()) {
-            if (key.kind() == 'e' && this.state.memo.stored(key).contains(Values.JGAP)) {
+        for (final Key key : this.state.memo().questions()) {
+            if (key.kind() == 'e' && this.state.memo().stored(key).contains(Values.JGAP)) {
                 final Ints got = new Ints();
-                got.addAll(this.state.memo.stored(key));
+                got.addAll(this.state.memo().stored(key));
                 this.answers.put(key, got);
             }
         }
-        for (final Map.Entry<Slot, Ints> row : this.state.rows.all().entrySet()) {
+        for (final Map.Entry<Slot, Ints> row : this.state.rows().all().entrySet()) {
             if (row.getValue().contains(Values.JGAP)) {
                 this.rows.put(row.getKey(), row.getValue());
             }
         }
     }
 
-    /**
-     * Make every decided open void a plain one, in the answers and rows.
-     */
     private void tidied() {
-        for (final Key key : this.state.memo.questions()) {
-            final Ids got = this.state.memo.stored(key);
+        for (final Key key : this.state.memo().questions()) {
+            final Ids got = this.state.memo().stored(key);
             if (key.kind() == 'e' && got.contains(Values.JGAP)) {
-                this.state.memo.replace(key, EndStep.tidy(got.size(), got::get));
+                this.state.memo().replace(key, EndStep.tidy(got.size(), got::get));
             }
         }
-        for (final Map.Entry<Slot, Ints> row : this.state.rows.all().entrySet()) {
+        for (final Map.Entry<Slot, Ints> row : this.state.rows().all().entrySet()) {
             final Ints got = row.getValue();
             if (got.contains(Values.JGAP)) {
                 row.setValue(EndStep.tidy(got.size(), got::get));
             }
         }
-        this.state.counting.grow();
+        this.state.counting().grow();
     }
 
-    /**
-     * Values with a decided open void made a plain one.
-     *
-     * @param size How many values there are
-     * @param values The values, by position
-     * @return The values tidied
-     */
     private static Ints tidy(final int size, final IntUnaryOperator values) {
         final Ints out = new Ints();
         for (int idx = 0; idx < size; ++idx) {

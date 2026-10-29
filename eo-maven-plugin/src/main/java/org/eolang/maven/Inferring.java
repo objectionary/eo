@@ -100,7 +100,6 @@ final class Inferring implements Step {
      * @param pre The directory for the prepared XMIR files
      * @param rows The directory for {@code facts.xml} and {@code answers.xml}
      * @param known The names of the program the engine has to know
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
     Inferring(
         final Iterable<Path> xmirs, final Path parsed, final Path pre, final Path rows,
@@ -132,7 +131,8 @@ final class Inferring implements Step {
             new Answers(new Walk(this.tables.resolve("facts.xml"), this.names))
                 .write(this.tables.resolve("answers.xml"));
             Logger.info(
-                this, "The facts and the answers of the program are in %[file]s (%s), the answers took %[ms]s",
+                this,
+                "The facts and the answers of the program are in %[file]s (%s), the answers took %[ms]s",
                 this.tables, new Tabled(this.tables).asString(),
                 System.currentTimeMillis() - start
             );

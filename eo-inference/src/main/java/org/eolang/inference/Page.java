@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -134,24 +135,23 @@ final class Page {
 
     private Map<Integer, List<Written>> written() {
         final Map<Integer, List<Written>> found = new HashMap<>(0);
-        this.deeper(this.root())
-            .filter(this::placed)
-            .filter(object -> !this.datum(object))
-            .forEach(
-                object -> {
-                    final Noted noted = new Noted(object);
-                    found.computeIfAbsent(
-                        Integer.parseInt(noted.says("line")), key -> new ArrayList<>(1)
-                    ).add(
-                        new Written(
-                            noted.says("loc"),
-                            Integer.parseInt(noted.says("pos")),
-                            noted.says("name"),
-                            noted.says("base")
-                        )
-                    );
-                }
+        final List<Xnav> objects = this.deeper(this.root())
+            .filter(Page::placed)
+            .filter(object -> !Page.datum(object))
+            .collect(Collectors.toList());
+        for (final Xnav object : objects) {
+            final Noted noted = new Noted(object);
+            found.computeIfAbsent(
+                Integer.parseInt(noted.says("line")), key -> new ArrayList<>(1)
+            ).add(
+                new Written(
+                    noted.says("loc"),
+                    Integer.parseInt(noted.says("pos")),
+                    noted.says("name"),
+                    noted.says("base")
+                )
             );
+        }
         return found;
     }
 
@@ -160,14 +160,14 @@ final class Page {
             .flatMap(kid -> Stream.concat(Stream.of(kid), this.deeper(kid)));
     }
 
-    private boolean placed(final Xnav object) {
+    private static boolean placed(final Xnav object) {
         final Noted noted = new Noted(object);
         return !noted.says("loc").isEmpty()
             && !noted.says("line").isEmpty()
             && !noted.says("pos").isEmpty();
     }
 
-    private boolean datum(final Xnav object) {
+    private static boolean datum(final Xnav object) {
         return object.elements(Filter.withName("o")).findAny().isEmpty()
             && !object.text().orElse("").strip().isEmpty();
     }
@@ -186,9 +186,9 @@ final class Page {
     }
 
     private Xnav root() {
-        return this.xmir.elements().filter(node -> node.node().getNodeType() == Node.ELEMENT_NODE)
-            .findFirst()
-            .orElseThrow(
+        return this.xmir.elements()
+            .filter(node -> node.node().getNodeType() == Node.ELEMENT_NODE)
+            .findFirst().orElseThrow(
                 () -> new IllegalStateException(
                     String.format("The XMIR of %s has no root element", this.name)
                 )

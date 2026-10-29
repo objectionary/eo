@@ -25,10 +25,10 @@ final class PoolTest {
     @Test
     void waitsWhileNothingIsInPool(@Mktmp final Path temp) throws IOException {
         final State state = PoolTest.state(temp);
-        state.pool.read(PoolTest.java(state), "Φ.os.status", "code", "Φ.app.φ", "");
+        state.pool().read(PoolTest.java(state), "code", new Site("Φ.app.φ", ""));
         MatcherAssert.assertThat(
             "a void read with nothing in its pool must wait for change a, but it didnt",
-            state.pool.waiting(),
+            state.pool().waiting(),
             Matchers.contains(List.of("Φ.os.status", "code"))
         );
     }
@@ -36,10 +36,10 @@ final class PoolTest {
     @Test
     void readsWhatCodePutIntoPool(@Mktmp final Path temp) throws IOException {
         final State state = PoolTest.state(temp);
-        state.pool.fill("Φ.os.status", "code", new int[] {Values.DATA});
+        state.pool().fill("Φ.os.status", "code", new int[] {Values.DATA});
         MatcherAssert.assertThat(
             "a void must read what EO code put into its pool, but it didnt",
-            state.pool.read(PoolTest.java(state), "Φ.os.status", "code", "Φ.app.φ", "").array(),
+            state.pool().read(PoolTest.java(state), "code", new Site("Φ.app.φ", "")).array(),
             Matchers.equalTo(new int[] {Values.DATA})
         );
     }
@@ -47,27 +47,30 @@ final class PoolTest {
     @Test
     void readsOpenVoidOnceDecidedJavaAloneFillsIt(@Mktmp final Path temp) throws IOException {
         final State state = PoolTest.state(temp);
-        state.pool.decide(List.of(List.of("Φ.os.status", "code")));
+        state.pool().decide(List.of(List.of("Φ.os.status", "code")));
         MatcherAssert.assertThat(
             "a void Java alone fills must read the decided open void, but it didnt",
-            state.pool.read(PoolTest.java(state), "Φ.os.status", "code", "Φ.app.φ", "").array(),
+            state.pool().read(PoolTest.java(state), "code", new Site("Φ.app.φ", "")).array(),
             Matchers.equalTo(new int[] {Values.JGAP})
         );
     }
 
     private static int java(final State state) {
-        return state.copies.fresh("Φ.os.status", Values.JBORN, Values.JAVA, "");
+        return state.copies().java("Φ.os.status");
     }
 
     private static State state(final Path temp) throws IOException {
         final State state = new State(
-            new Sources(
-                temp,
-                "os.eo", "[] > os\n  [] > check /Q.os.status\n  [code] > status\n    code > @\n"
+            new Sources(temp).with(
+                "os.eo",
+                "[] > os",
+                "  [] > check /Q.os.status",
+                "  [code] > status",
+                "    code > @"
             ).program(),
             new Names()
         );
-        state.copies.seed();
+        state.copies().seed();
         return state;
     }
 }

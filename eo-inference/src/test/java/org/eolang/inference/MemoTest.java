@@ -24,7 +24,7 @@ final class MemoTest {
 
     @Test
     void worksOutQuestionOncePerPass(@Mktmp final Path temp) throws IOException {
-        final Memo memo = new State(new Sources(temp).program(), new Names()).memo;
+        final Memo memo = new State(new Sources(temp).program(), new Names()).memo();
         final AtomicInteger asked = new AtomicInteger();
         final Key key = new Key('k', 31, "", "", "", 0);
         memo.ask(key, () -> new Ints(asked.incrementAndGet()));
@@ -38,7 +38,7 @@ final class MemoTest {
 
     @Test
     void joinsNewAnswerToStoredOne(@Mktmp final Path temp) throws IOException {
-        final Memo memo = new State(new Sources(temp).program(), new Names()).memo;
+        final Memo memo = new State(new Sources(temp).program(), new Names()).memo();
         final Key key = new Key('e', 7, "", "Φ.vase.φ", "", 0);
         memo.ask(key, () -> new Ints(Values.DATA));
         memo.stale(key);
@@ -52,7 +52,7 @@ final class MemoTest {
 
     @Test
     void givesWhatItHasSoFarToQuestionMetAgain(@Mktmp final Path temp) throws IOException {
-        final Memo memo = new State(new Sources(temp).program(), new Names()).memo;
+        final Memo memo = new State(new Sources(temp).program(), new Names()).memo();
         final Key key = new Key('a', 12, "next", "Φ.chain.φ", "", 0);
         memo.ask(
             key,
@@ -71,7 +71,7 @@ final class MemoTest {
 
     @Test
     void losesAnswerWhenWhatItReadGrows(@Mktmp final Path temp) throws IOException {
-        final Memo memo = new State(new Sources(temp).program(), new Names()).memo;
+        final Memo memo = new State(new Sources(temp).program(), new Names()).memo();
         final AtomicInteger asked = new AtomicInteger();
         final Key key = new Key('k', 4, "", "", "", 0);
         final Key row = new Key('r', 9, "lid", "", "", 0);

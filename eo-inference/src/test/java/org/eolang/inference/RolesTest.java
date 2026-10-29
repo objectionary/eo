@@ -27,7 +27,7 @@ final class RolesTest {
         MatcherAssert.assertThat(
             "a formation with only voids and a @ must be a decorator, but it wasnt",
             new Roles(
-                new Sources(temp, "frame.eo", "[picture] > frame\n  picture > @\n").program()
+                new Sources(temp).with("frame.eo", "[picture] > frame", "  picture > @").program()
             ).decorator("Φ.frame"),
             Matchers.is(true)
         );
@@ -39,9 +39,9 @@ final class RolesTest {
         MatcherAssert.assertThat(
             "a formation with an attribute of its own must not be a decorator, but it was",
             new Roles(
-                new Sources(
-                    temp, "frame.eo", "[picture] > frame\n  picture > @\n  4 > corners\n"
-                ).program()
+                new Sources(temp)
+                    .with("frame.eo", "[picture] > frame", "  picture > @", "  4 > corners")
+                    .program()
             ).decorator("Φ.frame"),
             Matchers.is(false)
         );
@@ -52,7 +52,7 @@ final class RolesTest {
         MatcherAssert.assertThat(
             "an object whose @ is its own void must pass that void on, but it didnt",
             new Roles(
-                new Sources(temp, "echo.eo", "[sound] > echo\n  sound > @\n").program()
+                new Sources(temp).with("echo.eo", "[sound] > echo", "  sound > @").program()
             ).passes("Φ.echo"),
             Matchers.equalTo("sound")
         );
@@ -63,9 +63,9 @@ final class RolesTest {
         MatcherAssert.assertThat(
             "an atom must give back the voids of its own its type names, but it didnt",
             new Roles(
-                new Sources(
-                    temp, "either.eo", "[] > either /A\n  ? > left /A\n  ? > right /A\n"
-                ).program()
+                new Sources(temp)
+                    .with("either.eo", "[] > either /A", "  ? > left /A", "  ? > right /A")
+                    .program()
             ).own("Φ.either"),
             Matchers.contains("left", "right")
         );
@@ -77,16 +77,16 @@ final class RolesTest {
         MatcherAssert.assertThat(
             "a read off ^ into the formation around must be inner, but it wasnt",
             new Roles(
-                new Sources(
-                    temp, "pot.eo", "[size] > pot\n  [] > lid\n    ^.size > @\n"
-                ).program()
+                new Sources(temp)
+                    .with("pot.eo", "[size] > pot", "  [] > lid", "    ^.size > @")
+                    .program()
             ).inner("Φ.pot.lid.φ"),
             Matchers.is(true)
         );
     }
 
     @Test
-    void takesNameWithTestMarkAsTest(@Mktmp final Path temp) throws IOException {
+    void takesNameWithCactusMarkAsCheck(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "a formation named with p🌵 must be a test, but it wasnt",
             new Roles(new Sources(temp).program()).test("Φ.pot.p🌵can-boil"),

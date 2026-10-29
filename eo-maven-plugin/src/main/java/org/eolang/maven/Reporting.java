@@ -58,17 +58,7 @@ final class Reporting implements Step {
     @Override
     public void exec() throws IOException {
         final Path answers = this.tables.resolve("answers.xml");
-        if (!Files.exists(answers)) {
-            Logger.info(
-                this, "The file %[file]s is absent, there is no inference report to draw",
-                answers
-            );
-        } else if (!Files.exists(this.prepared)) {
-            Logger.info(
-                this, "The directory %[file]s is absent, there is no inference report to draw",
-                this.prepared
-            );
-        } else {
+        if (Files.exists(answers) && Files.exists(this.prepared)) {
             final Map<String, Integer> tally = new Report(this.prepared, answers)
                 .written(this.pages);
             Logger.info(
@@ -78,6 +68,16 @@ final class Reporting implements Step {
                 tally.entrySet().stream()
                     .map(band -> String.format("%s %d", band.getKey(), band.getValue()))
                     .collect(Collectors.joining(", "))
+            );
+        } else if (Files.exists(answers)) {
+            Logger.info(
+                this, "The directory %[file]s is absent, there is no inference report to draw",
+                this.prepared
+            );
+        } else {
+            Logger.info(
+                this, "The file %[file]s is absent, there is no inference report to draw",
+                answers
             );
         }
     }

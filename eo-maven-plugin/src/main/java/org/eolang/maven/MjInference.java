@@ -88,30 +88,37 @@ public final class MjInference extends MjSafe {
      * The kinds that are one shared copy each, born {@code canon}: the first
      * holds the data, and every other one holds the first. Each must have
      * one void, {@code @}.
-     *
-     * @checkstyle MemberNameCheck (5 lines)
      */
-    @Parameter(alias = "inferenceCanon", property = "eo.inferenceCanon")
-    private List<String> canon = List.of("Φ.bytes", "Φ.number", "Φ.string");
+    @Parameter(
+        alias = "inferenceCanon",
+        property = "eo.inferenceCanon",
+        defaultValue = "Φ.bytes,Φ.number,Φ.string"
+    )
+    private List<String> canon;
 
     /**
      * The packages of list code: a copy that other code makes of a
      * formation under one of them starts a tag, which keeps apart what list
      * code does for different places of user code.
      */
-    @Parameter(alias = "inferenceRoots", property = "eo.inferenceRoots")
-    private List<String> roots = List.of("Φ.tuple", "Φ.map", "Φ.set");
+    @Parameter(
+        alias = "inferenceRoots",
+        property = "eo.inferenceRoots",
+        defaultValue = "Φ.tuple,Φ.map,Φ.set"
+    )
+    private List<String> roots;
 
     /**
      * The packages whose formations give back new data, so that a copy of
      * one of them takes no tag.
      */
-    @Parameter(alias = "inferenceScalars", property = "eo.inferenceScalars")
-    private List<String> scalars = List.of(
-        "Φ.number", "Φ.bytes", "Φ.string", "Φ.bool", "Φ.true", "Φ.false",
-        "Φ.i8", "Φ.i16", "Φ.i32", "Φ.i64", "Φ.u8", "Φ.u16", "Φ.u32", "Φ.u64",
-        "Φ.dataized"
-    );
+    @Parameter(
+        alias = "inferenceScalars",
+        property = "eo.inferenceScalars",
+        defaultValue =
+            "Φ.number,Φ.bytes,Φ.string,Φ.bool,Φ.true,Φ.false,Φ.i8,Φ.i16,Φ.i32,Φ.i64,Φ.u8,Φ.u16,Φ.u32,Φ.u64,Φ.dataized"
+    )
+    private List<String> scalars;
 
     /**
      * Ctor.

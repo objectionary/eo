@@ -45,11 +45,8 @@ import org.junit.jupiter.params.provider.ValueSource;
  *
  * @since 0.1
  * @todo #9650:45min Turn the four tests of formations safe to cache back on
- *  once "purify.xsl" reads "facts.xml" and "answers.xml" instead of
- *  "provides.xml" and "links.xml" of the old engine. They run the
- *  "inference" goal before "transpile" and expect a formation to be marked
- *  pure, which cannot happen while the tables purify.xsl reads are not
- *  written.
+ *  once "purify.xsl" reads "facts.xml" and "answers.xml" instead of the
+ *  tables of the old engine, which the "inference" goal no longer writes.
  */
 @ExtendWith(MktmpResolver.class)
 @ExtendWith(RandomProgramResolver.class)
@@ -170,9 +167,7 @@ final class MjTranspileTest {
                 "    42 > @"
             )
         ).with("tracking", true);
-        maven.execute(MjParse.class)
-            .execute(MjInference.class)
-            .execute(MjTranspile.class);
+        maven.execute(MjParse.class).execute(MjInference.class).execute(MjTranspile.class);
         MatcherAssert.assertThat(
             "a formation that takes nothing and copies nothing but a literal must be marked as safe to cache, but it wasnt",
             new XMLDocument(
@@ -192,11 +187,8 @@ final class MjTranspileTest {
         MatcherAssert.assertThat(
             "a formation marked as safe to cache must be wrapped in PhSticky in the generated Java, but it wasnt",
             new TextOf(
-                MjTranspileTest.pure(temp)
-                    .execute(MjParse.class)
-                    .execute(MjInference.class)
-                    .execute(MjTranspile.class)
-                    .result()
+                MjTranspileTest.pure(temp).execute(MjParse.class).execute(MjInference.class)
+                    .execute(MjTranspile.class).result()
                     .get("target/generated/org/eolang/EO_examples/EOx.java")
             ).asString(),
             Matchers.containsString("new PhSticky(")
@@ -209,11 +201,8 @@ final class MjTranspileTest {
         MatcherAssert.assertThat(
             "a top-level formation marked as safe to cache must implement Pure in the generated Java, so PhPackage can wrap it in PhSticky, but it didnt",
             new TextOf(
-                MjTranspileTest.pure(temp)
-                    .execute(MjParse.class)
-                    .execute(MjInference.class)
-                    .execute(MjTranspile.class)
-                    .result()
+                MjTranspileTest.pure(temp).execute(MjParse.class).execute(MjInference.class)
+                    .execute(MjTranspile.class).result()
                     .get("target/generated/org/eolang/EO_examples/EOx.java")
             ).asString(),
             Matchers.containsString("implements Pure")

@@ -66,48 +66,27 @@ final class Telling {
      * Tell every place.
      *
      * @return What is told
-     * @checkstyle CyclomaticComplexityCheck (100 lines)
-     * @checkstyle ExecutableStatementCountCheck (100 lines)
      */
-    @SuppressWarnings("PMD.CognitiveComplexity")
     Told told() {
-        final List<Key> answered = new ArrayList<>(0);
-        final List<Ids> answers = new ArrayList<>(0);
-        for (final Key key : this.state.memo.questions()) {
-            if (key.kind() == 'e' && this.state.counting.counts(key.value())) {
-                answered.add(key);
-                answers.add(this.state.memo.stored(key));
+        final Map<Key, Ids> answers = new LinkedHashMap<>(0);
+        for (final Key key : this.state.memo().questions()) {
+            if (key.kind() == 'e' && this.state.counting().counts(key.value())) {
+                answers.put(key, this.state.memo().stored(key));
             }
         }
         final List<Integer> copies = new ArrayList<>(0);
-        final BitSet known = this.state.passes.known();
+        final BitSet known = this.state.passes().known();
         for (int ctx = known.nextSetBit(0); ctx >= 0; ctx = known.nextSetBit(ctx + 1)) {
-            if (this.state.values.get(ctx).kind() == 'O' && this.state.counting.counts(ctx)) {
+            if (this.state.values().get(ctx).kind() == 'O' && this.state.counting().counts(ctx)) {
                 copies.add(ctx);
             }
         }
         final Map<String, Map<String, Integer>> sets = new HashMap<>(0);
-        for (int idx = 0; idx < answered.size(); ++idx) {
-            final Key key = answered.get(idx);
-            final Ints got = this.state.end.untidy(key, answers.get(idx));
-            final Set<String> labels = new TreeSet<>(new CodeOrder());
-            if (got.isEmpty()) {
-                final String mark = this.state.end.mark(key.place(), key.value());
-                if (EndStep.NOBODY.equals(mark)) {
-                    labels.add("?open-void-atom");
-                } else {
-                    labels.add("?can't-tell");
-                }
-            } else if (this.state.program.formation(key.place())) {
-                for (int pos = 0; pos < got.size(); ++pos) {
-                    labels.add(this.word(got.get(pos)));
-                }
-            } else {
-                for (int pos = 0; pos < got.size(); ++pos) {
-                    labels.addAll(this.last(got.get(pos)));
-                }
-            }
-            Telling.count(sets, key.place(), String.join("\t", labels));
+        for (final Map.Entry<Key, Ids> entry : answers.entrySet()) {
+            Telling.count(
+                sets, entry.getKey().place(),
+                String.join("\t", this.labels(entry.getKey(), entry.getValue()))
+            );
         }
         final Map<String, Map<String, Integer>> groups = new LinkedHashMap<>(0);
         for (final int copy : copies) {
@@ -116,97 +95,109 @@ final class Telling {
         for (final Map.Entry<String, Map<String, Integer>> entry : groups.entrySet()) {
             sets.putIfAbsent(entry.getKey(), entry.getValue());
         }
+        return new Told(sets, this.reduction(), this.state.calls().lands());
+    }
+
+    private Set<String> labels(final Key key, final Ids answer) {
+        final Ints got = this.state.end().untidy(key, answer);
+        final Set<String> labels = new TreeSet<>(new CodeOrder());
+        if (got.isEmpty()) {
+            labels.add(this.missing(key));
+        } else if (this.state.program().formation(key.place())) {
+            for (int pos = 0; pos < got.size(); ++pos) {
+                labels.add(this.word(got.get(pos)));
+            }
+        } else {
+            for (int pos = 0; pos < got.size(); ++pos) {
+                labels.addAll(this.last(got.get(pos)));
+            }
+        }
+        return labels;
+    }
+
+    private String missing(final Key key) {
+        final String label;
+        if (EndStep.NOBODY.equals(this.state.end().mark(key.place(), key.value()))) {
+            label = "?open-void-atom";
+        } else {
+            label = "?can't-tell";
+        }
+        return label;
+    }
+
+    private Map<String, Map<String, Integer>> reduction() {
         final Map<String, Map<String, Integer>> reduction = new HashMap<>(0);
         for (final Map.Entry<Integer, Set<String>> entry : this.finals.entrySet()) {
-            final Value value = this.state.values.get(entry.getKey());
+            final Value value = this.state.values().get(entry.getKey());
             if (value.kind() == 'O') {
                 final Set<String> sorted = new TreeSet<>(new CodeOrder());
                 sorted.addAll(entry.getValue());
                 Telling.count(reduction, value.form(), String.join(" ", sorted));
             }
         }
-        return new Told(sets, reduction, this.state.calls.lands());
+        return reduction;
     }
 
-    /**
-     * Tell a formation and its voids from one copy of it that counts.
-     *
-     * @param copy The copy
-     * @param groups Where the sets go, by place
-     * @checkstyle CyclomaticComplexityCheck (60 lines)
-     */
-    @SuppressWarnings("PMD.CognitiveComplexity")
     private void group(final int copy, final Map<String, Map<String, Integer>> groups) {
-        final Value value = this.state.values.get(copy);
-        final String form = value.form();
-        final Formation shape = this.state.program.form(form);
-        final boolean java = Values.JBORN.equals(value.birth());
-        final String hole;
-        if (java) {
-            hole = "?open-void-atom";
-        } else {
-            hole = "?open-void";
-        }
+        final String form = this.state.values().get(copy).form();
+        final Formation shape = this.state.program().form(form);
         Telling.count(groups, form, form);
         for (final String name : shape.order()) {
-            final String holds = shape.holds(name);
-            final Set<String> said = new TreeSet<>(new CodeOrder());
-            if (java || (value.bound() & shape.bit(name)) == 0) {
-                if (holds.isEmpty()) {
-                    said.add(hole);
-                } else {
-                    said.add(holds);
-                }
-            } else {
-                final Ints row = this.state.end.untidy(copy, name);
-                for (final int val : row.array()) {
-                    said.addAll(this.last(val));
-                }
-                if (!holds.isEmpty()) {
-                    said.add(holds);
-                }
-                if (said.isEmpty()) {
-                    said.add("?can't-tell");
-                }
-            }
-            Telling.count(groups, String.join(".", form, name), String.join("\t", said));
+            Telling.count(
+                groups, String.join(".", form, name), String.join("\t", this.said(copy, name))
+            );
         }
         if (shape.open("ρ")) {
-            final Set<String> said = new TreeSet<>(new CodeOrder());
-            if (this.state.callbacks.handedToJava(copy)) {
-                said.add(Telling.ONLY_JAVA);
-            } else if (java || (value.bound() & Formation.RHO) == 0) {
-                said.add(hole);
-            } else {
-                final Ints row = this.state.end.untidy(copy, "ρ");
-                for (final int val : row.array()) {
-                    said.addAll(this.last(val));
-                }
-                if (said.isEmpty()) {
-                    said.add("?can't-tell");
-                }
-            }
-            Telling.count(groups, String.join(".", form, "ρ"), String.join("\t", said));
+            Telling.count(groups, String.join(".", form, "ρ"), String.join("\t", this.rho(copy)));
         }
         if (!shape.returns().isEmpty()) {
-            final Set<String> gives = new TreeSet<>(new CodeOrder());
-            if (shape.gives().isEmpty()) {
-                gives.add(shape.returns());
-            } else {
-                gives.addAll(shape.gives());
-            }
-            Telling.count(groups, String.join(".", form, "λ"), String.join("\t", gives));
+            Telling.count(
+                groups, String.join(".", form, "λ"), String.join("\t", Telling.gives(shape))
+            );
         }
     }
 
-    /**
-     * What a value is named, at the end of its chain of {@code @}.
-     *
-     * @param num The value
-     * @return The labels
-     */
+    private Set<String> said(final int copy, final String name) {
+        final Value value = this.state.values().get(copy);
+        final Formation shape = this.state.program().form(value.form());
+        final String holds = shape.holds(name);
+        final Set<String> said = new TreeSet<>(new CodeOrder());
+        if (Values.JBORN.equals(value.birth()) || (value.bound() & shape.bit(name)) == 0) {
+            said.add(Telling.vacant(value, holds));
+        } else {
+            for (final int val : this.state.end().untidy(copy, name).array()) {
+                said.addAll(this.last(val));
+            }
+            if (!holds.isEmpty()) {
+                said.add(holds);
+            }
+            if (said.isEmpty()) {
+                said.add("?can't-tell");
+            }
+        }
+        return said;
+    }
+
+    private Set<String> rho(final int copy) {
+        final Value value = this.state.values().get(copy);
+        final Set<String> said = new TreeSet<>(new CodeOrder());
+        if (this.state.callbacks().handedToJava(copy)) {
+            said.add(Telling.ONLY_JAVA);
+        } else if (Values.JBORN.equals(value.birth()) || (value.bound() & Formation.RHO) == 0) {
+            said.add(Telling.vacant(value, ""));
+        } else {
+            for (final int val : this.state.end().untidy(copy, "ρ").array()) {
+                said.addAll(this.last(val));
+            }
+            if (said.isEmpty()) {
+                said.add("?can't-tell");
+            }
+        }
+        return said;
+    }
+
     private Set<String> last(final int num) {
-        final int inside = this.state.values.bare(num);
+        final int inside = this.state.values().bare(num);
         Set<String> got = this.finals.get(inside);
         if (got == null) {
             got = this.walked(inside);
@@ -215,79 +206,83 @@ final class Telling {
         return got;
     }
 
-    /**
-     * What a value is named, worked out now.
-     *
-     * @param num The value, with no wrapper
-     * @return The labels
-     * @checkstyle CyclomaticComplexityCheck (80 lines)
-     * @checkstyle NPathComplexityCheck (80 lines)
-     */
-    @SuppressWarnings({"PMD.CognitiveComplexity", "PMD.NPathComplexity"})
     private Set<String> walked(final int num) {
-        final Value value = this.state.values.get(num);
-        final Set<String> result = new HashSet<>(1);
-        if (value.kind() != 'O') {
-            result.add(this.word(num));
-        } else if (this.state.copies.canon(value.form())) {
+        final Value value = this.state.values().get(num);
+        final Set<String> result;
+        if (value.kind() == 'O' && this.state.copies().canon(value.form())) {
+            result = new HashSet<>(1);
             result.add(value.form());
+        } else if (value.kind() == 'O') {
+            result = this.named(num);
         } else {
-            final String form = value.form();
-            final Formation shape = this.state.program.form(form);
-            List<String> voids = List.of();
-            if (this.state.roles.decorator(form)) {
-                if (this.state.counting.counts(num)) {
-                    voids = List.of("φ");
-                }
-            } else if (!shape.returns().isEmpty() && !shape.has("φ")) {
-                if (this.state.program.formation(shape.returns())) {
-                    result.add(shape.returns());
-                } else {
-                    voids = this.state.roles.own(form);
-                }
-            }
-            if (result.isEmpty() && (voids.isEmpty() || this.walking.get(num))) {
+            result = new HashSet<>(1);
+            result.add(this.word(num));
+        }
+        return result;
+    }
+
+    private Set<String> named(final int num) {
+        final String form = this.state.values().get(num).form();
+        final Formation shape = this.state.program().form(form);
+        final Set<String> result = new HashSet<>(1);
+        if (!this.state.roles().decorator(form) && !shape.returns().isEmpty()
+            && !shape.has("φ") && this.state.program().formation(shape.returns())) {
+            result.add(shape.returns());
+        } else {
+            final List<String> voids = this.behind(num);
+            if (voids.isEmpty() || this.walking.get(num)) {
                 result.add(form);
-            }
-            if (result.isEmpty()) {
-                this.walking.set(num);
-                final Set<String> said = new HashSet<>(1);
-                try {
-                    for (final String name : voids) {
-                        final Ids got = this.state.reads.attr(
-                            num, name, String.join(".", form, name), value.tag()
-                        );
-                        for (int idx = 0; idx < got.size(); ++idx) {
-                            said.addAll(this.last(got.get(idx)));
-                        }
-                    }
-                } finally {
-                    this.walking.clear(num);
-                }
-                said.removeIf(label -> label.startsWith("?open-void"));
-                if (said.equals(Set.of("T"))) {
-                    result.addAll(said);
-                } else if (said.stream().anyMatch(Telling::told) && said.stream().allMatch(
-                    label -> Telling.told(label) || label.charAt(0) == '?' || "T".equals(label)
-                )) {
-                    result.addAll(said);
-                } else {
-                    result.add(form);
-                }
+            } else {
+                result.addAll(this.followed(num, voids));
             }
         }
         return result;
     }
 
-    /**
-     * The label of a value as it is.
-     *
-     * @param num The value
-     * @return The label
-     */
+    private List<String> behind(final int num) {
+        final String form = this.state.values().get(num).form();
+        final Formation shape = this.state.program().form(form);
+        final List<String> voids;
+        if (this.state.roles().decorator(form) && this.state.counting().counts(num)) {
+            voids = List.of("φ");
+        } else if (this.state.roles().decorator(form)
+            || shape.returns().isEmpty() || shape.has("φ")) {
+            voids = List.of();
+        } else {
+            voids = this.state.roles().own(form);
+        }
+        return voids;
+    }
+
+    private Set<String> followed(final int num, final List<String> voids) {
+        final Value value = this.state.values().get(num);
+        this.walking.set(num);
+        final Set<String> said = new HashSet<>(1);
+        try {
+            for (final String name : voids) {
+                final Ids got = this.state.reads().attr(
+                    num, name, new Site(String.join(".", value.form(), name), value.tag())
+                );
+                for (int idx = 0; idx < got.size(); ++idx) {
+                    said.addAll(this.last(got.get(idx)));
+                }
+            }
+        } finally {
+            this.walking.clear(num);
+        }
+        said.removeIf(label -> label.startsWith("?open-void"));
+        final Set<String> result = new HashSet<>(1);
+        if (said.equals(Set.of("T")) || Telling.clean(said)) {
+            result.addAll(said);
+        } else {
+            result.add(value.form());
+        }
+        return result;
+    }
+
     private String word(final int num) {
-        final int inside = this.state.values.bare(num);
-        final Value value = this.state.values.get(inside);
+        final int inside = this.state.values().bare(num);
+        final Value value = this.state.values().get(inside);
         final String label;
         if (inside == Values.JGAP) {
             label = "?open-void-atom";
@@ -305,25 +300,44 @@ final class Telling {
         return label;
     }
 
-    /**
-     * Whether a label is a name the answers may tell: not a mark, not T or
-     * D, and not hidden.
-     *
-     * @param label The label
-     * @return TRUE if it is
-     */
-    private static boolean told(final String label) {
-        return label.charAt(0) != '?' && label.charAt(0) != '!'
-            && !"T".equals(label) && !"D".equals(label) && !label.contains("🌵");
+    private static boolean clean(final Set<String> said) {
+        return said.stream().anyMatch(Telling::told) && said.stream().allMatch(Telling::known);
     }
 
-    /**
-     * Count one more copy that says a set of labels at a place.
-     *
-     * @param sets The sets, by place
-     * @param place The place
-     * @param labels The labels, joined
-     */
+    private static boolean known(final String label) {
+        return Telling.told(label) || label.charAt(0) == '?' || "T".equals(label);
+    }
+
+    private static boolean told(final String label) {
+        return label.charAt(0) != '?' && label.charAt(0) != '!' && Telling.plain(label);
+    }
+
+    private static boolean plain(final String label) {
+        return !"T".equals(label) && !"D".equals(label) && !label.contains("🌵");
+    }
+
+    private static String vacant(final Value value, final String holds) {
+        final String label;
+        if (holds.isEmpty() && Values.JBORN.equals(value.birth())) {
+            label = "?open-void-atom";
+        } else if (holds.isEmpty()) {
+            label = "?open-void";
+        } else {
+            label = holds;
+        }
+        return label;
+    }
+
+    private static Set<String> gives(final Formation shape) {
+        final Set<String> gives = new TreeSet<>(new CodeOrder());
+        if (shape.gives().isEmpty()) {
+            gives.add(shape.returns());
+        } else {
+            gives.addAll(shape.gives());
+        }
+        return gives;
+    }
+
     private static void count(
         final Map<String, Map<String, Integer>> sets, final String place, final String labels
     ) {

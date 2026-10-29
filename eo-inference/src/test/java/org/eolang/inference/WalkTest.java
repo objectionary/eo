@@ -28,7 +28,7 @@ final class WalkTest {
         MatcherAssert.assertThat(
             "a program with no money must be walked with no canon, but it wasnt",
             new Walk(
-                new Sources(temp, "till.eo", "[coins] > till\n  coins > @\n").facts(),
+                new Sources(temp).with("till.eo", "[coins] > till", "  coins > @").facts(),
                 new Names(List.of("Φ.money", "Φ.number"), List.of(), List.of())
             ).told().sets().get("Φ.till"),
             Matchers.equalTo(Map.of("Φ.till", 1))
@@ -40,11 +40,10 @@ final class WalkTest {
         MatcherAssert.assertThat(
             "a place read in two copies must be told for both, but it wasnt",
             new Walk(
-                new Sources(
-                    temp,
-                    "till.eo", "[coins] > till\n  coins > @\n  coins > held\n",
-                    "shop.eo", "[] > shop\n  (till 5).held > a\n  (till 6).held > b\n"
-                ).facts()
+                new Sources(temp)
+                    .with("till.eo", "[coins] > till", "  coins > @", "  coins > held")
+                    .with("shop.eo", "[] > shop", "  (till 5).held > a", "  (till 6).held > b")
+                    .facts()
             ).told().sets().get("Φ.till.held"),
             Matchers.equalTo(Map.of("Φ.number", 2))
         );

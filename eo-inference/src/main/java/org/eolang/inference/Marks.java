@@ -34,7 +34,7 @@ final class Marks {
      *
      * @param array The numbers noted, by value
      */
-    private Marks(final int[] array) {
+    private Marks(final int... array) {
         this.items = array;
     }
 

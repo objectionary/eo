@@ -71,10 +71,10 @@ final class Copies {
      * same.</p>
      */
     void seed() {
-        final List<String> kinds = this.state.names.canon();
+        final List<String> kinds = this.state.names().canon();
         boolean all = !kinds.isEmpty();
         for (final String kind : kinds) {
-            if (!this.state.program.formation(kind)) {
+            if (!this.state.program().formation(kind)) {
                 all = false;
                 break;
             }
@@ -85,89 +85,33 @@ final class Copies {
     }
 
     /**
-     * Make the shared and the blank copies of these kinds.
-     *
-     * @param kinds The kinds, the one that holds the data first
-     */
-    private void share(final List<String> kinds) {
-        for (final String kind : kinds) {
-            if (!List.of("φ").equals(this.state.program.form(kind).order())) {
-                throw new IllegalStateException(
-                    String.format("%s must have one void, φ, to be one of the canon", kind)
-                );
-            }
-            this.canon.put(
-                kind,
-                this.state.values.intern(
-                    new Value('O', kind, "canon", 1L | Formation.RHO, "", -1, 0)
-                )
-            );
-        }
-        final int datum = this.canon.get(kinds.get(0));
-        for (final String kind : kinds) {
-            final int shared = this.canon.get(kind);
-            if (shared == datum) {
-                this.state.rows.seed(shared, "φ", Values.DATA);
-            } else {
-                this.state.rows.seed(shared, "φ", datum);
-            }
-            this.state.rows.seed(shared, "ρ", Values.ROOT);
-        }
-        for (final String kind : kinds) {
-            final int empty = this.state.values.intern(
-                new Value('O', kind, "blank", Formation.RHO, "", -1, 0)
-            );
-            this.blank.put(kind, empty);
-            this.state.rows.seed(empty, "ρ", Values.ROOT);
-        }
-        for (final String kind : kinds) {
-            this.joins.add(this.blank.get(kind));
-        }
-        for (final String kind : kinds) {
-            this.joins.add(this.canon.get(kind));
-        }
-    }
-
-    /**
      * A copy of a formation: the shared or blank one of a kind of the
      * canon, or else the copy of this name, with these rows gathered into
      * it.
      *
-     * @param form The formation
-     * @param birth The birthplace
-     * @param voids The bits of the bound voids
+     * @param name The name of the copy: its formation, birthplace, tag and
+     *  the bits of its bound voids
      * @param rows What goes into each void, by void
-     * @param tag The tag, empty when none
      * @return The copy
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    int copy(
-        final String form, final String birth, final long voids,
-        final Map<String, int[]> rows, final String tag
-    ) {
+    int copy(final Value name, final Map<String, int[]> rows) {
+        final String form = name.form();
         final int made;
         if (this.canon.containsKey(form)) {
-            final int[] rho = rows.getOrDefault("ρ", new int[0]);
-            boolean root = rho.length > 0;
-            for (final int val : rho) {
-                if (val != Values.ROOT) {
-                    root = false;
-                    break;
-                }
-            }
-            if (!Values.JBORN.equals(birth) && (voids & ~Formation.RHO) == 0 && root) {
+            if (!Values.JBORN.equals(name.birth()) && (name.bound() & ~Formation.RHO) == 0
+                && Copies.rooted(rows.getOrDefault("ρ", new int[0]))) {
                 made = this.blank.get(form);
             } else {
                 made = this.canon.get(form);
             }
         } else {
-            made = this.state.values.intern(
+            made = this.state.values().intern(
                 new Value(
-                    'O', form, birth, voids & this.mask(form), tag, -1, 0
+                    'O', form, name.birth(), name.bound() & this.mask(form), name.tag(), -1, 0
                 )
             );
             for (final Map.Entry<String, int[]> row : rows.entrySet()) {
-                this.state.rows.gather(made, row.getKey(), row.getValue());
+                this.state.rows().gather(made, row.getKey(), row.getValue());
             }
         }
         return made;
@@ -178,21 +122,30 @@ final class Copies {
      * none, Java's own, or a value.
      *
      * @param form The formation
-     * @param birth The birthplace
+     * @param born Where it is born, with its tag
      * @param rho The {@code ρ}: {@link #NO_RHO}, {@link Values#JAVA} or a value
-     * @param tag The tag, empty when none
      * @return The copy
      */
-    int fresh(final String form, final String birth, final int rho, final String tag) {
+    int fresh(final String form, final Site born, final int rho) {
         final int made;
         if (rho == Copies.NO_RHO) {
-            made = this.copy(form, birth, 0L, Map.of(), tag);
+            made = this.copy(new Value(form, born, 0L), Map.of());
         } else if (rho == Values.JAVA) {
-            made = this.copy(form, Values.JBORN, Formation.RHO, Map.of(), "");
+            made = this.java(form);
         } else {
-            made = this.copy(form, birth, Formation.RHO, Map.of("ρ", new int[] {rho}), tag);
+            made = this.copy(new Value(form, born, Formation.RHO), Map.of("ρ", new int[] {rho}));
         }
         return made;
+    }
+
+    /**
+     * The copy of a formation Java makes, with Java's own {@code ρ}.
+     *
+     * @param form The formation
+     * @return The copy
+     */
+    int java(final String form) {
+        return this.copy(new Value(form, new Site(Values.JBORN, ""), Formation.RHO), Map.of());
     }
 
     /**
@@ -244,23 +197,13 @@ final class Copies {
     }
 
     /**
-     * Whether a copy was made in EO code, not by Java and not shared.
-     *
-     * @param value The copy
-     * @return TRUE if it was
-     */
-    boolean placed(final Value value) {
-        return !Values.JBORN.equals(value.birth()) && !"canon".equals(value.birth());
-    }
-
-    /**
      * The bits of every void of a formation, {@code ρ} too.
      *
      * @param form The formation
      * @return The bits
      */
     long mask(final String form) {
-        return (1L << this.state.program.form(form).order().size()) - 1L | Formation.RHO;
+        return (1L << this.state.program().form(form).order().size()) - 1L | Formation.RHO;
     }
 
     /**
@@ -271,11 +214,61 @@ final class Copies {
      * @return The bits
      */
     long bits(final String form, final List<String> names) {
-        final Formation shape = this.state.program.form(form);
+        final Formation shape = this.state.program().form(form);
         long bits = 0L;
         for (final String name : names) {
             bits |= shape.bit(name);
         }
         return bits;
+    }
+
+    private void share(final List<String> kinds) {
+        for (final String kind : kinds) {
+            if (!List.of("φ").equals(this.state.program().form(kind).order())) {
+                throw new IllegalStateException(
+                    String.format("%s must have one void, φ, to be one of the canon", kind)
+                );
+            }
+            this.canon.put(
+                kind,
+                this.state.values().intern(
+                    new Value('O', kind, "canon", 1L | Formation.RHO, "", -1, 0)
+                )
+            );
+        }
+        final int datum = this.canon.get(kinds.get(0));
+        for (final String kind : kinds) {
+            final int shared = this.canon.get(kind);
+            if (shared == datum) {
+                this.state.rows().seed(shared, "φ", Values.DATA);
+            } else {
+                this.state.rows().seed(shared, "φ", datum);
+            }
+            this.state.rows().seed(shared, "ρ", Values.ROOT);
+        }
+        for (final String kind : kinds) {
+            final int empty = this.state.values().intern(
+                new Value('O', kind, "blank", Formation.RHO, "", -1, 0)
+            );
+            this.blank.put(kind, empty);
+            this.state.rows().seed(empty, "ρ", Values.ROOT);
+        }
+        for (final String kind : kinds) {
+            this.joins.add(this.blank.get(kind));
+        }
+        for (final String kind : kinds) {
+            this.joins.add(this.canon.get(kind));
+        }
+    }
+
+    private static boolean rooted(final int... rho) {
+        boolean root = rho.length > 0;
+        for (final int val : rho) {
+            if (val != Values.ROOT) {
+                root = false;
+                break;
+            }
+        }
+        return root;
     }
 }

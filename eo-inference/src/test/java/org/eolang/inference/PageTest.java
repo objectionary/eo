@@ -25,7 +25,7 @@ final class PageTest {
         MatcherAssert.assertThat(
             "a separator the parser does not count must stay inside its line, but it opened a new one",
             PageTest.drawn(
-                "<object><listing>[] &gt; app\n  \"a b\" &gt; s\n</listing></object>",
+                "<object><listing>[] &gt; app&#10;  \"a b\" &gt; s&#10;</listing></object>",
                 "app.eo"
             ),
             XhtmlMatchers.hasXPath("/page[count(line)=2]")
@@ -37,7 +37,7 @@ final class PageTest {
         MatcherAssert.assertThat(
             "the text around the separator must stay on one line, but it was cut in two",
             PageTest.drawn(
-                "<object><listing>[] &gt; app\n  \"a b\" &gt; s\n</listing></object>",
+                "<object><listing>[] &gt; app&#10;  \"a b\" &gt; s&#10;</listing></object>",
                 "app.eo"
             ),
             XhtmlMatchers.hasXPath("/page/line[@n='2']/bit[contains(., 'b')]")
@@ -49,7 +49,7 @@ final class PageTest {
         MatcherAssert.assertThat(
             "a carriage return before a line feed must end the line with it, but it stayed",
             PageTest.drawn(
-                "<object><listing>[] &gt; tea&#13;\n  [] &gt; cup&#13;\n</listing></object>",
+                "<object><listing>[] &gt; tea&#13;&#10;  [] &gt; cup&#13;&#10;</listing></object>",
                 "tea.eo"
             ),
             XhtmlMatchers.hasXPath("/page[count(line)=2]/line[1]/bit[.='[] > tea']")
@@ -63,7 +63,7 @@ final class PageTest {
             PageTest.drawn(
                 String.join(
                     "",
-                    "<object><listing>[] &gt; cup\n  [] &gt; lid\n</listing>",
+                    "<object><listing>[] &gt; cup&#10;  [] &gt; lid&#10;</listing>",
                     "<o line='1' loc='Φ.cup' name='cup' pos='0'>",
                     "<o line='2' loc='Φ.cup.lid' name='lid' pos='2'/></o></object>"
                 ),
@@ -80,7 +80,7 @@ final class PageTest {
             PageTest.drawn(
                 String.join(
                     "",
-                    "<object><listing>[] &gt; cup\n  2A-\n</listing>",
+                    "<object><listing>[] &gt; cup&#10;  2A-&#10;</listing>",
                     "<o line='1' loc='Φ.cup' name='cup' pos='0'>",
                     "<o line='2' loc='Φ.cup.α0' pos='2'>2A-</o></o></object>"
                 ),
@@ -97,7 +97,7 @@ final class PageTest {
             PageTest.drawn(
                 String.join(
                     "",
-                    "<object><listing>[] &gt; cup\n</listing>",
+                    "<object><listing>[] &gt; cup&#10;</listing>",
                     "<o line='1' loc='Φ.cup' name='cup' pos='0'>",
                     "<o loc='Φ.cup.φ'/><o name='nobody'/><o line='1' loc='Φ.cup.ρ' pos='1'/>",
                     "</o></object>"

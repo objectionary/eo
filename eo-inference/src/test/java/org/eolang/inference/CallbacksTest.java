@@ -24,34 +24,48 @@ final class CallbacksTest {
     @Test
     void fillsEmptyVoidOfFormationCalledBackWithWhatJavaMakes(@Mktmp final Path temp)
         throws IOException {
-        final State state = new Sources(
-            temp,
+        final State state = new Sources(temp).with(
             "memory.eo",
-            "[] > memory\n  [] > use /Q.number\n    ? > size /Q.number\n    ? > scope /{Q.block}\n",
-            "block.eo", "[] > block\n  42 > size\n",
-            "app.eo", "[] > app\n  memory.use > @\n    5\n    [b]\n      b.size > @\n"
+            "[] > memory",
+            "  [] > use /Q.number",
+            "    ? > size /Q.number",
+            "    ? > scope /{Q.block}"
+        ).with(
+            "block.eo",
+            "[] > block",
+            "  42 > size"
+        ).with(
+            "app.eo",
+            "[] > app",
+            "  memory.use > @",
+            "    5",
+            "    [b]",
+            "      b.size > @"
         ).settled();
-        final int copy = state.values.intern(
-            new Value('O', "Φ.app.φ.α1", "Φ.app.φ", 1L | Formation.RHO, "", -1, 0)
-        );
         MatcherAssert.assertThat(
             "the formation called back must get a copy with Java's block in its void, but it didnt",
-            state.values.full(state.rows.row(copy, "b").get(0)),
+            state.values().full(
+                state.rows().row(
+                    state.values().intern(
+                        new Value('O', "Φ.app.φ.α1", "Φ.app.φ", 1L | Formation.RHO, "", -1, 0)
+                    ),
+                    "b"
+                ).get(0)
+            ),
             Matchers.equalTo("Φ.block@java{ρ}")
         );
     }
 
     @Test
     void notesCopyWhoseRhoOnlyJavaFills(@Mktmp final Path temp) throws IOException {
-        final State state = new Sources(
-            temp,
-            "jobs.eo", "[] > jobs\n  [] > run /Q.number\n    ? > job\n",
-            "app.eo", "[] > app\n  jobs.run > @\n    [^]\n      42 > @\n"
-        ).settled();
+        final State state = new Sources(temp)
+            .with("jobs.eo", "[] > jobs", "  [] > run /Q.number", "    ? > job")
+            .with("app.eo", "[] > app", "  jobs.run > @", "    [^]", "      42 > @")
+            .settled();
         MatcherAssert.assertThat(
             "a copy handed to an atom with a declared ^ nobody binds must be noted, but it wasnt",
-            state.callbacks.handedToJava(
-                state.values.intern(
+            state.callbacks().handedToJava(
+                state.values().intern(
                     new Value('O', "Φ.app.φ.α0", "Φ.app.φ.α0", 0L, "", -1, 0)
                 )
             ),

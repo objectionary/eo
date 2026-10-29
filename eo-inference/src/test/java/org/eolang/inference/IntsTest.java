@@ -38,20 +38,18 @@ final class IntsTest {
 
     @Test
     void findsNumberAmongMany() {
-        final Ints ints = new Ints(IntStream.range(0, 300).map(num -> num * 7 + 2).toArray());
         MatcherAssert.assertThat(
             "a number among hundreds must be found, but it wasnt",
-            ints.contains(1703),
+            new Ints(IntStream.range(0, 300).map(num -> num * 7 + 2).toArray()).contains(1703),
             Matchers.is(true)
         );
     }
 
     @Test
     void doesNotFindNumberNeverAdded() {
-        final Ints ints = new Ints(IntStream.range(0, 300).map(num -> num * 7 + 2).toArray());
         MatcherAssert.assertThat(
             "a number never added must not be found, but it was",
-            ints.contains(1704),
+            new Ints(IntStream.range(0, 300).map(num -> num * 7 + 2).toArray()).contains(1704),
             Matchers.is(false)
         );
     }

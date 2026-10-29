@@ -26,7 +26,9 @@ final class ReadsTest {
         final State state = ReadsTest.settled(temp);
         MatcherAssert.assertThat(
             "a read off a datum must fail and say what it reads, but it didnt",
-            state.values.full(state.reads.attr(Values.DATA, "size", "Φ.app.φ", "").get(0)),
+            state.values().full(
+                state.reads().attr(Values.DATA, "size", new Site("Φ.app.φ", "")).get(0)
+            ),
             Matchers.equalTo("X:data.size")
         );
     }
@@ -35,7 +37,7 @@ final class ReadsTest {
     void readsTerminationOffTermination(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "a read off T must be T, but it wasnt",
-            ReadsTest.settled(temp).reads.attr(Values.TERM, "size", "Φ.app.φ", ""),
+            ReadsTest.settled(temp).reads().attr(Values.TERM, "size", new Site("Φ.app.φ", "")),
             Matchers.equalTo(new Ids(Values.TERM))
         );
     }
@@ -45,11 +47,11 @@ final class ReadsTest {
         final State state = ReadsTest.settled(temp);
         MatcherAssert.assertThat(
             "a void the copy leaves unbound must read T, but it didnt",
-            state.reads.attr(
-                state.values.intern(
+            state.reads().attr(
+                state.values().intern(
                     new Value('O', "Φ.vase", "Φ.app.φ.ρ", 1L | Formation.RHO, "", -1, 0)
                 ),
-                "water", "Φ.app.φ", ""
+                "water", new Site("Φ.app.φ", "")
             ),
             Matchers.equalTo(new Ids(Values.TERM))
         );
@@ -60,12 +62,12 @@ final class ReadsTest {
         final State state = ReadsTest.settled(temp);
         MatcherAssert.assertThat(
             "a read of a name a complete formation lacks must fail, but it didnt",
-            state.values.full(
-                state.reads.attr(
-                    state.values.intern(
+            state.values().full(
+                state.reads().attr(
+                    state.values().intern(
                         new Value('O', "Φ.cat", "Φ.cat", Formation.RHO, "", -1, 0)
                     ),
-                    "bark", "Φ.app.x", ""
+                    "bark", new Site("Φ.app.x", "")
                 ).get(0)
             ),
             Matchers.equalTo("X:Φ.cat.bark")
@@ -73,11 +75,10 @@ final class ReadsTest {
     }
 
     private static State settled(final Path temp) throws IOException {
-        return new Sources(
-            temp,
-            "vase.eo", "[flower water] > vase\n  flower > @\n  water > wet\n",
-            "app.eo", "[] > app\n  (vase 5).wet > @\n",
-            "cat.eo", "[] > cat\n  \"meow\" > voice\n"
-        ).settled();
+        return new Sources(temp)
+            .with("vase.eo", "[flower water] > vase", "  flower > @", "  water > wet")
+            .with("app.eo", "[] > app", "  (vase 5).wet > @")
+            .with("cat.eo", "[] > cat", "  \"meow\" > voice")
+            .settled();
     }
 }

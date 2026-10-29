@@ -61,9 +61,6 @@ final class Band {
      */
     String name() {
         final Set<String> all = new HashSet<>(this.labels);
-        final Set<String> unknown = all.stream()
-            .filter(label -> label.startsWith("?"))
-            .collect(Collectors.toSet());
         final Set<String> names = all.stream()
             .filter(label -> !label.startsWith("?") && !label.startsWith("!") && !"T".equals(label))
             .collect(Collectors.toSet());
@@ -73,24 +70,18 @@ final class Band {
         } else if (all.stream().allMatch(label -> label.startsWith("?skipped"))) {
             found = "unreached";
         } else if (all.equals(names)) {
-            found = this.named(names.size());
+            found = Band.named(names.size());
+        } else if (names.isEmpty()) {
+            found = Band.unnamed(all);
         } else if (names.size() == 1) {
             found = "gaps";
-        } else if (!names.isEmpty()) {
-            found = "mixed";
-        } else if (unknown.isEmpty()) {
-            found = "error";
-        } else if (unknown.equals(Set.of("?open-void-atom"))) {
-            found = "atom";
-        } else if (Set.of("?open-void", "?open-void-atom").containsAll(unknown)) {
-            found = "unfilled";
         } else {
-            found = "lost";
+            found = "mixed";
         }
         return found;
     }
 
-    private String named(final int count) {
+    private static String named(final int count) {
         final String found;
         if (count == 1) {
             found = "named";
@@ -98,6 +89,23 @@ final class Band {
             found = "pair";
         } else {
             found = "mixed";
+        }
+        return found;
+    }
+
+    private static String unnamed(final Set<String> all) {
+        final Set<String> unknown = all.stream()
+            .filter(label -> label.startsWith("?"))
+            .collect(Collectors.toSet());
+        final String found;
+        if (unknown.isEmpty()) {
+            found = "error";
+        } else if (unknown.equals(Set.of("?open-void-atom"))) {
+            found = "atom";
+        } else if (Set.of("?open-void", "?open-void-atom").containsAll(unknown)) {
+            found = "unfilled";
+        } else {
+            found = "lost";
         }
         return found;
     }

@@ -30,7 +30,23 @@ final class Ids {
      * @param sorted The values, in ascending order, each once
      */
     Ids(final int... sorted) {
-        this.values = sorted;
+        this.values = Arrays.copyOf(sorted, sorted.length);
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        return this == other
+            || other instanceof Ids ids && Arrays.equals(this.values, ids.values);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(this.values);
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(this.values);
     }
 
     /**
@@ -98,21 +114,5 @@ final class Ids {
         final Ints all = new Ints(this.values);
         all.addAll(other);
         return all.frozen();
-    }
-
-    @Override
-    public boolean equals(final Object other) {
-        return this == other
-            || other instanceof Ids && Arrays.equals(this.values, ((Ids) other).values);
-    }
-
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(this.values);
-    }
-
-    @Override
-    public String toString() {
-        return Arrays.toString(this.values);
     }
 }

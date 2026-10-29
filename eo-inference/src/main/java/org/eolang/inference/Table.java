@@ -44,7 +44,7 @@ final class Table {
     /**
      * The document {@code answers.xml}.
      */
-    private final Xnav table;
+    private final Xnav answers;
 
     /**
      * The rows, read on the first question and kept for the rest.
@@ -63,7 +63,7 @@ final class Table {
      * @param answers The document {@code answers.xml}
      */
     Table(final Xnav answers) {
-        this.table = answers;
+        this.answers = answers;
         this.read = new ArrayList<>(1);
     }
 
@@ -116,7 +116,7 @@ final class Table {
 
     private Map<String, Map<Set<String>, Integer>> rows() {
         final Map<String, Map<Set<String>, Integer>> found = new HashMap<>(0);
-        this.table.element("answers").elements(Filter.withName("o")).forEach(
+        this.answers.element("answers").elements(Filter.withName("o")).forEach(
             row -> {
                 final Map<Set<String>, Integer> sets = found.computeIfAbsent(
                     new Noted(row).says("loc"), place -> new LinkedHashMap<>(1)
@@ -128,7 +128,7 @@ final class Table {
                 }
                 for (final Xnav group : groups) {
                     sets.merge(
-                        this.labels(group),
+                        Table.labels(group),
                         Integer.parseInt(new Noted(group).says("copies")),
                         Integer::sum
                     );
@@ -138,26 +138,26 @@ final class Table {
         return found;
     }
 
-    private Set<String> labels(final Xnav group) {
+    private static Set<String> labels(final Xnav group) {
         return group.elements()
             .filter(item -> item.node().getNodeType() == Node.ELEMENT_NODE)
             .filter(item -> !"reduced".equals(item.node().getNodeName()))
-            .map(this::label)
+            .map(Table::label)
             .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    private String label(final Xnav item) {
+    private static String label(final Xnav item) {
         final Noted noted = new Noted(item);
         final String tag = item.node().getNodeName();
         final String found;
         if ("is".equals(tag)) {
             found = noted.says("loc");
         } else if ("fails".equals(tag)) {
-            found = this.failed(noted);
+            found = Table.failed(noted);
         } else if ("open".equals(tag)) {
-            found = this.opened(noted);
+            found = Table.opened(noted);
         } else if ("unknown".equals(tag)) {
-            found = this.unknown(noted);
+            found = Table.unknown(noted);
         } else if ("data".equals(tag)) {
             found = "D";
         } else if ("terminator".equals(tag)) {
@@ -170,7 +170,7 @@ final class Table {
         return found;
     }
 
-    private String failed(final Noted noted) {
+    private static String failed(final Noted noted) {
         final String found;
         if ("java".equals(noted.says("by"))) {
             found = "!only-java-fills-ρ";
@@ -180,7 +180,7 @@ final class Table {
         return found;
     }
 
-    private String opened(final Noted noted) {
+    private static String opened(final Noted noted) {
         final String found;
         if ("java".equals(noted.says("by"))) {
             found = "?open-void-atom";
@@ -190,7 +190,7 @@ final class Table {
         return found;
     }
 
-    private String unknown(final Noted noted) {
+    private static String unknown(final Noted noted) {
         final String found;
         if (noted.says("why").isEmpty()) {
             found = "?can't-tell";

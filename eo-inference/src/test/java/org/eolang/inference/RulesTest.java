@@ -24,7 +24,7 @@ final class RulesTest {
 
     @Test
     void keepsWhatWaitsForStop(@Mktmp final Path temp) throws IOException {
-        final Rules rules = new State(new Sources(temp).program(), new Names()).rules;
+        final Rules rules = new State(new Sources(temp).program(), new Names()).rules();
         rules.wish(new Wish('3', "Φ.oven.φ", 8, 1));
         MatcherAssert.assertThat(
             "what waits for a stop must be pending, but it wasnt",
@@ -35,7 +35,7 @@ final class RulesTest {
 
     @Test
     void leavesDecidedWishOutOfPending(@Mktmp final Path temp) throws IOException {
-        final Rules rules = new State(new Sources(temp).program(), new Names()).rules;
+        final Rules rules = new State(new Sources(temp).program(), new Names()).rules();
         rules.wish(new Wish('e', "", -1, 44));
         rules.take(Set.of(new Wish('e', "", -1, 44)));
         MatcherAssert.assertThat(
@@ -48,18 +48,18 @@ final class RulesTest {
     @Test
     void forgetsWhatAnswerThatLostItFoundWaiting(@Mktmp final Path temp) throws IOException {
         final State state = new State(new Sources(temp).program(), new Names());
-        state.memo.ask(
+        state.memo().ask(
             new Key('k', 5, "", "", "", 0),
             () -> {
-                state.rules.wish(new Wish('b', "Φ.oven.φ", 3, 5));
+                state.rules().wish(new Wish('b', "Φ.oven.φ", 3, 5));
                 return new Ints();
             }
         );
-        state.memo.stale(new Key('k', 5, "", "", "", 0));
-        state.memo.invalidate();
+        state.memo().stale(new Key('k', 5, "", "", "", 0));
+        state.memo().invalidate();
         MatcherAssert.assertThat(
             "what an answer that lost it found waiting must be forgotten, but it wasnt",
-            state.rules.pending(),
+            state.rules().pending(),
             Matchers.empty()
         );
     }

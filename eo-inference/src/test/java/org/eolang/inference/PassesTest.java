@@ -23,13 +23,13 @@ final class PassesTest {
 
     @Test
     void walksFormationAsWrittenInsideCopiesAround(@Mktmp final Path temp) throws IOException {
-        final State state = new Sources(
-            temp, "house.eo", "[] > house\n  [] > room\n    42 > @\n"
-        ).settled();
+        final State state = new Sources(temp)
+            .with("house.eo", "[] > house", "  [] > room", "    42 > @")
+            .settled();
         MatcherAssert.assertThat(
             "a nested formation must be walked as written, inside the copy of the one around, but it wasnt",
-            state.passes.known().get(
-                state.values.intern(
+            state.passes().known().get(
+                state.values().intern(
                     new Value('O', "Φ.house.room", "Φ.house.room", Formation.RHO, "", -1, 0)
                 )
             ),
@@ -40,11 +40,11 @@ final class PassesTest {
     @Test
     void remembersValueOnce(@Mktmp final Path temp) throws IOException {
         final State state = new State(new Sources(temp).program(), new Names());
-        state.passes.remember(Values.TERM);
-        state.passes.remember(Values.TERM);
+        state.passes().remember(Values.TERM);
+        state.passes().remember(Values.TERM);
         MatcherAssert.assertThat(
             "a value remembered twice must be among the copies once, but it wasnt",
-            state.passes.contexts().size(),
+            state.passes().contexts().size(),
             Matchers.equalTo(1)
         );
     }
@@ -53,7 +53,9 @@ final class PassesTest {
     void stopsUsingCopiesOnceSettled(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "the passes must be over once settled, but they werent",
-            new Sources(temp, "house.eo", "[] > house\n  42 > @\n").settled().passes.frozen(),
+            new Sources(temp)
+                .with("house.eo", "[] > house", "  42 > @")
+                .settled().passes().frozen(),
             Matchers.is(true)
         );
     }

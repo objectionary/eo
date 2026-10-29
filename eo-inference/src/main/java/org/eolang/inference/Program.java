@@ -64,7 +64,6 @@ final class Program {
      * @param named The reads, by place
      * @param starts What each chain starts from, by place
      * @param applied The arguments of each call, by place
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
     Program(
         final Map<String, Formation> formations, final Map<String, Read> named,

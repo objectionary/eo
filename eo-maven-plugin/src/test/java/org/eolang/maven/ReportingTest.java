@@ -65,7 +65,7 @@ final class ReportingTest {
             Files.createDirectories(temp.resolve("pre")).resolve("pan.xmir"),
             String.join(
                 "",
-                "<object><listing>[] &gt; pan\n</listing>",
+                "<object><listing>[] &gt; pan&#10;</listing>",
                 "<o line='1' loc='Φ.pan' name='pan' pos='0'/></object>"
             )
         );

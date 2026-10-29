@@ -59,13 +59,23 @@ final class TellingTest {
     }
 
     private static Told told(final Path temp) throws IOException {
-        final State state = new Sources(
-            temp,
-            "five.eo", "[] > five\n  5 > @\n",
-            "box.eo", "[item spare] > box\n  item > @\n  spare > other\n",
-            "app.eo", "[] > app\n  five > @\n  (box 1).other > one\n  (box \"a\").other > word\n"
+        final State state = new Sources(temp).with(
+            "five.eo",
+            "[] > five",
+            "  5 > @"
+        ).with(
+            "box.eo",
+            "[item spare] > box",
+            "  item > @",
+            "  spare > other"
+        ).with(
+            "app.eo",
+            "[] > app",
+            "  five > @",
+            "  (box 1).other > one",
+            "  (box \"a\").other > word"
         ).settled();
-        state.end.step();
+        state.end().step();
         return new Telling(state).told();
     }
 }

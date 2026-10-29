@@ -35,7 +35,7 @@ final class ValuesTest {
     @Test
     void namesCopyTheWayPythonEngineDid(@Mktmp final Path temp) throws IOException {
         final Values values = new Values(
-            new Sources(temp, "pair.eo", "[left right] > pair\n  left > @\n").program()
+            new Sources(temp).with("pair.eo", "[left right] > pair", "  left > @").program()
         );
         MatcherAssert.assertThat(
             "a copy must be named formation@birthplace#tag{bound voids}, but it wasnt",
@@ -61,12 +61,11 @@ final class ValuesTest {
 
     @Test
     void opensVoidsCopyLeavesUnbound(@Mktmp final Path temp) throws IOException {
-        final Values values = new Values(
-            new Sources(temp, "pair.eo", "[left right] > pair\n  left > @\n").program()
-        );
         MatcherAssert.assertThat(
             "the voids a copy leaves unbound must be open, but they werent",
-            values.opened(new Value('O', "Φ.pair", "Φ.pair", 1L | Formation.RHO, "", -1, 0)),
+            new Values(
+                new Sources(temp).with("pair.eo", "[left right] > pair", "  left > @").program()
+            ).opened(new Value('O', "Φ.pair", "Φ.pair", 1L | Formation.RHO, "", -1, 0)),
             Matchers.contains("right")
         );
     }

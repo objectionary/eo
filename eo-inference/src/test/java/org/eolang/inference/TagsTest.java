@@ -25,7 +25,7 @@ final class TagsTest {
     void startsTagWhereCodeWithNoTagMakesListCode(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "a copy of list code made by code with no tag must be tagged with the place, but it wasnt",
-            TagsTest.tags(temp).tagged("", "Φ.tuple.with", "Φ.shop.φ"),
+            TagsTest.tags(temp).tagged(new Site("Φ.shop.φ", ""), "Φ.tuple.with"),
             Matchers.equalTo("Φ.shop.φ")
         );
     }
@@ -34,7 +34,7 @@ final class TagsTest {
     void givesNoTagToOtherCodeMadeByCodeWithNoTag(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "a copy of other code made by code with no tag must take no tag, but it took one",
-            TagsTest.tags(temp).tagged("", "Φ.box", "Φ.shop.φ"),
+            TagsTest.tags(temp).tagged(new Site("Φ.shop.φ", ""), "Φ.box"),
             Matchers.emptyString()
         );
     }
@@ -43,7 +43,7 @@ final class TagsTest {
     void passesTagOnToCopyOfAnyFormation(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "a copy made by tagged code must take its tag, but it didnt",
-            TagsTest.tags(temp).tagged("Φ.shop.φ", "Φ.box", "Φ.tuple.with.φ"),
+            TagsTest.tags(temp).tagged(new Site("Φ.tuple.with.φ", "Φ.shop.φ"), "Φ.box"),
             Matchers.equalTo("Φ.shop.φ")
         );
     }
@@ -52,7 +52,7 @@ final class TagsTest {
     void growsTagWhereListCodeCallsAnotherPackage(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "a copy of tuple made by map code must add the place to the tag, but it didnt",
-            TagsTest.tags(temp).tagged("Φ.shop.φ", "Φ.tuple.with", "Φ.map.put.φ"),
+            TagsTest.tags(temp).tagged(new Site("Φ.map.put.φ", "Φ.shop.φ"), "Φ.tuple.with"),
             Matchers.equalTo("Φ.shop.φ/Φ.map.put.φ")
         );
     }
@@ -61,7 +61,9 @@ final class TagsTest {
     void addsNoPlaceOfPackageTwice(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "a package that already added a place must add none again, but it did",
-            TagsTest.tags(temp).tagged("Φ.shop.φ/Φ.map.put.φ", "Φ.tuple.with", "Φ.map.get.φ"),
+            TagsTest.tags(temp).tagged(
+                new Site("Φ.map.get.φ", "Φ.shop.φ/Φ.map.put.φ"), "Φ.tuple.with"
+            ),
             Matchers.equalTo("Φ.shop.φ/Φ.map.put.φ")
         );
     }
@@ -70,7 +72,7 @@ final class TagsTest {
     void givesNoTagToFormationOfScalarPackage(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "a copy of a number method must take no tag, but it took one",
-            TagsTest.tags(temp).tagged("Φ.shop.φ", "Φ.number.plus", "Φ.tuple.with.φ"),
+            TagsTest.tags(temp).tagged(new Site("Φ.tuple.with.φ", "Φ.shop.φ"), "Φ.number.plus"),
             Matchers.emptyString()
         );
     }
@@ -79,13 +81,13 @@ final class TagsTest {
     void givesNoTagToObjectThatPassesItsVoidOn(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "a copy of an object whose @ is its void must take no tag, but it took one",
-            TagsTest.tags(temp).tagged("Φ.shop.φ", "Φ.same", "Φ.tuple.with.φ"),
+            TagsTest.tags(temp).tagged(new Site("Φ.tuple.with.φ", "Φ.shop.φ"), "Φ.same"),
             Matchers.emptyString()
         );
     }
 
     @Test
-    void findsNoPackageInsideTest(@Mktmp final Path temp) throws IOException {
+    void findsNoPackageInsideCheck(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "a name inside a test must have no package, but it had one",
             TagsTest.tags(temp).pkg("Φ.tuple.p🌵can-add.φ"),
@@ -95,15 +97,33 @@ final class TagsTest {
 
     private static Tags tags(final Path temp) throws IOException {
         return new State(
-            new Sources(
-                temp,
-                "tuple.eo", "[item rest] > tuple\n  [x] > with\n    tuple x ^ > @\n",
-                "map.eo", "[pairs] > map\n  [key] > put\n    ^.pairs.with key > @\n",
-                "box.eo", "[item] > box\n  item > @\n  1 > size\n",
-                "same.eo", "[x] > same\n  x > @\n",
-                "number.eo", "[@] > number\n  [] > plus /Q.number\n    ? > ^\n    ? > b\n"
+            new Sources(temp).with(
+                "tuple.eo",
+                "[item rest] > tuple",
+                "  [x] > with",
+                "    tuple x ^ > @"
+            ).with(
+                "map.eo",
+                "[pairs] > map",
+                "  [key] > put",
+                "    ^.pairs.with key > @"
+            ).with(
+                "box.eo",
+                "[item] > box",
+                "  item > @",
+                "  1 > size"
+            ).with(
+                "same.eo",
+                "[x] > same",
+                "  x > @"
+            ).with(
+                "number.eo",
+                "[@] > number",
+                "  [] > plus /Q.number",
+                "    ? > ^",
+                "    ? > b"
             ).program(),
             new Names()
-        ).tags;
+        ).tags();
     }
 }

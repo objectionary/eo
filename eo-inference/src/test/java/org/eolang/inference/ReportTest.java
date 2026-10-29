@@ -65,7 +65,7 @@ final class ReportTest {
         MatcherAssert.assertThat(
             "a page must end with a line feed, as the Python report ends it, but it didnt",
             Files.readString(temp.resolve("out/cup.eo.html")),
-            Matchers.endsWith("</html>\n")
+            Matchers.endsWith("</html>".concat(String.valueOf('\n')))
         );
     }
 
@@ -171,7 +171,9 @@ final class ReportTest {
         ).written(temp.resolve("html"));
         MatcherAssert.assertThat(
             "the pages of the run must be the bytes the Python report drew, but these arent",
-            ReportTest.differing(temp.resolve("html"), Paths.get(System.getProperty("report.html"))),
+            ReportTest.differing(
+                temp.resolve("html"), Paths.get(System.getProperty("report.html"))
+            ),
             Matchers.empty()
         );
     }
@@ -181,7 +183,7 @@ final class ReportTest {
             Files.createDirectories(temp.resolve("xmirs")).resolve("cup.xmir"),
             String.join(
                 "",
-                "<object><listing>[] &gt; cup\n  [] &gt; lid\n</listing>",
+                "<object><listing>[] &gt; cup&#10;  [] &gt; lid&#10;</listing>",
                 "<o line='1' loc='Φ.cup' name='cup' pos='0'>",
                 "<o line='2' loc='Φ.cup.lid' name='lid' pos='2'/></o></object>"
             )

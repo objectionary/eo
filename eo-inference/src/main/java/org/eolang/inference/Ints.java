@@ -55,10 +55,16 @@ final class Ints {
      * @param numbers The numbers to start with
      */
     Ints(final int... numbers) {
-        this();
-        for (final int number : numbers) {
-            this.add(number);
-        }
+        this(Ints.filled(numbers));
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param other The set whose numbers and table it takes over
+     */
+    private Ints(final Ints other) {
+        this(other.items, other.size, other.slots);
     }
 
     /**
@@ -68,7 +74,7 @@ final class Ints {
      * @param taken How many of them are taken
      * @param table The table of positions
      */
-    private Ints(final int[] array, final int taken, final int[] table) {
+    private Ints(final int[] array, final int taken, final int... table) {
         this.items = array;
         this.size = taken;
         this.slots = table;
@@ -127,11 +133,11 @@ final class Ints {
      */
     void remove(final int number) {
         if (this.contains(number)) {
-            int at = 0;
-            while (this.items[at] != number) {
-                at += 1;
+            int pos = 0;
+            while (this.items[pos] != number) {
+                pos += 1;
             }
-            System.arraycopy(this.items, at + 1, this.items, at, this.size - at - 1);
+            System.arraycopy(this.items, pos + 1, this.items, pos, this.size - pos - 1);
             this.size -= 1;
             if (this.slots.length > 0) {
                 this.rebuild();
@@ -225,9 +231,6 @@ final class Ints {
         this.slots = new int[0];
     }
 
-    /**
-     * The table of positions, made again for the numbers here.
-     */
     private void rebuild() {
         int length = Ints.FEW * 2;
         while (length < this.size * 4) {
@@ -239,11 +242,6 @@ final class Ints {
         }
     }
 
-    /**
-     * Put a number into the table of positions.
-     *
-     * @param number The number
-     */
     private void place(final int number) {
         final int mask = this.slots.length - 1;
         int slot = Ints.hash(number) & mask;
@@ -253,12 +251,14 @@ final class Ints {
         this.slots[slot] = number + 1;
     }
 
-    /**
-     * Where a number goes in the table.
-     *
-     * @param number The number
-     * @return The spread hash
-     */
+    private static Ints filled(final int... numbers) {
+        final Ints ints = new Ints();
+        for (final int number : numbers) {
+            ints.add(number);
+        }
+        return ints;
+    }
+
     private static int hash(final int number) {
         final int mixed = number * 0x9E3779B9;
         return mixed ^ mixed >>> 16;

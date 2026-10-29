@@ -5,7 +5,6 @@
 package org.eolang.inference;
 
 import java.util.BitSet;
-import java.util.List;
 
 /**
  * The answer at a place in a copy ({@code evaluate()}).
@@ -44,83 +43,86 @@ final class Places {
      * @return The answer
      */
     Ids evaluate(final String place, final int ctx) {
-        return this.state.memo.ask(
+        return this.state.memo().ask(
             new Key('e', ctx, "", place, "", 0),
             () -> this.now(place, ctx)
         );
     }
 
-    /**
-     * The answer at a place in a copy, worked out now.
-     *
-     * @param place The place
-     * @param ctx The copy around
-     * @return The answer
-     * @checkstyle CyclomaticComplexityCheck (100 lines)
-     */
-    @SuppressWarnings("PMD.CognitiveComplexity")
     private Ints now(final String place, final int ctx) {
-        Ints out = new Ints();
-        if (this.state.program.formation(place)) {
-            final int rho;
-            if (this.state.program.form(place).has("ρ")) {
-                rho = Copies.NO_RHO;
-            } else {
-                rho = ctx;
-            }
-            final int copy = this.state.copies.fresh(
-                place, place, rho,
-                this.state.tags.tagged(this.state.tags.carried(ctx), place, place)
-            );
-            this.state.passes.remember(copy);
-            out.add(copy);
+        final Ints out;
+        if (this.state.program().formation(place)) {
+            out = new Ints(this.formation(place, ctx));
+        } else if (this.state.program().args(place).isEmpty()) {
+            out = this.chain(place, ctx);
         } else {
-            if (this.state.program.starts(place)) {
-                for (final Head head : this.state.program.heads(place)) {
-                    if ("data".equals(head.tag())) {
-                        out.add(Values.DATA);
-                    } else if ("terminator".equals(head.tag())) {
-                        out.add(Values.TERM);
-                    } else if ("Φ".equals(head.loc())) {
-                        out.add(Values.ROOT);
-                    } else {
-                        this.outward(place, head.loc(), ctx, out);
-                    }
-                }
-            } else if (this.state.program.reads(place)) {
-                final Read read = this.state.program.read(place);
-                final boolean outside = !this.state.roles.inner(place);
-                final String tag = this.state.tags.carried(ctx);
-                final Ids got = this.evaluate(read.of(), ctx);
-                for (int idx = 0; idx < got.size(); ++idx) {
-                    if (outside) {
-                        this.state.counting.use(
-                            got.get(idx), read.name(), place, tag, Counting.READ, new Ints()
-                        );
-                    }
-                    out.addAll(this.state.reads.attr(got.get(idx), read.name(), place, tag));
-                }
+            out = this.state.calls().apply(this.chain(place, ctx), ctx, place);
+        }
+        return out;
+    }
+
+    private int formation(final String place, final int ctx) {
+        final int rho;
+        if (this.state.program().form(place).has("ρ")) {
+            rho = Copies.NO_RHO;
+        } else {
+            rho = ctx;
+        }
+        final int copy = this.state.copies().fresh(
+            place,
+            this.state.tags().born(new Site(place, this.state.tags().carried(ctx)), place),
+            rho
+        );
+        this.state.passes().remember(copy);
+        return copy;
+    }
+
+    private Ints chain(final String place, final int ctx) {
+        final Ints out;
+        if (this.state.program().starts(place)) {
+            out = this.heads(place, ctx);
+        } else if (this.state.program().reads(place)) {
+            out = this.read(place, ctx);
+        } else {
+            throw new IllegalStateException(
+                String.format("%s has no head in the facts", place)
+            );
+        }
+        return out;
+    }
+
+    private Ints heads(final String place, final int ctx) {
+        final Ints out = new Ints();
+        for (final Head head : this.state.program().heads(place)) {
+            if ("data".equals(head.tag())) {
+                out.add(Values.DATA);
+            } else if ("terminator".equals(head.tag())) {
+                out.add(Values.TERM);
+            } else if ("Φ".equals(head.loc())) {
+                out.add(Values.ROOT);
             } else {
-                throw new IllegalStateException(
-                    String.format("%s has no head in the facts", place)
-                );
-            }
-            final List<String> args = this.state.program.args(place);
-            if (!args.isEmpty()) {
-                out = this.state.calls.apply(out, args, ctx, place);
+                this.outward(place, head.loc(), ctx, out);
             }
         }
         return out;
     }
 
-    /**
-     * Walk up the {@code ρ} rows from a copy to the copies of a formation.
-     *
-     * @param place The place of the chain
-     * @param loc The formation
-     * @param ctx The copy to start from
-     * @param out Where the copies found go
-     */
+    private Ints read(final String place, final int ctx) {
+        final Read read = this.state.program().read(place);
+        final boolean outside = !this.state.roles().inner(place);
+        final Site site = new Site(place, this.state.tags().carried(ctx));
+        final Usage usage = new Usage(read.name(), site, Counting.READ);
+        final Ints out = new Ints();
+        final Ids got = this.evaluate(read.of(), ctx);
+        for (int idx = 0; idx < got.size(); ++idx) {
+            if (outside) {
+                this.state.counting().use(got.get(idx), usage, new Ints());
+            }
+            out.addAll(this.state.reads().attr(got.get(idx), read.name(), site));
+        }
+        return out;
+    }
+
     private void outward(final String place, final String loc, final int ctx, final Ints out) {
         final Pile todo = new Pile();
         todo.push(ctx);
@@ -131,7 +133,7 @@ final class Places {
                 continue;
             }
             met.set(here);
-            final Value value = this.state.values.get(here);
+            final Value value = this.state.values().get(here);
             if (value.kind() == 'O' && value.form().equals(loc)) {
                 out.add(here);
                 continue;
@@ -141,12 +143,12 @@ final class Places {
                 throw new IllegalStateException(
                     String.format(
                         "the walk from %s out to %s lost its way at %s",
-                        place, loc, this.state.values.full(here)
+                        place, loc, this.state.values().full(here)
                     )
                 );
             }
-            for (final int up : this.state.rows.cell(here, "ρ")) {
-                todo.push(up);
+            for (final int outer : this.state.rows().cell(here, "ρ")) {
+                todo.push(outer);
             }
         }
     }

@@ -254,9 +254,6 @@ final class Values {
         return name;
     }
 
-    /**
-     * The first six values, made once.
-     */
     private void start() {
         this.add(new Value('Φ', "", "", 0L, "", -1, 0));
         this.add(new Value('D', "", "", 0L, "", -1, 0));
@@ -266,11 +263,6 @@ final class Values {
         this.add(new Value('U', "open void", "decided", 0L, "", -1, 0));
     }
 
-    /**
-     * Add a value under the next number.
-     *
-     * @param value The value
-     */
     private void add(final Value value) {
         this.index.put(value, this.all.size());
         this.all.add(value);

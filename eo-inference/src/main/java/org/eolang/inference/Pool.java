@@ -62,19 +62,15 @@ final class Pool {
      * Read an empty void of a copy Java made, from its pool.
      *
      * @param copy The copy
-     * @param form Its formation
      * @param name The void
-     * @param place The place of the read
-     * @param tag The tag of the reader, empty when none
+     * @param site The site of the read, under the tag of the reader
      * @return What it holds, the decided open void too, nothing while it
      *  waits
-     * @checkstyle ParameterNumberCheck (5 lines)
      */
-    Ints read(
-        final int copy, final String form, final String name, final String place, final String tag
-    ) {
+    Ints read(final int copy, final String name, final Site site) {
+        final String form = this.state.values().get(copy).form();
         final List<String> pair = List.of(form, name);
-        this.state.memo.depend(new Key('p', 0, name, form, "", 0));
+        this.state.memo().depend(new Key('p', 0, name, form, "", 0));
         final int[] got = this.rows.getOrDefault(pair, new Ints()).array();
         final boolean told = this.decided.contains(pair);
         final Ints out = new Ints();
@@ -85,8 +81,8 @@ final class Pool {
                 out.add(Values.JGAP);
             }
             for (final int val : got) {
-                final int stamped = this.state.rows.stamp(val, copy, place, tag);
-                this.state.passes.remember(stamped);
+                final int stamped = this.state.rows().stamp(val, copy, site);
+                this.state.passes().remember(stamped);
                 out.add(stamped);
             }
         }
@@ -100,7 +96,7 @@ final class Pool {
      * @param name The void
      * @param values The values
      */
-    void fill(final String form, final String name, final int[] values) {
+    void fill(final String form, final String name, final int... values) {
         final Ints pool = this.rows.computeIfAbsent(List.of(form, name), key -> new Ints());
         boolean grew = false;
         for (final int val : values) {
@@ -109,8 +105,8 @@ final class Pool {
             }
         }
         if (grew) {
-            this.state.passes.change();
-            this.state.memo.spoil(new Key('p', 0, name, form, "", 0));
+            this.state.passes().change();
+            this.state.memo().spoil(new Key('p', 0, name, form, "", 0));
         }
     }
 
@@ -122,7 +118,7 @@ final class Pool {
      */
     List<List<String>> waiting() {
         final List<List<String>> out = new ArrayList<>(0);
-        for (final List<String> pair : this.state.roles.javaVoids()) {
+        for (final List<String> pair : this.state.roles().javaVoids()) {
             if (!this.decided.contains(pair) && this.nobody.contains(pair) && this.empty(pair)) {
                 out.add(pair);
             }
@@ -138,7 +134,7 @@ final class Pool {
     void decide(final List<List<String>> pairs) {
         this.decided.addAll(pairs);
         for (final List<String> pair : pairs) {
-            this.state.memo.spoil(new Key('p', 0, pair.get(1), pair.get(0), "", 0));
+            this.state.memo().spoil(new Key('p', 0, pair.get(1), pair.get(0), "", 0));
         }
     }
 
@@ -158,12 +154,6 @@ final class Pool {
         return out;
     }
 
-    /**
-     * Whether the pool of a void holds nothing.
-     *
-     * @param pair The formation and the void
-     * @return TRUE if it holds nothing
-     */
     private boolean empty(final List<String> pair) {
         return this.rows.getOrDefault(pair, new Ints()).isEmpty();
     }
