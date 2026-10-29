@@ -145,7 +145,7 @@ final class Origins {
     ) {
         if (!seen.containsKey(key)) {
             seen.put(key, Optional.empty());
-            seen.put(key, fresh.get());
+            seen.replace(key, fresh.get());
         }
         return seen.get(key);
     }
