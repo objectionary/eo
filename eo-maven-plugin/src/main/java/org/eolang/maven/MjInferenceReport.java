@@ -20,7 +20,8 @@ import org.apache.maven.plugins.annotations.Parameter;
  * {@code answers.xml}: green where it answers one name and nothing else,
  * other colours where it answers several names, names with gaps, only gaps,
  * or a read that fails. An index lists the pages with a bar per file, and
- * the goal logs how many objects fall in each band.</p>
+ * the goal logs how many objects fall in each band and writes the same
+ * numbers down in {@code ladder.txt}, beside the directory of the tables.</p>
  *
  * <p>A goal of its own rather than a flag on {@link MjInference}: a build
  * that wants the pages asks for this goal, one that does not never runs

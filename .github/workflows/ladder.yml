@@ -25,13 +25,7 @@ concurrency:
   group: ladder-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  # @todo #9650:30min Turn this job back on, or remove it with
-  #  'ladder-comment.yml', once the new engine says how much of eo-runtime
-  #  it names. The numbers came from 'ladder.txt', which the 'inference'
-  #  goal wrote from the tables of the old engine, and it writes no such
-  #  file now, so the job would fail on every pull request.
   ladder:
-    if: false
     timeout-minutes: 60
     runs-on: ubuntu-24.04
     steps:
@@ -91,7 +85,7 @@ jobs:
           fi
           # Every line is a number and the name it goes by, the value first, so
           # that nothing here has to know what any of them mean. Shares are
-          # written with a decimal point and rungs without one, and `awk` takes
+          # written with a decimal point and counts without one, and `awk` takes
           # the difference of either.
           declare -A was
           while read -r total metric; do
@@ -100,9 +94,9 @@ jobs:
           rows="${RUNNER_TEMP}/rows.md"
           : > "${rows}"
           # Every number goes into the table, and not only the ones that moved.
-          # A share is a number to game and may not be read without the rungs
+          # A share is a number to game and may not be read without the counts
           # beside it, which is as true of the ones that stayed where they were
-          # as of the ones that did not: a branch told that the depth fell by a
+          # as of the ones that did not: a branch told that a share fell by a
           # tenth, and nothing of what it fell from, has been handed half the
           # fact. A branch that moved none of them would be told nothing at
           # all, which reads exactly like a job that never ran.
@@ -122,14 +116,14 @@ jobs:
           {
             echo 'Where the inference numbers of this branch stand, and where the same'
             echo 'numbers stood on master. A share is a percentage of every object in the'
-            echo 'program, and the rungs are the counts it is made of, which come along'
+            echo 'program, and the count of objects in each band comes along beside it'
             echo 'because a share on its own is a number to game:'
             echo ''
             echo '| Number | master | branch | change |'
             echo '|:--|--:|--:|--:|'
             cat "${rows}"
             echo ''
-            echo "They come from \`eo-runtime/target/eo/ladder.txt\`, written by the \`inference\` goal."
+            echo "They come from \`eo-runtime/target/eo/ladder.txt\`, written by the \`inference-report\` goal."
           } > "${report}"
           # The same table on the run's own page, for a reader who has the job
           # in front of them rather than the pull request.

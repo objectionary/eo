@@ -35,6 +35,18 @@ final class ReportingTest {
     }
 
     @Test
+    void writesTheLadderBesideTheTables(@Mktmp final Path temp) throws IOException {
+        new Reporting(
+            ReportingTest.prepared(temp), ReportingTest.tables(temp), temp.resolve("pages")
+        ).exec();
+        MatcherAssert.assertThat(
+            "the numbers of the report must be written beside the tables, but they werent",
+            Files.readAllLines(temp.resolve("ladder.txt")),
+            Matchers.hasItem("1 objects in named")
+        );
+    }
+
+    @Test
     void skipsTablesWithoutAnswers(@Mktmp final Path temp) throws IOException {
         new Reporting(
             ReportingTest.prepared(temp),
