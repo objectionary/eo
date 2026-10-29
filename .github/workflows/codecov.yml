@@ -36,12 +36,7 @@ jobs:
       - run: mvn install '-Deo.coverageTracking=true' '-Deo.lowering=true'
       # The goal must have run, and a missing folder is how a silently
       # disabled lowering would look.
-      # @todo #9650:30min Run this check again once eo-runtime runs the
-      #  'lower' goal again. The goal reads the tables of the old engine,
-      #  which the 'inference' goal no longer writes, so it is out of the
-      #  pom of eo-runtime for now and the folder is never made.
-      - if: false
-        run: test -n "$(find eo-runtime/target/eo -maxdepth 1 -type d -name '[0-9][0-9]-lowering')"
+      - run: test -n "$(find eo-runtime/target/eo -maxdepth 1 -type d -name '[0-9][0-9]-lowering')"
       - uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
