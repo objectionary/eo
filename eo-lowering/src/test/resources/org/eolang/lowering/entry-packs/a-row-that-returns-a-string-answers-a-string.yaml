@@ -5,17 +5,19 @@
 # bytes around the fresh symbol, the way a string void is planted, so that
 # every attribute of a string dispatches on the answer as it would on a
 # literal.
+# `app` hands `shout` a string, and the body is a call of the atom `up`,
+# which returns a string.
 eo:
   shout.eo: |
     [s] > shout
       s.up > @
-provides: |
-  <provides>
-    <type id="Φ.shout" reduced="Φ.string">
-      <attr name="s" type="Φ.shout.s" void="true" holds="Φ.string"/>
-      <attr name="φ" type="Φ.shout.φ"/>
-    </type>
-  </provides>
+  string.eo: |
+    [@] > string
+      [] > up /Q.string
+        ? > ^
+  app.eo: |
+    [] > app
+      shout "hey" > used
 rows:
   - "L_shout\tΦ.shout\tΦ.shout\ts:string"
 table:

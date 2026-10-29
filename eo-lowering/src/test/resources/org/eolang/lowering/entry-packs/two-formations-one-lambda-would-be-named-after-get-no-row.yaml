@@ -4,6 +4,8 @@
 # A dot and a dash of a path both become an underscore of the λ, so two
 # formations may ask for one name, and then neither gets a row, since one
 # λ cannot answer in two shapes.
+# The body of each of them is a number, so each of them could have a row
+# on its own.
 eo:
   a.eo: |
     [] > a
@@ -12,15 +14,6 @@ eo:
       [] > b
         [] > c
           2 > @
-provides: |
-  <provides>
-    <type id="Φ.a.b-c" reduced="Φ.number">
-      <attr name="φ" type="Φ.a.b-c.φ"/>
-    </type>
-    <type id="Φ.a.b.c" reduced="Φ.number">
-      <attr name="φ" type="Φ.a.b.c.φ"/>
-    </type>
-  </provides>
 xmir:
   - "//o[@name='e1' and @base='Φ.a.b-c'][not(o[@name='φ'])]"
   - "//o[@name='e2' and @base='Φ.a.b.c'][not(o[@name='φ'])]"

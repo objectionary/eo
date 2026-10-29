@@ -3,32 +3,21 @@
 ---
 # yamllint disable rule:line-length
 # Each flow comes down to a bool, so the atom returns it bare, and the
-# tables must say the body is a number, a string, a bool or bytes. The link
-# of the body arrives at `Φ.bool.not`, a copy and not a formation, but
-# `flipped` binds nothing but its body, and `eo:inference` has chased that
-# body through all its copies and written what `flipped` behaves as into
-# the `reduced` cell of its row.
+# tables must say the body is a number, a string, a bool or bytes. The body
+# copies `Φ.bool.not`, and `app` hands `flipped` a `true`, so the engine
+# follows `not` of that bool to the bool it gives, and the row of the body
+# names `Φ.bool`.
 locator: Φ.flipped
 number: 1
 eo:
   flipped.eo: |
     [x] > flipped
       x.not > @
+  app.eo: |
+    [] > app
+      flipped true > used
 voids:
   - "𝜎1\t1\tx\tbool"
-provides: |
-  <provides>
-    <type complete="false" id="Φ.flipped" reduced="Φ.bool">
-      <attr name="x" type="Φ.flipped.x" void="true"/>
-      <attr name="φ" type="Φ.flipped.φ"/>
-    </type>
-  </provides>
-links: |
-  <links>
-    <type id="Φ.flipped.φ">
-      <ref loc="Φ.bool.not"/>
-    </type>
-  </links>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e1">

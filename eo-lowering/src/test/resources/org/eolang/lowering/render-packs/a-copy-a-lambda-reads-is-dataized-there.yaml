@@ -13,14 +13,18 @@ eo:
       (first items.head).plus 1 > @
       [x] > first
         x > @
+  number.eo: |
+    [@] > number
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+  tuple.eo: |
+    [tail head length] > tuple
+  app.eo: |
+    [] > app
+      joined (tuple (tuple 0 0 0) 5 1) > used
 voids:
   - "𝜎54\t54\titems.head\tobject"
-links: |
-  <links>
-    <type id="Φ.joined.φ">
-      <ref loc="Φ.number"/>
-    </type>
-  </links>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e54">

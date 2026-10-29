@@ -10,17 +10,14 @@ number: 8
 taint: The entry 8 forks on 𝜎752 before any decision, while phino never ran its right side, as it does when the flows are cut
 eo:
   bytes.eo: |
-    [] > bytes
-      [] > as-bool
+    [@] > bytes
+      [^] > as-bool
         (^.eq FF-).if true false > @
+      [] > eq /Q.bool
+        ? > ^
+        ? > b
 voids:
   - "𝜎10\t8\tρ\tbytes"
-provides: |
-  <provides>
-    <type complete="false" id="Φ.bytes.as-bool" reduced="Φ.bool">
-      <attr name="φ" type="Φ.bytes.as-bool.φ"/>
-    </type>
-  </provides>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e8">
