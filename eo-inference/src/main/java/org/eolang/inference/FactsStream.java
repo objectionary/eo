@@ -58,7 +58,7 @@ final class FactsStream {
         final Map<String, Formation> forms = new LinkedHashMap<>(0);
         final Map<String, Read> reads = new LinkedHashMap<>(0);
         final Map<String, List<Head>> heads = new LinkedHashMap<>(0);
-        final Map<String, List<String>> calls = new LinkedHashMap<>(0);
+        final Map<String, List<Argument>> calls = new LinkedHashMap<>(0);
         while (this.xml.hasNext()) {
             if (this.xml.next() == XMLStreamConstants.START_ELEMENT) {
                 final String tag = this.xml.getLocalName();
@@ -166,31 +166,43 @@ final class FactsStream {
         return starts;
     }
 
-    private void calls(final Map<String, List<String>> calls) throws XMLStreamException {
+    private void calls(final Map<String, List<Argument>> calls) throws XMLStreamException {
         int event = this.xml.next();
         while (!this.closes(event, "calls")) {
             if (this.opens(event, "call")) {
-                calls.put(this.attr("loc"), this.args());
+                final String loc = this.attr("loc");
+                calls.put(loc, this.args(loc));
             }
             event = this.xml.next();
         }
     }
 
-    private List<String> args() throws XMLStreamException {
-        final List<String[]> args = new ArrayList<>(1);
+    private List<Argument> args(final String call) throws XMLStreamException {
+        final List<Argument> args = new ArrayList<>(1);
         int event = this.xml.next();
         while (!this.closes(event, "call")) {
             if (this.opens(event, "arg")) {
-                args.add(new String[] {this.attr("n"), this.attr("loc")});
+                args.add(this.argument());
             }
             event = this.xml.next();
         }
-        args.sort(Comparator.comparingInt(arg -> Integer.parseInt(arg[0])));
-        final List<String> locs = new ArrayList<>(args.size());
-        for (final String[] arg : args) {
-            locs.add(arg[1]);
+        if (args.stream().map(arg -> arg.name().isEmpty()).distinct().count() > 1) {
+            throw new IllegalStateException(
+                String.format("The call at %s binds its arguments both by slot and by name", call)
+            );
         }
-        return locs;
+        args.sort(Comparator.comparingInt(Argument::slot));
+        return args;
+    }
+
+    private Argument argument() {
+        final Argument arg;
+        if (this.attr("n").isEmpty()) {
+            arg = new Argument(this.attr("loc"), -1, this.attr("name"));
+        } else {
+            arg = new Argument(this.attr("loc"), Integer.parseInt(this.attr("n")), "");
+        }
+        return arg;
     }
 
     private boolean opens(final int event, final String tag) {

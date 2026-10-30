@@ -220,6 +220,34 @@ final class Values {
     }
 
     /**
+     * The voids of a copy the arguments of a call go into, the way the
+     * runtime puts them.
+     *
+     * <p>An argument bound by its slot goes into the void at that slot in
+     * the order of the formation, or, if that one is bound already or taken
+     * by an earlier argument, into the next empty void to the right. An
+     * argument that names its void goes into that void, and only while it
+     * is empty. The list stops at the first argument that finds no void, so
+     * a call that fails gives fewer voids than it has arguments.</p>
+     *
+     * @param value The copy
+     * @param args The arguments
+     * @return The voids, one per argument as far as they go
+     */
+    List<String> voids(final Value value, final List<Argument> args) {
+        final List<String> order = this.program.form(value.form()).order();
+        final List<String> voids = new ArrayList<>(args.size());
+        for (final Argument arg : args) {
+            final String found = Values.vacancy(value, order, voids, arg);
+            if (found.isEmpty()) {
+                break;
+            }
+            voids.add(found);
+        }
+        return voids;
+    }
+
+    /**
      * The full name of a value, as the Python engine printed it:
      * {@code formation@birthplace#tag{bound voids}} for a copy.
      *
@@ -252,6 +280,28 @@ final class Values {
             name = String.valueOf(value.kind());
         }
         return name;
+    }
+
+    private static String vacancy(
+        final Value value, final List<String> order, final List<String> taken,
+        final Argument arg
+    ) {
+        final int first;
+        final int last;
+        if (arg.name().isEmpty()) {
+            first = arg.slot();
+            last = order.size();
+        } else {
+            first = order.indexOf(arg.name());
+            last = first + 1;
+        }
+        String found = "";
+        for (int pos = first; pos >= 0 && pos < last && found.isEmpty(); ++pos) {
+            if ((value.bound() & 1L << pos) == 0 && !taken.contains(order.get(pos))) {
+                found = order.get(pos);
+            }
+        }
+        return found;
     }
 
     private void start() {
