@@ -1,0 +1,335 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# one and two put a cat and a bag into the pool of thing, so the thing read
+# off what check returns is a cat or a bag, and size read off it fails on the
+# cat and is the size of the bag. The argument of box holds both, and the
+# failing one is dropped where it goes into item (rule 3), so item is the size
+# of bag alone.
+sources:
+  os.eo: |
+    [] > os
+      [] > check /Q.os.status
+      [thing] > status
+        thing > @
+  cat.eo: |
+    [] > cat
+  bag.eo: |
+    [] > bag
+      [] > size
+  one.eo: |
+    [] > one
+      os.status cat > @
+  two.eo: |
+    [] > two
+      os.status bag > @
+  box.eo: |
+    [item] > box
+      item > @
+  app.eo: |
+    [] > app
+      box os.check.thing.size > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="true" complete="false" id="Φ.app">
+           <attr name="φ" type="Φ.app.φ"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.bag">
+           <attr name="size" type="Φ.bag.size"/>
+        </type>
+        <type bare="true" complete="true" id="Φ.bag.size"/>
+        <type bare="true" complete="false" id="Φ.box">
+           <attr name="item" type="Φ.box.item" void="true"/>
+           <attr name="φ" type="Φ.box.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="true" complete="true" id="Φ.cat"/>
+        <type bare="true" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.one">
+           <attr name="φ" type="Φ.one.φ"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.os">
+           <attr name="check" type="Φ.os.check"/>
+           <attr name="status" type="Φ.os.status"/>
+        </type>
+        <type bare="true"
+              complete="false"
+              id="Φ.os.check"
+              returns="Φ.os.status"/>
+        <type bare="true" complete="false" id="Φ.os.status">
+           <attr name="thing" type="Φ.os.status.thing" void="true"/>
+           <attr name="φ" type="Φ.os.status.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.two">
+           <attr name="φ" type="Φ.two.φ"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="app" type="Φ.app"/>
+           <attr name="bag" type="Φ.bag"/>
+           <attr name="box" type="Φ.box"/>
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="cat" type="Φ.cat"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="one" type="Φ.one"/>
+           <attr name="os" type="Φ.os"/>
+           <attr name="string" type="Φ.string"/>
+           <attr name="two" type="Φ.two"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.app.φ" name="box" of="Φ.app.φ.ρ"/>
+        <read id="Φ.app.φ.α0" name="size" of="Φ.app.φ.α0.ρ"/>
+        <read id="Φ.app.φ.α0.ρ" name="thing" of="Φ.app.φ.α0.ρ.ρ"/>
+        <read id="Φ.app.φ.α0.ρ.ρ" name="check" of="Φ.app.φ.α0.ρ.ρ.ρ"/>
+        <read id="Φ.app.φ.α0.ρ.ρ.ρ" name="os" of="Φ.app.φ.α0.ρ.ρ.ρ.ρ"/>
+        <read id="Φ.box.φ" name="item" of="Φ.box.φ.ρ"/>
+        <read id="Φ.one.φ" name="status" of="Φ.one.φ.ρ"/>
+        <read id="Φ.one.φ.ρ" name="os" of="Φ.one.φ.ρ.ρ"/>
+        <read id="Φ.one.φ.α0" name="cat" of="Φ.one.φ.α0.ρ"/>
+        <read id="Φ.os.status.φ" name="thing" of="Φ.os.status.φ.ρ"/>
+        <read id="Φ.two.φ" name="status" of="Φ.two.φ.ρ"/>
+        <read id="Φ.two.φ.ρ" name="os" of="Φ.two.φ.ρ.ρ"/>
+        <read id="Φ.two.φ.α0" name="bag" of="Φ.two.φ.α0.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.app.φ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.φ.α0.ρ.ρ.ρ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.box.φ.ρ">
+           <ref loc="Φ.box"/>
+        </type>
+        <type id="Φ.one.φ.ρ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.one.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.os.status.φ.ρ">
+           <ref loc="Φ.os.status"/>
+        </type>
+        <type id="Φ.two.φ.ρ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.two.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+     </heads>
+     <calls>
+        <call loc="Φ.app.φ">
+           <arg loc="Φ.app.φ.α0" n="0"/>
+        </call>
+        <call loc="Φ.one.φ">
+           <arg loc="Φ.one.φ.α0" n="0"/>
+        </call>
+        <call loc="Φ.two.φ">
+           <arg loc="Φ.two.φ.α0" n="0"/>
+        </call>
+     </calls>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app" copies="1">
+      <is loc="Φ.app"/>
+    </o>
+    <o loc="Φ.app.φ" copies="1">
+      <is loc="Φ.bag.size"/>
+    </o>
+    <o loc="Φ.app.φ.α0" copies="1" lands="item">
+      <fails name="Φ.cat.size"/>
+      <is loc="Φ.bag.size"/>
+    </o>
+    <o loc="Φ.app.φ.α0.ρ" copies="1">
+      <is loc="Φ.bag"/>
+      <is loc="Φ.cat"/>
+    </o>
+    <o loc="Φ.app.φ.α0.ρ.ρ" copies="1">
+      <is loc="Φ.os.status"/>
+    </o>
+    <o loc="Φ.app.φ.α0.ρ.ρ.ρ" copies="1">
+      <is loc="Φ.os"/>
+    </o>
+    <o loc="Φ.app.φ.α0.ρ.ρ.ρ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.φ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bag" copies="2">
+      <is loc="Φ.bag"/>
+      <reduced copies="1">
+        <is loc="Φ.bag"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bag.size" copies="2">
+      <is loc="Φ.bag.size"/>
+      <reduced copies="1">
+        <is loc="Φ.bag.size"/>
+      </reduced>
+    </o>
+    <o loc="Φ.box" copies="1">
+      <is loc="Φ.box"/>
+      <reduced copies="1">
+        <is loc="Φ.bag.size"/>
+      </reduced>
+    </o>
+    <o loc="Φ.box.item" copies="1">
+      <is loc="Φ.bag.size"/>
+    </o>
+    <o loc="Φ.box.φ" copies="1">
+      <is loc="Φ.bag.size"/>
+    </o>
+    <o loc="Φ.box.φ.ρ" copies="1">
+      <is loc="Φ.bag.size"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.cat" copies="2">
+      <is loc="Φ.cat"/>
+      <reduced copies="1">
+        <is loc="Φ.cat"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.one" copies="1">
+      <is loc="Φ.one"/>
+    </o>
+    <o loc="Φ.one.φ" copies="1">
+      <is loc="Φ.cat"/>
+    </o>
+    <o loc="Φ.one.φ.α0" copies="1" lands="thing">
+      <is loc="Φ.cat"/>
+    </o>
+    <o loc="Φ.one.φ.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.one.φ.ρ" copies="1">
+      <is loc="Φ.os"/>
+    </o>
+    <o loc="Φ.one.φ.ρ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.os" copies="4">
+      <is loc="Φ.os"/>
+      <reduced copies="3">
+        <is loc="Φ.os"/>
+      </reduced>
+    </o>
+    <o loc="Φ.os.check" copies="2">
+      <is loc="Φ.os.check"/>
+      <reduced copies="1">
+        <is loc="Φ.os.status"/>
+      </reduced>
+    </o>
+    <o loc="Φ.os.check.λ" copies="2">
+      <is loc="Φ.os.status"/>
+    </o>
+    <o loc="Φ.os.status" copies="3">
+      <is loc="Φ.os.status"/>
+      <reduced copies="3">
+        <set copies="1">
+          <is loc="Φ.bag"/>
+        </set>
+        <set copies="1">
+          <is loc="Φ.bag"/>
+          <is loc="Φ.cat"/>
+        </set>
+        <set copies="1">
+          <is loc="Φ.cat"/>
+        </set>
+      </reduced>
+    </o>
+    <o loc="Φ.os.status.thing" copies="3">
+      <set copies="1">
+        <open by="java"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.bag"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.cat"/>
+      </set>
+    </o>
+    <o loc="Φ.os.status.φ" copies="3">
+      <set copies="1">
+        <is loc="Φ.bag"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.bag"/>
+        <is loc="Φ.cat"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.cat"/>
+      </set>
+    </o>
+    <o loc="Φ.os.status.φ.ρ" copies="3">
+      <set copies="1">
+        <is loc="Φ.bag"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.bag"/>
+        <is loc="Φ.cat"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.cat"/>
+      </set>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.two" copies="1">
+      <is loc="Φ.two"/>
+    </o>
+    <o loc="Φ.two.φ" copies="1">
+      <is loc="Φ.bag"/>
+    </o>
+    <o loc="Φ.two.φ.α0" copies="1" lands="thing">
+      <is loc="Φ.bag"/>
+    </o>
+    <o loc="Φ.two.φ.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.two.φ.ρ" copies="1">
+      <is loc="Φ.os"/>
+    </o>
+    <o loc="Φ.two.φ.ρ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+  </answers>

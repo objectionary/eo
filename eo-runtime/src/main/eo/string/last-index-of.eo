@@ -13,35 +13,37 @@
     or.
       or.
         gt.
-          number
-            part.size >> size!
-          txt.size >> tlen!
+          number part.size! >> size
+          tlen
         and.
           size.eq tlen
           not.
             eq.
               substring >> part!
               text >> txt!
-      found.eq -1
+      eq.
+        number >> found
+          rec-index-of >>!
+            minus.
+              number txt.size! >> tlen
+              size
+        -1
     -1
     length.
       string
-        txt.slice
-          0
-          rec-index-of >> found!
-            minus.
-              number tlen
-              size
+        txt.slice 0 found
   [^ idx] >> rec-index-of
     if. > @
       0.eq idx
-      includes.if idx -1
+      if.
+        eq. >> includes
+          txt.slice idx size
+          part
+        idx
+        -1
       includes.if
         idx
         ^.rec-index-of (idx.plus -1).as-number
-    eq. > includes
-      txt.slice idx size
-      part
 
   eq. ++> can-find-no-last-index-of-an-absent-substring
     -1

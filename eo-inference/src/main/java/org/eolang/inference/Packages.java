@@ -4,61 +4,92 @@
  */
 package org.eolang.inference;
 
+import com.jcabi.xml.XML;
+import com.yegor256.tojos.Tojos;
 import java.util.Collection;
 import java.util.HashSet;
 
 /**
- * The locators naming a package and nothing besides it.
+ * What every package of a program holds, the global object {@code Φ} too.
  *
- * <p>A {@code +package foo} puts the objects of its file under {@code Φ.foo}
- * and forms nothing at the prefix itself, so {@code Φ.foo} names no object
- * when no file holds a {@code foo} beside the package. The prefix is still
- * read: {@code Q.foo.oak} is a dispatch {@code .oak} off {@code Φ.foo}, and
- * every {@code +alias foo.oak} is parsed the same way. Left unanswered, the
- * dispatch has no bearer and the whole chain behind it stays unknown
- * (#9358).</p>
+ * <p>A package is an object. The runtime answers {@code Q.io} with a package
+ * object when the folder {@code io} has no {@code io.eo} to form one, so
+ * {@code Q.io.stdout} is valid with nothing but a {@code [] > stdout} in the
+ * package {@code io}. Every prefix of a locator that the program does not form
+ * as an object is such a package, and it gets a row of its own, with the next
+ * level under it as its attributes: {@code Φ} has {@code io}, {@code Φ.io}
+ * has {@code stdout}. The global object is the package at the very top, the
+ * one every chain of names off a bare {@code Φ} is read from.</p>
  *
- * <p>A prefix something else already names is not here. {@code Φ.string} is
- * a package of the runtime and an object of its own, and the row of that
- * object is the better answer, since it says what the object has.</p>
+ * <p>A package row is complete. The build parses, probes and pulls until no
+ * new object turns up, so every object the program names is in front of the
+ * checker, and a name a package lacks is missing for real. A package has no
+ * voids and hands back nothing, and having names of its own it is never
+ * bare.</p>
  *
- * @since 0.77.0
+ * <p>A prefix the program does form as an object keeps its own row, and its
+ * package only adds to it: {@code minus} in the package {@code number} is
+ * {@code Φ.number.minus} and belongs to the {@code Φ.number} of
+ * {@code number.eo} without appearing among the children of that formation.
+ * Reading the object at the top of every file is what finds those attributes,
+ * and the only way to find them. An object that is not a formation, such as
+ * {@code number > pinf}, gets nothing added, since it has no row to add
+ * to.</p>
+ *
+ * @since 0.76.0
  */
 final class Packages {
 
     /**
-     * The locator of everything the program names.
+     * The locators of the formations of the program.
      */
-    private final Collection<String> named;
+    private final Collection<String> owners;
+
+    /**
+     * The object every file of the program is about.
+     */
+    private final Collection<XML> roots;
 
     /**
      * Ctor.
      *
-     * @param locators The locator of everything the program names
+     * @param made The locators of the formations of the program
+     * @param tops The object every file is about
      */
-    Packages(final Collection<String> locators) {
-        this.named = locators;
+    Packages(final Collection<String> made, final Collection<XML> tops) {
+        this.owners = made;
+        this.roots = tops;
     }
 
     /**
-     * The prefixes naming a package and nothing besides it.
+     * Write every package and what it holds into the given table.
      *
-     * @return The locators, each of them the prefix of a name and the name
-     *  of nothing
+     * @param rows The table to fill
      */
-    Collection<String> all() {
-        final Collection<String> taken = new HashSet<>(this.named);
-        final Collection<String> found = new HashSet<>(0);
-        for (final String locator : taken) {
-            int dot = locator.indexOf('.');
-            while (dot > 0) {
-                final String prefix = locator.substring(0, dot);
-                if (!taken.contains(prefix)) {
-                    found.add(prefix);
-                }
-                dot = locator.indexOf('.', dot + 1);
-            }
+    void fill(final Tojos rows) {
+        final Collection<String> objects = new HashSet<>(this.owners);
+        for (final XML root : this.roots) {
+            objects.add(new Noted(root).says("loc"));
         }
-        return found;
+        rows.add("Φ").set("complete", "true");
+        for (final XML root : this.roots) {
+            this.hang(rows, objects, new Noted(root).says("loc"));
+        }
+    }
+
+    private void hang(final Tojos rows, final Collection<String> objects, final String member) {
+        final String owner = member.substring(0, member.lastIndexOf('.'));
+        final boolean folder = !objects.contains(owner);
+        if (folder || this.owners.contains(owner)) {
+            final String name = member.substring(member.lastIndexOf('.') + 1);
+            rows.add(String.join(" ", owner, name))
+                .set("owner", owner)
+                .set("name", name)
+                .set("type", member);
+        }
+        if (folder && owner.contains(".")) {
+            rows.add(owner).set("complete", "true");
+            this.hang(rows, objects, owner);
+        }
     }
 }

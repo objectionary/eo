@@ -1,0 +1,172 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls helper, so a stop keeps its copy as written, where x is an open
+# void. The call of box on it waits for a stop (rule b), and from then on it
+# answers box as it is, so the @ of helper is box.
+sources:
+  box.eo: |
+    [item] > box
+      item > @
+      42 > size
+  helper.eo: |
+    [x] > helper
+      box x > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="false" complete="false" id="Φ.box">
+           <attr name="item" type="Φ.box.item" void="true"/>
+           <attr name="φ" type="Φ.box.φ"/>
+           <attr name="size" type="Φ.box.size"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.helper">
+           <attr name="x" type="Φ.helper.x" void="true"/>
+           <attr name="φ" type="Φ.helper.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="box" type="Φ.box"/>
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="helper" type="Φ.helper"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="string" type="Φ.string"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.box.φ" name="item" of="Φ.box.φ.ρ"/>
+        <read id="Φ.box.size" name="number" of="Φ.box.size.ρ"/>
+        <read id="Φ.box.size.α0" name="bytes" of="Φ.box.size.α0.ρ"/>
+        <read id="Φ.helper.φ" name="box" of="Φ.helper.φ.ρ"/>
+        <read id="Φ.helper.φ.α0" name="x" of="Φ.helper.φ.α0.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.box.φ.ρ">
+           <ref loc="Φ.box"/>
+        </type>
+        <type id="Φ.box.size.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.box.size.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.helper.φ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.helper.φ.α0.ρ">
+           <ref loc="Φ.helper"/>
+        </type>
+        <type id="Φ.box.size.α0.α0">
+           <data/>
+        </type>
+     </heads>
+     <calls>
+        <call loc="Φ.box.size">
+           <arg loc="Φ.box.size.α0" n="0"/>
+        </call>
+        <call loc="Φ.box.size.α0">
+           <arg loc="Φ.box.size.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.helper.φ">
+           <arg loc="Φ.helper.φ.α0" n="0"/>
+        </call>
+     </calls>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.box" copies="1">
+      <is loc="Φ.box"/>
+      <reduced copies="2">
+        <is loc="Φ.box"/>
+      </reduced>
+    </o>
+    <o loc="Φ.box.item" copies="1">
+      <open/>
+    </o>
+    <o loc="Φ.box.size" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.box.size.α0" copies="1" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.box.size.α0.α0" copies="1" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.box.size.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.box.size.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.box.φ" copies="1">
+      <open/>
+    </o>
+    <o loc="Φ.box.φ.ρ" copies="1">
+      <is loc="Φ.box"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.helper" copies="1">
+      <is loc="Φ.helper"/>
+      <reduced copies="1">
+        <is loc="Φ.box"/>
+      </reduced>
+    </o>
+    <o loc="Φ.helper.x" copies="1">
+      <open/>
+    </o>
+    <o loc="Φ.helper.φ" copies="1">
+      <is loc="Φ.box"/>
+    </o>
+    <o loc="Φ.helper.φ.α0" copies="1" lands="item">
+      <open/>
+    </o>
+    <o loc="Φ.helper.φ.α0.ρ" copies="1">
+      <is loc="Φ.box"/>
+    </o>
+    <o loc="Φ.helper.φ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+  </answers>

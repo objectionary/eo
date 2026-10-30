@@ -1,0 +1,133 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# t has nothing but a @, which is base, so t reduces to base, and the next read
+# off t is base.next.
+sources:
+  app.eo: |
+    [] > app
+      t.next > @
+  t.eo: |
+    [] > t
+      base > @
+  base.eo: |
+    [] > base
+      [] > next
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="true" complete="false" id="Φ.app">
+           <attr name="φ" type="Φ.app.φ"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.base">
+           <attr name="next" type="Φ.base.next"/>
+        </type>
+        <type bare="true" complete="true" id="Φ.base.next"/>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.t">
+           <attr name="φ" type="Φ.t.φ"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="app" type="Φ.app"/>
+           <attr name="base" type="Φ.base"/>
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="string" type="Φ.string"/>
+           <attr name="t" type="Φ.t"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.app.φ" name="next" of="Φ.app.φ.ρ"/>
+        <read id="Φ.app.φ.ρ" name="t" of="Φ.app.φ.ρ.ρ"/>
+        <read id="Φ.t.φ" name="base" of="Φ.t.φ.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.app.φ.ρ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.t.φ.ρ">
+           <ref loc="Φ"/>
+        </type>
+     </heads>
+     <calls/>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app" copies="1">
+      <is loc="Φ.app"/>
+    </o>
+    <o loc="Φ.app.φ" copies="1">
+      <is loc="Φ.base.next"/>
+    </o>
+    <o loc="Φ.app.φ.ρ" copies="1">
+      <is loc="Φ.base"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.base" copies="2">
+      <is loc="Φ.base"/>
+      <reduced copies="1">
+        <is loc="Φ.base"/>
+      </reduced>
+    </o>
+    <o loc="Φ.base.next" copies="2">
+      <is loc="Φ.base.next"/>
+      <reduced copies="1">
+        <is loc="Φ.base.next"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.t" copies="2">
+      <is loc="Φ.t"/>
+      <reduced copies="1">
+        <is loc="Φ.base"/>
+      </reduced>
+    </o>
+    <o loc="Φ.t.φ" copies="2">
+      <is loc="Φ.base"/>
+    </o>
+    <o loc="Φ.t.φ.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+  </answers>

@@ -38,10 +38,12 @@
     ? > sockaddr /Q.win32.sockaddr-in
     ? > length /Q.number
   256 > creat
-  [code name] > dir-return
+  [cde nme] > dir-return
     win32.dir-return > called
       code
       name
+    number cde! > code
+    string nme! > name
   17 > eexist
   10022 > einval
   [] > errno /Q.number
@@ -58,10 +60,12 @@
     ? > path /Q.string
   [] > getenv /Q.win32.getenv-return
     ? > name /Q.string
-  [code value] > getenv-return
+  [cde vle] > getenv-return
     win32.getenv-return > called
       code
       value
+    FF-.eq cde! > code
+    string vle! > value
   [] > getpid /Q.number
   2 > inet
   [] > inet-addr /Q.number
@@ -83,11 +87,13 @@
   [] > read /Q.win32.read-return
     ? > descriptor /Q.number
     ? > size /Q.number
-  [code data] > read-return
+  [cde dta] > read-return
     data > @
     win32.read-return > called
       code
       data
+    number cde! > code
+    bytes dta! > data
   [] > recv /Q.win32.read-return
     ? > descriptor /Q.number
     ? > size /Q.number
@@ -98,11 +104,14 @@
   00-00-00-00-00-00-04-00 > reparse
   [] > rmdir /Q.win32.status-return
     ? > path /Q.string
-  [code name message] > search-return
+  [cde nme msg] > search-return
     win32.search-return > called
       code
       name
       message
+    number cde! > code
+    string msg! > message
+    string nme! > name
   [] > send /Q.number
     ? > descriptor /Q.number
     ? > buffer
@@ -119,28 +128,37 @@
     ? > domain /Q.number
     ? > type /Q.number
     ? > protocol /Q.number
-  [code message mode size] > stat-return
+  [cde msg mde sze] > stat-return
     win32.stat-return > called
       code
       message
       mode
       size
+    number cde! > code
+    string msg! > message
+    number mde! > mode
+    number sze! > size
   [] > stat64 /Q.win32.stat-return
     ? > path /Q.string
-  [code message] > status-return
+  [cde msg] > status-return
     win32.status-return > called
       code
       message
+    number cde! > code
+    string msg! > message
   2 > stderr
   0 > stdin
   1 > stdout
   1 > stream
   6 > tcp
-  [code seconds micros] > time-return
+  [cde scnds mcrs] > time-return
     win32.time-return > called
       code
       seconds
       micros
+    number cde! > code
+    number mcrs! > micros
+    number scnds! > seconds
   512 > trunc
   [] > unlink /Q.win32.status-return
     ? > path /Q.string
@@ -178,9 +196,9 @@
   ++> can-compute-the-size-of-a-sockaddr-in
     addr.size.eq 16 > @
     win32.sockaddr-in > addr
-      00-00
-      00-00
-      00-00-00-00
+      i16 00-00
+      i16 00-00
+      i32 00-00-00-00
 
   ++> can-open-a-file-with-the-append-flag
     os.is-windows.not.or > @
@@ -277,7 +295,7 @@
 
   win32.send --> stops-on-send-size-being-negative
     0
-    "ab"
+    "ab".as-bytes
     -0.5
     0
 

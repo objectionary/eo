@@ -3,17 +3,16 @@
 ---
 # A formation whose body the tables say nothing about gets an entry but no
 # row, since a row has to say in which carrier its answer is wrapped, and
-# nothing here says it.
+# nothing here says it: `number` has no `plus`, so the engine cannot tell
+# what the body is. `app` hands `vague` a number, so the engine says that
+# `k` holds one.
 eo:
   vague.eo: |
     [k] > vague
       k.plus 7 > @
-provides: |
-  <provides>
-    <type id="Φ.vague">
-      <attr name="k" type="Φ.vague.k" void="true" holds="Φ.number"/>
-    </type>
-  </provides>
+  app.eo: |
+    [] > app
+      vague 3 > used
 xmir:
   - "//o[@name='e1' and @base='Φ.vague'][not(o[@name='φ'])]"
 copies:

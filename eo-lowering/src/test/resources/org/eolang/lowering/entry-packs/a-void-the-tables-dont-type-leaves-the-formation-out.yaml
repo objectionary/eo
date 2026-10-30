@@ -1,21 +1,20 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# A void the tables say nothing about cannot be planted with nothing in it.
-# The calculus cuts a branch that reaches the bottom there and keeps only the
-# condition under which the run would end, so the atom would lose that branch,
-# the way `bytes.as-i64` once lost its `cant-convert`. The formation gets no
-# entry and stays in EO as its author wrote it.
+# A void the tables name no one object for cannot be planted with nothing in
+# it. The calculus cuts a branch that reaches the bottom there and keeps only
+# the condition under which the run would end, so the atom would lose that
+# branch, the way `bytes.as-i64` once lost its `cant-convert`. The formation
+# gets no entry and stays in EO as its author wrote it. `app` hands `gap` a
+# number for `a` twice, but a number for `b` once and a string the other
+# time, so the engine names two objects for `b`.
 eo:
   gap.eo: |
     [a b] > gap
       a.plus b > @
-provides: |
-  <provides>
-    <type id="Φ.gap">
-      <attr name="a" type="Φ.gap.a" void="true" holds="Φ.number"/>
-      <attr name="b" type="Φ.gap.b" void="true"/>
-    </type>
-  </provides>
+  app.eo: |
+    [] > app
+      gap 1 2 > first
+      gap 3 "four" > second
 xmir:
   - "/object/o[@name='l🌵'][not(o[starts-with(@name, 'e')])]"

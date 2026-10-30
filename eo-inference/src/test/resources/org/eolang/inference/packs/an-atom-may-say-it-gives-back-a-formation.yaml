@@ -1,0 +1,94 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The atom grow says it gives back an oak, a formation of the program, so its
+# λ is an oak. Nobody calls grow, so x stays an open void.
+sources:
+  oak.eo: |
+    [] > oak
+      [] > leaf
+  grow.eo: |
+    [] > grow /Q.oak
+      ? > x
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.grow" returns="Φ.oak">
+           <attr name="x" type="Φ.grow.x" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.oak">
+           <attr name="leaf" type="Φ.oak.leaf"/>
+        </type>
+        <type bare="true" complete="true" id="Φ.oak.leaf"/>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="grow" type="Φ.grow"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="oak" type="Φ.oak"/>
+           <attr name="string" type="Φ.string"/>
+        </type>
+     </objects>
+     <reads/>
+     <heads/>
+     <calls/>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.grow" copies="1">
+      <is loc="Φ.grow"/>
+    </o>
+    <o loc="Φ.grow.x" copies="1">
+      <open/>
+    </o>
+    <o loc="Φ.grow.λ" copies="1">
+      <is loc="Φ.oak"/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.oak" copies="1">
+      <is loc="Φ.oak"/>
+    </o>
+    <o loc="Φ.oak.leaf" copies="1">
+      <is loc="Φ.oak.leaf"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+  </answers>

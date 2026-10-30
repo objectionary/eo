@@ -1,0 +1,102 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# plus is written in number.eo and read in sum.eo, and the @ of sum is
+# number.plus, read off the shared number.
+sources:
+  sum.eo: |
+    [] > sum
+      number.plus > @
+  number.eo: |
+    [@] > number
+      [] > plus
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="false" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+           <attr name="plus" type="Φ.number.plus"/>
+        </type>
+        <type bare="true" complete="true" id="Φ.number.plus"/>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.sum">
+           <attr name="φ" type="Φ.sum.φ"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="string" type="Φ.string"/>
+           <attr name="sum" type="Φ.sum"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.sum.φ" name="plus" of="Φ.sum.φ.ρ"/>
+        <read id="Φ.sum.φ.ρ" name="number" of="Φ.sum.φ.ρ.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.sum.φ.ρ.ρ">
+           <ref loc="Φ"/>
+        </type>
+     </heads>
+     <calls/>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.plus" copies="2">
+      <is loc="Φ.number.plus"/>
+      <reduced copies="1">
+        <is loc="Φ.number.plus"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.sum" copies="1">
+      <is loc="Φ.sum"/>
+    </o>
+    <o loc="Φ.sum.φ" copies="1">
+      <is loc="Φ.number.plus"/>
+    </o>
+    <o loc="Φ.sum.φ.ρ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.sum.φ.ρ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+  </answers>

@@ -40,12 +40,15 @@ import org.xembly.Xembler;
  * <p>A symbol is never given alone. It is wrapped into the type that the
  * stage {@code eo:inference} found for that void, such as a number or a
  * bool, because the body of the object needs the attributes of that type.
- * So an object gets an entry only when every void of it holds a number, a
- * string, a bool, bytes or a tuple. When a void holds any other object, or
- * when {@code eo:inference} does not know what it holds, the object gets
- * no entry at all and stays in EO as it was written. A void left empty
- * would not stop phino: it drops the part of the body that reads that
- * void, and the Java atom would quietly lose that part.</p>
+ * The type is the annotation of the void in {@code facts.xml}, when the
+ * source wrote one, and otherwise the only object {@code answers.xml} names
+ * for the void. So an object gets an entry only when every void of it
+ * holds a number, a string, a bool, bytes or a tuple. When a void holds
+ * any other object, or when {@code eo:inference} does not know what it
+ * holds, the object gets no entry at all and stays in EO as it was
+ * written. A void left empty would not stop phino: it drops the part of
+ * the body that reads that void, and the Java atom would quietly lose that
+ * part.</p>
  *
  * <p>An object gets an entry whatever its body gives, because the Java
  * atom may give back the result of the body as the object it is, for
@@ -85,8 +88,9 @@ import org.xembly.Xembler;
 final class Planting implements Proc<Path> {
 
     /**
-     * The directory with the tables of {@code eo:inference}, which say the
-     * types of the voids and what the bodies give.
+     * The directory with the tables of {@code eo:inference},
+     * {@code facts.xml} and {@code answers.xml}, which say what the voids
+     * hold and what the bodies give.
      */
     private final Path tables;
 
@@ -101,7 +105,7 @@ final class Planting implements Proc<Path> {
 
     @Override
     public void exec(final Path home) throws IOException {
-        for (final String table : new ListOf<>("provides.xml", "links.xml", "atoms.xml")) {
+        for (final String table : new ListOf<>("facts.xml", "answers.xml")) {
             if (!Files.exists(this.tables.resolve(table))) {
                 throw new IllegalStateException(
                     String.format(

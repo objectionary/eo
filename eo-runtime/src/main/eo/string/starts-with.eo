@@ -10,9 +10,8 @@
 [^text substring] > starts-with
   and. > @
     lte.
-      number
-        part.size >> size!
-      txt.size >> length!
+      number part.size! >> size
+      number txt.size!
     eq.
       slice.
         text >> txt!

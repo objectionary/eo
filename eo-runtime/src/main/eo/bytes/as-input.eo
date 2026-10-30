@@ -36,7 +36,7 @@
         size
     [^ data buffer] > input-block
       buffer > @
-      data.size >> available!
+      number data.size! >> available
       [^ size] > read
         if. > @
           size.is-finite.not.or
@@ -49,15 +49,13 @@
             ^.^.input-block
               as-bytes.
                 ^.data.slice
-                  if. >> next!
-                    gt.
-                      number available
-                      size >> requested!
-                    requested
-                    available
-                  minus.
-                    number available
-                    number next
+                  number >> next
+                    if. >>!
+                      available.gt
+                        number size! >> requested
+                      requested
+                      available
+                  available.minus next
               as-bytes.
                 ^.data.slice 0 next
 

@@ -8,20 +8,20 @@
 # number. In the copy, the body moves under `body🌵` and the λ stands beside
 # it, so that every reference to the formation fires the row instead of
 # folding the body, while the entry of the formation itself takes `body🌵`
-# off the planted object, so that its own body is still spelled out.
+# off the planted object, so that its own body is still spelled out. The
+# `ρ` holds `number`, which `twice` is written in, and the body is a call of
+# the atom `plus`, which returns a number.
 eo:
   twice.eo: |
     +package number
 
     [^] > twice
       ^.plus ^ > @
-provides: |
-  <provides>
-    <type id="Φ.number.twice" reduced="Φ.number">
-      <attr name="ρ" type="Φ.number.twice.ρ" void="true" holds="Φ.number"/>
-      <attr name="φ" type="Φ.number.twice.φ"/>
-    </type>
-  </provides>
+  number.eo: |
+    [@] > number
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
 xmir:
   - "//o[@name='e1' and not(@base)]/o[@name='φ' and @base='.body🌵']\
     /o[@base='.twice']/o[1][@base='Φ.number' and not(@as)]\

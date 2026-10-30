@@ -32,9 +32,9 @@
         -3
 
   eq. ++> can-recover-from-an-empty-list-when-taking-the-minimum
-    "recovered"
+    42
     tuple.empty.minimum
-      "recovered" > [msg]
+      42 > [msg]
 
   eq. ++> can-take-a-minimum-of-one-item
     minimum.
