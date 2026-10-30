@@ -9,16 +9,12 @@ taint: is minted by L_clock_now, which has no Java
 eo:
   clock.eo: |
     [] > clock
-      [] > now
+      [^] > now
         ^.at > @
+      [] > at /Q.number
+        ? > ^
 voids:
   - "𝜎1\t9\tρ\tobject"
-links: |
-  <links>
-    <type id="Φ.clock.now.φ">
-      <ref loc="Φ.number"/>
-    </type>
-  </links>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e9">

@@ -1,0 +1,142 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The code of the atom reader declares it holds a number, so reading it off a
+# bare reader answers number, and the eq read off it is number.eq.
+sources:
+  app.eo: |
+    [] > app
+      reader.code.eq > @
+  reader.eo: |
+    [] > reader /Q.bytes
+      ? > code /Q.number
+  number.eo: |
+    [@] > number
+      [x] > eq
+        x > @
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="true" complete="false" id="Φ.app">
+           <attr name="φ" type="Φ.app.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="false" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+           <attr name="eq" type="Φ.number.eq"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number.eq">
+           <attr name="x" type="Φ.number.eq.x" void="true"/>
+           <attr name="φ" type="Φ.number.eq.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.reader" returns="Φ.bytes">
+           <attr holds="Φ.number" name="code" type="Φ.reader.code" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="app" type="Φ.app"/>
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="reader" type="Φ.reader"/>
+           <attr name="string" type="Φ.string"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.app.φ" name="eq" of="Φ.app.φ.ρ"/>
+        <read id="Φ.app.φ.ρ" name="code" of="Φ.app.φ.ρ.ρ"/>
+        <read id="Φ.app.φ.ρ.ρ" name="reader" of="Φ.app.φ.ρ.ρ.ρ"/>
+        <read id="Φ.number.eq.φ" name="x" of="Φ.number.eq.φ.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.app.φ.ρ.ρ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.number.eq.φ.ρ">
+           <ref loc="Φ.number.eq"/>
+        </type>
+     </heads>
+     <calls/>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app" copies="1">
+      <is loc="Φ.app"/>
+    </o>
+    <o loc="Φ.app.φ" copies="1">
+      <is loc="Φ.number.eq"/>
+    </o>
+    <o loc="Φ.app.φ.ρ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.ρ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.ρ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.eq" copies="1">
+      <is loc="Φ.number.eq"/>
+      <reduced copies="2">
+        <is loc="Φ.number.eq"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.eq.x" copies="1">
+      <open/>
+    </o>
+    <o loc="Φ.number.eq.φ" copies="1">
+      <open/>
+    </o>
+    <o loc="Φ.number.eq.φ.ρ" copies="1">
+      <is loc="Φ.number.eq"/>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.reader" copies="1">
+      <is loc="Φ.reader"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.reader.code" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.reader.λ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+  </answers>

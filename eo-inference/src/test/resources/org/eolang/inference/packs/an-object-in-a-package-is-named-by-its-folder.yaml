@@ -1,0 +1,218 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# square sits in the folder shapes and says it is in the package shapes, so it
+# is shapes.square, and the call in app fills its side with a number.
+sources:
+  shapes/square.eo: |
+    +package shapes
+
+    [side] > square
+      side.times side > area
+  app.eo: |
+    [] > app
+      (shapes.square 4).area > @
+  number.eo: |
+    [@] > number
+      [] > times /Q.number
+        ? > ^
+        ? > b /Q.number
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="true" complete="false" id="Φ.app">
+           <attr name="φ" type="Φ.app.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="false" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+           <attr name="times" type="Φ.number.times"/>
+        </type>
+        <type bare="true"
+              complete="false"
+              id="Φ.number.times"
+              returns="Φ.number">
+           <attr name="ρ" rho="Φ.number" type="Φ.number.times.ρ" void="true"/>
+           <attr holds="Φ.number" name="b" type="Φ.number.times.b" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.shapes.square">
+           <attr name="side" type="Φ.shapes.square.side" void="true"/>
+           <attr name="area" type="Φ.shapes.square.area"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="app" type="Φ.app"/>
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="shapes" type="Φ.shapes"/>
+           <attr name="string" type="Φ.string"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.shapes">
+           <attr name="square" type="Φ.shapes.square"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.app.φ" name="area" of="Φ.app.φ.ρ"/>
+        <read id="Φ.app.φ.ρ" name="square" of="Φ.app.φ.ρ.ρ"/>
+        <read id="Φ.app.φ.ρ.ρ" name="shapes" of="Φ.app.φ.ρ.ρ.ρ"/>
+        <read id="Φ.app.φ.ρ.α0" name="number" of="Φ.app.φ.ρ.α0.ρ"/>
+        <read id="Φ.app.φ.ρ.α0.α0" name="bytes" of="Φ.app.φ.ρ.α0.α0.ρ"/>
+        <read id="Φ.shapes.square.area" name="times" of="Φ.shapes.square.area.ρ"/>
+        <read id="Φ.shapes.square.area.ρ"
+              name="side"
+              of="Φ.shapes.square.area.ρ.ρ"/>
+        <read id="Φ.shapes.square.area.α0"
+              name="side"
+              of="Φ.shapes.square.area.α0.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.app.φ.ρ.ρ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.φ.ρ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.φ.ρ.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.shapes.square.area.ρ.ρ">
+           <ref loc="Φ.shapes.square"/>
+        </type>
+        <type id="Φ.shapes.square.area.α0.ρ">
+           <ref loc="Φ.shapes.square"/>
+        </type>
+        <type id="Φ.app.φ.ρ.α0.α0.α0">
+           <data/>
+        </type>
+     </heads>
+     <calls>
+        <call loc="Φ.app.φ.ρ">
+           <arg loc="Φ.app.φ.ρ.α0" n="0"/>
+        </call>
+        <call loc="Φ.app.φ.ρ.α0">
+           <arg loc="Φ.app.φ.ρ.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.app.φ.ρ.α0.α0">
+           <arg loc="Φ.app.φ.ρ.α0.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.shapes.square.area">
+           <arg loc="Φ.shapes.square.area.α0" n="0"/>
+        </call>
+     </calls>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app" copies="1">
+      <is loc="Φ.app"/>
+    </o>
+    <o loc="Φ.app.φ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.app.φ.ρ" copies="1">
+      <is loc="Φ.shapes.square"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.α0" copies="1" lands="side">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.α0.α0" copies="1" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.α0.α0.α0" copies="1" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.app.φ.ρ.α0.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.ρ" copies="1">
+      <is loc="Φ.shapes"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.ρ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.times" copies="1">
+      <is loc="Φ.number.times"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.times.b" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.times.λ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.times.ρ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.shapes" copies="2">
+      <is loc="Φ.shapes"/>
+      <reduced copies="1">
+        <is loc="Φ.shapes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.shapes.square" copies="1">
+      <is loc="Φ.shapes.square"/>
+      <reduced copies="1">
+        <is loc="Φ.shapes.square"/>
+      </reduced>
+    </o>
+    <o loc="Φ.shapes.square.area" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.shapes.square.area.α0" copies="1" lands="b">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.shapes.square.area.α0.ρ" copies="1">
+      <is loc="Φ.shapes.square"/>
+    </o>
+    <o loc="Φ.shapes.square.area.ρ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.shapes.square.area.ρ.ρ" copies="1">
+      <is loc="Φ.shapes.square"/>
+    </o>
+    <o loc="Φ.shapes.square.side" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+  </answers>

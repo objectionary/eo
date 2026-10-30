@@ -9,9 +9,12 @@ number: 31
 taint: ran out of 60 seconds at Φ.a🌵2
 eo:
   number.eo: |
-    [] > number
-      [] > neg
+    [@] > number
+      [^] > neg
         ^.times -1 > @
+      [] > times /Q.number
+        ? > ^
+        ? > b /Q.number
 voids:
   - "𝜎40\t31\tρ\tnumber"
 protocol: |

@@ -21,17 +21,22 @@ eo:
           p.gt 0
           p
           q
+  number.eo: |
+    [@] > number
+      [] > gt /Q.bool
+        ? > ^
+        ? > b /Q.number
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+  app.eo: |
+    [] > app
+      both 1 2 3 4 > used
 voids:
   - "𝜎1\t1\tx\tnumber"
   - "𝜎2\t1\ty\tnumber"
   - "𝜎3\t1\tp\tnumber"
   - "𝜎4\t1\tq\tnumber"
-links: |
-  <links>
-    <type id="Φ.both.φ">
-      <ref loc="Φ.number"/>
-    </type>
-  </links>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e1">

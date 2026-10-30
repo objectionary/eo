@@ -11,12 +11,6 @@ eo:
   yes.eo: |
     [] > yes
       true > @
-provides: |
-  <provides>
-    <type complete="false" id="Φ.yes" reduced="Φ.bool">
-      <attr name="φ" type="Φ.yes.φ"/>
-    </type>
-  </provides>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e75">

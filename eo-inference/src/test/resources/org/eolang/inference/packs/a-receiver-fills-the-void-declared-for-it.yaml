@@ -1,0 +1,155 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# oak.grow elm puts the elm into x and the oak into the ^ grow declares, so
+# grow is the elm it holds.
+sources:
+  app.eo: |
+    [] > app
+      oak.grow elm > @
+  oak.eo: |
+    [] > oak
+      [^ x] > grow
+        x > @
+  elm.eo: |
+    [] > elm
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="true" complete="false" id="Φ.app">
+           <attr name="φ" type="Φ.app.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="true" complete="true" id="Φ.elm"/>
+        <type bare="true" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.oak">
+           <attr name="grow" type="Φ.oak.grow"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.oak.grow">
+           <attr name="ρ" rho="Φ.oak" type="Φ.oak.grow.ρ" void="true"/>
+           <attr name="x" type="Φ.oak.grow.x" void="true"/>
+           <attr name="φ" type="Φ.oak.grow.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="app" type="Φ.app"/>
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="elm" type="Φ.elm"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="oak" type="Φ.oak"/>
+           <attr name="string" type="Φ.string"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.app.φ" name="grow" of="Φ.app.φ.ρ"/>
+        <read id="Φ.app.φ.ρ" name="oak" of="Φ.app.φ.ρ.ρ"/>
+        <read id="Φ.app.φ.α0" name="elm" of="Φ.app.φ.α0.ρ"/>
+        <read id="Φ.oak.grow.φ" name="x" of="Φ.oak.grow.φ.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.app.φ.ρ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.oak.grow.φ.ρ">
+           <ref loc="Φ.oak.grow"/>
+        </type>
+     </heads>
+     <calls>
+        <call loc="Φ.app.φ">
+           <arg loc="Φ.app.φ.α0" n="0"/>
+        </call>
+     </calls>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app" copies="1">
+      <is loc="Φ.app"/>
+    </o>
+    <o loc="Φ.app.φ" copies="1">
+      <is loc="Φ.elm"/>
+    </o>
+    <o loc="Φ.app.φ.α0" copies="1" lands="x">
+      <is loc="Φ.elm"/>
+    </o>
+    <o loc="Φ.app.φ.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.φ.ρ" copies="1">
+      <is loc="Φ.oak"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.elm" copies="2">
+      <is loc="Φ.elm"/>
+      <reduced copies="1">
+        <is loc="Φ.elm"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.oak" copies="2">
+      <is loc="Φ.oak"/>
+      <reduced copies="1">
+        <is loc="Φ.oak"/>
+      </reduced>
+    </o>
+    <o loc="Φ.oak.grow" copies="1">
+      <is loc="Φ.oak.grow"/>
+      <reduced copies="1">
+        <is loc="Φ.elm"/>
+      </reduced>
+    </o>
+    <o loc="Φ.oak.grow.x" copies="1">
+      <is loc="Φ.elm"/>
+    </o>
+    <o loc="Φ.oak.grow.ρ" copies="1">
+      <is loc="Φ.oak"/>
+    </o>
+    <o loc="Φ.oak.grow.φ" copies="1">
+      <is loc="Φ.elm"/>
+    </o>
+    <o loc="Φ.oak.grow.φ.ρ" copies="1">
+      <is loc="Φ.elm"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+  </answers>

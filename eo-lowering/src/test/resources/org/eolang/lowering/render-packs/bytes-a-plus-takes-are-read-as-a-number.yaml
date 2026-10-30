@@ -10,14 +10,16 @@ eo:
   sum.eo: |
     [x] > sum
       x.plus x > @
+  number.eo: |
+    [@] > number
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+  app.eo: |
+    [] > app
+      sum 5 > used
 voids:
   - "𝜎1\t5\tx\tobject"
-links: |
-  <links>
-    <type id="Φ.sum.φ">
-      <ref loc="Φ.number"/>
-    </type>
-  </links>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e5">

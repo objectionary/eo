@@ -6,18 +6,24 @@
 # order too, and the rendering binds each of them to the void it fills. A
 # formation with no `ρ` is reached by its path alone, and a body the
 # tables say is bytes answers bytes around the fresh symbol.
+# `app` hands `glued` a string and bytes, and the body is a call of the
+# atom `concat`, which returns bytes.
 eo:
   glued.eo: |
     [a b] > glued
       a.as-bytes.concat b > @
-provides: |
-  <provides>
-    <type id="Φ.glued" reduced="Φ.bytes">
-      <attr name="a" type="Φ.glued.a" void="true" holds="Φ.string"/>
-      <attr name="b" type="Φ.glued.b" void="true" holds="Φ.bytes"/>
-      <attr name="φ" type="Φ.glued.φ"/>
-    </type>
-  </provides>
+  bytes.eo: |
+    [@] > bytes
+      [] > concat /Q.bytes
+        ? > ^
+        ? > b /Q.bytes
+  string.eo: |
+    [@] > string
+      [] > as-bytes /Q.bytes
+        ? > ^
+  app.eo: |
+    [] > app
+      glued "x" 01- > used
 xmir:
   - "//o[@name='e1']/o[@name='φ' and @base='.body🌵']/o[@base='Φ.glued']\
     /o[@as='a' and @base='Φ.string']"

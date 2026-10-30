@@ -9,21 +9,30 @@ locator: Φ.bytes.xor
 number: 7
 eo:
   bytes.eo: |
-    [] > bytes
-      [b] > xor
+    [@] > bytes
+      [^ b] > xor
         if. > @
           ^.size.as-bytes.eq b.size.as-bytes
           T "bytes.xor requires operands of different lengths"
           ^.or b
+      [] > and /Q.bytes
+        ? > ^
+        ? > b /Q.bytes
+      [] > eq /Q.bool
+        ? > ^
+        ? > b
+      [] > or /Q.bytes
+        ? > ^
+        ? > b /Q.bytes
+      [] > size /Q.number
+        ? > ^
+  number.eo: |
+    [@] > number
+      [] > as-bytes /Q.bytes
+        ? > ^
 voids:
   - "𝜎7\t7\tρ\tbytes"
   - "𝜎8\t7\tb\tbytes"
-links: |
-  <links>
-    <type id="Φ.bytes.xor.φ">
-      <ref loc="Φ.bytes"/>
-    </type>
-  </links>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e7">

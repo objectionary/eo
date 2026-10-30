@@ -1,0 +1,304 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A test is an attribute of the object it is written in, named with p🌵. It is
+# a call like any other, so inc gets a copy for the test with 41 in x.
+sources:
+  inc.eo: |
+    [x] > inc
+      x.plus 1 > @
+
+      eq. ++> adds-one-to-a-number
+        inc 41
+        42
+  number.eo: |
+    [@] > number
+      [] > eq /Q.bool
+        ? > ^
+        ? > b
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+  bool.eo: |
+    [@] > bool
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="true" complete="false" id="Φ.bool">
+           <attr name="φ" type="Φ.bool.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.inc">
+           <attr name="x" type="Φ.inc.x" void="true"/>
+           <attr name="φ" type="Φ.inc.φ"/>
+           <attr name="p🌵adds-one-to-a-number" type="Φ.inc.p🌵adds-one-to-a-number"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.inc.p🌵adds-one-to-a-number">
+           <attr name="φ" type="Φ.inc.p🌵adds-one-to-a-number.φ"/>
+        </type>
+        <type bare="false" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+           <attr name="eq" type="Φ.number.eq"/>
+           <attr name="plus" type="Φ.number.plus"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number.eq" returns="Φ.bool">
+           <attr name="ρ" rho="Φ.number" type="Φ.number.eq.ρ" void="true"/>
+           <attr name="b" type="Φ.number.eq.b" void="true"/>
+        </type>
+        <type bare="true"
+              complete="false"
+              id="Φ.number.plus"
+              returns="Φ.number">
+           <attr name="ρ" rho="Φ.number" type="Φ.number.plus.ρ" void="true"/>
+           <attr holds="Φ.number" name="b" type="Φ.number.plus.b" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="bool" type="Φ.bool"/>
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="inc" type="Φ.inc"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="string" type="Φ.string"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.inc.φ" name="plus" of="Φ.inc.φ.ρ"/>
+        <read id="Φ.inc.φ.ρ" name="x" of="Φ.inc.φ.ρ.ρ"/>
+        <read id="Φ.inc.φ.α0" name="number" of="Φ.inc.φ.α0.ρ"/>
+        <read id="Φ.inc.φ.α0.α0" name="bytes" of="Φ.inc.φ.α0.α0.ρ"/>
+        <read id="Φ.inc.p🌵adds-one-to-a-number.φ"
+              name="eq"
+              of="Φ.inc.p🌵adds-one-to-a-number.φ.ρ"/>
+        <read id="Φ.inc.p🌵adds-one-to-a-number.φ.ρ"
+              name="inc"
+              of="Φ.inc.p🌵adds-one-to-a-number.φ.ρ.ρ"/>
+        <read id="Φ.inc.p🌵adds-one-to-a-number.φ.ρ.α0"
+              name="number"
+              of="Φ.inc.p🌵adds-one-to-a-number.φ.ρ.α0.ρ"/>
+        <read id="Φ.inc.p🌵adds-one-to-a-number.φ.ρ.α0.α0"
+              name="bytes"
+              of="Φ.inc.p🌵adds-one-to-a-number.φ.ρ.α0.α0.ρ"/>
+        <read id="Φ.inc.p🌵adds-one-to-a-number.φ.α0"
+              name="number"
+              of="Φ.inc.p🌵adds-one-to-a-number.φ.α0.ρ"/>
+        <read id="Φ.inc.p🌵adds-one-to-a-number.φ.α0.α0"
+              name="bytes"
+              of="Φ.inc.p🌵adds-one-to-a-number.φ.α0.α0.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.inc.φ.ρ.ρ">
+           <ref loc="Φ.inc"/>
+        </type>
+        <type id="Φ.inc.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.inc.φ.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.inc.p🌵adds-one-to-a-number.φ.ρ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.inc.p🌵adds-one-to-a-number.φ.ρ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.inc.p🌵adds-one-to-a-number.φ.ρ.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.inc.p🌵adds-one-to-a-number.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.inc.p🌵adds-one-to-a-number.φ.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.inc.φ.α0.α0.α0">
+           <data/>
+        </type>
+        <type id="Φ.inc.p🌵adds-one-to-a-number.φ.ρ.α0.α0.α0">
+           <data/>
+        </type>
+        <type id="Φ.inc.p🌵adds-one-to-a-number.φ.α0.α0.α0">
+           <data/>
+        </type>
+     </heads>
+     <calls>
+        <call loc="Φ.inc.φ">
+           <arg loc="Φ.inc.φ.α0" n="0"/>
+        </call>
+        <call loc="Φ.inc.φ.α0">
+           <arg loc="Φ.inc.φ.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.inc.φ.α0.α0">
+           <arg loc="Φ.inc.φ.α0.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.inc.p🌵adds-one-to-a-number.φ">
+           <arg loc="Φ.inc.p🌵adds-one-to-a-number.φ.α0" n="0"/>
+        </call>
+        <call loc="Φ.inc.p🌵adds-one-to-a-number.φ.ρ">
+           <arg loc="Φ.inc.p🌵adds-one-to-a-number.φ.ρ.α0" n="0"/>
+        </call>
+        <call loc="Φ.inc.p🌵adds-one-to-a-number.φ.ρ.α0">
+           <arg loc="Φ.inc.p🌵adds-one-to-a-number.φ.ρ.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.inc.p🌵adds-one-to-a-number.φ.ρ.α0.α0">
+           <arg loc="Φ.inc.p🌵adds-one-to-a-number.φ.ρ.α0.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.inc.p🌵adds-one-to-a-number.φ.α0">
+           <arg loc="Φ.inc.p🌵adds-one-to-a-number.φ.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.inc.p🌵adds-one-to-a-number.φ.α0.α0">
+           <arg loc="Φ.inc.p🌵adds-one-to-a-number.φ.α0.α0.α0" n="0"/>
+        </call>
+     </calls>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bool" copies="1">
+      <is loc="Φ.bool"/>
+    </o>
+    <o loc="Φ.bool.φ" copies="1">
+      <open/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.inc" copies="1">
+      <is loc="Φ.inc"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.inc.p🌵adds-one-to-a-number" copies="1">
+      <is loc="Φ.inc.p🌵adds-one-to-a-number"/>
+    </o>
+    <o loc="Φ.inc.p🌵adds-one-to-a-number.φ" copies="1">
+      <is loc="Φ.bool"/>
+    </o>
+    <o loc="Φ.inc.p🌵adds-one-to-a-number.φ.α0" copies="1" lands="b">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.inc.p🌵adds-one-to-a-number.φ.α0.α0" copies="1" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.inc.p🌵adds-one-to-a-number.φ.α0.α0.α0" copies="1" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.inc.p🌵adds-one-to-a-number.φ.α0.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.inc.p🌵adds-one-to-a-number.φ.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.inc.p🌵adds-one-to-a-number.φ.ρ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.inc.p🌵adds-one-to-a-number.φ.ρ.α0" copies="1" lands="x">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.inc.p🌵adds-one-to-a-number.φ.ρ.α0.α0" copies="1" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.inc.p🌵adds-one-to-a-number.φ.ρ.α0.α0.α0" copies="1" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.inc.p🌵adds-one-to-a-number.φ.ρ.α0.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.inc.p🌵adds-one-to-a-number.φ.ρ.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.inc.p🌵adds-one-to-a-number.φ.ρ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.inc.x" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.inc.φ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.inc.φ.α0" copies="1" lands="b">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.inc.φ.α0.α0" copies="1" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.inc.φ.α0.α0.α0" copies="1" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.inc.φ.α0.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.inc.φ.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.inc.φ.ρ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.inc.φ.ρ.ρ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.eq" copies="1">
+      <is loc="Φ.number.eq"/>
+      <reduced copies="1">
+        <is loc="Φ.bool"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.eq.b" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.eq.λ" copies="1">
+      <is loc="Φ.bool"/>
+    </o>
+    <o loc="Φ.number.eq.ρ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.plus" copies="1">
+      <is loc="Φ.number.plus"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.plus.b" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.plus.λ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.plus.ρ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+  </answers>

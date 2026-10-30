@@ -17,14 +17,19 @@ eo:
           t.plus 1
           t.plus 2
         t.plus 1
+  number.eo: |
+    [@] > number
+      [] > gt /Q.bool
+        ? > ^
+        ? > b /Q.number
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+  app.eo: |
+    [] > app
+      twice 5 > used
 voids:
   - "𝜎1\t1\tt\tnumber"
-links: |
-  <links>
-    <type id="Φ.twice.φ">
-      <ref loc="Φ.number"/>
-    </type>
-  </links>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e1">

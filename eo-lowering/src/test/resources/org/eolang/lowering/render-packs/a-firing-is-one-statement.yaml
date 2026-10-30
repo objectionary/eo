@@ -10,17 +10,14 @@ locator: Φ.number.neg
 number: 217
 eo:
   number.eo: |
-    [] > number
-      [] > neg
+    [@] > number
+      [^] > neg
         ^.times -1 > @
+      [] > times /Q.number
+        ? > ^
+        ? > b /Q.number
 voids:
   - "𝜎200\t217\tρ\tnumber"
-links: |
-  <links>
-    <type id="Φ.number.neg.φ">
-      <ref loc="Φ.number"/>
-    </type>
-  </links>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e217">

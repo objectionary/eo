@@ -11,15 +11,17 @@ eo:
   shifted.eo: |
     [x b] > shifted
       x.right b > @
+  bytes.eo: |
+    [@] > bytes
+      [] > right /Q.bytes
+        ? > ^
+        ? > b /Q.number
+  app.eo: |
+    [] > app
+      shifted 0F- 4 > used
 voids:
   - "𝜎1\t6\tx\tobject"
   - "𝜎2\t6\tb\tobject"
-links: |
-  <links>
-    <type id="Φ.shifted.φ">
-      <ref loc="Φ.bytes"/>
-    </type>
-  </links>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e6">

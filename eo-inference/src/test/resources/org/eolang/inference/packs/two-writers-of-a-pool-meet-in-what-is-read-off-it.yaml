@@ -1,0 +1,357 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Java makes status from the atom check. report calls status with 0 and "ok",
+# and alarm with 1 and 2, so the pool of its text holds a string and a number.
+# The pool is the one place where values of different calls meet, so the text
+# read off what check returns is both at once.
+sources:
+  os.eo: |
+    [] > os
+      [] > check /Q.os.status
+      [code text] > status
+        code > @
+  app.eo: |
+    [] > app
+      os.check.text > @
+  report.eo: |
+    [] > report
+      os.status 0 "ok" > @
+  alarm.eo: |
+    [] > alarm
+      os.status 1 2 > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="true" complete="false" id="Φ.alarm">
+           <attr name="φ" type="Φ.alarm.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.app">
+           <attr name="φ" type="Φ.app.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.os">
+           <attr name="check" type="Φ.os.check"/>
+           <attr name="status" type="Φ.os.status"/>
+        </type>
+        <type bare="true"
+              complete="false"
+              id="Φ.os.check"
+              returns="Φ.os.status"/>
+        <type bare="true" complete="false" id="Φ.os.status">
+           <attr name="code" type="Φ.os.status.code" void="true"/>
+           <attr name="text" type="Φ.os.status.text" void="true"/>
+           <attr name="φ" type="Φ.os.status.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.report">
+           <attr name="φ" type="Φ.report.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="alarm" type="Φ.alarm"/>
+           <attr name="app" type="Φ.app"/>
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="os" type="Φ.os"/>
+           <attr name="report" type="Φ.report"/>
+           <attr name="string" type="Φ.string"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.alarm.φ" name="status" of="Φ.alarm.φ.ρ"/>
+        <read id="Φ.alarm.φ.ρ" name="os" of="Φ.alarm.φ.ρ.ρ"/>
+        <read id="Φ.alarm.φ.α0" name="number" of="Φ.alarm.φ.α0.ρ"/>
+        <read id="Φ.alarm.φ.α0.α0" name="bytes" of="Φ.alarm.φ.α0.α0.ρ"/>
+        <read id="Φ.alarm.φ.α1" name="number" of="Φ.alarm.φ.α1.ρ"/>
+        <read id="Φ.alarm.φ.α1.α0" name="bytes" of="Φ.alarm.φ.α1.α0.ρ"/>
+        <read id="Φ.app.φ" name="text" of="Φ.app.φ.ρ"/>
+        <read id="Φ.app.φ.ρ" name="check" of="Φ.app.φ.ρ.ρ"/>
+        <read id="Φ.app.φ.ρ.ρ" name="os" of="Φ.app.φ.ρ.ρ.ρ"/>
+        <read id="Φ.os.status.φ" name="code" of="Φ.os.status.φ.ρ"/>
+        <read id="Φ.report.φ" name="status" of="Φ.report.φ.ρ"/>
+        <read id="Φ.report.φ.ρ" name="os" of="Φ.report.φ.ρ.ρ"/>
+        <read id="Φ.report.φ.α0" name="number" of="Φ.report.φ.α0.ρ"/>
+        <read id="Φ.report.φ.α0.α0" name="bytes" of="Φ.report.φ.α0.α0.ρ"/>
+        <read id="Φ.report.φ.α1" name="string" of="Φ.report.φ.α1.ρ"/>
+        <read id="Φ.report.φ.α1.α0" name="bytes" of="Φ.report.φ.α1.α0.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.alarm.φ.ρ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.alarm.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.alarm.φ.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.alarm.φ.α1.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.alarm.φ.α1.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.φ.ρ.ρ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.os.status.φ.ρ">
+           <ref loc="Φ.os.status"/>
+        </type>
+        <type id="Φ.report.φ.ρ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.report.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.report.φ.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.report.φ.α1.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.report.φ.α1.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.alarm.φ.α0.α0.α0">
+           <data/>
+        </type>
+        <type id="Φ.alarm.φ.α1.α0.α0">
+           <data/>
+        </type>
+        <type id="Φ.report.φ.α0.α0.α0">
+           <data/>
+        </type>
+        <type id="Φ.report.φ.α1.α0.α0">
+           <data/>
+        </type>
+     </heads>
+     <calls>
+        <call loc="Φ.alarm.φ">
+           <arg loc="Φ.alarm.φ.α0" n="0"/>
+           <arg loc="Φ.alarm.φ.α1" n="1"/>
+        </call>
+        <call loc="Φ.alarm.φ.α0">
+           <arg loc="Φ.alarm.φ.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.alarm.φ.α0.α0">
+           <arg loc="Φ.alarm.φ.α0.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.alarm.φ.α1">
+           <arg loc="Φ.alarm.φ.α1.α0" n="0"/>
+        </call>
+        <call loc="Φ.alarm.φ.α1.α0">
+           <arg loc="Φ.alarm.φ.α1.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.report.φ">
+           <arg loc="Φ.report.φ.α0" n="0"/>
+           <arg loc="Φ.report.φ.α1" n="1"/>
+        </call>
+        <call loc="Φ.report.φ.α0">
+           <arg loc="Φ.report.φ.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.report.φ.α0.α0">
+           <arg loc="Φ.report.φ.α0.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.report.φ.α1">
+           <arg loc="Φ.report.φ.α1.α0" n="0"/>
+        </call>
+        <call loc="Φ.report.φ.α1.α0">
+           <arg loc="Φ.report.φ.α1.α0.α0" n="0"/>
+        </call>
+     </calls>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.alarm" copies="1">
+      <is loc="Φ.alarm"/>
+    </o>
+    <o loc="Φ.alarm.φ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.alarm.φ.α0" copies="1" lands="code">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.alarm.φ.α0.α0" copies="1" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.alarm.φ.α0.α0.α0" copies="1" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.alarm.φ.α0.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.alarm.φ.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.alarm.φ.α1" copies="1" lands="text">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.alarm.φ.α1.α0" copies="1" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.alarm.φ.α1.α0.α0" copies="1" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.alarm.φ.α1.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.alarm.φ.α1.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.alarm.φ.ρ" copies="1">
+      <is loc="Φ.os"/>
+    </o>
+    <o loc="Φ.alarm.φ.ρ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app" copies="1">
+      <is loc="Φ.app"/>
+    </o>
+    <o loc="Φ.app.φ" copies="1">
+      <is loc="Φ.number"/>
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.app.φ.ρ" copies="1">
+      <is loc="Φ.os.status"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.ρ" copies="1">
+      <is loc="Φ.os"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.ρ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.os" copies="4">
+      <is loc="Φ.os"/>
+      <reduced copies="3">
+        <is loc="Φ.os"/>
+      </reduced>
+    </o>
+    <o loc="Φ.os.check" copies="2">
+      <is loc="Φ.os.check"/>
+      <reduced copies="1">
+        <is loc="Φ.os.status"/>
+      </reduced>
+    </o>
+    <o loc="Φ.os.check.λ" copies="2">
+      <is loc="Φ.os.status"/>
+    </o>
+    <o loc="Φ.os.status" copies="3">
+      <is loc="Φ.os.status"/>
+      <reduced copies="3">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.os.status.code" copies="3">
+      <set copies="2">
+        <is loc="Φ.number"/>
+      </set>
+      <set copies="1">
+        <open by="java"/>
+      </set>
+    </o>
+    <o loc="Φ.os.status.text" copies="3">
+      <set copies="1">
+        <open by="java"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.number"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.string"/>
+      </set>
+    </o>
+    <o loc="Φ.os.status.φ" copies="3">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.os.status.φ.ρ" copies="3">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.report" copies="1">
+      <is loc="Φ.report"/>
+    </o>
+    <o loc="Φ.report.φ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.report.φ.α0" copies="1" lands="code">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.report.φ.α0.α0" copies="1" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.report.φ.α0.α0.α0" copies="1" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.report.φ.α0.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.report.φ.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.report.φ.α1" copies="1" lands="text">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.report.φ.α1.α0" copies="1" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.report.φ.α1.α0.α0" copies="1" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.report.φ.α1.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.report.φ.α1.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.report.φ.ρ" copies="1">
+      <is loc="Φ.os"/>
+    </o>
+    <o loc="Φ.report.φ.ρ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+      <reduced copies="1">
+        <is loc="Φ.string"/>
+      </reduced>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+  </answers>

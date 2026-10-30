@@ -83,10 +83,9 @@ final class MjLowerTest {
     void createsItsFolderWhenPhinoReportsThePinnedVersion(@Mktmp final Path temp)
         throws IOException {
         final Path home = new Seqdir(temp.resolve("target"), 2).dirs().once("lowering");
-        new FakeMaven(temp)
+        MjLowerTest.inferred(temp)
             .with("lowering", true)
             .with("binary", MjLowerTest.binary(temp))
-            .with("tables", MjLowerTest.tables(temp).toFile())
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "the goal must make the folder it was given, but it didnt",
@@ -101,11 +100,10 @@ final class MjLowerTest {
         throws IOException {
         final MavenProjectStub project = new MavenProjectStub();
         project.setCompileSourceRoots(new ArrayList<>(0));
-        new FakeMaven(temp)
+        MjLowerTest.inferred(temp)
             .with("project", project)
             .with("lowering", true)
             .with("binary", MjLowerTest.binary(temp))
-            .with("tables", MjLowerTest.tables(temp).toFile())
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "the goal must hand its atoms to javac as a source root, but it didnt",
@@ -124,13 +122,10 @@ final class MjLowerTest {
     void pointsTheTranspilerAtTheSourceItPatched(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "the goal must hand the transpiler the source with the atom in it, but it didnt",
-            new FakeMaven(temp)
-                .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
-                .execute(MjParse.class)
+            MjLowerTest.inferred(temp)
                 .with("lowering", true)
                 .with("binary", MjLowerTest.binary(temp, 0, MjLowerTest.rooted()))
-                .with("tables", MjLowerTest.tables(temp).toFile())
-                .execute(MjLower.class)
+                    .execute(MjLower.class)
                 .foreignTojos()
                 .find("foo.x.main")
                 .xmir(),
@@ -145,9 +140,7 @@ final class MjLowerTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void ignoresTheCopyAnEarlierBuildPatched(@Mktmp final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp)
-            .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
-            .execute(MjParse.class);
+        final FakeMaven maven = MjLowerTest.inferred(temp);
         Files.write(
             Files.createDirectories(
                 new Seqdir(temp.resolve("target"), 2).dirs().once("lowering").resolve("4-patched")
@@ -159,8 +152,7 @@ final class MjLowerTest {
             maven
                 .with("lowering", true)
                 .with("binary", MjLowerTest.binary(temp))
-                .with("tables", MjLowerTest.tables(temp).toFile())
-                .execute(MjLower.class)
+                    .execute(MjLower.class)
                 .foreignTojos()
                 .find("foo.x.main")
                 .xmir(),
@@ -178,13 +170,10 @@ final class MjLowerTest {
     @DisabledOnOs(OS.WINDOWS)
     void keepsTheProtocolOfARunOutOfTheBudgetItWasGiven(@Mktmp final Path temp)
         throws IOException {
-        new FakeMaven(temp)
-            .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
-            .execute(MjParse.class)
+        MjLowerTest.inferred(temp)
             .with("lowering", true)
             .with("budget", 1)
             .with("binary", MjLowerTest.binary(temp, 1, MjLowerTest.expired()))
-            .with("tables", MjLowerTest.tables(temp).toFile())
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "a run out of its budget must keep its protocol for study, but it doesnt",
@@ -198,13 +187,10 @@ final class MjLowerTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void savesTheTextOfEveryEntryWhenAsked(@Mktmp final Path temp) throws IOException {
-        new FakeMaven(temp)
-            .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
-            .execute(MjParse.class)
+        MjLowerTest.inferred(temp)
             .with("lowering", true)
             .with("texts", true)
             .with("binary", MjLowerTest.binary(temp))
-            .with("tables", MjLowerTest.tables(temp).toFile())
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "the goal must save the text of an entry when asked, but it didnt",
@@ -219,13 +205,10 @@ final class MjLowerTest {
     @DisabledOnOs(OS.WINDOWS)
     void morphsNoEntryTheFilterOfTheIncludedDoesntMatch(@Mktmp final Path temp)
         throws IOException {
-        new FakeMaven(temp)
-            .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
-            .execute(MjParse.class)
+        MjLowerTest.inferred(temp)
             .with("lowering", true)
             .with("only", "Φ\\.gapped")
             .with("binary", MjLowerTest.binary(temp))
-            .with("tables", MjLowerTest.tables(temp).toFile())
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "the goal must not morph an entry that its filter doesnt include, but it did",
@@ -238,13 +221,10 @@ final class MjLowerTest {
     @DisabledOnOs(OS.WINDOWS)
     void morphsNoEntryTheFilterOfTheExcludedMatches(@Mktmp final Path temp)
         throws IOException {
-        new FakeMaven(temp)
-            .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
-            .execute(MjParse.class)
+        MjLowerTest.inferred(temp)
             .with("lowering", true)
             .with("never", ".*gap")
             .with("binary", MjLowerTest.binary(temp))
-            .with("tables", MjLowerTest.tables(temp).toFile())
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "the goal must not morph an entry that its filter excludes, but it did",
@@ -257,13 +237,10 @@ final class MjLowerTest {
     @DisabledOnOs(OS.WINDOWS)
     void handsPhinoTheNumberOfStepsItWasGiven(@Mktmp final Path temp) throws IOException {
         final int steps = new SecureRandom().nextInt(1000) + 1;
-        new FakeMaven(temp)
-            .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
-            .execute(MjParse.class)
+        MjLowerTest.inferred(temp)
             .with("lowering", true)
             .with("steps", steps)
             .with("binary", MjLowerTest.binary(temp))
-            .with("tables", MjLowerTest.tables(temp).toFile())
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "the goal must hand phino the number of steps it was given, but it didnt",
@@ -275,13 +252,10 @@ final class MjLowerTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void pinsPhinoToTheVersionItWasGiven(@Mktmp final Path temp) throws IOException {
-        new FakeMaven(temp)
-            .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
-            .execute(MjParse.class)
+        MjLowerTest.inferred(temp)
             .with("lowering", true)
             .with("pin", "0.7.33")
             .with("binary", MjLowerTest.binary(temp, "0.7.33"))
-            .with("tables", MjLowerTest.tables(temp).toFile())
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "the goal must pin phino to the version it was given, but it didnt",
@@ -294,13 +268,10 @@ final class MjLowerTest {
     @DisabledOnOs(OS.WINDOWS)
     void handsPhinoTheNumberOfLoopsItWasGiven(@Mktmp final Path temp) throws IOException {
         final int loops = new SecureRandom().nextInt(50) + 1;
-        new FakeMaven(temp)
-            .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
-            .execute(MjParse.class)
+        MjLowerTest.inferred(temp)
             .with("lowering", true)
             .with("loops", loops)
             .with("binary", MjLowerTest.binary(temp))
-            .with("tables", MjLowerTest.tables(temp).toFile())
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "the goal must hand phino the number of loops it was given, but it didnt",
@@ -313,12 +284,9 @@ final class MjLowerTest {
     @DisabledOnOs(OS.WINDOWS)
     void plantsTheEntriesOfTheProgramItCompiled(@Mktmp final Path temp) throws IOException {
         final Path home = new Seqdir(temp.resolve("target"), 2).dirs().once("lowering");
-        new FakeMaven(temp)
-            .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
-            .execute(MjParse.class)
+        MjLowerTest.inferred(temp)
             .with("lowering", true)
             .with("binary", MjLowerTest.binary(temp))
-            .with("tables", MjLowerTest.tables(temp).toFile())
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "the goal must plant the formations of the program it compiled, but it didnt",
@@ -433,24 +401,19 @@ final class MjLowerTest {
         );
     }
 
-    private static Path tables(final Path temp) throws IOException {
-        final Path made = Files.createDirectories(temp.resolve("tables"));
-        Files.write(
-            made.resolve("provides.xml"),
-            String.join(
-                "",
-                "<provides><type id='Φ.gap'>",
-                "<attr name='a' void='true' holds='Φ.number'/>",
-                "<attr name='b' void='true' holds='Φ.number'/>",
-                "</type></provides>"
-            ).getBytes(StandardCharsets.UTF_8)
+    private static FakeMaven inferred(final Path temp) throws IOException {
+        return new FakeMaven(temp)
+            .withProgram(String.format("[a b] > gap%n  a.plus b > @%n"))
+            .withProgram(String.format("[] > app%n  gap 2 5 > used%n"))
+            .withProgram(String.format("[@] > bytes%n"))
+            .withProgram(MjLowerTest.number())
+            .execute(MjParse.class)
+            .execute(MjInference.class);
+    }
+
+    private static String number() {
+        return String.format(
+            "[@] > number%n  [] > plus /Q.number%n    ? > ^%n    ? > b /Q.number%n"
         );
-        Files.write(
-            made.resolve("links.xml"),
-            "<links><type id='Φ.gap.φ'><ref loc='Φ.number'/></type></links>"
-                .getBytes(StandardCharsets.UTF_8)
-        );
-        Files.write(made.resolve("atoms.xml"), "<atoms/>".getBytes(StandardCharsets.UTF_8));
-        return made;
     }
 }

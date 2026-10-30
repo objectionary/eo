@@ -1,0 +1,157 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# pair 1 fills left and leaves right empty. The @ of pair is left, so half is a
+# number. Nobody reads half, so that copy does not count, and pair is walked as
+# written, with left and right both open.
+sources:
+  app.eo: |
+    [] > app
+      pair 1 > half
+  pair.eo: |
+    [left right] > pair
+      left > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="false" complete="true" id="Φ.app">
+           <attr name="half" type="Φ.app.half"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.pair">
+           <attr name="left" type="Φ.pair.left" void="true"/>
+           <attr name="right" type="Φ.pair.right" void="true"/>
+           <attr name="φ" type="Φ.pair.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="app" type="Φ.app"/>
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="pair" type="Φ.pair"/>
+           <attr name="string" type="Φ.string"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.app.half" name="pair" of="Φ.app.half.ρ"/>
+        <read id="Φ.app.half.α0" name="number" of="Φ.app.half.α0.ρ"/>
+        <read id="Φ.app.half.α0.α0" name="bytes" of="Φ.app.half.α0.α0.ρ"/>
+        <read id="Φ.pair.φ" name="left" of="Φ.pair.φ.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.app.half.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.half.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.half.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.pair.φ.ρ">
+           <ref loc="Φ.pair"/>
+        </type>
+        <type id="Φ.app.half.α0.α0.α0">
+           <data/>
+        </type>
+     </heads>
+     <calls>
+        <call loc="Φ.app.half">
+           <arg loc="Φ.app.half.α0" n="0"/>
+        </call>
+        <call loc="Φ.app.half.α0">
+           <arg loc="Φ.app.half.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.app.half.α0.α0">
+           <arg loc="Φ.app.half.α0.α0.α0" n="0"/>
+        </call>
+     </calls>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app" copies="1">
+      <is loc="Φ.app"/>
+    </o>
+    <o loc="Φ.app.half" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.app.half.α0" copies="1" lands="left">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.app.half.α0.α0" copies="1" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.app.half.α0.α0.α0" copies="1" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.app.half.α0.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.half.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.half.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.pair" copies="1">
+      <is loc="Φ.pair"/>
+      <reduced copies="1">
+        <is loc="Φ.pair"/>
+      </reduced>
+    </o>
+    <o loc="Φ.pair.left" copies="1">
+      <open/>
+    </o>
+    <o loc="Φ.pair.right" copies="1">
+      <open/>
+    </o>
+    <o loc="Φ.pair.φ" copies="1">
+      <open/>
+    </o>
+    <o loc="Φ.pair.φ.ρ" copies="1">
+      <is loc="Φ.pair"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+  </answers>

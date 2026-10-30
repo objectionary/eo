@@ -12,14 +12,16 @@ eo:
   wrap.eo: |
     [q] > wrap
       q.and FF- > @
+  bytes.eo: |
+    [@] > bytes
+      [] > and /Q.bytes
+        ? > ^
+        ? > b /Q.bytes
+  app.eo: |
+    [] > app
+      wrap 0F- > used
 voids:
   - "𝜎1\t1\tq\tbytes"
-links: |
-  <links>
-    <type id="Φ.wrap.φ">
-      <ref loc="Φ.bytes"/>
-    </type>
-  </links>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e1">

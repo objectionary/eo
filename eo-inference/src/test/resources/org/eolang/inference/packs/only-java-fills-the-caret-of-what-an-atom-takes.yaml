@@ -1,0 +1,178 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The formation handed to the atom run declares its ^ and nobody binds it, so
+# only Java fills that ^, and the answers say so.
+sources:
+  jobs.eo: |
+    [] > jobs
+      [] > run /Q.number
+        ? > job
+  app.eo: |
+    [] > app
+      jobs.run > @
+        [^]
+          42 > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="true" complete="false" id="Φ.app">
+           <attr name="φ" type="Φ.app.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.app.φ.α0">
+           <attr name="ρ" type="Φ.app.φ.α0.ρ" void="true"/>
+           <attr name="φ" type="Φ.app.φ.α0.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.jobs">
+           <attr name="run" type="Φ.jobs.run"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.jobs.run" returns="Φ.number">
+           <attr name="job" type="Φ.jobs.run.job" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="app" type="Φ.app"/>
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="jobs" type="Φ.jobs"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="string" type="Φ.string"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.app.φ" name="run" of="Φ.app.φ.ρ"/>
+        <read id="Φ.app.φ.ρ" name="jobs" of="Φ.app.φ.ρ.ρ"/>
+        <read id="Φ.app.φ.α0.φ" name="number" of="Φ.app.φ.α0.φ.ρ"/>
+        <read id="Φ.app.φ.α0.φ.α0" name="bytes" of="Φ.app.φ.α0.φ.α0.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.app.φ.ρ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.φ.α0.φ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.φ.α0.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.φ.α0.φ.α0.α0">
+           <data/>
+        </type>
+     </heads>
+     <calls>
+        <call loc="Φ.app.φ">
+           <arg loc="Φ.app.φ.α0" n="0"/>
+        </call>
+        <call loc="Φ.app.φ.α0.φ">
+           <arg loc="Φ.app.φ.α0.φ.α0" n="0"/>
+        </call>
+        <call loc="Φ.app.φ.α0.φ.α0">
+           <arg loc="Φ.app.φ.α0.φ.α0.α0" n="0"/>
+        </call>
+     </calls>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app" copies="1">
+      <is loc="Φ.app"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.app.φ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.app.φ.α0" copies="1" lands="job">
+      <is loc="Φ.app.φ.α0"/>
+    </o>
+    <o loc="Φ.app.φ.α0.ρ" copies="2">
+      <set copies="1">
+        <fails name="ρ" by="java"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.number"/>
+      </set>
+    </o>
+    <o loc="Φ.app.φ.α0.φ" copies="2">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.app.φ.α0.φ.α0" copies="2" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.app.φ.α0.φ.α0.α0" copies="2" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.app.φ.α0.φ.α0.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.φ.α0.φ.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.φ.ρ" copies="1">
+      <is loc="Φ.jobs"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.jobs" copies="2">
+      <is loc="Φ.jobs"/>
+      <reduced copies="1">
+        <is loc="Φ.jobs"/>
+      </reduced>
+    </o>
+    <o loc="Φ.jobs.run" copies="1">
+      <is loc="Φ.jobs.run"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.jobs.run.job" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.jobs.run.λ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+  </answers>

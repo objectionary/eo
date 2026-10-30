@@ -1,0 +1,206 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# two hands its y to one, and one is what its x holds, so two u is a u, and
+# held.next is the next of u.
+sources:
+  one.eo: |
+    [x] > one
+      x > @
+  two.eo: |
+    [y] > two
+      one y > @
+  u.eo: |
+    [] > u
+      [] > next
+  app.eo: |
+    [] > app
+      two u > held
+      held.next > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="false" complete="false" id="Φ.app">
+           <attr name="held" type="Φ.app.held"/>
+           <attr name="φ" type="Φ.app.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.one">
+           <attr name="x" type="Φ.one.x" void="true"/>
+           <attr name="φ" type="Φ.one.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.two">
+           <attr name="y" type="Φ.two.y" void="true"/>
+           <attr name="φ" type="Φ.two.φ"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.u">
+           <attr name="next" type="Φ.u.next"/>
+        </type>
+        <type bare="true" complete="true" id="Φ.u.next"/>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="app" type="Φ.app"/>
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="one" type="Φ.one"/>
+           <attr name="string" type="Φ.string"/>
+           <attr name="two" type="Φ.two"/>
+           <attr name="u" type="Φ.u"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.app.held" name="two" of="Φ.app.held.ρ"/>
+        <read id="Φ.app.held.α0" name="u" of="Φ.app.held.α0.ρ"/>
+        <read id="Φ.app.φ" name="next" of="Φ.app.φ.ρ"/>
+        <read id="Φ.app.φ.ρ" name="held" of="Φ.app.φ.ρ.ρ"/>
+        <read id="Φ.one.φ" name="x" of="Φ.one.φ.ρ"/>
+        <read id="Φ.two.φ" name="one" of="Φ.two.φ.ρ"/>
+        <read id="Φ.two.φ.α0" name="y" of="Φ.two.φ.α0.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.app.held.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.held.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.φ.ρ.ρ">
+           <ref loc="Φ.app"/>
+        </type>
+        <type id="Φ.one.φ.ρ">
+           <ref loc="Φ.one"/>
+        </type>
+        <type id="Φ.two.φ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.two.φ.α0.ρ">
+           <ref loc="Φ.two"/>
+        </type>
+     </heads>
+     <calls>
+        <call loc="Φ.app.held">
+           <arg loc="Φ.app.held.α0" n="0"/>
+        </call>
+        <call loc="Φ.two.φ">
+           <arg loc="Φ.two.φ.α0" n="0"/>
+        </call>
+     </calls>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app" copies="1">
+      <is loc="Φ.app"/>
+      <reduced copies="1">
+        <is loc="Φ.app"/>
+      </reduced>
+    </o>
+    <o loc="Φ.app.held" copies="1">
+      <is loc="Φ.u"/>
+    </o>
+    <o loc="Φ.app.held.α0" copies="1" lands="y">
+      <is loc="Φ.u"/>
+    </o>
+    <o loc="Φ.app.held.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.held.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.φ" copies="1">
+      <is loc="Φ.u.next"/>
+    </o>
+    <o loc="Φ.app.φ.ρ" copies="1">
+      <is loc="Φ.u"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.ρ" copies="1">
+      <is loc="Φ.app"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.one" copies="1">
+      <is loc="Φ.one"/>
+      <reduced copies="1">
+        <is loc="Φ.u"/>
+      </reduced>
+    </o>
+    <o loc="Φ.one.x" copies="1">
+      <is loc="Φ.u"/>
+    </o>
+    <o loc="Φ.one.φ" copies="1">
+      <is loc="Φ.u"/>
+    </o>
+    <o loc="Φ.one.φ.ρ" copies="1">
+      <is loc="Φ.u"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.two" copies="1">
+      <is loc="Φ.two"/>
+      <reduced copies="1">
+        <is loc="Φ.u"/>
+      </reduced>
+    </o>
+    <o loc="Φ.two.y" copies="1">
+      <is loc="Φ.u"/>
+    </o>
+    <o loc="Φ.two.φ" copies="1">
+      <is loc="Φ.u"/>
+    </o>
+    <o loc="Φ.two.φ.α0" copies="1" lands="x">
+      <is loc="Φ.u"/>
+    </o>
+    <o loc="Φ.two.φ.α0.ρ" copies="1">
+      <is loc="Φ.u"/>
+    </o>
+    <o loc="Φ.two.φ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.u" copies="2">
+      <is loc="Φ.u"/>
+      <reduced copies="1">
+        <is loc="Φ.u"/>
+      </reduced>
+    </o>
+    <o loc="Φ.u.next" copies="2">
+      <is loc="Φ.u.next"/>
+      <reduced copies="1">
+        <is loc="Φ.u.next"/>
+      </reduced>
+    </o>
+  </answers>

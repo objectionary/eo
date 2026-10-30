@@ -1,0 +1,191 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# grip calls hold back with an oak, and hold hands its m on to keep, so the k of
+# keep is an oak as well.
+sources:
+  oak.eo: |
+    [] > oak
+  keep.eo: |
+    [k] > keep
+  grip.eo: |
+    [] > grip /Q.bytes
+      ? > scope /{Q.oak}
+  app.eo: |
+    [] > app
+      grip hold > @
+      [m] > hold
+        keep m > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="false" complete="false" id="Φ.app">
+           <attr name="φ" type="Φ.app.φ"/>
+           <attr name="hold" type="Φ.app.hold"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.app.hold">
+           <attr name="m" type="Φ.app.hold.m" void="true"/>
+           <attr name="φ" type="Φ.app.hold.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.grip" returns="Φ.bytes">
+           <attr args="Φ.oak" name="scope" type="Φ.grip.scope" void="true"/>
+        </type>
+        <type bare="true" complete="true" id="Φ.keep">
+           <attr name="k" type="Φ.keep.k" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+        </type>
+        <type bare="true" complete="true" id="Φ.oak"/>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="app" type="Φ.app"/>
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="grip" type="Φ.grip"/>
+           <attr name="keep" type="Φ.keep"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="oak" type="Φ.oak"/>
+           <attr name="string" type="Φ.string"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.app.φ" name="grip" of="Φ.app.φ.ρ"/>
+        <read id="Φ.app.φ.α0" name="hold" of="Φ.app.φ.α0.ρ"/>
+        <read id="Φ.app.hold.φ" name="keep" of="Φ.app.hold.φ.ρ"/>
+        <read id="Φ.app.hold.φ.α0" name="m" of="Φ.app.hold.φ.α0.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.app.φ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.φ.α0.ρ">
+           <ref loc="Φ.app"/>
+        </type>
+        <type id="Φ.app.hold.φ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.hold.φ.α0.ρ">
+           <ref loc="Φ.app.hold"/>
+        </type>
+     </heads>
+     <calls>
+        <call loc="Φ.app.φ">
+           <arg loc="Φ.app.φ.α0" n="0"/>
+        </call>
+        <call loc="Φ.app.hold.φ">
+           <arg loc="Φ.app.hold.φ.α0" n="0"/>
+        </call>
+     </calls>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app" copies="1">
+      <is loc="Φ.app"/>
+      <reduced copies="1">
+        <is loc="Φ.app"/>
+      </reduced>
+    </o>
+    <o loc="Φ.app.hold" copies="1">
+      <is loc="Φ.app.hold"/>
+      <reduced copies="2">
+        <set copies="1">
+          <is loc="Φ.app.hold"/>
+        </set>
+        <set copies="1">
+          <is loc="Φ.keep"/>
+        </set>
+      </reduced>
+    </o>
+    <o loc="Φ.app.hold.m" copies="1">
+      <is loc="Φ.oak"/>
+    </o>
+    <o loc="Φ.app.hold.φ" copies="1">
+      <is loc="Φ.keep"/>
+    </o>
+    <o loc="Φ.app.hold.φ.α0" copies="1" lands="k">
+      <is loc="Φ.oak"/>
+    </o>
+    <o loc="Φ.app.hold.φ.α0.ρ" copies="1">
+      <is loc="Φ.keep"/>
+    </o>
+    <o loc="Φ.app.hold.φ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.app.φ.α0" copies="1" lands="scope">
+      <is loc="Φ.app.hold"/>
+    </o>
+    <o loc="Φ.app.φ.α0.ρ" copies="1">
+      <is loc="Φ.app"/>
+    </o>
+    <o loc="Φ.app.φ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.grip" copies="1">
+      <is loc="Φ.grip"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.grip.scope" copies="1">
+      <is loc="Φ.app.hold"/>
+    </o>
+    <o loc="Φ.grip.λ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.keep" copies="1">
+      <is loc="Φ.keep"/>
+      <reduced copies="1">
+        <is loc="Φ.keep"/>
+      </reduced>
+    </o>
+    <o loc="Φ.keep.k" copies="1">
+      <is loc="Φ.oak"/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.oak" copies="2">
+      <is loc="Φ.oak"/>
+      <reduced copies="1">
+        <is loc="Φ.oak"/>
+      </reduced>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+  </answers>
