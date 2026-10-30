@@ -589,7 +589,7 @@ world
 
 R-3.12.1. After an object body in an argument position, `:label` may appear, setting the attribute the argument attaches to.
 R-3.12.2. `:N` (digit) maps to `α0`, `α1`, … positional slot names.
-R-3.12.2a. `:^` maps to `ρ`, binding the argument to the receiver the callee declares (R-3.4.11), so `lt x:0 y:^` fills `lt`'s `ρ` with `y`.
+R-3.12.2a. `:^` is forbidden: dispatch fills the receiver the callee declares (R-3.4.11), so it cannot be filled by an argument binding. Use `y.lt x` to dispatch `lt` from `y` and bind `x` to its first non-receiver void.
 R-3.12.3. Binding is forbidden inside formation context — plain children carry their name via the name suffix, not the binding (§6.2).
 R-3.12.4. Binding rules in same-indent groups (§6.6) apply.
 
@@ -1279,7 +1279,7 @@ R-9.2.4. **Scope resolution adds no hops.** The `build-fqns` reshape that follow
 | Source token | XMIR character | Used as |
 | --- | --- | --- |
 | `@` (PHI) | `φ` | `@name='φ'` for the @-attribute |
-| `^` (RHO) | `ρ` | `@base='ρ'` for parent reference; `@name='ρ'` for the receiver void (R-3.4.11), with `@local='name'` when written `^name` (R-3.4.13); `@as='ρ'` for a `:^` binding (R-3.12.2a) |
+| `^` (RHO) | `ρ` | `@base='ρ'` for parent reference; `@name='ρ'` for the receiver void (R-3.4.11), with `@local='name'` when written `^name` (R-3.4.13); `:^` argument bindings are forbidden (R-3.12.2a) |
 | `Q` (ROOT) | `Φ` | `@base='Φ...'` for root-rooted FQNs |
 | `$` (XI) | `ξ` | `@base='ξ'` for self reference |
 | `T` (TERM) | `⊥` | `@base='⊥'` for the terminator term |
