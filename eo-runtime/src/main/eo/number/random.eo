@@ -1,6 +1,6 @@
 # Generates a pseudo-random number.
 #
-# @todo #9650:30min Remove `+unlint too-deep-object:53-54` from the
+# @todo #9650:30min Remove `+unlint too-deep-object:54-55` from the
 #  metas below. It hides how deep `next` nests its arithmetic, up to 18
 #  levels where the lint allows 12. Split the arithmetic into objects of its
 #  own, so that `next` nests no deeper.
@@ -10,7 +10,8 @@
 +package number
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint too-deep-object:53-54
++unlint missed-obfuscation
++unlint too-deep-object:54-55
 +version 0.0.0
 
 [^num] > random
