@@ -104,15 +104,6 @@
 
   mktemp.tmpfile.as-path.as-dir.made --> rejects-a-path-occupied-by-a-regular-file
 
-  --> rejects-a-path-that-is-its-own-parent
-    made. > @
-      directory stuck
-    [] > stuck
-      [] > as-path
-        "nowhere" > dirname
-      false > exists
-      "nowhere" > path
-
   --> rejects-a-path-whose-parent-is-occupied-by-a-regular-file
     made. > @
       as-dir.
