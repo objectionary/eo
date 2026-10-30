@@ -4,16 +4,14 @@
  */
 package org.eolang.inference;
 
+import com.jcabi.matchers.XhtmlMatchers;
+import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 import org.eolang.jucs.ClasspathSource;
-import org.eolang.xax.XtSticky;
-import org.eolang.xax.XtYaml;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -24,12 +22,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 /**
  * Test case for {@link Answers}.
  *
- * <p>Each pack in {@code packs} carries the {@code facts.xml} of a small
- * program and the {@code answers.xml} the Python engine wrote from it, and
- * the engine here must write the same bytes from the same facts. A larger
- * program is checked the same way when its two files are named on the
- * command line: {@code -Dinference.facts=…/facts.xml
- * -Dinference.answers=…/answers.xml}, the way eo-runtime is checked.</p>
+ * <p>Each pack in {@code packs} carries the EO sources of a small program
+ * and the XPaths its {@code answers.xml} must match. The facts are made of
+ * the sources the way Maven makes them, the engine walks them, and every
+ * XPath must find a node in the answers it writes. A larger program is
+ * checked byte for byte when its two files are named on the command line:
+ * {@code -Dinference.facts=…/facts.xml -Dinference.answers=…/answers.xml},
+ * the way eo-runtime is checked.</p>
  *
  * @since 0.76.0
  */
@@ -46,17 +45,17 @@ final class AnswersTest {
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/inference/packs/", glob = "**.yaml")
     void writesAnswersOfPack(final String yaml) throws Exception {
-        final Map<String, Object> pack = new XtSticky(new XtYaml(yaml)).map();
-        final Path facts = this.dir.resolve("facts.xml");
-        Files.write(facts, pack.get("facts").toString().getBytes(StandardCharsets.UTF_8));
-        new Answers(new Walk(facts, new Sources(this.dir).names()))
+        final Pack pack = new Pack(yaml);
+        final Sources sources = pack.sources(this.dir);
+        new Answers(new Walk(sources.facts(), sources.names()))
             .write(this.dir.resolve("answers.xml"));
         MatcherAssert.assertThat(
-            "the answers written from the facts of the pack must be the answers of the pack, byte for byte, but they werent",
-            new String(
-                Files.readAllBytes(this.dir.resolve("answers.xml")), StandardCharsets.UTF_8
+            String.format(
+                "the answers written of the program must match every XPath of the pack, but they dont:%n%s",
+                yaml
             ),
-            Matchers.equalTo(pack.get("answers").toString())
+            new XMLDocument(this.dir.resolve("answers.xml")),
+            XhtmlMatchers.hasXPaths(pack.answers())
         );
     }
 

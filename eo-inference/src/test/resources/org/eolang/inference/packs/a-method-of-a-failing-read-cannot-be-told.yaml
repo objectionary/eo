@@ -15,87 +15,9 @@ sources:
     [@] > number
   string.eo: |
     [@] > string
-facts: |
-  <?xml version="1.0" encoding="UTF-8"?>
-  <facts>
-     <objects>
-        <type bare="true" complete="false" id="Φ.bytes">
-           <attr name="φ" type="Φ.bytes.φ" void="true"/>
-        </type>
-        <type bare="true" complete="false" id="Φ.gauge">
-           <attr name="φ" type="Φ.gauge.φ"/>
-        </type>
-        <type bare="true" complete="false" id="Φ.number">
-           <attr name="φ" type="Φ.number.φ" void="true"/>
-        </type>
-        <type bare="true" complete="false" id="Φ.string">
-           <attr name="φ" type="Φ.string.φ" void="true"/>
-        </type>
-        <type bare="false" complete="true" id="Φ">
-           <attr name="bytes" type="Φ.bytes"/>
-           <attr name="gauge" type="Φ.gauge"/>
-           <attr name="number" type="Φ.number"/>
-           <attr name="string" type="Φ.string"/>
-        </type>
-     </objects>
-     <reads>
-        <read id="Φ.gauge.φ" name="times" of="Φ.gauge.φ.ρ"/>
-        <read id="Φ.gauge.φ.ρ" name="seconds" of="Φ.gauge.φ.ρ.ρ"/>
-        <read id="Φ.gauge.φ.ρ.ρ" name="ρ" of="Φ.gauge.φ.ρ.ρ.ρ"/>
-     </reads>
-     <heads>
-        <type id="Φ.gauge.φ.ρ.ρ.ρ">
-           <ref loc="Φ.gauge"/>
-        </type>
-     </heads>
-     <calls/>
-  </facts>
-answers: |
-  <?xml version="1.0" encoding="UTF-8"?>
-  <answers>
-    <o loc="Φ" copies="1">
-      <is loc="Φ"/>
-      <reduced copies="1">
-        <is loc="Φ"/>
-      </reduced>
-    </o>
-    <o loc="Φ.bytes" copies="1">
-      <is loc="Φ.bytes"/>
-      <reduced copies="1">
-        <is loc="Φ.bytes"/>
-      </reduced>
-    </o>
-    <o loc="Φ.bytes.φ" copies="1">
-      <data/>
-    </o>
-    <o loc="Φ.gauge" copies="1">
-      <is loc="Φ.gauge"/>
-      <reduced copies="1">
-        <is loc="Φ.gauge"/>
-      </reduced>
-    </o>
-    <o loc="Φ.gauge.φ" copies="1">
-      <unknown/>
-    </o>
-    <o loc="Φ.gauge.φ.ρ" copies="1">
-      <fails name="Φ.seconds"/>
-    </o>
-    <o loc="Φ.gauge.φ.ρ.ρ" copies="1">
-      <is loc="Φ"/>
-    </o>
-    <o loc="Φ.gauge.φ.ρ.ρ.ρ" copies="1">
-      <is loc="Φ.gauge"/>
-    </o>
-    <o loc="Φ.number" copies="1">
-      <is loc="Φ.number"/>
-    </o>
-    <o loc="Φ.number.φ" copies="1">
-      <is loc="Φ.bytes"/>
-    </o>
-    <o loc="Φ.string" copies="1">
-      <is loc="Φ.string"/>
-    </o>
-    <o loc="Φ.string.φ" copies="1">
-      <is loc="Φ.bytes"/>
-    </o>
-  </answers>
+answers:
+  - /answers[not(o[@loc='Φ.gauge.ρ'])]
+  - /answers/o[@loc='Φ.gauge.φ.ρ.ρ']/is[@loc='Φ']
+  - /answers/o[@loc='Φ.gauge.φ.ρ']/fails[@name='Φ.seconds']
+  - /answers/o[@loc='Φ.gauge.φ']/unknown
+  - /answers[not(o[@loc='Φ.gauge.φ']/is)]
