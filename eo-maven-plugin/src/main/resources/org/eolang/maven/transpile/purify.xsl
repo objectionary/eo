@@ -234,12 +234,25 @@
   &lt;is loc="Φ.number"/&gt;
   &lt;/o&gt;
   A part with no row of its own, or one naming anything else, leaves the
-  application unlabeled.
+  application unlabeled, and so does a call that reaches outside its parts.
   -->
   <xsl:function name="eo:applied" as="xs:boolean">
     <xsl:param name="a" as="element()"/>
     <xsl:variable name="parts" as="element()*" select="$a/o[@loc]"/>
-    <xsl:sequence select="exists($eo:answers) and exists($parts) and eo:receives($a) and (every $p in $parts satisfies eo:bytes(key('eo:answer', $p/@loc, $eo:answers), true()))"/>
+    <xsl:sequence select="exists($eo:answers) and exists($parts) and not(eo:outward($a)) and eo:receives($a) and (every $p in $parts satisfies eo:bytes(key('eo:answer', $p/@loc, $eo:answers), true()))"/>
+  </xsl:function>
+  <!--
+  Whether this application calls an object of the root or a termination.
+  An object of the root may reach outside the program: "posix.access" asks
+  the disk and "console.write" prints. The same bytes given to it twice need
+  not get the same answer twice, and a cache would skip the second call. A
+  termination gives back no bytes at all, so its cache would never keep an
+  answer. The literals never get here, since the template below leaves them
+  out.
+  -->
+  <xsl:function name="eo:outward" as="xs:boolean">
+    <xsl:param name="a" as="element()"/>
+    <xsl:sequence select="$a/@base = ($eo:bottom, $eo:program) or starts-with($a/@base, $eo:root)"/>
   </xsl:function>
   <!--
   Whether the object this application is attached to is decided by bytes
@@ -256,9 +269,10 @@
     <xsl:sequence select="not(starts-with($a/@base, $eo:xi)) or eo:bytes(key('eo:answer', concat($a/@loc, '.', $eo:rho), $eo:answers), true())"/>
   </xsl:function>
   <!--
-  An application whose parts and receiver are all decided by bytes is
-  labeled too, so that the answer it works out is remembered instead of
-  being worked out on every read.
+  An application whose parts and receiver are all decided by bytes, and
+  that calls neither an object of the root nor a termination, is labeled
+  too, so that the answer it works out is remembered instead of being worked
+  out on every read.
   -->
   <xsl:template match="*[@loc][@base][not(@base = $eo:literals)][o[@loc]]">
     <xsl:copy>
