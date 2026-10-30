@@ -12,14 +12,10 @@ eo:
   wrap.eo: |
     [data] > wrap
       i64 data > @
+  i64.eo: |
+    [@] > i64
 voids:
   - "𝜎1\t1\tdata\tbytes"
-links: |
-  <links>
-    <type id="Φ.wrap.φ">
-      <ref loc="Φ.i64"/>
-    </type>
-  </links>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e1">

@@ -1,0 +1,193 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# choose gives back whichever of its voids Java picks, so it reduces to what
+# goes into them: a number and a string.
+sources:
+  choose.eo: |
+    [] > choose /A
+      ? > first /A?
+      ? > second /A
+  app.eo: |
+    [] > app
+      choose 1 "one" > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="true" complete="false" id="Φ.app">
+           <attr name="φ" type="Φ.app.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="true"
+              complete="false"
+              id="Φ.choose"
+              returns="Φ.choose.first">
+           <attr name="first" type="Φ.choose.first" void="true"/>
+           <attr name="second" type="Φ.choose.second" void="true"/>
+           <return loc="Φ.choose.first"/>
+           <return loc="Φ.choose.second"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="app" type="Φ.app"/>
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="choose" type="Φ.choose"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="string" type="Φ.string"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.app.φ" name="choose" of="Φ.app.φ.ρ"/>
+        <read id="Φ.app.φ.α0" name="number" of="Φ.app.φ.α0.ρ"/>
+        <read id="Φ.app.φ.α0.α0" name="bytes" of="Φ.app.φ.α0.α0.ρ"/>
+        <read id="Φ.app.φ.α1" name="string" of="Φ.app.φ.α1.ρ"/>
+        <read id="Φ.app.φ.α1.α0" name="bytes" of="Φ.app.φ.α1.α0.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.app.φ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.φ.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.φ.α1.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.φ.α1.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.φ.α0.α0.α0">
+           <data/>
+        </type>
+        <type id="Φ.app.φ.α1.α0.α0">
+           <data/>
+        </type>
+     </heads>
+     <calls>
+        <call loc="Φ.app.φ">
+           <arg loc="Φ.app.φ.α0" n="0"/>
+           <arg loc="Φ.app.φ.α1" n="1"/>
+        </call>
+        <call loc="Φ.app.φ.α0">
+           <arg loc="Φ.app.φ.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.app.φ.α0.α0">
+           <arg loc="Φ.app.φ.α0.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.app.φ.α1">
+           <arg loc="Φ.app.φ.α1.α0" n="0"/>
+        </call>
+        <call loc="Φ.app.φ.α1.α0">
+           <arg loc="Φ.app.φ.α1.α0.α0" n="0"/>
+        </call>
+     </calls>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app" copies="1">
+      <is loc="Φ.app"/>
+    </o>
+    <o loc="Φ.app.φ" copies="1">
+      <is loc="Φ.number"/>
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.app.φ.α0" copies="1" lands="first">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.app.φ.α0.α0" copies="1" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.app.φ.α0.α0.α0" copies="1" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.app.φ.α0.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.φ.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.φ.α1" copies="1" lands="second">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.app.φ.α1.α0" copies="1" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.app.φ.α1.α0.α0" copies="1" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.app.φ.α1.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.φ.α1.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.φ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.choose" copies="1">
+      <is loc="Φ.choose"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+        <is loc="Φ.string"/>
+      </reduced>
+    </o>
+    <o loc="Φ.choose.first" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.choose.second" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.choose.λ" copies="1">
+      <is loc="Φ.choose.first"/>
+      <is loc="Φ.choose.second"/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+      <reduced copies="1">
+        <is loc="Φ.string"/>
+      </reduced>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+  </answers>

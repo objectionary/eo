@@ -1,0 +1,134 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls one, so its y is an open void, and the call inc y makes no copy
+# of inc. The x of inc stays an open void, and the @ of one cannot be told.
+sources:
+  one.eo: |
+    [y] > one
+      inc y > @
+  inc.eo: |
+    [x] > inc
+      x > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.inc">
+           <attr name="x" type="Φ.inc.x" void="true"/>
+           <attr name="φ" type="Φ.inc.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.one">
+           <attr name="y" type="Φ.one.y" void="true"/>
+           <attr name="φ" type="Φ.one.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="inc" type="Φ.inc"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="one" type="Φ.one"/>
+           <attr name="string" type="Φ.string"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.inc.φ" name="x" of="Φ.inc.φ.ρ"/>
+        <read id="Φ.one.φ" name="inc" of="Φ.one.φ.ρ"/>
+        <read id="Φ.one.φ.α0" name="y" of="Φ.one.φ.α0.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.inc.φ.ρ">
+           <ref loc="Φ.inc"/>
+        </type>
+        <type id="Φ.one.φ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.one.φ.α0.ρ">
+           <ref loc="Φ.one"/>
+        </type>
+     </heads>
+     <calls>
+        <call loc="Φ.one.φ">
+           <arg loc="Φ.one.φ.α0" n="0"/>
+        </call>
+     </calls>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.inc" copies="1">
+      <is loc="Φ.inc"/>
+      <reduced copies="1">
+        <is loc="Φ.inc"/>
+      </reduced>
+    </o>
+    <o loc="Φ.inc.x" copies="1">
+      <open/>
+    </o>
+    <o loc="Φ.inc.φ" copies="1">
+      <open/>
+    </o>
+    <o loc="Φ.inc.φ.ρ" copies="1">
+      <is loc="Φ.inc"/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.one" copies="1">
+      <is loc="Φ.one"/>
+      <reduced copies="1">
+        <is loc="Φ.one"/>
+      </reduced>
+    </o>
+    <o loc="Φ.one.y" copies="1">
+      <open/>
+    </o>
+    <o loc="Φ.one.φ" copies="1">
+      <unknown/>
+    </o>
+    <o loc="Φ.one.φ.α0" copies="1" lands="x">
+      <open/>
+    </o>
+    <o loc="Φ.one.φ.α0.ρ" copies="1">
+      <is loc="Φ.one"/>
+    </o>
+    <o loc="Φ.one.φ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+  </answers>

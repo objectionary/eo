@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.cactoos.list.ListOf;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
 import org.eolang.xax.XtSticky;
@@ -41,10 +43,11 @@ import org.xembly.Xembler;
  * <p>Most of the checks are in the YAML files of the directory
  * {@code entry-packs}. They say which objects get an entry, what their
  * voids get, and which objects become rows of the table of operations.
- * Every file has an EO program, the tables that {@code eo:inference}
- * would write for it, the XPath queries that the XMIR of the entries and
- * the copies must match, and the rows that {@code entries.tsv},
- * {@code voids.tsv}, {@code rows.tsv} and {@code atoms.yaml} must have.
+ * Every file has an EO program, which the engine of {@code eo:inference}
+ * reads to write the tables the planting reads, see {@link Tables}, the
+ * XPath queries that the XMIR of the entries and the copies must match,
+ * and the rows that {@code entries.tsv}, {@code voids.tsv},
+ * {@code rows.tsv} and {@code atoms.yaml} must have.
  * The tests in this class check the things that an EO program cannot
  * show: which files are written, whether two runs give the same result,
  * what the table of operations holds before any row is added, and when
@@ -174,50 +177,34 @@ final class PlantingTest {
     }
 
     @Test
-    void failsNamingTheTableOfLinksItCannotFind(@Mktmp final Path temp) throws IOException {
+    void failsNamingTheAnswersItCannotFind(@Mktmp final Path temp) throws IOException {
         final Path tables = Files.createDirectories(temp.resolve("tables"));
-        Files.write(tables.resolve("provides.xml"), "<provides/>".getBytes(StandardCharsets.UTF_8));
+        Files.write(tables.resolve("facts.xml"), "<facts/>".getBytes(StandardCharsets.UTF_8));
         MatcherAssert.assertThat(
             "the failure must name the table that is missing, but it doesnt",
             Assertions.assertThrows(
                 IllegalStateException.class,
                 () -> new Planting(tables).exec(temp),
-                "a table of links that is not there must fail the planting"
+                "answers that are not there must fail the planting"
             ).getMessage(),
-            Matchers.containsString("links.xml")
+            Matchers.containsString("answers.xml")
         );
     }
 
     private static Path planted(final Path temp) throws IOException {
-        PlantingTest.parsed(
-            Files.createDirectories(temp.resolve("1-planting")).resolve("gap.xmir"),
-            String.format("[a b] > gap%n  a.plus b > @%n")
+        final Map<String, String> program = new MapOf<String, String>(
+            new MapEntry<>("gap.eo", String.format("[a b] > gap%n  a.plus b > @%n")),
+            new MapEntry<>("app.eo", String.format("[] > app%n  gap 4 9 > used%n"))
         );
-        new Planting(
-            PlantingTest.tables(
-                temp,
-                String.join(
-                    "",
-                    "<provides><type id='Φ.gap'>",
-                    "<attr name='a' void='true' holds='Φ.number'/>",
-                    "<attr name='b' void='true' holds='Φ.number'/>",
-                    "</type></provides>"
-                ),
-                "<links/>",
-                "<atoms/>"
-            )
-        ).exec(temp);
+        for (final Map.Entry<String, String> source : program.entrySet()) {
+            PlantingTest.parsed(
+                Files.createDirectories(temp.resolve("1-planting"))
+                    .resolve(source.getKey().replace(".eo", ".xmir")),
+                source.getValue()
+            );
+        }
+        new Planting(new Inferred(temp.resolve("engine"), program).value()).exec(temp);
         return temp;
-    }
-
-    private static Path tables(
-        final Path temp, final String provides, final String links, final String atoms
-    ) throws IOException {
-        final Path made = Files.createDirectories(temp.resolve("tables"));
-        Files.write(made.resolve("provides.xml"), provides.getBytes(StandardCharsets.UTF_8));
-        Files.write(made.resolve("links.xml"), links.getBytes(StandardCharsets.UTF_8));
-        Files.write(made.resolve("atoms.xml"), atoms.getBytes(StandardCharsets.UTF_8));
-        return made;
     }
 
     private static Path parsed(final Path file, final String program) throws IOException {
@@ -269,7 +256,7 @@ final class PlantingTest {
             final Collection<String> failed = new ArrayList<>(0);
             for (final Object key : this.story.map().keySet()) {
                 if (!Arrays.asList(
-                    "eo", "dealpha", "provides", "links", "atoms",
+                    "eo", "dealpha", "facts", "answers",
                     "xmir", "copies", "voids", "entries", "rows", "table"
                 ).contains(key)) {
                     failed.add(String.format("unknown key: %s", key));
@@ -311,14 +298,7 @@ final class PlantingTest {
                     )
                 );
             }
-            new Planting(
-                PlantingTest.tables(
-                    this.temp,
-                    this.story.map().getOrDefault("provides", "<provides/>").toString(),
-                    this.story.map().getOrDefault("links", "<links/>").toString(),
-                    this.story.map().getOrDefault("atoms", "<atoms/>").toString()
-                )
-            ).exec(this.temp);
+            new Planting(new Tables(this.temp, this.story.map()).value()).exec(this.temp);
             return this.temp;
         }
 

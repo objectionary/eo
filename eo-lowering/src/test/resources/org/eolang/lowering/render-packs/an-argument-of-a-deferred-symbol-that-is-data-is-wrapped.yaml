@@ -15,16 +15,20 @@ eo:
         with-delimiter items.head items.tail
       [acc tup] > with-delimiter
         acc > @
+  number.eo: |
+    [@] > number
+      [] > eq /Q.bool
+        ? > ^
+        ? > b
+  tuple.eo: |
+    [tail head length] > tuple
+  app.eo: |
+    [] > app
+      joined (tuple (tuple 0 0 0) 01- 1) > used
 voids:
   - "𝜎53\t54\titems.length\tnumber"
   - "𝜎54\t54\titems.head\tobject"
   - "𝜎55\t54\titems.tail\ttuple"
-links: |
-  <links>
-    <type id="Φ.joined.φ">
-      <ref loc="Φ.bytes"/>
-    </type>
-  </links>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e54">

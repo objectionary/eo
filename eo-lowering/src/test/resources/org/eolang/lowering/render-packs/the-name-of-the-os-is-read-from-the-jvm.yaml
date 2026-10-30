@@ -12,13 +12,17 @@ eo:
   span.eo: |
     [] > span
       os.name.as-bytes.size > @
+  os.eo: |
+    [] > os
+      [] > name /Q.string
+        ? > ^
+  bytes.eo: |
+    [@] > bytes
+      [] > as-bytes /Q.bytes
+        ? > ^
+      [] > size /Q.number
+        ? > ^
 voids: []
-links: |
-  <links>
-    <type id="Φ.span.φ">
-      <ref loc="Φ.number"/>
-    </type>
-  </links>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e12">

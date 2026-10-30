@@ -81,15 +81,15 @@
   <!-- The table of rows the planting wrote, as a URI. -->
   <xsl:param name="rows" as="xs:string" select="''"/>
   <!--
-  The directory with the tables of "eo:inference", as a URI. The tables are
-  opened only when the root of a flow is data, since the table of
-  eo-runtime is large and nothing else asks about the body.
+  The directory with the tables of "eo:inference", as a URI, which holds
+  "facts.xml" and "answers.xml". The tables are opened only when the root
+  of a flow is data, since the tables of eo-runtime are large and nothing
+  else asks about the body.
   -->
   <xsl:param name="inference" as="xs:string" select="''"/>
   <xsl:variable name="eo:tables" as="xs:string" select="if (ends-with($inference, '/')) then $inference else concat($inference, '/')"/>
-  <xsl:variable name="eo:provides" as="document-node()" select="document(concat($eo:tables, 'provides.xml'))"/>
-  <xsl:variable name="eo:links" as="document-node()" select="document(concat($eo:tables, 'links.xml'))"/>
-  <xsl:variable name="eo:atoms" as="document-node()" select="document(concat($eo:tables, 'atoms.xml'))"/>
+  <xsl:variable name="eo:facts" as="document-node()" select="document(concat($eo:tables, 'facts.xml'))"/>
+  <xsl:variable name="eo:answers" as="document-node()" select="document(concat($eo:tables, 'answers.xml'))"/>
   <xsl:variable name="eo:alpha" select="'α'"/>
   <xsl:variable name="eo:phi" select="'φ'"/>
   <!--

@@ -1,0 +1,388 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# hold is an atom that gives back its value or its alternative, so held is a
+# step or a number. pick has same next to its @, so it is no bare wrapper, and
+# pick 7 in maker is a pick whose m is 7. A step has no m, so m is read off
+# its @, the pass of that maker, and gives the number in m. The alternative 0
+# is a number, and m read off it fails.
+sources:
+  pick.eo: |
+    [m] > pick
+      m > @
+      [] > same
+        ^.m > @
+  maker.eo: |
+    [] > maker
+      pick 7 > pass
+  hold.eo: |
+    [] > hold /A
+      ? > value /A?
+      ? > alternative /A
+  step.eo: |
+    [] > step
+      hold > inner
+        maker
+        0
+      inner.pass > @
+  app.eo: |
+    [] > app
+      hold > held
+        step
+        0
+      held.m > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="false" complete="false" id="Φ.app">
+           <attr name="held" type="Φ.app.held"/>
+           <attr name="φ" type="Φ.app.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.hold" returns="Φ.hold.value">
+           <attr name="value" type="Φ.hold.value" void="true"/>
+           <attr name="alternative" type="Φ.hold.alternative" void="true"/>
+           <return loc="Φ.hold.value"/>
+           <return loc="Φ.hold.alternative"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.maker">
+           <attr name="pass" type="Φ.maker.pass"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+        </type>
+        <type bare="false" complete="false" id="Φ.pick">
+           <attr name="m" type="Φ.pick.m" void="true"/>
+           <attr name="φ" type="Φ.pick.φ"/>
+           <attr name="same" type="Φ.pick.same"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.pick.same">
+           <attr name="φ" type="Φ.pick.same.φ"/>
+        </type>
+        <type bare="false" complete="false" id="Φ.step">
+           <attr name="inner" type="Φ.step.inner"/>
+           <attr name="φ" type="Φ.step.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="app" type="Φ.app"/>
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="hold" type="Φ.hold"/>
+           <attr name="maker" type="Φ.maker"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="pick" type="Φ.pick"/>
+           <attr name="step" type="Φ.step"/>
+           <attr name="string" type="Φ.string"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.app.held" name="hold" of="Φ.app.held.ρ"/>
+        <read id="Φ.app.held.α0" name="step" of="Φ.app.held.α0.ρ"/>
+        <read id="Φ.app.held.α1" name="number" of="Φ.app.held.α1.ρ"/>
+        <read id="Φ.app.held.α1.α0" name="bytes" of="Φ.app.held.α1.α0.ρ"/>
+        <read id="Φ.app.φ" name="m" of="Φ.app.φ.ρ"/>
+        <read id="Φ.app.φ.ρ" name="held" of="Φ.app.φ.ρ.ρ"/>
+        <read id="Φ.maker.pass" name="pick" of="Φ.maker.pass.ρ"/>
+        <read id="Φ.maker.pass.α0" name="number" of="Φ.maker.pass.α0.ρ"/>
+        <read id="Φ.maker.pass.α0.α0" name="bytes" of="Φ.maker.pass.α0.α0.ρ"/>
+        <read id="Φ.pick.φ" name="m" of="Φ.pick.φ.ρ"/>
+        <read id="Φ.pick.same.φ" name="m" of="Φ.pick.same.φ.ρ"/>
+        <read id="Φ.pick.same.φ.ρ" name="ρ" of="Φ.pick.same.φ.ρ.ρ"/>
+        <read id="Φ.step.inner" name="hold" of="Φ.step.inner.ρ"/>
+        <read id="Φ.step.inner.α0" name="maker" of="Φ.step.inner.α0.ρ"/>
+        <read id="Φ.step.inner.α1" name="number" of="Φ.step.inner.α1.ρ"/>
+        <read id="Φ.step.inner.α1.α0" name="bytes" of="Φ.step.inner.α1.α0.ρ"/>
+        <read id="Φ.step.φ" name="pass" of="Φ.step.φ.ρ"/>
+        <read id="Φ.step.φ.ρ" name="inner" of="Φ.step.φ.ρ.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.app.held.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.held.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.held.α1.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.held.α1.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.φ.ρ.ρ">
+           <ref loc="Φ.app"/>
+        </type>
+        <type id="Φ.maker.pass.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.maker.pass.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.maker.pass.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.pick.φ.ρ">
+           <ref loc="Φ.pick"/>
+        </type>
+        <type id="Φ.pick.same.φ.ρ.ρ">
+           <ref loc="Φ.pick.same"/>
+        </type>
+        <type id="Φ.step.inner.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.step.inner.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.step.inner.α1.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.step.inner.α1.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.step.φ.ρ.ρ">
+           <ref loc="Φ.step"/>
+        </type>
+        <type id="Φ.app.held.α1.α0.α0">
+           <data/>
+        </type>
+        <type id="Φ.maker.pass.α0.α0.α0">
+           <data/>
+        </type>
+        <type id="Φ.step.inner.α1.α0.α0">
+           <data/>
+        </type>
+     </heads>
+     <calls>
+        <call loc="Φ.app.held">
+           <arg loc="Φ.app.held.α0" n="0"/>
+           <arg loc="Φ.app.held.α1" n="1"/>
+        </call>
+        <call loc="Φ.app.held.α1">
+           <arg loc="Φ.app.held.α1.α0" n="0"/>
+        </call>
+        <call loc="Φ.app.held.α1.α0">
+           <arg loc="Φ.app.held.α1.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.maker.pass">
+           <arg loc="Φ.maker.pass.α0" n="0"/>
+        </call>
+        <call loc="Φ.maker.pass.α0">
+           <arg loc="Φ.maker.pass.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.maker.pass.α0.α0">
+           <arg loc="Φ.maker.pass.α0.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.step.inner">
+           <arg loc="Φ.step.inner.α0" n="0"/>
+           <arg loc="Φ.step.inner.α1" n="1"/>
+        </call>
+        <call loc="Φ.step.inner.α1">
+           <arg loc="Φ.step.inner.α1.α0" n="0"/>
+        </call>
+        <call loc="Φ.step.inner.α1.α0">
+           <arg loc="Φ.step.inner.α1.α0.α0" n="0"/>
+        </call>
+     </calls>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app" copies="1">
+      <is loc="Φ.app"/>
+      <reduced copies="1">
+        <is loc="Φ.app"/>
+      </reduced>
+    </o>
+    <o loc="Φ.app.held" copies="1">
+      <is loc="Φ.number"/>
+      <is loc="Φ.step"/>
+    </o>
+    <o loc="Φ.app.held.α0" copies="1" lands="value">
+      <is loc="Φ.step"/>
+    </o>
+    <o loc="Φ.app.held.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.held.α1" copies="1" lands="alternative">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.app.held.α1.α0" copies="1" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.app.held.α1.α0.α0" copies="1" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.app.held.α1.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.held.α1.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.held.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.φ" copies="1">
+      <fails name="data.m"/>
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.app.φ.ρ" copies="1">
+      <is loc="Φ.number"/>
+      <is loc="Φ.step"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.ρ" copies="1">
+      <is loc="Φ.app"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.hold" copies="2">
+      <is loc="Φ.hold"/>
+      <reduced copies="2">
+        <set copies="1">
+          <is loc="Φ.maker"/>
+          <is loc="Φ.number"/>
+        </set>
+        <set copies="1">
+          <is loc="Φ.number"/>
+          <is loc="Φ.step"/>
+        </set>
+      </reduced>
+    </o>
+    <o loc="Φ.hold.alternative" copies="2">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.hold.value" copies="2">
+      <set copies="1">
+        <is loc="Φ.maker"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.step"/>
+      </set>
+    </o>
+    <o loc="Φ.hold.λ" copies="2">
+      <is loc="Φ.hold.alternative"/>
+      <is loc="Φ.hold.value"/>
+    </o>
+    <o loc="Φ.maker" copies="2">
+      <is loc="Φ.maker"/>
+      <reduced copies="1">
+        <is loc="Φ.maker"/>
+      </reduced>
+    </o>
+    <o loc="Φ.maker.pass" copies="2">
+      <is loc="Φ.pick"/>
+    </o>
+    <o loc="Φ.maker.pass.α0" copies="2" lands="m">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.maker.pass.α0.α0" copies="2" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.maker.pass.α0.α0.α0" copies="2" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.maker.pass.α0.α0.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.maker.pass.α0.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.maker.pass.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.pick" copies="1">
+      <is loc="Φ.pick"/>
+      <reduced copies="1">
+        <is loc="Φ.pick"/>
+      </reduced>
+    </o>
+    <o loc="Φ.pick.m" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.pick.φ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.pick.φ.ρ" copies="1">
+      <is loc="Φ.pick"/>
+    </o>
+    <o loc="Φ.step" copies="2">
+      <is loc="Φ.step"/>
+      <reduced copies="2">
+        <is loc="Φ.step"/>
+      </reduced>
+    </o>
+    <o loc="Φ.step.inner" copies="2">
+      <is loc="Φ.maker"/>
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.step.inner.α0" copies="2" lands="value">
+      <is loc="Φ.maker"/>
+    </o>
+    <o loc="Φ.step.inner.α0.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.step.inner.α1" copies="2" lands="alternative">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.step.inner.α1.α0" copies="2" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.step.inner.α1.α0.α0" copies="2" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.step.inner.α1.α0.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.step.inner.α1.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.step.inner.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.step.φ" copies="2">
+      <fails name="data.pass"/>
+      <is loc="Φ.pick"/>
+    </o>
+    <o loc="Φ.step.φ.ρ" copies="2">
+      <is loc="Φ.maker"/>
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.step.φ.ρ.ρ" copies="2">
+      <is loc="Φ.step"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+  </answers>

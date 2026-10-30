@@ -142,8 +142,9 @@ final class Rendering implements Proc<Path> {
     private final Path atoms;
 
     /**
-     * The directory with the tables of {@code eo:inference}, which say what
-     * the body of an entry gives.
+     * The directory with the tables of {@code eo:inference},
+     * {@code facts.xml} and {@code answers.xml}, which say what the body of
+     * an entry gives.
      */
     private final Path tables;
 
@@ -160,7 +161,7 @@ final class Rendering implements Proc<Path> {
 
     @Override
     public void exec(final Path home) throws IOException {
-        for (final String table : new ListOf<>("provides.xml", "links.xml", "atoms.xml")) {
+        for (final String table : new ListOf<>("facts.xml", "answers.xml")) {
             if (!Files.exists(this.tables.resolve(table))) {
                 throw new IllegalStateException(
                     String.format(

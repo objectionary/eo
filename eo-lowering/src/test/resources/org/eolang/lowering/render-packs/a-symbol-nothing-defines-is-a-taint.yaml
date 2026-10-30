@@ -8,15 +8,12 @@ number: 217
 taint: The symbol 𝜎200 of the entry 217 is read, while nothing defines it
 eo:
   number.eo: |
-    [] > number
-      [] > neg
+    [@] > number
+      [^] > neg
         ^.times -1 > @
-links: |
-  <links>
-    <type id="Φ.number.neg.φ">
-      <ref loc="Φ.number"/>
-    </type>
-  </links>
+      [] > times /Q.number
+        ? > ^
+        ? > b /Q.number
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e217">

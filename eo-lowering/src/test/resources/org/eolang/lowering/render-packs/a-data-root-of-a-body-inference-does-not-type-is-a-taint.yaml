@@ -10,8 +10,8 @@ number: 217
 taint: The root 𝜎752 of the entry 217 is bare data, while inference does not say what Φ.number.neg returns
 eo:
   number.eo: |
-    [] > number
-      [] > neg
+    [@] > number
+      [^] > neg
         ^.times -1 > @
 voids:
   - "𝜎200\t217\tρ\tnumber"

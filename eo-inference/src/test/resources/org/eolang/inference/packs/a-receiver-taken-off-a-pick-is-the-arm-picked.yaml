@@ -1,0 +1,1209 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# choice has a not besides its pick, as bool does, so gauge, crate and chain
+# each pick one arm per caller. walker hands yes to gauge, so p is the record
+# 1, which is the ^ of p.ok, and the shine of that lamp gives 2, a number.
+# porter hands yes to crate, so c is the box around dial 05-, and c.ok is that
+# dial. user hands yes to chain, which picks the lamp and never reaches steps.
+# lamp is read off Φ in record and spare, so its ^ holds Φ, never a record.
+sources:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+      [] > not
+        ^.pick no yes > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  lamp.eo: |
+    [^] > lamp
+      [x] > shine
+        x > @
+  dial.eo: |
+    [^ sys] > dial
+      [^ size] > listen
+        size > @
+  record.eo: |
+    [at] > record
+      lamp > ok
+  gauge.eo: |
+    [^ flag cant-read] > gauge
+      flag.pick > @
+        record 1
+        cant-read
+          "the gauge cannot be read"
+  walker.eo: |
+    [] > walker
+      p.ok.shine 2 > @
+      gauge yes > p
+  other.eo: |
+    [] > other
+      gauge no spare > @
+  spare.eo: |
+    [msg] > spare
+      lamp > ok
+  box.eo: |
+    [ok] > box
+  crate.eo: |
+    [^ flag] > crate
+      flag.pick > @
+        box
+          dial 05-
+        record 3
+  porter.eo: |
+    [] > porter
+      c.ok > @
+      crate yes > c
+  idle.eo: |
+    [] > idle
+      crate no > @
+  chain.eo: |
+    [^ flag steps] > chain
+      flag.pick > @
+        lamp
+        steps.pick
+          lamp
+          dial 03-
+  user.eo: |
+    [] > user
+      chain yes no > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="true" complete="true" id="Φ.box">
+           <attr name="ok" type="Φ.box.ok" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.chain">
+           <attr name="ρ" rho="Φ" type="Φ.chain.ρ" void="true"/>
+           <attr name="flag" type="Φ.chain.flag" void="true"/>
+           <attr name="steps" type="Φ.chain.steps" void="true"/>
+           <attr name="φ" type="Φ.chain.φ"/>
+        </type>
+        <type bare="false" complete="false" id="Φ.choice">
+           <attr name="pick" type="Φ.choice.pick" void="true"/>
+           <attr name="φ" type="Φ.choice.φ"/>
+           <attr name="not" type="Φ.choice.not"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.choice.not">
+           <attr name="φ" type="Φ.choice.not.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.crate">
+           <attr name="ρ" rho="Φ" type="Φ.crate.ρ" void="true"/>
+           <attr name="flag" type="Φ.crate.flag" void="true"/>
+           <attr name="φ" type="Φ.crate.φ"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.dial">
+           <attr name="ρ" rho="Φ" type="Φ.dial.ρ" void="true"/>
+           <attr name="sys" type="Φ.dial.sys" void="true"/>
+           <attr name="listen" type="Φ.dial.listen"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.dial.listen">
+           <attr name="ρ" rho="Φ.dial" type="Φ.dial.listen.ρ" void="true"/>
+           <attr name="size" type="Φ.dial.listen.size" void="true"/>
+           <attr name="φ" type="Φ.dial.listen.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.gauge">
+           <attr name="ρ" rho="Φ" type="Φ.gauge.ρ" void="true"/>
+           <attr name="flag" type="Φ.gauge.flag" void="true"/>
+           <attr name="cant-read" type="Φ.gauge.cant-read" void="true"/>
+           <attr name="φ" type="Φ.gauge.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.idle">
+           <attr name="φ" type="Φ.idle.φ"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.lamp">
+           <attr name="ρ" rho="Φ" type="Φ.lamp.ρ" void="true"/>
+           <attr name="shine" type="Φ.lamp.shine"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.lamp.shine">
+           <attr name="x" type="Φ.lamp.shine.x" void="true"/>
+           <attr name="φ" type="Φ.lamp.shine.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.no">
+           <attr name="ρ" rho="Φ" type="Φ.no.ρ" void="true"/>
+           <attr name="φ" type="Φ.no.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.no.φ.α0">
+           <attr name="ρ" type="Φ.no.φ.α0.ρ" void="true"/>
+           <attr name="a🌵4-6" type="Φ.no.φ.α0.a🌵4-6" void="true"/>
+           <attr name="a🌵5-6" type="Φ.no.φ.α0.a🌵5-6" void="true"/>
+           <attr name="φ" type="Φ.no.φ.α0.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.other">
+           <attr name="φ" type="Φ.other.φ"/>
+        </type>
+        <type bare="false" complete="false" id="Φ.porter">
+           <attr name="φ" type="Φ.porter.φ"/>
+           <attr name="c" type="Φ.porter.c"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.record">
+           <attr name="at" type="Φ.record.at" void="true"/>
+           <attr name="ok" type="Φ.record.ok"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.spare">
+           <attr name="msg" type="Φ.spare.msg" void="true"/>
+           <attr name="ok" type="Φ.spare.ok"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.user">
+           <attr name="φ" type="Φ.user.φ"/>
+        </type>
+        <type bare="false" complete="false" id="Φ.walker">
+           <attr name="φ" type="Φ.walker.φ"/>
+           <attr name="p" type="Φ.walker.p"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.yes">
+           <attr name="ρ" rho="Φ" type="Φ.yes.ρ" void="true"/>
+           <attr name="φ" type="Φ.yes.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.yes.φ.α0">
+           <attr name="ρ" type="Φ.yes.φ.α0.ρ" void="true"/>
+           <attr name="a🌵4-6" type="Φ.yes.φ.α0.a🌵4-6" void="true"/>
+           <attr name="a🌵5-6" type="Φ.yes.φ.α0.a🌵5-6" void="true"/>
+           <attr name="φ" type="Φ.yes.φ.α0.φ"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="box" type="Φ.box"/>
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="chain" type="Φ.chain"/>
+           <attr name="choice" type="Φ.choice"/>
+           <attr name="crate" type="Φ.crate"/>
+           <attr name="dial" type="Φ.dial"/>
+           <attr name="gauge" type="Φ.gauge"/>
+           <attr name="idle" type="Φ.idle"/>
+           <attr name="lamp" type="Φ.lamp"/>
+           <attr name="no" type="Φ.no"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="other" type="Φ.other"/>
+           <attr name="porter" type="Φ.porter"/>
+           <attr name="record" type="Φ.record"/>
+           <attr name="spare" type="Φ.spare"/>
+           <attr name="string" type="Φ.string"/>
+           <attr name="user" type="Φ.user"/>
+           <attr name="walker" type="Φ.walker"/>
+           <attr name="yes" type="Φ.yes"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.chain.φ" name="pick" of="Φ.chain.φ.ρ"/>
+        <read id="Φ.chain.φ.ρ" name="flag" of="Φ.chain.φ.ρ.ρ"/>
+        <read id="Φ.chain.φ.α0" name="lamp" of="Φ.chain.φ.α0.ρ"/>
+        <read id="Φ.chain.φ.α1" name="pick" of="Φ.chain.φ.α1.ρ"/>
+        <read id="Φ.chain.φ.α1.ρ" name="steps" of="Φ.chain.φ.α1.ρ.ρ"/>
+        <read id="Φ.chain.φ.α1.α0" name="lamp" of="Φ.chain.φ.α1.α0.ρ"/>
+        <read id="Φ.chain.φ.α1.α1" name="dial" of="Φ.chain.φ.α1.α1.ρ"/>
+        <read id="Φ.chain.φ.α1.α1.α0" name="bytes" of="Φ.chain.φ.α1.α1.α0.ρ"/>
+        <read id="Φ.choice.φ" name="pick" of="Φ.choice.φ.ρ"/>
+        <read id="Φ.choice.not.φ" name="pick" of="Φ.choice.not.φ.ρ"/>
+        <read id="Φ.choice.not.φ.ρ" name="ρ" of="Φ.choice.not.φ.ρ.ρ"/>
+        <read id="Φ.choice.not.φ.α0" name="no" of="Φ.choice.not.φ.α0.ρ"/>
+        <read id="Φ.choice.not.φ.α1" name="yes" of="Φ.choice.not.φ.α1.ρ"/>
+        <read id="Φ.crate.φ" name="pick" of="Φ.crate.φ.ρ"/>
+        <read id="Φ.crate.φ.ρ" name="flag" of="Φ.crate.φ.ρ.ρ"/>
+        <read id="Φ.crate.φ.α0" name="box" of="Φ.crate.φ.α0.ρ"/>
+        <read id="Φ.crate.φ.α0.α0" name="dial" of="Φ.crate.φ.α0.α0.ρ"/>
+        <read id="Φ.crate.φ.α0.α0.α0" name="bytes" of="Φ.crate.φ.α0.α0.α0.ρ"/>
+        <read id="Φ.crate.φ.α1" name="record" of="Φ.crate.φ.α1.ρ"/>
+        <read id="Φ.crate.φ.α1.α0" name="number" of="Φ.crate.φ.α1.α0.ρ"/>
+        <read id="Φ.crate.φ.α1.α0.α0" name="bytes" of="Φ.crate.φ.α1.α0.α0.ρ"/>
+        <read id="Φ.dial.listen.φ" name="size" of="Φ.dial.listen.φ.ρ"/>
+        <read id="Φ.gauge.φ" name="pick" of="Φ.gauge.φ.ρ"/>
+        <read id="Φ.gauge.φ.ρ" name="flag" of="Φ.gauge.φ.ρ.ρ"/>
+        <read id="Φ.gauge.φ.α0" name="record" of="Φ.gauge.φ.α0.ρ"/>
+        <read id="Φ.gauge.φ.α0.α0" name="number" of="Φ.gauge.φ.α0.α0.ρ"/>
+        <read id="Φ.gauge.φ.α0.α0.α0" name="bytes" of="Φ.gauge.φ.α0.α0.α0.ρ"/>
+        <read id="Φ.gauge.φ.α1" name="cant-read" of="Φ.gauge.φ.α1.ρ"/>
+        <read id="Φ.gauge.φ.α1.α0" name="string" of="Φ.gauge.φ.α1.α0.ρ"/>
+        <read id="Φ.gauge.φ.α1.α0.α0" name="bytes" of="Φ.gauge.φ.α1.α0.α0.ρ"/>
+        <read id="Φ.idle.φ" name="crate" of="Φ.idle.φ.ρ"/>
+        <read id="Φ.idle.φ.α0" name="no" of="Φ.idle.φ.α0.ρ"/>
+        <read id="Φ.lamp.shine.φ" name="x" of="Φ.lamp.shine.φ.ρ"/>
+        <read id="Φ.no.φ" name="choice" of="Φ.no.φ.ρ"/>
+        <read id="Φ.no.φ.α0.φ" name="a🌵5-6" of="Φ.no.φ.α0.φ.ρ"/>
+        <read id="Φ.other.φ" name="gauge" of="Φ.other.φ.ρ"/>
+        <read id="Φ.other.φ.α0" name="no" of="Φ.other.φ.α0.ρ"/>
+        <read id="Φ.other.φ.α1" name="spare" of="Φ.other.φ.α1.ρ"/>
+        <read id="Φ.porter.φ" name="ok" of="Φ.porter.φ.ρ"/>
+        <read id="Φ.porter.φ.ρ" name="c" of="Φ.porter.φ.ρ.ρ"/>
+        <read id="Φ.porter.c" name="crate" of="Φ.porter.c.ρ"/>
+        <read id="Φ.porter.c.α0" name="yes" of="Φ.porter.c.α0.ρ"/>
+        <read id="Φ.record.ok" name="lamp" of="Φ.record.ok.ρ"/>
+        <read id="Φ.spare.ok" name="lamp" of="Φ.spare.ok.ρ"/>
+        <read id="Φ.user.φ" name="chain" of="Φ.user.φ.ρ"/>
+        <read id="Φ.user.φ.α0" name="yes" of="Φ.user.φ.α0.ρ"/>
+        <read id="Φ.user.φ.α1" name="no" of="Φ.user.φ.α1.ρ"/>
+        <read id="Φ.walker.φ" name="shine" of="Φ.walker.φ.ρ"/>
+        <read id="Φ.walker.φ.ρ" name="ok" of="Φ.walker.φ.ρ.ρ"/>
+        <read id="Φ.walker.φ.ρ.ρ" name="p" of="Φ.walker.φ.ρ.ρ.ρ"/>
+        <read id="Φ.walker.φ.α0" name="number" of="Φ.walker.φ.α0.ρ"/>
+        <read id="Φ.walker.φ.α0.α0" name="bytes" of="Φ.walker.φ.α0.α0.ρ"/>
+        <read id="Φ.walker.p" name="gauge" of="Φ.walker.p.ρ"/>
+        <read id="Φ.walker.p.α0" name="yes" of="Φ.walker.p.α0.ρ"/>
+        <read id="Φ.yes.φ" name="choice" of="Φ.yes.φ.ρ"/>
+        <read id="Φ.yes.φ.α0.φ" name="a🌵4-6" of="Φ.yes.φ.α0.φ.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.chain.φ.ρ.ρ">
+           <ref loc="Φ.chain"/>
+        </type>
+        <type id="Φ.chain.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.chain.φ.α1.ρ.ρ">
+           <ref loc="Φ.chain"/>
+        </type>
+        <type id="Φ.chain.φ.α1.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.chain.φ.α1.α1.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.chain.φ.α1.α1.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.choice.φ.ρ">
+           <ref loc="Φ.choice"/>
+        </type>
+        <type id="Φ.choice.not.φ.ρ.ρ">
+           <ref loc="Φ.choice.not"/>
+        </type>
+        <type id="Φ.choice.not.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.choice.not.φ.α1.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.crate.φ.ρ.ρ">
+           <ref loc="Φ.crate"/>
+        </type>
+        <type id="Φ.crate.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.crate.φ.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.crate.φ.α0.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.crate.φ.α1.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.crate.φ.α1.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.crate.φ.α1.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.dial.listen.φ.ρ">
+           <ref loc="Φ.dial.listen"/>
+        </type>
+        <type id="Φ.gauge.φ.ρ.ρ">
+           <ref loc="Φ.gauge"/>
+        </type>
+        <type id="Φ.gauge.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.gauge.φ.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.gauge.φ.α0.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.gauge.φ.α1.ρ">
+           <ref loc="Φ.gauge"/>
+        </type>
+        <type id="Φ.gauge.φ.α1.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.gauge.φ.α1.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.idle.φ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.idle.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.lamp.shine.φ.ρ">
+           <ref loc="Φ.lamp.shine"/>
+        </type>
+        <type id="Φ.no.φ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.no.φ.α0.φ.ρ">
+           <ref loc="Φ.no.φ.α0"/>
+        </type>
+        <type id="Φ.other.φ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.other.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.other.φ.α1.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.porter.φ.ρ.ρ">
+           <ref loc="Φ.porter"/>
+        </type>
+        <type id="Φ.porter.c.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.porter.c.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.record.ok.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.spare.ok.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.user.φ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.user.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.user.φ.α1.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.walker.φ.ρ.ρ.ρ">
+           <ref loc="Φ.walker"/>
+        </type>
+        <type id="Φ.walker.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.walker.φ.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.walker.p.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.walker.p.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.yes.φ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.yes.φ.α0.φ.ρ">
+           <ref loc="Φ.yes.φ.α0"/>
+        </type>
+        <type id="Φ.chain.φ.α1.α1.α0.α0">
+           <data/>
+        </type>
+        <type id="Φ.crate.φ.α0.α0.α0.α0">
+           <data/>
+        </type>
+        <type id="Φ.crate.φ.α1.α0.α0.α0">
+           <data/>
+        </type>
+        <type id="Φ.gauge.φ.α0.α0.α0.α0">
+           <data/>
+        </type>
+        <type id="Φ.gauge.φ.α1.α0.α0.α0">
+           <data/>
+        </type>
+        <type id="Φ.walker.φ.α0.α0.α0">
+           <data/>
+        </type>
+     </heads>
+     <calls>
+        <call loc="Φ.chain.φ">
+           <arg loc="Φ.chain.φ.α0" n="0"/>
+           <arg loc="Φ.chain.φ.α1" n="1"/>
+        </call>
+        <call loc="Φ.chain.φ.α1">
+           <arg loc="Φ.chain.φ.α1.α0" n="0"/>
+           <arg loc="Φ.chain.φ.α1.α1" n="1"/>
+        </call>
+        <call loc="Φ.chain.φ.α1.α1">
+           <arg loc="Φ.chain.φ.α1.α1.α0" n="0"/>
+        </call>
+        <call loc="Φ.chain.φ.α1.α1.α0">
+           <arg loc="Φ.chain.φ.α1.α1.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.choice.not.φ">
+           <arg loc="Φ.choice.not.φ.α0" n="0"/>
+           <arg loc="Φ.choice.not.φ.α1" n="1"/>
+        </call>
+        <call loc="Φ.crate.φ">
+           <arg loc="Φ.crate.φ.α0" n="0"/>
+           <arg loc="Φ.crate.φ.α1" n="1"/>
+        </call>
+        <call loc="Φ.crate.φ.α0">
+           <arg loc="Φ.crate.φ.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.crate.φ.α0.α0">
+           <arg loc="Φ.crate.φ.α0.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.crate.φ.α0.α0.α0">
+           <arg loc="Φ.crate.φ.α0.α0.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.crate.φ.α1">
+           <arg loc="Φ.crate.φ.α1.α0" n="0"/>
+        </call>
+        <call loc="Φ.crate.φ.α1.α0">
+           <arg loc="Φ.crate.φ.α1.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.crate.φ.α1.α0.α0">
+           <arg loc="Φ.crate.φ.α1.α0.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.gauge.φ">
+           <arg loc="Φ.gauge.φ.α0" n="0"/>
+           <arg loc="Φ.gauge.φ.α1" n="1"/>
+        </call>
+        <call loc="Φ.gauge.φ.α0">
+           <arg loc="Φ.gauge.φ.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.gauge.φ.α0.α0">
+           <arg loc="Φ.gauge.φ.α0.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.gauge.φ.α0.α0.α0">
+           <arg loc="Φ.gauge.φ.α0.α0.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.gauge.φ.α1">
+           <arg loc="Φ.gauge.φ.α1.α0" n="0"/>
+        </call>
+        <call loc="Φ.gauge.φ.α1.α0">
+           <arg loc="Φ.gauge.φ.α1.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.gauge.φ.α1.α0.α0">
+           <arg loc="Φ.gauge.φ.α1.α0.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.idle.φ">
+           <arg loc="Φ.idle.φ.α0" n="0"/>
+        </call>
+        <call loc="Φ.no.φ">
+           <arg loc="Φ.no.φ.α0" n="0"/>
+        </call>
+        <call loc="Φ.other.φ">
+           <arg loc="Φ.other.φ.α0" n="0"/>
+           <arg loc="Φ.other.φ.α1" n="1"/>
+        </call>
+        <call loc="Φ.porter.c">
+           <arg loc="Φ.porter.c.α0" n="0"/>
+        </call>
+        <call loc="Φ.user.φ">
+           <arg loc="Φ.user.φ.α0" n="0"/>
+           <arg loc="Φ.user.φ.α1" n="1"/>
+        </call>
+        <call loc="Φ.walker.φ">
+           <arg loc="Φ.walker.φ.α0" n="0"/>
+        </call>
+        <call loc="Φ.walker.φ.α0">
+           <arg loc="Φ.walker.φ.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.walker.φ.α0.α0">
+           <arg loc="Φ.walker.φ.α0.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.walker.p">
+           <arg loc="Φ.walker.p.α0" n="0"/>
+        </call>
+        <call loc="Φ.yes.φ">
+           <arg loc="Φ.yes.φ.α0" n="0"/>
+        </call>
+     </calls>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+      <reduced copies="1">
+        <is loc="Φ"/>
+      </reduced>
+    </o>
+    <o loc="Φ.box" copies="1">
+      <is loc="Φ.box"/>
+      <reduced copies="1">
+        <is loc="Φ.box"/>
+      </reduced>
+    </o>
+    <o loc="Φ.box.ok" copies="1">
+      <is loc="Φ.dial"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.chain" copies="1">
+      <is loc="Φ.chain"/>
+      <reduced copies="1">
+        <is loc="Φ.lamp"/>
+      </reduced>
+    </o>
+    <o loc="Φ.chain.flag" copies="1">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.chain.steps" copies="1">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.chain.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.chain.φ" copies="1">
+      <is loc="Φ.lamp"/>
+    </o>
+    <o loc="Φ.chain.φ.α0" copies="1" lands="a🌵4-6">
+      <is loc="Φ.lamp"/>
+    </o>
+    <o loc="Φ.chain.φ.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.chain.φ.α1" copies="1" lands="a🌵5-6">
+      <is loc="Φ.dial"/>
+    </o>
+    <o loc="Φ.chain.φ.α1.α0" copies="1" lands="a🌵4-6">
+      <is loc="Φ.lamp"/>
+    </o>
+    <o loc="Φ.chain.φ.α1.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.chain.φ.α1.α1" copies="1" lands="a🌵5-6">
+      <is loc="Φ.dial"/>
+    </o>
+    <o loc="Φ.chain.φ.α1.α1.α0" copies="1" lands="sys">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.chain.φ.α1.α1.α0.α0" copies="1" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.chain.φ.α1.α1.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.chain.φ.α1.α1.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.chain.φ.α1.ρ" copies="1">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.chain.φ.α1.ρ.ρ" copies="1">
+      <is loc="Φ.lamp"/>
+    </o>
+    <o loc="Φ.chain.φ.ρ" copies="1">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.chain.φ.ρ.ρ" copies="1">
+      <is loc="Φ.lamp"/>
+    </o>
+    <o loc="Φ.choice" copies="2">
+      <is loc="Φ.choice"/>
+      <reduced copies="2">
+        <is loc="Φ.choice"/>
+      </reduced>
+    </o>
+    <o loc="Φ.choice.pick" copies="2">
+      <set copies="1">
+        <is loc="Φ.no.φ.α0"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.yes.φ.α0"/>
+      </set>
+    </o>
+    <o loc="Φ.choice.φ" copies="2">
+      <set copies="1">
+        <is loc="Φ.no.φ.α0"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.yes.φ.α0"/>
+      </set>
+    </o>
+    <o loc="Φ.choice.φ.ρ" copies="2">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.crate" copies="2">
+      <is loc="Φ.crate"/>
+      <reduced copies="2">
+        <set copies="1">
+          <is loc="Φ.box"/>
+        </set>
+        <set copies="1">
+          <is loc="Φ.record"/>
+        </set>
+      </reduced>
+    </o>
+    <o loc="Φ.crate.flag" copies="2">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.crate.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.crate.φ" copies="2">
+      <set copies="1">
+        <is loc="Φ.box"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.record"/>
+      </set>
+    </o>
+    <o loc="Φ.crate.φ.α0" copies="2" lands="a🌵4-6">
+      <is loc="Φ.box"/>
+    </o>
+    <o loc="Φ.crate.φ.α0.α0" copies="2" lands="ok">
+      <is loc="Φ.dial"/>
+    </o>
+    <o loc="Φ.crate.φ.α0.α0.α0" copies="2" lands="sys">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.crate.φ.α0.α0.α0.α0" copies="2" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.crate.φ.α0.α0.α0.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.crate.φ.α0.α0.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.crate.φ.α0.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.crate.φ.α1" copies="2" lands="a🌵5-6">
+      <is loc="Φ.record"/>
+    </o>
+    <o loc="Φ.crate.φ.α1.α0" copies="2" lands="at">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.crate.φ.α1.α0.α0" copies="2" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.crate.φ.α1.α0.α0.α0" copies="2" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.crate.φ.α1.α0.α0.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.crate.φ.α1.α0.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.crate.φ.α1.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.crate.φ.ρ" copies="2">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.crate.φ.ρ.ρ" copies="2">
+      <set copies="1">
+        <is loc="Φ.box"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.record"/>
+      </set>
+    </o>
+    <o loc="Φ.dial" copies="2">
+      <is loc="Φ.dial"/>
+      <reduced copies="2">
+        <is loc="Φ.dial"/>
+      </reduced>
+    </o>
+    <o loc="Φ.dial.listen" copies="2">
+      <is loc="Φ.dial.listen"/>
+      <reduced copies="2">
+        <is loc="Φ.dial.listen"/>
+      </reduced>
+    </o>
+    <o loc="Φ.dial.listen.size" copies="2">
+      <open/>
+    </o>
+    <o loc="Φ.dial.listen.ρ" copies="2">
+      <is loc="Φ.dial"/>
+    </o>
+    <o loc="Φ.dial.listen.φ" copies="2">
+      <open/>
+    </o>
+    <o loc="Φ.dial.listen.φ.ρ" copies="2">
+      <is loc="Φ.dial.listen"/>
+    </o>
+    <o loc="Φ.dial.sys" copies="2">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.dial.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.gauge" copies="2">
+      <is loc="Φ.gauge"/>
+      <reduced copies="2">
+        <set copies="1">
+          <is loc="Φ.record"/>
+        </set>
+        <set copies="1">
+          <is loc="Φ.spare"/>
+        </set>
+      </reduced>
+    </o>
+    <o loc="Φ.gauge.cant-read" copies="2">
+      <set copies="1">
+        <open/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.spare"/>
+      </set>
+    </o>
+    <o loc="Φ.gauge.flag" copies="2">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.gauge.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.gauge.φ" copies="2">
+      <set copies="1">
+        <is loc="Φ.record"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.spare"/>
+      </set>
+    </o>
+    <o loc="Φ.gauge.φ.α0" copies="2" lands="a🌵4-6">
+      <is loc="Φ.record"/>
+    </o>
+    <o loc="Φ.gauge.φ.α0.α0" copies="2" lands="at">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.gauge.φ.α0.α0.α0" copies="2" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.gauge.φ.α0.α0.α0.α0" copies="2" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.gauge.φ.α0.α0.α0.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.gauge.φ.α0.α0.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.gauge.φ.α0.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.gauge.φ.α1" copies="2" lands="a🌵5-6">
+      <set copies="1">
+        <terminator/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.spare"/>
+      </set>
+    </o>
+    <o loc="Φ.gauge.φ.α1.α0" copies="2" lands="msg">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.gauge.φ.α1.α0.α0" copies="2" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.gauge.φ.α1.α0.α0.α0" copies="2" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.gauge.φ.α1.α0.α0.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.gauge.φ.α1.α0.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.gauge.φ.α1.ρ" copies="2">
+      <set copies="1">
+        <is loc="Φ.record"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.spare"/>
+      </set>
+    </o>
+    <o loc="Φ.gauge.φ.ρ" copies="2">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.gauge.φ.ρ.ρ" copies="2">
+      <set copies="1">
+        <is loc="Φ.record"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.spare"/>
+      </set>
+    </o>
+    <o loc="Φ.idle" copies="1">
+      <is loc="Φ.idle"/>
+    </o>
+    <o loc="Φ.idle.φ" copies="1">
+      <is loc="Φ.record"/>
+    </o>
+    <o loc="Φ.idle.φ.α0" copies="1" lands="flag">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.idle.φ.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.idle.φ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.lamp" copies="5">
+      <is loc="Φ.lamp"/>
+      <reduced copies="4">
+        <is loc="Φ.lamp"/>
+      </reduced>
+    </o>
+    <o loc="Φ.lamp.shine" copies="1">
+      <is loc="Φ.lamp.shine"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.lamp.shine.x" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.lamp.shine.φ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.lamp.shine.φ.ρ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.lamp.ρ" copies="5">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.no" copies="4">
+      <is loc="Φ.no"/>
+      <reduced copies="3">
+        <is loc="Φ.choice"/>
+      </reduced>
+    </o>
+    <o loc="Φ.no.ρ" copies="4">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.no.φ" copies="4">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.no.φ.α0" copies="4" lands="pick">
+      <is loc="Φ.no.φ.α0"/>
+      <reduced copies="5">
+        <set copies="2">
+          <is loc="Φ.no.φ.α0"/>
+        </set>
+        <set copies="1">
+          <is loc="Φ.dial"/>
+        </set>
+        <set copies="1">
+          <is loc="Φ.record"/>
+        </set>
+        <set copies="1">
+          <is loc="Φ.spare"/>
+        </set>
+      </reduced>
+    </o>
+    <o loc="Φ.no.φ.α0.a🌵4-6" copies="3">
+      <set copies="1">
+        <is loc="Φ.box"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.lamp"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.record"/>
+      </set>
+    </o>
+    <o loc="Φ.no.φ.α0.a🌵5-6" copies="3">
+      <set copies="1">
+        <is loc="Φ.dial"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.record"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.spare"/>
+      </set>
+    </o>
+    <o loc="Φ.no.φ.α0.ρ" copies="3">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.no.φ.α0.φ" copies="3">
+      <set copies="1">
+        <is loc="Φ.dial"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.record"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.spare"/>
+      </set>
+    </o>
+    <o loc="Φ.no.φ.α0.φ.ρ" copies="3">
+      <set copies="1">
+        <is loc="Φ.dial"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.record"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.spare"/>
+      </set>
+    </o>
+    <o loc="Φ.no.φ.ρ" copies="4">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.other" copies="1">
+      <is loc="Φ.other"/>
+    </o>
+    <o loc="Φ.other.φ" copies="1">
+      <is loc="Φ.spare"/>
+    </o>
+    <o loc="Φ.other.φ.α0" copies="1" lands="flag">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.other.φ.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.other.φ.α1" copies="1" lands="cant-read">
+      <is loc="Φ.spare"/>
+    </o>
+    <o loc="Φ.other.φ.α1.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.other.φ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.porter" copies="1">
+      <is loc="Φ.porter"/>
+      <reduced copies="1">
+        <is loc="Φ.porter"/>
+      </reduced>
+    </o>
+    <o loc="Φ.porter.c" copies="1">
+      <is loc="Φ.box"/>
+    </o>
+    <o loc="Φ.porter.c.α0" copies="1" lands="flag">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.porter.c.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.porter.c.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.porter.φ" copies="1">
+      <is loc="Φ.dial"/>
+    </o>
+    <o loc="Φ.porter.φ.ρ" copies="1">
+      <is loc="Φ.box"/>
+    </o>
+    <o loc="Φ.porter.φ.ρ.ρ" copies="1">
+      <is loc="Φ.porter"/>
+    </o>
+    <o loc="Φ.record" copies="2">
+      <is loc="Φ.record"/>
+      <reduced copies="2">
+        <is loc="Φ.record"/>
+      </reduced>
+    </o>
+    <o loc="Φ.record.at" copies="2">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.record.ok" copies="2">
+      <is loc="Φ.lamp"/>
+    </o>
+    <o loc="Φ.record.ok.ρ" copies="2">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.spare" copies="1">
+      <is loc="Φ.spare"/>
+      <reduced copies="2">
+        <is loc="Φ.spare"/>
+      </reduced>
+    </o>
+    <o loc="Φ.spare.msg" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.spare.ok" copies="1">
+      <is loc="Φ.lamp"/>
+    </o>
+    <o loc="Φ.spare.ok.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+      <reduced copies="1">
+        <is loc="Φ.string"/>
+      </reduced>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.user" copies="1">
+      <is loc="Φ.user"/>
+    </o>
+    <o loc="Φ.user.φ" copies="1">
+      <is loc="Φ.lamp"/>
+    </o>
+    <o loc="Φ.user.φ.α0" copies="1" lands="flag">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.user.φ.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.user.φ.α1" copies="1" lands="steps">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.user.φ.α1.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.user.φ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.walker" copies="1">
+      <is loc="Φ.walker"/>
+      <reduced copies="1">
+        <is loc="Φ.walker"/>
+      </reduced>
+    </o>
+    <o loc="Φ.walker.p" copies="1">
+      <is loc="Φ.record"/>
+    </o>
+    <o loc="Φ.walker.p.α0" copies="1" lands="flag">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.walker.p.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.walker.p.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.walker.φ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.walker.φ.α0" copies="1" lands="x">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.walker.φ.α0.α0" copies="1" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.walker.φ.α0.α0.α0" copies="1" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.walker.φ.α0.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.walker.φ.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.walker.φ.ρ" copies="1">
+      <is loc="Φ.lamp"/>
+    </o>
+    <o loc="Φ.walker.φ.ρ.ρ" copies="1">
+      <is loc="Φ.record"/>
+    </o>
+    <o loc="Φ.walker.φ.ρ.ρ.ρ" copies="1">
+      <is loc="Φ.walker"/>
+    </o>
+    <o loc="Φ.yes" copies="4">
+      <is loc="Φ.yes"/>
+      <reduced copies="3">
+        <is loc="Φ.choice"/>
+      </reduced>
+    </o>
+    <o loc="Φ.yes.ρ" copies="4">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.yes.φ" copies="4">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.yes.φ.α0" copies="4" lands="pick">
+      <is loc="Φ.yes.φ.α0"/>
+      <reduced copies="5">
+        <set copies="2">
+          <is loc="Φ.yes.φ.α0"/>
+        </set>
+        <set copies="1">
+          <is loc="Φ.box"/>
+        </set>
+        <set copies="1">
+          <is loc="Φ.lamp"/>
+        </set>
+        <set copies="1">
+          <is loc="Φ.record"/>
+        </set>
+      </reduced>
+    </o>
+    <o loc="Φ.yes.φ.α0.a🌵4-6" copies="3">
+      <set copies="1">
+        <is loc="Φ.box"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.lamp"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.record"/>
+      </set>
+    </o>
+    <o loc="Φ.yes.φ.α0.a🌵5-6" copies="3">
+      <set copies="1">
+        <terminator/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.dial"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.record"/>
+      </set>
+    </o>
+    <o loc="Φ.yes.φ.α0.ρ" copies="3">
+      <is loc="Φ.choice"/>
+    </o>
+    <o loc="Φ.yes.φ.α0.φ" copies="3">
+      <set copies="1">
+        <is loc="Φ.box"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.lamp"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.record"/>
+      </set>
+    </o>
+    <o loc="Φ.yes.φ.α0.φ.ρ" copies="3">
+      <set copies="1">
+        <is loc="Φ.box"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.lamp"/>
+      </set>
+      <set copies="1">
+        <is loc="Φ.record"/>
+      </set>
+    </o>
+    <o loc="Φ.yes.φ.ρ" copies="4">
+      <is loc="Φ"/>
+    </o>
+  </answers>

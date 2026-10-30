@@ -9,21 +9,21 @@ locator: Φ.bool.flag
 number: 3
 eo:
   bool.eo: |
-    [] > bool
-      [b] > masked
+    [if] > bool
+      [^ b] > masked
         ^.and b > @
-      [] > flag
+      [^] > flag
         ^.masked 01- > @
+      [] > and /Q.bytes
+        ? > ^
+        ? > b
+  app.eo: |
+    [] > app
+      true.flag > used
 voids:
   - "𝜎1\t3\tρ\tbool"
 rows:
   - "L_bool_masked\tΦ.bool.masked\tΦ.bool.masked\tρ:bool\tb:bytes"
-provides: |
-  <provides>
-    <type id="Φ.bool.flag" reduced="Φ.bytes">
-      <attr name="ρ" type="Φ.bool.flag.ρ" void="true" holds="Φ.bool"/>
-    </type>
-  </provides>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e3">

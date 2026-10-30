@@ -1,0 +1,80 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls tick, but its x declares it holds a number, so x is a number,
+# and tick says it gives a number.
+sources:
+  tick.eo: |
+    [] > tick /Q.number
+      ? > x /Q.number
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.tick" returns="Φ.number">
+           <attr holds="Φ.number" name="x" type="Φ.tick.x" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="string" type="Φ.string"/>
+           <attr name="tick" type="Φ.tick"/>
+        </type>
+     </objects>
+     <reads/>
+     <heads/>
+     <calls/>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.tick" copies="1">
+      <is loc="Φ.tick"/>
+    </o>
+    <o loc="Φ.tick.x" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.tick.λ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+  </answers>

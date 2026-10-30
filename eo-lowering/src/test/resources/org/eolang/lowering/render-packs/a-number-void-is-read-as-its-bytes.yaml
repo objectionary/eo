@@ -10,17 +10,17 @@ locator: Φ.number.width
 number: 46
 eo:
   number.eo: |
-    [] > number
-      [] > width
+    [@] > number
+      [^] > width
         ^.as-bytes.size > @
+      [] > as-bytes /Q.bytes
+        ? > ^
+  bytes.eo: |
+    [@] > bytes
+      [] > size /Q.number
+        ? > ^
 voids:
   - "𝜎27\t46\tρ\tnumber"
-links: |
-  <links>
-    <type id="Φ.number.width.φ">
-      <ref loc="Φ.number"/>
-    </type>
-  </links>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e46">

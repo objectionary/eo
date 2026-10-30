@@ -1,0 +1,199 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The alias makes stdout a read off io, off eolang, off org, off Φ, steps the
+# source never writes. Each step is answered by its package, so write is the
+# write of org.eolang.io.stdout, and its text holds the string.
+sources:
+  app.eo: |
+    +alias org.eolang.io.stdout
+
+    [] > app
+      stdout.write > @
+        "hello"
+  org/eolang/io/stdout.eo: |
+    +package org.eolang.io
+
+    [] > stdout
+      [text] > write
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="true" complete="false" id="Φ.app">
+           <attr name="φ" type="Φ.app.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.org.eolang.io.stdout">
+           <attr name="write" type="Φ.org.eolang.io.stdout.write"/>
+        </type>
+        <type bare="true" complete="true" id="Φ.org.eolang.io.stdout.write">
+           <attr name="text" type="Φ.org.eolang.io.stdout.write.text" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="app" type="Φ.app"/>
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="org" type="Φ.org"/>
+           <attr name="string" type="Φ.string"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.org.eolang.io">
+           <attr name="stdout" type="Φ.org.eolang.io.stdout"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.org.eolang">
+           <attr name="io" type="Φ.org.eolang.io"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.org">
+           <attr name="eolang" type="Φ.org.eolang"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.app.φ" name="write" of="Φ.app.φ.ρ"/>
+        <read id="Φ.app.φ.ρ" name="stdout" of="Φ.app.φ.ρ.ρ"/>
+        <read id="Φ.app.φ.ρ.ρ" name="io" of="Φ.app.φ.ρ.ρ.ρ"/>
+        <read id="Φ.app.φ.ρ.ρ.ρ" name="eolang" of="Φ.app.φ.ρ.ρ.ρ.ρ"/>
+        <read id="Φ.app.φ.ρ.ρ.ρ.ρ" name="org" of="Φ.app.φ.ρ.ρ.ρ.ρ.ρ"/>
+        <read id="Φ.app.φ.α0" name="string" of="Φ.app.φ.α0.ρ"/>
+        <read id="Φ.app.φ.α0.α0" name="bytes" of="Φ.app.φ.α0.α0.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.app.φ.ρ.ρ.ρ.ρ.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.φ.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.φ.α0.α0.α0">
+           <data/>
+        </type>
+     </heads>
+     <calls>
+        <call loc="Φ.app.φ">
+           <arg loc="Φ.app.φ.α0" n="0"/>
+        </call>
+        <call loc="Φ.app.φ.α0">
+           <arg loc="Φ.app.φ.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.app.φ.α0.α0">
+           <arg loc="Φ.app.φ.α0.α0.α0" n="0"/>
+        </call>
+     </calls>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app" copies="1">
+      <is loc="Φ.app"/>
+    </o>
+    <o loc="Φ.app.φ" copies="1">
+      <is loc="Φ.org.eolang.io.stdout.write"/>
+    </o>
+    <o loc="Φ.app.φ.α0" copies="1" lands="text">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.app.φ.α0.α0" copies="1" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.app.φ.α0.α0.α0" copies="1" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.app.φ.α0.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.φ.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.φ.ρ" copies="1">
+      <is loc="Φ.org.eolang.io.stdout"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.ρ" copies="1">
+      <is loc="Φ.org.eolang.io"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.ρ.ρ" copies="1">
+      <is loc="Φ.org.eolang"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.ρ.ρ.ρ" copies="1">
+      <is loc="Φ.org"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.ρ.ρ.ρ.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.org" copies="2">
+      <is loc="Φ.org"/>
+      <reduced copies="1">
+        <is loc="Φ.org"/>
+      </reduced>
+    </o>
+    <o loc="Φ.org.eolang" copies="2">
+      <is loc="Φ.org.eolang"/>
+      <reduced copies="1">
+        <is loc="Φ.org.eolang"/>
+      </reduced>
+    </o>
+    <o loc="Φ.org.eolang.io" copies="2">
+      <is loc="Φ.org.eolang.io"/>
+      <reduced copies="1">
+        <is loc="Φ.org.eolang.io"/>
+      </reduced>
+    </o>
+    <o loc="Φ.org.eolang.io.stdout" copies="2">
+      <is loc="Φ.org.eolang.io.stdout"/>
+      <reduced copies="1">
+        <is loc="Φ.org.eolang.io.stdout"/>
+      </reduced>
+    </o>
+    <o loc="Φ.org.eolang.io.stdout.write" copies="1">
+      <is loc="Φ.org.eolang.io.stdout.write"/>
+      <reduced copies="1">
+        <is loc="Φ.org.eolang.io.stdout.write"/>
+      </reduced>
+    </o>
+    <o loc="Φ.org.eolang.io.stdout.write.text" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+      <reduced copies="1">
+        <is loc="Φ.string"/>
+      </reduced>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+  </answers>

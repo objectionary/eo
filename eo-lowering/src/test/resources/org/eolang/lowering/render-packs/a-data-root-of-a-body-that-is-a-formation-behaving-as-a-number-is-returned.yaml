@@ -4,31 +4,29 @@
 # yamllint disable rule:line-length
 # The root is a number the atom computed, so the atom returns it bare, and
 # the tables must say the body is a number, a string, a bool or bytes. The
-# object `dozen` binds `word` besides its body, so it behaves as nothing but
-# itself and its row has no `reduced` cell. Its body, though, is a formation
-# that binds nothing but a body of its own, and the row of that formation
-# says it behaves as a number.
+# object `dozen` binds `word` besides its body, and its body is a formation
+# that binds nothing but a body of its own. The row of the body names that
+# formation, and what the formation reduces to, in its own row, is a
+# number. `app` hands `dozen` a number and takes an attribute off it, so the
+# engine walks the body.
 locator: Φ.dozen
 number: 1
 eo:
   dozen.eo: |
     [k] > dozen
-      [] > @
+      [^] > @
         ^.k.times 12 > @
       "twelve" > word
+  number.eo: |
+    [@] > number
+      [] > times /Q.number
+        ? > ^
+        ? > b /Q.number
+  app.eo: |
+    [] > app
+      (dozen 3).as-bytes > used
 voids:
   - "𝜎1\t1\tk\tnumber"
-provides: |
-  <provides>
-    <type complete="false" id="Φ.dozen">
-      <attr name="k" type="Φ.dozen.k" void="true"/>
-      <attr name="word" type="Φ.dozen.word"/>
-      <attr name="φ" type="Φ.dozen.φ"/>
-    </type>
-    <type complete="false" id="Φ.dozen.φ" reduced="Φ.number">
-      <attr name="φ" type="Φ.dozen.φ.φ"/>
-    </type>
-  </provides>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e1">

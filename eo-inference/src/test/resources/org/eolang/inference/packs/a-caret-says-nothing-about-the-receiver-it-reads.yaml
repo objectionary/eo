@@ -1,0 +1,200 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# ^ in leaf is the grove it was read off, ^.^ the oak and ^.^.^ the app, so
+# leaf is the acorn of app. Each ^ holds only what its formation was read off:
+# the ^ of oak holds app, never the grove inside it.
+sources:
+  app.eo: |
+    [] > app
+      oak > @
+      [^] > oak
+        grove > @
+        [^] > grove
+          leaf > @
+          [^] > leaf
+            ^.^.^.acorn > @
+      [] > acorn
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="false" complete="false" id="Φ.app">
+           <attr name="φ" type="Φ.app.φ"/>
+           <attr name="oak" type="Φ.app.oak"/>
+           <attr name="acorn" type="Φ.app.acorn"/>
+        </type>
+        <type bare="false" complete="false" id="Φ.app.oak">
+           <attr name="ρ" rho="Φ.app" type="Φ.app.oak.ρ" void="true"/>
+           <attr name="φ" type="Φ.app.oak.φ"/>
+           <attr name="grove" type="Φ.app.oak.grove"/>
+        </type>
+        <type bare="false" complete="false" id="Φ.app.oak.grove">
+           <attr name="ρ" rho="Φ.app.oak" type="Φ.app.oak.grove.ρ" void="true"/>
+           <attr name="φ" type="Φ.app.oak.grove.φ"/>
+           <attr name="leaf" type="Φ.app.oak.grove.leaf"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.app.oak.grove.leaf">
+           <attr name="ρ"
+                 rho="Φ.app.oak.grove"
+                 type="Φ.app.oak.grove.leaf.ρ"
+                 void="true"/>
+           <attr name="φ" type="Φ.app.oak.grove.leaf.φ"/>
+        </type>
+        <type bare="true" complete="true" id="Φ.app.acorn"/>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="app" type="Φ.app"/>
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="string" type="Φ.string"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.app.φ" name="oak" of="Φ.app.φ.ρ"/>
+        <read id="Φ.app.oak.φ" name="grove" of="Φ.app.oak.φ.ρ"/>
+        <read id="Φ.app.oak.grove.φ" name="leaf" of="Φ.app.oak.grove.φ.ρ"/>
+        <read id="Φ.app.oak.grove.leaf.φ"
+              name="acorn"
+              of="Φ.app.oak.grove.leaf.φ.ρ"/>
+        <read id="Φ.app.oak.grove.leaf.φ.ρ"
+              name="ρ"
+              of="Φ.app.oak.grove.leaf.φ.ρ.ρ"/>
+        <read id="Φ.app.oak.grove.leaf.φ.ρ.ρ"
+              name="ρ"
+              of="Φ.app.oak.grove.leaf.φ.ρ.ρ.ρ"/>
+        <read id="Φ.app.oak.grove.leaf.φ.ρ.ρ.ρ"
+              name="ρ"
+              of="Φ.app.oak.grove.leaf.φ.ρ.ρ.ρ.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.app.φ.ρ">
+           <ref loc="Φ.app"/>
+        </type>
+        <type id="Φ.app.oak.φ.ρ">
+           <ref loc="Φ.app.oak"/>
+        </type>
+        <type id="Φ.app.oak.grove.φ.ρ">
+           <ref loc="Φ.app.oak.grove"/>
+        </type>
+        <type id="Φ.app.oak.grove.leaf.φ.ρ.ρ.ρ.ρ">
+           <ref loc="Φ.app.oak.grove.leaf"/>
+        </type>
+     </heads>
+     <calls/>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app" copies="1">
+      <is loc="Φ.app"/>
+      <reduced copies="1">
+        <is loc="Φ.app"/>
+      </reduced>
+    </o>
+    <o loc="Φ.app.acorn" copies="2">
+      <is loc="Φ.app.acorn"/>
+      <reduced copies="1">
+        <is loc="Φ.app.acorn"/>
+      </reduced>
+    </o>
+    <o loc="Φ.app.oak" copies="2">
+      <is loc="Φ.app.oak"/>
+      <reduced copies="2">
+        <is loc="Φ.app.oak"/>
+      </reduced>
+    </o>
+    <o loc="Φ.app.oak.grove" copies="2">
+      <is loc="Φ.app.oak.grove"/>
+      <reduced copies="2">
+        <is loc="Φ.app.oak.grove"/>
+      </reduced>
+    </o>
+    <o loc="Φ.app.oak.grove.leaf" copies="2">
+      <is loc="Φ.app.oak.grove.leaf"/>
+      <reduced copies="2">
+        <is loc="Φ.app.acorn"/>
+      </reduced>
+    </o>
+    <o loc="Φ.app.oak.grove.leaf.ρ" copies="2">
+      <is loc="Φ.app.oak.grove"/>
+    </o>
+    <o loc="Φ.app.oak.grove.leaf.φ" copies="2">
+      <is loc="Φ.app.acorn"/>
+    </o>
+    <o loc="Φ.app.oak.grove.leaf.φ.ρ" copies="2">
+      <is loc="Φ.app"/>
+    </o>
+    <o loc="Φ.app.oak.grove.leaf.φ.ρ.ρ" copies="2">
+      <is loc="Φ.app.oak"/>
+    </o>
+    <o loc="Φ.app.oak.grove.leaf.φ.ρ.ρ.ρ" copies="2">
+      <is loc="Φ.app.oak.grove"/>
+    </o>
+    <o loc="Φ.app.oak.grove.leaf.φ.ρ.ρ.ρ.ρ" copies="2">
+      <is loc="Φ.app.acorn"/>
+    </o>
+    <o loc="Φ.app.oak.grove.ρ" copies="2">
+      <is loc="Φ.app.oak"/>
+    </o>
+    <o loc="Φ.app.oak.grove.φ" copies="2">
+      <is loc="Φ.app.acorn"/>
+    </o>
+    <o loc="Φ.app.oak.grove.φ.ρ" copies="2">
+      <is loc="Φ.app.oak.grove"/>
+    </o>
+    <o loc="Φ.app.oak.ρ" copies="2">
+      <is loc="Φ.app"/>
+    </o>
+    <o loc="Φ.app.oak.φ" copies="2">
+      <is loc="Φ.app.oak.grove"/>
+    </o>
+    <o loc="Φ.app.oak.φ.ρ" copies="2">
+      <is loc="Φ.app.oak"/>
+    </o>
+    <o loc="Φ.app.φ" copies="1">
+      <is loc="Φ.app.oak"/>
+    </o>
+    <o loc="Φ.app.φ.ρ" copies="1">
+      <is loc="Φ.app"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+  </answers>

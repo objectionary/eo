@@ -1,0 +1,252 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# next reads start off ^, the copy of counter it is an attribute of, so the
+# start it adds one to is the number the call put into counter.
+sources:
+  counter.eo: |
+    [start] > counter
+      [] > next
+        ^.start.plus 1 > @
+  app.eo: |
+    [] > app
+      clock.next > @
+      counter 5 > clock
+  number.eo: |
+    [@] > number
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="false" complete="false" id="Φ.app">
+           <attr name="φ" type="Φ.app.φ"/>
+           <attr name="clock" type="Φ.app.clock"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.counter">
+           <attr name="start" type="Φ.counter.start" void="true"/>
+           <attr name="next" type="Φ.counter.next"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.counter.next">
+           <attr name="φ" type="Φ.counter.next.φ"/>
+        </type>
+        <type bare="false" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+           <attr name="plus" type="Φ.number.plus"/>
+        </type>
+        <type bare="true"
+              complete="false"
+              id="Φ.number.plus"
+              returns="Φ.number">
+           <attr name="ρ" rho="Φ.number" type="Φ.number.plus.ρ" void="true"/>
+           <attr holds="Φ.number" name="b" type="Φ.number.plus.b" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="app" type="Φ.app"/>
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="counter" type="Φ.counter"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="string" type="Φ.string"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.app.φ" name="next" of="Φ.app.φ.ρ"/>
+        <read id="Φ.app.φ.ρ" name="clock" of="Φ.app.φ.ρ.ρ"/>
+        <read id="Φ.app.clock" name="counter" of="Φ.app.clock.ρ"/>
+        <read id="Φ.app.clock.α0" name="number" of="Φ.app.clock.α0.ρ"/>
+        <read id="Φ.app.clock.α0.α0" name="bytes" of="Φ.app.clock.α0.α0.ρ"/>
+        <read id="Φ.counter.next.φ" name="plus" of="Φ.counter.next.φ.ρ"/>
+        <read id="Φ.counter.next.φ.ρ" name="start" of="Φ.counter.next.φ.ρ.ρ"/>
+        <read id="Φ.counter.next.φ.ρ.ρ" name="ρ" of="Φ.counter.next.φ.ρ.ρ.ρ"/>
+        <read id="Φ.counter.next.φ.α0" name="number" of="Φ.counter.next.φ.α0.ρ"/>
+        <read id="Φ.counter.next.φ.α0.α0"
+              name="bytes"
+              of="Φ.counter.next.φ.α0.α0.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.app.φ.ρ.ρ">
+           <ref loc="Φ.app"/>
+        </type>
+        <type id="Φ.app.clock.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.clock.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.clock.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.counter.next.φ.ρ.ρ.ρ">
+           <ref loc="Φ.counter.next"/>
+        </type>
+        <type id="Φ.counter.next.φ.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.counter.next.φ.α0.α0.ρ">
+           <ref loc="Φ"/>
+        </type>
+        <type id="Φ.app.clock.α0.α0.α0">
+           <data/>
+        </type>
+        <type id="Φ.counter.next.φ.α0.α0.α0">
+           <data/>
+        </type>
+     </heads>
+     <calls>
+        <call loc="Φ.app.clock">
+           <arg loc="Φ.app.clock.α0" n="0"/>
+        </call>
+        <call loc="Φ.app.clock.α0">
+           <arg loc="Φ.app.clock.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.app.clock.α0.α0">
+           <arg loc="Φ.app.clock.α0.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.counter.next.φ">
+           <arg loc="Φ.counter.next.φ.α0" n="0"/>
+        </call>
+        <call loc="Φ.counter.next.φ.α0">
+           <arg loc="Φ.counter.next.φ.α0.α0" n="0"/>
+        </call>
+        <call loc="Φ.counter.next.φ.α0.α0">
+           <arg loc="Φ.counter.next.φ.α0.α0.α0" n="0"/>
+        </call>
+     </calls>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app" copies="1">
+      <is loc="Φ.app"/>
+      <reduced copies="1">
+        <is loc="Φ.app"/>
+      </reduced>
+    </o>
+    <o loc="Φ.app.clock" copies="1">
+      <is loc="Φ.counter"/>
+    </o>
+    <o loc="Φ.app.clock.α0" copies="1" lands="start">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.app.clock.α0.α0" copies="1" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.app.clock.α0.α0.α0" copies="1" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.app.clock.α0.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.clock.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.clock.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.app.φ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.app.φ.ρ" copies="1">
+      <is loc="Φ.counter"/>
+    </o>
+    <o loc="Φ.app.φ.ρ.ρ" copies="1">
+      <is loc="Φ.app"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.counter" copies="1">
+      <is loc="Φ.counter"/>
+      <reduced copies="1">
+        <is loc="Φ.counter"/>
+      </reduced>
+    </o>
+    <o loc="Φ.counter.next" copies="1">
+      <is loc="Φ.counter.next"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.counter.next.φ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.counter.next.φ.α0" copies="1" lands="b">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.counter.next.φ.α0.α0" copies="1" lands="φ">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.counter.next.φ.α0.α0.α0" copies="1" lands="φ">
+      <data/>
+    </o>
+    <o loc="Φ.counter.next.φ.α0.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.counter.next.φ.α0.ρ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.counter.next.φ.ρ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.counter.next.φ.ρ.ρ" copies="1">
+      <is loc="Φ.counter"/>
+    </o>
+    <o loc="Φ.counter.next.φ.ρ.ρ.ρ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.counter.start" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.plus" copies="1">
+      <is loc="Φ.number.plus"/>
+      <reduced copies="1">
+        <is loc="Φ.number"/>
+      </reduced>
+    </o>
+    <o loc="Φ.number.plus.b" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.plus.λ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.plus.ρ" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+  </answers>

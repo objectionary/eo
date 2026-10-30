@@ -1,0 +1,116 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# inner is walked where it is written, inside outer, so the ^ it declares
+# holds that outer: ^.held is the held of outer, and so is inner.
+sources:
+  outer.eo: |
+    [] > outer
+      [] > held
+      [^] > inner
+        ^.held > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="true" complete="false" id="Φ.bytes">
+           <attr name="φ" type="Φ.bytes.φ" void="true"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.number">
+           <attr name="φ" type="Φ.number.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ.outer">
+           <attr name="held" type="Φ.outer.held"/>
+           <attr name="inner" type="Φ.outer.inner"/>
+        </type>
+        <type bare="true" complete="true" id="Φ.outer.held"/>
+        <type bare="true" complete="false" id="Φ.outer.inner">
+           <attr name="ρ" rho="Φ.outer" type="Φ.outer.inner.ρ" void="true"/>
+           <attr name="φ" type="Φ.outer.inner.φ"/>
+        </type>
+        <type bare="true" complete="false" id="Φ.string">
+           <attr name="φ" type="Φ.string.φ" void="true"/>
+        </type>
+        <type bare="false" complete="true" id="Φ">
+           <attr name="bytes" type="Φ.bytes"/>
+           <attr name="number" type="Φ.number"/>
+           <attr name="outer" type="Φ.outer"/>
+           <attr name="string" type="Φ.string"/>
+        </type>
+     </objects>
+     <reads>
+        <read id="Φ.outer.inner.φ" name="held" of="Φ.outer.inner.φ.ρ"/>
+        <read id="Φ.outer.inner.φ.ρ" name="ρ" of="Φ.outer.inner.φ.ρ.ρ"/>
+     </reads>
+     <heads>
+        <type id="Φ.outer.inner.φ.ρ.ρ">
+           <ref loc="Φ.outer.inner"/>
+        </type>
+     </heads>
+     <calls/>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ" copies="1">
+      <is loc="Φ"/>
+    </o>
+    <o loc="Φ.bytes" copies="1">
+      <is loc="Φ.bytes"/>
+      <reduced copies="1">
+        <is loc="Φ.bytes"/>
+      </reduced>
+    </o>
+    <o loc="Φ.bytes.φ" copies="1">
+      <data/>
+    </o>
+    <o loc="Φ.number" copies="1">
+      <is loc="Φ.number"/>
+    </o>
+    <o loc="Φ.number.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+    <o loc="Φ.outer" copies="1">
+      <is loc="Φ.outer"/>
+      <reduced copies="1">
+        <is loc="Φ.outer"/>
+      </reduced>
+    </o>
+    <o loc="Φ.outer.held" copies="2">
+      <is loc="Φ.outer.held"/>
+      <reduced copies="1">
+        <is loc="Φ.outer.held"/>
+      </reduced>
+    </o>
+    <o loc="Φ.outer.inner" copies="1">
+      <is loc="Φ.outer.inner"/>
+      <reduced copies="1">
+        <is loc="Φ.outer.held"/>
+      </reduced>
+    </o>
+    <o loc="Φ.outer.inner.ρ" copies="1">
+      <is loc="Φ.outer"/>
+    </o>
+    <o loc="Φ.outer.inner.φ" copies="1">
+      <is loc="Φ.outer.held"/>
+    </o>
+    <o loc="Φ.outer.inner.φ.ρ" copies="1">
+      <is loc="Φ.outer"/>
+    </o>
+    <o loc="Φ.outer.inner.φ.ρ.ρ" copies="1">
+      <is loc="Φ.outer.held"/>
+    </o>
+    <o loc="Φ.string" copies="1">
+      <is loc="Φ.string"/>
+    </o>
+    <o loc="Φ.string.φ" copies="1">
+      <is loc="Φ.bytes"/>
+    </o>
+  </answers>
