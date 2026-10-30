@@ -28,9 +28,11 @@ import java.util.Optional;
 final class Level {
 
     /**
-     * The label an entry carries while no naming line has claimed it.
+     * An absent label: the name an entry carries while no naming line
+     * has claimed it, and the binding of the in-progress arg while none
+     * is tracked.
      */
-    private static final Optional<String> NO_NAME = Optional.empty();
+    private static final Optional<String> ABSENT = Optional.empty();
 
     /**
      * Indent (spaces) at which this entry's expression starts.
@@ -136,20 +138,21 @@ final class Level {
     private boolean star;
 
     /**
-     * Cross-line binding mode for arg-bearing parents — 0 unset, 1
-     * all-unbound, 2 all-bound. Updated by
-     * {@link #observeBinding(boolean, Span)} per R-6.6.2.
+     * Cross-line argument group of an arg-bearing parent — the kind its
+     * args hold (none bound, slot numbers, or names) and the labels they
+     * bind. Joined by {@link #commitArg()} per R-6.6.2 and R-6.6.5.
      */
-    private int bindings;
+    private Ties ties;
 
     /**
-     * The in-progress child arg, in the same spelling as
-     * {@link #bindings} — 0 none tracked yet, 1 unbound, 2 bound. Held
-     * apart from {@link #bindings} until {@link #commitArg()} joins it,
-     * since {@link #upgradeArgBinding()} may still turn it to bound when
-     * a {@code .method} continuation picks up an outer binding.
+     * The outer binding label of the in-progress child arg — the empty
+     * string when that arg carries none, and absent while no arg is
+     * tracked. Held apart from {@link #ties} until {@link #commitArg()}
+     * joins it, since {@link #upgradeArgBinding(String, Span)} may still
+     * give it a label when a {@code .method} continuation picks up an
+     * outer binding.
      */
-    private int arg;
+    private Optional<String> arg;
 
     /**
      * Why a same-indent {@code .method} continuation must be refused on
@@ -161,9 +164,9 @@ final class Level {
     private String refusal;
 
     /**
-     * Source span recorded with the in-progress arg, used for error
-     * positioning when {@link #commitArg()} rejects the arg
-     * against the group mode.
+     * Source span of the line that gave the in-progress arg its binding
+     * label (or its lack of one), used for error positioning when
+     * {@link #commitArg()} rejects the arg against the group.
      */
     private Span argspan;
 
@@ -188,13 +191,15 @@ final class Level {
         this.openness = state;
         this.parent = parent;
         this.patom = patom;
-        this.label = Level.NO_NAME;
+        this.label = Level.ABSENT;
         this.atom = false;
         this.taken = false;
         this.count = 0;
         this.children = 0;
         this.tupled = false;
         this.star = false;
+        this.ties = new Ties();
+        this.arg = Level.ABSENT;
         this.refusal = "";
     }
 
@@ -504,9 +509,9 @@ final class Level {
         this.tupled = false;
         this.children = 0;
         this.count = 0;
-        this.bindings = 0;
-        this.arg = 0;
-        this.label = Level.NO_NAME;
+        this.ties = new Ties();
+        this.arg = Level.ABSENT;
+        this.label = Level.ABSENT;
     }
 
     /**
@@ -519,58 +524,53 @@ final class Level {
     }
 
     /**
-     * Observe a child arg's binding presence and validate against the
-     * group's mode — R-6.6.2. The first observation sets the mode;
-     * subsequent ones must match.
+     * Observe a child arg's outer binding label and validate it against
+     * the group — R-6.6.2 and R-6.6.5. The first arg fixes the kind of
+     * the group; later ones must match it and bind a label of their own.
      *
      * <p>For vmethod chains (head + same-indent {@code .method}
      * continuations), the binding may live on the last link rather
      * than on the head. This method tracks the currently in-progress
-     * arg separately and only commits it to the group mode when the
+     * arg separately and only commits it to the group when the
      * next sibling arg starts or the parent closes. A late binding
-     * picked up via {@link #upgradeArgBinding()} is reflected at
-     * commit time.</p>
+     * picked up via {@link #upgradeArgBinding(String, Span)} is
+     * reflected at commit time.</p>
      *
-     * @param bound Whether the child carries an inline binding
+     * @param outer The child's outer binding label, empty when it carries none
      * @param span Source span of the child (for error positioning)
      */
-    void observeBinding(final boolean bound, final Span span) {
+    void observeBinding(final String outer, final Span span) {
         this.commitArg();
-        if (bound) {
-            this.arg = 2;
-        } else {
-            this.arg = 1;
-        }
+        this.arg = Optional.of(outer);
         this.argspan = span;
     }
 
     /**
-     * Mark the currently in-progress arg as bound — used when a
-     * {@code .method} chain continuation carries an outer binding
-     * that names the whole expression (binding lives on the last
-     * link per the chain-binding rule).
+     * Give the currently in-progress arg the binding label a
+     * {@code .method} chain continuation carries, which names the whole
+     * expression (binding lives on the last link per the chain-binding
+     * rule). A rejection of that label then points at the continuation.
+     *
+     * @param outer The continuation's outer binding label
+     * @param span Source span of the continuation line
      */
-    void upgradeArgBinding() {
-        this.arg = 2;
+    void upgradeArgBinding(final String outer, final Span span) {
+        this.arg = Optional.of(outer);
+        this.argspan = span;
     }
 
     /**
-     * Commit the currently in-progress arg's binding state into the
-     * group mode and verify against the all-or-nothing rule. Called
-     * before starting a new arg and at parent close time.
+     * Commit the currently in-progress arg's binding label into the
+     * group and verify it against R-6.6.2 and R-6.6.5. Called before
+     * starting a new arg and at parent close time.
      */
     void commitArg() {
-        if (this.arg != 0) {
-            final int code = this.arg;
-            this.arg = 0;
-            if (this.bindings == 0) {
-                this.bindings = code;
-            } else if (this.bindings != code) {
-                throw new ParseError(
-                    this.argspan.line(), this.argspan.indent(),
-                    "argument bindings must be all-or-nothing"
-                );
-            }
+        if (this.arg.isPresent()) {
+            final Optional<String> tie = this.arg.filter(text -> !text.isEmpty());
+            this.arg = Level.ABSENT;
+            this.ties = this.ties.with(
+                tie, this.argspan.line(), this.argspan.indent()
+            );
         }
     }
 
@@ -618,7 +618,7 @@ final class Level {
         this.children = other.children;
         this.tupled = other.tupled;
         this.star = other.star;
-        this.bindings = other.bindings;
+        this.ties = other.ties;
         this.arg = other.arg;
         this.argspan = other.argspan;
         this.refusal = other.refusal;
