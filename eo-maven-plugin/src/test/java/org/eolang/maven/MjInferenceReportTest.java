@@ -42,4 +42,31 @@ final class MjInferenceReportTest {
             Matchers.is(true)
         );
     }
+
+    @Test
+    void drawsNothingWhenInferenceNeverRan(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "no page may be drawn when there are no tables, but one was",
+            Files.exists(
+                new FakeMaven(temp)
+                    .execute(MjInferenceReport.class)
+                    .targetPath()
+                    .getParent()
+                    .resolve("site")
+                    .resolve("inference")
+                    .resolve("index.html")
+            ),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void createsNoStageDirectoryWhenInferenceNeverRan(@Mktmp final Path temp) throws IOException {
+        new FakeMaven(temp).execute(MjInferenceReport.class);
+        MatcherAssert.assertThat(
+            "A goal that only reads must leave the target untouched, but it didnt",
+            Files.exists(temp.resolve("target")),
+            Matchers.is(false)
+        );
+    }
 }

@@ -31,11 +31,16 @@ import java.util.Collection;
  * text can give. A formation that declares none leaves the caret unresolved,
  * since the runtime terminates on the {@code ρ} of such an object and there
  * is nothing to point at. Beyond that, nothing else is consulted — an
- * attribute reachable only through {@code φ} or through a package member is
- * not found here, and the name simply stays
- * unresolved. The checker is allowed to know less; it is not allowed to
- * guess, because a wrong link would make every later answer wrong with
- * it.</p>
+ * attribute reachable only through {@code φ} is not found here, and the name
+ * simply stays unresolved. The checker is allowed to know less; it is not
+ * allowed to guess, because a wrong link would make every later answer wrong
+ * with it.</p>
+ *
+ * <p>A Φ-name that no object carries may still be the package a file was
+ * written into, which {@link Packages} tells apart, and then it names that
+ * package: {@code Q.foo.oak} reads {@code Φ.foo} before it asks for
+ * {@code oak}, and a {@code foo} nobody formed left the dispatch with no
+ * bearer and the whole chain behind it unknown (#9358).</p>
  *
  * @since 0.68.0
  */
@@ -52,14 +57,35 @@ final class Scope {
     private final Collection<String> formations;
 
     /**
+     * The locators naming a package and nothing besides it.
+     */
+    private final Collection<String> packages;
+
+    /**
      * Ctor.
      *
      * @param all The locator of every object of the program
      * @param made The locators of its formations
      */
     Scope(final Collection<String> all, final Collection<String> made) {
+        this(all, made, new Packages(all).all());
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param all The locator of every object of the program
+     * @param made The locators of its formations
+     * @param prefixes The locators naming a package and nothing besides it
+     */
+    private Scope(
+        final Collection<String> all,
+        final Collection<String> made,
+        final Collection<String> prefixes
+    ) {
         this.locators = all;
         this.formations = made;
+        this.packages = prefixes;
     }
 
     /**
@@ -99,7 +125,7 @@ final class Scope {
 
     private String rooted(final String base) {
         final String found;
-        if (this.locators.contains(base)) {
+        if (this.locators.contains(base) || this.packages.contains(base)) {
             found = base;
         } else {
             found = "";

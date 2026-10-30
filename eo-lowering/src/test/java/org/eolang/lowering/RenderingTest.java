@@ -4,8 +4,11 @@
  */
 package org.eolang.lowering;
 
+import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -16,18 +19,19 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 import org.cactoos.list.ListOf;
-import org.cactoos.text.TextOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
 import org.eolang.xax.XtSticky;
@@ -80,36 +84,44 @@ final class RenderingTest {
         if (size > 0) {
             bytes = HexFormat.ofDelimiter("-").withUpperCase().formatHex(expected).concat("-");
         }
-        final String expression = Files.readString(
-            new RenderingTest.Pack(
-                new XtYaml(
-                    new TextOf(
-                        RenderingTest.class.getResource(
-                            "render-packs/a-data-root-of-a-body-that-returns-bytes-is-returned.yaml"
-                        )
-                    ).asString().replace("FF-", bytes)
-                ),
-                this.dir
-            ).rendered(new ArrayList<>(0)).resolve("org/eolang/EOwrap$EOφ.java")
-        ).replaceAll("(?s).*\\.and\\(new BytesOf\\((.*)\\)\\)\\.take\\(\\);.*", "$1");
-        final Path source = this.dir.resolve("Literal.java");
-        Files.writeString(
-            source,
-            String.format(
-                "public final class Literal { public static byte[] bytes() { return %s; } }",
-                expression
+        final String expression = new XSLDocument(
+            String.join(
+                "", "<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" ",
+                "xmlns:eo=\"https://www.eolang.org\" version=\"3.0\">",
+                "<xsl:import href=\"/org/eolang/lowering/rendering.xsl\"/>",
+                "<xsl:param name=\"bytes\"/>",
+                "<xsl:template match=\"/\"><literal>",
+                "<xsl:value-of select=\"eo:literal-of($bytes, 'byte[]')\"/>",
+                "</literal></xsl:template></xsl:stylesheet>"
             )
-        );
-        try (URLClassLoader loader = new URLClassLoader(new URL[]{this.dir.toUri().toURL()})) {
-            MatcherAssert.assertThat(
-                "the compiled literal must preserve every byte of the rendered constant",
-                ToolProvider.getSystemJavaCompiler().run(null, null, null, source.toString()) == 0
-                    && Arrays.equals(
-                        expected,
-                        (byte[]) loader.loadClass("Literal").getMethod("bytes").invoke(null)
-                    ),
-                Matchers.is(true)
+        ).with(new Hrefs()).with("bytes", bytes)
+            .transform(new XMLDocument("<input/>"))
+            .xpath("/literal/text()").get(0);
+        final Path output = Files.createTempDirectory(this.dir, "literal-");
+        try {
+            final Path source = output.resolve("Literal.java");
+            Files.writeString(
+                source,
+                String.format(
+                    "public final class Literal { public static byte[] bytes() { return %s; } }",
+                    expression
+                ),
+                StandardCharsets.UTF_8
             );
+            RenderingTest.compile(source);
+            try (URLClassLoader loader = new URLClassLoader(new URL[]{output.toUri().toURL()})) {
+                Assertions.assertArrayEquals(
+                    expected, (byte[]) loader.loadClass("Literal").getMethod("bytes").invoke(null),
+                    "the compiled literal must preserve every byte"
+                );
+            }
+        } finally {
+            try (Stream<Path> files = Files.walk(output)) {
+                for (final Path file : files.sorted(Comparator.reverseOrder())
+                    .collect(Collectors.toList())) {
+                    Files.delete(file);
+                }
+            }
         }
     }
 
@@ -190,7 +202,7 @@ final class RenderingTest {
             Files.write(
                 protocol,
                 String.format(
-                    "<protocol><morph><evaluate λ=\"L_root\"><dataize meta=\"𝛿1·2\">𝜎%d</dataize></evaluate></morph></protocol>",
+                    "<protocol><dataize at=\"Φ.l🌵.e1\"><manufactured meta=\"𝛿·0·1\">𝜎%d</manufactured></dataize></protocol>",
                     idx + 1
                 ).getBytes(StandardCharsets.UTF_8)
             );
@@ -268,6 +280,19 @@ final class RenderingTest {
                 "tables without the types of the bodies must fail the rendering"
             ).getMessage(),
             Matchers.containsString("links.xml")
+        );
+    }
+
+    private static void compile(final Path source) {
+        final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        Assertions.assertNotNull(compiler, "a JDK compiler is required");
+        final ByteArrayOutputStream diagnostics = new ByteArrayOutputStream();
+        Assertions.assertEquals(
+            0,
+            compiler.run(
+                null, null, diagnostics, "--release", "17", "-encoding", "UTF-8", source.toString()
+            ),
+            diagnostics.toString(StandardCharsets.UTF_8)
         );
     }
 
@@ -362,7 +387,7 @@ final class RenderingTest {
             final Collection<String> failed = new ArrayList<>(0);
             for (final Object key : this.story.map().keySet()) {
                 if (!Arrays.asList(
-                    "locator", "number", "eo", "voids", "links", "atoms", "provides",
+                    "locator", "number", "eo", "voids", "rows", "links", "atoms", "provides",
                     "protocol", "file", "java", "taint"
                 ).contains(key)) {
                     failed.add(String.format("unknown key: %s", key));
@@ -415,13 +440,15 @@ final class RenderingTest {
                 String.format("%s\t%s%n", this.story.map().get("number"), locator)
                     .getBytes(StandardCharsets.UTF_8)
             );
-            Files.write(
-                home.resolve("voids.tsv"),
-                this.demands("voids").stream()
-                    .map(row -> String.format("%s%n", row))
-                    .collect(Collectors.joining())
-                    .getBytes(StandardCharsets.UTF_8)
-            );
+            for (final String table : new ListOf<>("voids", "rows")) {
+                Files.write(
+                    home.resolve(String.format("%s.tsv", table)),
+                    this.demands(table).stream()
+                        .map(row -> String.format("%s%n", row))
+                        .collect(Collectors.joining())
+                        .getBytes(StandardCharsets.UTF_8)
+                );
+            }
             final Path sources = Files.createDirectories(
                 this.temp.resolve("1-planting")
             );

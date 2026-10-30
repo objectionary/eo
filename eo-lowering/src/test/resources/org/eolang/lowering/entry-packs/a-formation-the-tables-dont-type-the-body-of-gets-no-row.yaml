@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A formation whose body the tables say nothing about gets an entry but no
+# row, since a row has to say in which carrier its answer is wrapped, and
+# nothing here says it.
+eo:
+  vague.eo: |
+    [k] > vague
+      k.plus 7 > @
+provides: |
+  <provides>
+    <type id="Φ.vague">
+      <attr name="k" type="Φ.vague.k" void="true" holds="Φ.number"/>
+    </type>
+  </provides>
+xmir:
+  - "//o[@name='e1' and @base='Φ.vague'][not(o[@name='φ'])]"
+copies:
+  - "//o[@loc='Φ.vague'][not(o[@name='λ'])]/o[@name='φ']"
