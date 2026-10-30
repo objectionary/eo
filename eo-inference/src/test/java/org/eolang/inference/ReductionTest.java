@@ -29,7 +29,7 @@ final class ReductionTest {
             state.kind(
                 state.fresh("Φ.number", new Site("Φ.app.x", ""), Values.ROOT)
             ),
-            Matchers.equalTo(new Ids(state.shared("Φ.number")))
+            Matchers.hasToString(new Ids(state.shared("Φ.number")).toString())
         );
     }
 
@@ -42,7 +42,7 @@ final class ReductionTest {
             state.kind(
                 world.intern(new Value('O', "Φ.five", "Φ.five", Formation.RHO, "", -1, 0))
             ),
-            Matchers.equalTo(new Ids(state.shared("Φ.number")))
+            Matchers.hasToString(new Ids(state.shared("Φ.number")).toString())
         );
     }
 

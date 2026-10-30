@@ -47,7 +47,7 @@ final class Shapes {
     /**
      * The last part of a locator that names nothing a reader wrote.
      */
-    private static final Pattern HIDDEN = Pattern.compile("(φ|ρ|α[0-9]+|[apn]🌵.*)");
+    private static final Pattern HIDDEN = Pattern.compile("(φ|ρ|α\\d+|[apn]🌵.*)");
 
     /**
      * What the formation being shown is called inside its own shape.
@@ -117,7 +117,7 @@ final class Shapes {
             .filter(kid -> !"∅".equals(new Noted(kid).says("base")))
             .filter(kid -> !new Noted(kid).says("name").isEmpty())
             .filter(kid -> !Shapes.HIDDEN.matcher(new Noted(kid).says("name")).matches())
-            .collect(Collectors.toList());
+            .toList();
         final int shown;
         if (cap) {
             shown = Math.min(bound.size(), 4);
@@ -188,8 +188,7 @@ final class Shapes {
     }
 
     private List<Xnav> kids(final String label) {
-        return this.formations.get(label).elements(Filter.withName("o"))
-            .collect(Collectors.toList());
+        return this.formations.get(label).elements(Filter.withName("o")).toList();
     }
 
     private String head(final String label) {
@@ -213,7 +212,7 @@ final class Shapes {
         return this.ordered(place).stream()
             .map(label -> this.step(label, own))
             .distinct()
-            .collect(Collectors.toList());
+            .toList();
     }
 
     private String step(final String label, final String own) {
@@ -224,7 +223,7 @@ final class Shapes {
             final List<String> then = this.ordered(label.concat(".φ")).stream()
                 .map(what -> this.called(what, own))
                 .distinct()
-                .collect(Collectors.toList());
+                .toList();
             if (then.isEmpty()) {
                 found = this.head(label);
             } else {
@@ -262,7 +261,7 @@ final class Shapes {
         return said.keySet().stream().sorted(
             Comparator.comparingInt((String label) -> -said.get(label))
                 .thenComparing(new CodeOrder())
-        ).collect(Collectors.toList());
+        ).toList();
     }
 
     private static String arrow(final List<String> said, final boolean cap) {

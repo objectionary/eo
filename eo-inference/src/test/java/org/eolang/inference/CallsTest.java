@@ -27,7 +27,7 @@ final class CallsTest {
         MatcherAssert.assertThat(
             "a call with more arguments than empty voids must fail, but it didnt",
             new Settled(world).state().evaluate("Φ.app.many", CallsTest.app(world)),
-            Matchers.equalTo(new Ids(Values.TERM))
+            Matchers.hasToString(new Ids(Values.TERM).toString())
         );
     }
 

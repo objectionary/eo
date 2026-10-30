@@ -12,7 +12,6 @@ import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.xembly.Directives;
 
 /**
@@ -53,8 +52,7 @@ final class Applications implements Section {
         final Directives dirs = new Directives().add("calls");
         for (final XML application : new Xmirs(xmirs).applications()) {
             final Xnav node = new Xnav(application.inner());
-            final List<Xnav> args = node.elements(Filter.withName("o"))
-                .collect(Collectors.toList());
+            final List<Xnav> args = node.elements(Filter.withName("o")).toList();
             dirs.add("call").attr("loc", node.attribute("loc").text().orElse(""));
             final List<Xnav> placed = args.stream().filter(
                 arg -> arg.attribute("loc").text().isPresent()
@@ -63,7 +61,7 @@ final class Applications implements Section {
                 Comparator.comparingInt(
                     arg -> Integer.parseInt(arg.attribute("as").text().get().substring(1))
                 )
-            ).collect(Collectors.toList());
+            ).toList();
             for (final Xnav arg : placed) {
                 dirs.add("arg")
                     .attr("n", arg.attribute("as").text().get().substring(1))

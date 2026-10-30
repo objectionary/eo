@@ -158,7 +158,7 @@ final class Formation {
      *
      * @return The formation, empty when it declares none
      */
-    String rho() {
+    String parent() {
         return this.said.getOrDefault("rho", "");
     }
 

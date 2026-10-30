@@ -4,6 +4,9 @@
  */
 package org.eolang.inference;
 
+import java.nio.IntBuffer;
+import java.util.HashMap;
+import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -38,7 +41,7 @@ final class IdsTest {
         MatcherAssert.assertThat(
             "the answer with another set added must hold the numbers of both, but it didnt",
             new Ids(5, 77).with(new Ints(12, 77)),
-            Matchers.equalTo(new Ids(5, 12, 77))
+            Matchers.hasToString(new Ids(5, 12, 77).toString())
         );
     }
 
@@ -48,6 +51,16 @@ final class IdsTest {
             "a number of the answer must be found in it, but it wasnt",
             new Ids(1, 8, 64, 512).contains(64),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    void givesAnswerOfPoolWithSameValues() {
+        final Map<IntBuffer, Ids> pool = new HashMap<>(0);
+        MatcherAssert.assertThat(
+            "an answer with the values of one in the pool must be that one, but it wasnt",
+            new Ids(4, 17, 903).in(pool),
+            Matchers.sameInstance(new Ids(4, 17, 903).in(pool))
         );
     }
 }

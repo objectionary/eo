@@ -162,7 +162,7 @@ final class Ints {
             }
         } else {
             final int mask = this.slots.length - 1;
-            int slot = Ints.hash(number) & mask;
+            int slot = this.home(number);
             while (this.slots[slot] != 0) {
                 if (this.slots[slot] == number + 1) {
                     found = true;
@@ -212,6 +212,18 @@ final class Ints {
     }
 
     /**
+     * A copy of these numbers with one more.
+     *
+     * @param number The number
+     * @return The copy
+     */
+    Ints with(final int number) {
+        final Ints more = new Ints(this.array());
+        more.add(number);
+        return more;
+    }
+
+    /**
      * The numbers as an answer, which never changes.
      *
      * @return The answer
@@ -244,7 +256,7 @@ final class Ints {
 
     private void place(final int number) {
         final int mask = this.slots.length - 1;
-        int slot = Ints.hash(number) & mask;
+        int slot = this.home(number);
         while (this.slots[slot] != 0) {
             slot = slot + 1 & mask;
         }
@@ -259,8 +271,8 @@ final class Ints {
         return ints;
     }
 
-    private static int hash(final int number) {
+    private int home(final int number) {
         final int mixed = number * 0x9E3779B9;
-        return mixed ^ mixed >>> 16;
+        return (mixed ^ mixed >>> 16) & this.slots.length - 1;
     }
 }

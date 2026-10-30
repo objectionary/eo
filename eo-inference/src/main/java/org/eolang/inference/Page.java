@@ -18,7 +18,6 @@ import java.util.stream.Stream;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * One source file, ready to be shown to somebody.
@@ -174,14 +173,11 @@ final class Page {
 
     private Map<String, Integer> counted() {
         final Map<String, Integer> found = new HashMap<>(Band.ORDER.size());
-        final NodeList all = this.root().node().getOwnerDocument().getElementsByTagName("o");
-        for (int index = 0; index < all.getLength(); index = index + 1) {
-            final Node object = all.item(index);
-            final String loc = new Noted(new Xnav(object)).says("loc");
-            if (!loc.isEmpty()) {
-                found.merge(new Band(this.shapes.folded(loc)).name(), 1, Integer::sum);
-            }
-        }
+        this.deeper(this.root())
+            .map(object -> new Noted(object).says("loc"))
+            .filter(loc -> !loc.isEmpty())
+            .map(loc -> new Band(this.shapes.folded(loc)).name())
+            .forEach(band -> found.merge(band, 1, Integer::sum));
         return found;
     }
 

@@ -4,6 +4,7 @@
  */
 package org.eolang.inference;
 
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
@@ -96,9 +97,9 @@ final class Memo {
     private final Pile stored;
 
     /**
-     * Equal answers, as one object.
+     * Equal answers, as one object, by their values.
      */
-    private final Map<Ids, Ids> shared;
+    private final Map<IntBuffer, Ids> shared;
 
     /**
      * How many cycle hits there were.
@@ -444,13 +445,6 @@ final class Memo {
     }
 
     private Ids shared(final Ids got) {
-        final Ids old = this.shared.putIfAbsent(got, got);
-        final Ids result;
-        if (old == null) {
-            result = got;
-        } else {
-            result = old;
-        }
-        return result;
+        return got.in(this.shared);
     }
 }

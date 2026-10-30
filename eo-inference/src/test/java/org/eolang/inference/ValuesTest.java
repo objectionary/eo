@@ -54,7 +54,7 @@ final class ValuesTest {
         values.unknown("open void");
         MatcherAssert.assertThat(
             "an open void a stop decided must still be a gap, but it wasnt",
-            values.gap(Values.JGAP),
+            values.vacant(Values.JGAP),
             Matchers.is(true)
         );
     }

@@ -27,7 +27,7 @@ final class PlacesTest {
         MatcherAssert.assertThat(
             "a chain that starts at a datum must answer the datum, but it didnt",
             new Settled(world).state().evaluate("Φ.garden.φ.α0.α0", PlacesTest.garden(world)),
-            Matchers.equalTo(new Ids(Values.DATA))
+            Matchers.hasToString(new Ids(Values.DATA).toString())
         );
     }
 
@@ -39,7 +39,7 @@ final class PlacesTest {
         MatcherAssert.assertThat(
             "a bare ξ inside bed must be the copy of bed, but it wasnt",
             state.evaluate("Φ.garden.bed.φ.ρ", bed),
-            Matchers.equalTo(new Ids(bed))
+            Matchers.hasToString(new Ids(bed).toString())
         );
     }
 
@@ -51,7 +51,7 @@ final class PlacesTest {
         MatcherAssert.assertThat(
             "^ read inside bed must be the copy of garden around it, but it wasnt",
             state.evaluate("Φ.garden.bed.φ", PlacesTest.bed(state, world, garden)),
-            Matchers.equalTo(new Ids(garden))
+            Matchers.hasToString(new Ids(garden).toString())
         );
     }
 
@@ -63,7 +63,7 @@ final class PlacesTest {
         MatcherAssert.assertThat(
             "a formation at a place must answer its copy born there, but it didnt",
             state.evaluate("Φ.garden.bed", garden),
-            Matchers.equalTo(new Ids(PlacesTest.bed(state, world, garden)))
+            Matchers.hasToString(new Ids(PlacesTest.bed(state, world, garden)).toString())
         );
     }
 

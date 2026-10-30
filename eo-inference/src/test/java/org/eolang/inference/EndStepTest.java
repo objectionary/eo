@@ -46,7 +46,7 @@ final class EndStepTest {
         MatcherAssert.assertThat(
             "an answer with a decided open void must hold a plain one after the end step, but it didnt",
             state.stored(EndStepTest.read(world)),
-            Matchers.equalTo(new Ids(Values.GAP))
+            Matchers.hasToString(new Ids(Values.GAP).toString())
         );
     }
 

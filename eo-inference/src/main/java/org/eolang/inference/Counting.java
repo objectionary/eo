@@ -242,7 +242,7 @@ final class Counting {
 
     private boolean holds(final int outer, final Ints chain) {
         return chain.contains(outer) || this.alone(outer)
-            && (this.kept(outer) || this.upheld(outer, Counting.longer(chain, outer)));
+            && (this.kept(outer) || this.upheld(outer, chain.with(outer)));
     }
 
     private void now(final int num, final Usage usage, final Ints met) {
@@ -303,11 +303,5 @@ final class Counting {
         for (int idx = 0; idx < got.size(); ++idx) {
             this.use(got.get(idx), usage, met);
         }
-    }
-
-    private static Ints longer(final Ints chain, final int num) {
-        final Ints more = new Ints(chain.array());
-        more.add(num);
-        return more;
     }
 }

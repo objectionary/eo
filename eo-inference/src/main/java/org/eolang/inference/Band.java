@@ -72,7 +72,7 @@ final class Band {
         } else if (all.equals(names)) {
             found = Band.named(names.size());
         } else if (names.isEmpty()) {
-            found = Band.unnamed(all);
+            found = this.unnamed();
         } else if (names.size() == 1) {
             found = "gaps";
         } else {
@@ -93,8 +93,8 @@ final class Band {
         return found;
     }
 
-    private static String unnamed(final Set<String> all) {
-        final Set<String> unknown = all.stream()
+    private String unnamed() {
+        final Set<String> unknown = this.labels.stream()
             .filter(label -> label.startsWith("?"))
             .collect(Collectors.toSet());
         final String found;

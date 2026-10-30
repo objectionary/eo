@@ -135,7 +135,7 @@ final class Reads {
         final Value value = this.world.value(num);
         final Ints out = new Ints();
         if ((value.bound() & Formation.RHO) == 0 || Values.JBORN.equals(value.birth())) {
-            final String rho = this.world.form(value.form()).rho();
+            final String rho = this.world.form(value.form()).parent();
             if (rho.isEmpty()) {
                 throw new IllegalStateException(
                     String.format(

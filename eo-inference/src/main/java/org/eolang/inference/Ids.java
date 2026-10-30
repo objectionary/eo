@@ -4,7 +4,9 @@
  */
 package org.eolang.inference;
 
+import java.nio.IntBuffer;
 import java.util.Arrays;
+import java.util.Map;
 
 /**
  * An answer: the values a read or a reduction gives, which never change.
@@ -31,17 +33,6 @@ final class Ids {
      */
     Ids(final int... sorted) {
         this.values = Arrays.copyOf(sorted, sorted.length);
-    }
-
-    @Override
-    public boolean equals(final Object other) {
-        return this == other
-            || other instanceof Ids ids && Arrays.equals(this.values, ids.values);
-    }
-
-    @Override
-    public int hashCode() {
-        return Arrays.hashCode(this.values);
     }
 
     @Override
@@ -102,6 +93,17 @@ final class Ids {
             }
         }
         return all;
+    }
+
+    /**
+     * The answer of a pool that holds the same values as this one, which is
+     * this one when the pool holds none such yet.
+     *
+     * @param pool The answers so far, by their values
+     * @return The answer of the pool
+     */
+    Ids in(final Map<IntBuffer, Ids> pool) {
+        return pool.computeIfAbsent(IntBuffer.wrap(this.values), key -> this);
     }
 
     /**

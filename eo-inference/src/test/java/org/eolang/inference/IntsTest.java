@@ -70,7 +70,16 @@ final class IntsTest {
         MatcherAssert.assertThat(
             "the frozen numbers must be the same answer in ascending order, but they werent",
             new Ints(88, 2, 41).frozen(),
-            Matchers.equalTo(new Ids(2, 41, 88))
+            Matchers.hasToString(new Ids(2, 41, 88).toString())
+        );
+    }
+
+    @Test
+    void copiesWithOneMoreNumber() {
+        MatcherAssert.assertThat(
+            "the copy must hold the numbers and the one more, but it didnt",
+            new Ints(61, 5).with(270).frozen(),
+            Matchers.hasToString(new Ids(5, 61, 270).toString())
         );
     }
 }

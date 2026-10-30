@@ -136,26 +136,24 @@ final class Places {
         final BitSet met = new BitSet();
         while (!todo.isEmpty()) {
             final int here = todo.pop();
-            if (met.get(here)) {
-                continue;
-            }
-            met.set(here);
-            final Value value = this.world.value(here);
-            if (value.kind() == 'O' && value.form().equals(loc)) {
-                out.add(here);
-                continue;
-            }
-            if (value.kind() != 'O' || (value.bound() & Formation.RHO) == 0
-                || Values.JBORN.equals(value.birth())) {
-                throw new IllegalStateException(
-                    String.format(
-                        "the walk from %s out to %s lost its way at %s",
-                        place, loc, this.world.full(here)
-                    )
-                );
-            }
-            for (final int outer : this.state.cell(here, "ρ")) {
-                todo.push(outer);
+            if (!met.get(here)) {
+                met.set(here);
+                final Value value = this.world.value(here);
+                if (value.kind() == 'O' && value.form().equals(loc)) {
+                    out.add(here);
+                } else if (value.kind() == 'O' && (value.bound() & Formation.RHO) != 0
+                    && !Values.JBORN.equals(value.birth())) {
+                    for (final int outer : this.state.cell(here, "ρ")) {
+                        todo.push(outer);
+                    }
+                } else {
+                    throw new IllegalStateException(
+                        String.format(
+                            "the walk from %s out to %s lost its way at %s",
+                            place, loc, this.world.full(here)
+                        )
+                    );
+                }
             }
         }
     }

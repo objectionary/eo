@@ -31,7 +31,7 @@ final class RowsTest {
         MatcherAssert.assertThat(
             "a row must hold every value gathered into it, each once, but it didnt",
             state.row(cup, "tea").frozen(),
-            Matchers.equalTo(new Ids(Values.DATA, Values.TERM))
+            Matchers.hasToString(new Ids(Values.DATA, Values.TERM).toString())
         );
     }
 
@@ -46,7 +46,7 @@ final class RowsTest {
         MatcherAssert.assertThat(
             "a blank copy put into ρ must join the shared one, but it didnt",
             state.row(cup, "ρ").frozen(),
-            Matchers.equalTo(new Ids(state.shared("Φ.number")))
+            Matchers.hasToString(new Ids(state.shared("Φ.number")).toString())
         );
     }
 

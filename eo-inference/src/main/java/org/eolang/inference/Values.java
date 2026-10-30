@@ -161,7 +161,7 @@ final class Values {
      * @param num The number
      * @return TRUE if it is
      */
-    boolean gap(final int num) {
+    boolean vacant(final int num) {
         final Value value = this.get(num);
         return value.kind() == 'U' && "open void".equals(value.form());
     }

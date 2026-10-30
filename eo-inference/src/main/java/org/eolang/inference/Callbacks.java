@@ -98,7 +98,7 @@ final class Callbacks {
         final Value value = this.world.value(inside);
         if (value.kind() == 'O' && value.placed() && (value.bound() & Formation.RHO) == 0) {
             final Formation shape = this.world.form(value.form());
-            if (shape.open("ρ") && shape.rho().isEmpty()) {
+            if (shape.open("ρ") && shape.parent().isEmpty()) {
                 this.handed.set(inside);
             }
         }

@@ -45,7 +45,7 @@ final class FactsXmlTest {
     void readsDeclaredRho(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "the formation a declared ρ holds must be read, but it wasnt",
-            new FactsXml(FactsXmlTest.facts(temp)).program().form("Φ.lamp").rho(),
+            new FactsXml(FactsXmlTest.facts(temp)).program().form("Φ.lamp").parent(),
             Matchers.equalTo("Φ.room")
         );
     }

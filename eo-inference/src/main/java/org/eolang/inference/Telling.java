@@ -162,9 +162,13 @@ final class Telling {
             Telling.count(groups, String.join(".", form, "ρ"), String.join("\t", this.rho(copy)));
         }
         if (!shape.returns().isEmpty()) {
-            Telling.count(
-                groups, String.join(".", form, "λ"), String.join("\t", Telling.gives(shape))
-            );
+            final Set<String> gives = new TreeSet<>(new CodeOrder());
+            if (shape.gives().isEmpty()) {
+                gives.add(shape.returns());
+            } else {
+                gives.addAll(shape.gives());
+            }
+            Telling.count(groups, String.join(".", form, "λ"), String.join("\t", gives));
         }
     }
 
@@ -209,12 +213,10 @@ final class Telling {
 
     private Set<String> last(final int num) {
         final int inside = this.world.bare(num);
-        Set<String> got = this.finals.get(inside);
-        if (got == null) {
-            got = this.walked(inside);
-            this.finals.put(inside, got);
+        if (!this.finals.containsKey(inside)) {
+            this.finals.put(inside, this.walked(inside));
         }
-        return got;
+        return this.finals.get(inside);
     }
 
     private Set<String> walked(final int num) {
@@ -283,7 +285,8 @@ final class Telling {
         }
         said.removeIf(label -> label.startsWith("?open-void"));
         final Set<String> result = new HashSet<>(1);
-        if (said.equals(Set.of("T")) || Telling.clean(said)) {
+        if (said.equals(Set.of("T"))
+            || said.stream().anyMatch(Telling::told) && said.stream().allMatch(Telling::known)) {
             result.addAll(said);
         } else {
             result.add(value.form());
@@ -311,10 +314,6 @@ final class Telling {
         return label;
     }
 
-    private static boolean clean(final Set<String> said) {
-        return said.stream().anyMatch(Telling::told) && said.stream().allMatch(Telling::known);
-    }
-
     private static boolean known(final String label) {
         return Telling.told(label) || label.charAt(0) == '?' || "T".equals(label);
     }
@@ -337,16 +336,6 @@ final class Telling {
             label = holds;
         }
         return label;
-    }
-
-    private static Set<String> gives(final Formation shape) {
-        final Set<String> gives = new TreeSet<>(new CodeOrder());
-        if (shape.gives().isEmpty()) {
-            gives.add(shape.returns());
-        } else {
-            gives.addAll(shape.gives());
-        }
-        return gives;
     }
 
     private static void count(

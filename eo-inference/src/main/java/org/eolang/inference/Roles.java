@@ -181,7 +181,9 @@ final class Roles {
     private boolean decorates(final String form) {
         final Formation shape = this.program.form(form);
         return shape.has("φ") && !shape.open("φ")
-            && shape.names().stream().allMatch(name -> Roles.fits(shape, name));
+            && shape.names().stream().allMatch(
+                name -> shape.open(name) || "φ".equals(name) || Roles.hidden(name, true)
+            );
     }
 
     private List<String> owned(final String form) {
@@ -218,7 +220,9 @@ final class Roles {
         final Formation shape = this.program.form(form);
         final String found;
         if (this.self(form, read.of()) && shape.order().contains(read.name())
-            && Roles.plain(shape)) {
+            && shape.names().stream().allMatch(
+                name -> "φ".equals(name) || Roles.hidden(name, false) || shape.open(name)
+            )) {
             found = read.name();
         } else {
             found = "";
@@ -289,21 +293,6 @@ final class Roles {
                 return found;
             }
         );
-    }
-
-    private static boolean plain(final Formation shape) {
-        boolean all = true;
-        for (final String name : shape.names()) {
-            if (!"φ".equals(name) && !Roles.hidden(name, false) && !shape.open(name)) {
-                all = false;
-                break;
-            }
-        }
-        return all;
-    }
-
-    private static boolean fits(final Formation shape, final String name) {
-        return shape.open(name) || "φ".equals(name) || Roles.hidden(name, true);
     }
 
     private static boolean hidden(final String name, final boolean more) {

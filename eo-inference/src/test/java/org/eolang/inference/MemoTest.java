@@ -46,7 +46,7 @@ final class MemoTest {
         MatcherAssert.assertThat(
             "an answer worked out again must keep what it had, but it didnt",
             memo.ask(key, () -> new Ints(Values.TERM)),
-            Matchers.equalTo(new Ids(Values.DATA, Values.TERM))
+            Matchers.hasToString(new Ids(Values.DATA, Values.TERM).toString())
         );
     }
 

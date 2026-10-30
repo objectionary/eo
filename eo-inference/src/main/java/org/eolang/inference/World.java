@@ -335,7 +335,7 @@ final class World {
      * @return TRUE if it is
      */
     boolean gap(final int num) {
-        return this.values.gap(num);
+        return this.values.vacant(num);
     }
 
     /**

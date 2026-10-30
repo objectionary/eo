@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -122,7 +121,7 @@ public final class Report {
         if (Files.exists(out)) {
             final List<Path> all;
             try (Stream<Path> walked = Files.walk(out)) {
-                all = walked.sorted(Comparator.reverseOrder()).collect(Collectors.toList());
+                all = walked.sorted(Comparator.reverseOrder()).toList();
             }
             for (final Path path : all) {
                 Files.delete(path);

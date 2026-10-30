@@ -40,7 +40,7 @@ final class ReadsTest {
             new Settled(ReadsTest.world(temp)).state().attr(
                 Values.TERM, "size", new Site("Φ.app.φ", "")
             ),
-            Matchers.equalTo(new Ids(Values.TERM))
+            Matchers.hasToString(new Ids(Values.TERM).toString())
         );
     }
 
@@ -55,7 +55,7 @@ final class ReadsTest {
                 ),
                 "water", new Site("Φ.app.φ", "")
             ),
-            Matchers.equalTo(new Ids(Values.TERM))
+            Matchers.hasToString(new Ids(Values.TERM).toString())
         );
     }
 
