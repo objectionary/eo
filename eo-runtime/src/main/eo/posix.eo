@@ -122,13 +122,14 @@
     ? > protocol /Q.number
   [] > stat /Q.posix.stat-return
     ? > path /Q.string
-  [cde message mde sze] > stat-return
+  [cde msg mde sze] > stat-return
     posix.stat-return > called
       code
       message
       mode
       size
     number cde! > code
+    string msg! > message
     number mde! > mode
     number sze! > size
   [cde msg] > status-return

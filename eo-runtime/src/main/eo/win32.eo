@@ -128,13 +128,14 @@
     ? > domain /Q.number
     ? > type /Q.number
     ? > protocol /Q.number
-  [cde message mde sze] > stat-return
+  [cde msg mde sze] > stat-return
     win32.stat-return > called
       code
       message
       mode
       size
     number cde! > code
+    string msg! > message
     number mde! > mode
     number sze! > size
   [] > stat64 /Q.win32.stat-return
