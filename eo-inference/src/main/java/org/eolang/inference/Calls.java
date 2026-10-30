@@ -153,13 +153,14 @@ final class Calls {
             head = value.base();
             value = this.world.value(head);
         }
-        this.land(head, value, call.size(), landed);
+        final List<String> voids = this.voids(value, call);
+        this.land(head, value, voids, call.size(), landed);
         final char kind = value.kind();
         final Ints out = new Ints();
         if (kind == 'A') {
             out.add(this.marked(value, call.size()));
         } else if (kind == 'O') {
-            out.addAll(this.object(head, value, call));
+            out.addAll(this.object(head, value, call, voids));
         } else if (kind == 'D') {
             out.add(this.world.conflict("data()"));
         } else if (kind != 'X') {
@@ -168,14 +169,24 @@ final class Calls {
         return out;
     }
 
+    private List<String> voids(final Value value, final Call call) {
+        final List<String> voids;
+        if (value.kind() == 'O') {
+            voids = this.world.voids(value, call.site().place());
+        } else {
+            voids = Collections.emptyList();
+        }
+        return voids;
+    }
+
     private void land(
-        final int head, final Value value, final int args, final Set<Landing> landed
+        final int head, final Value value, final List<String> voids, final int args,
+        final Set<Landing> landed
     ) {
         final char kind = value.kind();
-        if (kind == 'O' && this.fits(head, value, args)) {
-            final List<String> free = this.world.opened(value);
+        if (kind == 'O' && this.fits(head, value, voids, args)) {
             for (int arg = 0; arg < args; ++arg) {
-                landed.add(new Landing(arg, free.get(arg)));
+                landed.add(new Landing(arg, voids.get(arg)));
             }
         } else if (kind != 'O' && kind != 'T' && kind != 'D' && kind != 'X') {
             for (int arg = 0; arg < args; ++arg) {
@@ -184,9 +195,11 @@ final class Calls {
         }
     }
 
-    private boolean fits(final int head, final Value value, final int args) {
+    private boolean fits(
+        final int head, final Value value, final List<String> voids, final int args
+    ) {
         return !Values.JBORN.equals(value.birth()) && !this.state.shared(head)
-            && args <= this.world.opened(value).size();
+            && voids.size() == args;
     }
 
     private int marked(final Value value, final int args) {
@@ -206,40 +219,47 @@ final class Calls {
         return result;
     }
 
-    private Ints object(final int head, final Value value, final Call call) {
-        final List<String> free = this.world.opened(value);
+    private Ints object(
+        final int head, final Value value, final Call call, final List<String> voids
+    ) {
         final String passed = this.world.passes(value.form());
         final Ints out;
         if ((Values.JBORN.equals(value.birth()) || this.state.shared(head))
-            && call.size() > 0 || call.size() > free.size()) {
+            && call.size() > 0 || voids.size() < call.size()) {
             out = new Ints(Values.TERM);
         } else if (passed.isEmpty()) {
-            out = this.made(head, value, call, false);
+            out = this.made(head, value, call, voids, false);
         } else if ((value.bound() & this.world.form(value.form()).bit(passed)) == 0) {
-            out = this.narrowed(head, value, call, free.indexOf(passed));
+            out = this.narrowed(head, value, call, voids, voids.indexOf(passed));
         } else {
             out = new Ints(this.state.cell(head, passed));
         }
         return out;
     }
 
-    private Ints narrowed(final int head, final Value value, final Call call, final int pos) {
+    private Ints narrowed(
+        final int head, final Value value, final Call call, final List<String> voids,
+        final int pos
+    ) {
         final int free = this.world.opened(value).size();
         final Ints out = new Ints();
-        if (pos < call.size()) {
+        if (pos >= 0) {
             for (final int val : call.sets().get(pos)) {
                 out.add(val);
             }
             if (!this.gapped(call.raw(), free) && !call.lacking(free)) {
-                out.addAll(this.made(head, value, call, true));
+                out.addAll(this.made(head, value, call, voids, true));
             }
         } else {
-            out.addAll(this.made(head, value, call, false));
+            out.addAll(this.made(head, value, call, voids, false));
         }
         return out;
     }
 
-    private Ints made(final int head, final Value value, final Call call, final boolean narrowed) {
+    private Ints made(
+        final int head, final Value value, final Call call, final List<String> voids,
+        final boolean narrowed
+    ) {
         final List<String> free = this.world.opened(value);
         final Wish wish = new Wish('b', call.site().place(), call.ctx(), head);
         final Ints out = new Ints();
@@ -251,15 +271,13 @@ final class Calls {
                 this.state.wish(wish);
             }
         } else if (!call.lacking(free.size())) {
-            this.bind(value, free, call);
+            this.bind(value, voids, call);
             final int copy = this.state.copy(
                 new Value(
                     value.form(), this.world.born(call.site(), value.form()),
-                    value.bound() | this.state.bits(
-                        value.form(), free.subList(0, Math.min(call.size(), free.size()))
-                    )
+                    value.bound() | this.state.bits(value.form(), voids)
                 ),
-                this.rows(head, value, free, call.sets())
+                this.rows(head, value, voids, call.sets())
             );
             this.state.remember(copy);
             if (!narrowed) {
@@ -269,24 +287,23 @@ final class Calls {
         return out;
     }
 
-    private void bind(final Value value, final List<String> free, final Call call) {
+    private void bind(final Value value, final List<String> voids, final Call call) {
         final String form = value.form();
-        final int count = Math.min(free.size(), call.size());
         if (this.world.returned(form)) {
-            for (int arg = 0; arg < count; ++arg) {
-                this.state.fill(form, free.get(arg), call.sets().get(arg));
+            for (int arg = 0; arg < voids.size(); ++arg) {
+                this.state.fill(form, voids.get(arg), call.sets().get(arg));
             }
         }
         final Formation shape = this.world.form(form);
-        for (int arg = 0; arg < count; ++arg) {
-            if (shape.back(free.get(arg))) {
-                this.back(free.get(arg), arg, shape, call);
+        for (int arg = 0; arg < voids.size(); ++arg) {
+            if (shape.back(voids.get(arg))) {
+                this.back(voids.get(arg), arg, shape, call);
             }
         }
         if (this.world.atom(form)) {
-            for (int arg = 0; arg < count; ++arg) {
-                if (!shape.back(free.get(arg))) {
-                    this.dataized(free.get(arg), arg, call);
+            for (int arg = 0; arg < voids.size(); ++arg) {
+                if (!shape.back(voids.get(arg))) {
+                    this.dataized(voids.get(arg), arg, call);
                 }
             }
         }
@@ -313,15 +330,14 @@ final class Calls {
     }
 
     private Map<String, int[]> rows(
-        final int head, final Value value, final List<String> free, final List<int[]> argsets
+        final int head, final Value value, final List<String> voids, final List<int[]> argsets
     ) {
         final Map<String, int[]> rows = new LinkedHashMap<>(0);
         for (final String name : this.world.bound(value)) {
             rows.put(name, this.state.cell(head, name));
         }
-        final int count = Math.min(free.size(), argsets.size());
-        for (int arg = 0; arg < count; ++arg) {
-            rows.put(free.get(arg), argsets.get(arg));
+        for (int arg = 0; arg < voids.size(); ++arg) {
+            rows.put(voids.get(arg), argsets.get(arg));
         }
         return rows;
     }

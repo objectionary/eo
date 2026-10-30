@@ -34,9 +34,9 @@ import org.xembly.Directives;
  * written at all, since nothing in the code stands there: {@code pair 5:1}
  * is a call with one {@code arg}, at {@code n="1"}. A binding may name the
  * void itself rather than its place, and is written by that name instead
- * (R-3.12.1), and a call that passes
- * everything by name, as {@code pick oak:m} or {@code run y:^} do, is written
- * with no place at all, only its named arguments (R-3.12.2a).</p>
+ * (R-3.12.1), and a call that passes everything by name, as
+ * {@code pick oak:m} does, is written with no place at all, only its named
+ * arguments.</p>
  *
  * <p>Which void a place is, and what object the call copies, are answers and
  * stay out. They are worked out later from the links, and a call whose copy

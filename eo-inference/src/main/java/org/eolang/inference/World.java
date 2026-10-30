@@ -135,7 +135,7 @@ final class World {
      * @return The places of the arguments, none when it is not a call
      */
     List<String> args(final String place) {
-        return this.program.args(place);
+        return this.program.locs(place);
     }
 
     /**
@@ -366,6 +366,17 @@ final class World {
      */
     List<String> opened(final Value value) {
         return this.values.opened(value);
+    }
+
+    /**
+     * The voids of a copy the arguments of the call at a place go into.
+     *
+     * @param value The copy
+     * @param place The place of the call
+     * @return The voids, one per argument as far as they go
+     */
+    List<String> voids(final Value value, final String place) {
+        return this.values.voids(value, this.program.args(place));
     }
 
     /**
