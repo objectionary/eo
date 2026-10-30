@@ -37,14 +37,12 @@ final class WalkTest {
 
     @Test
     void tellsEveryPlaceOfEveryCopyThatCounts(@Mktmp final Path temp) throws IOException {
+        final Sources sources = new Sources(temp)
+            .with("till.eo", "[coins] > till", "  coins > @", "  coins > held")
+            .with("shop.eo", "[] > shop", "  (till 5).held > a", "  (till 6).held > b");
         MatcherAssert.assertThat(
             "a place read in two copies must be told for both, but it wasnt",
-            new Walk(
-                new Sources(temp)
-                    .with("till.eo", "[coins] > till", "  coins > @", "  coins > held")
-                    .with("shop.eo", "[] > shop", "  (till 5).held > a", "  (till 6).held > b")
-                    .facts()
-            ).told().sets().get("Φ.till.held"),
+            new Walk(sources.facts(), sources.names()).told().sets().get("Φ.till.held"),
             Matchers.equalTo(Map.of("Φ.number", 2))
         );
     }

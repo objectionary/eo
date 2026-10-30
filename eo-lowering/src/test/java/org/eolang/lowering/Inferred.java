@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.UnaryOperator;
@@ -21,6 +22,7 @@ import org.cactoos.text.IoCheckedText;
 import org.cactoos.text.TextOf;
 import org.eolang.inference.Answers;
 import org.eolang.inference.Facts;
+import org.eolang.inference.Names;
 import org.eolang.inference.Prepared;
 import org.eolang.inference.Walk;
 import org.eolang.parser.Canonical;
@@ -33,7 +35,8 @@ import org.eolang.parser.EoSyntax;
  * <p>Every source is parsed and made ready by {@link Prepared}, and
  * {@link Facts} reads them all into {@code facts.xml}, which the engine,
  * {@link Walk}, reads to write {@code answers.xml} beside it, the way the
- * goal {@code eo:inference} does in a build. So a test of the lowering
+ * goal {@code eo:inference} does in a build, with the names the
+ * {@code pom.xml} of eo-runtime gives it. So a test of the lowering
  * reads what the engine says of its program, and not what somebody once
  * thought the engine would say.</p>
  *
@@ -106,7 +109,20 @@ final class Inferred implements Scalar<Path> {
         }
         final Path tables = this.home.resolve("inference");
         new Facts().follow(pre, tables);
-        new Answers(new Walk(tables.resolve("facts.xml"))).write(tables.resolve("answers.xml"));
+        new Answers(
+            new Walk(
+                tables.resolve("facts.xml"),
+                new Names(
+                    List.of("Φ.bytes", "Φ.number", "Φ.string"),
+                    List.of("Φ.tuple", "Φ.map", "Φ.set"),
+                    List.of(
+                        "Φ.number", "Φ.bytes", "Φ.string", "Φ.bool", "Φ.true", "Φ.false",
+                        "Φ.i8", "Φ.i16", "Φ.i32", "Φ.i64", "Φ.u8", "Φ.u16", "Φ.u32", "Φ.u64",
+                        "Φ.dataized"
+                    )
+                )
+            )
+        ).write(tables.resolve("answers.xml"));
         return tables;
     }
 }

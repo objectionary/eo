@@ -7,7 +7,8 @@ package org.eolang.inference;
 import com.jcabi.log.Logger;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 
 /**
  * The per-copy engine (design doc 3 and 4): it reads {@code facts.xml} and
@@ -45,15 +46,6 @@ public final class Walk {
     private final Names names;
 
     /**
-     * Ctor, with the names of eo-runtime.
-     *
-     * @param file The file {@code facts.xml}
-     */
-    public Walk(final Path file) {
-        this(file, new Names());
-    }
-
-    /**
      * Ctor.
      *
      * @param file The file {@code facts.xml}
@@ -72,39 +64,32 @@ public final class Walk {
      */
     Told told() throws IOException {
         final Program program = new FactsXml(this.facts).program();
-        final AtomicReference<Told> told = new AtomicReference<>();
-        final AtomicReference<Throwable> failure = new AtomicReference<>();
-        final Thread thread = new Thread(
-            null, () -> told.set(Walk.run(program, this.names)), "eo-inference-walk", Walk.STACK
-        );
-        thread.setUncaughtExceptionHandler((source, ex) -> failure.set(ex));
-        thread.start();
+        final FutureTask<Told> told = new FutureTask<>(() -> this.run(program));
+        new Thread(null, told, "eo-inference-walk", Walk.STACK).start();
         try {
-            thread.join();
+            return told.get();
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw new IOException(
                 String.format("The walk over %s was interrupted", this.facts), ex
             );
-        }
-        if (told.get() == null) {
+        } catch (final ExecutionException ex) {
             throw new IllegalStateException(
-                String.format("The walk over %s failed", this.facts), failure.get()
+                String.format("The walk over %s failed", this.facts), ex
             );
         }
-        return told.get();
     }
 
-    private static Told run(final Program program, final Names names) {
+    private Told run(final Program program) {
         final long start = System.currentTimeMillis();
-        final World world = new World(program, names);
+        final World world = new World(program, this.names);
         final State state = new State(world);
         state.seed();
         state.settle();
         state.step();
         final Told told = new Telling(state, world).told();
         Logger.info(
-            Walk.class,
+            this,
             "The walk settled after %d passes and %d stops in %[ms]s: %d values, %d answers",
             state.passes(), state.stops(), System.currentTimeMillis() - start,
             world.size(), state.answers()

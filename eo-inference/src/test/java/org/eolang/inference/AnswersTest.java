@@ -49,7 +49,8 @@ final class AnswersTest {
         final Map<String, Object> pack = new XtSticky(new XtYaml(yaml)).map();
         final Path facts = this.dir.resolve("facts.xml");
         Files.write(facts, pack.get("facts").toString().getBytes(StandardCharsets.UTF_8));
-        new Answers(new Walk(facts)).write(this.dir.resolve("answers.xml"));
+        new Answers(new Walk(facts, new Sources(this.dir).names()))
+            .write(this.dir.resolve("answers.xml"));
         MatcherAssert.assertThat(
             "the answers written from the facts of the pack must be the answers of the pack, byte for byte, but they werent",
             new String(
@@ -62,8 +63,9 @@ final class AnswersTest {
     @Test
     @EnabledIfSystemProperty(named = "inference.facts", matches = ".+")
     void writesAnswersOfProgramNamedOnCommandLine(@Mktmp final Path temp) throws Exception {
-        new Answers(new Walk(Paths.get(System.getProperty("inference.facts"))))
-            .write(temp.resolve("answers.xml"));
+        new Answers(
+            new Walk(Paths.get(System.getProperty("inference.facts")), new Sources(temp).names())
+        ).write(temp.resolve("answers.xml"));
         MatcherAssert.assertThat(
             "the answers written from the facts named on the command line must be the answers named there, byte for byte, but they werent",
             Files.readAllBytes(temp.resolve("answers.xml")),

@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.cactoos.io.Directory;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Sorted;
 import org.eolang.inference.Answers;
@@ -79,18 +78,6 @@ final class Inferring implements Step {
      * The names of the program the engine has to know.
      */
     private final Names names;
-
-    /**
-     * Ctor, for a caller that owns the directory and wants every XMIR in it.
-     *
-     * @param parsed The directory with XMIR files, as the parser leaves them
-     *  after its canonical pipeline (see {@code org.eolang.parser.Canonical})
-     * @param pre The directory for the prepared XMIR files
-     * @param rows The directory for {@code facts.xml} and {@code answers.xml}
-     */
-    Inferring(final Path parsed, final Path pre, final Path rows) {
-        this(new Directory(parsed), parsed, pre, rows, new Names());
-    }
 
     /**
      * Ctor.

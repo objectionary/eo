@@ -51,10 +51,11 @@ lands in:
 ```
 
 The engine knows three lists of names of the program, which are parameters of
-the goal: `inferenceCanon` (the kinds that are one shared copy each,
-`Φ.bytes`, `Φ.number` and `Φ.string`), `inferenceRoots` (the packages of list
-code, `Φ.tuple`, `Φ.map` and `Φ.set`) and `inferenceScalars` (the packages
-whose objects give back new data).
+the goal with no defaults, and the `pom.xml` of eo-runtime sets them:
+`inferenceCanon` (the kinds that are one shared copy each, `Φ.bytes`,
+`Φ.number` and `Φ.string`), `inferenceRoots` (the packages of list code,
+`Φ.tuple`, `Φ.map` and `Φ.set`) and `inferenceScalars` (the packages whose
+objects give back new data). A list left unset is empty.
 
 Before the facts are read, each file is made ready by `Prepared`: every chain
 of names is split into one read per name, the first one too, so `x.next.foo`

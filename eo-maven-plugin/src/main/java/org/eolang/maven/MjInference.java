@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -53,8 +54,9 @@ import org.eolang.inference.Names;
  * <p>The engine then reads {@code facts.xml} and writes {@code answers.xml}
  * beside it: for every place, which objects it can be when Java runs the
  * program. It has to know three lists of names of the program, which are
- * parameters here, with the names of eo-runtime as defaults:
- * {@link #canon}, {@link #roots} and {@link #scalars}.</p>
+ * parameters here: {@link #canon}, {@link #roots} and {@link #scalars}.
+ * They have no defaults: a program names its own, the way the
+ * {@code pom.xml} of eo-runtime does, and a list left unset is empty.</p>
  *
  * <p>The prepared XMIR is saved in {@link #prepared}, and {@code facts.xml}
  * and {@code answers.xml} in {@link #tables}. Nothing of it fails the
@@ -89,11 +91,7 @@ public final class MjInference extends MjSafe {
      * holds the data, and every other one holds the first. Each must have
      * one void, {@code @}.
      */
-    @Parameter(
-        alias = "inferenceCanon",
-        property = "eo.inferenceCanon",
-        defaultValue = "Φ.bytes,Φ.number,Φ.string"
-    )
+    @Parameter(alias = "inferenceCanon", property = "eo.inferenceCanon")
     private List<String> canon;
 
     /**
@@ -101,23 +99,14 @@ public final class MjInference extends MjSafe {
      * formation under one of them starts a tag, which keeps apart what list
      * code does for different places of user code.
      */
-    @Parameter(
-        alias = "inferenceRoots",
-        property = "eo.inferenceRoots",
-        defaultValue = "Φ.tuple,Φ.map,Φ.set"
-    )
+    @Parameter(alias = "inferenceRoots", property = "eo.inferenceRoots")
     private List<String> roots;
 
     /**
      * The packages whose formations give back new data, so that a copy of
      * one of them takes no tag.
      */
-    @Parameter(
-        alias = "inferenceScalars",
-        property = "eo.inferenceScalars",
-        defaultValue =
-            "Φ.number,Φ.bytes,Φ.string,Φ.bool,Φ.true,Φ.false,Φ.i8,Φ.i16,Φ.i32,Φ.i64,Φ.u8,Φ.u16,Φ.u32,Φ.u64,Φ.dataized"
-    )
+    @Parameter(alias = "inferenceScalars", property = "eo.inferenceScalars")
     private List<String> scalars;
 
     /**
@@ -151,7 +140,11 @@ public final class MjInference extends MjSafe {
                 parsed,
                 prepped,
                 inference,
-                new Names(this.canon, this.roots, this.scalars)
+                new Names(
+                    Objects.requireNonNullElse(this.canon, List.of()),
+                    Objects.requireNonNullElse(this.roots, List.of()),
+                    Objects.requireNonNullElse(this.scalars, List.of())
+                )
             ).exec();
         }
     }

@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -36,6 +37,9 @@ import org.eolang.parser.EoSyntax;
  * {@code @}, are added when the program does not write them, since the
  * engine shares one copy of each.</p>
  *
+ * <p>The engine walks the program with the names eo-runtime gives it in its
+ * {@code pom.xml}, and this is the one place the tests write them.</p>
+ *
  * @since 0.76.0
  */
 final class Sources {
@@ -51,6 +55,11 @@ final class Sources {
     private final Map<String, String> files;
 
     /**
+     * The names the engine has to know.
+     */
+    private final Names names;
+
+    /**
      * Ctor, with no sources.
      *
      * @param home The directory to work in
@@ -60,14 +69,38 @@ final class Sources {
     }
 
     /**
-     * Ctor.
+     * Ctor, with the names of eo-runtime.
      *
      * @param home The directory to work in
      * @param sources The sources, by path
      */
     Sources(final Path home, final Map<String, String> sources) {
+        this(
+            home,
+            sources,
+            new Names(
+                List.of("Φ.bytes", "Φ.number", "Φ.string"),
+                List.of("Φ.tuple", "Φ.map", "Φ.set"),
+                List.of(
+                    "Φ.number", "Φ.bytes", "Φ.string", "Φ.bool", "Φ.true", "Φ.false",
+                    "Φ.i8", "Φ.i16", "Φ.i32", "Φ.i64", "Φ.u8", "Φ.u16", "Φ.u32", "Φ.u64",
+                    "Φ.dataized"
+                )
+            )
+        );
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param home The directory to work in
+     * @param sources The sources, by path
+     * @param known The names the engine has to know
+     */
+    private Sources(final Path home, final Map<String, String> sources, final Names known) {
         this.dir = home;
         this.files = sources;
+        this.names = known;
     }
 
     /**
@@ -80,7 +113,7 @@ final class Sources {
     Sources with(final String path, final String... lines) {
         final Map<String, String> more = new LinkedHashMap<>(this.files);
         more.put(path, Sources.text(lines));
-        return new Sources(this.dir, more);
+        return new Sources(this.dir, more, this.names);
     }
 
     /**
@@ -125,14 +158,22 @@ final class Sources {
     }
 
     /**
-     * The world a walk over the program goes over, with the names of
-     * eo-runtime.
+     * The names the engine has to know.
+     *
+     * @return The names
+     */
+    Names names() {
+        return this.names;
+    }
+
+    /**
+     * The world a walk over the program goes over.
      *
      * @return The world
      * @throws IOException If a file cannot be written or read
      */
     World world() throws IOException {
-        return new World(this.program(), new Names());
+        return new World(this.program(), this.names);
     }
 
     private static XML prepared(final String source, final String objects) throws IOException {

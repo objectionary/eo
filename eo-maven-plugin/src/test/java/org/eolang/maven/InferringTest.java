@@ -13,7 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Collections;
-import org.eolang.inference.Names;
+import org.cactoos.io.Directory;
 import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -53,7 +53,10 @@ final class InferringTest {
                 String.join(System.lineSeparator(), "[] > cup", "  [] > handle", "")
             ).parsed().toString()
         );
-        new Inferring(many, temp.resolve("all"), temp.resolve("tables")).exec();
+        new Inferring(
+            new Directory(many), many, temp.resolve("all"), temp.resolve("tables"),
+            new RuntimeNames().get()
+        ).exec();
         MatcherAssert.assertThat(
             "one document must cover the whole program, but a file was left out of it",
             new XMLDocument(temp.resolve("tables").resolve("facts.xml")),
@@ -73,7 +76,10 @@ final class InferringTest {
                 String.join(System.lineSeparator(), "[] > pond", "  [] > frog", "")
             ).parsed().toString()
         );
-        new Inferring(sources, temp.resolve("pre"), temp.resolve("tables")).exec();
+        new Inferring(
+            new Directory(sources), sources, temp.resolve("pre"), temp.resolve("tables"),
+            new RuntimeNames().get()
+        ).exec();
         MatcherAssert.assertThat(
             "the answers must be written beside the facts and tell what the frog is, but they werent",
             new XMLDocument(temp.resolve("tables").resolve("answers.xml")),
@@ -97,7 +103,7 @@ final class InferringTest {
             parsed,
             temp.resolve("pre"),
             temp.resolve("tables"),
-            new Names()
+            new RuntimeNames().get()
         ).exec();
         MatcherAssert.assertThat(
             "a file left behind by a deleted source must stay out of the facts, but it didnt",
@@ -116,7 +122,10 @@ final class InferringTest {
                 String.join(System.lineSeparator(), "[] > rake", "  [] > teeth", "")
             ).parsed().toString()
         );
-        new Inferring(sources, temp.resolve("pre"), temp.resolve("rows")).exec();
+        new Inferring(
+            new Directory(sources), sources, temp.resolve("pre"), temp.resolve("rows"),
+            new RuntimeNames().get()
+        ).exec();
         Files.delete(sources.resolve("rake.xmir"));
         Files.writeString(
             sources.resolve("hoe.xmir"),
@@ -124,7 +133,10 @@ final class InferringTest {
                 String.join(System.lineSeparator(), "[] > hoe", "  [] > blade", "")
             ).parsed().toString()
         );
-        new Inferring(sources, temp.resolve("pre"), temp.resolve("rows")).exec();
+        new Inferring(
+            new Directory(sources), sources, temp.resolve("pre"), temp.resolve("rows"),
+            new RuntimeNames().get()
+        ).exec();
         MatcherAssert.assertThat(
             "a file whose source is gone must leave the facts, but it stayed",
             new XMLDocument(temp.resolve("rows").resolve("facts.xml")),
@@ -140,7 +152,10 @@ final class InferringTest {
                 String.join(System.lineSeparator(), "[] > leaf", "  [] > vein", "")
             ).parsed().toString()
         );
-        new Inferring(temp.resolve("tree"), temp.resolve("copy"), temp.resolve("rows")).exec();
+        new Inferring(
+            new Directory(temp.resolve("tree")), temp.resolve("tree"),
+            temp.resolve("copy"), temp.resolve("rows"), new RuntimeNames().get()
+        ).exec();
         MatcherAssert.assertThat(
             "a file in a folder must be written to the same folder again, but it wasnt",
             Files.exists(temp.resolve("copy").resolve("one").resolve("leaf.xmir")),
@@ -158,7 +173,10 @@ final class InferringTest {
             ).parsed().toString()
         );
         Files.createDirectories(sources.resolve("stale.xmir"));
-        new Inferring(sources, temp.resolve("pre"), temp.resolve("rows")).exec();
+        new Inferring(
+            new Directory(sources), sources, temp.resolve("pre"), temp.resolve("rows"),
+            new RuntimeNames().get()
+        ).exec();
         MatcherAssert.assertThat(
             "a folder whose name ends with .xmir must be left alone, but it was read",
             new XMLDocument(temp.resolve("rows").resolve("facts.xml")),
@@ -187,7 +205,10 @@ final class InferringTest {
             );
             Assertions.assertThrows(
                 IOException.class,
-                () -> new Inferring(sources, pre, temp.resolve("rows")).exec(),
+                () -> new Inferring(
+                    new Directory(sources), sources, pre, temp.resolve("rows"),
+                    new RuntimeNames().get()
+                ).exec(),
                 "a prepared XMIR of an earlier run that could not be removed must stop inference, not be read together with the current ones"
             );
         } finally {
@@ -205,7 +226,10 @@ final class InferringTest {
             ).parsed().toString()
         );
         Assertions.assertDoesNotThrow(
-            () -> new Inferring(sources, temp.resolve("pre"), temp.resolve("rows")).exec(),
+            () -> new Inferring(
+                new Directory(sources), sources, temp.resolve("pre"), temp.resolve("rows"),
+                new RuntimeNames().get()
+            ).exec(),
             "a prepared directory that was never made is not a failed cleanup, but it was taken for one"
         );
     }
