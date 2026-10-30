@@ -6,7 +6,7 @@
 # directory is empty, through `file.deleted`, which reaches for `rmdir` over
 # `unlink` when the path it is given is a directory.
 #
-# @todo #9650:30min Remove `+unlint redundant-attachment:32` from the metas
+# @todo #9650:30min Remove `+unlint redundant-attachment:33` from the metas
 #  below once objectionary/lints#1301 counts a hop through the receiver as
 #  reaching outward. The lint reads the `>>` name of the formation around
 #  `recovered` as never referenced, while that formation reaches `folder`
@@ -17,7 +17,8 @@
 +package directory
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-attachment:32
++unlint missed-obfuscation
++unlint redundant-attachment:33
 +version 0.0.0
 
 [^folder] > deleted
