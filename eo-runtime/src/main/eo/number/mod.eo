@@ -29,14 +29,12 @@
       if.
         num.as-bytes.size.eq 8
         nan
-        T
-          "the 'ρ' attribute must be a number"
+        T "the 'ρ' attribute must be a number"
       divisor.is-finite.not.if
         if.
           b.as-bytes.size.eq 8
           divisor.is-nan.if nan num
-          T
-            "the 'b' attribute must be a number"
+          T "the 'b' attribute must be a number"
         if.
           num.as-bytes.eq 80-00-00-00-00-00-00-00
           num

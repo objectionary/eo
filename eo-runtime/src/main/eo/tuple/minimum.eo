@@ -11,8 +11,7 @@
 
 [^list cant-min] > minimum
   list.is-empty.if > @
-    cant-min
-      "cannot get the minimum number from an empty sequence"
+    cant-min "cannot get the minimum number from an empty sequence"
     list.reduced
       pinf
       if. > [min item]
