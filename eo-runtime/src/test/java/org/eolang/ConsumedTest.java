@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
  *
  * @since 0.75.0
  */
-@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "PMD.AvoidThreadGroup"})
+@SuppressWarnings("PMD.AvoidThreadGroup")
 final class ConsumedTest {
 
     @Test

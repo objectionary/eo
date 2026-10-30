@@ -9,6 +9,7 @@ import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -24,6 +25,9 @@ import org.cactoos.iterable.Filtered;
 import org.cactoos.text.HexOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.cache.GlobalCache;
+import org.eolang.cache.Saved;
+import org.eolang.cache.Sha;
 import org.eolang.parser.Canonical;
 import org.w3c.dom.Node;
 
@@ -36,7 +40,8 @@ import org.w3c.dom.Node;
  *
  * <p>The class scans all the EO sources registered in the foreign file catalog
  * and then parses those that were not parsed before (i.e. do not have XMIRs yet)
- * to XMIR format. The resulting XMIR files are stored in the {@link #DIR} directory.</p>
+ * to XMIR format. The resulting XMIR files are stored in a directory
+ * {@code Seqdir} numbers "parse".</p>
  *
  * @since 0.1
  */
@@ -48,12 +53,7 @@ final class Parsing implements Step {
     static final String ZERO = "0.0.0";
 
     /**
-     * The directory where to parse to.
-     */
-    static final String DIR = "1-parse";
-
-    /**
-     * Subdirectory for parsed cache.
+     * Directory for parsed cache.
      */
     static final String CACHE = "parsed";
 
@@ -153,8 +153,11 @@ final class Parsing implements Step {
         ).total();
     }
 
-    private boolean unparsed(final TjForeign tojo) {
-        return tojo.notParsed() || !tojo.xmir().startsWith(this.target.resolve(Parsing.DIR));
+    private boolean unparsed(final TjForeign tojo) throws IOException {
+        return tojo.notParsed()
+            || !tojo.xmir().startsWith(
+                new Seqdir(this.target, 2).dirs().once("parse")
+            );
     }
 
     private int parsed(
@@ -162,14 +165,14 @@ final class Parsing implements Step {
     ) throws Exception {
         final Path source = tojo.source();
         final String name = tojo.identifier();
-        final Path base = this.target.resolve(Parsing.DIR);
+        final Path base = new Seqdir(this.target, 2).dirs().once("parse");
         final Path xmir = new Place(name).make(base, MjAssemble.XMIR);
         final List<Node> refs = new ArrayList<>(1);
         store.footprint(
             base.relativize(xmir),
             new TojoHash(tojo),
             src -> {
-                final Node node = this.parsed(src, name, pipeline);
+                final Node node = this.parsed(tojo, pipeline);
                 refs.add(node);
                 return new XMLDocument(node).toString();
             }
@@ -186,31 +189,40 @@ final class Parsing implements Step {
             Logger.debug(this, "Parsed %[file]s to %[file]s", source, xmir);
         } else {
             for (final Xnav error : errors) {
-                Logger.error(
-                    this,
-                    "Failed to parse '%[file]s:%s': %s",
-                    source,
-                    error.attribute("line").text().orElse("0"),
-                    error.text().orElse("")
-                );
+                this.logged(source, error);
             }
         }
         return 1;
     }
 
+    private void logged(final Path source, final Xnav error) {
+        final String location = Logger.format(
+            "'%[file]s:%s': %s",
+            source,
+            error.attribute("line").text().orElse("0"),
+            error.text().orElse("")
+        );
+        if ("warning".equals(error.attribute("severity").text().orElse("error"))) {
+            Logger.warn(this, "Warning while parsing %s", location);
+        } else {
+            Logger.error(this, "Failed to parse %s", location);
+        }
+    }
+
     private Node parsed(
-        final Path source, final String identifier, final UnaryOperator<XML> pipeline
+        final TjForeign tojo, final UnaryOperator<XML> pipeline
     ) throws IOException {
-        final Xmir xmir = new EoSource(identifier, source, pipeline).parsed(
+        final Xmir xmir = new EoSource(tojo.identifier(), tojo.source(), pipeline).parsed(
             pipeline.apply(
-                new Raws(this.cache.with("raws"), this.target.resolve("0-raw"))
-                    .of(identifier, source)
+                new Raws(
+                    this.cache.with("raws"), new Seqdir(this.target, 2).dirs().once("raw")
+                ).of(tojo)
             )
         );
         Logger.debug(
             Parsing.class,
             "Parsed program '%s' from %[file]s:%n %s",
-            identifier, this.home.relativize(source.toAbsolutePath()), xmir
+            tojo.identifier(), this.home.relativize(tojo.source().toAbsolutePath()), xmir
         );
         if (xmir.broken()) {
             new Saved(

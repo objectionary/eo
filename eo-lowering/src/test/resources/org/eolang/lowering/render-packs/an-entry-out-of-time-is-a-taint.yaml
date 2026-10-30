@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The protocol of neg would give an atom, but phino ran out of time before
+# the run ended, so what it wrote is only a part of the work, and nothing
+# is rendered from it.
+locator: Φ.number.neg
+number: 31
+taint: ran out of 60 seconds at Φ.a🌵2
+eo:
+  number.eo: |
+    [] > number
+      [] > neg
+        ^.times -1 > @
+voids:
+  - "𝜎40\t31\tρ\tnumber"
+protocol: |
+  <protocol>
+    <dataize at="Φ.l🌵.e31">
+      <evaluate λ="L_number_times" by="morph" at="Φ.a🌵1">
+        <dataize at="Φ.a🌵3">
+          <manufactured meta="𝛿·2·1">𝜎40</manufactured>
+        </dataize>
+        <bound meta="𝛿1·2">𝛿·2·1</bound>
+        <dataize at="Φ.a🌵4">
+          <dataized meta="𝛿·2·2">BF-F0-00-00-00-00-00-00</dataized>
+        </dataize>
+        <bound meta="𝛿2·2">𝛿·2·2</bound>
+        <minted symbol="𝜎57">𝜎40 BF-F0-00-00-00-00-00-00</minted>
+      </evaluate>
+      <timeout limit="60" by="morph" at="Φ.a🌵2"/>
+      <manufactured meta="𝛿·3·1">𝜎57</manufactured>
+    </dataize>
+    <msec>284</msec>
+    <firings>2</firings>
+    <fps>10</fps>
+  </protocol>

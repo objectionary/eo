@@ -104,4 +104,50 @@ final class BehavedTest {
             Matchers.hasEntry("Φ.grafted", "Φ.oak")
         );
     }
+
+    @Test
+    void keepsApartATypeWhoseBodyFillsItsBaseType() {
+        MatcherAssert.assertThat(
+            "a partial application behaves as itself, but it was reduced to its base type",
+            new Behaved(
+                BehavedTest.withOakAndAlias(),
+                Collections.singletonMap("Φ.alias.φ", "Φ.oak"),
+                Collections.singletonMap(
+                    "Φ.alias.φ", Collections.singleton("Φ.oak.seed")
+                )
+            ).all(),
+            Matchers.not(Matchers.hasKey("Φ.alias"))
+        );
+    }
+
+    @Test
+    void reducesABodyThatFillsAVoidOfAnotherType() {
+        MatcherAssert.assertThat(
+            "a filling outside the base type does not make a new behavior, but it did",
+            new Behaved(
+                BehavedTest.withOakAndAlias(),
+                Collections.singletonMap("Φ.alias.φ", "Φ.oak"),
+                Collections.singletonMap(
+                    "Φ.alias.φ", Collections.singleton("Φ.elm.seed")
+                )
+            ).all(),
+            Matchers.hasEntry("Φ.alias", "Φ.oak")
+        );
+    }
+
+    private static XMLDocument withOakAndAlias() {
+        return new XMLDocument(
+            String.join(
+                "",
+                "<provides>",
+                "<type id='Φ.oak'>",
+                "<attr name='seed' type='Φ.oak.seed' void='true'/>",
+                "</type>",
+                "<type id='Φ.alias'>",
+                "<attr name='φ' type='Φ.alias.φ'/>",
+                "</type>",
+                "</provides>"
+            )
+        );
+    }
 }

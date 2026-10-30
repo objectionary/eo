@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" exclude-result-prefixes="eo" id="roll-bases" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" exclude-result-prefixes="eo" id="roll-bases" version="3.0">
   <!--
   - <o base=".org">
   <o base="Φ"/>  => <o base="Φ.org"/>
@@ -129,9 +129,14 @@
       x.
       y
       z
-      No rolling because of argument
+      No rolling because of argument.
+
+      A fragile link is kept out of its parent's base for the same
+      reason: the base holds the name of the chain and nothing else, so
+      a marker rolled into it is gone, and `x?.y.a`, `x?.y?.a` and
+      `x.y?.a` all come out as `x.y.a` (#9314).
       -->
-      <xsl:when test="$arg/o">
+      <xsl:when test="$arg/o or $arg/@fragile">
         <o>
           <xsl:apply-templates select="@*"/>
           <o>

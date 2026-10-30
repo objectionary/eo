@@ -1,7 +1,7 @@
 # Reads formatted input from a string. It is a method of the formatter
 # string (e.g. "Hello, %s!"), with one free attribute `read`, the string
 # where the data exists (e.g. "Hello, John!"). It returns a
-# `org.eolang.tuple` of formatted values (e.g. * "John").
+# `tuple` of formatted values (e.g. * "John").
 # Supported formatters are:
 # - %d - parse as integer and convert to `number`
 # - %f - parse as float and convert to `number`
@@ -24,6 +24,15 @@
 # value inside the double range past its edge into infinity; 200 keeps the
 # same one-step shape for every exponent this parser is ever asked to
 # handle while landing on a smaller power of ten to start the drift from.
+#
+# The four tests of a `%d` value past the long range read the `head` of the
+# answer and then ask whether it is an integer, rather than standing on the
+# `scanf` call itself. `scanf` answers a tuple, the range check only runs
+# when an element is taken, and a generated `-->` test reads a boolean off
+# what it was given, which a tuple is not: all four passed on the missing
+# `D` of the tuple and would have passed with no range check at all
+# (#9020). Taking the head reaches the check, and reading it as a boolean
+# is what makes the test fail if the check ever stops firing.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -34,7 +43,7 @@
 +unlint sprintf-without-formatters
 +version 0.0.0
 
-[^ read] > scanf
+[^text read] > scanf
   [^ pattern specifiers] >>
     [^ text] > as-float
       negative.if negated scaled > @
@@ -47,12 +56,7 @@
             txt.slice 0 1
             "-"
           folded.times -1
-          if.
-            eq.
-              txt.slice 0 1
-              "+"
-            folded
-            folded
+          folded
         ^.^.fold-digits > folded
           signed.if
             txt.slice
@@ -268,7 +272,7 @@
     ch
   [^ position accumulated found pending] >> tokenize
     if. > @
-      position.gte ^.^.length
+      position.gte ^.text.length
       pending.if *1
         T "The format string ends with a dangling percent and no specifier after it"
         accumulated
@@ -329,7 +333,7 @@
                   escaped ch
               found
               false
-    ^.^.slice > ch
+    ^.text.slice > ch
       position
       1
   | >> tokens
@@ -462,7 +466,9 @@
 
   "hello%".scanf "hello" --> stops-on-a-dangling-percent
 
-  "%d".scanf "99999999999999999999" --> stops-on-an-oversized-integer
+  is-integer. --> stops-on-an-oversized-integer
+    head.
+      "%d".scanf "99999999999999999999"
 
   eq. ++> can-format-the-oversized-integer-message-with-a-single-percent
     "The number doesn't fit into long range for the '%%d' conversion".printf
@@ -479,17 +485,17 @@
       "%d".scanf "-9223372036854775808"
     -9000000000000000000
 
-  scanf. --> stops-on-a-nineteen-digit-value-above-long-max
-    "%d"
-    "9223372036854775808"
+  is-integer. --> stops-on-a-nineteen-digit-value-above-long-max
+    head.
+      "%d".scanf "9223372036854775808"
 
-  scanf. --> stops-on-a-nineteen-digit-value-below-long-min
-    "%d"
-    "-9223372036854775809"
+  is-integer. --> stops-on-a-nineteen-digit-value-below-long-min
+    head.
+      "%d".scanf "-9223372036854775809"
 
-  scanf. --> stops-on-a-zero-padded-integer-above-long-max
-    "%d"
-    "00009223372036854775808"
+  is-integer. --> stops-on-a-zero-padded-integer-above-long-max
+    head.
+      "%d".scanf "00009223372036854775808"
 
   "%l".scanf "error" --> stops-on-a-wrong-format
 

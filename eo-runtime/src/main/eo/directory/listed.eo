@@ -24,12 +24,12 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^] > listed
+[^folder] > listed
   if. > @
     opened.code.eq -1
     T
       "Can't list the directory '%s': %s".printf
-        * ^.path opened.message
+        * folder.path opened.message
     seq *
       entries.is-empty
       closed
@@ -98,9 +98,9 @@
   called. > opened
     os.is-windows.if
       win32.find-first-file
-        ^.as-path.separator.joined
-          * ^.path "*"
-      posix.opendir ^.path
+        folder.as-path.separator.joined
+          * folder.path "*"
+      posix.opendir folder.path
   [^ one two bit] > smaller
     if. > @
       lit.eq

@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The root is a number the atom computed, which the atom would return bare,
+# and inference does not say what the body is. Were it an "i16", the bare
+# number would lose the object around it, so the entry stays in EO.
+locator: Φ.number.neg
+number: 217
+taint: The root 𝜎752 of the entry 217 is bare data, while inference does not say what Φ.number.neg returns
+eo:
+  number.eo: |
+    [] > number
+      [] > neg
+        ^.times -1 > @
+voids:
+  - "𝜎200\t217\tρ\tnumber"
+protocol: |
+  <protocol>
+    <dataize at="Φ.l🌵.e217">
+      <evaluate λ="L_number_times" by="morph" at="Φ.a🌵1">
+        <dataize at="Φ.a🌵2">
+          <manufactured meta="𝛿·2·1">𝜎200</manufactured>
+        </dataize>
+        <bound meta="𝛿1·2">𝛿·2·1</bound>
+        <dataize at="Φ.a🌵3">
+          <dataized meta="𝛿·2·2">BF-F0-00-00-00-00-00-00</dataized>
+        </dataize>
+        <bound meta="𝛿2·2">𝛿·2·2</bound>
+        <minted symbol="𝜎752">𝜎200 BF-F0-00-00-00-00-00-00</minted>
+      </evaluate>
+      <manufactured meta="𝛿·3·1">𝜎752</manufactured>
+    </dataize>
+    <msec>113</msec>
+    <firings>2</firings>
+    <fps>26</fps>
+  </protocol>

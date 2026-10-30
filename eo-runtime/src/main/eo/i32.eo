@@ -9,56 +9,56 @@
 
 [as-bytes] > i32
   as-bytes > @
-  [^ cant-convert] > as-i16
+  [^num cant-convert] > as-i16
     if. > @
-      ^.eq
+      num.eq
         as-i32.
           i16 >> left
-            ^.as-bytes.slice 2 2
+            num.as-bytes.slice 2 2
       left
       cant-convert
         "Can't convert i32 number %d to i16 because it's out of i16 bounds".printf
-          * ^.as-i64.as-number
-  i64 > [^] > as-i64
+          * num.as-i64.as-number
+  i64 > [^num] > as-i64
     concat.
       if.
         eq.
-          ^.as-bytes.and 80-00-00-00
+          num.as-bytes.and 80-00-00-00
           00-00-00-00
         00-00-00-00
         FF-FF-FF-FF
-      ^.as-bytes
+      num.as-bytes
   as-i64.as-number > as-number
-  [^ b cant-divide] > div
+  [^num b cant-divide] > div
     if. > @
       eq.
         b.as-i32 >> other
         00-00-00-00
       cant-divide
         "Can't divide %d by i32 zero".printf
-          * ^.as-i64.as-number
+          * num.as-i64.as-number
       i32
         slice.
           as-bytes.
-            ^.as-i64.div other.as-i64
+            num.as-i64.div other.as-i64
           4
           4
-  ^.as-i64.gt b.as-i32.as-i64 > [^ b] > gt
-  ^.as-i64.gte b.as-i32.as-i64 > [^ b] > gte
-  ^.as-i64.lt b.as-i32.as-i64 > [^ b] > lt
-  ^.as-i64.lte b.as-i32.as-i64 > [^ b] > lte
-  ^.plus b.as-i32.neg > [^ b] > minus
+  num.as-i64.gt b.as-i32.as-i64 > [^num b] > gt
+  num.as-i64.gte b.as-i32.as-i64 > [^num b] > gte
+  num.as-i64.lt b.as-i32.as-i64 > [^num b] > lt
+  num.as-i64.lte b.as-i32.as-i64 > [^num b] > lte
+  num.plus b.as-i32.neg > [^num b] > minus
   times -1.as-i64.as-i32 > neg
-  i32 > [^ b] > plus
+  i32 > [^num b] > plus
     slice.
       as-bytes.
-        ^.as-i64.plus b.as-i32.as-i64
+        num.as-i64.plus b.as-i32.as-i64
       4
       4
-  i32 > [^ b] > times
+  i32 > [^num b] > times
     slice.
       as-bytes.
-        ^.as-i64.times b.as-i32.as-i64
+        num.as-i64.times b.as-i32.as-i64
       4
       4
 

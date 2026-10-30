@@ -6,6 +6,9 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import java.util.function.Supplier;
+import org.eolang.cache.Footprint;
+import org.eolang.cache.FpEnvelope;
+import org.eolang.cache.FpFork;
 
 /**
  * Footprint that behaves like one of the given footprints depending on

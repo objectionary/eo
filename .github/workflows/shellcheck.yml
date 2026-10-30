@@ -7,9 +7,17 @@ name: shellcheck
   push:
     branches:
       - master
+    paths:
+      - '**.sh'
+      - '.github/workflows/shellcheck.yml'
   pull_request:
     branches:
       - master
+    paths:
+      - '**.sh'
+      - '.github/workflows/shellcheck.yml'
+permissions:
+  contents: read
 concurrency:
   group: shellcheck-${{ github.ref }}
   cancel-in-progress: true

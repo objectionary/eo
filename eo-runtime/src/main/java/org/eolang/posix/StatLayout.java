@@ -20,7 +20,7 @@ import org.eolang.ExFailure;
  * <p>Which platform this is gets decided when the object is made, so a test
  * can ask for the struct of an architecture other than the one it runs on.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 final class StatLayout {
 

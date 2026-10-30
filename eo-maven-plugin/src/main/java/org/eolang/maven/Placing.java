@@ -14,13 +14,18 @@ import java.util.Set;
 import java.util.function.Supplier;
 import org.cactoos.io.InputOf;
 import org.cactoos.scalar.Unchecked;
+import org.eolang.cache.FpGenerated;
 
 /**
  * Core placing logic: copies binary files from the resolved dependency directory
  * into the classes output directory.
  *
- * <p>Input directory is the resolved-deps folder ({@link MjResolve#DIR}).
- * Output directory is the classes directory.</p>
+ * <p>Input directory is the resolved-deps folder (a directory {@code Seqdir}
+ * numbers "resolve"). Output directory is the classes directory.</p>
+ *
+ * <p>With rewriting off, a binary already sitting at its target is neither
+ * copied nor written into the catalog, whoever put it there, so that
+ * {@link Unplacing} deletes only what this step copied.</p>
  *
  * @see <a href="https://news.eolang.org/2022-10-19-placed-catalog.html">Place catalog</a>
  * @since 0.61.0
@@ -33,7 +38,7 @@ final class Placing implements Step {
     private final TjsPlaced placed;
 
     /**
-     * Home directory where resolved deps live (target / MjResolve.DIR).
+     * Home directory where resolved deps live.
      */
     private final Path home;
 
@@ -184,17 +189,12 @@ final class Placing implements Step {
             final Path target = Placing.this.classes.resolve(
                 this.dir.relativize(file)
             );
-            final Optional<TjPlaced> tojo = Placing.this.placed.find(target);
             final boolean res;
-            if (!this.rwte
-                && tojo.isPresent()
-                && Files.exists(target)
-                && !tojo.get().unplaced()
-            ) {
+            if (!this.rwte && Files.exists(target)) {
                 Logger.debug(
                     this,
-                    "The same file %[file]s is already placed to %[file]s maybe by %s, skipping",
-                    file, target, tojo.get().dependency()
+                    "The file %[file]s is already at %[file]s and rewriting is off, skipping",
+                    file, target
                 );
                 res = false;
             } else {
@@ -236,11 +236,9 @@ final class Placing implements Step {
         private void placeBinary(final Path file) {
             final Path path = this.dir.relativize(file);
             try {
-                final Footprint generated = new FpGenerated(InputOf::new);
-                final Path target = new FpIfTargetExists(
-                    new FpFork(this.rwte, generated, new FpIgnore()),
-                    generated
-                ).apply(file, Placing.this.classes.resolve(path));
+                final Path target = new FpGenerated(InputOf::new).apply(
+                    file, Placing.this.classes.resolve(path)
+                );
                 Placing.this.placed.placeClass(
                     target,
                     Placing.this.classes.relativize(target).toString(),

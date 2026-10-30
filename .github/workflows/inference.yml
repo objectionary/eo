@@ -9,6 +9,8 @@ run-name: "inference report publication"
     tags:
       - '*'
   workflow_dispatch:
+permissions:
+  contents: write
 concurrency:
   group: inference-${{ github.ref }}
   cancel-in-progress: false

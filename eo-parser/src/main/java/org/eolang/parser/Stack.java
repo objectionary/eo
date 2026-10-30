@@ -29,6 +29,18 @@ import java.util.List;
 final class Stack {
 
     /**
+     * How deep the walk nests before it refuses to go deeper — §5.
+     *
+     * <p>The stack itself costs one entry per level, but the XSL chain
+     * behind the walk recurses once per level of the tree it is handed,
+     * and a few hundred levels overflow it: the walk would hand over a
+     * document that kills the process instead of an error the caller can
+     * report. Real EO stays far below this — the deepest object in
+     * eo-runtime sits at level 41.</p>
+     */
+    static final int DEEPEST = 256;
+
+    /**
      * The levels, bottom-to-top.
      */
     private final List<Level> levels;
@@ -198,6 +210,11 @@ final class Stack {
      * {@code parent} is read from the entry below; if the stack was
      * empty, the parent is {@link Kind#TOP_LEVEL}.</p>
      *
+     * <p>A push that would take the stack past {@link #DEEPEST} entries
+     * is refused with a {@link ParseError}, so the caller reports the
+     * line and skips the block under it instead of emitting a tree the
+     * XSL chain cannot walk.</p>
+     *
      * @param indent New indent
      * @param line Start line
      * @param kind Initial outer kind
@@ -208,6 +225,12 @@ final class Stack {
     Level push(
         final int indent, final int line, final Kind kind, final Openness openness
     ) {
+        if (this.levels.size() >= Stack.DEEPEST) {
+            throw new ParseError(
+                line, indent,
+                String.format("object nested deeper than %d levels", Stack.DEEPEST)
+            );
+        }
         final Kind parent;
         final boolean patom;
         final boolean argues;

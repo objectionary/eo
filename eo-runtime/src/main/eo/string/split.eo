@@ -9,14 +9,14 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^ delimiter cant-split] > split
+[^text delimiter cant-split] > split
   if. > @
     delimiter.size.eq 0
     cant-split "The delimiter must not be empty"
     if.
       eq.
         size. >> len!
-          ^ >> bts!
+          text >> bts!
         0
       * ""
       [^ accum start current] >> rec-split

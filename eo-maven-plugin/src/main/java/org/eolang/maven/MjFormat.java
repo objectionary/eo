@@ -8,6 +8,7 @@ import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -17,6 +18,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.cache.Saved;
 import org.eolang.parser.Canonical;
 import org.eolang.parser.EoSyntax;
 import org.eolang.printer.Xmir;
@@ -43,12 +45,6 @@ import org.eolang.printer.Xmir;
  * again to lay it out.</p>
  *
  * @since 0.57.0
- * @todo #6627:30min Bound the store of raw trees.
- *  {@link Raws} writes a tree for every distinct source text it is asked
- *  about and never takes one out again, so the machine-wide cache grows
- *  with every edit of every source built on this machine. Give it the
- *  treatment the rest of the cache gets, or an age at which a tree nobody
- *  has asked for is dropped.
  */
 @Mojo(
     name = "format",
@@ -81,18 +77,22 @@ public final class MjFormat extends MjPenalties {
         final long start = System.currentTimeMillis();
         try (TjsForeign tojos = this.tojos()) {
             final Collection<TjForeign> sources = tojos.withSources();
+            final Raws raws = new Raws(
+                this.caching(Parsing.CACHE).with("raws"),
+                new Seqdir(this.target.toPath(), 2).dirs().once("raw")
+            );
             this.report(
                 sources.size(),
-                new Threaded<>(sources, this::reformat).total(),
+                new Threaded<>(sources, tojo -> this.reformat(tojo, raws)).total(),
                 System.currentTimeMillis() - start
             );
         }
     }
 
-    private int reformat(final TjForeign tojo) throws IOException {
+    private int reformat(final TjForeign tojo, final Raws raws) throws IOException {
         final Path source = tojo.source();
         final String actual = new UncheckedText(new TextOf(source)).asString();
-        final String canonical = this.canonical(tojo.identifier(), source, actual);
+        final String canonical = this.canonical(tojo, actual, raws);
         final Diff diff = new Diff(actual, canonical);
         final int diverged;
         if (diff.same()) {
@@ -115,10 +115,12 @@ public final class MjFormat extends MjPenalties {
     }
 
     private String canonical(
-        final String name, final Path path, final String source
+        final TjForeign tojo, final String source, final Raws raws
     ) throws IOException {
         String structure = source;
-        XML tree = MjFormat.checked(path, structure, this.stored(name, path));
+        XML tree = MjFormat.checked(
+            tojo.source(), structure, new Canonical().apply(raws.of(tojo))
+        );
         Optional<String> settled = Optional.empty();
         final int settle = 8;
         for (int pass = 0; pass < settle; ++pass) {
@@ -128,7 +130,7 @@ public final class MjFormat extends MjPenalties {
                 break;
             }
             structure = printed;
-            tree = MjFormat.checked(path, structure, new EoSyntax(structure).parsed());
+            tree = MjFormat.checked(tojo.source(), structure, new EoSyntax(structure).parsed());
         }
         final String canon;
         if (settled.isPresent() && this.weights().isEmpty()) {
@@ -137,15 +139,6 @@ public final class MjFormat extends MjPenalties {
             canon = new Xmir(tree, this.weights()).toEO();
         }
         return canon;
-    }
-
-    private XML stored(final String name, final Path source) throws IOException {
-        return new Canonical().apply(
-            new Raws(
-                this.caching(Parsing.CACHE).with("raws"),
-                this.target.toPath().resolve("0-raw")
-            ).of(name, source)
-        );
     }
 
     private static XML checked(final Path source, final String structure, final XML xmir) {

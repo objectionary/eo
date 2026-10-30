@@ -16,7 +16,7 @@ import java.util.Set;
  * verbatim into a base by `expand-aliases.xsl`, where it names nothing at
  * all, which is why it is caught while the line is still being read.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 final class Dotted {
 
@@ -73,6 +73,36 @@ final class Dotted {
             found = Dotted.SCOPES.contains(parts[idx]) && !Dotted.rooted(parts, idx);
         }
         return found;
+    }
+
+    /**
+     * Whether a segment of the path is not a {@code NAME} token.
+     *
+     * <p>§2.3 shapes a name as a lowercase letter and then any glyph that
+     * does not end a token. {@code expand-aliases.xsl} copies the path
+     * into a base, so a segment of any other shape comes out as a locator
+     * that {@code XMIR.xsd} refuses, like {@code Φ.A.b} (#9316). The root
+     * at the head of a longer path is a token of its own and is left to
+     * {@link #scoped()}.</p>
+     *
+     * @return True if a segment of it is not a name
+     */
+    boolean unnamed() {
+        final String[] parts = this.path.split("\\.", -1);
+        boolean found = false;
+        for (int idx = 0; idx < parts.length && !found; idx = idx + 1) {
+            found = !Dotted.rooted(parts, idx) && !Dotted.names(parts[idx]);
+        }
+        return found;
+    }
+
+    private static boolean names(final String part) {
+        boolean name = !part.isEmpty() && part.charAt(0) >= 'a' && part.charAt(0) <= 'z'
+            && part.codePoints().noneMatch(code -> code == 0x1F335);
+        for (int idx = 1; idx < part.length() && name; idx = idx + 1) {
+            name = !Tokens.terminates(part.charAt(idx));
+        }
+        return name;
     }
 
     private static boolean rooted(final String[] parts, final int idx) {

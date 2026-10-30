@@ -16,7 +16,9 @@ import java.util.Map;
  * every application of the program and the pairs themselves. {@link Refs} joins
  * them, {@link Bound} works out what went where and {@link Provided} says which
  * voids there were to fill; this is the four of them wired up, so that whoever
- * has pairs and wants rows says so in one line.</p>
+ * has pairs and wants rows says so in one line. {@link Forked} gives every arm
+ * of a choice the receiver it is read off, which only the rows can know, since
+ * the choices are worked out once the pairs are (#8885).</p>
  *
  * <p>Rows are asked for twice over. Once at the end, for the table the build
  * writes down, and once for every provisional table a fact is read off before
@@ -93,8 +95,20 @@ final class Woven {
         final Map<String, String> pairs, final Map<String, Collection<String>> chosen,
         final Map<String, String> certain
     ) {
-        final Bound bound = this.bound(pairs);
-        return new Refs(pairs, bound.all(), chosen, bound.relays(), certain).all();
+        final Provided owned = new Provided(this.given, new Ends(pairs).names(), this.hollows);
+        final Bound bound = new Bound(
+            this.applied.arguments(), this.applied.named(), this.receivers, this.all, pairs,
+            owned, new Copied(this.all, chosen).all()
+        );
+        return new Refs(
+            pairs,
+            bound.all(),
+            new Forked(
+                chosen, new Stamped(pairs, this.receivers, owned), owned, this.hollows
+            ).all(),
+            bound.relays(),
+            certain
+        ).all();
     }
 
     /**
@@ -107,21 +121,17 @@ final class Woven {
      * a second of every pass of a fixpoint that runs a hundred of them.</p>
      *
      * @param pairs The pairs, each object against the one it is a copy of
+     * @param copied The arms every read off a choice is a copy of, from
+     *  {@link Dispatched}
      * @return The objects put in, by the locator of the void, by the locator of
      *  the object that put them there
      */
-    Map<String, Map<String, String>> binds(final Map<String, String> pairs) {
-        return this.bound(pairs).all();
-    }
-
-    private Bound bound(final Map<String, String> pairs) {
+    Map<String, Map<String, String>> binds(
+        final Map<String, String> pairs, final Map<String, Collection<String>> copied
+    ) {
         return new Bound(
-            this.applied.arguments(),
-            this.applied.named(),
-            this.receivers,
-            this.all,
-            pairs,
-            new Provided(this.given, new Ends(pairs).names(), this.hollows)
-        );
+            this.applied.arguments(), this.applied.named(), this.receivers, this.all, pairs,
+            new Provided(this.given, new Ends(pairs).names(), this.hollows), copied
+        ).all();
     }
 }

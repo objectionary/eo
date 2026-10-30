@@ -29,6 +29,12 @@ import java.util.Map;
  * what stands behind its {@code φ}, or, for an atom, the type it says it comes
  * back with.</p>
  *
+ * <p>A package nobody formed an object at answers too, which {@link Packages}
+ * tells apart from a name the table knows: the {@code example} of a
+ * {@code Φ.com} that only {@code +package com.example} ever wrote is the
+ * package one step deeper, and stopping there left every dispatch into such a
+ * package unknown (#9358).</p>
+ *
  * <p>The walk stops at a type it has already passed, so an object that
  * delegates in a circle is walked once and answers nothing. A void answers
  * too, but with the name rooted at itself: the table has no row for one,
@@ -64,6 +70,11 @@ final class Provided {
     private final Map<String, String> held;
 
     /**
+     * The locators naming a package and nothing besides it.
+     */
+    private final Collection<String> packages;
+
+    /**
      * Ctor.
      *
      * @param provides The provides table, as {@link Provides} wrote it
@@ -95,10 +106,30 @@ final class Provided {
         final Collection<String> voids,
         final Map<String, String> holds
     ) {
+        this(rows, aliases, voids, holds, new Packages(rows.keySet()).all());
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param rows The rows of the provides table, by the name of their owner
+     * @param aliases The name every type goes by, from {@link Same}
+     * @param voids The locator of every void, from {@link Hollows}
+     * @param holds What every void that says so will hold, from {@link Held}
+     * @param prefixes The locators naming a package and nothing besides it
+     */
+    private Provided(
+        final Map<String, Collection<Map<String, String>>> rows,
+        final Map<String, String> aliases,
+        final Collection<String> voids,
+        final Map<String, String> holds,
+        final Collection<String> prefixes
+    ) {
         this.table = rows;
         this.names = aliases;
         this.hollows = voids;
         this.held = holds;
+        this.packages = prefixes;
     }
 
     /**
@@ -125,7 +156,10 @@ final class Provided {
     String here(final String type, final String name) {
         String found = this.bound(type, name);
         final String member = String.join(".", type, name);
-        if (found.isEmpty() && (this.table.containsKey(member) || this.blank(type))) {
+        if (found.isEmpty()
+            && (this.table.containsKey(member)
+                || this.packages.contains(member)
+                || this.blank(type))) {
             found = member;
         }
         return found;
@@ -273,6 +307,27 @@ final class Provided {
      */
     boolean hollow(final String type) {
         return new Rooted(this.hollows).covers(type);
+    }
+
+    /**
+     * The void this name is taken off, where only a caller can say what it
+     * holds.
+     *
+     * <p>A {@code ρ} is not one of them: whoever dispatches into its owner
+     * fills it, whether or not any call passes it, so the {@code ^} of the
+     * {@code made} of a {@code directory} is a directory on every run. Nor is
+     * a void that says what it holds, since that is true of every caller.</p>
+     *
+     * @param type The name the type goes by
+     * @return The locator of the void, empty when the name is taken off none
+     *  of them, off a {@code ρ}, or off a void that says what it holds
+     */
+    String rooted(final String type) {
+        String found = new Rooted(this.hollows).names(type);
+        if (found.endsWith(".ρ") || this.held.containsKey(found)) {
+            found = "";
+        }
+        return found;
     }
 
     private String kept(final String type, final String name, final Collection<String> walked) {

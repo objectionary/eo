@@ -100,6 +100,35 @@ final class Fillings {
      *  nobody ever fills
      */
     Map<String, Collection<Type>> all() {
+        final Map<String, String> behaves = new Behaviours(this.given).all();
+        final Map<String, Collection<Type>> found = new LinkedHashMap<>(0);
+        for (final Map.Entry<String, Map<String, Type>> hollow : this.walked().entrySet()) {
+            found.put(hollow.getKey(), new Counted(hollow.getValue(), behaves).all());
+        }
+        return found;
+    }
+
+    /**
+     * What every void is ever given, by the name each thing goes by.
+     *
+     * <p>This is the census before it is counted, and it is what a pass asks
+     * when it wants to know whether a void holds a formation, or holds
+     * anything at all. Asking a list of its own instead, built from the calls
+     * alone, gave a void two atoms fill no filling while the census gave it
+     * two, and an arm that read the void was struck as dead (#9006).</p>
+     *
+     * @return The names of what is put in, by the locator of the void, without
+     *  the voids nobody ever fills
+     */
+    Map<String, Collection<String>> holders() {
+        final Map<String, Collection<String>> found = new LinkedHashMap<>(0);
+        for (final Map.Entry<String, Map<String, Type>> hollow : this.walked().entrySet()) {
+            found.put(hollow.getKey(), hollow.getValue().keySet());
+        }
+        return found;
+    }
+
+    private Map<String, Map<String, Type>> walked() {
         final Map<String, String> names = new Ends(this.table.all()).names();
         final Map<String, String> landings = new Landed(this.table, this.given).all();
         final Forms forms = new Forms(this.table.forms());
@@ -125,11 +154,6 @@ final class Fillings {
         while (atoms.fills(placed, walked)) {
             walked = new Carried(placed, handed).all();
         }
-        final Map<String, String> behaves = new Behaviours(this.given).all();
-        final Map<String, Collection<Type>> found = new LinkedHashMap<>(0);
-        for (final Map.Entry<String, Map<String, Type>> hollow : walked.entrySet()) {
-            found.put(hollow.getKey(), new Counted(hollow.getValue(), behaves).all());
-        }
-        return found;
+        return walked;
     }
 }

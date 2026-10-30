@@ -10,6 +10,8 @@ run-name: "eo-maven-plugin site publication"
       - '*'
   workflow_dispatch:
 
+permissions:
+  contents: write
 concurrency:
   group: eo-maven-plugin-site-${{ github.ref }}
   cancel-in-progress: false

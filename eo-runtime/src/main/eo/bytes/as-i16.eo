@@ -9,13 +9,13 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^ cant-convert] > as-i16
+[^data cant-convert] > as-i16
   if. > @
-    ^.size.eq 2
-    i16 ^
+    data.size.eq 2
+    i16 data
     cant-convert
       "Can't convert non 2 length bytes to i16, bytes are %x".printf
-        * ^
+        * data
 
   00-33.as-i16.as-bytes.eq 00-33 ++> can-convert-bytes-to-i16-and-back
 

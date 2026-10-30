@@ -4,7 +4,6 @@
  */
 package org.eolang.inference;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -24,7 +23,9 @@ import org.xembly.Directives;
  * those hand back different things. The locator is then true of every caller
  * and concrete for none, and the arms are the whole of what this one caller
  * may come back with, so the two belong in one row and the choice goes inside
- * the copy it refines (#8744).</p>
+ * the copy it refines (#8744). An arm is a copy of its own, and carries the
+ * receiver it is read off, since the row cannot say that of all of them at
+ * once (#8885).</p>
  *
  * <p>A copy may be one only because of what the program was seen to put
  * into a void: the call on a void that every caller fills with one formation
@@ -52,7 +53,7 @@ final class Ref implements Type {
     /**
      * The objects the call may come back with, where the locator is a void.
      */
-    private final Collection<String> arms;
+    private final Collection<Type> arms;
 
     /**
      * Whether what this is a copy of was reached through a void.
@@ -96,7 +97,7 @@ final class Ref implements Type {
     Ref(
         final String target,
         final Map<String, String> binds,
-        final Collection<String> chosen
+        final Collection<Type> chosen
     ) {
         this(target, binds, chosen, false, Collections.emptyList());
     }
@@ -117,7 +118,7 @@ final class Ref implements Type {
     Ref(
         final String target,
         final Map<String, String> binds,
-        final Collection<String> chosen,
+        final Collection<Type> chosen,
         final boolean witnessed,
         final Collection<String> relayed
     ) {
@@ -150,11 +151,7 @@ final class Ref implements Type {
                 .up();
         }
         if (!this.arms.isEmpty()) {
-            final Collection<Type> members = new ArrayList<>(this.arms.size());
-            for (final String arm : this.arms) {
-                members.add(new Ref(arm));
-            }
-            dirs.append(new Union(members).directives());
+            dirs.append(new Union(this.arms).directives());
         }
         return dirs.up();
     }

@@ -116,9 +116,10 @@
     ? > protocol /Q.number
   [] > stat /Q.posix.stat-return
     ? > path /Q.string
-  [code mode size] > stat-return
+  [code message mode size] > stat-return
     posix.stat-return > called
       code
+      message
       mode
       size
   [code message] > status-return
@@ -224,8 +225,11 @@
   ++> can-open-and-close-a-file-through-a-syscall
     os.is-windows.or > @
       seq *
-        posix.close fd
         fd.gt -1
+        not.
+          eq.
+            posix.close fd
+            -1
     code. > fd
       posix.open
         "/dev/null"

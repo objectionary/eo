@@ -7,9 +7,16 @@ name: actionlint
   push:
     branches:
       - master
+    paths:
+      - '.github/**'
   pull_request:
     branches:
       - master
+    paths:
+      - '.github/**'
+permissions:
+  contents: read
+  pull-requests: write
 concurrency:
   group: actionlint-${{ github.ref }}
   cancel-in-progress: true

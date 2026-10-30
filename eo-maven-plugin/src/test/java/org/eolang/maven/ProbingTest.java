@@ -54,6 +54,40 @@ final class ProbingTest {
     }
 
     @Test
+    void completesRootPackageForTopLevelProbe(@TempDir final Path temp) throws IOException {
+        final Path xmir = temp.resolve("test.xmir");
+        Files.write(
+            xmir,
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(),
+                    "+package foo",
+                    "",
+                    "[] > test",
+                    "  Q.tuple > @"
+                )
+            ).parsed().toString().getBytes(StandardCharsets.UTF_8)
+        );
+        final TjsForeign tojos = new TjsForeign();
+        tojos.add("test").withXmir(xmir);
+        new Probing(
+            tojos,
+            new OyIndexed(
+                new Objectionary.Fake(),
+                new ObjectsIndex(
+                    () -> new SetOf<>("tuple", "seq", "tuple.each")
+                )
+            ),
+            true
+        ).exec();
+        MatcherAssert.assertThat(
+            "Probe should have registered the top-level sibling of a bare probed object",
+            tojos.contains("seq"),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
     void doesNotCompletePackageThatLocalSourcesProvide(
         @TempDir final Path temp
     ) throws IOException {

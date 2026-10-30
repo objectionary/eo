@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Only the entry of left was rendered, so right, whose entry was a taint or
+# was killed, is not written at all, and the transpiler reads it from where
+# it was.
+eo:
+  left.eo: |
+    [a] > left
+      a.plus 1 > @
+  right.eo: |
+    [a] > right
+      a.minus 1 > @
+rendered:
+  - "1\tΦ.left"
+patched:
+  left.xmir:
+    - "/object/o[@name='left']/o[@name='φ' and not(@base)]/o[@name='λ']"

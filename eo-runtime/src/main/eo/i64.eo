@@ -37,23 +37,23 @@
 [as-bytes] > i64
   as-bytes > @
   as-i32.as-i16 > as-i16
-  [^ cant-convert] > as-i32
+  [^num cant-convert] > as-i32
     if. > @
-      ^.eq
+      num.eq
         as-i64.
           i32 >> left
-            ^.as-bytes.slice 4 4
+            num.as-bytes.slice 4 4
       left
       cant-convert
         "Can't convert i64 number %s to i32 because it's out of i32 bounds".printf
           *
-            string ^.as-number.as-scientific
+            string num.as-number.as-scientific
     i32 > left
-      ^.as-bytes.slice 4 4
-  [^] > as-number
+      num.as-bytes.slice 4 4
+  [^num] > as-number
     if. > @
       eq.
-        ^.as-bytes.and 80-00-00-00-00-00-00-00
+        num.as-bytes.and 80-00-00-00-00-00-00-00
         00-00-00-00-00-00-00-00
       plus.
         high.times 4503599627370496
@@ -68,48 +68,48 @@
       number
         43-30-00-00-00-00-00-00.or
           and.
-            ^.as-bytes.right 52
+            num.as-bytes.right 52
             00-00-00-00-00-00-0F-FF
       4503599627370496
     minus. > low
       number
         43-30-00-00-00-00-00-00.or
-          ^.as-bytes.and 00-0F-FF-FF-FF-FF-FF-FF
+          num.as-bytes.and 00-0F-FF-FF-FF-FF-FF-FF
       4503599627370496
-  [^ b] > gt
+  [^num b] > gt
     if. > @
       not.
         eq.
-          ^.as-bytes.and 80-00-00-00-00-00-00-00 >> sign
+          num.as-bytes.and 80-00-00-00-00-00-00-00 >> sign
           b.as-bytes.and 80-00-00-00-00-00-00-00
       sign.eq 00-00-00-00-00-00-00-00
       and.
         eq.
           and.
             as-bytes.
-              ^.minus b >> difference
+              num.minus b >> difference
             80-00-00-00-00-00-00-00
           00-00-00-00-00-00-00-00
         not.
           difference.as-bytes.eq 00-00-00-00-00-00-00-00
-  [^ b] > gte
+  [^num b] > gte
     or. > @
-      ^.gt
+      num.gt
         b >> value!
-      ^.eq value
-  gt. > [^ b] > lt
+      num.eq value
+  gt. > [^num b] > lt
     i64 b.as-bytes
-    ^
-  [^ b] > lte
+    num
+  [^num b] > lte
     or. > @
-      ^.lt
+      num.lt
         b >> value!
-      ^.eq value
-  ^.plus (i64 b!).neg > [^ b] > minus
-  plus. > [^] > neg
-    i64 ^.as-bytes.not
+      num.eq value
+  num.plus (i64 b!).neg > [^num b] > minus
+  plus. > [^num] > neg
+    i64 num.as-bytes.not
     i64 00-00-00-00-00-00-00-01
-  [^ b] > plus
+  [^num b] > plus
     i64 > @
       concat.
         slice.
@@ -131,7 +131,7 @@
     plus. > lower
       number
         43-30-00-00-00-00-00-00.or
-          ^.as-bytes.and 00-00-00-00-FF-FF-FF-FF
+          num.as-bytes.and 00-00-00-00-FF-FF-FF-FF
       minus.
         number
           43-30-00-00-00-00-00-00.or
@@ -142,7 +142,7 @@
         number
           43-30-00-00-00-00-00-00.or
             and.
-              ^.as-bytes.right 32
+              num.as-bytes.right 32
               00-00-00-00-FF-FF-FF-FF
         minus.
           number
@@ -152,7 +152,7 @@
                 00-00-00-00-FF-FF-FF-FF
           4503599627370496
       carried.if 1 0
-  [^ b] > times
+  [^num b] > times
     if. > [^ acc a bits] > looped
       bits.eq 00-00-00-00-00-00-00-00
       i64 acc
@@ -170,7 +170,7 @@
         bits.right 1
     | > @
       00-00-00-00-00-00-00-00
-      ^.as-bytes
+      num.as-bytes
       b.as-bytes
 
   eq. ++> can-add-mixed-signs

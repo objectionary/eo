@@ -17,8 +17,15 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.apache.log4j.Appender;
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggingEvent;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.cactoos.bytes.Sha256DigestOf;
@@ -27,6 +34,8 @@ import org.cactoos.io.ResourceOf;
 import org.cactoos.text.HexOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.cache.Cache;
+import org.eolang.cache.Saved;
 import org.eolang.parser.Canonical;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -44,16 +53,16 @@ final class MjParseTest {
 
     @Test
     void parsesSuccessfully(@Mktmp final Path temp) throws Exception {
+        final FakeMaven maven = new FakeMaven(temp).withHelloWorld();
+        final Map<String, Path> result = maven.execute(new PpParse()).result();
         final String parsed = String.format(
             "target/%s/foo/x/main.%s",
-            Parsing.DIR,
+            maven.dirName("parse"),
             MjAssemble.XMIR
         );
         MatcherAssert.assertThat(
             String.format("ParseMojo should have parsed stdout object %s, but didn't", parsed),
-            new FakeMaven(temp).withHelloWorld()
-                .execute(new PpParse())
-                .result(),
+            result,
             Matchers.hasKey(parsed)
         );
     }
@@ -84,7 +93,7 @@ final class MjParseTest {
         MatcherAssert.assertThat(
             "the merged XMIR cannot stand for a parsed one, or the next build lints the merge",
             maven.foreignTojos().find("foo").xmir().toString(),
-            Matchers.endsWith(Paths.get(Parsing.DIR).resolve("foo.xmir").toString())
+            Matchers.endsWith(Paths.get(maven.dirName("parse")).resolve("foo.xmir").toString())
         );
     }
 
@@ -111,7 +120,7 @@ final class MjParseTest {
             new TextOf(new ResourceOf("org/eolang/maven/main.xmir"))
         ).asString();
         final CommitHash hash = new ChCached(new ChNarrow(new ChRemote("0.40.5")));
-        final Path base = maven.targetPath().resolve(Parsing.DIR);
+        final Path base = maven.targetPath().resolve(maven.dirName("parse"));
         final Path target = new Place("foo.x.main").make(base, MjAssemble.XMIR);
         new Cache(
             cache.resolve(Parsing.CACHE)
@@ -122,7 +131,7 @@ final class MjParseTest {
         target.toFile().delete();
         final String actual = String.format(
             "target/%s/foo/x/main.%s",
-            Parsing.DIR,
+            maven.dirName("parse"),
             MjAssemble.XMIR
         );
         MatcherAssert.assertThat(
@@ -139,18 +148,17 @@ final class MjParseTest {
 
     @Test
     void doesNotCrashesOnError(@Mktmp final Path temp) throws Exception {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.format("+package foo.x%n"),
+            "[] > main",
+            "  seq *-1 > @",
+            "    true"
+        );
         MatcherAssert.assertThat(
             "Even if the eo program invalid we still have to parse it, but we didn't",
-            new FakeMaven(temp).withProgram(
-                String.format("+package foo.x%n"),
-                "[] > main",
-                "  seq *-1 > @",
-                "    true"
-                )
-                .execute(new PpParse())
-                .result(),
+            maven.execute(new PpParse()).result(),
             Matchers.hasKey(
-                String.format("target/%s/foo/x/main.%s", Parsing.DIR, MjAssemble.XMIR)
+                String.format("target/%s/foo/x/main.%s", maven.dirName("parse"), MjAssemble.XMIR)
             )
         );
     }
@@ -183,7 +191,7 @@ final class MjParseTest {
             "bare reference 'bar' must be resolved into the same package as 'Φ.foo.bar'",
             new XMLDocument(
                 maven.execute(new PpParse()).result().get(
-                    String.format("target/%s/foo/app.%s", Parsing.DIR, MjAssemble.XMIR)
+                    String.format("target/%s/foo/app.%s", maven.dirName("parse"), MjAssemble.XMIR)
                 )
             ),
             XhtmlMatchers.hasXPath("//o[@base='Φ.foo.bar']")
@@ -208,7 +216,7 @@ final class MjParseTest {
             "bare reference 'bar' must stay at the root when no 'Φ.foo.bar' object exists",
             new XMLDocument(
                 maven.execute(new PpParse()).result().get(
-                    String.format("target/%s/foo/app.%s", Parsing.DIR, MjAssemble.XMIR)
+                    String.format("target/%s/foo/app.%s", maven.dirName("parse"), MjAssemble.XMIR)
                 )
             ),
             XhtmlMatchers.hasXPath("//o[@base='Φ.bar']")
@@ -244,7 +252,7 @@ final class MjParseTest {
             .execute(new PpParse())
             .result();
         final File parsed = result.get(
-            String.format("target/%s/foo/x/main.%s", Parsing.DIR, MjAssemble.XMIR)
+            String.format("target/%s/foo/x/main.%s", maven.dirName("parse"), MjAssemble.XMIR)
         ).toFile();
         final long before = parsed.lastModified();
         maven.execute(MjParse.class);
@@ -263,7 +271,7 @@ final class MjParseTest {
             .withHelloWorld()
             .execute(new PpParse())
             .result()
-            .get(String.format("target/%s/foo/x/main.%s", Parsing.DIR, MjAssemble.XMIR));
+            .get(String.format("target/%s/foo/x/main.%s", maven.dirName("parse"), MjAssemble.XMIR));
         final Path source = temp.resolve(Paths.get("foo", "x", "main.eo"));
         new Saved(
             String.join(
@@ -303,7 +311,7 @@ final class MjParseTest {
             xmirs.add(
                 String.format(
                     "target/%s/foo/x/main%s.%s",
-                    Parsing.DIR,
+                    maven.dirName("parse"),
                     FakeMaven.suffix(program),
                     MjAssemble.XMIR
                 )
@@ -318,16 +326,16 @@ final class MjParseTest {
 
     @Test
     void addsErrorsIfObjectNameDoesNotMatchFilename(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            "[] > app",
+            "main"
+        );
         MatcherAssert.assertThat(
             "Errors are not present in the resulted XMIR, but they should",
             new XMLDocument(
-                new FakeMaven(temp).withProgram(
-                    "[] > app",
-                    "main"
-                    )
-                    .execute(new PpParse())
-                    .result()
-                    .get(String.format("target/%s/main.%s", Parsing.DIR, MjAssemble.XMIR))
+                maven.execute(new PpParse()).result().get(
+                    String.format("target/%s/main.%s", maven.dirName("parse"), MjAssemble.XMIR)
+                )
             ),
             XhtmlMatchers.hasXPaths(
                 "/object/errors[count(error)=1]",
@@ -339,14 +347,13 @@ final class MjParseTest {
 
     @Test
     void addsErrorsWhenObjectNameFails(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram("# App.");
         MatcherAssert.assertThat(
             "Errors are not present in the resulted XMIR, but they should",
             new XMLDocument(
-                new FakeMaven(temp)
-                    .withProgram("# App.")
-                    .execute(new PpParse())
-                    .result()
-                    .get("target/1-parse/foo/x/main.xmir")
+                maven.execute(new PpParse()).result().get(
+                    String.format("target/%s/foo/x/main.xmir", maven.dirName("parse"))
+                )
             ),
             XhtmlMatchers.hasXPaths(
                 "//error[@severity='critical']",
@@ -361,7 +368,9 @@ final class MjParseTest {
         final File parsed = maven
             .withHelloWorld()
             .execute(new PpParse())
-            .result().get(String.format("target/%s/foo/x/main.%s", Parsing.DIR, MjAssemble.XMIR))
+            .result().get(
+                String.format("target/%s/foo/x/main.%s", maven.dirName("parse"), MjAssemble.XMIR)
+            )
             .toFile();
         Files.setLastModifiedTime(
             parsed.toPath(), FileTime.fromMillis(System.currentTimeMillis() + 60_000L)
@@ -384,6 +393,68 @@ final class MjParseTest {
             Matchers.allOf(
                 Matchers.equalTo(before),
                 Matchers.equalTo(after)
+            )
+        );
+    }
+
+    @Test
+    void logsParserWarningWithoutCallingItAFailure(@Mktmp final Path temp) throws Exception {
+        final List<String> messages = new ArrayList<>(0);
+        final String home = com.jcabi.log.Logger.format("%[file]s", temp);
+        final Appender appender = new AppenderSkeleton() {
+            @Override
+            protected void append(final LoggingEvent event) {
+                if (event.getRenderedMessage().contains(home)) {
+                    messages.add(
+                        String.format("[%s] %s", event.getLevel(), event.getRenderedMessage())
+                    );
+                }
+            }
+
+            @Override
+            public void close() {
+                // Nothing to release.
+            }
+
+            @Override
+            public boolean requiresLayout() {
+                return false;
+            }
+        };
+        final Logger logger = Logger.getLogger(Parsing.class);
+        final Level level = logger.getLevel();
+        logger.setLevel(Level.ALL);
+        logger.addAppender(appender);
+        try {
+            new FakeMaven(temp).withProgram(
+                String.join(
+                    System.lineSeparator(),
+                    "+package foo.x",
+                    "",
+                    "[x] > main",
+                    "  x?.y.a > @"
+                )
+            ).execute(new PpParse());
+        } finally {
+            logger.removeAppender(appender);
+            logger.setLevel(level);
+        }
+        MatcherAssert.assertThat(
+            "A parser warning must be logged as a warning, not as a parsing failure, but it was not",
+            messages.stream()
+                .filter(line -> line.contains(temp.getFileName().toString()))
+                .collect(Collectors.toList()),
+            Matchers.both(
+                Matchers.<String>hasItem(
+                    Matchers.allOf(
+                        Matchers.containsString("[WARN]"),
+                        Matchers.containsString("fragile object requires")
+                    )
+                )
+            ).and(
+                Matchers.not(
+                    Matchers.<String>hasItem(Matchers.containsString("Failed to parse"))
+                )
             )
         );
     }

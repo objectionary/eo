@@ -21,19 +21,19 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^] > made
-  ^.exists.if > @
-    ^.is-directory.if
-      ^
+[^folder] > made
+  folder.exists.if > @
+    folder.is-directory.if
+      folder
       T
         "Cant make the directory '%s': a file already occupies that path".printf
-          * ^.path
+          * folder.path
     seq *
       if.
-        ^.path.eq above.path
+        folder.path.eq above.path
         T
           "Cant make the directory '%s': it has no parent".printf
-            * ^.path
+            * folder.path
         made.
           directory above
       if.
@@ -41,16 +41,16 @@
           created.code.eq 0
           and.
             errno.eq eexist
-            ^.is-directory
-        ^
+            folder.is-directory
+        folder
         T
           "Cant make the directory '%s': %s".printf
-            * ^.path created.message
-  file ^.as-path.dirname > above
+            * folder.path created.message
+  file folder.as-path.dirname > above
   called. > created
     os.is-windows.if
-      win32.mkdir ^.path
-      posix.mkdir ^.path posix.permissions
+      win32.mkdir folder.path
+      posix.mkdir folder.path posix.permissions
   os.is-windows.if > eexist
     win32.eexist
     posix.eexist

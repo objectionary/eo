@@ -1,0 +1,47 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The `made` of a `cabinet` chooses between two arms, the way the `made` of a
+# `directory` does: the first asks `full` and hands back its own receiver `^`,
+# the second is a `dial`. The call on `flag.pick` fills neither `full` nor `^`,
+# and that arm used to be dropped for it, so `made` came back as a `dial`. It
+# does not for `held`, where both flags are `yes` and the call comes back as
+# the `cabinet` it was taken off. The arm stays, so `made` is not a `dial` but
+# a choice that holds both of its arms (#8885).
+eo:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^ left right]
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^ left right]
+          right > @
+  dial.eo: |
+    [^ sys] > dial
+      [^ size] > listen
+        size > @
+  cabinet.eo: |
+    [] > cabinet
+      [^ flag full] > made
+        flag.pick > @
+          full.pick
+            ^
+            T
+              "the cabinet is full"
+          dial 03-
+  held.eo: |
+    [] > held
+      cabinet.made yes yes > @
+  other.eo: |
+    [] > other
+      cabinet.made no no > @
+links:
+  - "/links/type[@id='Φ.cabinet.made.φ'][not(ref[@loc='Φ.dial'])]"
+  - "/links/type[@id='Φ.cabinet.made.φ']/ref/union/ref[@loc='Φ.dial']"
+  - "/links/type[@id='Φ.cabinet.made.φ']/ref/union/ref[@loc='Φ.cabinet']"

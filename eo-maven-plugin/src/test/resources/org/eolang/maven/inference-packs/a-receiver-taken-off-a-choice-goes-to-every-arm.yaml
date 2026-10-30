@@ -1,0 +1,94 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The `gauge` chooses between a `record` and whatever `cant-read` holds, and
+# `p.ok` in `walker` reads `ok` off that choice. In the first arm `ok` is a
+# `lamp` the `record` keeps, so the `record` goes to the `^` of that `lamp`,
+# and the `lamp` must be told so. It was not, since the call itself is rooted
+# at a void, and the `lamp` heard of nobody at all. Nor is it the `gauge`
+# that goes there: the `ok` is found behind its `φ`. The `ok` of a `box` is
+# a void, and the `dial` put there got its receiver where it was written, so
+# the arm of `crate` that reads it gives the `box` to nobody. The `chain` is
+# written the way a `seq` is, with a second choice nested in its last arm,
+# so it is a choice and not the `lamp` of its first arm (#8885). The `other`
+# fills that `cant-read` with a `spare`, or the arm would be dead and `p.ok`
+# would read off no choice at all (#8981).
+eo:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  lamp.eo: |
+    [^] > lamp
+      [x] > shine
+        x > @
+  dial.eo: |
+    [^ sys] > dial
+      [^ size] > listen
+        size > @
+  record.eo: |
+    [at] > record
+      lamp > ok
+  gauge.eo: |
+    [^ flag cant-read] > gauge
+      flag.pick > @
+        record 1
+        cant-read
+          "the gauge cannot be read"
+  walker.eo: |
+    [] > walker
+      p.ok.shine 2 > @
+      gauge yes > p
+  other.eo: |
+    [] > other
+      gauge no spare > @
+  spare.eo: |
+    [msg] > spare
+      lamp > ok
+  box.eo: |
+    [ok] > box
+  crate.eo: |
+    [^ flag] > crate
+      flag.pick > @
+        box
+          dial 05-
+        record 3
+  porter.eo: |
+    [] > porter
+      c.ok > @
+      crate yes > c
+  idle.eo: |
+    [] > idle
+      crate no > @
+  chain.eo: |
+    [^ flag steps] > chain
+      flag.pick > @
+        lamp
+        steps.pick
+          lamp
+          dial 03-
+  user.eo: |
+    [] > user
+      chain yes no > @
+links:
+  - "/links/type[@id='Φ.walker.φ.ρ']/ref/union/ref[@loc='Φ.record.ok']\
+    /bind[@void='Φ.lamp.ρ']/ref[@loc='Φ.record']"
+  - "/links/type[@id='Φ.porter.φ']/ref/union/ref[@loc='Φ.box.ok'][not(bind)]"
+  - "/links/type[@id='Φ.chain.φ'][not(ref[@loc='Φ.lamp'])]"
+provides:
+  - "//type[@id='Φ.lamp']/attr[@name='ρ']/witnessed//ref[@loc='Φ.record']"
+  - "//type[@id='Φ.lamp']/attr[@name='ρ']/witnessed[not(.//ref[@loc='Φ.gauge'])]"
+  - "//type[@id='Φ.dial']/attr[@name='ρ'][not(.//ref[@loc='Φ.box'])]"

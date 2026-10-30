@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -47,54 +48,44 @@ public final class MjCompile extends MjSafe {
             TjsForeign compile = this.compileTojos();
             TjsPlaced placed = this.placed()
         ) {
-            new Timed(
-                new Compiling(
-                    new Timed(this.assembling(tojos)),
-                    new Timed(
-                        new Linting(
-                            tojos,
-                            compile,
-                            this.target.toPath(),
-                            this.cache.toPath(),
-                            this.cacheEnabled,
-                            this.plugin.getVersion(),
-                            this.skipSourceLints,
-                            this.skipProgramLints,
-                            this.skipExperimental,
-                            this.failOnWarning,
-                            this.lintAsPackage,
-                            this.skipLinting
-                        )
-                    ),
-                    new Timed(
-                        new Merging(
-                            tojos,
-                            this.target.toPath().resolve(Merging.DIR)
-                        )
-                    ),
-                    new Timed(
-                        new Resolving(
-                            tojos,
-                            this.target.toPath().resolve(MjResolve.DIR),
-                            new CentralMaven(this.system, this.session, this.repositories),
-                            this.discoverSelf,
-                            this.skipZeroVersions,
-                            this.resolveJna,
-                            this.ignoreRuntime,
-                            this.runtime(),
-                            this.ignoreConflicts
-                        )
-                    ),
-                    new Timed(
-                        new Placing(
-                            placed,
-                            this.target.toPath().resolve(MjResolve.DIR),
-                            this.classes.toPath(),
-                            this.placeBinaries,
-                            this.skipBinaries,
-                            this.rewriteBinaries
-                        )
-                    )
+            new Compiling(
+                this.assembling(tojos),
+                new Linting(
+                    tojos,
+                    compile,
+                    this.target.toPath(),
+                    this.cache.toPath(),
+                    this.cacheEnabled,
+                    this.plugin.getVersion(),
+                    this.skipSourceLints,
+                    this.skipProgramLints,
+                    this.experimental,
+                    this.failOnWarning,
+                    this.lintAsPackage,
+                    this.skipLinting
+                ),
+                new Merging(
+                    tojos,
+                    this.target.toPath()
+                ),
+                new Resolving(
+                    tojos,
+                    this.target.toPath(),
+                    new CentralMaven(this.system, this.session, this.repositories),
+                    this.discover,
+                    this.zeros,
+                    this.jna,
+                    this.ignoreRuntime,
+                    this.runtime(),
+                    this.conflicts
+                ),
+                new Placing(
+                    placed,
+                    new Seqdir(this.target.toPath(), 2).dirs().once("resolve"),
+                    this.classes.toPath(),
+                    this.placeBinaries,
+                    this.skipBinaries,
+                    this.rewrite
                 )
             ).exec();
         }

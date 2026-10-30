@@ -1,0 +1,50 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An arm of a choice that reads a void nobody fills is not an arm. Nobody in
+# this program puts anything in `cant-read`, and the program is everything
+# compiled together, so a run that takes that arm reads an empty void and
+# stops there. The arm is as dead as one that terminates, and the choice comes
+# back as the `listen` of the `dial` in the other arm alone (#8981).
+eo:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  dial.eo: |
+    [^ sys] > dial
+      [^ size] > listen
+        size > @
+  gauge.eo: |
+    [^ flag cant-read] > gauge
+      flag.pick > @
+        dial 03-
+        cant-read
+          "the gauge cannot be read"
+  held.eo: |
+    [] > held
+      gauge yes > @
+  other.eo: |
+    [] > other
+      gauge no > @
+  app.eo: |
+    [] > app
+      listen. > @
+        held
+        05-
+links:
+  - "/links/type[@id='Φ.app.φ']/ref[@loc='Φ.dial.listen']"
+  - "/links/type[@id='Φ.app.φ'][not(.//union)]"

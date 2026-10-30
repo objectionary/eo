@@ -113,6 +113,66 @@ final class PiecesTest {
     }
 
     @Test
+    void marksTheNameAFormationIsBoundTo() {
+        MatcherAssert.assertThat(
+            "a formation must be marked on its name, but the bracket that opens it was marked",
+            PiecesTest.drawn(
+                "[x] > foo",
+                Collections.singletonList(
+                    new Written("Φ.foo", 0, "foo", new Answer("Φ.foo", 3))
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/line/bit[.='[x] > '][not(@band)]",
+                "/line/bit[text='foo'][@band]"
+            )
+        );
+    }
+
+    @Test
+    void marksTheNameAnAtomIsBoundTo() {
+        MatcherAssert.assertThat(
+            "an atom and its body must share the mark on its name, but they didnt",
+            PiecesTest.drawn(
+                "  [] > div /Q.number",
+                Arrays.asList(
+                    new Written("Φ.number.div", 2, "div", new Answer("Φ.number.div", 3)),
+                    new Written("Φ.number.div.λ", 2, "λ", new Answer("Φ.number.div.λ", 0))
+                )
+            ),
+            XhtmlMatchers.hasXPath("/line/bit[text='div'][@band='blank'][count(told)=2]")
+        );
+    }
+
+    @Test
+    void marksTheNameAFormationIsBoundToTwice() {
+        MatcherAssert.assertThat(
+            "a formation behind a double arrow must be marked on its name, but it wasnt",
+            PiecesTest.drawn(
+                "  [ü] >> ñame",
+                Collections.singletonList(
+                    new Written("Φ.ñame", 2, "ñame", new Answer("Φ.ñame", 3))
+                )
+            ),
+            XhtmlMatchers.hasXPath("/line/bit[text='ñame'][@band]")
+        );
+    }
+
+    @Test
+    void keepsTheBracketOfAFormationBoundToNoName() {
+        MatcherAssert.assertThat(
+            "a formation with no name must stay marked on its bracket, but it vanished",
+            PiecesTest.drawn(
+                "  seq * > [^ m] >>",
+                Collections.singletonList(
+                    new Written("Φ.f.@.α1", 10, "", new Answer("Φ.f.@.α1.λ", 0))
+                )
+            ),
+            XhtmlMatchers.hasXPath("/line/bit[text='['][@band='blank']")
+        );
+    }
+
+    @Test
     void sharesOneMarkBetweenObjectsWrittenOnce() {
         MatcherAssert.assertThat(
             "a literal and the bytes it carries are one word and must share a mark, but didnt",

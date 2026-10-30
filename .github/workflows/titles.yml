@@ -11,6 +11,9 @@ name: titles
 'on':
   schedule:
     - cron: '0 * * * *'
+permissions:
+  contents: read
+  issues: write
 concurrency:
   group: titles
   cancel-in-progress: false

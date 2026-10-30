@@ -7,11 +7,11 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^ b] > gte
+[^num b] > gte
   or. > @
-    ^.gt
+    num.gt
       b >> value!
-    ^.eq value
+    num.eq value
 
   eq. ++> can-be-greater-than-or-equal-to-a-float-when-positive-infinity
     pinf.gte 42.5

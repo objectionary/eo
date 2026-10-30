@@ -4,6 +4,8 @@
  */
 package org.eolang.inference;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -29,6 +31,13 @@ import java.util.Map;
  * next pass could have answered (#8351). So the name the tables give is asked
  * for last, once the other two have stopped learning, and a site given up on
  * that way is one no filling was ever going to settle.</p>
+ *
+ * <p>Before that, where neither of the first two has anything to say, the arms
+ * every read off a choice is a copy of are asked for, since a call on such a
+ * read fills the voids of its arms and a filling nobody hears of answers
+ * nothing (#8993). They cost what a pass costs, so they are asked for only
+ * here, and every pass after that is told them. Where they add an arm, the
+ * passes go round again before anything is given up on.</p>
  *
  * @since 0.69.0
  * @todo #8274:90min Settle a chain in fewer passes than it has hops.
@@ -77,21 +86,29 @@ final class Settled {
      */
     Map<String, String> from(final Map<String, String> pairs) {
         final Map<String, String> found = new LinkedHashMap<>(pairs);
-        Map<String, String> answers = this.answers(found);
-        while (!answers.isEmpty()) {
+        Map<String, Collection<String>> copied = Collections.emptyMap();
+        boolean learning = true;
+        while (learning) {
+            Map<String, String> answers = this.answers(found, copied);
+            if (answers.isEmpty()) {
+                final Map<String, Collection<String>> wider = this.made.copies(found, copied);
+                if (wider.equals(copied)) {
+                    answers = this.made.guesses(found);
+                    learning = !answers.isEmpty();
+                }
+                copied = wider;
+            }
             found.putAll(answers);
-            answers = this.answers(found);
         }
         return found;
     }
 
-    private Map<String, String> answers(final Map<String, String> pairs) {
-        Map<String, String> found = this.made.answers(pairs);
+    private Map<String, String> answers(
+        final Map<String, String> pairs, final Map<String, Collection<String>> copied
+    ) {
+        Map<String, String> found = this.made.answers(pairs, copied);
         if (found.isEmpty()) {
-            found = this.more.from(pairs);
-        }
-        if (found.isEmpty()) {
-            found = this.made.guesses(pairs);
+            found = this.more.from(pairs, copied);
         }
         return found;
     }

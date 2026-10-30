@@ -6,12 +6,14 @@ package org.eolang.maven;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 import org.cactoos.text.TextOf;
+import org.eolang.cache.Saved;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -55,7 +57,7 @@ final class MjPlaceTest {
         ).toFile().lastModified();
         MatcherAssert.assertThat(
             "PlaceMojo must skip already placed binaries, but it doesn't",
-            new FakeMaven(temp).with("rewriteBinaries", false).withPlacedBinary(
+            new FakeMaven(temp).with("rewrite", false).withPlacedBinary(
                 temp.resolve(this.targetClasses()).resolve(binary)
                 )
             .execute(MjPlace.class)
@@ -86,7 +88,7 @@ final class MjPlaceTest {
 
     @Test
     void placesWithoutBinaries(@Mktmp final Path temp) throws IOException {
-        Files.createDirectories(temp.resolve("target").resolve(MjResolve.DIR));
+        Files.createDirectories(new Seqdir(temp.resolve("target"), 2).dirs().once("resolve"));
         MatcherAssert.assertThat(
             String.format(
                 "PlaceMojo must not place binaries from %s",
@@ -163,7 +165,7 @@ final class MjPlaceTest {
         MatcherAssert.assertThat(
             "PlaceMojo have to place the runtime file, but doesn't",
             new FakeMaven(temp).withHelloWorld()
-                .with("resolveJna", false)
+                .with("jna", false)
                 .execute(new PpPlace())
                 .result()
                 .get(this.targetClasses()),
@@ -177,7 +179,7 @@ final class MjPlaceTest {
             "PlaceMojo have not to place the runtime file, but doesn't",
             new FakeMaven(temp).withHelloWorld()
                 .with("ignoreRuntime", true)
-                .with("resolveJna", false)
+                .with("jna", false)
                 .execute(new PpPlace())
                 .result()
                 .get(this.targetClasses()),
@@ -196,7 +198,7 @@ final class MjPlaceTest {
         MjPlaceTest.saveBinary(temp, updated, binary);
         maven.execute(MjPlace.class).result();
         MatcherAssert.assertThat(
-            "The binary file must be replaced with new content because rewriteBinaries is on by default, but it was not",
+            "The binary file must be replaced with new content because rewrite is on by default, but it was not",
             new TextOf(MjPlaceTest.pathToPlacedBinary(temp, binary)).asString(),
             Matchers.equalTo(updated)
         );
@@ -205,7 +207,7 @@ final class MjPlaceTest {
     @Test
     void doesNotPlaceAgainIfNotUnplacedAndRewriteBinariesIsOff(@Mktmp final Path temp)
         throws Exception {
-        final FakeMaven maven = new FakeMaven(temp).with("rewriteBinaries", false);
+        final FakeMaven maven = new FakeMaven(temp).with("rewrite", false);
         final String binary = "some.class";
         final String old = "some old content";
         MjPlaceTest.saveBinary(temp, old, binary);
@@ -213,7 +215,7 @@ final class MjPlaceTest {
         MjPlaceTest.saveBinary(temp, "new content", binary);
         maven.execute(MjPlace.class).result();
         MatcherAssert.assertThat(
-            "The binary file must not be replaced with new content because rewriteBinaries is off, but it was",
+            "The binary file must not be replaced with new content because rewrite is off, but it was",
             new TextOf(MjPlaceTest.pathToPlacedBinary(temp, binary)).asString(),
             Matchers.equalTo(old)
         );
@@ -251,7 +253,7 @@ final class MjPlaceTest {
     ) throws IOException {
         new Saved(
             content,
-            temp.resolve("target").resolve(MjResolve.DIR).resolve(
+            new Seqdir(temp.resolve("target"), 2).dirs().once("resolve").resolve(
                 Paths.get(String.format("%s/%s", "foo/hello/-/0.1", binary))
             )
         ).value();

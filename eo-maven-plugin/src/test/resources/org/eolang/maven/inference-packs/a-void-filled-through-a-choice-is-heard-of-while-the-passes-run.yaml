@@ -1,0 +1,45 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# `(num yes).wide.div (num no)` in `app` puts a `num` into the `b` of
+# `big.div`, through the first arm of the choice `wide` comes back as, and
+# nothing else in the program puts anything there. So `b.wide` in the body of
+# `div` is the `wide` of that `num`. The filling used to be worked out once the
+# passes had stopped, for the rows and the census alone, so no pass heard of
+# it, and `b.wide` was left rooted at a void the program does fill (#8993).
+eo:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  num.eo: |
+    [flag] > num
+      [^ fail] > wide
+        ^.flag.pick > @
+          big ^
+          fail
+  big.eo: |
+    [v] > big
+      [^ b fail] > div
+        b.wide > @
+  app.eo: |
+    [] > app
+      (num yes).wide.div (num no) > @
+  other.eo: |
+    [] > other
+      num no > @
+links:
+  - "/links/type[@id='Φ.big.div.φ']/ref[@loc='Φ.num.wide']"

@@ -4,8 +4,10 @@
  */
 package org.eolang.maven;
 
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -25,8 +27,8 @@ import org.apache.maven.plugins.annotations.Parameter;
  * and the number of those is written to the log. With {@link #rigid} set,
  * the build fails when there is one.</p>
  *
- * <p>The XMIR goes to {@link Dealphaing#DIR}, and {@link MjTranspile} reads it
- * from there.</p>
+ * <p>The XMIR goes to a directory {@code Seqdir} numbers "dealpha", and
+ * {@link MjTranspile} reads it from there.</p>
  *
  * @since 0.69.0
  */
@@ -38,14 +40,11 @@ import org.apache.maven.plugins.annotations.Parameter;
 public final class MjDealpha extends MjSafe {
 
     /**
-     * The directory with the tables that {@link MjInference} writes.
+     * The directory with the tables that {@link MjInference} writes,
+     * falling back to a directory {@code Seqdir} numbers "inference"
+     * when unset.
      */
-    @Parameter(
-        alias = "inferenceDir",
-        property = "eo.inferenceDir",
-        required = true,
-        defaultValue = "${project.build.directory}/eo/6-inference"
-    )
+    @Parameter(alias = "inferenceDir", property = "eo.inferenceDir")
     private File tables;
 
     /**
@@ -68,14 +67,18 @@ public final class MjDealpha extends MjSafe {
 
     @Override
     void exec() throws IOException {
+        final Path inference;
+        if (this.tables == null) {
+            inference = new Seqdir(this.target.toPath(), 2).dirs().once("inference");
+        } else {
+            inference = this.tables.toPath();
+        }
         try (TjsForeign tojos = this.tojos()) {
-            new Timed(
-                new Dealphaing(
-                    tojos.standalone(),
-                    new Landings(this.tables.toPath().resolve("links.xml")),
-                    this.target.toPath().resolve(Dealphaing.DIR),
-                    this.rigid
-                )
+            new Dealphaing(
+                tojos.standalone(),
+                new Landings(inference.resolve("links.xml")),
+                this.target.toPath(),
+                this.rigid
             ).exec();
         }
     }

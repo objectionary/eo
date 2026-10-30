@@ -1,4 +1,4 @@
-# Natural logarithm of `num` with base `e` as `org.eolang.number`. The argument
+# Natural logarithm of `num` with base `e` as `number`. The argument
 # is folded into [1/e, e] by peeling powers of `e` that double at each step
 # (e, e^2, e^4, ..., e^512), so the depth is bounded regardless of how large
 # the argument is, then the remainder is summed with the area-hyperbolic-
@@ -13,7 +13,7 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^] > ln
+[^num] > ln
   n.is-nan.if > @
     nan
     if.
@@ -102,7 +102,7 @@
           number prev
       ^.step > prev!
         level.minus 1
-  number ^.as-bytes > n
+  number num.as-bytes > n
 
   -2.2.ln.is-nan ++> can-return-nan-for-a-logarithm-of-a-negative-float
 

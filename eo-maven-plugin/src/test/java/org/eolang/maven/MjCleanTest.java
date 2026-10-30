@@ -90,7 +90,7 @@ final class MjCleanTest {
             .with("classes", temp.resolve("out").toFile())
             .with("placed", temp.resolve("list").toFile())
             .with("cache", temp.resolve("cache/parsed").toFile())
-            .with("skipZeroVersions", true).with(
+            .with("zeros", true).with(
                 "central",
                 (BiConsumer<Dependency, Path>) (dependency, path) -> {
                     assert dependency != null;

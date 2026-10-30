@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" exclude-result-prefixes="eo" id="dataized-to-const" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" exclude-result-prefixes="eo" id="dataized-to-const" version="3.0">
   <!--
   Performs the reverse operation of "/org/eolang/parser/const-to-dataized.xsl"
   -->
@@ -14,7 +14,16 @@
     <xsl:choose>
       <xsl:when test="exists($argument)">
         <o>
-          <xsl:apply-templates select="$argument/@*[name()!='as']"/>
+          <!--
+          The readable handle of a const (`foo 42 &gt;&gt;! saved`) stays only
+          while the const is still that handle, under its cactus name. Once
+          "inline-cactoos" folded it into its only reader, a named binding such
+          as `saved &gt; @`, the const takes the reader's name, and keeping the
+          handle would print `foo 42 &gt;&gt; saved!` in place of
+          `foo 42 &gt; @!`, which loses the reader's name (#9163).
+          -->
+          <xsl:variable name="named" select="@name and @name != '' and not(starts-with(@name, concat('a', $eo:cactoos)))"/>
+          <xsl:apply-templates select="$argument/@*[name()!='as' and not($named and name()='local')]"/>
           <!--
           Named const (a > b!) keeps its name; an anonymous inline const
           argument (42.plus a!) folds in without one and reads as `a!`.

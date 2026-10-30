@@ -14,11 +14,12 @@
       string uri.as-bytes
     posix
       string uri.as-bytes
-  [^ sys uri] > impl
+  [^location sys uri] > impl
     uri > @
     directory > as-dir
       file uri
     file uri > as-file
+    basename >> base!
     [^] > basename
       string > @
         if.
@@ -104,15 +105,14 @@
               text.last-index-of "." >> index!
               text.length.minus
                 number index
-      string > text
-        ^.basename >> base!
+      string base > text
     and. > is-absolute
       driveless.size.gt 0
       eq.
         driveless.slice 0 1
         separator
     [^] > normalized
-      ^.^.impl > @
+      ^.location.impl > @
         ^.sys
         if.
           normalized.eq
@@ -122,6 +122,10 @@
             normalized.size.eq 0
             "."
             string normalized
+      if. > closing
+        trailing.and rooted.not
+        ^.separator
+        --
       concat. > core!
         ^.drive.concat
           ^.is-absolute.if
@@ -179,16 +183,8 @@
                   ^.drive.size.gt 0
                   ^.is-absolute.not
               core.concat
-                ".".concat
-                  if.
-                    trailing.and rooted.not
-                    ^.separator
-                    --
-              core.concat
-                if.
-                  trailing.and rooted.not
-                  ^.separator
-                  --
+                ".".concat closing
+              core.concat closing
       and. > rooted
         core.size.gt 0
         eq.
@@ -199,14 +195,13 @@
       and. > trailing
         ubts.size.gt 0
         eq.
-          slice.
-            ^.uri >> ubts!
+          ubts.slice
             ubts.size.plus -1
             1
           ^.separator
     [^ other] > resolved
       normalized. > @
-        ^.^.impl
+        ^.location.impl
           ^.sys
           string
             if.
@@ -227,7 +222,10 @@
                     ^.unc.if
                       ^.share.concat valid
                       ^.drive.concat valid
-                    concat. (^.uri.concat ^.separator) valid
+                    if.
+                      ^.uri.size.eq 0
+                      valid
+                      concat. (^.uri.concat ^.separator) valid
       string > valid!
         as-bytes.
           ^.sys.sanitized other
@@ -257,22 +255,25 @@
         tail
     string > [^] > trimmed
       ^.stripped ^.uri
+    uri >> ubts!
     and. > unc
       separator.eq "\\"
       and.
         driveless.size.gt 1
         driveless.starts-with
           separator.concat separator
-  [^ paths] > joined
+  [^location paths] > joined
     normalized. > @
       os.is-windows.if
-        ^.win32 jpath
-        ^.posix jpath
+        location.win32 jpath
+        location.posix jpath
     string > jpath
       as-bytes.
-        ^.separator.joined paths
-  [^ uri] > posix
-    ^.impl > @
+        location.separator.joined
+          paths.filtered
+            p.size.gt 0 > [p]
+  [^location uri] > posix
+    location.impl > @
       sys
       uri
     "/" > separator
@@ -283,8 +284,8 @@
   os.is-windows.if > separator
     win32.separator
     posix.separator
-  [^ uri] > win32
-    ^.impl > @
+  [^location uri] > win32
+    location.impl > @
       sys
       sys.sanitized uri
     "\\" > separator
@@ -348,6 +349,16 @@
     os.is-windows.if
       path.win32.separator
       path.posix.separator
+
+  eq. ++> can-join-a-path-skipping-an-empty-first-element
+    path.joined
+      * "" "файл"
+    "файл"
+
+  eq. ++> can-join-only-empty-elements-into-the-current-directory
+    path.joined
+      * "" ""
+    "."
 
   eq. ++> can-normalize-a-device-namespace-win32-path-reducing-a-child-directory
     normalized.
@@ -633,6 +644,18 @@
       path.posix "/var/temp"
       "/www/html"
     "/www/html"
+
+  eq. ++> can-resolve-an-empty-posix-path-against-a-relative-path
+    resolved.
+      path.posix ""
+      "каталог/файл"
+    "каталог/файл"
+
+  eq. ++> can-resolve-an-empty-win32-path-against-a-relative-path
+    resolved.
+      path.win32 ""
+      "каталог\\файл"
+    "каталог\\файл"
 
   eq. ++> can-return-a-basename-with-a-backslash-on-posix
     basename.

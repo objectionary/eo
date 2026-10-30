@@ -7,6 +7,8 @@ name: telegram
   push:
     tags:
       - '*'
+permissions:
+  contents: read
 concurrency:
   group: telegram-${{ github.ref }}
   cancel-in-progress: true
@@ -24,7 +26,7 @@ jobs:
       - run: sudo apt-get update --yes --fix-missing && sudo apt-get install --yes jq bc
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 4.0.7
+          ruby-version: 4.0.9
           bundler-cache: true
       - run: gem install hoc
       - env:
