@@ -254,9 +254,10 @@ public final class Lowering {
         }
         Logger.info(
             this,
-            "Phino %s is found at '%s', though nothing is lowered yet",
+            "Phino %s is found at '%s', lowering %d sources",
             pinned,
-            this.phino
+            this.phino,
+            this.sources.size()
         );
         new IoCheckedProc<>(
             new Procs<>(
