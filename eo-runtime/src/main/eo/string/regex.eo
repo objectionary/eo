@@ -73,32 +73,27 @@
 # objectionary/lints#1301 counts a hop through the receiver as reaching
 # outward even when the head declares a void of the same name.
 #
-# @todo #9650:30min Remove `+unlint too-deep-object:687-688` from the
+# @todo #9650:30min Remove `+unlint too-deep-object:681-682` from the
 #  metas below. It hides how deep `run` in `member` nests the lookup of the
 #  case-folded character, 14 levels where the lint allows 12. Move the folding
 #  into objects of its own, so that `run` nests no deeper.
 #
-# @todo #9650:30min Remove `+unlint too-deep-object:1252` from the
-#  metas below. It hides how deep `piece` in `pattern` nests the cut of a
-#  literal before its quantifier, 13 levels where the lint allows 12. Move the
-#  cut and its slices into objects of their own, so `piece` nests no deeper.
-#
-# @todo #9650:30min Remove `+unlint too-deep-object:1373-1398` from the
+# @todo #9650:30min Remove `+unlint too-deep-object:1372-1397` from the
 #  metas below. It hides how deep `atom` in `pattern` nests its chain of `if.`
 #  over the next byte, up to 18 levels where the lint allows 12. Split the
 #  chain into objects of its own, so that `atom` nests no deeper.
 #
-# @todo #9650:30min Remove `+unlint too-deep-object:1571-1573` from the
+# @todo #9650:30min Remove `+unlint too-deep-object:1570-1572` from the
 #  metas below. It hides how deep `entry` in `pattern` nests the check of a
 #  character range, 13 levels where the lint allows 12. Move that check into
 #  an object of its own, so that `entry` nests no deeper.
 #
-# @todo #9650:30min Remove `+unlint too-deep-object:1750-1761` from the
+# @todo #9650:30min Remove `+unlint too-deep-object:1749-1760` from the
 #  metas below. It hides how deep `refused` in `pattern` nests its chain of
 #  `if.` over the escaped byte, up to 15 levels where the lint allows 12. Split
 #  the chain into objects of its own, so that `refused` nests no deeper.
 #
-# @todo #9650:30min Remove `+unlint too-deep-object:1940-1944` from the
+# @todo #9650:30min Remove `+unlint too-deep-object:1939-1943` from the
 #  metas below. It hides how deep `braces` in `pattern` nests the parsing of a
 #  counted closure, up to 14 levels where the lint allows 12. Split the parsing
 #  into objects of its own, so that `braces` nests no deeper.
@@ -109,12 +104,11 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-attachment
-+unlint too-deep-object:1252
-+unlint too-deep-object:1373-1398
-+unlint too-deep-object:1571-1573
-+unlint too-deep-object:1750-1761
-+unlint too-deep-object:1940-1944
-+unlint too-deep-object:687-688
++unlint too-deep-object:1372-1397
++unlint too-deep-object:1570-1572
++unlint too-deep-object:1749-1760
++unlint too-deep-object:1939-1943
++unlint too-deep-object:681-682
 +version 0.0.0
 
 [^text] > regex
@@ -1235,9 +1229,10 @@
                     back (a.text.size.plus -1) a.text >> cut!
                   0
                 sequence
-                  plain
+                  clipped
                     a.mode
-                    a.text.slice 0 (number cut)
+                    a.text
+                    number cut
                   repeat
                     if. >> greed
                       g.eq 3F-
@@ -1245,11 +1240,7 @@
                       if. (g.eq 2B-) 2 0
                     b.least
                     b.most
-                    plain
-                      a.mode
-                      a.text.slice
-                        number cut
-                        a.text.size.minus (number cut)
+                    remnant a.mode a.text (number cut)
                 repeat greed b.least b.most a.node
               --
             b
@@ -1292,6 +1283,14 @@
           text
           flagged 10- mode
         literal text
+    plain > [^ mode text cut] >> clipped
+      mode
+      text.slice 0 cut
+    plain > [^ mode text cut] >> remnant
+      mode
+      text.slice
+        cut
+        text.size.minus cut
     [^ text unicode] >> spelled
       if. > @
         text.size.gt
