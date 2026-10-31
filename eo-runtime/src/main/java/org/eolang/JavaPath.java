@@ -19,7 +19,13 @@ import java.util.regex.Pattern;
  * - "Φ.io.stdout$bytes" -> "org.eolang.EO_io.EOstdout$EObytes"
  * Every segment is escaped the way {@code eo:clean} escapes it in
  * {@code _java-names.xsl}, which the transpiler uses to name the class it
- * writes, so that a name the transpiler accepted is found at runtime.</p>
+ * writes, so that a name the transpiler accepted is found at runtime. The
+ * dollar is escaped ahead of everything else, so that an escape is never
+ * read as a dollar the name itself carried; the dash then becomes an
+ * underscore and the underscore an escape of its own, which no dash can
+ * produce, so that "a-_b" and "a_-b" stay two names; and every character
+ * Java forbids in an identifier becomes an escape of six digits, not four,
+ * since four drop everything above the sixteenth bit.</p>
  *
  * @since 0.29
  */
@@ -70,26 +76,15 @@ final class JavaPath {
             } else {
                 prefix = "EO_";
             }
-            out.append('.').append(prefix).append(this.clean(parts[idx]));
+            out.append('.').append(prefix).append(JavaPath.clean(parts[idx]));
         }
         return out.toString();
     }
 
-    /**
-     * The Java identifier of one segment, escaped the way {@code eo:clean}
-     * escapes it in {@code _java-names.xsl}. The dollar is escaped ahead of
-     * everything else, so that an escape is never read as a dollar the name
-     * itself carried. The dash becomes an underscore and the underscore an
-     * escape of its own, which no dash can produce, so that "a-_b" and
-     * "a_-b" stay two names.
-     *
-     * @param name The segment of the object name
-     * @return Java identifier
-     */
-    private String clean(final String name) {
+    private static String clean(final String name) {
         final String swapped = name
             .replace("$", "$EO")
-            .replace("_", this.escaped('_'))
+            .replace("_", JavaPath.escaped('_'))
             .replace('-', '_')
             .replace('@', 'φ')
             .replace("α", "_");
@@ -100,21 +95,14 @@ final class JavaPath {
             if (Character.isLetterOrDigit(code) || code == '_' || code == '$') {
                 out.appendCodePoint(code);
             } else {
-                out.append(this.escaped(code));
+                out.append(JavaPath.escaped(code));
             }
             idx += Character.charCount(code);
         }
         return out.toString();
     }
 
-    /**
-     * The escape of a code point Java forbids in an identifier. Six digits,
-     * not four, since four drop everything above the sixteenth bit.
-     *
-     * @param code The code point
-     * @return Escape of it
-     */
-    private String escaped(final int code) {
+    private static String escaped(final int code) {
         return String.format("$u%06X", code);
     }
 }
