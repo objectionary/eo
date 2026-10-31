@@ -6,16 +6,6 @@
 # past the largest `i64` and has no answer here. The magnitude of the
 # dividend is taken once, since the restoring loop reads one bit of it
 # per step and negating a negative dividend costs a full carry chain.
-#
-# @todo #8385:60min Make an i64 division affordable. Starting the loop at the
-#  highest bit of the dividend brought `42 / 10` from 234MB to 85MB, but what
-#  is left is not in this loop. Measured on their own, `i64.plus` allocates
-#  4MB while `i64.neg` allocates 168MB, and `minus`, `gt` and `lt` cost
-#  170-220MB each because they are built on `neg`. A division of small
-#  numbers still costs tens of megabytes, so `1.5.as-fixed 2` still cannot
-#  run under a 300MB heap. Until that is cheaper, the tests below stay over
-#  the one second that `Deadline` allows and are recorded as skipped instead
-#  of being run.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
