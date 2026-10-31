@@ -33,14 +33,9 @@ final class Emissions {
      * What the parser says when the identity object is applied to
      * arguments (R-3.16.1). Shared by every position an application may
      * be written in — a line head ({@link LnApplication}), a paren
-     * group, an inline φ, and the φ of an only-phi line — so the writer
-     * gets the same instruction wherever the glyph carries arguments.
+     * group, an inline φ, and the φ of an only-phi line.
      */
-    static final String NO_IDENTITY_ARGS = String.join(
-        " ",
-        "the identity object takes no horizontal arguments;",
-        "put the argument on a deeper-indent line"
-    );
+    static final String NO_IDENTITY_ARGS = "the identity object takes no arguments";
 
     /**
      * The void the identity object {@code I} binds and decorates.
