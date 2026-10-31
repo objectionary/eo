@@ -1,8 +1,19 @@
 # Raises the number to the power of `b` as `number`. A zero exponent
-# gives one, an integer exponent is expanded by exponentiation-by-squaring so
-# integer results stay exact, and a fractional exponent of a positive base is
-# taken as e raised to `b` times the natural logarithm of the base. Zeros,
-# infinities and nan follow the same IEEE rules that Math.pow obeys.
+# gives one. An integer exponent is expanded by exponentiation-by-squaring
+# with every product carried in two doubles, `wide` being the power so far:
+# `halved` splits a factor by Dekker's method, as `sine` does, so that
+# `joined` keeps what each product drops, and the answer is rounded once.
+# A negative exponent takes the `reciprocal` of the pair. Where the `answer`
+# overflows, comes to nan or to zero, the squaring is done in single doubles.
+# A fractional exponent of a positive base is taken as e raised to `b` times
+# the natural logarithm of the base. Zeros, infinities and nan follow the
+# same IEEE rules that Math.pow obeys.
+#
+# @todo #9030:30min Keep the pair for powers above about 1.3e300. There
+#  `halved` overflows multiplying a factor by 134217729, and the power falls
+#  back to single doubles: `10.power 305` is 9.999999999999995E304. Splitting
+#  such a factor after dividing it by two to the 28th, and multiplying the
+#  halves back, keeps the split exact.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -41,21 +52,24 @@
                   pinf
               expo.is-integer.if
                 if.
-                  expo.lt 0
-                  [^ factor n] >> ipow
-                    if. > @
-                      n.eq 0
-                      1
-                      if.
-                        is-integer. (n.div 2)
-                        times.
-                          number
-                            ^.ipow factor (n.div 2) >> half!
-                          number half
-                        factor.times
-                          ^.ipow factor (n.minus 1)
-                  | (1.div base) expo.abs
-                  ipow base expo.abs
+                  answer.is-finite.and (answer.eq 0).not
+                  answer
+                  if.
+                    expo.lt 0
+                    [^ factor n] >> ipow
+                      if. > @
+                        n.eq 0
+                        1
+                        if.
+                          is-integer. (n.div 2)
+                          times.
+                            number
+                              ^.ipow factor (n.div 2) >> half!
+                            number half
+                          factor.times
+                            ^.ipow factor (n.minus 1)
+                    | (1.div base) expo.abs
+                    ipow base expo.abs
                 if.
                   base.gt 0
                   [^ y] >> expon
@@ -115,6 +129,83 @@
                 base.abs.eq 1
                 nan
                 pinf
+  if. > answer
+    expo.lt 0
+    reciprocal
+    high
+  joined > check
+    paired
+      rough
+      0
+    exact
+  wide > exact!
+    base
+    expo.abs
+  [^ a] > halved
+    a.minus top > foot
+    a.times 134217729 > spread
+    spread.minus > top
+      spread.minus a
+  number > high
+    exact.slice
+      0
+      8
+  [^ x y] > joined
+    ^.paired > @
+      hi
+      lo
+    product.plus slip > hi
+    ^.halved xh > left
+    slip.minus > lo
+      hi.minus product
+    xh.times yh > product
+    ^.halved yh > right
+    plus. > slip
+      plus.
+        plus.
+          plus.
+            minus.
+              left.top.times right.top
+              product
+            left.top.times right.foot
+          left.foot.times right.top
+        left.foot.times right.foot
+      plus.
+        xh.times yl
+        xl.times yh
+    number > xh
+      x.slice 0 8
+    number > xl
+      x.slice 8 8
+    number > yh
+      y.slice 0 8
+    number > yl
+      y.slice 8 8
+  hi.as-bytes.concat lo.as-bytes > [hi lo] > paired
+  rough.plus > reciprocal
+    div.
+      minus.
+        1.minus check.hi
+        check.lo
+      high
+  1.div high > rough
+  [^ factor n] > wide
+    if. > @
+      n.eq 0
+      ^.paired 1 0
+      if.
+        is-integer.
+          n.div 2
+        ^.joined half half
+        ^.joined
+          ^.paired factor 0
+          rest
+    ^.wide > half!
+      factor
+      n.div 2
+    ^.wide > rest!
+      factor
+      n.minus 1
 
   gt. ++> can-avoid-underflow-for-a-negative-exponent-that-overflows-positive
     10.power -315
@@ -128,6 +219,15 @@
     3.power 2
     9
 
+  eq. ++> can-keep-the-sign-of-a-negative-base-that-underflows
+    as-bytes.
+      -1.0e-200.power 3
+    80-00-00-00-00-00-00-00
+
+  eq. ++> can-overflow-a-tiny-float-raised-to-a-negative-integer
+    1.0e-200.power -2
+    pinf
+
   eq. ++> can-raise-a-float-to-zero
     42.5.power 0
     1
@@ -138,6 +238,14 @@
         0.5.power 1.5
         0.35355339059327373
     1.0e-9
+
+  eq. ++> can-raise-a-negative-float-to-a-large-odd-integer
+    -2.5264073185977667.power 353
+    -1.2125226888853189e142
+
+  eq. ++> can-raise-a-negative-float-to-a-negative-odd-integer
+    -1.1.power -359
+    -1.3804669964634422e-15
 
   eq. ++> can-raise-a-negative-float-to-negative-infinity
     -42.5.power ninf
@@ -154,6 +262,18 @@
   eq. ++> can-raise-a-negative-integer-to-positive-infinity
     -10.power pinf
     pinf
+
+  eq. ++> can-raise-a-number-near-one-to-a-large-integer
+    1.0000001.power 10000000
+    2.7182816941320818
+
+  eq. ++> can-raise-a-number-near-one-to-a-large-negative-integer
+    0.9997391950564872.power -764148
+    3.6592231555530986e86
+
+  eq. ++> can-raise-a-positive-float-to-a-negative-integer
+    1.2.power -3
+    0.5787037037037037
 
   eq. ++> can-raise-a-positive-float-to-a-positive-integer
     3.5.power 4
@@ -178,6 +298,10 @@
   eq. ++> can-raise-a-positive-integer-to-positive-infinity
     42.power pinf
     pinf
+
+  eq. ++> can-raise-a-tenth-to-a-large-integer
+    0.1.power 289
+    1.0000000000000161e-289
 
   eq. ++> can-raise-a-zero-base
     0.power 145
@@ -269,6 +393,14 @@
     pinf.power pinf
     pinf
 
+  eq. ++> can-raise-ten-to-a-large-negative-integer
+    10.power -292
+    1.0e-292
+
+  eq. ++> can-raise-ten-to-minus-five
+    10.power -5
+    1.0e-5
+
   eq. ++> can-raise-three-to-two
     3.power 2
     9
@@ -295,6 +427,10 @@
   eq. ++> can-raise-two-to-minus-one
     2.power -1
     0.5
+
+  eq. ++> can-raise-two-to-minus-one-thousand
+    2.power -1000
+    9.332636185032189e-302
 
   eq. ++> can-raise-two-to-minus-three
     2.power -3
