@@ -62,38 +62,27 @@
 # where its bytes end, so `next` neither rescans the text nor parses the
 # pattern again.
 #
-# @todo #7485:30min Stop skipping 'redundant-attachment' here. It complains
-# about three formations, the fallback of `compiled`, the continuation
-# `sought` hands to `run` and the one the parser builds for `\z`, and reads
-# their `>>` names as unreferenced. At least the one in `sought` does reach
-# out of itself, through the receiver its own head declares, and the lint
-# misses it, because a void of the same name masks the reference. Dropping
-# the names breaks the engine and everything built on it, `string.scanf`,
-# `string.as-number` and `path` among them. Remove this directive once
-# objectionary/lints#1301 counts a hop through the receiver as reaching
-# outward even when the head declares a void of the same name.
-#
-# @todo #9650:30min Remove `+unlint too-deep-object:681-682` from the
+# @todo #9650:30min Remove `+unlint too-deep-object:669-670` from the
 #  metas below. It hides how deep `run` in `member` nests the lookup of the
 #  case-folded character, 14 levels where the lint allows 12. Move the folding
 #  into objects of its own, so that `run` nests no deeper.
 #
-# @todo #9650:30min Remove `+unlint too-deep-object:1372-1397` from the
+# @todo #9650:30min Remove `+unlint too-deep-object:1360-1385` from the
 #  metas below. It hides how deep `atom` in `pattern` nests its chain of `if.`
 #  over the next byte, up to 18 levels where the lint allows 12. Split the
 #  chain into objects of its own, so that `atom` nests no deeper.
 #
-# @todo #9650:30min Remove `+unlint too-deep-object:1570-1572` from the
+# @todo #9650:30min Remove `+unlint too-deep-object:1558-1560` from the
 #  metas below. It hides how deep `entry` in `pattern` nests the check of a
 #  character range, 13 levels where the lint allows 12. Move that check into
 #  an object of its own, so that `entry` nests no deeper.
 #
-# @todo #9650:30min Remove `+unlint too-deep-object:1749-1760` from the
+# @todo #9650:30min Remove `+unlint too-deep-object:1737-1748` from the
 #  metas below. It hides how deep `refused` in `pattern` nests its chain of
 #  `if.` over the escaped byte, up to 15 levels where the lint allows 12. Split
 #  the chain into objects of its own, so that `refused` nests no deeper.
 #
-# @todo #9650:30min Remove `+unlint too-deep-object:1939-1943` from the
+# @todo #9650:30min Remove `+unlint too-deep-object:1927-1931` from the
 #  metas below. It hides how deep `braces` in `pattern` nests the parsing of a
 #  counted closure, up to 14 levels where the lint allows 12. Split the parsing
 #  into objects of its own, so that `braces` nests no deeper.
@@ -103,12 +92,11 @@
 +package string
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-attachment
-+unlint too-deep-object:1372-1397
-+unlint too-deep-object:1570-1572
-+unlint too-deep-object:1749-1760
-+unlint too-deep-object:1939-1943
-+unlint too-deep-object:681-682
++unlint too-deep-object:1360-1385
++unlint too-deep-object:1558-1560
++unlint too-deep-object:1737-1748
++unlint too-deep-object:1927-1931
++unlint too-deep-object:669-670
 +version 0.0.0
 
 [^text] > regex
