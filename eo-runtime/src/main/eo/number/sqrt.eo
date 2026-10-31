@@ -40,8 +40,7 @@
   if. > arg
     num.as-bytes.size.eq 8
     number num.as-bytes
-    T
-      "the 'ρ' attribute must be a number"
+    T "the 'ρ' attribute must be a number"
 
   lt. ++> can-approximate-a-square-root-of-four
     abs.

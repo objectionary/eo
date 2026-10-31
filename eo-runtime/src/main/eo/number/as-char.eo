@@ -38,8 +38,7 @@
   if. > arg
     num.as-bytes.size.eq 8
     number num.as-bytes
-    T
-      "the 'ρ' attribute must be a number"
+    T "the 'ρ' attribute must be a number"
 
   eq. ++> can-round-trip-through-as-ascii
     "!"
@@ -69,10 +68,10 @@
     "0"
     string 48.as-char
 
+  128.as-char --> stops-on-a-code-past-the-ascii-range
+
   as-char. --> stops-on-a-code-that-is-not-a-number
     number "abc"
-
-  128.as-char --> stops-on-a-code-past-the-ascii-range
 
   3.5.as-char --> stops-on-a-fractional-code
 

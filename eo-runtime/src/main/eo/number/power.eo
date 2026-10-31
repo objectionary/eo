@@ -121,8 +121,7 @@
   if. > expo
     b.as-bytes.size.eq 8
     number b.as-bytes
-    T
-      "the 'b' attribute must be a number"
+    T "the 'b' attribute must be a number"
 
   gt. ++> can-avoid-underflow-for-a-negative-exponent-that-overflows-positive
     10.power -315
