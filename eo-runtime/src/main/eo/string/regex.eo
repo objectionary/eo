@@ -2516,6 +2516,11 @@
       regex.pattern "recovered".as-bytes -- > [message]
     "recovered"
 
+  matches. ++> can-recover-from-a-class-as-the-end-of-a-range
+    "/[a-\\d]/".regex.compile
+      regex.pattern "recovered".as-bytes -- > [message]
+    "recovered"
+
   matches. ++> can-recover-from-a-control-escape
     "/\\cA/".regex.compile
       regex.pattern "recovered".as-bytes -- > [message]
