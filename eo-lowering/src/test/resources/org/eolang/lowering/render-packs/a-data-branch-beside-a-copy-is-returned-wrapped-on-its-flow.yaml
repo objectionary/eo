@@ -106,7 +106,7 @@ java: |
       @Override
       public Phi lambda() {
           if (this.𝜎133()[0] == -1) {
-              return new Data.ToPhi(java.nio.ByteBuffer.wrap(this.𝜎134()).getDouble());
+              return new Data.ToPhi(new Dataized(new Data.ToPhi(this.𝜎134())).asNumber());
           } else {
               return this.𝜎135();
           }
@@ -121,7 +121,7 @@ java: |
       }
 
       private byte[] 𝜎134() {
-          return java.nio.ByteBuffer.allocate(8).putDouble(java.nio.ByteBuffer.wrap(this.𝜎53()).getDouble() + 1.0d).array();
+          return java.nio.ByteBuffer.allocate(8).putDouble(new Dataized(new Data.ToPhi(this.𝜎53())).asNumber() + 1.0d).array();
       }
 
       private Phi 𝜎135() {
