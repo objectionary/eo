@@ -28,7 +28,8 @@
   <xsl:function name="eo:hidden" as="element(o)?">
     <xsl:param name="wrapper" as="element(o)"/>
     <xsl:variable name="read" select="$wrapper/o[1]/o[1]"/>
-    <xsl:sequence select="$wrapper/../o[$wrapper/@name and @name and not(@base) and @line = $wrapper/@line and @pos = $wrapper/@pos and starts-with(@name, concat($wrapper/@name, '-')) and substring-after(@name, concat($wrapper/@name, '-')) castable as xs:integer and exists($read) and empty($read/node()) and tokenize($read/@base, '\.')[last()] = @name and count(key('reader', @name)) = 1][1]"/>
+    <xsl:variable name="prefix" select="concat($wrapper/@name, '-')"/>
+    <xsl:sequence select="$wrapper/../o[$wrapper/@name and @name and not(@base) and @line = $wrapper/@line and @pos = $wrapper/@pos and starts-with(@name, $prefix) and substring-after(@name, $prefix) castable as xs:integer and exists($read) and empty($read/node()) and tokenize($read/@base, '\.')[last()] = @name and count(key('reader', @name)) = 1][1]"/>
   </xsl:function>
   <xsl:template match="o[@base='.as-bytes' and o[position()=1 and @base='Φ.dataized']]">
     <xsl:variable name="hidden" select="eo:hidden(.)"/>
