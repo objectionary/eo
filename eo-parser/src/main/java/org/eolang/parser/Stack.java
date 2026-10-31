@@ -46,6 +46,15 @@ final class Stack {
     private final List<Level> levels;
 
     /**
+     * How many dispatch hops the chain standing on the top entry holds
+     * — the ones the line that opened the entry spelled on itself, plus
+     * one for every {@code .method} continuation line that followed
+     * (R-3.5.3c). A chain ends where the top entry does, so a push, a
+     * replace and a pop all start the count again.
+     */
+    private int hops;
+
+    /**
      * Close-time check hook, invoked whenever a level is popped or
      * replaced. Injected once at construction so per-call wiring stays
      * out of the API.
@@ -93,6 +102,7 @@ final class Stack {
      */
     Stack(final Closer closer, final Opener opener) {
         this.levels = new ArrayList<>(8);
+        this.hops = 0;
         this.closer = closer;
         this.opener = opener;
         this.bottom = new Level(0, 0, Kind.TOP_LEVEL, Openness.OPEN, Kind.TOP_LEVEL, false);
@@ -114,6 +124,28 @@ final class Stack {
      */
     int depth() {
         return this.levels.size();
+    }
+
+    /**
+     * Count dispatch hops into the chain standing on the top entry, and
+     * refuse the line that takes it past {@link #DEEPEST} hops
+     * (R-3.5.3c). Every hop becomes one more level of the emitted tree,
+     * however the chain is spelled, so a chain written as {@code .method}
+     * continuation lines reaches the same limit as one written on a
+     * single line (#9301).
+     *
+     * @param more How many hops the line just read brings
+     * @param line Line to blame
+     * @param pos Position to blame
+     */
+    void hop(final int more, final int line, final int pos) {
+        if (this.hops + more > Stack.DEEPEST) {
+            throw new ParseError(
+                line, pos,
+                String.format("object nested deeper than %d levels", Stack.DEEPEST)
+            );
+        }
+        this.hops = this.hops + more;
     }
 
     /**
@@ -231,6 +263,7 @@ final class Stack {
                 String.format("object nested deeper than %d levels", Stack.DEEPEST)
             );
         }
+        this.hops = 0;
         final Kind parent;
         final boolean patom;
         final boolean argues;
@@ -287,8 +320,11 @@ final class Stack {
             stepped = true;
             this.closer.onClose(last, true);
         }
-        if (stepped && !this.levels.isEmpty() && this.top().openness() == Openness.OPEN) {
-            this.top().close(Openness.VCOMPLETED);
+        if (stepped) {
+            this.hops = 0;
+            if (!this.levels.isEmpty() && this.top().openness() == Openness.OPEN) {
+                this.top().close(Openness.VCOMPLETED);
+            }
         }
     }
 
@@ -307,6 +343,7 @@ final class Stack {
             throw new IllegalStateException("cannot replace top of empty stack");
         }
         final Level old = this.levels.remove(this.levels.size() - 1);
+        this.hops = 0;
         this.closer.onClose(old, true);
         final int indent = old.indent();
         final Kind parent;
