@@ -162,9 +162,7 @@ final class MjTranspileTest {
                 "    42 > @"
             )
         ).with("tracking", true);
-        maven.execute(MjParse.class)
-            .execute(MjInference.class)
-            .execute(MjTranspile.class);
+        maven.execute(MjParse.class).execute(MjInference.class).execute(MjTranspile.class);
         MatcherAssert.assertThat(
             "a formation that takes nothing and copies nothing but a literal must be marked as safe to cache, but it wasnt",
             new XMLDocument(
@@ -183,11 +181,8 @@ final class MjTranspileTest {
         MatcherAssert.assertThat(
             "a formation marked as safe to cache must be wrapped in PhSticky in the generated Java, but it wasnt",
             new TextOf(
-                MjTranspileTest.pure(temp)
-                    .execute(MjParse.class)
-                    .execute(MjInference.class)
-                    .execute(MjTranspile.class)
-                    .result()
+                MjTranspileTest.pure(temp).execute(MjParse.class).execute(MjInference.class)
+                    .execute(MjTranspile.class).result()
                     .get("target/generated/org/eolang/EO_examples/EOx.java")
             ).asString(),
             Matchers.containsString("new PhSticky(")
@@ -199,11 +194,8 @@ final class MjTranspileTest {
         MatcherAssert.assertThat(
             "a top-level formation marked as safe to cache must implement Pure in the generated Java, so PhPackage can wrap it in PhSticky, but it didnt",
             new TextOf(
-                MjTranspileTest.pure(temp)
-                    .execute(MjParse.class)
-                    .execute(MjInference.class)
-                    .execute(MjTranspile.class)
-                    .result()
+                MjTranspileTest.pure(temp).execute(MjParse.class).execute(MjInference.class)
+                    .execute(MjTranspile.class).result()
                     .get("target/generated/org/eolang/EO_examples/EOx.java")
             ).asString(),
             Matchers.containsString("implements Pure")
@@ -443,6 +435,46 @@ final class MjTranspileTest {
                 )
             ).asString(),
             Matchers.containsString("eo.phiDefaultClass")
+        );
+    }
+
+    @Test
+    void writesNoTimeoutWhenDeadlineIsZero(@Mktmp final Path temp)
+        throws Exception {
+        MatcherAssert.assertThat(
+            "a zero eo.deadline must take the deadline away from a generated test, while keeping its budget, since JUnit refuses a timeout of zero",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(MjTranspileTest.truthy())
+                    .with("deadline", 0L)
+                    .execute(new PpTranspile())
+                    .result()
+                    .get("target/generated-test-sources/org/eolang/EO_foo/EO_x/TestEOmain.java")
+            ).asString(),
+            Matchers.allOf(
+                Matchers.containsString("@Budget(\"1G\")"),
+                Matchers.not(Matchers.containsString("@Timeout("))
+            )
+        );
+    }
+
+    @Test
+    void rejectsNegativeDeadline(@Mktmp final Path temp) {
+        MatcherAssert.assertThat(
+            "a negative eo.deadline must be refused by naming the option, instead of emitting a timeout that JUnit refuses",
+            new UncheckedText(
+                new TextOf(
+                    Assertions.assertThrows(
+                        IllegalStateException.class,
+                        () -> new FakeMaven(temp)
+                            .withProgram(MjTranspileTest.truthy())
+                            .with("deadline", -1L)
+                            .execute(new PpTranspile()),
+                        "a negative eo.deadline must not reach the generated tests"
+                    )
+                )
+            ).asString(),
+            Matchers.containsString("eo.deadline")
         );
     }
 

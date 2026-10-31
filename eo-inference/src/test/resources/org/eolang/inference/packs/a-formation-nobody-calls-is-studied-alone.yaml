@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls pair, so it is walked once in a copy of its own with nothing in
+# its voids: left and right stay open, and so does what plus is read off.
+sources:
+  pair.eo: |
+    [left right] > pair
+      left.plus right > @
+  app.eo: |
+    [] > app
+      7 > @
+  number.eo: |
+    [@] > number
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.pair' and @copies='1']
+  - /answers/o[@loc='Φ.pair.left']/open
+  - /answers/o[@loc='Φ.pair.right']/open
+  - /answers/o[@loc='Φ.pair.φ.ρ']/open

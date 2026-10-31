@@ -20,23 +20,36 @@ If you want to run tests separately, you can run:
 mvn clean test -Dtest="{test}"
 ```
 
-Here the variable `{test}` is the full name of the test, or several test
-names separated by commas (`,`).
+Here the variable `{test}` is the full name of the JUnit class, or several
+class names separated by commas (`,`), optionally with `#` and the name of
+one method.
 
-For example, this `EO` test:
+A test of an `EO` object is an attribute of that object, written with `++>`,
+like this one in `src/main/eo/number/exp.eo`:
 
 ```text
-[] > prints-itself
-  assert-that > @
-    length.
-      as-phi $
-    $.greater-than 0
+  lt. ++> can-exponentiate-five
+    abs.
+      minus.
+        e.power 5
+        5.exp
+    1.0e-7
 ```
 
-you can run just like this:
+The transpiler collects the tests of a package object and of every member of
+its package into one JUnit class called `TestEO<object>`, and turns each test
+name into a method name, with `-` replaced by `_`. The test above becomes
+`org.eolang.TestEOnumber#can_exponentiate_five`, so you can run it just like
+this:
 
 ```bash
-mvn clean test -Dtest="EOorg.EOeolang.EOprints_itselfTest"
+mvn clean test -Dtest="TestEOnumber#can_exponentiate_five"
+```
+
+or run every test of `number` like this:
+
+```bash
+mvn clean test -Dtest="TestEOnumber"
 ```
 
 ### Note on logging within tests
@@ -55,17 +68,12 @@ _test\resources\jul.properties_:
 _test\resources\logback.xml_:
 
 ```xml
-<logger name="org.eolang.Dataized" level="FINE"/>
 <logger name="org.eolang.PhDefault" level="FINE"/>
 ```
 
-For the latter `FINE` level must be set to desired object. `Dataized` will
-produce extensive logging for dataization process and `PhDefault` for
-attributes retrieval process.
-By default, dataization will be logged up until nesting level 3.
-If for some reason deeper dataization log is required it can be
-achieved by jvm property `-Dmax.dataization.log=<N>`
-where `N` is an integer representing desired nesting level to log.
+`PhDefault` is the only object of the runtime that logs. At `FINE` it
+prints a line for every attribute it resolves, indented by the nesting
+level of the retrieval, so a deep chain of attributes reads as a tree.
 
 ## How to release eo-runtime
 

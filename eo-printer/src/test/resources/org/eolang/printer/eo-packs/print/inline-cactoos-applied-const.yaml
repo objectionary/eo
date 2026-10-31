@@ -1,0 +1,39 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A const ">>! name" handle (R-3.10.12) used as the head of an application
+# ("h 5 > g" over "foo >>! h"). The children of such a handle are the
+# "Φ.dataized" wrapper "const-to-dataized" leaves behind, not arguments, so a
+# fold copies them and appends nothing: "h 5 > g" printed as "foo > g!" and the
+# "5" was gone (#9295). A const has no inline spelling as the head of an
+# application, so "eo:reapplied" leaves both the handle and the reference
+# standing, the same way it does for an already-applied based handle (#5952).
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/resolve-before-stars.xsl
+  - /org/eolang/parser/parse/fragile-dispatch.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/validate-objects-count.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/printer/print/restore-local-names.xsl
+  - /org/eolang/printer/print/inline-cactoos.xsl
+asserts:
+  # The const handle is kept in place, under its own cactus name.
+  - /object/o[@name='app']/o[@base='.as-bytes' and contains(@name, '🌵')]/o[@base='Φ.dataized']/o[@base='Φ.foo' and @local='h']
+  # The reference stays a reference and still carries the "5".
+  - /object/o[@name='app']/o[@name='g' and contains(@base, '🌵') and count(o)=1]/o[@base='Φ.number']/o[@base='Φ.bytes']/o[text()='40-14-00-00-00-00-00-00']
+  # The const was never folded into the reference, so only one of it exists.
+  - /object[count(//o[@base='Φ.dataized'])=1]
+input: |
+  [] > app
+    foo >>! h
+    h 5 > g
