@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# inner reads n off ^.^, the copy of outer that its middle was read off, so in
+# each copy it is what that call of outer put into n: first is a number and
+# second a string.
+sources:
+  outer.eo: |
+    [n] > outer
+      [] > middle
+        [] > inner
+          ^.^.n > @
+  app.eo: |
+    [] > app
+      (outer 5).middle.inner > first
+      (outer "five").middle.inner > second
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.outer.middle.inner.φ.ρ']/is[@loc='Φ.outer']
+  - /answers/o[@loc='Φ.app.first.ρ.ρ.α0' and @lands='n']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.second.ρ.ρ.α0' and @lands='n']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.outer.middle.inner.φ' and set/is[@loc='Φ.number'] and set/is[@loc='Φ.string']]
+  - /answers/o[@loc='Φ.app.first']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.second']/is[@loc='Φ.string']
