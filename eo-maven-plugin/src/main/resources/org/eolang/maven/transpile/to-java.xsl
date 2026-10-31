@@ -937,7 +937,8 @@
   Every test carries its own deadline and memory budget, so that it keeps them
   in any build that compiles it, even one that tells JUnit nothing: a runaway
   test is stopped and reported as skipped, instead of eating the heap of the
-  whole build (#9074).
+  whole build (#9074). A zero deadline means no deadline, so no @Timeout is
+  written, since JUnit refuses a timeout of zero.
   -->
   <xsl:template match="class" mode="tests">
     <xsl:value-of select="eo:eol(1)"/>
@@ -948,8 +949,10 @@
       <xsl:if test="eo:test-attr(.)">
         <xsl:text>@Test</xsl:text>
         <xsl:value-of select="eo:eol(1)"/>
-        <xsl:value-of select="concat('@Timeout(value = ', $deadline, ', unit = TimeUnit.SECONDS)')"/>
-        <xsl:value-of select="eo:eol(1)"/>
+        <xsl:if test="$deadline != '0'">
+          <xsl:value-of select="concat('@Timeout(value = ', $deadline, ', unit = TimeUnit.SECONDS)')"/>
+          <xsl:value-of select="eo:eol(1)"/>
+        </xsl:if>
         <xsl:value-of select="concat('@Budget(&quot;', eo:literal($maxmem), '&quot;)')"/>
         <xsl:value-of select="eo:eol(1)"/>
         <xsl:text>@ExtendWith({Deadline.class, Maxmem.class})</xsl:text>

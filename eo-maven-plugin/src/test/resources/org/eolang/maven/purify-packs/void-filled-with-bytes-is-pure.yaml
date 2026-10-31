@@ -11,7 +11,6 @@ eo:
       [x] > shout
         x > @
   bytes.eo: |
-    [as-bytes] > bytes
-      as-bytes > @
+    [@] > bytes
 pure:
   - "//o[@name='shout' and @pure='true']"

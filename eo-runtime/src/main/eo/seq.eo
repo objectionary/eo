@@ -1,6 +1,7 @@
 # Sequential execution object that dataizes all provided steps in order
 # and returns the value of the final step. All steps are dataized for
 # their side effects, while only the last step's value is returned.
+# A sequence of no steps has no final step, so it is an error.
 #
 # The innermost `if` answers the final step on both of its branches on
 # purpose: its condition exists only to dataize the steps before it,
@@ -25,7 +26,8 @@
 [steps] > seq
   if. > @
     steps.length.eq 0
-    true
+    T
+      "Can't run a sequence of no steps"
     if.
       steps.length.eq 1
       steps.head
@@ -182,3 +184,6 @@
       true
       true
       true
+
+  seq --> stops-on-a-sequence-of-no-steps
+    *

@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls inner, and its m is filled by no copy, so a stop gives it one
+# study copy inside each of the two copies of outer. Each reads its own n off
+# ^, a number, while m stays open.
+sources:
+  outer.eo: |
+    [n] > outer
+      [m] > inner
+        ^.n.plus m > @
+  app.eo: |
+    [] > app
+      outer 1 > a
+      outer 2 > b
+  number.eo: |
+    [@] > number
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+answers:
+  - /answers[not(o[@lands='m'])]
+  - /answers/o[@loc='Φ.outer' and @copies='2']
+  - /answers/o[@loc='Φ.outer.inner' and @copies='2']
+  - /answers/o[@loc='Φ.outer.inner.φ.ρ.ρ']/is[@loc='Φ.outer']
+  - /answers/o[@loc='Φ.outer.inner.φ.ρ' and @copies='2']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.outer.inner.m']/open

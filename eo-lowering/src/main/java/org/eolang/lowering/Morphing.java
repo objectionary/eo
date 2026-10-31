@@ -5,6 +5,7 @@
 package org.eolang.lowering;
 
 import com.jcabi.log.Logger;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,18 +15,15 @@ import java.util.Comparator;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Stream;
 import org.cactoos.Proc;
 import org.cactoos.Scalar;
 import org.cactoos.Text;
-import org.cactoos.bytes.BytesOf;
 import org.cactoos.bytes.Sha256DigestOf;
 import org.cactoos.experimental.Threads;
-import org.cactoos.io.Directory;
 import org.cactoos.io.InputOf;
-import org.cactoos.io.ResourceOf;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.iterable.Sorted;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
@@ -55,13 +53,13 @@ import org.eolang.cache.GlobalCache;
  * line from {@link Progress} that says how much work is done.</p>
  *
  * <p>phino is allowed to write down only the operations that are listed in
- * the file {@code atoms.yaml}, such as adding two numbers. Before the runs,
- * this stage copies that file from the resources of the module into the
- * directory of the world, so that anybody can see what phino was told,
- * next to what phino answered. When phino meets an atom that is not in the
- * file, it leaves that atom as it is. Then the entry becomes a taint:
- * nothing is guessed about it, and nothing about it is turned into
- * Java.</p>
+ * the file {@code atoms.yaml}, such as adding two numbers. {@link Planting}
+ * writes that file into the directory of the world, next to where phino
+ * answers: the operations of the atoms of the library, from the resources
+ * of the module, and one row for every object the planting gave a row
+ * to. When phino meets an atom that is not in the file, it leaves that
+ * atom as it is. Then the entry becomes a taint: nothing is guessed about
+ * it, and nothing about it is turned into Java.</p>
  *
  * <p>Every run has two limits. The first limit is the largest number of
  * steps phino may take inside one another. This limit is needed because
@@ -106,7 +104,7 @@ import org.eolang.cache.GlobalCache;
  * the build reads them. The cache keeps them the same way as the
  * protocols, so a later build with the same four things does not run
  * phino for them either. The text of a run that was stopped stays on the
- * disk for study, with a {@code timeout(…)} line where the time ran out.
+ * disk for study, with a {@code timeout …} line where the time ran out.
  * The texts of an earlier build are deleted before the runs, even when
  * this build does not ask for them, so that no text outlives its
  * protocol.</p>
@@ -194,19 +192,27 @@ final class Morphing implements Proc<Path> {
                 )
             );
         }
-        final Path atoms = Files.write(
-            home.resolve("atoms.yaml"),
-            new IoChecked<>(
-                () -> new BytesOf(new ResourceOf("org/eolang/lowering/atoms.yaml")).asBytes()
-            ).value()
-        );
-        final Path protocols = home.resolve("2-protocols");
+        final Path atoms = home.resolve("atoms.yaml");
+        if (!Files.exists(atoms)) {
+            throw new IllegalStateException(
+                String.format(
+                    "There is no '%s', while morphing needs the table of operations the planting writes",
+                    atoms
+                )
+            );
+        }
+        final Path protocols = new Seqdir(home, 1).dirs().once("protocols");
         final Path texts = home.resolve("texts");
         for (final Path dir : new ListOf<>(protocols, texts)) {
             if (Files.exists(dir)) {
-                for (final Path stale
-                    : new Sorted<>(Comparator.reverseOrder(), new Directory(dir))) {
-                    Files.delete(stale);
+                try (Stream<Path> inside = Files.walk(dir)) {
+                    for (final Path stale : new ListOf<>(
+                        inside.filter(path -> !path.equals(dir))
+                            .sorted(Comparator.reverseOrder())
+                            .iterator()
+                    )) {
+                        Files.delete(stale);
+                    }
                 }
             }
         }
@@ -289,7 +295,9 @@ final class Morphing implements Proc<Path> {
                 (src, tgt) -> false,
                 (src, tgt) -> {
                     fresh.set(true);
-                    this.phino.morph(src, atoms, number, tgt, this.steps, this.loops, this.budget);
+                    this.phino.dataize(
+                        src, atoms, number, tgt, this.steps, this.loops, this.budget
+                    );
                     return tgt;
                 }
             ).apply(world, protocol);
@@ -335,7 +343,9 @@ final class Morphing implements Proc<Path> {
                 () -> hash,
                 (src, tgt) -> false,
                 (src, tgt) -> {
-                    this.phino.morph(src, atoms, number, tgt, this.steps, this.loops, this.budget);
+                    this.phino.dataize(
+                        src, atoms, number, tgt, this.steps, this.loops, this.budget
+                    );
                     return tgt;
                 }
             ).apply(world, target);

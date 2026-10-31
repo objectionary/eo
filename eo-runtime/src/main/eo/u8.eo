@@ -89,10 +89,10 @@
     FF-.as-u8.as-i16
 
   eq. ++> can-recover-from-division-by-zero
-    "recovered"
+    u8 2A-
     02-.as-u8.div
       00-.as-u8
-      "recovered" > [message]
+      u8 2A- > [message]
 
   eq. ++> can-subtract
     05-.as-u8.minus 03-.as-u8

@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# holder has no extra of its own, so extra is read off its @, base, and
+# holder.extra is the extra of base.
+sources:
+  app.eo: |
+    [] > app
+      holder.extra > @
+      [] > holder
+        base > @
+        [] > base
+          [] > extra
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers[not(o[@loc='Φ.app.holder.extra'])]
+  - /answers/o[@loc='Φ.app.holder.φ']/is[@loc='Φ.app.holder.base']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.app.holder.base.extra']

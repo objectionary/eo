@@ -7,7 +7,6 @@ package org.eolang.lowering;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
@@ -15,6 +14,7 @@ import java.time.Duration;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.cactoos.list.ListOf;
+import org.cactoos.map.MapOf;
 import org.eolang.cache.GlobalCache;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -102,9 +102,9 @@ final class LoweringTest {
                 "a build with nothing in it must be planted as an empty world, but it wasnt",
                 made.map(Path::getFileName).map(Path::toString).collect(Collectors.toList()),
                 Matchers.containsInAnyOrder(
-                    "entries.xmir", "voids.tsv", "entries.tsv",
+                    "entries.xmir", "voids.tsv", "entries.tsv", "rows.tsv",
                     "world.phi", "atoms.yaml", "rendered.tsv", "patched.tsv",
-                    "1-planting", "2-protocols"
+                    "1-planting", "2-protocols", ".seqdir.lock"
                 )
             );
         }
@@ -215,16 +215,6 @@ final class LoweringTest {
     }
 
     private static Path tables(final Path temp) throws IOException {
-        final Path made = Files.createDirectories(temp.resolve("tables"));
-        Files.write(
-            made.resolve("provides.xml"), "<provides/>".getBytes(StandardCharsets.UTF_8)
-        );
-        Files.write(
-            made.resolve("links.xml"),
-            "<links><type id='Φ.gap.φ'><ref loc='Φ.number'/></type></links>"
-                .getBytes(StandardCharsets.UTF_8)
-        );
-        Files.write(made.resolve("atoms.xml"), "<atoms/>".getBytes(StandardCharsets.UTF_8));
-        return made;
+        return new Inferred(temp.resolve("engine"), new MapOf<String, String>()).value();
     }
 }

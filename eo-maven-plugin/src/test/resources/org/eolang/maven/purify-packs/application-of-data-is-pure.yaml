@@ -14,5 +14,7 @@ eo:
       as-bytes > @
       [x] > power
         x > @
+  bytes.eo: |
+    [@] > bytes
 pure:
   - "//o[@name='x' and @pure='true']"
