@@ -49,15 +49,17 @@ final class Emissions {
 
     /**
      * A valid void parameter name, other than the {@code @} and {@code ^}
-     * special forms — §4.5. Shared by every producer of a void parameter
-     * list ({@link LnFormation}, {@link LnOnlyPhi}, this class's own
-     * {@link #inlinePhi}), so a bracket list is validated the same way
-     * regardless of which line shape it appears on. The cactus emoji is
+     * special forms — §4.5. The same shape follows the {@code ^} of a
+     * receiver that carries a handle, {@code ^name} (R-3.4.13). Shared by
+     * every producer of a void parameter list ({@link LnFormation},
+     * {@link LnOnlyPhi}, this class's own {@link #inlinePhi}), so a bracket
+     * list is validated the same way regardless of which line shape it
+     * appears on. The cactus emoji is
      * excluded along with the ordinary NAME terminators, since §2.3 keeps
      * that glyph for auto-names.
      */
     private static final Pattern PARAM_NAME = Pattern.compile(
-        "[a-z][^ \\t,.|':;!?\\[\\]{}()\\x{1F335}]*"
+        "[a-z][^ \\t,.|':;!?/\\[\\]{}()\\x{1F335}]*"
     );
 
     /**
@@ -205,8 +207,6 @@ final class Emissions {
         final String tag;
         if (!raw.isEmpty() && raw.chars().allMatch(c -> c >= '0' && c <= '9')) {
             tag = "α".concat(raw);
-        } else if ("^".equals(raw)) {
-            tag = "ρ";
         } else {
             tag = raw;
         }
@@ -247,10 +247,11 @@ final class Emissions {
      * @param pos Source column of the parameter's first character
      */
     static void validParam(final String raw, final int line, final int pos) {
-        if (!"@".equals(raw) && !"^".equals(raw) && !Emissions.PARAM_NAME.matcher(raw).matches()) {
+        if (!"@".equals(raw) && !"^".equals(raw) && !Emissions.PARAM_NAME.matcher(raw).matches()
+            && !Emissions.PARAM_NAME.matcher(new VoidHandle(raw).asString()).matches()) {
             throw new ParseError(
                 line, pos,
-                "parameter names in voids must be NAME, @ or ^"
+                "parameter names in voids must be NAME, @, ^ or ^NAME"
             );
         }
         Suffix.checkGlyphs(raw, line, pos);
@@ -428,7 +429,7 @@ final class Emissions {
         final Emit emit, final String name, final Value value, final int line
     ) {
         final String inner = value.raw().substring(1, value.raw().length() - 1);
-        final int phi = Emissions.topLevelInlinePhi(inner);
+        final int phi = Tokens.inlinePhi(inner);
         if (phi >= 0) {
             Emissions.inlinePhi(emit, name, inner, phi, value.pos() + 1, line);
         } else {
@@ -467,27 +468,6 @@ final class Emissions {
             mapped = head.raw();
         }
         return mapped;
-    }
-
-    private static int topLevelInlinePhi(final String body) {
-        int depth = 0;
-        int found = -1;
-        int idx = 0;
-        while (idx < body.length() - 2 && found < 0) {
-            final char glyph = body.charAt(idx);
-            if (glyph == '"') {
-                idx = Tokens.closingQuote(body, idx);
-            } else if (glyph == '(') {
-                depth = depth + 1;
-            } else if (glyph == ')') {
-                depth = depth - 1;
-            } else if (depth == 0 && glyph == '>'
-                && body.charAt(idx + 1) == ' ' && body.charAt(idx + 2) == '[') {
-                found = idx;
-            }
-            idx = idx + 1;
-        }
-        return found;
     }
 
     private static void inlinePhi(
@@ -539,7 +519,9 @@ final class Emissions {
         int pcol = column + bracket + 1;
         for (final String param : Emissions.splitParams(params, line, pcol)) {
             Emissions.validPhiParam(param, line, pcol);
-            emit.voidParam(new VoidName(param).asString(), line, pcol);
+            emit.voidParam(
+                new VoidName(param).asString(), new VoidHandle(param).asString(), line, pcol
+            );
             pcol = pcol + param.length() + 1;
         }
         final Tokens tokens = new Tokens(sub.body(), sub);

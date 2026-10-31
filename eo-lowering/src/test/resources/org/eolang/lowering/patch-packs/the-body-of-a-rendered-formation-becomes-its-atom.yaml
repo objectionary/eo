@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The body of gap was rendered as the atom of the entry 1, so its φ becomes
+# that atom, in the place where the old φ stood, and the voids stay where they
+# were.
+eo:
+  gap.eo: |
+    [a b] > gap
+      a.plus b > @
+rendered:
+  - "1\tΦ.gap"
+patched:
+  gap.xmir:
+    - "/object/o[@name='gap']\
+      /o[3][@name='φ' and not(@base) and @loc='Φ.gap.φ' and count(o)=1]\
+      /o[@name='λ' and @loc='Φ.gap.φ.λ']"
+    - "/object/o[@name='gap']/o[1][@name='a' and @base='∅']"
+    - "/object/o[@name='gap']/o[2][@name='b' and @base='∅']"
+    - "/object/o[@name='gap'][count(o)=3]"
+    - "/object[not(//o[@base='.plus'])]"

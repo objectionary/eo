@@ -177,7 +177,7 @@ final class Eo implements Iterable<Directive> {
         int idx = 0;
         while (idx < body.length() - 2 && found < 0) {
             final char glyph = body.charAt(idx);
-            if (glyph == '"') {
+            if (glyph == '"' && Tokens.opensString(body, idx)) {
                 idx = Tokens.closingQuote(body, idx);
             } else if (glyph == '(') {
                 depth = depth + 1;
@@ -328,19 +328,19 @@ final class Eo implements Iterable<Directive> {
         if (globals.inTextBlock()) {
             Eo.continueTextBlock(span, stack, globals, emit);
         } else if (span.tab() && !span.blank()) {
-            emit.error(span.line(), 0, Eo.TAB);
+            emit.error(span.line(), 0, Eo.TAB, true);
             failed = true;
         } else if (span.alien() && !span.blank()) {
-            emit.error(span.line(), 0, Eo.ALIEN);
+            emit.error(span.line(), 0, Eo.ALIEN, true);
             failed = true;
         } else if (!span.blank() && span.indent() % 2 == 1) {
-            emit.error(span.line(), 0, "unexpected odd indent");
+            emit.error(span.line(), 0, "unexpected odd indent", true);
             failed = true;
         } else if (span.trailing()) {
-            emit.error(span.line(), 0, Eo.TRAILING);
+            emit.error(span.line(), 0, Eo.TRAILING, true);
             failed = true;
         } else if (Eo.opensTextBlock(span)) {
-            globals.seal(emit, span);
+            globals.sealOrReport(emit, span);
             Blanks.enterAfterMeta(span, globals, emit);
             globals.openTextBlock(span.line(), span.indent());
             globals.markEmitted();
@@ -456,6 +456,8 @@ final class Eo implements Iterable<Directive> {
             line = Eo.applicative(span, Eo.reversedDispatch(span));
         } else if (Eo.rootHead(span)) {
             line = Eo.applicative(span, Eo.rootReversedDispatch(span));
+        } else if (Eo.topLevelGreaterBracketIndex(span.body()) == 0) {
+            line = new LnOnlyPhi(span);
         } else {
             line = Eo.rejected(span);
         }
@@ -623,9 +625,9 @@ final class Eo implements Iterable<Directive> {
         final String body = span.body();
         int depth = 0;
         int idx = 0;
-        while (idx < body.length() && (depth > 0 || body.charAt(idx) != ' ')) {
+        while (idx < body.length() && (depth > 0 || !Eo.endsHead(body, idx))) {
             final char glyph = body.charAt(idx);
-            if (glyph == '"') {
+            if (glyph == '"' && Tokens.opensString(body, idx)) {
                 idx = Tokens.closingQuote(body, idx);
             } else if (glyph == '(') {
                 depth = depth + 1;
@@ -634,12 +636,30 @@ final class Eo implements Iterable<Directive> {
             }
             idx = idx + 1;
         }
+        final int star = Eo.starAfter(body, idx);
         boolean compact = false;
-        if (idx + 1 < body.length() && body.charAt(idx + 1) == '*') {
-            final int after = idx + 2;
+        if (star >= 0) {
+            final int after = star + 1;
             compact = after >= body.length() || Eo.starTail(body, after);
         }
         return compact;
+    }
+
+    private static boolean endsHead(final String body, final int idx) {
+        final char glyph = body.charAt(idx);
+        return glyph == ' ' || glyph == '*' && idx > 0;
+    }
+
+    private static int starAfter(final String body, final int idx) {
+        final int star;
+        if (idx < body.length() && body.charAt(idx) == '*') {
+            star = idx;
+        } else if (idx + 1 < body.length() && body.charAt(idx + 1) == '*') {
+            star = idx + 1;
+        } else {
+            star = -1;
+        }
+        return star;
     }
 
     private static boolean starTail(final String body, final int after) {
@@ -705,7 +725,7 @@ final class Eo implements Iterable<Directive> {
     }
 
     private static boolean nameTerminator(final char glyph) {
-        return " \t,|':;!?[]{}()".indexOf(glyph) >= 0;
+        return " \t,|':;!?*[]{}()".indexOf(glyph) >= 0;
     }
 
     private static void checkOnClose(final Level level, final Emit emit, final boolean naming) {

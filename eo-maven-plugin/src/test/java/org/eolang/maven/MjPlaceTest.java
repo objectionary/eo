@@ -6,12 +6,14 @@ package org.eolang.maven;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 import org.cactoos.text.TextOf;
+import org.eolang.cache.Saved;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -86,7 +88,7 @@ final class MjPlaceTest {
 
     @Test
     void placesWithoutBinaries(@Mktmp final Path temp) throws IOException {
-        Files.createDirectories(temp.resolve("target").resolve(MjResolve.DIR));
+        Files.createDirectories(new Seqdir(temp.resolve("target"), 2).dirs().once("resolve"));
         MatcherAssert.assertThat(
             String.format(
                 "PlaceMojo must not place binaries from %s",
@@ -163,7 +165,7 @@ final class MjPlaceTest {
         MatcherAssert.assertThat(
             "PlaceMojo have to place the runtime file, but doesn't",
             new FakeMaven(temp).withHelloWorld()
-                .with("resolveJna", false)
+                .with("jna", false)
                 .execute(new PpPlace())
                 .result()
                 .get(this.targetClasses()),
@@ -177,7 +179,7 @@ final class MjPlaceTest {
             "PlaceMojo have not to place the runtime file, but doesn't",
             new FakeMaven(temp).withHelloWorld()
                 .with("ignoreRuntime", true)
-                .with("resolveJna", false)
+                .with("jna", false)
                 .execute(new PpPlace())
                 .result()
                 .get(this.targetClasses()),
@@ -251,7 +253,7 @@ final class MjPlaceTest {
     ) throws IOException {
         new Saved(
             content,
-            temp.resolve("target").resolve(MjResolve.DIR).resolve(
+            new Seqdir(temp.resolve("target"), 2).dirs().once("resolve").resolve(
                 Paths.get(String.format("%s/%s", "foo/hello/-/0.1", binary))
             )
         ).value();

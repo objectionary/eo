@@ -16,7 +16,7 @@ import java.util.List;
  * and the padding sits before {@code st_size} rather than before
  * {@code st_rdev}, so the whole thing is 128 bytes instead of 144.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  * @checkstyle VisibilityModifierCheck (60 lines)
  */
 public final class LinuxArmFileStat extends Structure implements Stat.FileStat {

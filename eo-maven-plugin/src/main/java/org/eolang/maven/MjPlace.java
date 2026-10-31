@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -12,7 +13,7 @@ import org.apache.maven.plugins.annotations.Mojo;
  * Take binary files from where {@link MjResolve} placed them and
  * copy to the {@code target/classes} directory.
  *
- * <p>Input directory is {@link MjResolve#DIR}.
+ * <p>Input directory is a directory {@code Seqdir} numbers "resolve".
  * Output directory is {@code target}/classes.</p>
  *
  * @see <a href="https://news.eolang.org/2022-10-19-placed-catalog.html">Place catalog</a>
@@ -37,7 +38,7 @@ public final class MjPlace extends MjSafe {
         try (TjsPlaced placed = this.placed()) {
             new Placing(
                 placed,
-                this.target.toPath().resolve(MjResolve.DIR),
+                new Seqdir(this.target.toPath(), 2).dirs().once("resolve"),
                 this.classes.toPath(),
                 this.placeBinaries,
                 this.skipBinaries,

@@ -17,7 +17,7 @@ import org.eolang.Phi;
  * with a one-byte length and a one-byte family, and a caller of {@code bind},
  * {@code connect} or {@code accept} wants whichever the kernel reads.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 public final class Sockaddr {
 

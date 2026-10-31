@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The φ of pi is an atom that was written by hand, and no entry of pi was
+# rendered, so pi is not patched, and its source is not written at all.
+eo:
+  pi.eo: |
+    [] > pi
+      [] > @ /number
+rendered: []
+patched: {}

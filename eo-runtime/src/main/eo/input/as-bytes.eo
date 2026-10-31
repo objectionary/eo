@@ -16,11 +16,11 @@
 +unlint redundant-attachment
 +version 0.0.0
 
-[^] > as-bytes
+[^source] > as-bytes
   malloc.of > @
     0
     seq * > [^ m] >>
-      ^.^.copied m.to-output
+      ^.source.copied m.to-output
       m
 
   ++> can-convert-bytes-to-an-input-and-back

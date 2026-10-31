@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A const handle read only by `> @` is folded into that reader. The const
+# then carries the name of the reader, not the handle, or the printer
+# writes `foo 42 >> saved!` and the object loses its φ.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > app
+    foo 42 >>! saved
+    saved > @
+
+printed: |
+  [] > app
+    foo 42 > @!

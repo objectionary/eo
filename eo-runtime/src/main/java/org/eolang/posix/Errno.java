@@ -23,7 +23,7 @@ import org.eolang.Phi;
  * native call can overwrite the value. On success it stays an empty
  * {@link PhDefault}, exactly what the wrappers put there before.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 public final class Errno implements Supplier<Phi> {
 

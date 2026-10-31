@@ -11,6 +11,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import org.cactoos.io.InputOf;
 import org.cactoos.text.Joined;
+import org.eolang.cache.FpEnvelope;
+import org.eolang.cache.FpGenerated;
 
 /**
  * Footprint of Java generated files as input.

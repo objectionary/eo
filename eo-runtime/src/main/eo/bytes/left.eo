@@ -13,11 +13,11 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^ b] > left
+[^data b] > left
   if. > @
     b.as-bytes.eq C1-E0-00-00-00-00-00-00
-    ^.right 2147483647
-    ^.right b.neg
+    data.right 2147483647
+    data.right b.neg
 
   eq. ++> can-shift-left-an-even-negative
     FF-FF-FF-FF-FF-FF-FF-EE.left 2

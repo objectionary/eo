@@ -9,6 +9,7 @@ import com.yegor256.MktmpResolver;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.io.InputOf;
+import org.eolang.cache.Saved;
 import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -71,6 +72,18 @@ final class MjAtomsTableTest {
         } finally {
             Files.deleteIfExists(output);
         }
+    }
+
+    @Test
+    void createsNoStageDirectoryWhenNothingWasParsed(@Mktmp final Path temp) throws Exception {
+        new FakeMaven(temp)
+            .with("csv", temp.resolve("classes/org/eolang/atoms.csv").toFile())
+            .execute(MjAtomsTable.class);
+        MatcherAssert.assertThat(
+            "A goal that only reads must leave the target untouched, but it didnt",
+            Files.exists(temp.resolve("target")),
+            Matchers.is(false)
+        );
     }
 
     @Test

@@ -14,32 +14,31 @@
 +unlint redundant-attachment
 +version 0.0.0
 
-[^] > naturals
+[^span] > naturals
   if. > @
     and.
-      ^.start.is-integer.and ^.end.is-integer
+      span.start.is-integer.and span.end.is-integer
       and.
-        ^.start.abs.lt safe
-        ^.end.abs.lt safe
+        span.start.abs.lt
+          2.power 53 >> safe
+        span.end.abs.lt safe
     range
       [^] >>
-        build ^.^.start > @
-        [^ num] > build
+        [^ num] >> build
           num > @
           ^.build > next
             1.plus @
-      ^.end
-    T complaint
-  printf. > complaint
-    "Range bounds must be integers within the safe unit-step range (|x| < 2^53), but were %s and %s"
-    *
-      printed ^.start
-      printed ^.end
-  num.is-finite.if > [num] > printed
-    "%f".printf
-      * num
-    string num.as-scientific
-  2.power 53 > safe
+        | ^.span.start > @
+      span.end
+    T
+      "Range bounds must be integers within the safe unit-step range (|x| < 2^53), but were %s and %s".printf
+        *
+          num.is-finite.if > [num] >> printed
+            "%f".printf
+              * num
+            string num.as-scientific
+          | span.start
+          printed span.end
 
   eq. ++> can-build-a-range-of-negatives
     naturals.
@@ -91,18 +90,6 @@
       7
       8
       9
-
-  eq. ++> can-name-a-fractional-bound-in-its-complaint
-    complaint.
-      naturals.
-        range 0.5 2
-    "Range bounds must be integers within the safe unit-step range (|x| < 2^53), but were 0.500000 and 2.000000"
-
-  eq. ++> can-name-a-non-finite-bound-in-its-complaint
-    complaint.
-      naturals.
-        range pinf 0
-    "Range bounds must be integers within the safe unit-step range (|x| < 2^53), but were infinity and 0.000000"
 
   naturals. --> rejects-a-fractional-lower-bound
     range

@@ -46,4 +46,16 @@ public interface Attribute extends Term {
      * @return TRUE if it's an unset void attribute
      */
     boolean vacant();
+
+    /**
+     * Is this a void attribute?
+     *
+     * <p>A void attribute is a slot the object declares as empty, whether
+     * something has already been put into it or not. A vacant attribute is
+     * always void, while a void one stops being vacant as soon as it is
+     * filled.</p>
+     *
+     * @return TRUE if it's a void attribute
+     */
+    boolean voided();
 }

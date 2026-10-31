@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Java makes status from the atom check. report calls status with 0 and "ok",
+# and alarm with 1 and 2, so the pool of its text holds a string and a number.
+# The pool is the one place where values of different calls meet, so the text
+# read off what check returns is both at once.
+sources:
+  os.eo: |
+    [] > os
+      [] > check /Q.os.status
+      [code text] > status
+        code > @
+  app.eo: |
+    [] > app
+      os.check.text > @
+  report.eo: |
+    [] > report
+      os.status 0 "ok" > @
+  alarm.eo: |
+    [] > alarm
+      os.status 1 2 > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.os.check.λ']/is[@loc='Φ.os.status']
+  - /answers/o[@loc='Φ.os.status.text']/set/open[@by='java']
+  - /answers/o[@loc='Φ.report.φ.α1' and @lands='text']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.alarm.φ.α1' and @lands='text']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.number']

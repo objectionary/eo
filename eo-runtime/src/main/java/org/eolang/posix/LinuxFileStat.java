@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * The {@code struct stat} of Linux on x86-64.
  *
- * @since 0.74.0
+ * @since 0.64.0
  * @checkstyle VisibilityModifierCheck (60 lines)
  */
 public final class LinuxFileStat extends Structure implements Stat.FileStat {

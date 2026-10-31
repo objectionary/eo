@@ -5,28 +5,32 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Supplier;
+import org.eolang.cache.CachePath;
+import org.eolang.cache.Footprint;
+import org.eolang.cache.FpFork;
+import org.eolang.cache.FpGenerated;
+import org.eolang.cache.FpIfTargetExists;
+import org.eolang.cache.FpIgnore;
+import org.eolang.cache.FpUpdateBoth;
+import org.eolang.cache.FpUpdateFromCache;
 
 /**
  * Pulls EO sources from Objectionary.
  *
  * <p>Goes through all objects from "foreign" catalog that lack sources and
  * pulls them from the Objectionary remote repository. The pulled sources
- * are stored in the {@link #DIR} directory.</p>
+ * are stored in a directory {@code Seqdir} numbers "pull".</p>
  *
  * @since 0.61.0
  */
 final class Pulling implements Step {
-
-    /**
-     * The directory where to store pulled sources.
-     */
-    static final String DIR = "2-pull";
 
     /**
      * Cache subdirectory name.
@@ -39,9 +43,9 @@ final class Pulling implements Step {
     private final TjsForeign tojos;
 
     /**
-     * Base target directory (target + DIR).
+     * Target directory.
      */
-    private final Path base;
+    private final Path target;
 
     /**
      * Commit hash to pull from.
@@ -82,7 +86,7 @@ final class Pulling implements Step {
      * Constructor.
      *
      * @param tjs Foreign tojos catalog
-     * @param dir Base target directory
+     * @param tgt Target directory
      * @param hsh Commit hash
      * @param obj Objectionary
      * @param cache Cache directory
@@ -93,7 +97,7 @@ final class Pulling implements Step {
      */
     Pulling(
         final TjsForeign tjs,
-        final Path dir,
+        final Path tgt,
         final CommitHash hsh,
         final Objectionary obj,
         final Path cache,
@@ -103,7 +107,7 @@ final class Pulling implements Step {
         final boolean off
     ) {
         this.tojos = tjs;
-        this.base = dir;
+        this.target = tgt;
         this.hash = hsh;
         this.objectionary = obj;
         this.cdir = cache;
@@ -158,12 +162,13 @@ final class Pulling implements Step {
     }
 
     private Path pulled(final String object, final String hsh) throws IOException {
-        final Path target = new Place(object).make(this.base, MjAssemble.EO);
+        final Path base = new Seqdir(this.target, 2).dirs().once("pull");
+        final Path dest = new Place(object).make(base, MjAssemble.EO);
         final Supplier<Path> che = new CachePath(
             this.cdir,
             this.version,
             hsh,
-            this.base.relativize(target)
+            base.relativize(dest)
         );
         final Footprint generated = new FpGenerated(
             src -> {
@@ -199,6 +204,6 @@ final class Pulling implements Step {
                 )
             ),
             generated
-        ).apply(Paths.get(""), target);
+        ).apply(Paths.get(""), dest);
     }
 }

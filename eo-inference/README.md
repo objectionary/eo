@@ -4,269 +4,96 @@
 
 # eo-inference
 
-Works out, for every object in an EO program, which formation it behaves as.
+Reads what an EO program says about its own objects and writes it down in
+`facts.xml`, then works out from it which objects each place of the program
+can be when Java runs it, writes that down in `answers.xml`, and draws a
+report of those answers over the source.
 
 EO has no types. It has objects, and every object is a copy of some other one,
 which is a copy of another, and so on until the chain arrives at a formation
-written in the source. That formation is where the answer is looked for, and an
-FQN is the whole of what this module means by a type:
+written in the source. The engine follows those chains copy by copy: a copy is
+one use of a formation, with its own values in its voids, and every place is
+answered once per copy of the formation around it.
 
-```eo
-[@] > number             # Φ.number.φ is a Φ.bytes
-  [b] > plus             # Φ.number.plus.b is a Φ.number
-  [b] > minus
-    $.^.plus ($.b.times -1) > @      # Φ.number.minus.@ is a Φ.number
-```
+## What it writes
 
-Where the chain arrives is not always where it stops. A formation that binds
-nothing the outside can read but its own `φ` has no behaviour of its own: it
-hands on everything it can be asked, and its name says less about an object
-than the name behind it. So `1.plus 2` is a `Φ.number` rather than a
-`Φ.number.plus`, and the `as-bytes` of a `Φ.bytes` is a `Φ.bytes`. A formation
-that does bind something of its own is where the walk ends, and if we cannot
-say which formation it is we say so rather than dressing up a guess.
+The `inference` goal of `eo-maven-plugin` runs after `parse` and writes two
+documents into `target/eo/NN-inference`, where `seqdir` gives the directory its
+number. The first, `facts.xml`, has four parts:
 
-The goal runs after `pre-inference` and writes three XML tables into
-`target/eo/6-inference`. Nothing else in the compiler reads them yet.
+- `objects`: every formation with its attributes. For each void it says
+  whether a type is declared (`holds`, from `? > code /Q.number`) and
+  whether an atom calls it back (`args`, from `? > scope /{Q.chunk}`). For an
+  atom it says what it returns.
+- `reads`: every name read, and what it is read off.
+- `heads`: what each chain starts from: `Φ`, the formation around a bare
+  `ξ`, a datum or a termination.
+- `calls`: each call and its arguments in order.
 
-## What it prints
+Every object is named by its locator, a path from `Φ` down: `φ` is the `@`,
+`ρ` is `^`, and `α0`, `α1` are the first and the second argument of a call.
 
-```text
-46896 objects: 81.0% named, 17.9% rooted at a void, 1.2% nothing known; depth 67.2%
-```
-
-Read that as: this program has 46,896 objects in it, we can name the formation
-of four out of five, and one in eighty we cannot say a thing about.
-
-The denominator is every object of the program, and it is never trimmed. The
-atoms whose body is written in Java count against us, since this module cannot
-read Java and so cannot say what they come back with unless the source says so
-in as many words. A share that leaves out the hard cases is a share of the
-easy ones.
-
-### named
-
-Coverage. The share whose answer is a formation of the program — a real FQN
-that a reader can go and look at. A datum counts too: the bytes of `01-` are
-the ground everything else stands on, and asking what more there is to know
-about them is asking nothing. So does a termination.
-
-Whether the formation still has voids free does not matter here. Knowing that
-something is a `Φ.number` is knowing which object it is, even before knowing
-what went into its `φ`.
-
-### rooted at a void
-
-The share we can only describe by pointing at somebody else's void. We know
-that `Φ.inc.x.next` is the `next` of whatever fills `x`, and that is true of
-every caller and concrete for none.
-
-This is the honest middle. It is not coverage, because no formation is named;
-it is not nothing, because the shape of the answer is there and one more fact
-would finish it. Counting it as either would be a lie in one direction or the
-other, so it gets a band of its own — and it is the band worth attacking,
-being fifteen times the size of the one below it.
-
-### nothing known
-
-The share we say nothing about. Rare, and mostly the atoms whose body is Java.
-
-### depth
-
-A fourth number, of a different kind, which is why it sits behind a semicolon.
-Each object stands on one of five rungs — nothing at all; a name rooted at a
-void; a formation with voids still free; a formation with nothing left free;
-nothing left to find out — and depth is the mean rung out of the highest one,
-as a percentage.
-
-It is an average of an ordinal scale, so it means nothing concrete: 67.2% is
-not two thirds of anything. It is kept because it moves when a rule gets
-sharper without moving an object from one band into another, which makes it a
-finer instrument than the three shares for telling whether a change helped. It
-must never be read as coverage.
-
-Run with debug logging on to see the rungs themselves, which is the only way
-to read any of these honestly — a share is a number to game, and writing an
-empty row for every object would leave all four exactly where they are:
-
-```text
-   548  nothing at all
-  8374  a name rooted at a void
-  5953  a formation, voids still free
- 22293  a formation, nothing left free
-  9728  nothing left to find out
-```
-
-### written down
-
-The line scrolls past, so the same numbers also go into `target/eo/ladder.txt`,
-beside the tables rather than among them, because they measure us and not the
-program:
-
-```text
-46896 objects
-81.0 named
-17.9 rooted at a void
-1.2 nothing known
-67.2 depth
-548 nothing at all
-8374 a name rooted at a void
-5953 a formation, voids still free
-22293 a formation, nothing left free
-9728 nothing left to find out
-581 rooted at a void nobody fills
-7790 rooted at a void the callers fill
-3 rooted at a void only an atom fills
-745 answered with a choice
-```
-
-One number a line, the value first and the name of it after, so that a shell
-can read it with one `read` and know nothing about what any of it means. The
-rungs go down with the shares and not instead of them, for the reason above.
-
-The three under the rung of the voids go down with them for a reason of their
-own. That rung is one number and three different situations, and only one of
-the three is ours. A void nobody fills and a void only Java fills are as far
-as anybody can go: the name is weak and it is true, and no amount of work will
-make it say more. A void the callers of the program fill is a gap we left,
-since the program says what goes in there and `Witnessed` wrote it down, so a
-name still rooted at it means we did not use what we recorded. Added together
-the three make a share that cannot get worse when we are wrong, which is the
-one thing a measurement of ourselves must never do. They are bands rather than
-rungs, so `Band` works them out and a page and a tally cannot disagree about
-them, and they sum to the rung above.
-
-The last line is neither a share nor a rung. A call on a void that holds a
-picker hands back one of the arguments it was given, and where those agree on
-nothing the row names all of them rather than none. That is a real answer, and
-no rung can show it: the walk ended at the void either way, so an object told
-it is either a `Φ.dial` or a `Φ.clock` is counted beside an object told
-nothing. It goes last and on its own, because a share that started counting
-arms would be a share nobody could compare against an older build.
-
-A pull request that touches the rules, the parser, the plugin or the program
-they are read from is built twice by `.github/workflows/ladder.yml` — once at
-the branch and once at the commit it sits on — and every line that differs
-between the two files is posted on it as a table. A branch that moved nothing
-is told nothing.
-
-## What it draws
-
-The three numbers say how much of a program we understand without saying which
-part. A page per source file says both, with the author's own source on it and
-a mark on every object: green where we can name the formation, amber where the
-answer is somebody else's void, red where there is nothing. Hovering over a
-mark says what the tables hold about it, and an amber one names what the
-program was seen putting into the void besides.
-
-The pages of eo-runtime are published at
-[www.eolang.org/inference](https://www.eolang.org/inference/), rebuilt on every
-tag, so looking at them needs nothing installed.
-
-Drawing them is a goal of its own, `inference-report`, since the tables are
-what the compiler needs and the pages are for a person: a build that wants
-them asks for the goal, one that does not never runs it. The pom of eo-runtime
-asks for it, so this is the shortest way to the pages of a working copy:
-
-```bash
-mvn -pl eo-runtime process-sources
-open eo-runtime/target/site/inference/index.html
-```
-
-They land in the `target/site/inference/` of the module they describe, beside
-the coverage report and every other generated page a person opens. They are
-not written into `target/eo/`, which is the compiler's scratch space, however
-much the tables they are made from live there.
-
-## How it works
-
-Every rule is a `Clue`: it reads the program and writes down one kind of fact.
-No clue decides anything, and none of them can fail, so they compose in any
-order:
-
-```java
-new Witnessed(new Demanded(new Reduced(new Resolved(new Clues()))))
-```
-
-`Clues` is the first pass and fills the three tables from the source text
-alone, writing a row for an object because it is *there* rather than because
-something reaches it. That matters: eo-runtime is a library with no entry
-point, so a checker that starts from a root and follows what runs would report
-a clean bill of health for code it never opened.
-
-| Table | Holds |
-| --- | --- |
-| `provides.xml` | What an object certainly has, read off the formation: its attributes, which of them are void, what it delegates to, what an atom comes back with. |
-| `needs.xml` | What an object must have, judging by how it is used. `x.foo` means `x` needs a `foo`, whatever `x` turns out to be. |
-| `links.xml` | Which object is a copy of which, and what every application puts into the voids of what it copies. |
-
-The passes after it read those tables and write them again, each answering one
-more question:
-
-| Pass | Answers |
-| --- | --- |
-| `Resolved` | What every dispatch turns out to be. `a.b.c` is walked one hop at a time, each hop asked of the type the last one arrived at, looking behind a delegation and into a package where it has to. |
-| `Reduced` | Which name a type goes by when it has no behaviour of its own. A formation whose only public attribute is its `φ` hands on everything it can be asked, so the name behind it is written on the row and every object that settled on it is reported as that instead. |
-| `Demanded` | What a void will have to offer, gathered from every name ever asked of it, and what it will have to take, gathered from every call ever made on it. A contract: a caller that fills it owes these attributes, and the voids of what it fills with have to take these arguments. |
-| `Witnessed` | What the program is actually seen to put into a void. Evidence, never a contract — the callers a program happens to have today do not oblige the one written tomorrow, and a void filled with a `Φ.number` everywhere is still a void. Nothing may work out a type from it. |
-| `Named` | Which object a void is settled at, where the census `Witnessed` gathered has one member and that member is a type the table has a row for. It is written on the row of the void, and on every link that stops at the void. |
-
-`Depth` then walks the finished tables and puts every object on its rung.
-
-A void row carries two answers and they are not the same answer. `holds` is
-what the source declared, in `? > code /Q.number`, true of every caller there
-will ever be; `settled` is what `Named` read off the census, true of the callers
-this program happens to have. It is written only where the source declared
-nothing, and a reader after the type of a void reads it second.
-
-A link says the same of itself. A `ref` or a `bind` that was reached only
-through what the program was seen to put into a void carries
-`witnessed="true"`: the call on a void that its one caller fills with a
-`refused` is a copy of `refused` and fills its `message` for as long as that
-caller is the only one, and not a moment longer. A reader that needs a
-contract, such as a pass renaming arguments after the voids they land in,
-leaves those out, since a caller compiled apart may put a formation of another
-shape there:
+The second, `answers.xml`, is what the engine (`Walk`) works out from
+`facts.xml` alone. For every place it has the sets of objects the copies of
+that place can be, with the number of copies that say each set, what the
+copies of each formation reduce to, and, for an argument, the one void it
+lands in:
 
 ```xml
-<type id="Φ.socket.connect.φ.α0">
-  <ref loc="Φ.socket.refused" witnessed="true">
-    <bind void="Φ.socket.refused.message" witnessed="true">
-      <ref loc="Φ.socket.connect.φ.α0.α0"/>
-    </bind>
-  </ref>
-</type>
+<o loc="Φ.box.item" copies="2">
+  <set copies="1">
+    <is loc="Φ.number"/>
+  </set>
+  <set copies="1">
+    <is loc="Φ.string"/>
+  </set>
+</o>
 ```
 
-A `ref` is marked where the passes, run once more with no void named after
-its callers, do not arrive at it, and wherever `Named` wrote it from the
-census; a `bind` is marked where only the relay into what a void holds put it
-there.
+The engine knows three lists of names of the program, which are parameters of
+the goal with no defaults, and the `pom.xml` of eo-runtime sets them:
+`inferenceCanon` (the kinds that are one shared copy each, `Φ.bytes`,
+`Φ.number` and `Φ.string`), `inferenceRoots` (the packages of list code,
+`Φ.tuple`, `Φ.map` and `Φ.set`) and `inferenceScalars` (the packages whose
+objects give back new data). A list left unset is empty.
+
+Before the facts are read, each file is made ready by `Prepared`: every chain
+of names is split into one read per name, the first one too, so `x.next.foo`
+becomes `.foo` read off `.next`, read off `.x`, read off a bare `ξ`, and the
+locators are set again on the objects the split made. The prepared files are
+kept in `target/eo/NN-pre-inference`, since every row of `facts.xml` points
+into them.
+
+## The report
+
+The `inference-report` goal reads the prepared files and the `answers.xml` in
+`target/eo/NN-inference`, and writes a page per source file into
+`target/site/inference`, with an index. A page shows the source with a mark
+on every object, coloured by one of ten bands of what the engine answers
+there: green for one name and nothing else, then names with gaps, two names,
+mixed names, lost track, voids an atom fills, voids nobody fills, only an
+error, not reached, and red where a read fails. The goal logs how many
+objects fall in each band.
+
+`Report` draws the same bytes as `report.py`, the Python report it is ported
+from, with the same `page.xsl` and `index.xsl`. `ReportTest` compares the two
+on a whole run when given its files:
+
+```bash
+mvn test -pl eo-inference -Dtest=ReportTest \
+  -Dreport.xmirs=pre -Dreport.answers=answers.xml -Dreport.html=html
+```
 
 ## How the behaviour is described
 
-By packs, in
-`eo-maven-plugin/src/test/resources/org/eolang/maven/inference-packs`. One pack
-per behaviour: a small EO program of one or more files, and the XPaths its
-tables must satisfy afterwards. A rule is described by the program it reads,
-never by XMIR written out by hand.
-
-```yaml
-eo:
-  app.eo: |
-    [] > app
-      inc oak > @
-  inc.eo: |
-    [x] > inc
-      x > @
-  oak.eo: |
-    [] > oak
-provides:
-  - "//type[@id='Φ.inc']/attr[@void='true']/witnessed/ref[@loc='Φ.oak']"
-```
-
-Three tables is the whole set. A new fact becomes a column of one of them or a
-child element inside a row — never a fourth document.
+By test packs in `src/test/resources/org/eolang/inference/packs`. Each one
+carries the EO sources of a small program, several files where it can, a
+comment at the top that says what the engine gives on it, and a list of
+XPaths, each checking one claim of that comment. `AnswersTest` makes the
+facts of the sources the way Maven does, runs the engine on them, and checks
+the XPaths under `answers:` against the `answers.xml` it writes. A pack whose
+rule is about the facts also lists XPaths under `facts:`, and `FactsTest`
+checks them against the `facts.xml`; it skips the packs that have none.
 
 ## What is not here
 

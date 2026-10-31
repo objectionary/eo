@@ -1,0 +1,125 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The table of operations phino may answer symbolically during the one run
+# of the lowering. A key is a regular expression matched against the whole
+# name of a λ function; a bare 𝜎 in an answer is a fresh symbol wrapped in
+# the carrier of the operation. A λ function no key matches is left where
+# it stands, and the formation that reached it is a taint.
+# A fork answers neither of its sides. Its condition is a value nobody
+# worked out, so phino morphs both sides first. Two sides that come to one
+# term up to their symbols are joined into a fresh symbol that stands for
+# either, and the run goes on as one: the "stay" lines drop the ρ a side
+# may hang on its bytes, the "undress" lines take φ off a side that only
+# wraps another object, the second pair of "evaluate" lines fires the atom
+# the undressing may uncover, the "symbolize" lines turn a literal a side holds
+# into a symbol, so that a side computed and a side written out compare
+# as one shape, and the "defer" lines turn a copy over a bare symbol,
+# which nobody can work out, into a symbol that stands for it, so that a
+# side ends in the symbol instead of getting stuck inside the copy, and the
+# "cast" lines put a side that is a bare symbol at the end of the φ chain of
+# the other side, so that data meets data even when one side still wraps
+# it. Two
+# formations that do not join are answered by a formation of copies of
+# the fork, one per attribute, each holding the condition and the two
+# sides under the names "on🌵", "left🌵" and "right🌵" phino gives them;
+# the fork spells its own condition and sides under the same names, so
+# the one entry below answers a planted fork and a fabricated copy alike,
+# and names itself under "otherwise". Two sides that neither join nor
+# are formations get the firing stuck, and the formation that reached it
+# is a taint. The rendering turns every join into an if that assigns the
+# joined symbol.
+- λ: L_number_(plus|times|div)
+  dataize:
+    𝛿1: $.ρ
+    𝛿2: $.b
+  𝑛: Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )
+- λ: L_number_gt
+  dataize:
+    𝛿1: $.ρ
+    𝛿2: $.b
+  𝑛: >-
+    ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
+    on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧
+- λ: L_bytes_size
+  dataize:
+    𝛿1: $.ρ
+  𝑛: Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )
+- λ: L_bytes_eq
+  dataize:
+    𝛿1: $.ρ
+    𝛿2: $.b
+  𝑛: >-
+    ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
+    on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧
+- λ: L_bytes_(and|or|concat|right)
+  dataize:
+    𝛿1: $.ρ
+    𝛿2: $.b
+  𝑛: Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )
+- λ: L_bytes_not
+  dataize:
+    𝛿1: $.ρ
+  𝑛: Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )
+- λ: L_bytes_slice
+  dataize:
+    𝛿1: $.ρ
+    𝛿2: $.start
+    𝛿3: $.len
+  𝑛: Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )
+- λ: L_dataized
+  dataize:
+    𝛿1: $.target
+  𝑛: Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )
+- λ: L_os_name
+  𝑛: Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )
+- λ: L_fork
+  dataize:
+    𝛿1: $.on🌵
+  morph:
+    𝑛1: $.left🌵
+    𝑛2: $.right🌵
+  undress:
+    𝑛15: 𝑛9
+    𝑛16: 𝑛10
+  stay:
+    𝑛3: 𝑛1
+    𝑛4: 𝑛2
+  evaluate:
+    𝑛5: 𝑛3
+    𝑛6: 𝑛4
+    𝑛17: 𝑛15
+    𝑛18: 𝑛16
+  rewrite:
+    𝑛9:
+      of: 𝑛5
+      rules: &bool
+        - name: true-literal
+          pattern: >-
+            ⟦ 𝐵1, φ ↦ Φ.bool( if ↦ ⟦ ρ ↦ ∅, 𝜏1 ↦ ∅, 𝜏2 ↦ ∅, φ ↦ ξ.𝜏1 ⟧ ) ⟧
+          result: >-
+            ⟦ 𝐵1, φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
+            on🌵 ↦ ⟦ Δ ⤍ FF- ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧
+        - name: false-literal
+          pattern: >-
+            ⟦ 𝐵1, φ ↦ Φ.bool( if ↦ ⟦ ρ ↦ ∅, 𝜏1 ↦ ∅, 𝜏2 ↦ ∅, φ ↦ ξ.𝜏2 ⟧ ) ⟧
+          result: >-
+            ⟦ 𝐵1, φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
+            on🌵 ↦ ⟦ Δ ⤍ 00- ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧
+    𝑛10:
+      of: 𝑛6
+      rules: *bool
+  symbolize:
+    𝑛11: 𝑛17
+    𝑛12: 𝑛18
+  defer:
+    𝑛13: 𝑛11
+    𝑛14: 𝑛12
+  cast:
+    𝑛19: 𝑛13
+    𝑛20: 𝑛14
+  join:
+    'on': 𝛿1
+    left: 𝑛19
+    right: 𝑛20
+    otherwise: L_fork

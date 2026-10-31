@@ -6,12 +6,15 @@ package org.eolang.maven;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.Set;
 import java.util.UUID;
+import org.eolang.cache.Saved;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -88,6 +91,27 @@ final class MjUnplaceTest {
                 Matchers.not(Matchers.hasKey("target/classes/org")),
                 Matchers.hasKey("target/classes")
             )
+        );
+    }
+
+    @Test
+    void keepsBinaryThatPlaceDidNotCopy(@Mktmp final Path temp) throws IOException {
+        final String binary = "org/eolang/f/x.class";
+        final Path target = temp.resolve("target/classes").resolve(binary);
+        new Saved("a class the project compiled itself", target).value();
+        new Saved(
+            "a class of the dependency",
+            new Seqdir(temp.resolve("target"), 2).dirs().once("resolve").resolve(
+                Paths.get(String.format("foo/hello/-/0.1/%s", binary))
+            )
+        ).value();
+        final FakeMaven maven = new FakeMaven(temp).with("rewrite", false);
+        maven.execute(MjPlace.class);
+        maven.execute(MjUnplace.class);
+        MatcherAssert.assertThat(
+            "The binary that place left alone must stay, but it was deleted",
+            Files.exists(target),
+            Matchers.is(true)
         );
     }
 

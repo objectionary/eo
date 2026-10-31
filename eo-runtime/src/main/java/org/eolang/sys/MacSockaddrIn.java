@@ -13,7 +13,7 @@ import java.util.List;
  * The sockaddr_in structure, as macOS and the BSDs lay it out: a one-byte
  * {@code sin_len} and a one-byte {@code sin_family}, not a two-byte family.
  *
- * @since 0.74.0
+ * @since 0.64.0
  * @checkstyle VisibilityModifierCheck (50 lines)
  */
 public final class MacSockaddrIn extends Structure {

@@ -1,0 +1,48 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# taken calls choose, a void of pick written alone, with two oaks. yes and no
+# fill choose with an arm whose @ is one of its own voids, so the call answers
+# what goes there: taken is an oak, and the grows app reads off it answers the
+# bytes it is handed.
+sources:
+  pick.eo: |
+    [choose] > pick
+      choose > taken
+        oak
+        oak
+  yes.eo: |
+    [^] > yes
+      pick > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      pick > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  oak.eo: |
+    [] > oak
+      [^ tall] > grows
+        tall > @
+  app.eo: |
+    [] > app
+      yes.taken.grows > @
+        03-
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.pick.choose']/set/is[@loc='Φ.yes.φ.α0']
+  - /answers/o[@loc='Φ.pick.choose']/set/is[@loc='Φ.no.φ.α0']
+  - /answers/o[@loc='Φ.pick.taken']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='tall']/is[@loc='Φ.bytes']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.bytes']

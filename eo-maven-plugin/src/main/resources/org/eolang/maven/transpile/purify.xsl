@@ -3,36 +3,57 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="purify" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="purify" version="3.0">
   <!--
   Here we mark every formation that is safe to cache with @pure="true", so
   that a later step of #5165 can let "PhSticky" keep the result of dataizing
   it instead of working it out again.
-  Nothing is worked out here: the tables that "eo:inference" leaves in
-  "target/eo/6-inference" already say what a program knows about itself, and
-  this stylesheet only reads them. The "inference" parameter names that
-  directory, and when it names nothing, or the tables are not there - a build
-  that skips the "inference" goal - every question below is unanswerable and
-  the stylesheet is an identity transform.
+  Nothing is worked out here: the two tables that "eo:inference" leaves in
+  its directory already say what a program knows about itself, and this
+  stylesheet only reads them. The "inference" parameter names that
+  directory, and when it names nothing, or the tables are not there - a
+  build that skips the "inference" goal - every question below is
+  unanswerable and the stylesheet is an identity transform.
+  "facts.xml" says what the text of the program states, and among it, in
+  its "objects", the voids every formation declares:
+  &lt;type id="Φ.socket.htons"&gt;
+  &lt;attr name="port" type="Φ.socket.htons.port" void="true"/&gt;
+  &lt;/type&gt;
+  "answers.xml" says, for every place of the program, what the copies of
+  it the engine walked turned out to be. The labels sit right under the
+  row, or in a "set" each when the copies disagree:
+  &lt;o loc="Φ.socket.htons.port" copies="2"&gt;
+  &lt;set copies="1"&gt;
+  &lt;terminator/&gt;
+  &lt;is loc="Φ.number"/&gt;
+  &lt;/set&gt;
+  &lt;set copies="1"&gt;
+  &lt;is loc="Φ.number"/&gt;
+  &lt;/set&gt;
+  &lt;/o&gt;
+  A row says its place is decided by bytes when its labels, every set of
+  them taken together, with a termination ("terminator"), an open void
+  ("open") and a failing read ("fails") left out, are at least one, and
+  each of them is a datum ("data") or a copy of "Φ.number", "Φ.string" or
+  "Φ.bytes". The three left out are gaps: a copy that stops or waits there
+  gives no bytes at all, so it never hands a cache a wrong answer. Anything
+  else - another formation, a label the engine could not tell ("unknown") -
+  keeps the label off.
   A formation earns the label when three things are true of it:
-  1. Every void it has is filled with a number or a string, and the tables
-  have seen it filled. "provides.xml" says what goes in, as the evidence of
-  the callers a program happens to have:
-  &lt;attr name="port" type="Φ.socket.htons.port" void="true"&gt;
-  &lt;witnessed&gt;
-  &lt;ref loc="Φ.number"/&gt;
-  &lt;/witnessed&gt;
-  &lt;/attr&gt;
-  A void nobody fills has no "witnessed" at all and does not qualify, and
-  neither does one filled with anything wider - another formation, a
-  termination, or a choice with a member that is not a number or a string.
-  The "ρ" a formation declares as "[^ x]" is one of those voids and is asked
-  the same question as the rest: the object a formation is attached to is an
-  input it is handed like any other, with no special meaning, so a body that
-  reads it reads a number or a string or the formation is not labeled. That
-  also settles what a body climbing further out reads - "ξ.ρ.ρ" is an
-  attribute of whatever came in as "ρ", and once that is data everything
-  taken from it is decided by those same bytes.
+  1. Every void it declares is filled with a number, a string or bytes:
+  the row of the place of the void, "Φ.socket.htons.port" above, is
+  decided by bytes, with a bare datum not counted. What a caller puts into
+  a void is an object, and "PhSticky" takes an object as a key only when
+  it is a number, a string or bytes. A void nobody fills has nothing but
+  gaps in its row and does not qualify.
+  The "ρ" a formation declares as "[^ x]" is one of those voids, though its
+  row is not read: the engine names the copy in "^" by what its "@" gives,
+  so the row may say "Φ.number" where "^" holds a decorator of one. A
+  declared "^" holds the formation it is written in, which the locator of
+  the formation tells, and it qualifies when that is "Φ.number",
+  "Φ.string" or "Φ.bytes". That also settles what a body climbing further
+  out reads - "ξ.ρ.ρ" is an attribute of whatever came in as "ρ", and once
+  that is data everything taken from it is decided by those same bytes.
   2. No object in its body copies anything from the root of the program,
   since such an object is shared by the whole program and its bytes are not
   part of what a caller passes in. The data literals are the exception: the
@@ -44,44 +65,39 @@
   what its attributes hold, so the formation around it is judged on what its
   own body does.
   The label means "pure when the inputs are data" and nothing stronger,
-  because what "provides.xml" says about a void is evidence of the callers of
-  today and never a contract (see "Witnessed.java"). At run time "PhSticky"
-  still asks the actual arguments, and the context where the body reads it,
-  what they are before it touches its cache, and passes through when the
-  answer is not data.
-  Formations are found by their locators rather than by their place in the
+  because what "answers.xml" says about a void is what the callers of today
+  put there and never a contract. At run time "PhSticky" still asks the
+  actual arguments, and the context where the body reads it, what they are
+  before it touches its cache, and passes through when the answer is not
+  data.
+  Objects are found by their locators rather than by their place in the
   document: "set-locators.xsl" opens the transpile train, so every object
-  carries a @loc equal to the id of its row in the tables, and the rows of
-  "provides.xml" are the formations of the program and nothing else. That is
-  what makes the same questions answerable both here, at the end of the
-  train, where a formation has become a "class" or an "abstract", and on the
-  XMIR as the parser leaves it, where it is still an "o".
+  carries a @loc equal to the name of its place in both tables. That is what
+  makes the same questions answerable both here, at the end of the train,
+  where a formation has become a "class" or an "abstract", and on the XMIR
+  as the parser leaves it, where it is still an "o".
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:import href="/org/eolang/parser/_specials.xsl"/>
   <!--
-  The rows of the table, by the type each one is about. Without the index
-  every question about a formation walks the whole table, and the table of
-  eo-runtime holds tens of thousands of rows.
+  The formations of "facts.xml" and the rows of "answers.xml", by the
+  locator each one is about. Without the index every question walks a
+  whole table, and the tables of eo-runtime hold tens of thousands of rows.
   -->
-  <xsl:key name="eo:row" match="type" use="@id"/>
+  <xsl:key name="eo:object" match="objects/type" use="@id"/>
+  <xsl:key name="eo:answer" match="answers/o" use="@loc"/>
   <!--
   The directory with the tables of "eo:inference", as a URI. Empty when
   nothing was worked out, and then nothing is labeled.
   -->
   <xsl:param name="inference" as="xs:string" select="''"/>
   <xsl:variable name="eo:dir" as="xs:string" select="if ($inference = '' or ends-with($inference, '/')) then $inference else concat($inference, '/')"/>
-  <xsl:variable name="eo:provides" as="document-node()?" select="if ($eo:dir != '' and doc-available(concat($eo:dir, 'provides.xml'))) then doc(concat($eo:dir, 'provides.xml')) else ()"/>
   <!--
-  Where the table of links is expected to be.
+  The tables, each absent when the directory is not named or does not hold
+  it, and then nothing is labeled.
   -->
-  <xsl:variable name="eo:links-file" as="xs:string" select="concat($eo:dir, 'links.xml')"/>
-  <!--
-  The table that says what every part of an application is, by the locator of
-  that part. Absent for the same reasons "provides.xml" may be absent, and
-  then no application is labeled.
-  -->
-  <xsl:variable name="eo:links" as="document-node()?" select="if ($eo:dir != '' and doc-available($eo:links-file)) then doc($eo:links-file) else ()"/>
+  <xsl:variable name="eo:facts" as="document-node()?" select="if ($eo:dir != '' and doc-available(concat($eo:dir, 'facts.xml'))) then doc(concat($eo:dir, 'facts.xml')) else ()"/>
+  <xsl:variable name="eo:answers" as="document-node()?" select="if ($eo:dir != '' and doc-available(concat($eo:dir, 'answers.xml'))) then doc(concat($eo:dir, 'answers.xml')) else ()"/>
   <!--
   The objects whose bytes a caller may pass in: a number, a string and a bytes
   are the kinds of data a formation can be given and still be worth caching by
@@ -109,18 +125,18 @@
   asked one at a time, cheapest first, and the one that walks the whole body
   of the formation is asked last: an "and" of all four leaves Saxon free to
   work out every one of them, and the walk is then done for every object of
-  the program rather than for the few formations the table lets through. The
-  row is looked up inside the branch that knows there is a table to look in,
+  the program rather than for the few formations the tables let through. The
+  row is looked up inside the branch that knows there are tables to look in,
   since "key()" takes no empty sequence for the document to search.
   -->
   <xsl:function name="eo:pure" as="xs:boolean">
     <xsl:param name="f" as="element()"/>
     <xsl:choose>
-      <xsl:when test="empty($eo:provides) or exists($f/*[@name = $eo:lambda])">
+      <xsl:when test="empty($eo:facts) or empty($eo:answers) or exists($f/*[@name = $eo:lambda])">
         <xsl:sequence select="false()"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:variable name="row" as="element()?" select="key('eo:row', $f/@loc, $eo:provides)"/>
+        <xsl:variable name="row" as="element()?" select="key('eo:object', $f/@loc, $eo:facts)"/>
         <xsl:choose>
           <xsl:when test="empty($row) or not(eo:filled($row))">
             <xsl:sequence select="false()"/>
@@ -149,11 +165,11 @@
   <!--
   Whether this formation reads the object it is attached to without declaring
   it. Rule 1 above judges the receiver like any other input, and "eo:filled"
-  asks that of every void the row has; a receiver the formation never declared
-  has no void to be witnessed, so an empty list of voids answers the question
-  before it is put and the label goes on with the receiver never looked at
-  (#7613). The cheap half is asked first: a formation that declares "ρ" has
-  been judged on it already.
+  asks that of every void the formation declares; a receiver it never declared
+  is not among them, so an empty list of voids answers the question before it
+  is put and the label goes on with the receiver never looked at (#7613). The
+  cheap half is asked first: a formation that declares "ρ" has been judged on
+  it already.
   Only the reads of this very formation count, which is why no formation may
   stand between a read and this one. A nested formation declaring its own
   receiver and reading that says nothing about the formation around it - its
@@ -162,7 +178,7 @@
   in between are the ancestors of a read that this formation precedes, and
   asking for them that way leaves the ones above this formation alone: a
   program nests hundreds of objects deep, and the question is put to every
-  read of every formation the table lets through.
+  read of every formation the tables let through.
   -->
   <xsl:function name="eo:borrowed" as="xs:boolean">
     <xsl:param name="f" as="element()"/>
@@ -170,84 +186,73 @@
     <xsl:sequence select="empty($row/attr[@void = 'true'][@name = $eo:rho]) and exists($f/descendant::*[@base = $eo:receiver or starts-with(@base, $eo:from-receiver)][empty(ancestor::*[$f &lt;&lt; .][eo:formation(.)])])"/>
   </xsl:function>
   <!--
-  Whether every void of this row is witnessed as a number or a string, the
-  "ρ" a formation declares for itself among them.
+  Whether every void this row of "facts.xml" declares is filled with a
+  number, a string or bytes, the "ρ" a formation declares for itself among
+  them.
   -->
   <xsl:function name="eo:filled" as="xs:boolean">
     <xsl:param name="row" as="element()"/>
-    <xsl:sequence select="every $v in $row/attr[@void = 'true'] satisfies eo:given($v)"/>
+    <xsl:sequence select="every $v in $row/attr[@void = 'true'] satisfies eo:given($row/@id, $v/@name)"/>
   </xsl:function>
   <!--
-  Whether this void of a row of "provides.xml" is witnessed as data, and
-  nothing else. A void nobody fills has no "witnessed" and does not
-  qualify; a "union" qualifies when every member of it does.
+  Whether this void of this formation is filled with a number, a string or
+  bytes. A declared "ρ" holds the formation the owner is written in, which
+  is everything of the locator of the owner but its last part; any other
+  void is asked of the row of its place, where a bare datum does not count.
   -->
   <xsl:function name="eo:given" as="xs:boolean">
-    <xsl:param name="v" as="element()?"/>
-    <xsl:sequence select="exists($v) and exists($v/witnessed) and empty($v/witnessed//*[not(name() = 'union' or (name() = 'ref' and @loc = $eo:data))])"/>
-  </xsl:function>
-  <!--
-  Whether this application is decided by the bytes of its own parts. Every
-  part it has, and the receiver an implicit dispatch leaves out of them,
-  must be decided by bytes, which is what a row of "links.xml" holding one
-  "ref" to a data object says:
-  &lt;type id="Φ.app.x.ρ"&gt;
-  &lt;ref loc="Φ.number"/&gt;
-  &lt;/type&gt;
-  A part with no row of its own, or one holding anything else, leaves the
-  application unlabeled.
-  -->
-  <xsl:function name="eo:applied" as="xs:boolean">
-    <xsl:param name="a" as="element()"/>
-    <xsl:variable name="parts" as="element()*" select="$a/o[@loc]"/>
-    <xsl:sequence select="exists($eo:links) and exists($parts) and eo:receives($a) and (every $p in $parts satisfies eo:decided(key('eo:row', $p/@loc, $eo:links), ()))"/>
-  </xsl:function>
-  <!--
-  Whether this row of "links.xml" says its object is decided by bytes
-  alone. Every row holds one thing, and all four of the ones the table
-  carries are answered here: a "data" is a literal; a "ref" to one of the
-  data objects is a copy of one; a "ref" to anything else is followed,
-  since what that object comes back with is what this one comes back
-  with; and a "var" is a void, put to the same question "eo:filled" puts
-  to the voids of a formation, a "union" of data among the answers that
-  qualify. A "terminator" and an "unknown" answer nothing and the object
-  stays undecided.
-  The locators already walked through are carried along, so a ring of
-  references - "a" that comes from "b" that comes from "a" - is answered
-  instead of walked for ever.
-  -->
-  <xsl:function name="eo:decided" as="xs:boolean">
-    <xsl:param name="row" as="element()?"/>
-    <xsl:param name="seen" as="xs:string*"/>
+    <xsl:param name="owner" as="xs:string"/>
+    <xsl:param name="name" as="xs:string"/>
     <xsl:choose>
-      <xsl:when test="empty($row) or count($row/*) != 1">
-        <xsl:sequence select="false()"/>
-      </xsl:when>
-      <xsl:when test="exists($row/data) or exists($row/ref[@loc = $eo:data])">
-        <xsl:sequence select="true()"/>
-      </xsl:when>
-      <xsl:when test="exists($row/var)">
-        <xsl:sequence select="eo:given(eo:void($row/@id))"/>
-      </xsl:when>
-      <xsl:when test="exists($row/ref) and not($row/ref/@loc = $seen)">
-        <xsl:sequence select="eo:decided(key('eo:row', $row/ref/@loc, $eo:links), ($seen, $row/@id))"/>
+      <xsl:when test="$name = $eo:rho">
+        <xsl:sequence select="replace($owner, '\.[^.]+$', '') = $eo:data"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:sequence select="false()"/>
+        <xsl:sequence select="eo:bytes(key('eo:answer', concat($owner, '.', $name), $eo:answers), false())"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
   <!--
-  The void this locator names, as "provides.xml" holds it: a locator is the
-  name of an attribute under the locator of the formation declaring it, so
-  the row is the one of everything but the last part of it.
+  Whether this row of "answers.xml" says its place is decided by bytes:
+  its labels, right under it or in any of its sets and with the gaps left
+  out, are at least one, and each of them is a copy of a data object, or a
+  datum when one counts. A row with nothing but gaps, or no row at all,
+  answers nothing, and the place stays undecided.
   -->
-  <xsl:function name="eo:void" as="element()?">
-    <xsl:param name="loc" as="xs:string"/>
-    <xsl:variable name="parts" as="xs:string*" select="tokenize($loc, '\.')"/>
-    <xsl:variable name="owner" as="xs:string" select="string-join($parts[position() != last()], '.')"/>
-    <xsl:variable name="row" as="element()?" select="if (exists($eo:provides) and $owner != '') then key('eo:row', $owner, $eo:provides) else ()"/>
-    <xsl:sequence select="$row/attr[@void = 'true'][@name = $parts[last()]]"/>
+  <xsl:function name="eo:bytes" as="xs:boolean">
+    <xsl:param name="row" as="element()?"/>
+    <xsl:param name="datum" as="xs:boolean"/>
+    <xsl:variable name="labels" as="element()*" select="$row/(* | set/*)[not(self::set or self::reduced or self::terminator or self::open or self::fails)]"/>
+    <xsl:sequence select="exists($labels) and (every $l in $labels satisfies (exists($l/self::is[@loc = $eo:data]) or ($datum and exists($l/self::data))))"/>
+  </xsl:function>
+  <!--
+  Whether this application is decided by the bytes of its own parts. Every
+  part it has, and the receiver an implicit dispatch leaves out of them,
+  must be decided by bytes, which is what a row of "answers.xml" naming
+  nothing but a datum or a data object says:
+  &lt;o loc="Φ.app.x.ρ" copies="1"&gt;
+  &lt;is loc="Φ.number"/&gt;
+  &lt;/o&gt;
+  A part with no row of its own, or one naming anything else, leaves the
+  application unlabeled, and so does a call that reaches outside its parts.
+  -->
+  <xsl:function name="eo:applied" as="xs:boolean">
+    <xsl:param name="a" as="element()"/>
+    <xsl:variable name="parts" as="element()*" select="$a/o[@loc]"/>
+    <xsl:sequence select="exists($eo:answers) and exists($parts) and not(eo:outward($a)) and eo:receives($a) and (every $p in $parts satisfies eo:bytes(key('eo:answer', $p/@loc, $eo:answers), true()))"/>
+  </xsl:function>
+  <!--
+  Whether this application calls an object of the root or a termination.
+  An object of the root may reach outside the program: "posix.access" asks
+  the disk and "console.write" prints. The same bytes given to it twice need
+  not get the same answer twice, and a cache would skip the second call. A
+  termination gives back no bytes at all, so its cache would never keep an
+  answer. The literals never get here, since the template below leaves them
+  out.
+  -->
+  <xsl:function name="eo:outward" as="xs:boolean">
+    <xsl:param name="a" as="element()"/>
+    <xsl:sequence select="$a/@base = ($eo:bottom, $eo:program) or starts-with($a/@base, $eo:root)"/>
   </xsl:function>
   <!--
   Whether the object this application is attached to is decided by bytes
@@ -261,12 +266,13 @@
   -->
   <xsl:function name="eo:receives" as="xs:boolean">
     <xsl:param name="a" as="element()"/>
-    <xsl:sequence select="not(starts-with($a/@base, $eo:xi)) or eo:decided(key('eo:row', concat($a/@loc, '.', $eo:rho), $eo:links), ())"/>
+    <xsl:sequence select="not(starts-with($a/@base, $eo:xi)) or eo:bytes(key('eo:answer', concat($a/@loc, '.', $eo:rho), $eo:answers), true())"/>
   </xsl:function>
   <!--
-  An application whose parts and receiver are all decided by bytes is
-  labeled too, so that the answer it works out is remembered instead of
-  being worked out on every read.
+  An application whose parts and receiver are all decided by bytes, and
+  that calls neither an object of the root nor a termination, is labeled
+  too, so that the answer it works out is remembered instead of being worked
+  out on every read.
   -->
   <xsl:template match="*[@loc][@base][not(@base = $eo:literals)][o[@loc]]">
     <xsl:copy>

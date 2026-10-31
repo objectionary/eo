@@ -8,6 +8,7 @@ import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import org.eolang.cache.Saved;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -63,29 +65,24 @@ import org.w3c.dom.NodeList;
 final class Merging implements Step {
 
     /**
-     * The directory for the merged XMIR.
-     */
-    static final String DIR = "4-merge";
-
-    /**
      * The tojos of everything this build compiles.
      */
     private final TjsForeign tojos;
 
     /**
-     * The directory to write the merged XMIR to.
+     * Target directory.
      */
-    private final Path dir;
+    private final Path target;
 
     /**
      * Ctor.
      *
      * @param foreign The tojos of everything this build compiles
-     * @param target The directory for the merged XMIR
+     * @param tgt Target directory
      */
-    Merging(final TjsForeign foreign, final Path target) {
+    Merging(final TjsForeign foreign, final Path tgt) {
         this.tojos = foreign;
-        this.dir = target;
+        this.target = tgt;
     }
 
     @Override
@@ -101,9 +98,13 @@ final class Merging implements Step {
         } else {
             Logger.info(
                 this, "Put %d member(s) into %d package object(s), XMIR is in %[file]s",
-                done, found.size(), this.dir
+                done, found.size(), this.dir()
             );
         }
+    }
+
+    private Path dir() throws IOException {
+        return new Seqdir(this.target, 2).dirs().once("merge");
     }
 
     private static Collection<String> deepest(final Map<String, TjForeign> all) {
@@ -155,18 +156,18 @@ final class Merging implements Step {
                 formation.appendChild(top.removeChild(test));
             }
         }
-        final Path target = new Place(pkg).make(this.dir, MjAssemble.XMIR);
+        final Path dest = new Place(pkg).make(this.dir(), MjAssemble.XMIR);
         final String merged = new XMLDocument(formation.getOwnerDocument()).toString();
-        if (!Files.exists(target) || !new Diff(Files.readString(target), merged).same()) {
-            new Saved(merged, target).value();
+        if (!Files.exists(dest) || !new Diff(Files.readString(dest), merged).same()) {
+            new Saved(merged, dest).value();
         }
-        object.withXmir(target);
+        object.withXmir(dest);
         for (final TjForeign member : members.values()) {
             member.withMerged(pkg);
         }
         Logger.debug(
             this, "Put %d member(s) of '%s' into %[file]s",
-            members.size(), pkg, target
+            members.size(), pkg, dest
         );
         return members.size();
     }

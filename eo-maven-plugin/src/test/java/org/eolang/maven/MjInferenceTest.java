@@ -9,8 +9,11 @@ import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -24,50 +27,110 @@ final class MjInferenceTest {
 
     @Test
     void writesTableOfWholeProgram(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > app",
+                "  [] > t",
+                "    [] > next",
+                ""
+            )
+        );
+        maven.execute(MjParse.class).execute(MjInference.class);
         MatcherAssert.assertThat(
-            "the table must say what the innermost formation provides, but it doesnt",
+            "the facts must say what the innermost formation has, but they dont",
             new XMLDocument(
-                new FakeMaven(temp).withProgram(
-                    String.join(
-                        System.lineSeparator(),
-                        "[] > app",
-                        "  [] > t",
-                        "    [] > next",
-                        ""
-                    )
-                )
-                .execute(MjParse.class)
-                .execute(MjInference.class)
-                .targetPath()
-                .resolve("6-inference")
-                .resolve("provides.xml")
+                maven.targetPath()
+                    .resolve(maven.dirName("inference"))
+                    .resolve("facts.xml")
             ),
-            XhtmlMatchers.hasXPath("/provides/type[@id='Φ.app.t']/attr[@name='next']")
+            XhtmlMatchers.hasXPath("/facts/objects/type[@id='Φ.app.t']/attr[@name='next']")
+        );
+    }
+
+    @Test
+    void writesAnswersBesideFacts(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > app",
+                "  [] > t",
+                "    [] > next",
+                ""
+            )
+        );
+        maven.execute(MjParse.class).execute(MjInference.class);
+        MatcherAssert.assertThat(
+            "the answers must name what each place is, but they dont",
+            new XMLDocument(
+                maven.targetPath()
+                    .resolve(maven.dirName("inference"))
+                    .resolve("answers.xml")
+            ),
+            XhtmlMatchers.hasXPath("/answers/o[@loc='Φ.app.t']/is[@loc='Φ.app.t']")
+        );
+    }
+
+    @Test
+    void readsOnlyTheXmirOfARegisteredSource(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(System.lineSeparator(), "[] > app", "")
+        );
+        maven.execute(MjParse.class);
+        Files.writeString(
+            maven.targetPath().resolve(maven.dirName("parse")).resolve("bee.xmir"),
+            new EoSyntax(
+                String.join(System.lineSeparator(), "[] > bee", "")
+            ).parsed().toString()
+        );
+        maven.execute(MjInference.class);
+        MatcherAssert.assertThat(
+            "an XMIR that no tojo names must stay out of the facts, but it didnt",
+            new XMLDocument(
+                maven.targetPath()
+                    .resolve(maven.dirName("inference"))
+                    .resolve("facts.xml")
+            ).nodes("/facts/objects/type[@id='Φ.bee']"),
+            Matchers.empty()
+        );
+    }
+
+    @Test
+    void writesFactsForModuleWithoutSources(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp);
+        maven.execute(MjParse.class).execute(MjInference.class);
+        MatcherAssert.assertThat(
+            "the facts must be written for a module with no sources, but they werent",
+            new XMLDocument(
+                maven.targetPath()
+                    .resolve(maven.dirName("inference"))
+                    .resolve("facts.xml")
+            ),
+            XhtmlMatchers.hasXPath("/facts/calls[not(*)]")
         );
     }
 
     @Test
     void keepsPreparedXmirOfProgram(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[x] > box",
+                "  x.lid.hinge > @",
+                ""
+            )
+        );
+        maven.execute(MjParse.class).execute(MjInference.class);
         MatcherAssert.assertThat(
-            "the prepared XMIR must have one object per dispatch step, but it doesnt",
+            "the prepared XMIR must have one object per name of a chain, but it doesnt",
             new XMLDocument(
-                new FakeMaven(temp).withProgram(
-                    String.join(
-                        System.lineSeparator(),
-                        "[x] > box",
-                        "  x.lid.hinge > @",
-                        ""
-                    )
-                )
-                .execute(MjParse.class)
-                .execute(MjInference.class)
-                .targetPath()
-                .resolve("6-pre-inference")
-                .resolve("foo")
-                .resolve("x")
-                .resolve("main.xmir")
+                maven.targetPath()
+                    .resolve(maven.dirName("pre-inference"))
+                    .resolve("foo")
+                    .resolve("x")
+                    .resolve("main.xmir")
             ),
-            XhtmlMatchers.hasXPath("//o[@base='.hinge']/o[@base='.lid']/o[@base='ξ.x']")
+            XhtmlMatchers.hasXPath("//o[@base='.hinge']/o[@base='.lid']/o[@base='.x']/o[@base='ξ']")
         );
     }
 }

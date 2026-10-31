@@ -6,56 +6,49 @@ package org.eolang.inference;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.xembly.Directives;
+import java.util.TreeSet;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * One line of source, cut into the pieces a page draws.
  *
  * <p>A line is text with objects written in it, and a page has to show both:
- * the text as the author typed it, and a mark on every stretch of it that the
- * tables have something to say about. Cutting the line up here rather than in
- * the stylesheet keeps the arithmetic of columns and widths in one place,
- * where it can be tested, and leaves the page nothing harder to do than
- * putting a class on a span.</p>
- *
- * <p>A mark carries what the tables said about every object under it, so that
- * a reader hovering over a word is told the same thing the tables hold: the
- * name it goes by, what it settled on, and, where it settled on nothing better
- * than somebody else's void, what the program was seen putting into that
- * void. An object whose answer is its own locator is a void itself and is
- * marked as one, since telling a reader that {@code args} is whatever
- * {@code args} turns out to be is telling them nothing.</p>
+ * the text as the author typed it, and a mark on every stretch of it the table
+ * has something to say about. Cutting the line up here rather than in the
+ * stylesheet keeps the arithmetic of columns and widths in one place, where it
+ * can be tested, and leaves the stylesheet nothing harder to do than putting a
+ * class on a span.</p>
  *
  * <p>A chain of dispatches is the awkward case. {@code first.as-bytes.size}
- * is three objects and the XMIR gives all three the same column, because each
- * one is written where the chain ends rather than where it begins. So a group
- * is walked leftward instead: the outermost keeps the column it was given, and
- * every object that is the receiver ({@code ρ}) of the one before it takes the
- * word before, back to the {@code ^} a chain is often taken off. Anything else
- * stays where the one before it was put and shares its mark, which is right
- * for a literal and the bytes it carries — to a reader those are one thing
- * written once — and right for a step whose own receiver the source never
- * wrote, such as the {@code dataized} that a trailing {@code !} slips into the
- * middle of a chain, since a reader has no word to hang it on.</p>
+ * is three objects and the XMIR gives all three the same column, the one where
+ * the chain ends. So a group is walked leftward: the outermost keeps the
+ * column it was given, and every object that is the receiver ({@code ρ}) of
+ * the one before it takes the word before, back to the {@code ^} a chain is
+ * often taken off. Anything else stays where the one before it was put and
+ * shares its mark, which is right for a literal and the bytes it carries, and
+ * for a step the source never wrote, such as the {@code dataized} a trailing
+ * {@code !} slips into the middle of a chain. A formation is marked on the
+ * name the arrow binds it to, since a bracket names nothing, and only a
+ * formation bound to no name keeps its bracket marked.</p>
  *
- * <p>A mark shared that way is coloured by the worst object under it. A
- * stretch of text with something unknown beneath it has to say so: colouring
- * it by whichever object came first drew green what the tally counts as
- * unknown, and the tally is counted from these same answers for exactly that
- * reason. The body of an atom sits under the bracket that opens it, so an
- * atom nobody can answer for used to be invisible on the page while being
- * counted at the top of it (#8318). Which object the warning is about the
- * reader finds in the popup, where all of them are listed. Which colour any of
- * it comes out as is {@link Band}'s to say and not this one's, so that a word
- * on the page and the tally above it cannot disagree.</p>
+ * <p>A mark over several objects tells only the one the source spells, as
+ * {@link Written} chooses it, and takes its colour from that one alone.</p>
  *
  * @since 0.70.0
  */
 final class Pieces {
+
+    /**
+     * The names that some letters on a page stand for.
+     */
+    private static final Map<String, String> SPELLED = Map.of(
+        "T", "⊥", "^", "ρ", "Q", "Φ", "$", "ξ"
+    );
 
     /**
      * The line, as the source wrote it.
@@ -79,69 +72,90 @@ final class Pieces {
     }
 
     /**
-     * The pieces of the line, in the order they are read.
+     * Put the pieces of the line into a row of a page, in the order they are
+     * read, a {@code bit} each.
      *
-     * @return The directives, one {@code bit} per piece
+     * @param row The row, a {@code line} of a page
+     * @param entries What a mark tells
      */
-    Directives directives() {
-        final Map<Integer, Collection<Written>> laid = this.laid();
-        final List<Integer> columns = new ArrayList<>(laid.keySet());
-        Collections.sort(columns);
+    void drawn(final Element row, final Entries entries) {
+        final Document page = row.getOwnerDocument();
+        final Map<Integer, List<Written>> laid = this.laid();
         final Reach reach = new Reach(this.line);
-        final Directives dirs = new Directives();
         int cursor = 0;
-        for (final int column : columns) {
+        for (final int column : new TreeSet<>(laid.keySet())) {
             final int width = reach.from(column);
             if (column >= cursor && width > 0) {
                 if (column > cursor) {
-                    dirs.add("bit").set(this.line.substring(cursor, column)).up();
+                    row.appendChild(Pieces.plain(page, this.line.substring(cursor, column)));
                 }
-                dirs.append(
-                    Pieces.marked(
-                        this.line.substring(column, Math.min(column + width, this.line.length())),
-                        laid.get(column)
-                    )
+                final String text = this.line.substring(
+                    column, Math.min(column + width, this.line.length())
                 );
+                final Element bit = page.createElement("bit");
+                entries.told(bit, Pieces.spelled(laid.get(column), text).loc());
+                final Element said = page.createElement("text");
+                said.appendChild(page.createTextNode(text));
+                bit.appendChild(said);
+                row.appendChild(bit);
                 cursor = column + width;
             }
         }
         if (cursor < this.line.length()) {
-            dirs.add("bit").set(this.line.substring(cursor)).up();
+            row.appendChild(Pieces.plain(page, this.line.substring(cursor)));
         }
-        return dirs;
     }
 
-    private Map<Integer, Collection<Written>> laid() {
-        final Map<Integer, Collection<Written>> found = new LinkedHashMap<>(0);
-        for (final Map.Entry<Integer, Collection<Written>> group : this.grouped().entrySet()) {
-            this.walked(found, group.getKey(), Pieces.sorted(group.getValue()));
-        }
-        return found;
+    private static Element plain(final Document page, final String text) {
+        final Element bit = page.createElement("bit");
+        bit.appendChild(page.createTextNode(text));
+        return bit;
     }
 
-    private Map<Integer, Collection<Written>> grouped() {
-        final Map<Integer, Collection<Written>> found = new LinkedHashMap<>(0);
+    private static Written spelled(final List<Written> said, final String text) {
+        final String word = text.replaceFirst("^\\.+", "");
+        final String spelt = Pieces.SPELLED.getOrDefault(word, word);
+        return said.stream().min(
+            Comparator.comparingInt((Written object) -> object.spelling(spelt))
+                .thenComparingInt(Written::depth)
+        ).orElseThrow();
+    }
+
+    private Map<Integer, List<Written>> laid() {
+        final Map<Integer, List<Written>> grouped = new LinkedHashMap<>(0);
         for (final Written object : this.objects) {
             if (object.at() >= 0 && object.at() < this.line.length()) {
-                found.computeIfAbsent(object.at(), key -> new ArrayList<>(1)).add(object);
+                grouped.computeIfAbsent(object.at(), key -> new ArrayList<>(1)).add(object);
+            }
+        }
+        final Map<Integer, List<Written>> found = new LinkedHashMap<>(0);
+        for (final Map.Entry<Integer, List<Written>> group : grouped.entrySet()) {
+            final List<Written> chain = new ArrayList<>(group.getValue());
+            chain.sort(Comparator.comparingInt(Written::hops));
+            int place = this.bound(group.getKey());
+            for (int step = 0; step < chain.size(); step = step + 1) {
+                if (step > 0 && chain.get(step).receives(chain.get(step - 1))) {
+                    place = this.leftward(place);
+                }
+                found.computeIfAbsent(place, key -> new ArrayList<>(1)).add(chain.get(step));
             }
         }
         return found;
     }
 
-    private void walked(
-        final Map<Integer, Collection<Written>> found,
-        final int column,
-        final List<Written> chain
-    ) {
-        int place = column;
-        for (int step = 0; step < chain.size(); step = step + 1) {
-            final Written link = chain.get(step);
-            if (step > 0 && link.loc().equals(chain.get(step - 1).loc().concat(".ρ"))) {
-                place = this.leftward(place);
+    private int bound(final int column) {
+        int found = column;
+        if (this.line.charAt(column) == '[') {
+            int start = this.line.indexOf('>', column) + 1;
+            while (start > 0 && start < this.line.length()
+                && (this.line.charAt(start) == '>' || this.line.charAt(start) == ' ')) {
+                start = start + 1;
             }
-            found.computeIfAbsent(place, key -> new ArrayList<>(1)).add(link.moved(place));
+            if (start > 0 && start < this.line.length()) {
+                found = start;
+            }
         }
+        return found;
     }
 
     private int leftward(final int column) {
@@ -156,74 +170,10 @@ final class Pieces {
         final int found;
         if (start == edge) {
             found = column;
+        } else if (start > 0 && this.line.charAt(start - 1) == '.') {
+            found = start - 1;
         } else {
-            if (start > 0 && this.line.charAt(start - 1) == '.') {
-                start = start - 1;
-            }
             found = start;
-        }
-        return found;
-    }
-
-    private static List<Written> sorted(final Collection<Written> group) {
-        final List<Written> found = new ArrayList<>(group);
-        found.sort(
-            (first, second) -> Integer.compare(
-                Pieces.hops(first.loc()), Pieces.hops(second.loc())
-            )
-        );
-        return found;
-    }
-
-    private static int hops(final String locator) {
-        int found = 0;
-        int spot = locator.indexOf(".ρ");
-        while (spot >= 0) {
-            found = found + 1;
-            spot = locator.indexOf(".ρ", spot + 1);
-        }
-        return found;
-    }
-
-    private static Directives marked(final String text, final Collection<Written> said) {
-        final Directives dirs = new Directives()
-            .add("bit")
-            .attr("band", Pieces.worst(said));
-        for (final Written object : said) {
-            final Band band = new Band(object.answer());
-            dirs.add("told")
-                .attr("label", object.label())
-                .attr("band", band.name())
-                .attr("where", object.answer().where())
-                .attr("loc", object.loc());
-            if (object.loc().equals(object.answer().where()) && band.hollow()) {
-                dirs.attr("void", "true");
-            }
-            Pieces.witnessed(dirs, object.answer().seen());
-            dirs.up();
-        }
-        return dirs.add("text").set(text).up().up();
-    }
-
-    private static void witnessed(final Directives dirs, final Collection<Type> seen) {
-        if (!seen.isEmpty()) {
-            dirs.add("seen");
-            for (final Type witness : seen) {
-                dirs.append(witness.directives());
-            }
-            dirs.up();
-        }
-    }
-
-    private static String worst(final Collection<Written> said) {
-        String found = "named";
-        int rank = Integer.MAX_VALUE;
-        for (final Written object : said) {
-            final Band band = new Band(object.answer());
-            if (band.rank() < rank) {
-                rank = band.rank();
-                found = band.name();
-            }
         }
         return found;
     }
