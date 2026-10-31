@@ -48,34 +48,32 @@
         "Can't convert i64 number %s to i32 because it's out of i32 bounds".printf
           *
             string num.as-number.as-scientific
-    i32 > left
-      num.as-bytes.slice 4 4
   [^num] > as-number
     if. > @
       eq.
         num.as-bytes.and 80-00-00-00-00-00-00-00
         00-00-00-00-00-00-00-00
       plus.
-        high.times 4503599627370496
-        low
+        times.
+          minus. >> high
+            number
+              43-30-00-00-00-00-00-00.or
+                and.
+                  num.as-bytes.right 52
+                  00-00-00-00-00-00-0F-FF
+            4503599627370496
+          4503599627370496
+        minus. >> low
+          number
+            43-30-00-00-00-00-00-00.or
+              num.as-bytes.and 00-0F-FF-FF-FF-FF-FF-FF
+          4503599627370496
       neg.
         plus.
           times.
             4095.minus high
             4503599627370496
           4503599627370496.minus low
-    minus. > high
-      number
-        43-30-00-00-00-00-00-00.or
-          and.
-            num.as-bytes.right 52
-            00-00-00-00-00-00-0F-FF
-      4503599627370496
-    minus. > low
-      number
-        43-30-00-00-00-00-00-00.or
-          num.as-bytes.and 00-0F-FF-FF-FF-FF-FF-FF
-      4503599627370496
   [^num b] > gt
     if. > @
       not.
@@ -115,45 +113,43 @@
         slice.
           as-bytes.
             if.
-              upper.gt 4503603922337791
+              gt.
+                plus. >> upper
+                  plus.
+                    number
+                      43-30-00-00-00-00-00-00.or
+                        and. (num.as-bytes.right 32) 00-00-00-00-FF-FF-FF-FF
+                    minus.
+                      number
+                        43-30-00-00-00-00-00-00.or
+                          and. (b.as-bytes.right 32) 00-00-00-00-FF-FF-FF-FF
+                      4503599627370496
+                  carried.if 1 0
+                4503603922337791
               upper.minus 4294967296
               upper
           4
           4
         slice.
           as-bytes.
-            carried.if
-              lower.minus 4294967296
+            if.
+              lower.gt 4503603922337791 >> carried
+              minus.
+                plus. >> lower
+                  number
+                    43-30-00-00-00-00-00-00.or
+                      num.as-bytes.and 00-00-00-00-FF-FF-FF-FF
+                  minus.
+                    number
+                      43-30-00-00-00-00-00-00.or
+                        b.as-bytes.and 00-00-00-00-FF-FF-FF-FF
+                    4503599627370496
+                4294967296
               lower
           4
           4
-    lower.gt 4503603922337791 > carried
-    plus. > lower
-      number
-        43-30-00-00-00-00-00-00.or
-          num.as-bytes.and 00-00-00-00-FF-FF-FF-FF
-      minus.
-        number
-          43-30-00-00-00-00-00-00.or
-            b.as-bytes.and 00-00-00-00-FF-FF-FF-FF
-        4503599627370496
-    plus. > upper
-      plus.
-        number
-          43-30-00-00-00-00-00-00.or
-            and.
-              num.as-bytes.right 32
-              00-00-00-00-FF-FF-FF-FF
-        minus.
-          number
-            43-30-00-00-00-00-00-00.or
-              and.
-                b.as-bytes.right 32
-                00-00-00-00-FF-FF-FF-FF
-          4503599627370496
-      carried.if 1 0
   [^num b] > times
-    if. > [^ acc a bits] > looped
+    if. > [^ acc a bits] >> looped
       bits.eq 00-00-00-00-00-00-00-00
       i64 acc
       ^.looped
@@ -253,18 +249,6 @@
 
   42.as-i64.as-bytes.eq 00-00-00-00-00-00-00-2A ++> can-expose-valid-bytes
 
-  eq. ++> can-format-the-error-message-of-the-maximum-i64-when-converting-to-i32
-    "Can't convert i64 number 9.223372e18 to i32 because it's out of i32 bounds"
-    as-i32.
-      i64 7F-FF-FF-FF-FF-FF-FF-FF
-      I
-
-  eq. ++> can-format-the-error-message-of-the-minimum-i64-when-converting-to-i32
-    "Can't convert i64 number -9.223372e18 to i32 because it's out of i32 bounds"
-    as-i32.
-      i64 80-00-00-00-00-00-00-00
-      I
-
   eq. ++> can-keep-the-low-bits-of-a-large-product
     2147483647.as-i64.times 2147483647.as-i64
     i64 3F-FF-FF-FF-00-00-00-01
@@ -293,9 +277,21 @@
   0.as-i64.neg.eq 0.as-i64 ++> can-negate-zero-to-zero
 
   eq. ++> can-recover-from-an-out-of-bounds-conversion-to-i32
-    "recovered"
+    i32 00-00-00-2A
     3147483647.as-i64.as-i32
-      "recovered" > [message]
+      i32 00-00-00-2A > [message]
+
+  eq. ++> can-recover-from-converting-the-maximum-i64-to-i32
+    i32 00-00-00-2A
+    as-i32.
+      i64 7F-FF-FF-FF-FF-FF-FF-FF
+      i32 00-00-00-2A > [message]
+
+  eq. ++> can-recover-from-converting-the-minimum-i64-to-i32
+    i32 00-00-00-2A
+    as-i32.
+      i64 80-00-00-00-00-00-00-00
+      i32 00-00-00-2A > [message]
 
   eq. ++> can-round-a-tie-to-even-when-converting-to-a-number
     as-number.

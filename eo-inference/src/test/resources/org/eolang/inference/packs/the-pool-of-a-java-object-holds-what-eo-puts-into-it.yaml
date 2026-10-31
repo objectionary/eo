@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Java makes status from the atom check. EO code elsewhere calls status with
+# a string, which goes into the pool of its text, so the text read off what
+# check returns is a string.
+sources:
+  os.eo: |
+    [] > os
+      [] > check /Q.os.status
+      [code text] > status
+        code > @
+  app.eo: |
+    [] > app
+      os.check.text > @
+  report.eo: |
+    [] > report
+      os.status 0 "ok" > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.os.check.λ']/is[@loc='Φ.os.status']
+  - /answers/o[@loc='Φ.report.φ.α1' and @lands='text']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.os.status']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.string']

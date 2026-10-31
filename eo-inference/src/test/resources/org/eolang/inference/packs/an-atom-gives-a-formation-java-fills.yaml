@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The atom stat says it gives os.stat-return, and Java fills its voids, so
+# code and size are open voids filled by an atom, and info.size reads one.
+sources:
+  os.eo: |
+    [] > os
+      [] > stat /Q.os.stat-return
+        ? > path /Q.string
+      [code size] > stat-return
+        code > @
+  app.eo: |
+    [] > app
+      info.size > @
+      os.stat "/tmp" > info
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.os.stat.λ']/is[@loc='Φ.os.stat-return']
+  - /answers/o[@loc='Φ.os.stat-return.code']/open[@by='java']
+  - /answers/o[@loc='Φ.os.stat-return.size']/open[@by='java']
+  - /answers/o[@loc='Φ.app.φ']/open[@by='java']

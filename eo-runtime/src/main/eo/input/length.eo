@@ -18,10 +18,9 @@
       length
       ^.rec-read
         chunk
-        length.plus chunk.size
-    ^. > chunk
-      read.
-        input.read 1048576
+        length.plus
+          size.
+            ^. (input.read 1048576).read >> chunk
   | > @
     source
     0

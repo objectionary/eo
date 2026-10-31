@@ -25,25 +25,25 @@
         [sys] >> impl
           [^ buffer] > write
             @. > @
-              output-block.write buffer
-            [^] > output-block
-              true > @
-              [^ buffer] > write
-                seq * > @
-                  if. >>!
-                    code.eq -1
-                    T
-                      "Failed to write to standard error"
-                    ^.^.output-block
-                  code
-                  remainder
-                as-number. > code
-                  ^.^.^.sys.write ^.^.^.sys.descriptor buffer buffer.size >>!
-                if. > remainder
-                  code.lt buffer.size
-                  ^.^.output-block.write
-                    buffer.slice code (buffer.size.minus code)
-                  ^.^.output-block
+              write.
+                [^] >> output-block
+                  true > @
+                  [^ buffer] > write
+                    seq * > @
+                      if. >>!
+                        code.eq -1
+                        T
+                          "Failed to write to standard error"
+                        ^.^.output-block
+                      code
+                      if.
+                        lt.
+                          number (^.^.^.sys.write ^.^.^.sys.descriptor buffer buffer.size)! >> code
+                          buffer.size
+                        ^.^.output-block.write
+                          buffer.slice code (buffer.size.minus code)
+                        ^.^.output-block
+                buffer
         |
           []
             win32.stderr > descriptor

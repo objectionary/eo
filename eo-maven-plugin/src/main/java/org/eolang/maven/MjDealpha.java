@@ -18,10 +18,11 @@ import org.apache.maven.plugins.annotations.Parameter;
  *
  * <p>The parser has no way to know which void an argument fills, so it names
  * them by their places: in {@code foo k}, the {@code k} is {@code α0}. The
- * tables of {@link MjInference} know better, since every application there
- * says which void of what it copies each argument goes to. This goal reads
- * them and writes {@code foo (bar: k)} instead, wherever the answer is
- * certain, as described in #8301.</p>
+ * {@code answers.xml} of {@link MjInference} knows better, since the row of
+ * an argument names the void it lands in whenever there is one. This goal
+ * reads it and writes {@code foo (bar: k)} instead, wherever the answer is
+ * certain, as described in #8301, and the {@code facts.xml} beside it says
+ * that no caller can change it.</p>
  *
  * <p>An argument keeps its place where no single void is known to take it,
  * and the number of those is written to the log. With {@link #rigid} set,
@@ -40,9 +41,9 @@ import org.apache.maven.plugins.annotations.Parameter;
 public final class MjDealpha extends MjSafe {
 
     /**
-     * The directory with the tables that {@link MjInference} writes,
-     * falling back to a directory {@code Seqdir} numbers "inference"
-     * when unset.
+     * The directory with the {@code answers.xml} and the {@code facts.xml}
+     * that {@link MjInference} writes, falling back to a directory
+     * {@code Seqdir} numbers "inference" when unset.
      */
     @Parameter(alias = "inferenceDir", property = "eo.inferenceDir")
     private File tables;
@@ -76,7 +77,7 @@ public final class MjDealpha extends MjSafe {
         try (TjsForeign tojos = this.tojos()) {
             new Dealphaing(
                 tojos.standalone(),
-                new Landings(inference.resolve("links.xml")),
+                new Landings(inference),
                 this.target.toPath(),
                 this.rigid
             ).exec();

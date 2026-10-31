@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# each of tuple calls the f it is handed, and both places in app hand it show.
+# The copy of show made there takes the tag of the place in app that started
+# it, so the two never meet: the x of show is a number in one copy and a
+# string in the other.
+sources:
+  tuple.eo: |
+    [item rest] > tuple
+      [f] > each
+        f ^.item > @
+  show.eo: |
+    [x] > show
+      x > @
+      x > kept
+  app.eo: |
+    [] > app
+      (tuple 1 0).each show > one
+      (tuple "a" 0).each show > word
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.tuple.each.φ']/is[@loc='Φ.show']
+  - /answers/o[@loc='Φ.app.one.α0' and @lands='f']/is[@loc='Φ.show']
+  - /answers/o[@loc='Φ.app.word.α0' and @lands='f']/is[@loc='Φ.show']
+  - /answers/o[@loc='Φ.show' and @copies='2']
+  - /answers[not(o[@loc='Φ.show.x']/set[is[@loc='Φ.number'] and is[@loc='Φ.string']])]
+  - /answers/o[@loc='Φ.show.x']/set[@copies='1']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.show.x']/set[@copies='1']/is[@loc='Φ.string']

@@ -1,0 +1,41 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# grove calls the formation in its scope with an oak, so tree in app and twig
+# in path each hold an oak, and the grown taken off them is the grown of oak,
+# a number.
+sources:
+  oak.eo: |
+    [] > oak
+      [^ height width] > grown
+        height.plus width > @
+  grove.eo: |
+    [scope] > grove
+      scope oak > @
+  app.eo: |
+    [] > app
+      grove > @
+        [tree]
+          tree.grown 3 5 > @
+  path.eo: |
+    [] > path
+      grove > @
+        [twig]
+          twig.grown 1 2 > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.grove.φ.α0']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.φ.α0.tree']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.path.φ.α0.twig']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.oak.grown']/reduced/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ.α0.φ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.path.φ.α0.φ']/is[@loc='Φ.number']

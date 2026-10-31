@@ -55,11 +55,12 @@ final class MjDealphaTest {
                 System.lineSeparator(),
                 "[] > app",
                 "  [left right] > pair",
-                "    left > @",
+                "    right > @",
                 "  pair 1 > half",
                 "  half 2 > @"
             )
-        );
+        ).withProgram("[@] > bytes", "bytes", "bytes.eo")
+            .withProgram("[@] > number", "number", "number.eo");
         MatcherAssert.assertThat(
             "the argument of a curried copy must fill the void left vacant, but it doesnt",
             new XMLDocument(
@@ -88,6 +89,88 @@ final class MjDealphaTest {
                 )
             ),
             XhtmlMatchers.hasXPath("/object/o/o[@name='φ']/o[@as='α0']")
+        );
+    }
+
+    @Test
+    void keepsAlphaOfCallOnVoidThatCallerFills(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > app",
+                "  [fail] > guard",
+                "    fail 42 > @",
+                "  [message] > loud",
+                "    message > @",
+                "  guard loud > @"
+            )
+        ).withProgram("[@] > bytes", "bytes", "bytes.eo")
+            .withProgram("[@] > number", "number", "number.eo");
+        MatcherAssert.assertThat(
+            "an argument of a call on a void must keep its place whatever callers put there, but it was renamed",
+            new XMLDocument(
+                maven.execute(new PpDealpha()).result().get(
+                    String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha"))
+                )
+            ),
+            XhtmlMatchers.hasXPath("/object/o/o[@name='guard']/o[@name='φ']/o[@as='α0']")
+        );
+    }
+
+    @Test
+    void keepsAlphaOfDispatchOffVoid(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > app",
+                "  [x] > inc",
+                "    x.plus 1 > @",
+                "  inc 5 > @"
+            )
+        ).withProgram("[@] > bytes", "bytes", "bytes.eo").withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[as-bytes] > number",
+                "  as-bytes > @",
+                "  [y] > plus",
+                "    y > @"
+            ),
+            "number",
+            "number.eo"
+        );
+        MatcherAssert.assertThat(
+            "an argument of a method read off a void must keep its place, but it was renamed",
+            new XMLDocument(
+                maven.execute(new PpDealpha()).result().get(
+                    String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha"))
+                )
+            ),
+            XhtmlMatchers.hasXPath("/object/o/o[@name='inc']/o[@name='φ']/o[@as='α0']")
+        );
+    }
+
+    @Test
+    void namesArgumentOfCallThroughRho(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > app",
+                "  [kit] > make",
+                "    kit > @",
+                "  [^ z] > leaf",
+                "    ^.make 42 > @",
+                "  leaf 1 > @"
+            )
+        ).withProgram("[@] > bytes", "bytes", "bytes.eo")
+            .withProgram("[@] > number", "number", "number.eo");
+        MatcherAssert.assertThat(
+            "an argument of a call on a formation reached through ρ must carry the name of its void, but it doesnt",
+            new XMLDocument(
+                maven.execute(new PpDealpha()).result().get(
+                    String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha"))
+                )
+            ),
+            XhtmlMatchers.hasXPath("/object/o/o[@name='leaf']/o[@name='φ']/o[@as='kit']")
         );
     }
 
@@ -182,7 +265,8 @@ final class MjDealphaTest {
                     ),
                     "number",
                     "number.eo"
-                ).execute(new PpDealpha())
+                ).withProgram("[@] > bytes", "bytes", "bytes.eo")
+                    .execute(new PpDealpha())
                     .execute(MjTranspile.class)
                     .result()
                     .get("target/generated/org/eolang/EO_examples/EOapp.java")
