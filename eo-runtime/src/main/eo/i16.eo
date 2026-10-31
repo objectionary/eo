@@ -8,7 +8,12 @@
 +version 0.0.0
 
 [as-bytes] > i16
-  as-bytes > @
+  if. > @
+    as-bytes.size.eq 2
+    as-bytes
+    T
+      "An i16 needs exactly 2 bytes, got %d".printf
+        * as-bytes.size
   i32 > [^num] > as-i32
     concat.
       if.
@@ -171,5 +176,7 @@
   eq. ++> can-wrap-a-product-modulo-two-to-the-sixteenth
     256.as-i64.as-i32.as-i16.times 256.as-i64.as-i32.as-i16
     0.as-i64.as-i32.as-i16
+
+  i16 01-02-03 --> stops-on-bytes-of-the-wrong-width
 
   2.as-i64.as-i32.as-i16.div 0.as-i64.as-i32.as-i16 --> stops-on-division-by-zero

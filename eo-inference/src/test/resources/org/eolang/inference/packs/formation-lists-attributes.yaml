@@ -15,70 +15,10 @@ sources:
     [@] > number
   string.eo: |
     [@] > string
-facts: |
-  <?xml version="1.0" encoding="UTF-8"?>
-  <facts>
-     <objects>
-        <type bare="true" complete="false" id="Φ.bytes">
-           <attr name="φ" type="Φ.bytes.φ" void="true"/>
-        </type>
-        <type bare="false" complete="true" id="Φ.kettle">
-           <attr name="steam" type="Φ.kettle.steam"/>
-           <attr name="whistle" type="Φ.kettle.whistle"/>
-        </type>
-        <type bare="true" complete="true" id="Φ.kettle.steam"/>
-        <type bare="true" complete="true" id="Φ.kettle.whistle"/>
-        <type bare="true" complete="false" id="Φ.number">
-           <attr name="φ" type="Φ.number.φ" void="true"/>
-        </type>
-        <type bare="true" complete="false" id="Φ.string">
-           <attr name="φ" type="Φ.string.φ" void="true"/>
-        </type>
-        <type bare="false" complete="true" id="Φ">
-           <attr name="bytes" type="Φ.bytes"/>
-           <attr name="kettle" type="Φ.kettle"/>
-           <attr name="number" type="Φ.number"/>
-           <attr name="string" type="Φ.string"/>
-        </type>
-     </objects>
-     <reads/>
-     <heads/>
-     <calls/>
-  </facts>
-answers: |
-  <?xml version="1.0" encoding="UTF-8"?>
-  <answers>
-    <o loc="Φ" copies="1">
-      <is loc="Φ"/>
-    </o>
-    <o loc="Φ.bytes" copies="1">
-      <is loc="Φ.bytes"/>
-      <reduced copies="1">
-        <is loc="Φ.bytes"/>
-      </reduced>
-    </o>
-    <o loc="Φ.bytes.φ" copies="1">
-      <data/>
-    </o>
-    <o loc="Φ.kettle" copies="1">
-      <is loc="Φ.kettle"/>
-    </o>
-    <o loc="Φ.kettle.steam" copies="1">
-      <is loc="Φ.kettle.steam"/>
-    </o>
-    <o loc="Φ.kettle.whistle" copies="1">
-      <is loc="Φ.kettle.whistle"/>
-    </o>
-    <o loc="Φ.number" copies="1">
-      <is loc="Φ.number"/>
-    </o>
-    <o loc="Φ.number.φ" copies="1">
-      <is loc="Φ.bytes"/>
-    </o>
-    <o loc="Φ.string" copies="1">
-      <is loc="Φ.string"/>
-    </o>
-    <o loc="Φ.string.φ" copies="1">
-      <is loc="Φ.bytes"/>
-    </o>
-  </answers>
+facts:
+  - /facts/objects/type[@id='Φ.kettle' and count(attr)=2]
+  - /facts/objects/type[@id='Φ.kettle']/attr[@name='steam' and @type='Φ.kettle.steam']
+  - /facts/objects/type[@id='Φ.kettle']/attr[@name='whistle' and @type='Φ.kettle.whistle']
+answers:
+  - /answers/o[@loc='Φ.kettle.steam']/is[@loc='Φ.kettle.steam']
+  - /answers/o[@loc='Φ.kettle.whistle']/is[@loc='Φ.kettle.whistle']

@@ -77,9 +77,9 @@ final class BindingsTest {
             () -> Bindings.checkAllOrNothing(
                 Arrays.asList(
                     new Value(Value.Kind.IDENTIFIER, "a", 4, Integer.toString(slot)),
-                    new Value(Value.Kind.IDENTIFIER, "b", 6, Integer.toString(slot))
+                    new Value(Value.Kind.IDENTIFIER, "b", 6, Integer.toString(slot + 1))
                 ),
-                new Span(String.format("foo a:%1$d b:%1$d", slot), 1)
+                new Span(String.format("foo a:%d b:%d", slot, slot + 1), 1)
             ),
             String.format("a numeric binding is a valid uniform mode, seed is %d", seed)
         );
@@ -91,9 +91,9 @@ final class BindingsTest {
             () -> Bindings.checkAllOrNothing(
                 Arrays.asList(
                     new Value(Value.Kind.IDENTIFIER, "a", 4, ""),
-                    new Value(Value.Kind.IDENTIFIER, "b", 6, "")
+                    new Value(Value.Kind.IDENTIFIER, "b", 6, "y")
                 ),
-                new Span("foo a: b:", 1)
+                new Span("foo a: b:y", 1)
             ),
             "an empty binding label is still a binding, not its absence"
         );

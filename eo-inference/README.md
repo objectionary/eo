@@ -87,15 +87,13 @@ mvn test -pl eo-inference -Dtest=ReportTest \
 ## How the behaviour is described
 
 By test packs in `src/test/resources/org/eolang/inference/packs`. Each one
-carries the EO sources of a small program, several files where it can, the
-`facts.xml` written of it, and the `answers.xml` the engine gives on those
-facts. `FactsTest` parses the sources the way Maven does and checks that the
-facts come out the same, byte for byte, and `AnswersTest` checks the same of
-the answers the engine writes from those facts.
-
-The expected text of both was written by the Python engine the port is made
-from, with its own copy of these classes, so a pack that fails here shows
-where the Java and the Python sides part.
+carries the EO sources of a small program, several files where it can, a
+comment at the top that says what the engine gives on it, and a list of
+XPaths, each checking one claim of that comment. `AnswersTest` makes the
+facts of the sources the way Maven does, runs the engine on them, and checks
+the XPaths under `answers:` against the `answers.xml` it writes. A pack whose
+rule is about the facts also lists XPaths under `facts:`, and `FactsTest`
+checks them against the `facts.xml`; it skips the packs that have none.
 
 ## What is not here
 

@@ -55,7 +55,9 @@ final class FactsXmlTest {
         MatcherAssert.assertThat(
             "the arguments of a call must be read in the order of their numbers, but they werent",
             new FactsXml(FactsXmlTest.facts(temp)).program().args("Φ.room.φ"),
-            Matchers.contains("Φ.room.φ.α0", "Φ.room.φ.α1")
+            Matchers.contains(
+                new Argument("Φ.room.φ.α0", 0, ""), new Argument("Φ.room.φ.α1", 1, "")
+            )
         );
     }
 

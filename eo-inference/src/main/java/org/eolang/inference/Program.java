@@ -45,7 +45,12 @@ final class Program {
     /**
      * The arguments of each call, in order, by place.
      */
-    private final Map<String, List<String>> calls;
+    private final Map<String, List<Argument>> calls;
+
+    /**
+     * The places of the arguments of each call, worked out once.
+     */
+    private final Map<String, List<String>> locs;
 
     /**
      * The formation right around each place, worked out once.
@@ -67,12 +72,13 @@ final class Program {
      */
     Program(
         final Map<String, Formation> formations, final Map<String, Read> named,
-        final Map<String, List<Head>> starts, final Map<String, List<String>> applied
+        final Map<String, List<Head>> starts, final Map<String, List<Argument>> applied
     ) {
         this.forms = formations;
         this.reads = named;
         this.heads = starts;
         this.calls = applied;
+        this.locs = new HashMap<>(0);
         this.around = new HashMap<>(0);
         this.bodies = new LinkedHashMap<>(0);
     }
@@ -166,10 +172,28 @@ final class Program {
      * The arguments of the call at a place, in order.
      *
      * @param place The place
-     * @return The places of the arguments, none when it is not a call
+     * @return The arguments, none when it is not a call
      */
-    List<String> args(final String place) {
+    List<Argument> args(final String place) {
         return this.calls.getOrDefault(place, Collections.emptyList());
+    }
+
+    /**
+     * The places of the arguments of the call at a place, in order.
+     *
+     * @param place The place
+     * @return The places, none when it is not a call
+     */
+    List<String> locs(final String place) {
+        final List<String> found;
+        if (this.calls.containsKey(place)) {
+            found = this.locs.computeIfAbsent(
+                place, key -> this.calls.get(key).stream().map(Argument::loc).toList()
+            );
+        } else {
+            found = Collections.emptyList();
+        }
+        return found;
     }
 
     /**
