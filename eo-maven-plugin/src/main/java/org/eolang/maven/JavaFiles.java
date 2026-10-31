@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.eolang.cache.Footprint;
+import org.eolang.cache.FpIgnore;
 import org.eolang.cache.GlobalCache;
 
 /**
@@ -27,6 +28,12 @@ import org.eolang.cache.GlobalCache;
  * a Java file under the generated sources directory, taken from the
  * global cache when the tojo is at a released hash and put there when
  * it is not.</p>
+ *
+ * <p>The implementation of an atom is written by hand, so no Java file is
+ * made of it. Its JUnit companion is not: the class of an atom carries its
+ * own {@code <tests>}, and that body reaches {@link JavaPlaced} like any
+ * other, while the footprint that would have written the main source is
+ * the one that writes nothing (#9390).</p>
  *
  * @since 0.74
  */
@@ -107,26 +114,26 @@ final class JavaFiles {
                 final String jname = clazz.attribute("java-name").text().get();
                 final Path tgt = new Place(jname).make(this.generated, JavaFiles.JAVA);
                 this.touched.add(tgt);
-                if (!atom || jname.endsWith("Test")) {
+                final Footprint written;
+                if (atom && !jname.endsWith("Test")) {
+                    written = new FpIgnore();
+                } else {
                     this.fresh.add(tgt);
                     final Footprint java = new FpJavaGenerated(
                         clazz, new FileGenerationReport(saved, tgt, target)
                     );
-                    new JavaPlaced(
-                        new FpIfReleased(
-                            hsh,
-                            cache.kept(
-                                this.generated.relativize(tgt),
-                                () -> hsh,
-                                new RewritePolicy(rewrite, tgt),
-                                java
-                            ),
+                    written = new FpIfReleased(
+                        hsh,
+                        cache.kept(
+                            this.generated.relativize(tgt),
+                            () -> hsh,
+                            new RewritePolicy(rewrite, tgt),
                             java
                         ),
-                        tgt,
-                        this.generated, this.roots
-                    ).exec(clazz, tests);
+                        java
+                    );
                 }
+                new JavaPlaced(written, tgt, this.generated, this.roots).exec(clazz, tests);
             }
             Logger.debug(
                 this,

@@ -14,6 +14,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,6 +24,8 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 import org.cactoos.list.ListOf;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
 import org.eolang.xax.XtSticky;
@@ -72,13 +75,9 @@ final class RenderingTest {
         );
         Files.write(home.resolve("voids.tsv"), new byte[0]);
         Files.createDirectories(temp.resolve("2-protocols"));
-        Files.write(
-            Files.createDirectories(temp.resolve("1-planting")).resolve("slow.xmir"),
-            new EoSyntax(String.format("[] > slow%n  42 > @%n")).parsed().toString()
-                .getBytes(StandardCharsets.UTF_8)
-        );
         new Rendering(
-            temp.resolve("atoms"), RenderingTest.tables(temp, "<links/>", "<atoms/>", "<provides/>")
+            temp.resolve("atoms"),
+            RenderingTest.planted(temp, "slow", String.format("[] > slow%n  42 > @%n"))
         ).exec(temp);
         MatcherAssert.assertThat(
             "an entry whose run was killed must be rendered into nothing, but it is",
@@ -96,18 +95,14 @@ final class RenderingTest {
         );
         Files.write(home.resolve("voids.tsv"), new byte[0]);
         Files.createDirectories(temp.resolve("2-protocols"));
-        Files.write(
-            Files.createDirectories(temp.resolve("1-planting")).resolve("slow.xmir"),
-            new EoSyntax(String.format("[] > slow%n  42 > @%n")).parsed().toString()
-                .getBytes(StandardCharsets.UTF_8)
+        final Path tables = RenderingTest.planted(
+            temp, "slow", String.format("[] > slow%n  42 > @%n")
         );
         final Path stale = Files.createDirectories(
             temp.resolve("atoms").resolve("org").resolve("eolang")
         ).resolve("EOstale$EOφ.java");
         Files.write(stale, "// nothing".getBytes(StandardCharsets.UTF_8));
-        new Rendering(
-            temp.resolve("atoms"), RenderingTest.tables(temp, "<links/>", "<atoms/>", "<provides/>")
-        ).exec(temp);
+        new Rendering(temp.resolve("atoms"), tables).exec(temp);
         MatcherAssert.assertThat(
             "an atom of an earlier build must not survive the rendering, but it did",
             Files.exists(stale),
@@ -126,11 +121,10 @@ final class RenderingTest {
             temp.resolve("voids.tsv"),
             String.format("𝜎1\t1\tx\tobject%n𝜎2\t2\ty\tobject%n").getBytes(StandardCharsets.UTF_8)
         );
-        Files.write(
-            Files.createDirectories(temp.resolve("1-planting")).resolve("foo.xmir"),
-            new EoSyntax(
-                String.format("[] > foo%n  bar > @%n    [x]%n      x > @%n    [y]%n      y > @%n")
-            ).parsed().toString().getBytes(StandardCharsets.UTF_8)
+        final Path tables = RenderingTest.planted(
+            temp,
+            "foo",
+            String.format("[] > foo%n  bar > @%n    [x]%n      x > @%n    [y]%n      y > @%n")
         );
         for (final int idx : new ListOf<>(0, 1)) {
             final Path protocol = temp.resolve("2-protocols").resolve(
@@ -140,14 +134,12 @@ final class RenderingTest {
             Files.write(
                 protocol,
                 String.format(
-                    "<protocol><morph><evaluate λ=\"L_root\"><dataize meta=\"𝛿1·2\">𝜎%d</dataize></evaluate></morph></protocol>",
+                    "<protocol><dataize at=\"Φ.l🌵.e1\"><manufactured meta=\"𝛿·0·1\">𝜎%d</manufactured></dataize></protocol>",
                     idx + 1
                 ).getBytes(StandardCharsets.UTF_8)
             );
         }
-        new Rendering(
-            temp.resolve("atoms"), RenderingTest.tables(temp, "<links/>", "<atoms/>", "<provides/>")
-        ).exec(temp);
+        new Rendering(temp.resolve("atoms"), tables).exec(temp);
         MatcherAssert.assertThat(
             "two entries whose atoms ask for one class must both be taints, but some were rendered",
             Files.readString(temp.resolve("rendered.tsv"), StandardCharsets.UTF_8),
@@ -161,7 +153,9 @@ final class RenderingTest {
             Files.createDirectories(temp).resolve("entries.tsv"),
             String.format("5\tΦ.idle%n").getBytes(StandardCharsets.UTF_8)
         );
-        final Path tables = RenderingTest.tables(temp, "<links/>", "<atoms/>", "<provides/>");
+        final Path tables = RenderingTest.planted(
+            temp, "idle", String.format("[] > idle%n  42 > @%n")
+        );
         MatcherAssert.assertThat(
             "the failure must name the home with no protocols, but it doesnt",
             Assertions.assertThrows(
@@ -183,17 +177,12 @@ final class RenderingTest {
         );
         Files.write(home.resolve("voids.tsv"), new byte[0]);
         Files.createDirectories(temp.resolve("2-protocols"));
-        Files.write(
-            Files.createDirectories(temp.resolve("1-planting")).resolve("lazy.xmir"),
-            new EoSyntax(String.format("[] > lazy%n  42 > @%n")).parsed().toString()
-                .getBytes(StandardCharsets.UTF_8)
-        );
         MatcherAssert.assertThat(
             "an entry with no protocol must be logged as left in EO, but it isnt",
             RenderingTest.logged(
                 new Rendering(
                     temp.resolve("atoms"),
-                    RenderingTest.tables(temp, "<links/>", "<atoms/>", "<provides/>")
+                    RenderingTest.planted(temp, "lazy", String.format("[] > lazy%n  42 > @%n"))
                 ),
                 temp
             ),
@@ -207,28 +196,75 @@ final class RenderingTest {
     }
 
     @Test
-    void failsNamingTheTableOfTheBodiesItCannotFind(@Mktmp final Path temp) throws IOException {
-        final Path tables = Files.createDirectories(temp.resolve("tables"));
-        Files.write(tables.resolve("provides.xml"), "<provides/>".getBytes(StandardCharsets.UTF_8));
+    void namesTheTaintsInTheLog(@Mktmp final Path temp) throws IOException {
+        final int count = new SecureRandom().nextInt(4) + 2;
+        final List<String> names = new ArrayList<>(count);
+        final Map<String, String> eos = new HashMap<>(count);
+        final StringBuilder entries = new StringBuilder();
+        for (int idx = 0; idx < count; ++idx) {
+            final String name = String.format("zj%d", new SecureRandom().nextInt(1000) * 10 + idx);
+            final String program = String.format("[] > %s%n  42 > @%n", name);
+            names.add(name);
+            eos.put(String.format("%s.eo", name), program);
+            entries.append(String.format("%d\tΦ.%s%n", idx, name));
+            Files.write(
+                Files.createDirectories(temp.resolve("1-planting"))
+                    .resolve(String.format("%s.xmir", name)),
+                new EoSyntax(program).parsed().toString().getBytes(StandardCharsets.UTF_8)
+            );
+            final Path protocol = temp.resolve("2-protocols")
+                .resolve(new Locator(String.format("Φ.%s", name)).protocol());
+            Files.createDirectories(protocol.getParent());
+            Files.write(protocol, "<protocol/>".getBytes(StandardCharsets.UTF_8));
+        }
+        Files.write(
+            temp.resolve("entries.tsv"), entries.toString().getBytes(StandardCharsets.UTF_8)
+        );
+        Files.write(temp.resolve("voids.tsv"), new byte[0]);
         MatcherAssert.assertThat(
-            "the failure must name the table of the bodies that is missing, but it doesnt",
-            Assertions.assertThrows(
-                IllegalStateException.class,
-                () -> new Rendering(temp.resolve("atoms"), tables).exec(temp),
-                "tables without the types of the bodies must fail the rendering"
-            ).getMessage(),
-            Matchers.containsString("links.xml")
+            "the log must name the entries that are taints, but it doesnt",
+            RenderingTest.logged(
+                new Rendering(
+                    temp.resolve("atoms"), new Inferred(temp.resolve("engine"), eos).value()
+                ),
+                temp
+            ),
+            Matchers.hasItem(
+                Matchers.endsWith(
+                    String.format(
+                        "while %d entries were taints: %s", count, String.join(", ", names)
+                    )
+                )
+            )
         );
     }
 
-    private static Path tables(
-        final Path temp, final String links, final String atoms, final String provides
-    ) throws IOException {
-        final Path made = Files.createDirectories(temp.resolve("tables"));
-        Files.write(made.resolve("links.xml"), links.getBytes(StandardCharsets.UTF_8));
-        Files.write(made.resolve("atoms.xml"), atoms.getBytes(StandardCharsets.UTF_8));
-        Files.write(made.resolve("provides.xml"), provides.getBytes(StandardCharsets.UTF_8));
-        return made;
+    @Test
+    void failsNamingTheAnswersItCannotFind(@Mktmp final Path temp) throws IOException {
+        final Path tables = Files.createDirectories(temp.resolve("tables"));
+        Files.write(tables.resolve("facts.xml"), "<facts/>".getBytes(StandardCharsets.UTF_8));
+        MatcherAssert.assertThat(
+            "the failure must name the answers that are missing, but it doesnt",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> new Rendering(temp.resolve("atoms"), tables).exec(temp),
+                "tables without the answers must fail the rendering"
+            ).getMessage(),
+            Matchers.containsString("answers.xml")
+        );
+    }
+
+    private static Path planted(final Path temp, final String name, final String program)
+        throws IOException {
+        Files.write(
+            Files.createDirectories(temp.resolve("1-planting"))
+                .resolve(String.format("%s.xmir", name)),
+            new EoSyntax(program).parsed().toString().getBytes(StandardCharsets.UTF_8)
+        );
+        return new Inferred(
+            temp.resolve("engine"),
+            new MapOf<String, String>(new MapEntry<>(String.format("%s.eo", name), program))
+        ).value();
     }
 
     private static List<String> logged(final Rendering rendering, final Path home)
@@ -270,12 +306,14 @@ final class RenderingTest {
      *
      * <p>The file has EO sources, one entry, its protocol, and the whole
      * text of the Java atom of that entry, which the rendering must write
-     * exactly. The keys {@code links}, {@code atoms} and {@code provides}
-     * may hold the tables of {@code eo:inference}, which are empty
-     * otherwise. When the file names no Java file, the entry must be a
-     * taint, and no atom may be written. Then the key {@code taint} may
-     * hold a part of the line the log must have about it, which says
-     * why.</p>
+     * exactly. The tables of {@code eo:inference} are what the engine writes
+     * for the sources, unless the keys {@code facts} and {@code answers}
+     * hold them, see {@link Tables}. So the sources hold what the engine
+     * needs to tell what the body gives, the atoms it calls and a caller
+     * that hands its voids their data, besides the object of the entry.
+     * When the file names no Java file, the entry must be a taint, and no
+     * atom may be written. Then the key {@code taint} may hold a part of the
+     * line the log must have about it, which says why.</p>
      *
      * @since 0.64.0
      */
@@ -312,7 +350,7 @@ final class RenderingTest {
             final Collection<String> failed = new ArrayList<>(0);
             for (final Object key : this.story.map().keySet()) {
                 if (!Arrays.asList(
-                    "locator", "number", "eo", "voids", "links", "atoms", "provides",
+                    "locator", "number", "eo", "voids", "rows", "facts", "answers",
                     "protocol", "file", "java", "taint"
                 ).contains(key)) {
                     failed.add(String.format("unknown key: %s", key));
@@ -365,13 +403,15 @@ final class RenderingTest {
                 String.format("%s\t%s%n", this.story.map().get("number"), locator)
                     .getBytes(StandardCharsets.UTF_8)
             );
-            Files.write(
-                home.resolve("voids.tsv"),
-                this.demands("voids").stream()
-                    .map(row -> String.format("%s%n", row))
-                    .collect(Collectors.joining())
-                    .getBytes(StandardCharsets.UTF_8)
-            );
+            for (final String table : new ListOf<>("voids", "rows")) {
+                Files.write(
+                    home.resolve(String.format("%s.tsv", table)),
+                    this.demands(table).stream()
+                        .map(row -> String.format("%s%n", row))
+                        .collect(Collectors.joining())
+                        .getBytes(StandardCharsets.UTF_8)
+                );
+            }
             final Path sources = Files.createDirectories(
                 this.temp.resolve("1-planting")
             );
@@ -394,12 +434,7 @@ final class RenderingTest {
                 RenderingTest.logged(
                     new Rendering(
                         this.temp.resolve("atoms"),
-                        RenderingTest.tables(
-                            this.temp,
-                            this.story.map().getOrDefault("links", "<links/>").toString(),
-                            this.story.map().getOrDefault("atoms", "<atoms/>").toString(),
-                            this.story.map().getOrDefault("provides", "<provides/>").toString()
-                        )
+                        new Tables(this.temp, this.story.map()).value()
                     ),
                     this.temp
                 )
