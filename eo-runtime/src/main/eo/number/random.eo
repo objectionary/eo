@@ -63,8 +63,8 @@
 
   not. ++> can-differ-between-two-draws
     eq.
-      random.clocked 123.as-i64
-      random.clocked 456.as-i64
+      1.random.clocked 123.as-i64
+      1.random.clocked 456.as-i64
 
   ++> can-reach-the-upper-half
     not. > @

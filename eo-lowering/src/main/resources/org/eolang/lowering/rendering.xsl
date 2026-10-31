@@ -420,15 +420,16 @@
     </xsl:choose>
   </xsl:function>
   <!--
-  The message a flow throws, as the body of a Java string literal, or
-  nothing when the flow does not throw. The flow throws when phino stopped
-  at the λ of "throw" right where it dataized the root, and then the
-  protocol names the copy of "throw" it stopped at, and the record that
-  applied "throw" to its message. The message is a string literal when
-  "eo:octets" finds its bytes, and those bytes are text in UTF-8. A message
-  that is anything else is an object the atom would have to compute, and an
-  entry that throws it is a taint, as is an entry whose protocol does not
-  say what the message is.
+  The message a flow throws, as the Java of a string, or nothing when the
+  flow does not throw. The flow throws when phino stopped at the λ of
+  "throw" right where it dataized the root, and then the protocol names
+  the copy of "throw" it stopped at, and the record that applied "throw"
+  to its message. The message is a string literal when "eo:octets" finds
+  its bytes, and those bytes are text in UTF-8, and then the atom throws
+  that literal. A message that is anything else is an object, which the
+  atom builds and dataizes into the reason it throws, the way the
+  terminator of eo-runtime dataizes its own reason. An entry whose
+  protocol does not say what the message is stays a taint.
   -->
   <xsl:function name="eo:thrown" as="xs:string?">
     <xsl:param name="leaf" as="element()"/>
@@ -441,14 +442,13 @@
         <xsl:when test="$message = ''">
           <xsl:sequence select="eo:taint(concat($prefix, 'phino stopped at L_throw for ', normalize-space($stop), ', while no record of its protocol gives the message'))"/>
         </xsl:when>
-        <xsl:when test="empty($bytes)">
-          <xsl:sequence select="eo:taint(concat($prefix, 'its message ', $message, ' is not a string literal, and an atom that computes its message is not written yet'))"/>
+        <xsl:when test="exists($bytes) and not(eo:text($bytes) = -1)">
+          <xsl:sequence select="concat('&quot;', eo:message($bytes), '&quot;')"/>
         </xsl:when>
-        <xsl:when test="eo:text($bytes) = -1">
-          <xsl:sequence select="eo:taint(concat($prefix, 'its message ', $bytes, ' is no text in UTF-8'))"/>
-        </xsl:when>
+        <xsl:otherwise>
+          <xsl:sequence select="concat('new Dataized(', eo:computed($message, $prefix), ').asString()')"/>
+        </xsl:otherwise>
       </xsl:choose>
-      <xsl:sequence select="eo:message($bytes)"/>
     </xsl:if>
   </xsl:function>
   <!--
@@ -463,6 +463,70 @@
     <xsl:variable name="bytes" select="normalize-space(($eo:doc//(applied | formed)[@meta = normalize-space($string)])[1][@of = 'Φ.bytes' and count(*) = 1]/datum[@attr = 'φ'])"/>
     <xsl:if test="matches($bytes, '^(--|[0-9A-F]{2}-|[0-9A-F]{2}(-[0-9A-F]{2})+)$')">
       <xsl:sequence select="$bytes"/>
+    </xsl:if>
+  </xsl:function>
+  <!--
+  The Java that builds the object a record of the protocol names, so that
+  the atom can dataize it: an object of the world, outside the entry,
+  applied to its "φ" alone, down to the bytes or the symbol at the bottom.
+  A symbol is read the way a copy reads it, so a void arrives as the object
+  it is and anything else as the value of its method. Bytes under
+  "Φ.bytes" are written as "Data.ToPhi", which is "Φ.bytes" applied to
+  them already, so the hop through it is left out. A record of any other
+  shape names an object this stage cannot build, since it never parses a
+  phi-expression, so its entry is a taint.
+  -->
+  <xsl:function name="eo:computed" as="xs:string">
+    <xsl:param name="meta" as="xs:string"/>
+    <xsl:param name="prefix" as="xs:string"/>
+    <xsl:variable name="record" select="($eo:doc//(applied | formed)[@meta = $meta])[1]"/>
+    <xsl:variable name="held" select="$record[matches(@of, '^Φ(\.[^.\s()]+)+$') and not(starts-with(@of, concat($locator, '.'))) and count(*) = 1]/*[@attr = 'φ']"/>
+    <xsl:choose>
+      <xsl:when test="empty($held)">
+        <xsl:sequence select="eo:taint(concat($prefix, 'its message ', $meta, ' is no object of the world applied to its φ, so the atom cannot build it'))"/>
+      </xsl:when>
+      <xsl:when test="$held[self::datum] and $record/@of = 'Φ.bytes'">
+        <xsl:sequence select="eo:literal-of(normalize-space($held), 'Phi')"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:variable name="inner">
+          <xsl:choose>
+            <xsl:when test="$held[self::datum]">
+              <xsl:sequence select="eo:literal-of(normalize-space($held), 'Phi')"/>
+            </xsl:when>
+            <xsl:when test="$held[self::meta]">
+              <xsl:sequence select="eo:computed(normalize-space($held), $prefix)"/>
+            </xsl:when>
+            <xsl:when test="$held[self::symbol]">
+              <xsl:sequence select="eo:argument(normalize-space($held))"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:sequence select="eo:taint(concat($prefix, 'the φ of its message ', $meta, ' is a ', name($held), ', which the atom cannot build'))"/>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+        <xsl:sequence select="concat('new PhApplication(', eo:global($record/@of), ', &quot;φ&quot;, ', $inner, ')')"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+  <!--
+  Every symbol the "φ" of a record names, down to the bottom, so that the
+  atom computes them before it throws. Whether the record can be built at
+  all is not asked here, since a record that cannot says so where it is
+  built, and its entry is a taint either way.
+  -->
+  <xsl:function name="eo:borne" as="xs:string*">
+    <xsl:param name="meta" as="xs:string"/>
+    <xsl:variable name="held" select="($eo:doc//(applied | formed)[@meta = $meta])[1]/*[@attr = 'φ']"/>
+    <xsl:sequence select="($held[self::symbol] ! normalize-space(.), $held[self::meta] ! eo:borne(normalize-space(.)))"/>
+  </xsl:function>
+  <!-- The symbols the message a flow throws is built from, or nothing when it throws none. -->
+  <xsl:function name="eo:bearing" as="xs:string*">
+    <xsl:param name="leaf" as="element()"/>
+    <xsl:variable name="stop" select="eo:stop($leaf)"/>
+    <xsl:if test="exists($stop)">
+      <xsl:variable name="meta" select="normalize-space($stop)"/>
+      <xsl:sequence select="eo:borne(normalize-space(($eo:doc//(applied | formed)[@meta = $meta]/*[@attr = 'message'])[1]))"/>
     </xsl:if>
   </xsl:function>
   <!-- The code points of bytes read as text in UTF-8, with -1 where they are no such text. -->
@@ -697,7 +761,7 @@
     <xsl:variable name="root" select="eo:root($leaf)"/>
     <xsl:choose>
       <xsl:when test="exists($thrown)">
-        <xsl:sequence select="concat($indent, 'throw new ExFailure(&quot;%s&quot;, &quot;', $thrown, '&quot;);&#10;')"/>
+        <xsl:sequence select="concat($indent, 'throw new ExFailure(&quot;%s&quot;, ', $thrown, ');&#10;')"/>
       </xsl:when>
       <xsl:when test="exists($root) and eo:constant($root)">
         <xsl:sequence select="concat($indent, 'return ', eo:constant-returned(eo:bytes($root)), ';&#10;')"/>
@@ -732,7 +796,7 @@
   -->
   <xsl:function name="eo:reached" as="xs:string*">
     <xsl:variable name="all" select="distinct-values(($eo:doc//(minted | joined | deferred)/@symbol, map:keys($eo:voids)))"/>
-    <xsl:variable name="seeds" as="xs:string*" select="(map:keys($eo:leaves) ! eo:root($eo:leaves(.))[not(map:contains($eo:voids, .)) and not(eo:constant(.))], map:keys($eo:nodes) ! $eo:nodes(.)[not(eo:constant(.))])"/>
+    <xsl:variable name="seeds" as="xs:string*" select="(map:keys($eo:leaves) ! (eo:root($eo:leaves(.)), eo:bearing($eo:leaves(.)))[not(map:contains($eo:voids, .)) and not(eo:constant(.))], map:keys($eo:nodes) ! $eo:nodes(.)[not(eo:constant(.))])"/>
     <xsl:iterate select="sort($all, (), function($s) { -eo:serial($s) })">
       <xsl:param name="reached" as="xs:string*" select="distinct-values($seeds)"/>
       <xsl:on-completion>

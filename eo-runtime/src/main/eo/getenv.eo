@@ -32,9 +32,7 @@
 
   not. ++> can-read-an-existing-variable
     eq.
-      getenv
-        "PATH"
-        "not found"
+      getenv "PATH" "not found"
       "not found"
 
   eq. ++> can-return-fallback-for-a-name-containing-an-equals-sign
@@ -70,12 +68,8 @@
   os.is-windows.or ++> can-treat-variable-names-case-sensitively
     not.
       eq.
-        getenv
-          "path"
-          "not found"
-        getenv
-          "PATH"
-          "not found"
+        getenv "path" "not found"
+        getenv "PATH" "not found"
 
   eq. ++> can-use-a-boolean-fallback-when-variable-does-not-exist
     getenv
