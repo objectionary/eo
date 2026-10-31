@@ -23,12 +23,16 @@
 +version 0.0.0
 
 [^num] > cosine
-  1.minus > @
-    2.times
-      times.
-        sine. >> half
-          num.div 2
-        half
+  if. > @
+    num.is-finite.and
+      num.abs.gt 2000000000000000
+    T "Can't take a cosine of an angle above 2e15, the reduction cannot hold it"
+    1.minus
+      2.times
+        times.
+          sine. >> half
+            num.div 2
+          half
 
   lt. ++> can-behave-as-an-even-function
     abs.
