@@ -804,7 +804,10 @@
       touched.
         as-file.
           d.resolved "a.txt"
-      eq. (d.as-dir.walk "[.txt").length 0
+      eq.
+        length.
+          d.as-dir.walk "[.txt"
+        0
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted
