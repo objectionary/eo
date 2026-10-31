@@ -18,6 +18,6 @@
 
   "ÄÖÜ".eq "ÄÖÜ".upper ++> can-keep-non-ascii-letters-when-upper-casing
 
-  "HELLO".eq "hello".upper ++> can-upper-case-text
+  "HELLO".eq "hello".upper ++> can-turn-text-to-upper-case
 
-  "HELLO".eq "hello".upper ++> can-upper-case-text-through-the-package
+  "HELLO".eq "hello".upper ++> can-turn-text-to-upper-case-through-the-package
