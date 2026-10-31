@@ -20,8 +20,8 @@ asserts:
 input: |
   [] > foo
     foo > @
-      x 42 > i
-      y 52 -1 > spb
+      x 42
+      y 52 -1
     this.is "F" > f
     if. > q
       some.x y
