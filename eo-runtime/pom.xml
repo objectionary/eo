@@ -441,15 +441,6 @@
                 arguments on purpose.
                 -->
                 <lint>no-attribute-formation</lint>
-                <!--
-                @todo #9108:30min Stop skipping 'missed-obfuscation' here.
-                The lint wants a formation that decorates another object to
-                make its void attributes private, and it complains 595 times,
-                87 of them about top-level objects. Making their voids
-                private changes the public interface of the runtime, which
-                only the architect may decide.
-                -->
-                <lint>missed-obfuscation</lint>
               </skipSourceLints>
               <!--
               Objects with an optional fallback argument, like 'string.as-fixed'

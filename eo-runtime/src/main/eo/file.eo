@@ -1,12 +1,12 @@
 # Represents a file in the filesystem for reading and writing.
 #
-# @todo #9650:30min Remove `+unlint redundant-attachment:101` from the metas
+# @todo #9650:30min Remove `+unlint redundant-attachment:102` from the metas
 #  below once objectionary/lints#1301 counts a hop through the receiver as
 #  reaching outward. The lint reads the `>>` name of the formation `open` hands
 #  to `seq` as never referenced, while that formation reaches out through the
 #  `^` its head declares.
 #
-# @todo #9650:30min Remove `+unlint too-deep-object:170` from the metas
+# @todo #9650:30min Remove `+unlint too-deep-object:171` from the metas
 #  below. It hides how deep `write` of the output block in `open` nests the
 #  slice of a buffer written in part, 14 levels where the lint allows 12. Move
 #  the stream of `open` into an object of its own, so that it nests no deeper.
@@ -15,8 +15,9 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-attachment:101
-+unlint too-deep-object:170
++unlint missed-obfuscation
++unlint redundant-attachment:102
++unlint too-deep-object:171
 +version 0.0.0
 
 [path] > file
