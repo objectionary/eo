@@ -119,6 +119,27 @@ final class MjLowerTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void handsJavacTheAtomsUnderTheNumberAnEarlierBuildGaveThem(@Mktmp final Path temp)
+        throws IOException {
+        final Path atoms = Files.createDirectories(
+            new Seqdir(temp.resolve("target"), 2).dirs().once("lowering").resolve("5-atoms")
+        );
+        final MavenProjectStub project = new MavenProjectStub();
+        project.setCompileSourceRoots(new ArrayList<>(0));
+        MjLowerTest.inferred(temp)
+            .with("project", project)
+            .with("lowering", true)
+            .with("binary", MjLowerTest.binary(temp))
+            .execute(MjLower.class);
+        MatcherAssert.assertThat(
+            "the goal must hand javac the atoms where the lowering keeps them, but it didnt",
+            project.getCompileSourceRoots(),
+            Matchers.hasItem(atoms.toAbsolutePath().toString())
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void pointsTheTranspilerAtTheSourceItPatched(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "the goal must hand the transpiler the source with the atom in it, but it didnt",

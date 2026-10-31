@@ -75,13 +75,12 @@ final class RenderingTest {
         Files.write(home.resolve("voids.tsv"), new byte[0]);
         Files.createDirectories(temp.resolve("2-protocols"));
         new Rendering(
-            temp.resolve("atoms"),
             RenderingTest.planted(temp, "slow", String.format("[] > slow%n  42 > @%n"))
         ).exec(temp);
         MatcherAssert.assertThat(
             "an entry whose run was killed must be rendered into nothing, but it is",
-            Files.exists(temp.resolve("atoms")),
-            Matchers.is(false)
+            temp.resolve("3-atoms").toFile().list(),
+            Matchers.emptyArray()
         );
     }
 
@@ -98,10 +97,10 @@ final class RenderingTest {
             temp, "slow", String.format("[] > slow%n  42 > @%n")
         );
         final Path stale = Files.createDirectories(
-            temp.resolve("atoms").resolve("org").resolve("eolang")
+            temp.resolve("3-atoms").resolve("org").resolve("eolang")
         ).resolve("EOstale$EOφ.java");
         Files.write(stale, "// nothing".getBytes(StandardCharsets.UTF_8));
-        new Rendering(temp.resolve("atoms"), tables).exec(temp);
+        new Rendering(tables).exec(temp);
         MatcherAssert.assertThat(
             "an atom of an earlier build must not survive the rendering, but it did",
             Files.exists(stale),
@@ -138,7 +137,7 @@ final class RenderingTest {
                 ).getBytes(StandardCharsets.UTF_8)
             );
         }
-        new Rendering(temp.resolve("atoms"), tables).exec(temp);
+        new Rendering(tables).exec(temp);
         MatcherAssert.assertThat(
             "two entries whose atoms ask for one class must both be taints, but some were rendered",
             Files.readString(temp.resolve("rendered.tsv"), StandardCharsets.UTF_8),
@@ -159,7 +158,7 @@ final class RenderingTest {
             "the failure must name the home with no protocols, but it doesnt",
             Assertions.assertThrows(
                 IllegalStateException.class,
-                () -> new Rendering(temp.resolve("atoms"), tables).exec(temp),
+                () -> new Rendering(tables).exec(temp),
                 "a home without protocols must fail the rendering"
             ).getMessage(),
             Matchers.containsString(temp.toString())
@@ -180,7 +179,6 @@ final class RenderingTest {
             "an entry with no protocol must be logged as left in EO, but it isnt",
             RenderingTest.logged(
                 new Rendering(
-                    temp.resolve("atoms"),
                     RenderingTest.planted(temp, "lazy", String.format("[] > lazy%n  42 > @%n"))
                 ),
                 temp
@@ -202,7 +200,7 @@ final class RenderingTest {
             "the failure must name the answers that are missing, but it doesnt",
             Assertions.assertThrows(
                 IllegalStateException.class,
-                () -> new Rendering(temp.resolve("atoms"), tables).exec(temp),
+                () -> new Rendering(tables).exec(temp),
                 "tables without the answers must fail the rendering"
             ).getMessage(),
             Matchers.containsString("answers.xml")
@@ -388,13 +386,12 @@ final class RenderingTest {
             log.addAll(
                 RenderingTest.logged(
                     new Rendering(
-                        this.temp.resolve("atoms"),
                         new Tables(this.temp, this.story.map()).value()
                     ),
                     this.temp
                 )
             );
-            return this.temp.resolve("atoms");
+            return this.temp.resolve("6-atoms");
         }
 
         private List<Path> files(final Path atoms) throws IOException {
