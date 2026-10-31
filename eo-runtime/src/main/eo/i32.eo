@@ -135,15 +135,15 @@
     -2.as-i64.as-i32
 
   eq. ++> can-recover-from-an-out-of-bounds-conversion-to-i16
-    "recovered"
+    i16 00-2A
     247483647.as-i64.as-i32.as-i16
-      "recovered" > [message]
+      i16 00-2A > [message]
 
   eq. ++> can-recover-from-division-by-zero
-    "recovered"
+    i32 00-00-00-2A
     2.as-i64.as-i32.div
       0.as-i64.as-i32
-      "recovered" > [message]
+      i32 00-00-00-2A > [message]
 
   eq. ++> can-subtract-one-from-one
     1.as-i64.as-i32.minus 1.as-i64.as-i32

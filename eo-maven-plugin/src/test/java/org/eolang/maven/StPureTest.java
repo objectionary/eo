@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.cactoos.io.Directory;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
 import org.eolang.xax.XtSticky;
@@ -109,8 +110,12 @@ final class StPureTest {
                 )
             ).parsed().toString()
         );
+        Files.writeString(parsed.resolve("bytes.xmir"), StPureTest.xmir("[@] > bytes"));
         final Path tables = temp.resolve("tables");
-        new Inferring(parsed, temp.resolve("pre"), tables).exec();
+        new Inferring(
+            new Directory(parsed), parsed, temp.resolve("pre"), tables,
+            new RuntimeNames().get()
+        ).exec();
         MatcherAssert.assertThat(
             "an application whose parts are all data must be wrapped in PhSticky, but it wasnt",
             new Xsline(
@@ -149,8 +154,12 @@ final class StPureTest {
                 )
             ).parsed().toString()
         );
+        Files.writeString(parsed.resolve("bytes.xmir"), StPureTest.xmir("[@] > bytes"));
         final Path tables = temp.resolve("tables");
-        new Inferring(parsed, temp.resolve("pre"), tables).exec();
+        new Inferring(
+            new Directory(parsed), parsed, temp.resolve("pre"), tables,
+            new RuntimeNames().get()
+        ).exec();
         MatcherAssert.assertThat(
             "a dispatch over data that takes no arguments must be wrapped in PhSticky, but it wasnt",
             new Xsline(
@@ -164,6 +173,34 @@ final class StPureTest {
                     .with(new StClasspath("/org/eolang/maven/transpile/to-java.xsl"))
             ).pass(new XMLDocument(parsed.resolve("app.xmir"))).toString(),
             Matchers.containsString("new PhSticky(")
+        );
+    }
+
+    @Test
+    void readsTablesAgainAfterTheyAreRewritten(@Mktmp final Path temp) throws IOException {
+        final Path parsed = Files.createDirectories(temp.resolve("parsed"));
+        final Path source = parsed.resolve("app.xmir");
+        Files.writeString(
+            source, StPureTest.xmir("[] > app", "  2.plus 3 > x", "  x > @")
+        );
+        Files.writeString(
+            parsed.resolve("number.xmir"),
+            StPureTest.xmir(
+                "[as-bytes] > number", "  as-bytes > @", "  [x] > plus", "    x > @"
+            )
+        );
+        Files.writeString(parsed.resolve("bytes.xmir"), StPureTest.xmir("[@] > bytes"));
+        final Path tables = temp.resolve("tables");
+        new Inferring(
+            new Directory(parsed), parsed, temp.resolve("pre"), tables,
+            new RuntimeNames().get()
+        ).exec();
+        StPureTest.stamped(tables, source);
+        Files.writeString(tables.resolve("answers.xml"), "<answers/>");
+        MatcherAssert.assertThat(
+            "the second stamping must read the table that was rewritten under it, while it reads the one it parsed before",
+            StPureTest.stamped(tables, source).nodes("//o[@base='.plus'][@pure]"),
+            Matchers.empty()
         );
     }
 
@@ -183,7 +220,10 @@ final class StPureTest {
             );
         }
         final Path tables = this.dir.resolve("tables");
-        new Inferring(parsed, this.dir.resolve("pre"), tables).exec();
+        new Inferring(
+            new Directory(parsed), parsed, this.dir.resolve("pre"), tables,
+            new RuntimeNames().get()
+        ).exec();
         final Collection<XML> stamped = new ArrayList<>(0);
         for (final String name : sources.keySet()) {
             stamped.add(StPureTest.stamped(tables, parsed.resolve(name)));
@@ -198,6 +238,12 @@ final class StPureTest {
             }
         }
         return failed;
+    }
+
+    private static String xmir(final String... lines) throws IOException {
+        return new EoSyntax(
+            String.format("%s%n", String.join(System.lineSeparator(), lines))
+        ).parsed().toString();
     }
 
     private static XML stamped(final Path tables, final Path source) throws IOException {

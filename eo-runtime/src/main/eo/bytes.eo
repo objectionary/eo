@@ -169,18 +169,18 @@
     C0-26-00-00-00-00-00-00
 
   eq. ++> can-recover-from-a-slice-whose-start-plus-length-overflows
-    "recovered"
+    2A-
     20-1F-EE-B5-90.slice
       2000000000
       2000000000
-      "recovered" > [message]
+      2A- > [message]
 
   eq. ++> can-recover-from-an-out-of-bounds-slice
-    "recovered"
+    2A-
     20-1F-EE-B5-90.slice
       3
       10
-      "recovered" > [message]
+      2A- > [message]
 
   eq. ++> can-shift-right-an-even-negative
     -38.as-bytes.right 1

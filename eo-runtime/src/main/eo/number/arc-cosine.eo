@@ -1,4 +1,4 @@
-# Arc cosine of `num` as `org.eolang.number`, the angle in radians whose cosine
+# Arc cosine of `num` as `number`, the angle in radians whose cosine
 # is `num`, taken as pi/2 minus the arc sine of the argument, since acos(x)
 # equals pi/2 minus asin(x). Arguments outside [-1, 1] and non-finite ones
 # collapse to nan.
