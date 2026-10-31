@@ -30,7 +30,9 @@
           * folder.path
     seq *
       if.
-        folder.path.eq above.path
+        folder.path.eq
+          path.
+            file folder.as-path.dirname >> above
         T
           "Cant make the directory '%s': it has no parent".printf
             * folder.path
@@ -40,19 +42,20 @@
         or.
           created.code.eq 0
           and.
-            errno.eq eexist
+            eq.
+              os.is-windows.if win32.errno posix.errno
+              os.is-windows.if win32.eexist posix.eexist
             folder.is-directory
         folder
         T
           "Cant make the directory '%s': %s".printf
-            * folder.path created.message
-  file folder.as-path.dirname > above
-  called. > created
-    os.is-windows.if
-      win32.mkdir folder.path
-      posix.mkdir folder.path posix.permissions
-  os.is-windows.if win32.eexist posix.eexist > eexist
-  os.is-windows.if win32.errno posix.errno > errno
+            *
+              folder.path
+              message.
+                called. >> created
+                  os.is-windows.if
+                    win32.mkdir folder.path
+                    posix.mkdir folder.path posix.permissions
 
   ++> can-make-a-directory-and-return-the-same-path
     dir.made.path.eq dir.path > @

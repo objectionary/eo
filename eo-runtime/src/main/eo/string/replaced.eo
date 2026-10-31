@@ -30,7 +30,7 @@
             reinit.length.minus start
     |
       matched
-      ""
+      --
       start.
         next. >> matched
           target.match reinit

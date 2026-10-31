@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# alias has nothing of its own but a @, so it reduces to the oak its @ gives
+# before it goes into x. x holds an oak, not an alias, and first is the leaf
+# of an oak.
+sources:
+  app.eo: |
+    [] > app
+      inc alias > first
+  inc.eo: |
+    [x] > inc
+      x.leaf > @
+  oak.eo: |
+    [] > oak
+      [] > leaf
+  alias.eo: |
+    [] > alias
+      oak > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.alias']/reduced/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.first.α0' and @lands='x']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.inc.x']/is[@loc='Φ.oak']
+  - /answers[not(o[@loc='Φ.inc.x']/is[@loc='Φ.alias'])]
+  - /answers/o[@loc='Φ.app.first']/is[@loc='Φ.oak.leaf']

@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# At first nothing calls status, so a stop decides Java alone fills its text,
+# and the text read off what check returns is an open void that Java fills.
+# Nobody calls late, so a later stop keeps its copy as written, and its call
+# of status puts "late" into the pool: the text is a string as well, next to
+# that open void.
+sources:
+  os.eo: |
+    [] > os
+      [] > check /Q.os.status
+      [code text] > status
+        code > @
+  app.eo: |
+    [] > app
+      os.check.text > @
+  late.eo: |
+    [x] > late
+      os.status 0 "late" > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.os.status.text']/set[not(is)]/open[@by='java']
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.os.status']
+  - /answers/o[@loc='Φ.app.φ']/open[@by='java']
+  - /answers/o[@loc='Φ.late.φ.α1' and @lands='text']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.φ' and open[@by='java']]/is[@loc='Φ.string']

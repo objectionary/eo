@@ -105,10 +105,10 @@
   C8-.as-i8.as-number.eq -56 ++> can-read-a-high-bit-as-negative
 
   eq. ++> can-recover-from-division-by-zero
-    "recovered"
+    i8 2A-
     02-.as-i8.div
       00-.as-i8
-      "recovered" > [message]
+      i8 2A- > [message]
 
   eq. ++> can-subtract-one-from-one
     01-.as-i8.minus 01-.as-i8
