@@ -14,6 +14,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -189,6 +190,50 @@ final class RenderingTest {
                 Matchers.allOf(
                     Matchers.containsString(String.format("entry %d at Φ.lazy", number)),
                     Matchers.containsString("has no protocol")
+                )
+            )
+        );
+    }
+
+    @Test
+    void namesTheTaintsInTheLog(@Mktmp final Path temp) throws IOException {
+        final int count = new SecureRandom().nextInt(4) + 2;
+        final List<String> names = new ArrayList<>(count);
+        final Map<String, String> eos = new HashMap<>(count);
+        final StringBuilder entries = new StringBuilder();
+        for (int idx = 0; idx < count; ++idx) {
+            final String name = String.format("zj%d", new SecureRandom().nextInt(1000) * 10 + idx);
+            final String program = String.format("[] > %s%n  42 > @%n", name);
+            names.add(name);
+            eos.put(String.format("%s.eo", name), program);
+            entries.append(String.format("%d\tΦ.%s%n", idx, name));
+            Files.write(
+                Files.createDirectories(temp.resolve("1-planting"))
+                    .resolve(String.format("%s.xmir", name)),
+                new EoSyntax(program).parsed().toString().getBytes(StandardCharsets.UTF_8)
+            );
+            final Path protocol = temp.resolve("2-protocols")
+                .resolve(new Locator(String.format("Φ.%s", name)).protocol());
+            Files.createDirectories(protocol.getParent());
+            Files.write(protocol, "<protocol/>".getBytes(StandardCharsets.UTF_8));
+        }
+        Files.write(
+            temp.resolve("entries.tsv"), entries.toString().getBytes(StandardCharsets.UTF_8)
+        );
+        Files.write(temp.resolve("voids.tsv"), new byte[0]);
+        MatcherAssert.assertThat(
+            "the log must name the entries that are taints, but it doesnt",
+            RenderingTest.logged(
+                new Rendering(
+                    temp.resolve("atoms"), new Inferred(temp.resolve("engine"), eos).value()
+                ),
+                temp
+            ),
+            Matchers.hasItem(
+                Matchers.endsWith(
+                    String.format(
+                        "while %d entries were taints: %s", count, String.join(", ", names)
+                    )
                 )
             )
         );

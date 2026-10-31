@@ -212,6 +212,11 @@
     ninf.power 9
     ninf
 
+  eq. ++> can-raise-negative-infinity-to-an-odd-negative-integer
+    as-bytes.
+      ninf.power -3
+    80-00-00-00-00-00-00-00
+
   eq. ++> can-raise-negative-infinity-to-negative-infinity
     ninf.power ninf
     0
