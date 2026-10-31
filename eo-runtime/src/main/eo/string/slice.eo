@@ -13,18 +13,12 @@
 # points above U+10FFFF (`F4` with a `90`-`BF` second byte, and `F5`-`FF` leads)
 # are rejected. A malformed sequence terminates the computation, exactly like a
 # truncated character does.
-#
-# @todo #9650:30min Remove `+unlint too-deep-object:118-152` from the
-#  metas below. It hides how deep `recidx` nests the checks of a three-byte
-#  and a four-byte character, up to 16 levels where the lint allows 12. Move
-#  those checks into objects of their own, so that `recidx` nests no deeper.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint too-deep-object:118-152
 +version 0.0.0
 
 [^text start len] > slice
@@ -94,7 +88,11 @@
                         index
                         2
                         ((byte.and FE-).eq C0-).not.and
-                          eq. (b1.and C0-) 80- >> b1cont
+                          eq. >> b1cont
+                            and.
+                              ^.text.as-bytes.slice (index.plus 1) 1 >> b1
+                              C0-
+                            80-
                       accum.plus 1
                       result
                       cause
@@ -110,17 +108,7 @@
                                 ^.text.as-bytes.slice (index.plus 2) 1
                                 C0-
                               80-
-                            if.
-                              byte.eq E0-
-                              eq.
-                                and.
-                                  ^.text.as-bytes.slice (index.plus 1) 1 >> b1
-                                  E0-
-                                A0-
-                              if.
-                                byte.eq ED-
-                                eq. (b1.and E0-) 80-
-                                b1cont
+                            b1three
                         accum.plus 1
                         result
                         cause
@@ -130,32 +118,53 @@
                           increase
                             index
                             4
-                            b2cont.and
-                              and.
-                                eq.
-                                  and.
-                                    ^.text.as-bytes.slice (index.plus 3) 1
-                                    C0-
-                                  80-
-                                if.
-                                  byte.eq F0-
-                                  ((b1.and F0-).eq 90-).or
-                                    eq. (b1.and E0-) A0-
-                                  if.
-                                    byte.eq F4-
-                                    eq. (b1.and F0-) 80-
-                                    if.
-                                      or. >>
-                                        byte.eq F1- >> leadf1
-                                        or. (byte.eq F2-) (byte.eq F3-)
-                                      b1cont
-                                      false
+                            b2cont.and (b3cont.and b1four)
                           accum.plus 1
                           result
                           cause
                         T
                           "Unknown byte format (%x), can't recognize character".printf
                             * byte
+            if. > b1four
+              byte.eq F0-
+              or.
+                eq.
+                  b1.and F0-
+                  90-
+                eq.
+                  b1.and E0-
+                  A0-
+              if.
+                byte.eq F4-
+                eq.
+                  b1.and F0-
+                  80-
+                if.
+                  or. >>
+                    byte.eq F1- >> leadf1
+                    or.
+                      byte.eq F2-
+                      byte.eq F3-
+                  b1cont
+                  false
+            if. > b1three
+              byte.eq E0-
+              eq.
+                b1.and E0-
+                A0-
+              if.
+                byte.eq ED-
+                eq.
+                  b1.and E0-
+                  80-
+                b1cont
+            eq. > b3cont
+              and.
+                ^.text.as-bytes.slice
+                  index.plus 3
+                  1
+                C0-
+              80-
           |
             bstart
             0
