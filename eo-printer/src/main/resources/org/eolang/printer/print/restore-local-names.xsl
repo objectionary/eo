@@ -257,6 +257,22 @@
     <xsl:sequence select="if (empty($wrapper) or not($wrapper/@base='.as-bytes') or empty($wrapper/@name) or empty($value/@local)) then false() else exists(key('local-head', $wrapper/@name/string(), root($wrapper))[contains(@base, $auto-dot)][ancestor::*[. is $wrapper/..]][not(ancestor-or-self::o[. is $wrapper])][2])"/>
   </xsl:function>
   <!--
+  Whether the binding "$target" is the value of a const file-local handle that
+  floated out of its shell. The parser writes "[x] &gt;&gt;! h" as a
+  "const-to-dataized" shell over a reference, and the formation itself is
+  lifted out of the shell to a sibling of it, carrying the readable handle
+  along, so the handle no longer sits inside the shell the way
+  "eo:const-handle" expects. "inline-cactoos" folds the formation back into the
+  shell, keeping its name, so the marker must survive this sheet to reach
+  "to-eo-tree" with it; dropped here, the const printed as an anonymous
+  "&gt;&gt;!" and every reader was stranded on a synthetic "vL_P" (#9297).
+  -->
+  <xsl:function name="eo:const-valued" as="xs:boolean">
+    <xsl:param name="target" as="element()"/>
+    <xsl:param name="name" as="xs:string?"/>
+    <xsl:sequence select="exists(eo:references($target, $name)[parent::o[@base='Φ.dataized']][parent::o/parent::o[@base='.as-bytes']])"/>
+  </xsl:function>
+  <!--
   Whether the applied reference "$ref" resolves to a recursive "&gt;&gt;" handle
   standing among its following siblings, so that it has to be relocated just
   below that handle and piped (#5848, below). The test belongs in the pattern
@@ -353,10 +369,12 @@
   application (#5952) — and on the value of a
   multi-referenced dataized-const handle (see
   "eo:const-handle") so "to-eo-tree" restores the readable "&gt;&gt; name"
-  handle; drop it on the other non-void formations, whose handle is inlined
-  away by "inline-cactoos".
+  handle — and on the value of a const handle that floated out of its shell
+  (see "eo:const-valued"), which "inline-cactoos" folds back into the shell
+  with its name, so the handle reaches "to-eo-tree" there; drop it on the other
+  non-void formations, whose handle is inlined away by "inline-cactoos".
   -->
-  <xsl:template match="o[not(@base=$eo:empty) and not(@pipe) and not(eo:recursive(., @name/string())) and not(eo:dispatched(., @name/string())) and not(eo:applied-receiver(., @name/string())) and not(eo:multi-referenced(., @name/string())) and not(eo:unreferenced(., @name/string())) and not(eo:nested-referenced(., @name/string())) and not(eo:reapplied(., @name/string())) and not(eo:const-handle(parent::o/parent::o))]/@local"/>
+  <xsl:template match="o[not(@base=$eo:empty) and not(@pipe) and not(eo:recursive(., @name/string())) and not(eo:dispatched(., @name/string())) and not(eo:applied-receiver(., @name/string())) and not(eo:multi-referenced(., @name/string())) and not(eo:unreferenced(., @name/string())) and not(eo:nested-referenced(., @name/string())) and not(eo:reapplied(., @name/string())) and not(eo:const-valued(., @name/string())) and not(eo:const-handle(parent::o/parent::o))]/@local"/>
   <!--
   When a recursive "&gt;&gt; name" handle is restored, its cactus name is
   promoted to the visible "@name" and every reference is rewritten from the

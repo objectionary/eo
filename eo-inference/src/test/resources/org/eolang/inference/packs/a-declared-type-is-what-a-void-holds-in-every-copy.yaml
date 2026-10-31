@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The void b of the atom plus declares it holds a number, so it answers number
+# in every copy, next to the string the call puts into it.
+sources:
+  app.eo: |
+    [] > app
+      5.plus "two" > @
+  number.eo: |
+    [@] > number
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.number.plus.b' and not(set)]/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='b']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.number.plus.b']/is[@loc='Φ.string']

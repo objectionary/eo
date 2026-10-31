@@ -1,0 +1,41 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A const ">>! name" handle whose value is a bare reference to another handle
+# ("h >>! g" over "foo >> h"). The parser marks the const's own handle name
+# "@local" on the argument inside "Φ.dataized", which is that reference, so
+# folding the alias there took the mark with the rest of the reference's
+# attributes: the const printed anonymously and its reader was left on a
+# synthetic "v5_2" that nothing declares (#9296). The reference's "@local" is
+# carried over the fold the same way its "@name" is (#5947), so
+# "dataized-to-const" still has the handle name to print.
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/resolve-before-stars.xsl
+  - /org/eolang/parser/parse/fragile-dispatch.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/validate-objects-count.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/printer/print/restore-local-names.xsl
+  - /org/eolang/printer/print/inline-cactoos.xsl
+asserts:
+  # The const keeps its handle name, on the value the alias was folded into.
+  - /object/o[@name='app']/o[@base='.as-bytes' and contains(@name, '🌵')]/o[@base='Φ.dataized']/o[@base='Φ.foo' and @local='g']
+  # The alias is folded away, leaving no handle of its own behind.
+  - /object[count(//o[@local='h'])=0]
+  # The reader still points at the const binding.
+  - /object/o[@name='app']/o[@name='x' and contains(@base, '🌵') and not(o)]
+input: |
+  [] > app
+    foo >> h
+    h >>! g
+    g > x
