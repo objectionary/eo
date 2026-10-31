@@ -69,7 +69,7 @@ final class PenaltyTest {
     }
 
     @Test
-    void stillChargesForBracketOutsideStringLiteral() {
+    void chargesForBracketOutsideStringLiteral() {
         MatcherAssert.assertThat(
             "A bracket next to a string literal must still cost more than plain text, but it didnt",
             new Penalty("(\"(\") x").points(),
