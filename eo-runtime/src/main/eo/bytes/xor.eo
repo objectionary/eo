@@ -15,15 +15,15 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^ b] > xor
+[^data b] > xor
   if. > @
-    ^.size.as-bytes.eq b.size.as-bytes
+    data.size.as-bytes.eq b.size.as-bytes
     or.
-      ^.and b.not
-      ^.not.and b
+      data.and b.not
+      data.not.and b
     T
       "bytes.xor requires operands of the same length, got %d and %d".printf
-        * ^.size b.size
+        * data.size b.size
 
   eq. ++> can-xor-negative-bytes-with-leading-zeroes
     00-00-00-00-8E-EA-4C-B1.xor FF-FF-FF-FF-00-00-00-00

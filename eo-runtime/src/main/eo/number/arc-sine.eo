@@ -1,4 +1,4 @@
-# Arc sine of `num` as `org.eolang.number`, the angle in radians whose sine is
+# Arc sine of `num` as `number`, the angle in radians whose sine is
 # `num`. An argument above one half is folded toward zero through the identity
 # asin(x) equals pi/2 minus twice asin(sqrt((1 minus x) div 2)), so the Taylor
 # series always runs in its fast region, while arguments outside [-1, 1] and
@@ -11,12 +11,14 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^] > arc-sine
+[^num] > arc-sine
   if. > @
     arg.as-bytes.eq 80-00-00-00-00-00-00-00
     arg
     if.
-      arg.lt 0
+      lt.
+        number num.as-bytes >> arg
+        0
       neg.
         if. >> base
           arg.abs.gt 0.5
@@ -27,29 +29,28 @@
                 times. > @
                   number
                     point >> bts!
-                  poly 1
-                if. > [^ depth] > poly
-                  depth.gt 30
-                  1
-                  1.plus
-                    times.
-                      div.
-                        times.
+                  if. > [^ depth] >> poly
+                    depth.gt 30
+                    1
+                    1.plus
+                      times.
+                        div.
                           times.
-                            minus. (depth.times 2) 1
-                            minus. (depth.times 2) 1
-                          ^.squared
-                        times.
-                          depth.times 2
-                          plus. (depth.times 2) 1
-                      ^.poly (depth.plus 1)
-                times. > squared!
+                            times.
+                              minus. (depth.times 2) 1
+                              minus. (depth.times 2) 1
+                            squared
+                          times.
+                            depth.times 2
+                            plus. (depth.times 2) 1
+                        ^.poly (depth.plus 1)
+                  | 1
+                times. >> squared!
                   number bts
                   number bts
               | ((1.minus arg.abs).div 2).sqrt
           series arg.abs
       base
-  number ^.as-bytes > arg
 
   lt. ++> can-behave-as-an-odd-function-when-taking-arc-sine
     abs.

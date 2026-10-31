@@ -4,7 +4,13 @@
 # yamllint disable rule:line-length
 name: labeler
 'on':
-  - pull_request_target
+  pull_request_target:
+    paths:
+      - 'eo-parser/src/main/resources/XMIR.xsd'
+      - 'eo-parser/**/*.g4'
+      - '**/*.md'
+      - '**/pom.xml'
+      - '.github/**'
 concurrency:
   group: labeler-${{ github.event.pull_request.number }}
   cancel-in-progress: true

@@ -61,12 +61,19 @@ final class JavaFiles {
     private final Collection<Path> touched;
 
     /**
+     * Configured test source roots.
+     */
+    private final Path[] roots;
+
+    /**
      * Ctor.
      *
      * @param dir Generated sources directory
+     * @param roots Configured test source roots
      */
-    JavaFiles(final Path dir) {
+    JavaFiles(final Path dir, final Path... roots) {
         this.generated = dir;
+        this.roots = roots.clone();
         this.fresh = new ConcurrentLinkedQueue<>();
         this.touched = new ConcurrentLinkedQueue<>();
     }
@@ -117,7 +124,7 @@ final class JavaFiles {
                             java
                         ),
                         tgt,
-                        this.generated
+                        this.generated, this.roots
                     ).exec(clazz, tests);
                 }
             }

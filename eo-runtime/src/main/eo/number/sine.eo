@@ -1,4 +1,4 @@
-# Sine of `num` radians as `org.eolang.number`.
+# Sine of `num` radians as `number`.
 # The argument is reduced into the [-pi, pi] range and the Taylor series is
 # summed over the reduced angle through Horner's scheme.
 #
@@ -23,11 +23,13 @@
 #
 # Two doubles carry about 106 bits, so the reduction holds to a few ULP for
 # as long as `turns times two pi` needs no more than that, which is |num| up
-# to about `1e15`. Past it the reduced angle drifts out of [-pi, pi] and the
-# series is summed further from zero than it is meant to be. Holding the
-# whole range of a double would take Payne-Hanek reduction, with two-over-pi
-# written out to more bits than any product of doubles carries.
-# Non-finite arguments collapse to nan.
+# to `1e15`. Past it the reduced angle drifts out of [-pi, pi] and the series
+# is summed so far from zero that it answers outside [-1, 1], which is no
+# sine of anything: `1e300` came back as infinity. A finite angle above
+# `1e15` therefore terminates, rather than answering a number a sine cannot
+# be. Holding the whole range of a double would take Payne-Hanek reduction,
+# with two-over-pi written out to more bits than any product of doubles
+# carries. Non-finite arguments collapse to nan, as they did.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -36,57 +38,60 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^] > sine
-  reduced.times > @
-    if. > [^ depth] >> factor
-      depth.gt 15
-      1
-      1.minus
-        times.
-          div.
-            ^.reduced.times ^.reduced
-            times.
-              depth.times 2
+[^num] > sine
+  if. > @
+    arg.is-finite.and
+      arg.abs.gt 1000000000000000
+    T
+      "Can't take a sine of an angle above 1e15, the reduction cannot hold it"
+    times.
+      number >> reduced
+        minus. >> angle!
+          minus.
+            minus.
+              number num.as-bytes >> arg
+              turns.times tau >> product
+            plus.
               plus.
+                plus.
+                  minus.
+                    times.
+                      minus. >> top
+                        turns.times 134217729 >> wide
+                        wide.minus turns
+                      minus. >> crown
+                        times. >> spread
+                          pi.times 2 >> tau
+                          134217729
+                        spread.minus tau
+                    product
+                  top.times
+                    tau.minus crown >> stub
+                times.
+                  turns.minus top >> foot
+                  crown
+              foot.times stub
+          times.
+            floor. >> turns
+              plus.
+                arg.div tau
+                0.5
+            2.4492935982947064e-16
+      if. > [^ depth] >> factor
+        depth.gt 15
+        1
+        1.minus
+          times.
+            div.
+              reduced.times reduced
+              times.
                 depth.times 2
-                1
-          ^.factor
-            depth.plus 1
-    | 1
-  minus. > angle!
-    minus.
-      arg.minus product
-      slip
-    turns.times tail
-  number ^.as-bytes > arg
-  spread.minus tau > away
-  foot.times crown > cross
-  spread.minus away > crown
-  turns.minus top > foot
-  134217729 > gap
-  top.times crown > high
-  foot.times stub > low
-  top.times stub > mid
-  turns.times tau > product
-  number angle > reduced
-  wide.minus turns > shed
-  plus. > slip
-    plus.
-      plus.
-        high.minus product
-        mid
-      cross
-    low
-  tau.times gap > spread
-  tau.minus crown > stub
-  2.4492935982947064e-16 > tail
-  pi.times 2 > tau
-  wide.minus shed > top
-  floor. > turns
-    plus.
-      arg.div tau
-      0.5
-  turns.times gap > wide
+                plus.
+                  depth.times 2
+                  1
+            ^.factor
+              depth.plus 1
+      | 1
 
   lt. ++> can-be-accurate-near-the-documented-four-hundred-million-boundary
     abs.
@@ -198,3 +203,5 @@
     1
 
   0.sine.eq 0 ++> can-take-a-sine-of-zero
+
+  1.0e300.sine --> stops-on-a-sine-of-an-angle-the-reduction-cannot-hold

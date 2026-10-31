@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# inner declares no ^, yet ^.held in it reads held off the outer it is an
+# attribute of, so inner is the held of outer.
+sources:
+  outer.eo: |
+    [] > outer
+      [] > held
+      [] > inner
+        ^.held > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers[not(o[@loc='Φ.outer.inner.ρ'])]
+  - /answers/o[@loc='Φ.outer.inner.φ.ρ']/is[@loc='Φ.outer']
+  - /answers/o[@loc='Φ.outer.inner.φ']/is[@loc='Φ.outer.held']
+  - /answers/o[@loc='Φ.outer.inner']/reduced/is[@loc='Φ.outer.held']

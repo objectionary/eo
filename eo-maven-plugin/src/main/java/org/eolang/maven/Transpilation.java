@@ -14,6 +14,8 @@ import com.yegor256.xsline.TrJoined;
 import com.yegor256.xsline.TrLambda;
 import com.yegor256.xsline.Train;
 import com.yegor256.xsline.Xsline;
+import io.github.sekator778.seqdir.Seqdir;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -41,7 +43,7 @@ final class Transpilation {
      * The XSL steps of the transpile train, in order, ending with
      * {@code purify.xsl} and {@code to-java.xsl}, the two that take
      * parameters. Kept as a single list so both the train in
-     * {@link #compiled(boolean, boolean, String, Path)} and the cache-key
+     * {@link #compiled(boolean, boolean, String, long, String, Path)} and the cache-key
      * fingerprint in {@link #version()} are derived from the same source.
      */
     static final String[] XSLS = {
@@ -67,7 +69,7 @@ final class Transpilation {
      * as editing a top-level stylesheet does, but leaves {@link #XSLS}
      * itself unchanged (see #6032). Not part of {@link #XSLS} itself
      * because that array is also used verbatim to build the actual XSL
-     * train in {@link #compiled(boolean, boolean, String, Path)}, where its
+     * train in {@link #compiled(boolean, boolean, String, long, String, Path)}, where its
      * last two elements are special-cased as {@code purify.xsl} and
      * {@code to-java.xsl}.
      */
@@ -111,6 +113,17 @@ final class Transpilation {
     private final String superclass;
 
     /**
+     * How many seconds a single generated test may run.
+     */
+    private final long deadline;
+
+    /**
+     * How much memory a single generated test may allocate, the way
+     * {@code -Xmx} writes it.
+     */
+    private final String memory;
+
+    /**
      * File where XSL measurements are stored.
      */
     private final Path measures;
@@ -140,6 +153,8 @@ final class Transpilation {
      * @param diagnostics Which diagnostic artifacts to emit while transpiling
      * @param cvrg Whether located objects are wrapped into {@code PhCoverage}
      * @param base The class that a generated class extends instead of {@code PhDefault}
+     * @param seconds How many seconds a single generated test may run
+     * @param size How much memory a single generated test may allocate
      * @param measures Path to the file where XSL measurements are stored
      * @param dir The target directory of the build
      * @param tables The directory with the tables of {@link MjInference}
@@ -148,6 +163,8 @@ final class Transpilation {
         final Tracking diagnostics,
         final boolean cvrg,
         final String base,
+        final long seconds,
+        final String size,
         final Path measures,
         final Path dir,
         final Path tables
@@ -155,6 +172,8 @@ final class Transpilation {
         this.tracking = diagnostics;
         this.coverage = cvrg;
         this.superclass = base;
+        this.deadline = seconds;
+        this.memory = size;
         this.measures = measures;
         this.target = dir;
         this.inference = tables;
@@ -172,11 +191,12 @@ final class Transpilation {
      * constant {@code -SNAPSHOT} during development), see #5578; folding
      * the imported libraries in too closes the gap where editing one of
      * them changed the actual output without changing anything in
-     * {@link #XSLS} itself, see #6032. Folding the three flags and the name
-     * of the base class in means changing any of them also invalidates the
-     * cache, since all of them change what a build of the same source
-     * produces: the first two and the base class change what
-     * {@code to-java.xsl} emits (see #6031 and #5955), and
+     * {@link #XSLS} itself, see #6032. Folding the three flags, the name
+     * of the base class, and the limits of a test in means changing any of
+     * them also invalidates the cache, since all of them change what a build
+     * of the same source produces: the first two, the base class, and the
+     * limits change what {@code to-java.xsl} emits (see #6031, #5955, and
+     * #9074), and
      * {@code tracking} decides whether the XMIRs of the train are written
      * at all, which a cache hit would otherwise skip (see #7628).
      * The tables belong to {@link #version(Collection)} instead.
@@ -185,13 +205,14 @@ final class Transpilation {
      */
     String version() {
         return String.format(
-            "%s-%b-%b-%b-%s",
+            "%s-%b-%b-%b-%s-%d-%s",
             new Fingerprint(
                 Stream.concat(
                     Arrays.stream(Transpilation.XSLS), Arrays.stream(Transpilation.IMPORTS)
                 ).toArray(String[]::new)
             ).get(),
-            this.tracking.locations(), this.tracking.steps(), this.coverage, this.superclass
+            this.tracking.locations(), this.tracking.steps(), this.coverage, this.superclass,
+            this.deadline, this.memory
         );
     }
 
@@ -233,13 +254,14 @@ final class Transpilation {
      *
      * @param name Name of the object the source XMIR holds
      * @return XSL transformation function
+     * @throws IOException If the directory for the steps cannot be numbered
      */
-    Function<XML, XML> forSource(final String name) {
+    Function<XML, XML> forSource(final String name) throws IOException {
         final Train<Shift> measured = this.measured(this.train());
         final Function<XML, XML> func;
         if (this.tracking.steps()) {
             final Path dir = new Place(name).make(
-                new Subdir(this.target, "pre-transpile").path(), ""
+                new Seqdir(this.target, 2).dirs().once("pre-transpile"), ""
             );
             func = xml -> new Xsline(new TrSpy(measured, dir)).pass(xml);
         } else {
@@ -280,15 +302,18 @@ final class Transpilation {
         final boolean track = this.tracking.locations();
         final boolean instrument = this.coverage;
         final String base = this.superclass;
+        final long seconds = this.deadline;
+        final String size = this.memory;
         final Path tables = this.inference;
         return Transpilation.TRAINS.get().computeIfAbsent(
-            String.format("%b|%b|%s|%s", track, instrument, base, tables),
-            ignored -> Transpilation.compiled(track, instrument, base, tables)
+            String.format("%b|%b|%s|%d|%s|%s", track, instrument, base, seconds, size, tables),
+            ignored -> Transpilation.compiled(track, instrument, base, seconds, size, tables)
         );
     }
 
     private static Train<Shift> compiled(
-        final boolean track, final boolean instrument, final String base, final Path tables
+        final boolean track, final boolean instrument, final String base,
+        final long seconds, final String size, final Path tables
     ) {
         final int last = Transpilation.XSLS.length - 1;
         return new TrFull(
@@ -303,7 +328,9 @@ final class Transpilation {
                         String.format("disclaimer %s", new Disclaimer()),
                         String.format("trackLocations %b", track),
                         String.format("coverage %b", instrument),
-                        String.format("phiDefaultClass %s", base)
+                        String.format("phiDefaultClass %s", base),
+                        String.format("deadline %d", seconds),
+                        String.format("maxmem %s", size)
                     )
                 )
             )

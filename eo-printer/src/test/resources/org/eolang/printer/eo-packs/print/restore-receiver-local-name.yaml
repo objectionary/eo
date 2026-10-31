@@ -1,0 +1,34 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A receiver written as "^s" (R-3.4.11) is the void "ρ" carrying the
+# file-local handle "s". Restoring it keeps the void named "ρ", so the head
+# still declares the receiver, and rewrites only the "ρ" hop that leaves the
+# formation declaring it, so "ξ.ρ.ρ.bar" reads "ξ.s.ρ.bar" there and
+# "ξ.ρ.ρ.baz" reads "ξ.ρ.s.baz" one formation further in (#8227).
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/resolve-before-stars.xsl
+  - /org/eolang/parser/parse/fragile-dispatch.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/validate-objects-count.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/printer/print/restore-local-names.xsl
+asserts:
+  - /object/o[@name='printf']/o[1][@name='ρ' and @base='∅' and @local='s']
+  - /object/o[@name='printf']/o[@name='φ' and @base='ξ.s.ρ.bar']
+  - /object/o[@name='printf']/o[@name='inner']/o[@name='φ' and @base='ξ.ρ.s.baz']
+input: |
+  [^s args] > printf
+    s.^.bar args > @
+    [] > inner
+      s.baz > @

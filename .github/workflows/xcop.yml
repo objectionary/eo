@@ -7,9 +7,25 @@ name: xcop
   push:
     branches:
       - master
+    paths:
+      - '**.xsl'
+      - '**.xml'
+      - '**.xhtml'
+      - '**.html'
+      - '**.xsd'
+      - '.github/workflows/xcop.yml'
+      - '.xcop'
   pull_request:
     branches:
       - master
+    paths:
+      - '**.xsl'
+      - '**.xml'
+      - '**.xhtml'
+      - '**.html'
+      - '**.xsd'
+      - '.github/workflows/xcop.yml'
+      - '.xcop'
 permissions:
   contents: read
 concurrency:

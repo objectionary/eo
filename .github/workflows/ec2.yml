@@ -4,22 +4,15 @@
 # yamllint disable rule:line-length
 name: ec2
 'on':
-  push:
-    branches:
-      - master
+  schedule:
+    - cron: '0 */6 * * *'
 permissions:
   contents: read
 concurrency:
   group: ec2-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  wait:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 70
-    steps:
-      - run: sleep 3600
   start-instance:
-    needs: wait
     runs-on: ubuntu-24.04
     outputs:
       label: ${{ steps.start.outputs.label }}

@@ -22,11 +22,11 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^ output] > tee
+[^source output] > tee
   [^ size] > read
     read. > @
       input-block
-        ^.^
+        ^.source
         ^.output
         --
       size
@@ -34,10 +34,12 @@
       buffer > @
       [^ size] > read
         seq * > @
-          written
-          ^.^.input-block chunk written chunk.as-bytes
-        ^. (^.input.read size).read > chunk
-        ^. (^.output.write chunk).write > written
+          ^. (^.output.write chunk).write >> written
+          ^.^.input-block
+            chunk
+            written
+            as-bytes.
+              ^. (^.input.read size).read >> chunk
 
   eq. ++> can-read-from-bytes-and-write-to-memory
     malloc.of

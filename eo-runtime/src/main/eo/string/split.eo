@@ -9,7 +9,7 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^ delimiter cant-split] > split
+[^text delimiter cant-split] > split
   if. > @
     delimiter.size.eq 0
     cant-split
@@ -17,13 +17,17 @@
     if.
       eq.
         size. >> len!
-          ^ >> bts!
+          text >> bts!
         0
       * ""
       [^ accum start current] >> rec-split
         if. > @
           len.eq current
-          appended
+          accum.with >> appended
+            string
+              bts.slice
+                start
+                current.minus start
           if.
             or.
               size.eq 0
@@ -45,23 +49,20 @@
                 as-number.
                   current.plus size
               ^.rec-split accum start (current.plus 1).as-number
-        accum.with > appended
-          string
-            bts.slice
-              start
-              current.minus start
       |
         *
         0
         0
-  size. >> size!
-    delimiter >> delim!
+  number >> size
+    size. >>!
+      delimiter >> delim!
 
   eq. ++> can-recover-from-an-empty-delimiter
-    "recovered"
+    * "recovered"
     "abc".split
       ""
-      "recovered" > [message]
+      * > [message]
+        "recovered"
 
   eq. ++> can-split-a-text-into-empty-strings
     "-a-b-".split "-"

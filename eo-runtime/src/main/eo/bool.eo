@@ -22,13 +22,13 @@
   if > @
     FF-
     00-
-  ^.if > [^ x] > and
+  flag.if > [^flag x] > and
     FF-.eq x
     false
   if > not
     false
     true
-  ^.if > [^ x] > or
+  flag.if > [^flag x] > or
     true
     FF-.eq x
 

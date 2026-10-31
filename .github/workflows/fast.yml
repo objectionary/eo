@@ -102,7 +102,10 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 26
-      - uses: actions/cache@v6
+      # Restored, never saved: the `mvn` job saves this very key on master,
+      # where every pull request can read it, while a cache saved here is
+      # scoped to one pull request and pushes master's out of the quota.
+      - uses: actions/cache/restore@v6
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-jdk-26-maven-${{ hashFiles('**/pom.xml') }}
@@ -115,18 +118,9 @@ jobs:
       # leg builds with lowering explicitly off, keeping the disabled path
       # of the goal continuously covered.
       - if: ${{ matrix.os == 'ubuntu-24.04' }}
-        uses: actions/cache@v6
+        uses: objectionary/phino@3220ca00f33602190a41fa04ac6b42c4cd7c4a7c  # master
         with:
-          path: ~/.cabal
-          key: phino-${{ hashFiles('eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt') }}
-      - if: ${{ matrix.os == 'ubuntu-24.04' }}
-        run: |
-          ver=$(tr -d '[:space:]' < eo-lowering/src/main/resources/org/eolang/lowering/phino-version.txt)
-          if ! "$HOME/.cabal/bin/phino" --version 2>/dev/null | grep -qx "${ver}"; then
-            cabal update
-            cabal install "phino-${ver}" --overwrite-policy=always
-          fi
-          echo "$HOME/.cabal/bin" >> "$GITHUB_PATH"
+          version: 0.0.160
       - if: ${{ matrix.os != 'ubuntu-24.04' }}
         run: echo "LOWERING=-Deo.lowering=false" >> "$GITHUB_ENV"
       - run: mvn -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Deo.transpileTests=false' ${{ env.LOWERING }} clean install

@@ -8,6 +8,7 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Xsline;
@@ -19,6 +20,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.cactoos.io.Directory;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
 import org.eolang.xax.XtSticky;
@@ -40,6 +42,12 @@ import org.junit.jupiter.params.ParameterizedTest;
  * source and runs all of it — parsing, inference, stamping — so every rule of
  * the stylesheet is described by a program a reader can run in their head,
  * and a regression in any of the three stages shows up as a failed pack.</p>
+ *
+ * <p>The other half of the label is here as well: what {@code to-java.xsl}
+ * makes of an object the stylesheet marked. Such an object has to come out of
+ * the transpiler wrapped in {@code PhSticky}, so that the bytes it works out
+ * are remembered instead of being worked out on every read of it (see
+ * #5165).</p>
  *
  * @since 0.75.0
  */
@@ -80,6 +88,122 @@ final class StPureTest {
         );
     }
 
+    @Test
+    void wrapsApplicationOfDataInPhSticky(@Mktmp final Path temp) throws IOException {
+        final Path parsed = Files.createDirectories(temp.resolve("parsed"));
+        Files.writeString(
+            parsed.resolve("app.xmir"),
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(),
+                    "[] > app", "  2.plus 3 > x", "  x > @", ""
+                )
+            ).parsed().toString()
+        );
+        Files.writeString(
+            parsed.resolve("number.xmir"),
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(),
+                    "[as-bytes] > number", "  as-bytes > @",
+                    "  [x] > plus", "    x > @", ""
+                )
+            ).parsed().toString()
+        );
+        Files.writeString(parsed.resolve("bytes.xmir"), StPureTest.xmir("[@] > bytes"));
+        final Path tables = temp.resolve("tables");
+        new Inferring(
+            new Directory(parsed), parsed, temp.resolve("pre"), tables,
+            new RuntimeNames().get()
+        ).exec();
+        MatcherAssert.assertThat(
+            "an application whose parts are all data must be wrapped in PhSticky, but it wasnt",
+            new Xsline(
+                new TrDefault<Shift>()
+                    .with(new StClasspath("/org/eolang/parser/parse/set-locators.xsl"))
+                    .with(new StClasspath("/org/eolang/maven/transpile/set-original-names.xsl"))
+                    .with(new StClasspath("/org/eolang/maven/transpile/classes.xsl"))
+                    .with(new StClasspath("/org/eolang/maven/transpile/attrs.xsl"))
+                    .with(new StClasspath("/org/eolang/maven/transpile/data.xsl"))
+                    .with(new StPure("/org/eolang/maven/transpile/purify.xsl", tables))
+                    .with(new StClasspath("/org/eolang/maven/transpile/to-java.xsl"))
+            ).pass(new XMLDocument(parsed.resolve("app.xmir"))).toString(),
+            Matchers.containsString("new PhSticky(new PhApplication(")
+        );
+    }
+
+    @Test
+    void wrapsDispatchWithoutArgumentsInPhSticky(@Mktmp final Path temp) throws IOException {
+        final Path parsed = Files.createDirectories(temp.resolve("parsed"));
+        Files.writeString(
+            parsed.resolve("app.xmir"),
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(),
+                    "[] > app", "  2.neg > x", "  x > @", ""
+                )
+            ).parsed().toString()
+        );
+        Files.writeString(
+            parsed.resolve("number.xmir"),
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(),
+                    "[as-bytes] > number", "  as-bytes > @",
+                    "  [] > neg", "    as-bytes > @", ""
+                )
+            ).parsed().toString()
+        );
+        Files.writeString(parsed.resolve("bytes.xmir"), StPureTest.xmir("[@] > bytes"));
+        final Path tables = temp.resolve("tables");
+        new Inferring(
+            new Directory(parsed), parsed, temp.resolve("pre"), tables,
+            new RuntimeNames().get()
+        ).exec();
+        MatcherAssert.assertThat(
+            "a dispatch over data that takes no arguments must be wrapped in PhSticky, but it wasnt",
+            new Xsline(
+                new TrDefault<Shift>()
+                    .with(new StClasspath("/org/eolang/parser/parse/set-locators.xsl"))
+                    .with(new StClasspath("/org/eolang/maven/transpile/set-original-names.xsl"))
+                    .with(new StClasspath("/org/eolang/maven/transpile/classes.xsl"))
+                    .with(new StClasspath("/org/eolang/maven/transpile/attrs.xsl"))
+                    .with(new StClasspath("/org/eolang/maven/transpile/data.xsl"))
+                    .with(new StPure("/org/eolang/maven/transpile/purify.xsl", tables))
+                    .with(new StClasspath("/org/eolang/maven/transpile/to-java.xsl"))
+            ).pass(new XMLDocument(parsed.resolve("app.xmir"))).toString(),
+            Matchers.containsString("new PhSticky(")
+        );
+    }
+
+    @Test
+    void readsTablesAgainAfterTheyAreRewritten(@Mktmp final Path temp) throws IOException {
+        final Path parsed = Files.createDirectories(temp.resolve("parsed"));
+        final Path source = parsed.resolve("app.xmir");
+        Files.writeString(
+            source, StPureTest.xmir("[] > app", "  2.plus 3 > x", "  x > @")
+        );
+        Files.writeString(
+            parsed.resolve("number.xmir"),
+            StPureTest.xmir(
+                "[as-bytes] > number", "  as-bytes > @", "  [x] > plus", "    x > @"
+            )
+        );
+        Files.writeString(parsed.resolve("bytes.xmir"), StPureTest.xmir("[@] > bytes"));
+        final Path tables = temp.resolve("tables");
+        new Inferring(
+            new Directory(parsed), parsed, temp.resolve("pre"), tables,
+            new RuntimeNames().get()
+        ).exec();
+        StPureTest.stamped(tables, source);
+        Files.writeString(tables.resolve("answers.xml"), "<answers/>");
+        MatcherAssert.assertThat(
+            "the second stamping must read the table that was rewritten under it, while it reads the one it parsed before",
+            StPureTest.stamped(tables, source).nodes("//o[@base='.plus'][@pure]"),
+            Matchers.empty()
+        );
+    }
+
     private Collection<String> unmatched(final Xtory pack) throws IOException {
         final Collection<String> failed = new ArrayList<>(0);
         for (final Object key : pack.map().keySet()) {
@@ -96,7 +220,10 @@ final class StPureTest {
             );
         }
         final Path tables = this.dir.resolve("tables");
-        new Inferring(parsed, this.dir.resolve("pre"), tables).exec();
+        new Inferring(
+            new Directory(parsed), parsed, this.dir.resolve("pre"), tables,
+            new RuntimeNames().get()
+        ).exec();
         final Collection<XML> stamped = new ArrayList<>(0);
         for (final String name : sources.keySet()) {
             stamped.add(StPureTest.stamped(tables, parsed.resolve(name)));
@@ -111,6 +238,12 @@ final class StPureTest {
             }
         }
         return failed;
+    }
+
+    private static String xmir(final String... lines) throws IOException {
+        return new EoSyntax(
+            String.format("%s%n", String.join(System.lineSeparator(), lines))
+        ).parsed().toString();
     }
 
     private static XML stamped(final Path tables, final Path source) throws IOException {

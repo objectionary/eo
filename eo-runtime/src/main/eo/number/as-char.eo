@@ -15,18 +15,18 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^] > as-char
+[^num] > as-char
   if. > @
     or.
       or.
-        0.gt ^
-        ^.gt 127
-      ^.is-integer.not
+        0.gt num
+        num.gt 127
+      num.is-integer.not
     T
       "The receiver of as-char must be an integer within the range [0, 127]"
     slice.
       as-bytes.
-        ^.plus 4503599627370496
+        num.plus 4503599627370496
       7
       1
 

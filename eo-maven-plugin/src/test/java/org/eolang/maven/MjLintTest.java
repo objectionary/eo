@@ -59,6 +59,48 @@ final class MjLintTest {
     }
 
     @Test
+    void refusesRootReferencesInArgumentsBeforeTranspiling(@Mktmp final Path temp)
+        throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            "+architect yegor256@gmail.com",
+            "+package foo.x",
+            "",
+            "stdout > main",
+            "  $.x"
+        );
+        final List<Object> evidence = new ArrayList<>(2);
+        evidence.add(
+            new UncheckedText(
+                new TextOf(
+                    Assertions.assertThrows(
+                        IllegalStateException.class,
+                        () -> maven.execute(new PpTranspile()),
+                        "a root self reference in an argument must stop before Java generation"
+                    )
+                )
+            ).asString()
+        );
+        evidence.add(
+            maven.result().keySet().stream()
+                .filter(path -> path.endsWith(".java"))
+                .collect(Collectors.toList())
+        );
+        MatcherAssert.assertThat(
+            "a root self reference in an argument must fail before Java generation",
+            evidence,
+            Matchers.<Object>contains(
+                Matchers.hasToString(
+                    Matchers.allOf(
+                        Matchers.containsString("foo.x.main:5"),
+                        Matchers.containsString("(validate-root-base)")
+                    )
+                ),
+                Matchers.<Object>equalTo(List.of())
+            )
+        );
+    }
+
+    @Test
     void includesDefectDetailsInExceptionMessage(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(MjLintTest.erroneous());
         final IllegalStateException thrown = Assertions.assertThrows(
@@ -656,8 +698,11 @@ final class MjLintTest {
             .execute(new PpLint());
         final String planted = new TextOf(new ResourceOf("org/eolang/maven/main.xml")).asString();
         try (Stream<Path> saved = Files.walk(cache.resolve(Linting.CACHE))) {
-            saved.filter(p -> p.endsWith(Paths.get("foo", "x", "main.xmir")))
-                .forEach(p -> new Unchecked<>(new Saved(planted, p)).value());
+            saved.filter(p -> p.endsWith(Paths.get("foo", "x", "main.xmir"))).forEach(
+                p -> new Unchecked<>(
+                    new Saved(MjLintTest.restamped(p, planted), p)
+                ).value()
+            );
         }
         maven.execute(MjLint.class);
         MatcherAssert.assertThat(
@@ -759,5 +804,10 @@ final class MjLintTest {
             "",
             "[] > main",
         };
+    }
+
+    private static String restamped(final Path slot, final String content) {
+        final String text = new UncheckedText(new TextOf(slot)).asString();
+        return text.substring(0, text.indexOf(' ') + 1).concat(content);
     }
 }
