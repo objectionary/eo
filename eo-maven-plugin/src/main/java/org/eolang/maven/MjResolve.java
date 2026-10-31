@@ -24,7 +24,7 @@ import org.apache.maven.plugins.annotations.Mojo;
  * {@link MjPull} goal, finds their implementations
  * (i.e. transitive dependencies), downloads them from Maven Central,
  * unpacks them and places the resulting files to a directory
- * {@link Subdir} numbers "resolve".</p>
+ * {@code Seqdir} numbers "resolve".</p>
  *
  * @since 0.1
  */

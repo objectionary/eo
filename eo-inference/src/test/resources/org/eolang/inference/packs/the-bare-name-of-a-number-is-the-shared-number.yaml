@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A read off the bare name number is a read off the one shared number, so the
+# blank copy does not count and plus is read off a number.
+sources:
+  app.eo: |
+    [] > app
+      number.plus 1 > @
+  number.eo: |
+    [@] > number
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.number']
+  - /answers[not(o[@loc='Φ.number.φ']//open)]
+  - /answers/o[@loc='Φ.number.plus.ρ']/is[@loc='Φ.number']
