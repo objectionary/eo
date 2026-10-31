@@ -12,7 +12,7 @@
   index.is-integer.if > @
     if.
       0.gt
-        list.length.minus index! >> start!
+        number (list.length.minus index)! >> start
       list
       list.reducedi
         *

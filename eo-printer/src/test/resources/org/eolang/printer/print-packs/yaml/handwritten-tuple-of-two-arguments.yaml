@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A `tuple` of two positional arguments is not what `stars-to-tuples`
+# builds, which is a nested tuple, one element and a length, so it keeps the
+# shape it was written in (#9165). As a star it would leave the range
+# strictly between the first child and the last empty, and both arguments
+# are gone.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > app
+    tuple > @
+      tuple.empty
+      42
+
+printed: |
+  tuple > [] > app
+    *
+    42

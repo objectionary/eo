@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# if sits in a file of its own in the package bool, so the facts list it among
+# the attributes of bool, and the if read off bool in app is bool.if.
+sources:
+  app.eo: |
+    [] > app
+      bool.if > @
+  bool.eo: |
+    [] > bool
+  bool/if.eo: |
+    +package bool
+
+    [] > if
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts:
+  - /facts/objects/type[@id='Φ.bool']/attr[@name='if' and @type='Φ.bool.if']
+answers:
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.bool']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.bool.if']

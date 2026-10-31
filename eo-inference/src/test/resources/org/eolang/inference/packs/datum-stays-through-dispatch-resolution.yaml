@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# held is inc with a t in x, so held.next is the next of a t. The 42 next to
+# it stays a number made of bytes made of a datum.
+sources:
+  app.eo: |
+    [] > app
+      inc t > held
+      held.next > @
+      42 > answer
+  inc.eo: |
+    [x] > inc
+      x > @
+  t.eo: |
+    [] > t
+      [] > next
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.held.α0' and @lands='x']/is[@loc='Φ.t']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.t.next']
+  - /answers/o[@loc='Φ.app.answer']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.answer.α0' and @lands='φ']/is[@loc='Φ.bytes']
+  - /answers/o[@loc='Φ.app.answer.α0.α0' and @lands='φ']/data
