@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# close is an atom that says it gives a number, so posix.close 3 is a number
+# and eq is read off number. Nobody calls the return that posix declares, so
+# its voids stay open.
+sources:
+  posix.eo: |
+    [name args] > posix
+      [] > @ /Q.posix.return
+        ? > ^
+      [^ code output] > return
+        output > @
+      [] > close /Q.number
+        ? > descriptor /Q.number
+  app.eo: |
+    [] > app
+      (posix.close 3).eq 0 > @
+  number.eo: |
+    [@] > number
+      [b] > eq
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.posix.close.λ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.number.eq']
+  - /answers/o[@loc='Φ.posix.return' and @copies='1']
+  - /answers/o[@loc='Φ.posix.return.code']/open
+  - /answers/o[@loc='Φ.posix.return.output']/open

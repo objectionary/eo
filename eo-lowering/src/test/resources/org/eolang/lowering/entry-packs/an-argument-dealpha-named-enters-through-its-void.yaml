@@ -6,24 +6,24 @@
 # the locator as the parser wrote it. An entry names its formation by a path
 # the calculus can walk, so the path is read off the tree, void name and all,
 # while the tables and the table of entries still go by the locator.
+# `app` hands the `if` of `yes` two numbers, so the engine says that `left`
+# and `right` hold numbers. `choice` is no bool, so `yes` gets no row of the
+# table of operations, which would move its body under `body🌵`.
 eo:
-  true.eo: |
-    [] > true
-      bool > @
+  yes.eo: |
+    [] > yes
+      choice > @
         [left right]
           left > @
+  choice.eo: |
+    [if] > choice
+  app.eo: |
+    [] > app
+      yes.if 1 2 > used
 dealpha:
-  Φ.true.φ.α0: if
-provides: |
-  <provides>
-    <type id="Φ.true.φ.α0">
-      <attr name="left" type="Φ.true.φ.α0.left" void="true" holds="Φ.number"/>
-      <attr name="right" type="Φ.true.φ.α0.right" void="true"
-        holds="Φ.number"/>
-    </type>
-  </provides>
+  Φ.yes.φ.α0: if
 xmir:
-  - "//o[@name='e1']/o/o[@as='v' and @base='Φ.true']"
-  - "//o[@name='e2']/o/o[@as='v' and @base='Φ.true.φ.if']"
+  - "//o[@name='e1' and @base='Φ.yes']"
+  - "//o[@name='e2' and @base='Φ.yes.φ.if']"
 entries:
-  - "2\tΦ.true.φ.α0"
+  - "2\tΦ.yes.φ.α0"

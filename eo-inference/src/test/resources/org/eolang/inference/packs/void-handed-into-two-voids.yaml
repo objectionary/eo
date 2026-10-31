@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls shelf, so stuff is an open void, and shelf hands it on to book
+# and to scale. Each call answers its head, book and scale, and pages and
+# weight stay open.
+sources:
+  book.eo: |
+    [pages] > book
+      pages.size > @
+  scale.eo: |
+    [weight] > scale
+      weight.mass > @
+  shelf.eo: |
+    [stuff] > shelf
+      book stuff > a
+      scale stuff > b
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers[not(o[@lands='stuff'])]
+  - /answers/o[@loc='Φ.shelf.stuff']/open
+  - /answers/o[@loc='Φ.shelf.a.α0' and @lands='pages']/open
+  - /answers/o[@loc='Φ.shelf.b.α0' and @lands='weight']/open
+  - /answers/o[@loc='Φ.shelf.a']/is[@loc='Φ.book']
+  - /answers/o[@loc='Φ.shelf.b']/is[@loc='Φ.scale']
+  - /answers/o[@loc='Φ.book.pages']/open
+  - /answers/o[@loc='Φ.scale.weight']/open

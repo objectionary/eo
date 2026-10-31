@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,7 +28,7 @@ import org.cactoos.text.Joined;
 
 /**
  * Resolves all required runtime dependencies: downloads from Maven Central,
- * unpacks and places them into a directory {@link Subdir} numbers "resolve".
+ * unpacks and places them into a directory {@code Seqdir} numbers "resolve".
  *
  * @since 0.61.0
  */
@@ -122,9 +123,12 @@ final class Resolving implements Step {
     }
 
     @Override
-    public void exec() {
-        final Path dir = new Subdir(this.target, "resolve").path();
-        final Collection<Dep> deps = this.deps();
+    public void exec() throws IOException {
+        final Path dir = new Seqdir(this.target, 2).dirs().once("resolve");
+        final DpsDefault defaults = new DpsDefault(
+            this.tojos, this.discover, this.skipzero, this.jna
+        );
+        final Collection<Dep> deps = this.deps(defaults);
         final int unpacked;
         if (deps.isEmpty()) {
             unpacked = 0;
@@ -132,7 +136,11 @@ final class Resolving implements Step {
             final Map<String, Set<String>> versions = new ResolvedVersions(deps).byCoordinate();
             unpacked = new Threaded<>(
                 deps,
-                dep -> this.resolved(dep, dir, versions)
+                dep -> {
+                    final int files = this.resolved(dep, dir, versions);
+                    defaults.resolved(dep);
+                    return files;
+                }
             ).total();
         }
         if (unpacked == 0) {
@@ -243,10 +251,8 @@ final class Resolving implements Step {
         return 1;
     }
 
-    private Collection<Dep> deps() {
-        Dependencies result = new DpsDefault(
-            this.tojos, this.discover, this.skipzero, this.jna
-        );
+    private Collection<Dep> deps(final DpsDefault defaults) {
+        Dependencies result = defaults;
         if (this.noruntime) {
             Logger.info(this, "Runtime dependency is ignored because eo:ignoreRuntime=TRUE");
             result = new DpsWithoutRuntime(result);
