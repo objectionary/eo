@@ -5,6 +5,8 @@
 package org.eolang.parser;
 
 import com.jcabi.matchers.XhtmlMatchers;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -982,6 +984,35 @@ final class EoTest {
                     "/object/errors/error[contains(text(),'trailing blank')]"
                 )
             )
+        );
+    }
+
+    @Test
+    void acceptsTupleOfTheLargestSize() throws Exception {
+        MatcherAssert.assertThat(
+            "A tuple of 256 elements must parse without an error, but it didnt",
+            new EoSyntax(EoTest.tuple(256)).parsed().xpath("/object/errors/error/text()"),
+            Matchers.empty()
+        );
+    }
+
+    @Test
+    void refusesTupleOverTheLargestSize() throws Exception {
+        MatcherAssert.assertThat(
+            "A tuple of 257 elements must be refused once, at its line, but it wasnt",
+            new EoSyntax(EoTest.tuple(257)).parsed().xpath(
+                "/object/errors/error[contains(text(),'nested deeper than 256 levels')]/@line"
+            ),
+            Matchers.contains("2")
+        );
+    }
+
+    private static String tuple(final int size) {
+        return String.format(
+            "[] > app%n  * > @%n%s%n",
+            IntStream.range(0, size)
+                .mapToObj(idx -> String.format("    %d", idx))
+                .collect(Collectors.joining(System.lineSeparator()))
         );
     }
 
