@@ -46,6 +46,16 @@
 # one-character text of U+0000 is accepted as a boolean, since its byte is
 # the byte of `false`.
 #
+# The `%d` and `%f` conversions refuse an argument whose bytes are not eight
+# wide, naming the argument and the conversion the way `%b` does. Without that
+# guard the bytes were read as a number anyway and whatever met them answered
+# for itself: `%d` came back naming the receiver of the comparison it fell
+# into (#9036), and `%f` called a text a non-finite number, naming what the
+# reading made of the argument instead of the argument (#9037). Eight bytes
+# is as far as the check reaches, since the bytes of a number are the bytes
+# of any other object of the same length, so a text of eight bytes is still
+# written as the number they spell.
+#
 # The `%d` guard names the number it rejects through `as-scientific` and not
 # through `%f`, because every magnitude it rejects is past the range `as-fixed`
 # writes, and a reason rendered with `%f` destroyed itself instead of arriving.
@@ -57,12 +67,6 @@
 # termination instead of declaring it with `-->`, because a returned text of
 # more than one byte fails to dataize as a boolean exactly as a termination
 # does, and a `-->` test would pass either way.
-#
-# An argument of `%f` whose bytes are not eight is turned down before that,
-# saying it is not a number, the way `%b` says what it got is not a boolean.
-# Eight bytes is as far as the check reaches: the bytes of a number are the
-# bytes of any other object of the same length, so a text of eight bytes is
-# written as the number they spell.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -80,9 +84,14 @@
       if. > @
         gt.
           number span
-          number cursor
+          number
+            index >> cursor!
         if.
-          25-.eq char
+          25-.eq
+            slice. >> char!
+              bytes raw
+              number cursor
+              1
           spec
             number cursor
             auto
@@ -94,11 +103,6 @@
             auto
             acc.concat char
         acc
-      slice. > char!
-        bytes raw
-        number cursor
-        1
-      index > cursor!
     | 0 0 --
   slice. > [^ i] >> byte
     bytes raw
@@ -150,13 +154,31 @@
   [^ index auto acc] >> spec
     if. > @
       gte.
-        number end
+        number
+          precise.as-bool.if >> end!
+            digits-end
+              plus.
+                number
+                  digits-end >> dot!
+                    number
+                      flags-end >> digits!
+                        number
+                          positional.as-bool.if >> flags!
+                            plus.
+                              number
+                                digits-end (index.plus 1) >> dollar!
+                              1
+                            index.plus 1
+                1
+            number dot
         number span
       T
         "The format %s ends with an incomplete specifier, a conversion character is missing".printf
           * ^.text
       if.
-        25-.eq conv
+        25-.eq
+          byte >> conv!
+            number end
         if.
           eq.
             number end
@@ -174,218 +196,167 @@
           plus.
             number end
             1
-          positional.as-bool.if
+          if.
+            as-bool.
+              and. >> positional!
+                gt.
+                  number dollar
+                  index.plus 1
+                and.
+                  lt.
+                    number dollar
+                    number span
+                  24-.eq
+                    byte (number dollar)
             auto
             auto.plus 1
           seq *
-            value
-            acc.concat padded
-    ^.args.at > arg
-      number idx
-    byte > conv!
-      number end
-    if. > converted!
-      73-.eq conv
-      as-bytes. > [^ text] >> capped
-        ^.precise.as-bool.if
-          truncated.
-            string text
-            number ^.precision
-            I
-          text
-      |
-        seq *
-          length.
-            string datum
-          capped datum
-      if.
-        64-.eq conv
-        as-decimal.
-          if.
-            or.
-              gte.
-                number numeric
-                9.223372036854776e18
-              lt.
-                number numeric
-                -9223372036854775808
-            T
-              "The number %s doesn't fit into the long range of the '%%d' conversion".printf
-                *
-                  string (number numeric).as-scientific
-            number numeric
-        if.
-          66-.eq conv
-          if.
-            8.eq datum.size
-            as-fixed.
-              number numeric
-              precise.as-bool.if
-                number precision
-                6
-            T
-              "The argument %x is not a number, the %%f conversion takes a number".printf
-                * datum
-          if.
-            78-.eq conv
-            capped (bytes datum).as-hex
-            if.
-              62-.eq conv
-              if.
-                or.
-                  FF-.eq datum
-                  00-.eq datum
-                capped
-                  arg.as-bool.if "true" "false"
-                T
-                  "The argument %x is not a boolean, the %%b conversion takes true or false".printf
-                    * datum
+            if. >> value!
+              positional.as-bool.and
+                18.lt
+                  minus.
+                    number dollar
+                    index.plus 1
               T
-                "The conversion %s in the format is unsupported, only %%s, %%d, %%f, %%x and %%b are".printf
-                  *
-                    string conv
-    arg.as-bytes > datum!
-    flags-end > digits!
-      number flags
-    digits-end > dollar!
-      index.plus 1
-    digits-end > dot!
-      number digits
-    precise.as-bool.if > end!
-      digits-end
-        plus.
-          number dot
-          1
-      number dot
-    as-bytes. > filled!
-      padded-zeros.
-        string value
-        number width
-        I
-    positional.as-bool.if > flags!
-      plus.
-        number dollar
-        1
-      index.plus 1
-    if. > guarded!
-      precise.as-bool.and
-        64-.eq conv
-      T
-        "A precision of %d can't be applied to the %%d conversion".printf
-          *
-            number precision
-      if.
-        zero.as-bool.and
-          not.
-            or.
-              64-.eq conv
-              66-.eq conv
-        T
-          "The zero flag can't be applied to the %s conversion, only to %%d and %%f".printf
-            *
-              string conv
-        converted
-    positional.as-bool.if > idx!
-      minus.
-        digits-value
-          index.plus 1
-          number dollar
-          0
-        1
-      auto
-    number arg > numeric!
-    if. > padded!
-      if. > [^ i c] >> flagged
-        i.gte
-          number ^.digits
-        false
-        if.
-          c.eq
-            byte i
-          true
-          ^.flagged
-            i.plus 1
-            c
-      | (number flags) 2D-
-      as-bytes.
-        padded-right.
-          string value
-          number width
-          " "
-          I
-      zero.as-bool.if
-        filled
-        as-bytes.
-          padded-left.
-            string value
-            number width
-            " "
-            I
-    and. > positional!
-      gt.
-        number dollar
-        index.plus 1
-      and.
-        lt.
-          number dollar
-          number span
-        24-.eq
-          byte
-            number dollar
-    and. > precise!
-      lt.
-        number dot
-        number span
-      2E-.eq
-        byte
-          number dot
-    precise.as-bool.if > precision!
-      digits-value
-        plus.
-          number dot
-          1
-        number end
-        0
-      0
-    if. > value!
-      positional.as-bool.and
-        18.lt
-          minus.
-            number dollar
-            index.plus 1
-      T
-        "The positional argument index in the format %s is too large".printf
-          * ^.text
-      if.
-        positional.as-bool.and
-          lt.
-            number idx
-            0
-        T
-          "The positional argument index %d in the format must be 1 or greater".printf
-            *
-              plus.
-                number idx
-                1
-        if.
-          gte.
-            number idx
-            ^.args.length
-          T
-            "The argument index %d in the format is out of bounds, only %d given".printf
-              *
-                plus.
-                  number idx
-                  1
-                ^.args.length
-          guarded
-    digits-value > width!
-      number digits
-      number dot
-      0
-    flagged > zero!
-      number flags
-      30-
+                "The positional argument index in the format %s is too large".printf
+                  * ^.text
+              if.
+                positional.as-bool.and
+                  lt. (number idx) 0
+                T
+                  "The positional argument index %d in the format must be 1 or greater".printf
+                    * ((number idx).plus 1)
+                if.
+                  gte. (number idx) ^.args.length
+                  T
+                    "The argument index %d in the format is out of bounds, only %d given".printf
+                      * ((number idx).plus 1) ^.args.length
+                  if. >> guarded!
+                    precise.as-bool.and (64-.eq conv)
+                    T
+                      "A precision of %d can't be applied to the %%d conversion".printf
+                        * (number precision)
+                    if.
+                      and.
+                        as-bool.
+                          flagged (number flags) 30- >> zero!
+                        not.
+                          or.
+                            64-.eq conv
+                            66-.eq conv
+                      T
+                        "The zero flag can't be applied to the %s conversion, only to %%d and %%f".printf
+                          * (string conv)
+                      if. >> converted!
+                        73-.eq conv
+                        as-bytes. > [^ text] >> capped
+                          precise.as-bool.if
+                            truncated.
+                              string text
+                              number precision
+                              I
+                            text
+                        |
+                          seq *
+                            length.
+                              string
+                                as-bytes. >> datum!
+                                  ^.args.at >> arg
+                                    number
+                                      positional.as-bool.if >> idx!
+                                        minus.
+                                          digits-value (index.plus 1) (number dollar) 0
+                                          1
+                                        auto
+                            capped (string datum)
+                        if.
+                          64-.eq conv
+                          if.
+                            datum.size.eq 8
+                            as-decimal.
+                              if.
+                                or.
+                                  gte.
+                                    number
+                                      number arg >> numeric!
+                                    9.223372036854776e18
+                                  lt. (number numeric) -9223372036854775808
+                                T
+                                  "The number %s doesn't fit into the long range of the '%%d' conversion".printf
+                                    * (string (number numeric).as-scientific)
+                                number numeric
+                            T
+                              "The argument %x is not a number, the %%d conversion takes one".printf
+                                * datum
+                          if.
+                            66-.eq conv
+                            if.
+                              datum.size.eq 8
+                              as-fixed.
+                                number numeric
+                                if.
+                                  as-bool.
+                                    ((number dot).lt (number span)).and >> precise!
+                                      2E-.eq (byte (number dot))
+                                  number
+                                    precise.as-bool.if >> precision!
+                                      digits-value
+                                        plus. (number dot) 1
+                                        number end
+                                        0
+                                      0
+                                  6
+                              T
+                                "The argument %x is not a number, the %%f conversion takes one".printf
+                                  * datum
+                            if.
+                              78-.eq conv
+                              capped
+                                string (bytes datum).as-hex
+                              if.
+                                62-.eq conv
+                                if.
+                                  or. (FF-.eq datum) (00-.eq datum)
+                                  capped (arg.as-bool.if "true" "false")
+                                  T
+                                    "The argument %x is not a boolean, the %%b conversion takes true or false".printf
+                                      * datum
+                                T
+                                  "The conversion %s in the format is unsupported, only %%s, %%d, %%f, %%x and %%b are".printf
+                                    * (string conv)
+            acc.concat
+              if. >> padded!
+                if. > [^ i c] >> flagged
+                  i.gte
+                    number digits
+                  false
+                  if.
+                    c.eq (byte i)
+                    true
+                    ^.flagged (i.plus 1) c
+                | (number flags) 2D-
+                as-bytes.
+                  padded-right.
+                    string value
+                    number width
+                    " "
+                    I
+                zero.as-bool.if
+                  as-bytes. >> filled!
+                    padded-zeros.
+                      string value
+                      number
+                        digits-value >> width!
+                          number digits
+                          number dot
+                          0
+                      I
+                  as-bytes.
+                    padded-left.
+                      string value
+                      number width
+                      " "
+                      I
 
   eq. ++> can-answer-the-length-of-the-formatted-text
     2
@@ -625,6 +596,10 @@
     "%d".printf
       * -9223372036854775808
 
+  printf. --> stops-on-a-boolean-as-a-decimal
+    "%d"
+    * true
+
   printf. --> stops-on-a-boolean-as-a-string
     "%s"
     * true
@@ -672,6 +647,10 @@
   printf. --> stops-on-a-precision-with-d
     "%.2d"
     * 5
+
+  printf. --> stops-on-a-string-as-a-decimal
+    "%d"
+    * "x"
 
   printf. --> stops-on-a-width-before-an-escaped-percent
     "%5%s"

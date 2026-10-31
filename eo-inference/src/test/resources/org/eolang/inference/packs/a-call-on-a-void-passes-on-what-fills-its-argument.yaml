@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# grip calls arm with an oak, and arm calls the scope of its ^ with its m, so
+# the oak reaches the k of hold and the j of pick. Both copies of grip make
+# arm at one place, so they share one arm whose ^ holds both, and the @ of
+# each grip is hold or pick.
+sources:
+  oak.eo: |
+    [] > oak
+  grip.eo: |
+    [scope] > grip
+      arm oak > @
+      [^ m] > arm
+        ^.scope m > @
+  app.eo: |
+    [] > app
+      grip hold > @
+      grip pick > twin
+      [k] > hold
+      [j] > pick
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.grip.φ.α0' and @lands='m']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.grip.arm.φ.α0']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.hold.k']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.pick.j']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.grip' and @copies='2']
+  - /answers/o[@loc='Φ.grip.arm' and @copies='1']
+  - /answers/o[@loc='Φ.grip.arm.φ' and is[@loc='Φ.app.hold'] and is[@loc='Φ.app.pick']]
+  - /answers/o[@loc='Φ.grip.φ' and is[@loc='Φ.app.hold'] and is[@loc='Φ.app.pick']]

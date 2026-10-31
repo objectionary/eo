@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls tick, but its x declares it holds a number, so x is a number,
+# and tick says it gives a number.
+sources:
+  tick.eo: |
+    [] > tick /Q.number
+      ? > x /Q.number
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.tick.x']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.tick.λ']/is[@loc='Φ.number']
