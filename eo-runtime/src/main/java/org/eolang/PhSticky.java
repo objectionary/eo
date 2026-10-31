@@ -214,7 +214,7 @@ public final class PhSticky implements Phi {
     private byte[] remembered(final String key) {
         final byte[] result;
         final PhSticky.Guard guard = this.guards.merge(
-            key, new Guard(new ReentrantLock(), 1), (held, fresh) -> held.joined(1)
+            key, new PhSticky.Guard(new ReentrantLock(), 1), (held, fresh) -> held.joined(1)
         );
         guard.lock().lock();
         try {
@@ -274,6 +274,7 @@ public final class PhSticky implements Phi {
      * @since 0.60
      */
     private final class Guard {
+
         /**
          * The lock of the key.
          */
@@ -286,6 +287,7 @@ public final class PhSticky implements Phi {
 
         /**
          * Ctor.
+         *
          * @param lock The lock of the key
          * @param count The number of callers using the lock
          */
@@ -296,6 +298,7 @@ public final class PhSticky implements Phi {
 
         /**
          * The lock of the key.
+         *
          * @return The lock
          */
         ReentrantLock lock() {
@@ -304,11 +307,12 @@ public final class PhSticky implements Phi {
 
         /**
          * The same lock, with the number of its callers changed.
+         *
          * @param delta How many callers came, or left if negative
          * @return The new guard
          */
         PhSticky.Guard joined(final int delta) {
-            return new Guard(this.mutex, this.users + delta);
+            return new PhSticky.Guard(this.mutex, this.users + delta);
         }
 
         /**
