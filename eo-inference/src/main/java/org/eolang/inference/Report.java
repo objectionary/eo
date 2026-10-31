@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -119,14 +118,12 @@ public final class Report {
 
     private static void wiped(final Path out) throws IOException {
         if (Files.exists(out)) {
-            final List<Path> all;
+            final List<Path> pages;
             try (Stream<Path> walked = Files.walk(out)) {
-                all = walked.sorted(Comparator.reverseOrder()).toList();
+                pages = walked.filter(path -> path.toString().endsWith(".html")).toList();
             }
-            for (final Path path : all) {
-                if (path.toString().endsWith(".html")) {
-                    Files.delete(path);
-                }
+            for (final Path page : pages) {
+                Files.delete(page);
             }
         }
     }
