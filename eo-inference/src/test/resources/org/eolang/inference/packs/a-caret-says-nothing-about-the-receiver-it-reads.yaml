@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# ^ in leaf is the grove it was read off, ^.^ the oak and ^.^.^ the app, so
+# leaf is the acorn of app. Each ^ holds only what its formation was read off:
+# the ^ of oak holds app, never the grove inside it.
+sources:
+  app.eo: |
+    [] > app
+      oak > @
+      [^] > oak
+        grove > @
+        [^] > grove
+          leaf > @
+          [^] > leaf
+            ^.^.^.acorn > @
+      [] > acorn
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.oak.grove.leaf.φ.ρ.ρ.ρ']/is[@loc='Φ.app.oak.grove']
+  - /answers/o[@loc='Φ.app.oak.grove.leaf.φ.ρ.ρ']/is[@loc='Φ.app.oak']
+  - /answers/o[@loc='Φ.app.oak.grove.leaf.φ.ρ']/is[@loc='Φ.app']
+  - /answers/o[@loc='Φ.app.oak.grove.leaf']/reduced/is[@loc='Φ.app.acorn']
+  - /answers/o[@loc='Φ.app.oak.ρ']/is[@loc='Φ.app']
+  - /answers[not(o[@loc='Φ.app.oak.ρ']/is[@loc='Φ.app.oak.grove'])]
