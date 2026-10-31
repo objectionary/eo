@@ -61,7 +61,11 @@ import org.cactoos.text.TextOf;
  * only by the stylesheet {@code rendering.xsl}, one protocol at a time.
  * This class only finds what the stylesheet needs to know about the
  * entry: its number, its locator, the top object it is inside, and the
- * package of that object.</p>
+ * package of that object. The stylesheet also reads {@code rows.tsv},
+ * which {@link Planting} writes: a symbol that the λ of a row made is
+ * turned into a call of the object the row is about, with its inputs
+ * wrapped back into their types, and that call dataizes the object,
+ * whether it became an atom or stayed in EO.</p>
  *
  * <p>An entry that phino did not run has no protocol, so it is skipped.
  * When the stylesheet finds that an entry is a taint, this class only
@@ -98,14 +102,19 @@ import org.cactoos.text.TextOf;
  * through {@code ExFailure}, which is what {@code T} does in eo-runtime,
  * and {@code recovered} catches it the same way.</p>
  *
- * <p>A fork whose branch is a {@code T} raises on that side, as
- * {@code bytes.xor} does when its operands differ in length. phino joins
- * such a fork into its other branch, and writes a {@code terminate} record
- * that names the condition and the message. The atom checks that condition
- * with an {@code if}, which throws the message through {@code ExFailure}
- * right where the condition is computed. This check is a guard. An entry
- * whose fork raises anywhere but around its whole body is a taint, and so
- * is an entry that raises a message it would have to compute.</p>
+ * <p>A fork is an {@code if} whose condition nobody worked out, such as
+ * the check of {@code bytes.xor} that its operands have one length. phino
+ * works out both sides of it first. When they are the same up to their
+ * symbols, phino joins them into one symbol, and the atom assigns that
+ * symbol inside an {@code if} on the condition. Otherwise the run splits
+ * into two flows, one per side, and the record of the fork holds what
+ * each of them did from there on, with the forks they meet nested inside
+ * it the same way. The atom is the tree of these forks: an {@code if} for
+ * every fork, with the statements only one side needs inside that side,
+ * and a {@code return} or a {@code throw} at the end of every flow. A flow
+ * whose side is a copy of {@code throw} ends in the throw of its message,
+ * the way the root of a whole entry does, and an entry that throws a
+ * message it would have to compute is a taint.</p>
  *
  * @since 0.64.0
  * @todo #9248:45min Put the object around a root that comes out of an
@@ -116,29 +125,20 @@ import org.cactoos.text.TextOf;
  *  returns the void bare, as bytes, and the {@code i8} around it is lost.
  *  A body that copies a decorator of a string, like {@code separator.joined
  *  parts}, is a taint now for the same reason. Once phino names, in the
- *  formations of {@code L_root}, the object each root reduced to, read the
+ *  dataization of the entry, the object each root reduced to, read the
  *  object around the root there as well.
  * @todo #9373:45min Write an atom for an entry that throws a message it
  *  computes. When the message of a {@code T} is not a string literal, like
  *  {@code T (string FF-FE)} or {@code T (x.as-string)}, phino writes it as
  *  an object, and the entry is a taint now. But its atom could compute the
  *  message first, and then throw it.
- * @todo #8548:30min Write an atom for an entry whose result is always the
- *  same. When the result of the body is known bytes, like an object that
- *  always returns {@code 42}, the entry is a taint now. But its atom could
- *  simply return those bytes.
- * @todo #9448:45min Put a guard inside the branch or the operand where its
- *  fork raises. A guard stands at the top of the atom now, so an entry is a
- *  taint when the fork that raises sits inside a branch of another fork, or
- *  inside an argument of an operation, or next to a fork that does not
- *  raise. Once phino names, in every {@code terminate} record, the fork and
- *  the branch the record sits inside, place every guard right there.
  */
 final class Rendering implements Proc<Path> {
 
     /**
-     * The directory with the tables of {@code eo:inference}, which say what
-     * the body of an entry gives.
+     * The directory with the tables of {@code eo:inference},
+     * {@code facts.xml} and {@code answers.xml}, which say what the body of
+     * an entry gives.
      */
     private final Path tables;
 
@@ -153,7 +153,7 @@ final class Rendering implements Proc<Path> {
 
     @Override
     public void exec(final Path home) throws IOException {
-        for (final String table : new ListOf<>("provides.xml", "links.xml", "atoms.xml")) {
+        for (final String table : new ListOf<>("facts.xml", "answers.xml")) {
             if (!Files.exists(this.tables.resolve(table))) {
                 throw new IllegalStateException(
                     String.format(
@@ -189,6 +189,7 @@ final class Rendering implements Proc<Path> {
             "/org/eolang/lowering/rendering.xsl"
         ).with(new Hrefs())
             .with("voids", home.resolve("voids.tsv").toUri().toString())
+            .with("rows", home.resolve("rows.tsv").toUri().toString())
             .with("inference", this.tables.toUri().toString());
         final Path atoms = new Seqdir(home, 1).dirs().once("atoms");
         Rendering.clean(atoms);

@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nothing is written for math but the minus in its folder, yet the facts make
+# math an object with minus in it, and the answers name math as itself.
+sources:
+  math/minus.eo: |
+    +package math
+
+    [] > minus
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts:
+  - /facts/objects/type[@id='Φ']/attr[@name='math' and @type='Φ.math']
+  - /facts/objects/type[@id='Φ.math']/attr[@name='minus' and @type='Φ.math.minus']
+answers:
+  - /answers/o[@loc='Φ.math']/is[@loc='Φ.math']

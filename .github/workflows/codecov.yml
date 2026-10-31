@@ -21,7 +21,7 @@ jobs:
       - uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
-          java-version: 21.0.12+101.0.LTS
+          java-version: 21.0.13+9.0.LTS
       - uses: actions/cache@v6
         with:
           path: ~/.m2/repository
@@ -32,7 +32,7 @@ jobs:
       # and this job is the one that always builds with lowering on.
       - uses: objectionary/phino@3220ca00f33602190a41fa04ac6b42c4cd7c4a7c  # master
         with:
-          version: 0.0.156
+          version: 0.0.160
       - run: mvn install '-Deo.coverageTracking=true' '-Deo.lowering=true'
       # The goal must have run, and a missing folder is how a silently
       # disabled lowering would look.

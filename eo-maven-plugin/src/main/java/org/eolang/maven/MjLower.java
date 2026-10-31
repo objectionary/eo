@@ -46,7 +46,7 @@ import org.eolang.lowering.Scope;
  * and then plants the entries of the build. It hands the lowering the
  * XMIR of every standalone object, the directory where {@code eo:inference}
  * left its tables, because an entry is a formation applied to what the
- * tables say its voids hold, and one home directory, which {@link Subdir}
+ * tables say its voids hold, and one home directory, which {@code Seqdir}
  * numbers as {@code NN-lowering}. There the lowering keeps the world, the
  * sources with their tests cut out in {@code 1-planting}, and the protocol
  * of every object morphed in {@code 2-protocols}. The atoms the lowering
@@ -105,7 +105,7 @@ public final class MjLower extends MjSafe {
     @Parameter(
         alias = "pinPhino",
         property = "eo.pinPhino",
-        defaultValue = "0.0.156"
+        defaultValue = "0.0.160"
     )
     private String pin;
 
@@ -190,7 +190,7 @@ public final class MjLower extends MjSafe {
 
     /**
      * The directory with the tables of {@code eo:inference}. When it is not
-     * set, the goal uses the directory that {@link Subdir} gives to the name
+     * set, the goal uses the directory that {@code Seqdir} gives to the name
      * "inference", which is where {@code eo:inference} saves the tables.
      */
     @Parameter(alias = "inferenceDir", property = "eo.inferenceDir")
@@ -206,11 +206,18 @@ public final class MjLower extends MjSafe {
     @Override
     void exec() throws IOException {
         if (this.lowering) {
-            final Path home = new Subdir(this.target, "lowering").path().toAbsolutePath();
+            final Path home = new Seqdir(this.target.toPath(), 2)
+                .dirs().once("lowering").toAbsolutePath();
+            final Path inference;
+            if (this.tables == null) {
+                inference = new Seqdir(this.target.toPath(), 2).dirs().once("inference");
+            } else {
+                inference = this.tables.toPath();
+            }
             try (TjsForeign tojos = this.tojos()) {
                 final Lowering pipeline = new Lowering(
                     new ListOf<>(new Mapped<>(TjForeign::xmir, tojos.standalone())),
-                    new Subdir(this.target, "inference").orConfigured(this.tables),
+                    inference,
                     home,
                     this.binary,
                     this.pin,
