@@ -33,12 +33,17 @@ import org.eolang.cache.GlobalCache;
  *
  * <ul>
  * <li>the home directory itself holds the world and the other files that
- * are made on the way to it;</li>
+ * are made on the way to it, among them {@code atoms.yaml}, the table of
+ * the operations phino may write down, where every formation that the
+ * planting gave a row to stands after the atoms of the library;</li>
  * <li>{@code 1-planting}, inside the home directory, holds the copies of the
  * sources, without the tests, and with every {@code T} turned into a copy
  * of {@code throw};</li>
  * <li>{@code 2-protocols}, inside the home directory, holds one protocol file
  * for every entry that phino worked on;</li>
+ * <li>{@code texts}, inside the home directory, holds the same protocols
+ * written as indented text, for a person to read, only when they are asked
+ * for;</li>
  * <li>the directory of atoms, given to the constructor, holds the Java
  * atoms;</li>
  * <li>the directory of patched sources, given to the constructor, holds
@@ -64,8 +69,9 @@ public final class Lowering {
     private final Collection<Path> sources;
 
     /**
-     * The directory with the tables of {@code eo:inference}, which say the
-     * types of the voids.
+     * The directory with the tables of {@code eo:inference},
+     * {@code facts.xml} and {@code answers.xml}, which say what the voids
+     * hold and what the bodies give.
      */
     private final Path tables;
 
@@ -108,10 +114,20 @@ public final class Lowering {
     private final int steps;
 
     /**
+     * How many times one run of phino may enter the same formation again.
+     */
+    private final int loops;
+
+    /**
      * The time that one run of phino on one entry may take before it is
      * stopped.
      */
     private final Duration budget;
+
+    /**
+     * Whether every entry gets its protocol as indented text too.
+     */
+    private final boolean texts;
 
     /**
      * Ctor.
@@ -120,20 +136,29 @@ public final class Lowering {
      * @param tbls The directory with the tables of {@code eo:inference}
      * @param dir The home directory of the lowering, usually {@code target/eo/NN-lowering}
      * @param exe The name of the phino program, or the path to it
+     * @param pin The only version of phino that the lowering accepts
      * @param store The cache, where the protocols are kept between builds
      * @param kept The directory for the Java atoms, which javac compiles
      * @param copies The directory for the patched XMIR files
      * @param range The entries that phino is allowed to run on
      * @param ceiling The largest number of steps inside one another that one
      *  run of phino may take
+     * @param again How many times one run of phino may enter the same
+     *  formation again
      * @param span The time that one run of phino may take before it is stopped
+     * @param text Whether every entry gets its protocol as indented text too
+     * @checkstyle ParameterNumberCheck (10 lines)
      */
     public Lowering(
         final Collection<Path> srcs, final Path tbls, final Path dir, final String exe,
-        final GlobalCache store, final Path kept, final Path copies, final Scope range,
-        final int ceiling, final Duration span
+        final String pin, final GlobalCache store, final Path kept, final Path copies,
+        final Scope range, final int ceiling, final int again, final Duration span,
+        final boolean text
     ) {
-        this(srcs, tbls, dir, new Phino(exe), store, kept, copies, range, ceiling, span);
+        this(
+            srcs, tbls, dir, new Phino(exe, pin), store, kept, copies, range, ceiling, again,
+            span, text
+        );
     }
 
     /**
@@ -149,12 +174,15 @@ public final class Lowering {
      * @param range The entries that phino is allowed to run on
      * @param ceiling The largest number of steps inside one another that one
      *  run of phino may take
+     * @param again How many times one run of phino may enter the same
+     *  formation again
      * @param span The time that one run of phino may take before it is stopped
+     * @param text Whether every entry gets its protocol as indented text too
      */
     Lowering(
         final Collection<Path> srcs, final Path tbls, final Path dir, final Phino exe,
         final GlobalCache store, final Path kept, final Path copies, final Scope range,
-        final int ceiling, final Duration span
+        final int ceiling, final int again, final Duration span, final boolean text
     ) {
         this.sources = srcs;
         this.tables = tbls;
@@ -165,7 +193,9 @@ public final class Lowering {
         this.patched = copies;
         this.scope = range;
         this.steps = ceiling;
+        this.loops = again;
         this.budget = span;
+        this.texts = text;
     }
 
     /**
@@ -224,16 +254,20 @@ public final class Lowering {
         }
         Logger.info(
             this,
-            "Phino %s is found at '%s', though nothing is lowered yet",
+            "Phino %s is found at '%s', lowering %d sources",
             pinned,
-            this.phino
+            this.phino,
+            this.sources.size()
         );
         new IoCheckedProc<>(
             new Procs<>(
                 new Pruning(this.sources),
                 new Planting(this.tables),
                 new Merging(this.phino),
-                new Morphing(this.phino, this.cache, this.scope, this.steps, this.budget),
+                new Morphing(
+                    this.phino, this.cache, this.scope, this.steps, this.loops, this.budget,
+                    this.texts
+                ),
                 new Rendering(this.atoms, this.tables),
                 new Patching(this.sources, this.tables, this.patched)
             )

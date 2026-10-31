@@ -15,14 +15,15 @@
         bts.size.gt 8
     and.
       eq.
-        bts.and 7F-F0-00-00-00-00-00-00
+        and.
+          num.as-bytes >> bts
+          7F-F0-00-00-00-00-00-00
         7F-F0-00-00-00-00-00-00
       not.
         eq.
           bts.and 00-0F-FF-FF-FF-FF-FF-FF
           00-00-00-00-00-00-00-00
     false
-  num.as-bytes > bts
 
   is-nan. ++> can-be-nan-when-built-of-nan-bytes
     number nan.as-bytes

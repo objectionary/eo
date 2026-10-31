@@ -1,0 +1,39 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# taken calls choose with yes and no. choose holds only the arm a caller puts
+# there, one per copy of pick, and the call puts yes and no, each a pick, into
+# the left and the right of that arm, so taken is a pick.
+sources:
+  pick.eo: |
+    [choose] > pick
+      choose > taken
+        yes
+        no
+  yes.eo: |
+    [^] > yes
+      pick > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      pick > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.pick.choose' and @copies='2']/set[@copies='1' and count(*)=1]/is[@loc='Φ.yes.φ.α0']
+  - /answers/o[@loc='Φ.pick.choose' and @copies='2']/set[@copies='1' and count(*)=1]/is[@loc='Φ.no.φ.α0']
+  - /answers/o[@loc='Φ.pick.taken.α0' and @lands='a🌵4-6']/is[@loc='Φ.pick']
+  - /answers/o[@loc='Φ.pick.taken.α1' and @lands='a🌵5-6']/is[@loc='Φ.pick']
+  - /answers/o[@loc='Φ.pick.taken']/is[@loc='Φ.pick']
