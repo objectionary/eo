@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# dead is T, an error, and its answer is T, with nothing to follow.
+sources:
+  app.eo: |
+    [] > app
+      T > dead
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.dead']/terminator
+  - /answers[not(o[starts-with(@loc, 'Φ.app.dead.')])]

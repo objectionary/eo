@@ -9,7 +9,12 @@
 +version 0.0.0
 
 [as-bytes] > u16
-  as-bytes > @
+  if. > @
+    as-bytes.size.eq 2
+    as-bytes
+    T
+      "A u16 needs exactly 2 bytes, got %d".printf
+        * as-bytes.size
   i32 > [^num] > as-i32
     00-00.concat num.as-bytes
   as-i32.as-number > as-number
@@ -85,10 +90,10 @@
     00-2A.as-u16
 
   eq. ++> can-recover-from-division-by-zero
-    "recovered"
+    u16 00-2A
     00-02.as-u16.div
       00-00.as-u16
-      "recovered" > [message]
+      u16 00-2A > [message]
 
   eq. ++> can-subtract
     00-05.as-u16.minus 00-03.as-u16
@@ -119,5 +124,7 @@
   eq. ++> can-wrap-a-product-modulo-two-to-the-sixteenth
     01-00.as-u16.times 01-00.as-u16
     00-00.as-u16
+
+  u16 01-02-03 --> stops-on-bytes-of-the-wrong-width
 
   00-02.as-u16.div 00-00.as-u16 --> stops-on-division-by-zero
