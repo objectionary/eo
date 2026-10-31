@@ -3,6 +3,11 @@
 # integer results stay exact, and a fractional exponent of a positive base is
 # taken as e raised to `b` times the natural logarithm of the base. Zeros,
 # infinities and nan follow the same IEEE rules that Math.pow obeys.
+#
+# `expo` says that `b` is not a number itself, rather than letting the
+# first atom it reaches say it of its own attribute: the exponent of a
+# string is eight bytes short, and the comparison that met it blamed its
+# own receiver, which is an attribute the caller never wrote (#9283).
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -13,9 +18,7 @@
 
 [^num b] > power
   if. > @
-    eq.
-      number b.as-bytes >> expo
-      0
+    expo.eq 0
     1
     base.is-nan.if
       nan
@@ -49,11 +52,11 @@
                       if.
                         is-integer. (n.div 2)
                         times.
-                          number half
+                          number
+                            ^.ipow factor (n.div 2) >> half!
                           number half
                         factor.times
                           ^.ipow factor (n.minus 1)
-                    ^.ipow factor (n.div 2) > half!
                   | (1.div base) expo.abs
                   ipow base expo.abs
                 if.
@@ -61,24 +64,29 @@
                   [^ y] >> expon
                     times. > @
                       if.
-                        lt. (number k) 0
+                        lt.
+                          number
+                            floor. >> k!
+                              plus.
+                                number
+                                  y >> arg!
+                                0.5
+                          0
                         1.div
                           ipow e (number k).abs
                         ipow e (number k).abs
-                      fraction 1
-                    y > arg!
-                    if. > [^ j] > fraction
-                      j.gt 20
-                      1
-                      1.plus
-                        times.
-                          div.
-                            minus.
-                              number ^.arg
-                              number ^.k
-                            j
-                          ^.fraction (j.plus 1)
-                    floor. ((number arg).plus 0.5) > k!
+                      if. > [^ j] >> fraction
+                        j.gt 20
+                        1
+                        1.plus
+                          times.
+                            div.
+                              minus.
+                                number arg
+                                number k
+                              j
+                            ^.fraction (j.plus 1)
+                      | 1
                   | (expo.times base.ln)
                   nan
             if.
@@ -110,6 +118,10 @@
                 base.abs.eq 1
                 nan
                 pinf
+  if. > expo
+    b.as-bytes.size.eq 8
+    number b.as-bytes
+    T "the 'b' attribute must be a number"
 
   gt. ++> can-avoid-underflow-for-a-negative-exponent-that-overflows-positive
     10.power -315
@@ -190,6 +202,11 @@
     4.power -3
     0.015625
 
+  eq. ++> can-raise-negative-infinity-to-a-negative-odd-integer
+    as-bytes.
+      ninf.power -3
+    80-00-00-00-00-00-00-00
+
   eq. ++> can-raise-negative-infinity-to-a-positive-float
     ninf.power 9.9
     pinf
@@ -201,6 +218,11 @@
   eq. ++> can-raise-negative-infinity-to-an-odd-integer
     ninf.power 9
     ninf
+
+  eq. ++> can-raise-negative-infinity-to-an-odd-negative-integer
+    as-bytes.
+      ninf.power -3
+    80-00-00-00-00-00-00-00
 
   eq. ++> can-raise-negative-infinity-to-negative-infinity
     ninf.power ninf
@@ -219,8 +241,9 @@
     ninf
 
   eq. ++> can-raise-negative-zero-to-odd-positive
-    -0.power 3
-    -0
+    as-bytes.
+      -0.power 3
+    80-00-00-00-00-00-00-00
 
   lt. ++> can-raise-one-to-a-fraction
     abs.
@@ -352,3 +375,5 @@
         2.power 0.5
         1.4142135623730951
     1.0e-9
+
+  2.power "abc" --> stops-on-an-exponent-that-is-not-a-number

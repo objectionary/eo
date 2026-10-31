@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The @ of again is a fresh copy of again, so its reduction meets itself and
+# drops it (rule s), and nothing is left. The argument of box never has a
+# value, so the call makes no copy (the absence rule), and what app reads off
+# it cannot be told.
+sources:
+  again.eo: |
+    [] > again
+      ^.again > @
+  box.eo: |
+    [item] > box
+      item > @
+      item > kept
+  app.eo: |
+    [] > app
+      (box again).kept > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.again.φ']/is[@loc='Φ.again']
+  - /answers/o[@loc='Φ.box.item' and @copies='1']/open
+  - /answers/o[@loc='Φ.app.φ.ρ']/unknown
+  - /answers/o[@loc='Φ.app.φ']/unknown

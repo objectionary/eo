@@ -12,8 +12,7 @@
 [^text delimiter cant-split] > split
   if. > @
     delimiter.size.eq 0
-    cant-split
-      "The delimiter must not be empty"
+    cant-split "The delimiter must not be empty"
     if.
       eq.
         size. >> len!
@@ -23,7 +22,11 @@
       [^ accum start current] >> rec-split
         if. > @
           len.eq current
-          appended
+          accum.with >> appended
+            string
+              bts.slice
+                start
+                current.minus start
           if.
             or.
               size.eq 0
@@ -45,23 +48,20 @@
                 as-number.
                   current.plus size
               ^.rec-split accum start (current.plus 1).as-number
-        accum.with > appended
-          string
-            bts.slice
-              start
-              current.minus start
       |
         *
         0
         0
-  size. >> size!
-    delimiter >> delim!
+  number >> size
+    size. >>!
+      delimiter >> delim!
 
   eq. ++> can-recover-from-an-empty-delimiter
-    "recovered"
+    * "recovered"
     "abc".split
       ""
-      "recovered" > [message]
+      * > [message]
+        "recovered"
 
   eq. ++> can-split-a-text-into-empty-strings
     "-a-b-".split "-"
@@ -92,8 +92,7 @@
   eq. ++> can-split-into-strings
     length.
       at.
-        "hello world!".split
-          " "
+        "hello world!".split " "
         1
     6
 

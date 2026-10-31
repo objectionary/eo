@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# cat is complete and has no bark, so the read of bark off it fails and says
+# what is missing.
+sources:
+  cat.eo: |
+    [] > cat
+      "meow" > voice
+  app.eo: |
+    [] > app
+      cat.bark > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts:
+  - /facts/objects/type[@id='Φ.cat' and @complete='true']
+  - /facts[not(objects/type[@id='Φ.cat']/attr[@name='bark'])]
+answers:
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.cat']
+  - /answers/o[@loc='Φ.app.φ']/fails[@name='Φ.cat.bark']

@@ -44,12 +44,13 @@ final class HrefsTest {
             new XMLDocument(
                 new Hrefs().resolve(
                     Files.write(
-                        temp.resolve("links.xml"),
-                        "<links><type id='Φ.q7w.φ'/></links>".getBytes(StandardCharsets.UTF_8)
+                        temp.resolve("answers.xml"),
+                        "<answers><o loc='Φ.q7w.φ' copies='2'><data/></o></answers>"
+                            .getBytes(StandardCharsets.UTF_8)
                     ).toUri().toString(),
                     ""
                 )
-            ).xpath("/links/type/@id"),
+            ).xpath("/answers/o/@loc"),
             Matchers.contains("Φ.q7w.φ")
         );
     }

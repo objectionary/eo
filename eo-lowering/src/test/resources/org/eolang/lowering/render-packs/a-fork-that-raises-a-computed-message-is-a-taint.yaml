@@ -2,67 +2,107 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# The message the fork raises is a "printf", which phino leaves as code, so
-# the atom would have to compute the message, and such an atom is not
-# written yet. The forks inside the message do not matter then.
+# The message the flow throws is a printf over the sizes, and the protocol
+# names it through a dispatch, not through a chain of objects of the world,
+# so the atom has nothing to build it from, and the entry stays in EO.
 locator: Φ.bytes.xor
 number: 7
-taint: raises when 𝜎137 is false, but its message 𝑛·6·378 is not a string literal
+taint: its message 𝑛·1·25 is no object of the world applied to its φ, so the atom cannot build it
 eo:
   bytes.eo: |
-    [] > bytes
-      [b] > xor
+    [@] > bytes
+      [^ b] > xor
         if. > @
           ^.size.as-bytes.eq b.size.as-bytes
           ^.or b
-          T
-            "bytes.xor requires operands of the same length, got %d".printf
-              * ^.size
+          T "bytes.xor requires operands of the same length"
+      [] > and /Q.bytes
+        ? > ^
+        ? > b /Q.bytes
+      [] > eq /Q.bool
+        ? > ^
+        ? > b
+      [] > or /Q.bytes
+        ? > ^
+        ? > b /Q.bytes
+      [] > size /Q.number
+        ? > ^
+  number.eo: |
+    [@] > number
+      [] > as-bytes /Q.bytes
+        ? > ^
 voids:
   - "𝜎7\t7\tρ\tbytes"
   - "𝜎8\t7\tb\tbytes"
 protocol: |
   <protocol>
-    <morph at="Φ.l/.e7">
-      <evaluate λ="L_entry" by="morph" at="Φ.l/.e7">
+    <dataize at="Φ.l🌵.e7">
+      <boxed meta="𝑛·0·1">Φ.l🌵.e7.φ</boxed>
+      <morph at="𝑛·0·1">
         <evaluate λ="L_bytes_size" by="morph" at="Φ.a🌵1">
-          <dataize meta="𝛿1·2">𝜎7</dataize>
+          <dataize at="Φ.a🌵12">
+            <manufactured meta="𝛿·2·1">𝜎7</manufactured>
+          </dataize>
+          <bound meta="𝛿1·2">𝛿·2·1</bound>
           <minted symbol="𝜎135">𝜎7</minted>
         </evaluate>
         <evaluate λ="L_bytes_eq" by="morph" at="Φ.a🌵1">
-          <dataize meta="𝛿1·3">𝜎135</dataize>
+          <dataize at="Φ.a🌵13">
+            <manufactured meta="𝛿·3·1">𝜎135</manufactured>
+          </dataize>
+          <bound meta="𝛿1·3">𝛿·3·1</bound>
           <evaluate λ="L_bytes_size" by="morph" at="Φ.a🌵4">
-            <dataize meta="𝛿1·4">𝜎8</dataize>
+            <dataize at="Φ.a🌵15">
+              <manufactured meta="𝛿·4·1">𝜎8</manufactured>
+            </dataize>
+            <bound meta="𝛿1·4">𝛿·4·1</bound>
             <minted symbol="𝜎136">𝜎8</minted>
           </evaluate>
-          <dataize meta="𝛿2·3">𝜎136</dataize>
+          <dataize at="Φ.a🌵14">
+            <manufactured meta="𝛿·3·2">𝜎136</manufactured>
+          </dataize>
+          <bound meta="𝛿2·3">𝛿·3·2</bound>
           <minted symbol="𝜎137">𝜎135 𝜎136</minted>
         </evaluate>
-        <evaluate λ="L_bytes_or" by="morph" at="Φ.a🌵1.left">
-          <dataize meta="𝛿1·5">𝜎7</dataize>
-          <dataize meta="𝛿2·5">𝜎8</dataize>
+        <applied meta="𝑛·1·17" of="Φ.bytes"><datum attr="φ">62-79-74-65-73-2E-78-6F-72-20-72-65-71-75-69-72-65-73-20-6F-70-65-72-61-6E-64-73-20-6F-66-20-74-68-65-20-73-61-6D-65-20-6C-65-6E-67-74-68-2C-20-67-6F-74-20-25-64</datum></applied>
+        <applied meta="𝑛·1·18" of="Φ.string"><meta attr="φ">𝑛·1·17</meta></applied>
+        <applied meta="𝑛·1·19" of="Φ.bytes"><datum attr="φ">3F-F0-00-00-00-00-00-00</datum></applied>
+        <applied meta="𝑛·1·20" of="Φ.number"><meta attr="φ">𝑛·1·19</meta></applied>
+        <applied meta="𝑛·1·21" of="Φ.tuple"><ref attr="tail">Φ.tuple.empty</ref><meta attr="head">𝑛·1·12.size</meta><meta attr="length">𝑛·1·20</meta></applied>
+        <applied meta="𝑛·1·25" of="𝑛·1·18.printf"><meta attr="args">𝑛·1·21</meta></applied>
+        <applied meta="𝑛·1·26" of="Φ.l🌵.throw"><meta attr="message">𝑛·1·25</meta></applied>
+        <morphed meta="𝑛·0·2">𝑛·1·30</morphed>
+      </morph>
+      <evaluate λ="L_fork" by="dataize" at="Φ.a🌵7">
+        <dataize at="Φ.a🌵17">
+          <manufactured meta="𝛿·7·1">𝜎137</manufactured>
+        </dataize>
+        <bound meta="𝛿1·7">𝛿·7·1</bound>
+        <evaluate λ="L_bytes_or" by="morph" at="Φ.a🌵8">
+          <dataize at="Φ.a🌵18">
+            <manufactured meta="𝛿·8·1">𝜎7</manufactured>
+          </dataize>
+          <bound meta="𝛿1·8">𝛿·8·1</bound>
+          <dataize at="Φ.a🌵19">
+            <manufactured meta="𝛿·8·2">𝜎8</manufactured>
+          </dataize>
+          <bound meta="𝛿2·8">𝛿·8·2</bound>
           <minted symbol="𝜎138">𝜎7 𝜎8</minted>
-          <applied meta="𝑛·5·4" by="morph" at="𝑛·5·3" of="Φ.bytes"><attr name="φ">𝜎138</attr></applied>
         </evaluate>
-        <evaluate λ="L_fork" by="morph" at="Φ.a🌵1">
-          <dataize meta="𝛿1·6">𝜎137</dataize>
-          <applied meta="𝑛·6·2" by="morph" at="Φ.a🌵10.message" of="Φ.bytes"><attr name="φ">62-79-74-65-73-2E-78-6F-72-20-72-65-71-75-69-72-65-73-20-6F-70-65-72-61-6E-64-73-20-6F-66-20-74-68-65-20-73-61-6D-65-20-6C-65-6E-67-74-68-2C-20-67-6F-74-20-25-64</attr></applied>
-          <evaluate λ="L_fork" by="morph" at="Φ.a🌵874">
-            <known symbol="𝜎651">40-20-00-00-00-00-00-00</known>
-            <stuck λ="L_fork"/>
-          </evaluate>
-          <applied meta="𝑛·6·377" by="morph" at="Φ.a🌵10.message" of="Φ.string"><attr name="φ">𝑛·6·2</attr></applied>
-          <applied meta="𝑛·6·378" by="morph" at="Φ.a🌵10.message" of="𝑛·6·377.printf"><attr name="args">𝑛·6·376</attr></applied>
-          <terminate symbol="𝜎137" branch="right" message="𝑛·6·378"/>
-          <answer meta="𝑛·6·380">𝑛·5·4</answer>
-        </evaluate>
-        <bind meta="𝑛1·1">𝑛·5·4</bind>
+        <forked on="𝜎137">
+          <left>
+            <answered meta="𝑛·7·2">𝑛·7·1</answered>
+            <manufactured meta="𝛿·6·1">𝜎138</manufactured>
+          </left>
+          <right>
+            <answered meta="𝑛·11·2">𝑛·1·26</answered>
+            <unanswered λ="L_throw" by="dataize">𝑛·1·26</unanswered>
+            <stuck λ="L_throw"/>
+          </right>
+        </forked>
       </evaluate>
-      <evaluate λ="L_root" by="morph" at="Φ.l/.e7">
-        <dataize meta="𝛿1·7">𝜎138</dataize>
-      </evaluate>
-    </morph>
-    <msec>28</msec>
-    <firings>7</firings>
-    <fps>250</fps>
+    </dataize>
+    <msec>32</msec>
+    <firings>8</firings>
+    <fps>281</fps>
   </protocol>

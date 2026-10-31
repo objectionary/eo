@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# One call fills the x of inc with T and another with an oak. Each call gets
+# its own copy, so x is T in one and an oak in the other, dead is T and alive
+# is an oak.
+sources:
+  inc.eo: |
+    [x] > inc
+      x > @
+  oak.eo: |
+    [] > oak
+  app.eo: |
+    [] > app
+      inc T > dead
+      inc oak > alive
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.dead.α0' and @lands='x']/terminator
+  - /answers/o[@loc='Φ.app.alive.α0' and @lands='x']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.inc.x' and @copies='2']/set[@copies='1']/terminator
+  - /answers/o[@loc='Φ.inc.x' and @copies='2']/set[@copies='1']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.dead']/terminator
+  - /answers/o[@loc='Φ.app.alive']/is[@loc='Φ.oak']

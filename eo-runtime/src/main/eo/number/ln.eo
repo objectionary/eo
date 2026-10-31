@@ -5,6 +5,10 @@
 # tangent series. The limiting cases follow the usual conventions: zero is
 # negative infinity, a negative number and negative infinity are nan, and
 # positive infinity stays.
+#
+# `n` says that the receiver is not a number itself, rather than letting
+# the first comparison blame its own `b`, which is an attribute the caller
+# never wrote (#9283).
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -17,92 +21,83 @@
   n.is-nan.if > @
     nan
     if.
-      n.lt 0
+      lt.
+        if. >> n
+          num.as-bytes.size.eq 8
+          number num.as-bytes
+          T "the 'ρ' attribute must be a number"
+        0
       nan
       if.
         n.eq 0
         ninf
         n.is-finite.if
-          lnp n
+          [p] >> lnp
+            if. > @
+              p.gte e
+              if. > [^ level p] >> climb
+                level.lt 0
+                series p
+                if.
+                  p.gte
+                    epow level
+                  plus.
+                    ^.climb
+                      level.minus 1
+                      p.div (epow level)
+                    step level
+                  ^.climb (level.minus 1) p
+              | 9 p
+              if.
+                p.lt
+                  1.div e
+                if. > [^ level p] >> descend
+                  level.lt 0
+                  series p
+                  if.
+                    p.lt
+                      1.div (epow level)
+                    minus.
+                      ^.descend
+                        level.minus 1
+                        p.times (epow level)
+                      step level
+                    ^.descend (level.minus 1) p
+                | 9 p
+                [m] >> series
+                  2.times > @
+                    times.
+                      div. >> t
+                        m.minus 1
+                        m.plus 1
+                      if. > [^ k] >> horner
+                        k.gt 40
+                        0
+                        plus.
+                          1.div ((k.times 2).plus 1)
+                          times.
+                            t.times t
+                            ^.horner (k.plus 1)
+                      | 0
+                | p
+            [^ level] >> epow
+              if. > @
+                level.eq 0
+                e
+                times.
+                  number
+                    ^.epow (level.minus 1) >> prev!
+                  number prev
+            [^ level] >> step
+              if. > @
+                level.eq 0
+                1
+                plus.
+                  number
+                    ^.step (level.minus 1) >> prev!
+                  number prev
+          | n
           pinf
-  [p] > lnp
-    if. > @
-      p.gte e
-      climb 9 p
-      if.
-        p.lt
-          1.div e
-        descend 9 p
-        series p
-    if. > [^ level p] > climb
-      level.lt 0
-      ^.series p
-      if.
-        p.gte
-          ^.epow level
-        plus.
-          ^.climb
-            level.minus 1
-            p.div
-              ^.epow level
-          ^.step level
-        ^.climb
-          level.minus 1
-          p
-    if. > [^ level p] > descend
-      level.lt 0
-      ^.series p
-      if.
-        p.lt
-          1.div
-            ^.epow level
-        minus.
-          ^.descend
-            level.minus 1
-            p.times
-              ^.epow level
-          ^.step level
-        ^.descend
-          level.minus 1
-          p
-    [^ level] > epow
-      if. > @
-        level.eq 0
-        e
-        times.
-          number prev
-          number prev
-      ^.epow > prev!
-        level.minus 1
-    [m] > series
-      2.times > @
-        t.times
-          horner 0
-      if. > [^ k] > horner
-        k.gt 40
-        0
-        plus.
-          1.div
-            plus.
-              k.times 2
-              1
-          times.
-            ^.t.times ^.t
-            ^.horner
-              k.plus 1
-      div. > t
-        m.minus 1
-        m.plus 1
-    [^ level] > step
-      if. > @
-        level.eq 0
-        1
-        plus.
-          number prev
-          number prev
-      ^.step > prev!
-        level.minus 1
-  number num.as-bytes > n
 
   -2.2.ln.is-nan ++> can-return-nan-for-a-logarithm-of-a-negative-float
 
