@@ -156,8 +156,7 @@
                 seq *
                   if. >> chunk!
                     received.code.eq -1
-                    T
-                      "Failed to read from file"
+                    T "Failed to read from file"
                     data.
                       called. >> received
                         ^.^.^.syscall.read ^.^.^.descriptor size
@@ -177,8 +176,7 @@
                 seq *
                   if. >>!
                     code.eq -1
-                    T
-                      "Failed to write to file"
+                    T "Failed to write to file"
                     ^.^.output-block
                   code
                   if.
