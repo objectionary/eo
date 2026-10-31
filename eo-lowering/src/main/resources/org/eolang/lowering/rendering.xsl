@@ -957,6 +957,30 @@
     <xsl:sequence select="if (eo:constant($token)) then eo:literal-of(eo:bytes($token), $want) else eo:cast(eo:call($token), eo:type($token), $want)"/>
   </xsl:function>
   <!--
+  Like the transpiler's data.xsl (#9344), keep at most 256 bytes inline:
+  each array element costs bytecode, and concat may emit an operand twice.
+  Strings hold 1024 bytes each (at most 2048 modified UTF-8 bytes, below
+  the JVM's 65535-byte constant limit). String.join prevents javac folding
+  them into one oversized constant; ISO_8859_1 restores every byte.
+  -->
+  <!-- One byte as a Java character, with fixed-width octal for non-printable bytes. -->
+  <xsl:function name="eo:java-char" as="xs:string">
+    <xsl:param name="octet" as="xs:string"/>
+    <xsl:variable name="digits" select="'0123456789ABCDEF'"/>
+    <xsl:variable name="code" select="string-length(substring-before($digits, upper-case(substring($octet, 1, 1)))) * 16 + string-length(substring-before($digits, upper-case(substring($octet, 2, 1))))"/>
+    <xsl:choose>
+      <xsl:when test="$code = (34, 92)">
+        <xsl:sequence select="concat('\', codepoints-to-string($code))"/>
+      </xsl:when>
+      <xsl:when test="$code ge 32 and $code le 126">
+        <xsl:sequence select="codepoints-to-string($code)"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="concat('\', $code idiv 64, $code idiv 8 mod 8, $code mod 8)"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+  <!--
   The Java literal of bytes, as a value of a type. A double is the number
   phino wrote next to the same bytes in the protocol, the shortest decimal
   that reads back as the same double, with the suffix "d", so that a reader
@@ -983,6 +1007,14 @@
       </xsl:when>
       <xsl:when test="$want = 'byte[]' and empty($octets)">
         <xsl:sequence select="'new byte[0]'"/>
+      </xsl:when>
+      <xsl:when test="$want = 'byte[]' and count($octets) &gt; 256">
+        <xsl:variable name="chunks" as="xs:string*">
+          <xsl:for-each select="0 to (count($octets) - 1) idiv 1024">
+            <xsl:sequence select="concat('&quot;', string-join(subsequence($octets, . * 1024 + 1, 1024) ! eo:java-char(.), ''), '&quot;')"/>
+          </xsl:for-each>
+        </xsl:variable>
+        <xsl:sequence select="concat('String.join(&quot;&quot;, ', string-join($chunks, ', '), ').getBytes(java.nio.charset.StandardCharsets.ISO_8859_1)')"/>
       </xsl:when>
       <xsl:when test="$want = 'byte[]'">
         <xsl:sequence select="concat('new byte[] {', string-join($octets ! concat('(byte) 0x', upper-case(.)), ', '), '}')"/>
