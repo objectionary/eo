@@ -46,34 +46,34 @@
     ? > len /Q.number
     ? > cant-slice /{Q.string}
 
-  eq. ++> can-and-negative-bytes-with-leading-zeroes
+  eq. ++> can-apply-and-to-negative-bytes-with-leading-zeroes
     as-number.
       00-00-00-00-8E-EA-4C-B1.and FF-FF-FF-FF-00-00-00-00
     0
 
-  eq. ++> can-and-negative-bytes-without-leading-zeroes
+  eq. ++> can-apply-and-to-negative-bytes-without-leading-zeroes
     as-number.
       00-00-00-00-FF-FF-FF-FF.and FF-FF-FF-FF-00-00-00-00
     0
 
-  eq. ++> can-and-one-negative-with-one-positive
+  eq. ++> can-apply-and-to-one-negative-with-one-positive
     -7.as-bytes.and 7.as-bytes
     40-1C-00-00-00-00-00-00
 
-  eq. ++> can-and-two-negatives
+  eq. ++> can-apply-and-to-two-negatives
     -6.as-bytes.and -4.as-bytes
     C0-10-00-00-00-00-00-00
 
-  eq. ++> can-and-two-positives
+  eq. ++> can-apply-and-to-two-positives
     5.as-bytes.and 10.as-bytes
     40-04-00-00-00-00-00-00
 
-  eq. ++> can-and-two-single-byte-numbers
+  eq. ++> can-apply-and-to-two-single-byte-numbers
     as-number.
       1.as-bytes.and 1.as-bytes
     1
 
-  eq. ++> can-and-with-zero
+  eq. ++> can-apply-and-with-zero
     0.as-bytes.and 32.as-bytes
     00-00-00-00-00-00-00-00
 
