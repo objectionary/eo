@@ -59,7 +59,7 @@ final class Emissions {
      * that glyph for auto-names.
      */
     private static final Pattern PARAM_NAME = Pattern.compile(
-        "[a-z][^ \\t,.|':;!?\\[\\]{}()\\x{1F335}]*"
+        "[a-z][^ \\t,.|':;!?/\\[\\]{}()\\x{1F335}]*"
     );
 
     /**
@@ -207,8 +207,6 @@ final class Emissions {
         final String tag;
         if (!raw.isEmpty() && raw.chars().allMatch(c -> c >= '0' && c <= '9')) {
             tag = "α".concat(raw);
-        } else if ("^".equals(raw)) {
-            tag = "ρ";
         } else {
             tag = raw;
         }
@@ -431,7 +429,7 @@ final class Emissions {
         final Emit emit, final String name, final Value value, final int line
     ) {
         final String inner = value.raw().substring(1, value.raw().length() - 1);
-        final int phi = Emissions.topLevelInlinePhi(inner);
+        final int phi = Tokens.inlinePhi(inner);
         if (phi >= 0) {
             Emissions.inlinePhi(emit, name, inner, phi, value.pos() + 1, line);
         } else {
@@ -470,27 +468,6 @@ final class Emissions {
             mapped = head.raw();
         }
         return mapped;
-    }
-
-    private static int topLevelInlinePhi(final String body) {
-        int depth = 0;
-        int found = -1;
-        int idx = 0;
-        while (idx < body.length() - 2 && found < 0) {
-            final char glyph = body.charAt(idx);
-            if (glyph == '"') {
-                idx = Tokens.closingQuote(body, idx);
-            } else if (glyph == '(') {
-                depth = depth + 1;
-            } else if (glyph == ')') {
-                depth = depth - 1;
-            } else if (depth == 0 && glyph == '>'
-                && body.charAt(idx + 1) == ' ' && body.charAt(idx + 2) == '[') {
-                found = idx;
-            }
-            idx = idx + 1;
-        }
-        return found;
     }
 
     private static void inlinePhi(

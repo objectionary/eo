@@ -26,7 +26,7 @@
       as-number.
         index.plus 1
   | > @
-    0
+    0.as-i64
     0
 
   and. ++> can-hash-a-bool-into-a-number
