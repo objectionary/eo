@@ -39,7 +39,7 @@ public final class EOwin32$EOrecv extends PhDefault implements Atom {
             this,
             Phi.Φ.take("win32").take("read-return"),
             (buffer, size) -> Winsock.INSTANCE.recv(
-                new Pointer(new Dataized(this.take("descriptor")).asNumber().longValue()),
+                new Pointer(new Handle("the socket of recv", this.take("descriptor")).it()),
                 buffer,
                 size,
                 new Int(Expect.at(this, "flags")).it()
