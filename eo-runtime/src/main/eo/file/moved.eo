@@ -70,8 +70,7 @@
     seq * > @
       temp.open
         "w"
-        f.write > [f]
-          "Hello, world"
+        f.write "Hello, world" > [f]
       temp.moved dest
       "Hello, world".eq
         malloc.of

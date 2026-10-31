@@ -26,8 +26,7 @@
 [steps] > seq
   if. > @
     steps.length.eq 0
-    T
-      "Can't run a sequence of no steps"
+    T "Can't run a sequence of no steps"
     if.
       steps.length.eq 1
       steps.head

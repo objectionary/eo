@@ -15,8 +15,8 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-attachment:101
-+unlint too-deep-object:170
++unlint redundant-attachment:100
++unlint too-deep-object:169
 +version 0.0.0
 
 [path] > file
@@ -83,8 +83,7 @@
               access.eq "a"
             as-bool.
               access.eq "a+"
-      T
-        "Wrong access mode. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
+      T "Wrong access mode. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
       if.
         and.
           or. >> existing
@@ -339,8 +338,7 @@
     seq * > @
       temp.open
         "w"
-        f.write > [f]
-          "Shrek is love"
+        f.write "Shrek is love" > [f]
       "Shrek is love".eq
         malloc.of
           13
@@ -497,8 +495,7 @@
     size.
       mktemp.tmpfile.open
         "w"
-        f.write > [f]
-          "Hello, world"
+        f.write "Hello, world" > [f]
     12
 
   eq. ++> can-write-to-a-file-sequentially
@@ -514,8 +511,7 @@
     seq * > @
       temp.open
         "w"
-        f.write > [f]
-          "Shrek is love"
+        f.write "Shrek is love" > [f]
       open.
         file source
         "a"
