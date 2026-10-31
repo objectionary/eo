@@ -306,6 +306,21 @@
                 <xsl:apply-templates select="@name"/>
               </xsl:if>
               <!--
+              The reference carries a `&gt;&gt;` handle name of its own, marked
+              `@local` by "restore-local-names". A const handle over an alias
+              (`h &gt;&gt;! g` over `foo &gt;&gt; h`) puts that mark on the
+              argument inside `Φ.dataized`, which is this reference, so folding
+              `h` here dropped it with the rest of the reference's attributes
+              and "dataized-to-const" had no name left to print: the const came
+              out anonymous and its reader was stranded on a synthetic "v5_2"
+              nothing declares (#9296). The mark is carried over for the same
+              reason the name above is, and under the same guard: a target that
+              keeps a name of its own already brings its own `@local` along.
+              -->
+              <xsl:if test="@local and not($keep-name)">
+                <xsl:apply-templates select="@local"/>
+              </xsl:if>
+              <!--
               The folded value is rebased as a whole `o` and then unwrapped
               into the node being built, rather than as the loose sequence of
               its attributes and children. The `dropped` mode rewrites an
