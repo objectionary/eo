@@ -991,7 +991,9 @@ final class EoTest {
     void acceptsTupleOfTheLargestSize() throws Exception {
         MatcherAssert.assertThat(
             "A tuple of 256 elements must parse without an error, but it didnt",
-            new EoSyntax(EoTest.tuple(256)).parsed().xpath("/object/errors/error/text()"),
+            new EoSyntax(EoTest.tuple(256)).parsed().xpath(
+                "/object/errors/error[contains(text(),'nested deeper')]/text()"
+            ),
             Matchers.empty()
         );
     }

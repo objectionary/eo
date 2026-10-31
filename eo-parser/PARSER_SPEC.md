@@ -491,7 +491,7 @@ seq * > @
 
 is a perfectly valid compact tuple: the head is `seq` (a `head`-kind expression), `N` defaults to 0, and the two vertical children become elements of the synthesised `Φ.tuple`. This is the canonical "tuple of N elements as one arg" form.
 
-R-3.9.4a. **Size limit.** A tuple holds 256 vertical elements at the most, since each of them becomes one more level of the emitted tree. Otherwise: error `object nested deeper than 256 levels`, reported at the line of the tuple.
+R-3.9.4a. **Size limit.** A tuple holds 256 elements at the most, since each of them becomes one more level of the emitted tree. Otherwise: error `object nested deeper than 256 levels`, reported at the line of the tuple.
 
 R-3.9.5. The marker must be preceded by a space. A `*` glued to the head ends the name (§2.3), so `foo.bar*1` is the head `foo.bar` with a glued marker, not a dispatch on an attribute called `bar*1`, and the line is rejected: error "compact tuple marker must follow a space".
 

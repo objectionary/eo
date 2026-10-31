@@ -803,13 +803,6 @@ final class Eo implements Iterable<Directive> {
             emit.star();
             parent.openTuple();
         }
-        if ((parent.kind() == Kind.COMPACT_TUPLE || parent.star())
-            && parent.children() - parent.count() == Stack.DEEPEST) {
-            emit.error(
-                parent.start(), parent.indent(),
-                String.format("object nested deeper than %d levels", Stack.DEEPEST)
-            );
-        }
         parent.child();
     }
 }
