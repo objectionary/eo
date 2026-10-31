@@ -4,14 +4,16 @@
  */
 package org.eolang.inference;
 
+import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.matchers.XhtmlMatchers;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.HashMap;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
-import org.xembly.Directives;
-import org.xembly.Xembler;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Test case for {@link Pieces}.
@@ -21,302 +23,167 @@ import org.xembly.Xembler;
 final class PiecesTest {
 
     @Test
-    void walksAChainOfReceiversLeftward() {
+    void walksAChainOfReceiversLeftward() throws ParserConfigurationException {
         MatcherAssert.assertThat(
             "each link of the chain must get its own word, but they piled onto one",
             PiecesTest.drawn(
                 "  first.as-bytes.size",
-                Arrays.asList(
-                    new Written("Φ.f.d", 16, "", new Answer("Φ.number", 3)),
-                    new Written("Φ.f.d.ρ", 16, "", new Answer("Φ.bytes", 3)),
-                    new Written("Φ.f.d.ρ.ρ", 16, "", new Answer("Φ.string", 3))
-                )
+                new Written("Φ.f.d", 16, "", ".size"),
+                new Written("Φ.f.d.ρ", 16, "", ".as-bytes"),
+                new Written("Φ.f.d.ρ.ρ", 16, "", ".first")
             ),
             XhtmlMatchers.hasXPaths(
-                "/line/bit[text='first']/told[@where='Φ.string']",
-                "/line/bit[text='.as-bytes']/told[@where='Φ.bytes']",
-                "/line/bit[text='.size']/told[@where='Φ.number']"
+                "/line/bit[text='first']/told[@loc='Φ.f.d.ρ.ρ']",
+                "/line/bit[text='.as-bytes']/told[@loc='Φ.f.d.ρ']",
+                "/line/bit[text='.size']/told[@loc='Φ.f.d']"
             )
         );
     }
 
     @Test
-    void marksTheCaretAChainIsDispatchedOn() {
+    void marksTheCaretAChainIsDispatchedOn() throws ParserConfigurationException {
         MatcherAssert.assertThat(
             "the caret a walk is taken off must get a word of its own, but it stayed bare",
             PiecesTest.drawn(
                 "  ^.walk",
-                Arrays.asList(
-                    new Written("Φ.w.α1", 3, "", new Answer("Φ.number", 3)),
-                    new Written("Φ.w.α1.ρ", 3, "ρ", new Answer("Φ.string", 3))
-                )
+                new Written("Φ.w.α1", 3, "", ".walk"),
+                new Written("Φ.w.α1.ρ", 3, "ρ", "ξ.ρ")
             ),
             XhtmlMatchers.hasXPaths(
-                "/line/bit[text='^']/told[@where='Φ.string']",
-                "/line/bit[text='.walk']/told[@where='Φ.number']"
+                "/line/bit[text='^']/told[@loc='Φ.w.α1.ρ']",
+                "/line/bit[text='.walk']/told[@loc='Φ.w.α1']"
             )
         );
     }
 
     @Test
-    void marksADispatchTakenOffTheCaret() {
+    void marksADispatchTakenOffTheCaret() throws ParserConfigurationException {
         MatcherAssert.assertThat(
             "the step .^ must carry its dot into the mark, but the dot was marked alone",
             PiecesTest.drawn(
                 "* ^.^",
-                Arrays.asList(
-                    new Written("Φ.t.α1", 3, "", new Answer("Φ.number", 3)),
-                    new Written("Φ.t.α1.ρ", 3, "ρ", new Answer("Φ.string", 3))
-                )
+                new Written("Φ.t.α1", 3, "", ".ρ"),
+                new Written("Φ.t.α1.ρ", 3, "ρ", "ξ.ρ")
             ),
-            XhtmlMatchers.hasXPath("/line/bit[text='.^']/told[@where='Φ.number']")
+            XhtmlMatchers.hasXPath("/line/bit[text='.^']/told[@loc='Φ.t.α1']")
         );
     }
 
     @Test
-    void walksPastAStepTheSourceNeverWrote() {
-        MatcherAssert.assertThat(
-            "the steps above an unwritten one must keep their own words, but they piled onto one",
-            PiecesTest.drawn(
-                "    precise.as-bool.if > end!",
-                Arrays.asList(
-                    new Written("Φ.p.end", 19, "end", new Answer("Φ.bytes.as-bytes", 3)),
-                    new Written("Φ.p.end.ρ.α0", 19, "", new Answer("Φ.bool.if", 1)),
-                    new Written("Φ.p.end.ρ.α0.ρ", 19, "", new Answer("Φ.bytes.as-bool", 3)),
-                    new Written("Φ.p.end.ρ.α0.ρ.ρ", 19, "", new Answer("Φ.string", 3))
-                )
-            ),
-            XhtmlMatchers.hasXPaths(
-                "/line/bit[text='precise']/told[@where='Φ.string']",
-                "/line/bit[text='.as-bool']/told[@where='Φ.bytes.as-bool']",
-                "/line/bit[text='.if']/told[@label='end']"
-            )
-        );
-    }
-
-    @Test
-    void keepsTextThatNoObjectClaims() {
+    void keepsTextThatNoObjectClaims() throws ParserConfigurationException {
         MatcherAssert.assertThat(
             "the brackets around a void are the author's text and must survive, but they didnt",
-            PiecesTest.drawn(
-                "[if] > bool",
-                Collections.singletonList(
-                    new Written("Φ.bool.if", 1, "if", new Answer("Φ.bool.if", 1))
-                )
-            ),
+            PiecesTest.drawn("[if] > bool", new Written("Φ.bool.if", 1, "if", "∅")),
             XhtmlMatchers.hasXPaths(
-                "/line/bit[.='[']",
-                "/line/bit[text='if'][@band='unfilled']",
-                "/line/bit[.='] > bool']"
+                "/line/bit[1][.='[' and not(@band)]",
+                "/line/bit[2][text='if']",
+                "/line/bit[3][.='] > bool' and not(@band)]"
             )
         );
     }
 
     @Test
-    void marksTheNameAFormationIsBoundTo() {
+    void marksTheNameAFormationIsBoundTo() throws ParserConfigurationException {
         MatcherAssert.assertThat(
             "a formation must be marked on its name, but the bracket that opens it was marked",
-            PiecesTest.drawn(
-                "[x] > foo",
-                Collections.singletonList(
-                    new Written("Φ.foo", 0, "foo", new Answer("Φ.foo", 3))
-                )
-            ),
+            PiecesTest.drawn("[x] > foo", new Written("Φ.foo", 0, "foo", "")),
             XhtmlMatchers.hasXPaths(
-                "/line/bit[.='[x] > '][not(@band)]",
-                "/line/bit[text='foo'][@band]"
+                "/line/bit[1][.='[x] > ' and not(@band)]",
+                "/line/bit[2][text='foo']/told[@loc='Φ.foo']"
             )
         );
     }
 
     @Test
-    void marksTheNameAnAtomIsBoundTo() {
-        MatcherAssert.assertThat(
-            "an atom and its body must share the mark on its name, but they didnt",
-            PiecesTest.drawn(
-                "  [] > div /Q.number",
-                Arrays.asList(
-                    new Written("Φ.number.div", 2, "div", new Answer("Φ.number.div", 3)),
-                    new Written("Φ.number.div.λ", 2, "λ", new Answer("Φ.number.div.λ", 0))
-                )
-            ),
-            XhtmlMatchers.hasXPath("/line/bit[text='div'][@band='blank'][count(told)=2]")
-        );
-    }
-
-    @Test
-    void marksTheNameAFormationIsBoundToTwice() {
+    void marksTheNameAFormationIsBoundToTwice() throws ParserConfigurationException {
         MatcherAssert.assertThat(
             "a formation behind a double arrow must be marked on its name, but it wasnt",
-            PiecesTest.drawn(
-                "  [ü] >> ñame",
-                Collections.singletonList(
-                    new Written("Φ.ñame", 2, "ñame", new Answer("Φ.ñame", 3))
-                )
-            ),
-            XhtmlMatchers.hasXPath("/line/bit[text='ñame'][@band]")
+            PiecesTest.drawn("  [ü] >> ñame", new Written("Φ.ñame", 2, "ñame", "")),
+            XhtmlMatchers.hasXPath("/line/bit[text='ñame']/told")
         );
     }
 
     @Test
-    void keepsTheBracketOfAFormationBoundToNoName() {
+    void keepsTheBracketOfAFormationBoundToNoName() throws ParserConfigurationException {
         MatcherAssert.assertThat(
             "a formation with no name must stay marked on its bracket, but it vanished",
-            PiecesTest.drawn(
-                "  seq * > [^ m] >>",
-                Collections.singletonList(
-                    new Written("Φ.f.@.α1", 10, "", new Answer("Φ.f.@.α1.λ", 0))
-                )
-            ),
-            XhtmlMatchers.hasXPath("/line/bit[text='['][@band='blank']")
+            PiecesTest.drawn("  seq * > [^ m] >>", new Written("Φ.f.φ.α1", 10, "", "")),
+            XhtmlMatchers.hasXPath("/line/bit[text='[']/told[@loc='Φ.f.φ.α1']")
         );
     }
 
     @Test
-    void sharesOneMarkBetweenObjectsWrittenOnce() {
+    void tellsTheOutermostOfTheObjectsWrittenOnce() throws ParserConfigurationException {
         MatcherAssert.assertThat(
-            "a literal and the bytes it carries are one word and must share a mark, but didnt",
+            "a literal and its bytes must be told by the literal, but the bytes were",
             PiecesTest.drawn(
                 "  plus 42",
-                Arrays.asList(
-                    new Written("Φ.p.α0", 7, "", new Answer("Φ.number", 3)),
-                    new Written("Φ.p.α0.α0", 7, "", new Answer("Φ.bytes", 4))
-                )
+                new Written("Φ.p.α0", 7, "", "Φ.number"),
+                new Written("Φ.p.α0.α0", 7, "", "Φ.bytes")
             ),
-            XhtmlMatchers.hasXPath("/line/bit[text='42'][count(told)=2]")
+            XhtmlMatchers.hasXPath("/line/bit[text='42'][count(told)=1]/told[@loc='Φ.p.α0']")
         );
     }
 
     @Test
-    void callsAnUnwrittenNameByWords() {
+    void tellsTheObjectWhoseBaseIsTheWord() throws ParserConfigurationException {
         MatcherAssert.assertThat(
-            "a rho is written nowhere and must be said in words, but its glyph came through",
+            "the read the source spells must be told, but the object around it was",
             PiecesTest.drawn(
-                "  oak",
-                Collections.singletonList(
-                    new Written("Φ.grove.oak.ρ", 2, "ρ", new Answer("Φ.grove", 3))
-                )
+                "  lid > cap",
+                new Written("Φ.jar.cap", 2, "cap", "Φ.box"),
+                new Written("Φ.jar.cap.ρ.α0", 2, "", ".lid")
             ),
-            XhtmlMatchers.hasXPath("/line/bit/told[@label='what it is dispatched on (ρ)']")
+            XhtmlMatchers.hasXPath("/line/bit[text='lid']/told[@loc='Φ.jar.cap.ρ.α0']")
         );
     }
 
     @Test
-    void tellsAVoidApartFromANameRootedInOne() {
+    void tellsTheObjectNamedByTheWord() throws ParserConfigurationException {
         MatcherAssert.assertThat(
-            "a void answered by its own locator must be said to be one, but it wasnt",
+            "the object whose name is the word must be told, but another one was",
             PiecesTest.drawn(
-                "[args] > printf",
-                Collections.singletonList(
-                    new Written(
-                        "Φ.printf.args", 1, "args",
-                        new Answer(
-                            "Φ.printf.args", 1, Collections.singletonList(new Ref("Φ.tuple"))
-                        )
-                    )
-                )
+                "  lid",
+                new Written("Φ.jar", 2, "", "Φ.box"),
+                new Written("Φ.jar.φ.lid", 2, "lid", "Φ.cap")
             ),
-            XhtmlMatchers.hasXPath("/line/bit/told[@void='true']")
+            XhtmlMatchers.hasXPath("/line/bit[text='lid']/told[@loc='Φ.jar.φ.lid']")
         );
     }
 
     @Test
-    void saysWhatCallersWereSeenPassing() {
+    void readsTheCaretAsTheReceiverItStandsFor() throws ParserConfigurationException {
         MatcherAssert.assertThat(
-            "an amber mark must say what turned up in the void, but it didnt",
+            "a caret must be read as ρ when the object is chosen, but it wasnt",
             PiecesTest.drawn(
-                "[if] > bool",
-                Collections.singletonList(
-                    new Written(
-                        "Φ.bool.if", 1, "if",
-                        new Answer(
-                            "Φ.bool.if", 1,
-                            Arrays.asList(new Ref("Φ.true"), new Ref("Φ.false"))
-                        )
-                    )
-                )
+                "  ^",
+                new Written("Φ.k.α0", 2, "", "Φ.x"),
+                new Written("Φ.k.α0.φ.ρ", 2, "", "ρ")
             ),
-            XhtmlMatchers.hasXPaths(
-                "/line/bit/told/seen/ref[@loc='Φ.true']",
-                "/line/bit/told/seen/ref[@loc='Φ.false']"
-            )
+            XhtmlMatchers.hasXPath("/line/bit[text='^']/told[@loc='Φ.k.α0.φ.ρ']")
         );
     }
 
     @Test
-    void warnsAboutTheWorstObjectUnderOneMark() {
+    void leavesALineBareWhenItsObjectsLieBeyondIt() throws ParserConfigurationException {
         MatcherAssert.assertThat(
-            "a mark over an object nobody can name must say so, but the name beside it hid it",
-            PiecesTest.drawn(
-                "  [] > pour /Q.mug",
-                Arrays.asList(
-                    new Written("Φ.cup.pour", 2, "pour", new Answer("Φ.cup.pour", 3)),
-                    new Written("Φ.cup.pour.λ", 2, "λ", new Answer("Φ.cup.pour.λ", 0))
-                )
-            ),
-            XhtmlMatchers.hasXPath("/line/bit[@band='blank'][count(told)=2]")
+            "an object past the end of the line must not be marked, but it was",
+            PiecesTest.drawn("  oak", new Written("Φ.grove.oak", 40, "oak", "")),
+            XhtmlMatchers.hasXPath("/line[count(bit)=1]/bit[.='  oak' and not(told)]")
         );
     }
 
-    @Test
-    void marksAVoidAnAtomFillsApartFromTheRest() {
-        MatcherAssert.assertThat(
-            "a void filled inside an atom must get a band of its own, but it took the amber one",
-            PiecesTest.drawn(
-                "  size",
-                Collections.singletonList(
-                    new Written(
-                        "Φ.info.size", 2, "size",
-                        new Answer(
-                            "Φ.posix.return.output.size", 1, Collections.emptyList(), true
-                        )
-                    )
-                )
-            ),
-            XhtmlMatchers.hasXPath("/line/bit[text='size'][@band='atom']")
+    private static Document drawn(final String line, final Written... objects)
+        throws ParserConfigurationException {
+        final Document page = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+            .newDocument();
+        final Element row = page.createElement("line");
+        page.appendChild(row);
+        final Table table = new Table(new Xnav("<answers/>"));
+        new Pieces(line, Arrays.asList(objects)).drawn(
+            row,
+            new Entries(table, new Shapes(new HashMap<>(0), new HashMap<>(0), table), "app.eo")
         );
-    }
-
-    @Test
-    void marksAVoidNobodyFillsApartFromTheRest() {
-        MatcherAssert.assertThat(
-            "a void nothing was ever put into must get a band of its own, but it took the amber one",
-            PiecesTest.drawn(
-                "  cant-convert",
-                Collections.singletonList(
-                    new Written(
-                        "Φ.bytes.as-i16.@.α2", 2, "",
-                        new Answer("Φ.bytes.as-i16.cant-convert", 1)
-                    )
-                )
-            ),
-            XhtmlMatchers.hasXPath("/line/bit[text='cant-convert'][@band='unfilled']")
-        );
-    }
-
-    @Test
-    void saysAVoidNobodyFillsIsStillAVoid() {
-        MatcherAssert.assertThat(
-            "a void nobody fills is still a void and must be said to be one, but it wasnt",
-            PiecesTest.drawn(
-                "[cant-convert] > as-i16",
-                Collections.singletonList(
-                    new Written(
-                        "Φ.bytes.as-i16.cant-convert", 1, "cant-convert",
-                        new Answer("Φ.bytes.as-i16.cant-convert", 1)
-                    )
-                )
-            ),
-            XhtmlMatchers.hasXPath("/line/bit/told[@void='true']")
-        );
-    }
-
-    private static String drawn(final String line, final Collection<Written> written) {
-        return new Xembler(
-            new Directives()
-                .add("line")
-                .append(new Pieces(line, written).directives())
-                .up()
-        ).xmlQuietly();
+        return page;
     }
 }
