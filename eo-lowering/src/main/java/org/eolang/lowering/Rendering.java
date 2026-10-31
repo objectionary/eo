@@ -9,19 +9,23 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import javax.xml.transform.stream.StreamSource;
 import org.cactoos.Proc;
 import org.cactoos.Text;
+import org.cactoos.io.Directory;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.iterable.Sorted;
+import org.cactoos.list.ListOf;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
 
@@ -34,6 +38,12 @@ import org.cactoos.text.TextOf;
  * body is a few lines of Java: one line for every symbol that phino made
  * in the protocol. These lines are put into a Java class, which is an
  * atom. Later, {@link Patching} puts this atom into the EO object.</p>
+ *
+ * <p>The atoms of an earlier build are deleted before this one writes any,
+ * the way {@link Morphing} deletes the protocols of an earlier build. The
+ * Maven goal hands the directory to javac whole, so an atom whose entry is
+ * now a taint, or whose object was renamed or deleted, would otherwise be
+ * compiled again and again (#9267).</p>
  *
  * <p>The Java files are written into the directory of atoms, next to the
  * directory of protocols, so that a reader of the build can compare every
@@ -52,34 +62,77 @@ import org.cactoos.text.TextOf;
  * only by the stylesheet {@code rendering.xsl}, one protocol at a time.
  * This class only finds what the stylesheet needs to know about the
  * entry: its number, its locator, the top object it is inside, and the
- * package of that object.</p>
+ * package of that object. The stylesheet also reads {@code rows.tsv},
+ * which {@link Planting} writes: a symbol that the λ of a row made is
+ * turned into a call of the object the row is about, with its inputs
+ * wrapped back into their types, and that call dataizes the object,
+ * whether it became an atom or stayed in EO.</p>
  *
- * <p>An entry whose run was stopped because of the time limit has no
- * protocol, so it is skipped. When the stylesheet finds that an entry is a
- * taint, this class only writes about it into the log, and the object
- * stays in EO exactly as it was written. At the end, this class writes the
+ * <p>An entry that phino did not run has no protocol, so it is skipped.
+ * When the stylesheet finds that an entry is a taint, this class only
+ * writes into the log why, and the object stays in EO exactly as it was
+ * written. Every skipped entry and every taint gets its own line in the
+ * log, at the level INFO, so that a reader of the build sees why each
+ * object was not turned into Java. At the end, this class writes the
  * list of the entries it turned into atoms into the file
  * {@code rendered.tsv}, so that {@link Patching} knows which objects to
  * change.</p>
  *
+ * <p>The transpiler names the atom of an argument of another object after
+ * the top object only, so two entries may ask for one class. Each of them
+ * is a taint then, since javac would find only one of the two.</p>
+ *
+ * <p>The atom gives back the result of the body inside the object the
+ * protocol names around it, when the answer of the run for the body is an
+ * object of the world applied to its {@code φ} alone: a string, for
+ * example, is {@code Φ.string} applied to its bytes again. Otherwise the
+ * atom gives the result back as the object it is when that result is a
+ * copy of another object, and as plain data when the atom computed it.
+ * Plain data has no object around it, so a string or an {@code i16}, for
+ * example, would lose every attribute of its own. This is why, when the
+ * result is plain data the protocol names no object around, this stage
+ * asks the tables of {@code eo:inference} what the body gives, and an
+ * entry whose body is not a number, a bool or bytes is a taint. The tables
+ * must be there before the stage starts, even though most entries never
+ * ask them.</p>
+ *
+ * <p>Every {@code T} of the copies is a copy of {@code throw} by now, see
+ * {@link Pruning}. phino stops at the λ of {@code throw}, since nothing
+ * answers it, and the protocol keeps the message that copy got. So when
+ * the root of an entry is such a copy, the atom only throws that message,
+ * through {@code ExFailure}, which is what {@code T} does in eo-runtime,
+ * and {@code recovered} catches it the same way.</p>
+ *
+ * <p>A fork is an {@code if} whose condition nobody worked out, such as
+ * the check of {@code bytes.xor} that its operands have one length. phino
+ * works out both sides of it first. When they are the same up to their
+ * symbols, phino joins them into one symbol, and the atom assigns that
+ * symbol inside an {@code if} on the condition. Otherwise the run splits
+ * into two flows, one per side, and the record of the fork holds what
+ * each of them did from there on, with the forks they meet nested inside
+ * it the same way. The atom is the tree of these forks: an {@code if} for
+ * every fork, with the statements only one side needs inside that side,
+ * and a {@code return} or a {@code throw} at the end of every flow. A flow
+ * whose side is a copy of {@code throw} ends in the throw of its message,
+ * the way the root of a whole entry does, and an entry that throws a
+ * message it would have to compute is a taint.</p>
+ *
  * @since 0.64.0
- * @todo #8548:60min Make a slice outside of the bytes fail the same way
- *  as the atom does. When the range of a slice is outside of the bytes,
- *  the Java that {@code rendering.xsl} writes throws a Java exception. But
- *  the atom {@code bytes.slice} returns its {@code cant-slice} error
- *  instead, and EO code may catch that error. Write the slice so that it
- *  fails the same way as the atom does, or make every entry that slices a
- *  taint.
- * @todo #8548:60min Write atoms for objects that are arguments of other
- *  objects. A locator with a {@code φ}, {@code ρ} or {@code α} in it, like
- *  {@code Φ.true.φ.α0}, belongs to an object that has no name of its own.
- *  The transpiler names the atom of such an object by a rule that
- *  {@code rendering.xsl} does not follow, so such an entry is a taint now.
- *  Four of the 587 entries of eo-runtime are like this.
- * @todo #8548:30min Write an atom for an entry whose result is always the
- *  same. When the result of the body is known bytes, like an object that
- *  always returns {@code 42}, the entry is a taint now. But its atom could
- *  simply return those bytes.
+ * @todo #9248:45min Put the object around a root that comes out of an
+ *  {@code if} or a dispatch. The protocol names the object around the root
+ *  only when the answer of the run for the body is that object applied to
+ *  its {@code φ}. The body of {@code Φ.bytes.as-i8} is an {@code if} whose
+ *  branch is {@code i8} applied to the void {@code data}, so its atom
+ *  returns the void bare, as bytes, and the {@code i8} around it is lost.
+ *  A body that copies a decorator of a string, like {@code separator.joined
+ *  parts}, is a taint now for the same reason. Once phino names, in the
+ *  dataization of the entry, the object each root reduced to, read the
+ *  object around the root there as well.
+ * @todo #9373:45min Write an atom for an entry that throws a message it
+ *  computes. When the message of a {@code T} is not a string literal, like
+ *  {@code T (string FF-FE)} or {@code T (x.as-string)}, phino writes it as
+ *  an object, and the entry is a taint now. But its atom could compute the
+ *  message first, and then throw it.
  */
 final class Rendering implements Proc<Path> {
 
@@ -89,16 +142,35 @@ final class Rendering implements Proc<Path> {
     private final Path atoms;
 
     /**
+     * The directory with the tables of {@code eo:inference},
+     * {@code facts.xml} and {@code answers.xml}, which say what the body of
+     * an entry gives.
+     */
+    private final Path tables;
+
+    /**
      * Ctor.
      *
      * @param dir The directory where the Java atoms are written
+     * @param tbls The directory with the tables of {@code eo:inference}
      */
-    Rendering(final Path dir) {
+    Rendering(final Path dir, final Path tbls) {
         this.atoms = dir;
+        this.tables = tbls;
     }
 
     @Override
     public void exec(final Path home) throws IOException {
+        for (final String table : new ListOf<>("facts.xml", "answers.xml")) {
+            if (!Files.exists(this.tables.resolve(table))) {
+                throw new IllegalStateException(
+                    String.format(
+                        "There is no '%s' in '%s', while rendering needs the tables of eo:inference to say what a body gives",
+                        table, this.tables
+                    )
+                );
+            }
+        }
         final Path entries = home.resolve("entries.tsv");
         if (!Files.exists(entries)) {
             throw new IllegalStateException(
@@ -108,41 +180,48 @@ final class Rendering implements Proc<Path> {
                 )
             );
         }
-        final Map<String, String> tops = new HashMap<>(0);
+        final Path protocols = new Seqdir(home, 1).dirs().find("protocols").orElseThrow(
+            () -> new IllegalStateException(
+                String.format(
+                    "There are no protocols in '%s', while rendering needs the protocols the morphing writes",
+                    home
+                )
+            )
+        );
+        final Map<String, Path> tops = new HashMap<>(0);
         for (final Path copy : new Copies(home)) {
-            final XML xmir = new XMLDocument(copy);
-            tops.put(
-                xmir.xpath("/object/o[1]/@loc").get(0),
-                String.join("", xmir.xpath("/object/metas/meta[head='package']/tail/text()"))
-            );
+            tops.put(new XMLDocument(copy).xpath("/object/o[1]/@loc").get(0), copy);
         }
         final XSL sheet = new XSLDocument(
             Rendering.class.getResource("/org/eolang/lowering/rendering.xsl"),
             "/org/eolang/lowering/rendering.xsl"
-        ).with((href, base) -> new StreamSource(href))
-            .with("voids", home.resolve("voids.tsv").toUri().toString());
+        ).with(new Hrefs())
+            .with("voids", home.resolve("voids.tsv").toUri().toString())
+            .with("rows", home.resolve("rows.tsv").toUri().toString())
+            .with("inference", this.tables.toUri().toString());
+        this.clean();
         final Collection<String> rendered = new ArrayList<>(0);
+        final Map<String, Collection<String>> claims = new HashMap<>(0);
         int tainted = 0;
         for (final String row : new Filtered<>(
             line -> !line.isEmpty(),
             new Mapped<>(Text::asString, new Split(new TextOf(entries), "\\R"))
         )) {
             final String[] cells = row.split("\t", -1);
-            final Path protocol = home.resolve("2-protocols")
-                .resolve(new Locator(cells[1]).protocol());
+            final Path protocol = protocols.resolve(new Locator(cells[1]).protocol());
             if (Files.exists(protocol)) {
                 final String top = Rendering.top(tops, cells[1]);
                 final XML out = sheet
                     .with("number", cells[0])
                     .with("locator", cells[1])
                     .with("top", top)
-                    .with("package", tops.get(top))
+                    .with("source", tops.get(top).toUri().toString())
                     .transform(new XMLDocument(protocol));
                 if (out.nodes("/rendered/atom").isEmpty()) {
                     tainted += 1;
-                    Logger.debug(
+                    Logger.info(
                         this,
-                        "The entry %s at %s is a taint: %s",
+                        "The entry %s at %s gets no Java atom and stays in EO as written, because: %s",
                         cells[0], cells[1], out.xpath("/rendered/taint/text()").get(0)
                     );
                 } else {
@@ -155,6 +234,9 @@ final class Rendering implements Proc<Path> {
                         out.xpath("/rendered/atom/text()").get(0).getBytes(StandardCharsets.UTF_8)
                     );
                     rendered.add(String.format("%s%n", row));
+                    claims.computeIfAbsent(
+                        out.xpath("/rendered/atom/@file").get(0), key -> new ArrayList<>(1)
+                    ).add(String.format("%s%n", row));
                     Logger.debug(
                         this,
                         "Rendered the entry %s at %s into %[file]s (%[size]s), with voids read: %s, statements: %s, ifs: %s",
@@ -164,8 +246,15 @@ final class Rendering implements Proc<Path> {
                         out.xpath("/rendered/atom/@branches").get(0)
                     );
                 }
+            } else {
+                Logger.info(
+                    this,
+                    "The entry %s at %s gets no Java atom and stays in EO as written, because it has no protocol at %[file]s, since phino did not run it",
+                    cells[0], cells[1], protocol
+                );
             }
         }
+        tainted += this.unshared(claims, rendered);
         Files.write(
             home.resolve("rendered.tsv"),
             String.join("", rendered).getBytes(StandardCharsets.UTF_8)
@@ -177,7 +266,35 @@ final class Rendering implements Proc<Path> {
         );
     }
 
-    private static String top(final Map<String, String> tops, final String locator) {
+    private void clean() throws IOException {
+        if (Files.exists(this.atoms)) {
+            for (final Path stale
+                : new Sorted<>(Comparator.reverseOrder(), new Directory(this.atoms))) {
+                Files.delete(stale);
+            }
+        }
+    }
+
+    private int unshared(
+        final Map<String, Collection<String>> claims, final Collection<String> rendered
+    ) throws IOException {
+        int dropped = 0;
+        for (final Map.Entry<String, Collection<String>> claim : claims.entrySet()) {
+            if (claim.getValue().size() > 1) {
+                rendered.removeAll(claim.getValue());
+                Files.delete(this.atoms.resolve(claim.getKey()));
+                dropped += claim.getValue().size();
+                Logger.info(
+                    this,
+                    "%d entries get no Java atom and stay in EO as written, because all of them ask for %s",
+                    claim.getValue().size(), claim.getKey()
+                );
+            }
+        }
+        return dropped;
+    }
+
+    private static String top(final Map<String, Path> tops, final String locator) {
         String found = "";
         for (final String loc : tops.keySet()) {
             if ((locator.equals(loc) || locator.startsWith(String.format("%s.", loc)))

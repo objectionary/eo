@@ -1,4 +1,4 @@
-# Natural logarithm of `num` with base `e` as `org.eolang.number`. The argument
+# Natural logarithm of `num` with base `e` as `number`. The argument
 # is folded into [1/e, e] by peeling powers of `e` that double at each step
 # (e, e^2, e^4, ..., e^512), so the depth is bounded regardless of how large
 # the argument is, then the remainder is summed with the area-hyperbolic-
@@ -13,96 +13,84 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^] > ln
+[^num] > ln
   n.is-nan.if > @
     nan
     if.
-      n.lt 0
+      lt.
+        number num.as-bytes >> n
+        0
       nan
       if.
         n.eq 0
         ninf
         n.is-finite.if
-          lnp n
+          [p] >> lnp
+            if. > @
+              p.gte e
+              if. > [^ level p] >> climb
+                level.lt 0
+                series p
+                if.
+                  p.gte
+                    epow level
+                  plus.
+                    ^.climb
+                      level.minus 1
+                      p.div (epow level)
+                    step level
+                  ^.climb (level.minus 1) p
+              | 9 p
+              if.
+                p.lt
+                  1.div e
+                if. > [^ level p] >> descend
+                  level.lt 0
+                  series p
+                  if.
+                    p.lt
+                      1.div (epow level)
+                    minus.
+                      ^.descend
+                        level.minus 1
+                        p.times (epow level)
+                      step level
+                    ^.descend (level.minus 1) p
+                | 9 p
+                [m] >> series
+                  2.times > @
+                    times.
+                      div. >> t
+                        m.minus 1
+                        m.plus 1
+                      if. > [^ k] >> horner
+                        k.gt 40
+                        0
+                        plus.
+                          1.div ((k.times 2).plus 1)
+                          times.
+                            t.times t
+                            ^.horner (k.plus 1)
+                      | 0
+                | p
+            [^ level] >> epow
+              if. > @
+                level.eq 0
+                e
+                times.
+                  number
+                    ^.epow (level.minus 1) >> prev!
+                  number prev
+            [^ level] >> step
+              if. > @
+                level.eq 0
+                1
+                plus.
+                  number
+                    ^.step (level.minus 1) >> prev!
+                  number prev
+          | n
           pinf
-  [p] > lnp
-    if. > @
-      p.gte e
-      climb 9 p
-      if.
-        p.lt
-          1.div e
-        descend 9 p
-        series p
-    if. > [^ level p] > climb
-      level.lt 0
-      ^.series p
-      if.
-        p.gte
-          ^.epow level
-        plus.
-          ^.climb
-            level.minus 1
-            p.div
-              ^.epow level
-          ^.step level
-        ^.climb
-          level.minus 1
-          p
-    if. > [^ level p] > descend
-      level.lt 0
-      ^.series p
-      if.
-        p.lt
-          1.div
-            ^.epow level
-        minus.
-          ^.descend
-            level.minus 1
-            p.times
-              ^.epow level
-          ^.step level
-        ^.descend
-          level.minus 1
-          p
-    [^ level] > epow
-      if. > @
-        level.eq 0
-        e
-        times.
-          number prev
-          number prev
-      ^.epow > prev!
-        level.minus 1
-    [m] > series
-      2.times > @
-        t.times
-          horner 0
-      if. > [^ k] > horner
-        k.gt 40
-        0
-        plus.
-          1.div
-            plus.
-              k.times 2
-              1
-          times.
-            ^.t.times ^.t
-            ^.horner
-              k.plus 1
-      div. > t
-        m.minus 1
-        m.plus 1
-    [^ level] > step
-      if. > @
-        level.eq 0
-        1
-        plus.
-          number prev
-          number prev
-      ^.step > prev!
-        level.minus 1
-  number ^.as-bytes > n
 
   -2.2.ln.is-nan ++> can-return-nan-for-a-logarithm-of-a-negative-float
 

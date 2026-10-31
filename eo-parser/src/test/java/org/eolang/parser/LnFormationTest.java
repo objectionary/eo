@@ -315,6 +315,44 @@ final class LnFormationTest {
     }
 
     @Test
+    void emitsHandleOfRhoParameter() {
+        final Emit emit = new Emit();
+        new LnFormation(new Span("[^me x] > lt", 1))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a `^me` parameter must emit as <o name='ρ' base='∅' local='me'/>",
+            LnFormationTest.render(emit),
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='lt']/o[1][@name='ρ' and @base='∅' and @local='me']"
+            )
+        );
+    }
+
+    @Test
+    void placesParameterBehindHandledRho() {
+        final Emit emit = new Emit();
+        new LnFormation(new Span("[^me x] > lt", 1))
+            .into(new Stack(), new Globals(), emit);
+        emit.close();
+        MatcherAssert.assertThat(
+            "a parameter behind `^me` must keep the column it was written at",
+            LnFormationTest.render(emit),
+            XhtmlMatchers.hasXPath("/object/o[@name='lt']/o[2][@name='x' and @pos='5']")
+        );
+    }
+
+    @Test
+    void rejectsRhoHandleThatIsNotName() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnFormation(new Span("[^@ x] > lt", 1))
+                .into(new Stack(), new Globals(), new Emit()),
+            "a `^` followed by something other than a NAME must be rejected"
+        );
+    }
+
+    @Test
     void rejectsBindingOnFormationChildUnderFormationParent() {
         final Stack stack = new Stack();
         stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);

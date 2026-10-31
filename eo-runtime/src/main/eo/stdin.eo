@@ -44,7 +44,7 @@
 
 [] > stdin
   all-lines > @
-  [^] > all-lines
+  [^stream] > all-lines
     [^ scan buffer is-first] >> rec-read
       scan.eof.if > @
         string buffer
@@ -59,8 +59,8 @@
                 scan.line
             false
     | > @
-      ^.line-or-eof
-      ""
+      stream.line-or-eof
+      --
       true
   [] > line-or-eof
     first.as-bytes.size.eq 0 > eof
@@ -85,4 +85,4 @@
         @. > next
           input.read 1
       | first --
-  ^.line-or-eof.line > [^] > next-line
+  stream.line-or-eof.line > [^stream] > next-line

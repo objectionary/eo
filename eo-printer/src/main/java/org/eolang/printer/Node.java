@@ -25,7 +25,10 @@ import java.util.stream.Collectors;
  * own indented lines, a {@link Horizontal} one, where they are inlined, a
  * {@link Phi} one for a formation bound to nothing but its decoratee, and
  * a {@link Starred} one for a tuple applied at the tail — and keeps the
- * one with the smaller {@link Penalty}. The decision is made recursively,
+ * one with the smaller {@link Penalty}. The identity glyph is the one head
+ * that takes no horizontal arguments (R-3.16.1), so an application headed by
+ * it, with or without a method chain behind it, keeps every argument on a
+ * line of its own. The decision is made recursively,
  * bottom-up, against a {@link Style} that carries the indentation width
  * and the penalty weights, so the node never has to refer back to the
  * printer that started it.</p>
@@ -145,6 +148,14 @@ final class Node {
      * suffix shape puts the receiver in front of the dot and leaves the
      * binding after a name, where it parses.</p>
      *
+     * <p>A receiver too long to sit in front of that dot leaves no suffix
+     * shape at all, and the binding used to be glued onto the reversed head
+     * after all (#9173). The dispatch is then written the way the source
+     * wrote it: the receiver on its own lines, and a {@code .method:hey}
+     * continuation under the same head, which dispatches on the lines above
+     * it. Only a receiver-only dispatch is spelled that way, since the
+     * grammar takes no arguments under a continuation line.</p>
+     *
      * @param style The style to lay out in
      * @param indent The indentation level
      * @return The rendered block
@@ -157,6 +168,8 @@ final class Node {
             if (this.labelled() || style.points(alt) <= style.points(best)) {
                 best = alt;
             }
+        } else if (this.labelled() && this.children.size() == 1) {
+            best = this.continued(style, indent);
         }
         return best;
     }
@@ -453,7 +466,7 @@ final class Node {
         final Optional<String> result;
         if (this.abstractt) {
             result = this.phi(style, indent);
-        } else if (this.children.isEmpty()) {
+        } else if (this.children.isEmpty() || this.glyph()) {
             result = Optional.empty();
         } else {
             result = new Horizontal(
@@ -466,7 +479,8 @@ final class Node {
     private Optional<String> phi(final Style style, final int indent) {
         final Optional<String> result;
         if (this.children.size() == 1
-            && " > @".equals(this.children.get(0).tail)) {
+            && " > @".equals(this.children.get(0).tail)
+            && !this.bound()) {
             result = new Phi(
                 this.base, this.tail, this.children.get(0)
             ).print(style, indent);
@@ -520,6 +534,8 @@ final class Node {
             result = Optional.empty();
         } else if (this.abstractt || !this.tail.isEmpty() || "*".equals(this.base)) {
             result = Optional.empty();
+        } else if (this.glyph() && !this.children.isEmpty()) {
+            result = Optional.empty();
         } else if (this.children.isEmpty()) {
             result = Optional.of(this.base);
         } else {
@@ -564,8 +580,32 @@ final class Node {
         return "!".equals(this.tail);
     }
 
+    private String continued(final Style style, final int indent) {
+        final String dot;
+        if (this.base.endsWith("?.")) {
+            dot = "?.";
+        } else {
+            dot = ".";
+        }
+        return new StringBuilder(this.children.get(0).print(style, indent))
+            .append('\n')
+            .append(style.indent(indent))
+            .append(dot)
+            .append(this.base, 0, this.base.length() - dot.length())
+            .append(this.tail)
+            .toString();
+    }
+
     private boolean labelled() {
-        return this.reversed && this.tail.startsWith(":");
+        return this.reversed && this.bound();
+    }
+
+    private boolean bound() {
+        return this.tail.startsWith(":");
+    }
+
+    private boolean glyph() {
+        return "I".equals(this.base) || this.base.startsWith("I.");
     }
 
     private boolean forced() {

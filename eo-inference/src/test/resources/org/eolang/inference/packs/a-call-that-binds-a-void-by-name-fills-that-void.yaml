@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A binding by name puts the argument into the void of that name: pair 5:b
+# puts 5 into b, the @ of pair, so app is a number.
+sources:
+  pair.eo: |
+    [a b] > pair
+      b > @
+  app.eo: |
+    [] > app
+      pair 5:b > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.b' and @lands='b']/is[@loc='Φ.number']
+  - /answers[not(o[@lands='a'])]
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.number']

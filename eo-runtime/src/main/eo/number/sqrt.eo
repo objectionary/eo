@@ -1,4 +1,4 @@
-# Positive square root of `num` as `org.eolang.number`, taken as `num` raised to
+# Positive square root of `num` as `number`, taken as `num` raised to
 # the one-half power. A negative argument, negative infinity included, is nan.
 #
 # The half power goes through a logarithm and an exponential, both of which
@@ -16,10 +16,10 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^] > sqrt
+[^num] > sqrt
   if. > @
     lt.
-      number ^.as-bytes >> arg
+      number num.as-bytes >> arg
       0
     nan
     if.

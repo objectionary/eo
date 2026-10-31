@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# choose gives back whichever of its voids Java picks, so it reduces to what
+# goes into them: a number and a string.
+sources:
+  choose.eo: |
+    [] > choose /A
+      ? > first /A?
+      ? > second /A
+  app.eo: |
+    [] > app
+      choose 1 "one" > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.choose.λ' and is[@loc='Φ.choose.first']]/is[@loc='Φ.choose.second']
+  - /answers/o[@loc='Φ.choose']/reduced/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.choose']/reduced/is[@loc='Φ.string']

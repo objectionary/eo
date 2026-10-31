@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The root throws, but phino stopped at the λ of "throw" for an expression
+# it named and spelled out in no record, so no record of the protocol
+# applies "throw" to a message. The atom cannot tell what to throw, so the
+# entry is a taint.
+locator: Φ.lost
+number: 4
+taint: phino stopped at L_throw for 𝑒1, while no record of its protocol gives the message
+eo:
+  lost.eo: |
+    [] > lost
+      T "oops" > @
+protocol: |
+  <protocol>
+    <dataize at="Φ.l🌵.e4">
+      <boxed meta="𝑛·0·1">Φ.l🌵.e4.φ</boxed>
+      <morph at="𝑛·0·1">
+        <morphed meta="𝑛·0·2">𝑒1</morphed>
+      </morph>
+      <unanswered λ="L_throw" by="dataize">𝑒1</unanswered>
+      <stuck λ="L_throw"/>
+    </dataize>
+    <msec>1</msec>
+    <firings>1</firings>
+    <fps>2000</fps>
+  </protocol>

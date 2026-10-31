@@ -9,13 +9,13 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^ cant-convert] > as-i64
+[^data cant-convert] > as-i64
   if. > @
-    ^.size.eq 8
-    i64 ^
+    data.size.eq 8
+    i64 data
     cant-convert
       "Can't convert non 8 length bytes to i64, bytes are %x".printf
-        * ^
+        * data
 
   00-00-00-00-00-00-00-2A.as-i64.eq 42.as-i64 ++> can-convert-bytes-to-i64
 
@@ -24,9 +24,9 @@
     00-00-00-00-00-00-00-33
 
   eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-i64
-    "recovered"
+    i64 00-00-00-00-00-00-00-2A
     01-01-01-01.as-i64
-      "recovered" > [message]
+      i64 00-00-00-00-00-00-00-2A > [message]
 
   not. ++> can-tell-it-does-not-match-the-bytes-of-the-same-number
     00-00-00-00-00-00-00-2A.as-i64.as-bytes.eq 42.as-bytes

@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# grip calls back what it is handed with an oak, as /{Q.oak} says, so the m of
+# hold is an oak, though no EO code fills it.
+sources:
+  oak.eo: |
+    [] > oak
+  grip.eo: |
+    [] > grip /Q.bytes
+      ? > scope /{Q.oak}
+  app.eo: |
+    [] > app
+      grip hold > @
+      [m] > hold
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='scope']/is[@loc='Φ.app.hold']
+  - /answers/o[@loc='Φ.app.hold.m']/is[@loc='Φ.oak']
+  - /answers[not(o[@lands='m'])]

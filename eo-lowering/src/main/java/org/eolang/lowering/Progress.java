@@ -66,6 +66,11 @@ final class Progress implements Text {
     private final AtomicInteger reused;
 
     /**
+     * How many of the entries done so far ran out of their time budget.
+     */
+    private final AtomicInteger expired;
+
+    /**
      * How many bytes all the protocols written so far take.
      */
     private final AtomicLong bytes;
@@ -86,6 +91,7 @@ final class Progress implements Text {
             System.currentTimeMillis(),
             new AtomicInteger(),
             new AtomicInteger(),
+            new AtomicInteger(),
             new AtomicLong(),
             new ConcurrentLinkedQueue<>()
         );
@@ -98,17 +104,20 @@ final class Progress implements Text {
      * @param moment The moment the work started, in milliseconds
      * @param count How many entries are done so far
      * @param hits How many of them got their protocols from the cache
+     * @param late How many of them ran out of their time budget
      * @param size How many bytes all the protocols written so far take
      * @param running The locators of the entries in processing, the oldest first
      */
     Progress(
         final int entries, final long moment, final AtomicInteger count,
-        final AtomicInteger hits, final AtomicLong size, final Collection<String> running
+        final AtomicInteger hits, final AtomicInteger late, final AtomicLong size,
+        final Collection<String> running
     ) {
         this.total = entries;
         this.start = moment;
         this.done = count;
         this.reused = hits;
+        this.expired = late;
         this.bytes = size;
         this.busy = running;
     }
@@ -120,11 +129,12 @@ final class Progress implements Text {
         );
         final StringBuilder line = new StringBuilder(
             Logger.format(
-                "%d/%d entries in %[ms]s, %d from cache, %[size]s in XMLs",
+                "%d/%d entries in %[ms]s, %d from cache, %d out of time, %[size]s in XMLs",
                 this.done.get(),
                 this.total,
                 System.currentTimeMillis() - this.start,
                 this.reused.get(),
+                this.expired.get(),
                 this.bytes.get()
             )
         );
@@ -175,5 +185,13 @@ final class Progress implements Text {
     void reuse(final Path protocol) throws IOException {
         this.add(protocol);
         this.reused.incrementAndGet();
+    }
+
+    /**
+     * Count one more entry as done, whose run of phino ran out of time.
+     */
+    void expire() {
+        this.done.incrementAndGet();
+        this.expired.incrementAndGet();
     }
 }

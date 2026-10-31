@@ -9,11 +9,11 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^ cant-min] > minimum
-  ^.is-empty.if > @
+[^list cant-min] > minimum
+  list.is-empty.if > @
     cant-min
       "cannot get the minimum number from an empty sequence"
-    ^.reduced
+    list.reduced
       pinf
       if. > [min item]
         item.as-number.is-nan.or
@@ -33,9 +33,9 @@
         -3
 
   eq. ++> can-recover-from-an-empty-list-when-taking-the-minimum
-    "recovered"
+    42
     tuple.empty.minimum
-      "recovered" > [msg]
+      42 > [msg]
 
   eq. ++> can-take-a-minimum-of-one-item
     minimum.

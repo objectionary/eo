@@ -28,16 +28,17 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^ places cant-print] > as-fixed
+[^num places cant-print] > as-fixed
   if. > @
-    ^.is-finite.not.or
-      huge.or
+    num.is-finite.not.or
+      or.
+        num.abs.gte 9.223372036854776e18 >> huge
         or.
           0.gt places
           places.is-integer.not.or
             places.gt 9007199254740991
     cant-print
-      ^.is-finite.not.if
+      num.is-finite.not.if
         "Can't write a non-finite number as a fixed-point decimal"
         huge.if
           "Can't write a fixed-point decimal with a magnitude of 2^63 or larger"
@@ -46,49 +47,41 @@
               * places
             "Can't write a fixed-point decimal with a non-finite number of fraction places"
     if.
-      ^.as-bytes.eq 80-00-00-00-00-00-00-00
+      num.as-bytes.eq 80-00-00-00-00-00-00-00
       "-".as-bytes.concat
         [^ a] >> positive
           if. > @
-            digits.eq scale
+            eq.
+              floor. >> digits
+                plus.
+                  times. (a.minus a.floor) ^.scale
+                  0.5
+              ^.scale
             if. > [^ unit rest] >> written
               ^.^.places.eq 0
               unit.as-decimal
               concat.
                 unit.as-decimal.concat ".".as-bytes
                 concat.
-                  rec-pad rest ^.k --
-                  zeros (^.^.places.minus ^.k) --
-            | (whole.plus 1) 0
-            written whole digits
-          floor. > digits
-            plus.
-              times.
-                a.minus whole
-                scale
-              0.5
-          if. > k
-            ^.places.gt 15
-            15
-            ^.places
-          pow10 k > scale
-          a.floor > whole
+                  rec-pad rest k --
+                  zeros (^.^.places.minus k) --
+            | (a.floor.plus 1) 0
+            written a.floor digits
         | 0
       if.
-        ^.lt 0
+        num.lt 0
         if. > [^ a] >> signed
           eq.
             floor.
               plus.
-                a.times (positive a).scale
+                a.times ^.scale
                 0.5
             0
           positive a
           "-".as-bytes.concat
             positive a
-        | (^.times -1)
-        positive ^
-  ^.abs.gte 9.223372036854776e18 > huge
+        | (num.times -1)
+        positive num
   if. > [^ p] >> pow10
     p.eq 0
     1
@@ -97,6 +90,11 @@
         as-number.
           p.minus 1
       10
+  | >> scale
+    if. >> k
+      places.gt 15
+      15
+      places
   if. > [^ value count acc] >> rec-pad
     count.eq 0
     acc

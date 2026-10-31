@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls one, so its y is an open void, and the call inc y makes no copy
+# of inc. The x of inc stays an open void, and the @ of one cannot be told.
+sources:
+  one.eo: |
+    [y] > one
+      inc y > @
+  inc.eo: |
+    [x] > inc
+      x > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.one.y']/open
+  - /answers/o[@loc='Φ.inc' and @copies='1']
+  - /answers/o[@loc='Φ.inc.x']/open
+  - /answers/o[@loc='Φ.one.φ']/unknown

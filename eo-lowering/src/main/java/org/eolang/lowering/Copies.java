@@ -4,18 +4,22 @@
  */
 package org.eolang.lowering;
 
+import io.github.sekator778.seqdir.Seqdir;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Iterator;
 import org.cactoos.io.Directory;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Sorted;
+import org.cactoos.scalar.Unchecked;
 
 /**
- * The list of the copies of the sources, which have no tests inside.
+ * The list of the copies of the sources, which have no tests and no
+ * {@code T} inside.
  *
  * <p>The stage {@link Pruning} makes a copy of every source file of the
- * build, removes the tests from it, and saves it into the directory
+ * build, removes the tests from it, turns every {@code T} there into a copy
+ * of {@code throw}, and saves it into the directory
  * {@code 1-planting}, inside the home directory of the lowering. All the
  * stages after {@link Pruning} read only these copies, and never the
  * original sources. This class lists those copies.</p>
@@ -48,7 +52,18 @@ final class Copies implements Iterable<Path> {
         return new Sorted<>(
             new Filtered<>(
                 Files::isRegularFile,
-                new Directory(this.home.resolve("1-planting"))
+                new Directory(
+                    new Unchecked<>(
+                        () -> new Seqdir(this.home, 1).dirs().find("planting")
+                    ).value().orElseThrow(
+                        () -> new IllegalStateException(
+                            String.format(
+                                "There is no planting in '%s', while the stages read the copies the pruning writes",
+                                this.home
+                            )
+                        )
+                    )
+                )
             )
         ).iterator();
     }
