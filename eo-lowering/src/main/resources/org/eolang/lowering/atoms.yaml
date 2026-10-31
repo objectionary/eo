@@ -6,13 +6,29 @@
 # name of a λ function; a bare 𝜎 in an answer is a fresh symbol wrapped in
 # the carrier of the operation. A λ function no key matches is left where
 # it stands, and the formation that reached it is a taint.
-# A fork brings its two branches to one shape with the rules of its rewrite
-# block before it symbolizes and joins them: the true and false eo-runtime
-# spells, a bool a firing answered and an object decorating one are one
-# value in three spellings, and the join pairs nothing but symbols.
-# A branch that stops at the λ of "throw", which is what every T is by now,
-# raises: the fork is joined into its other branch, and the protocol keeps
-# the condition and the message, which rendering turns into a guard.
+# A fork answers neither of its sides. Its condition is a value nobody
+# worked out, so phino morphs both sides first. Two sides that come to one
+# term up to their symbols are joined into a fresh symbol that stands for
+# either, and the run goes on as one: the "stay" lines drop the ρ a side
+# may hang on its bytes, the "undress" lines take φ off a side that only
+# wraps another object, the second pair of "evaluate" lines fires the atom
+# the undressing may uncover, the "symbolize" lines turn a literal a side holds
+# into a symbol, so that a side computed and a side written out compare
+# as one shape, and the "defer" lines turn a copy over a bare symbol,
+# which nobody can work out, into a symbol that stands for it, so that a
+# side ends in the symbol instead of getting stuck inside the copy, and the
+# "cast" lines put a side that is a bare symbol at the end of the φ chain of
+# the other side, so that data meets data even when one side still wraps
+# it. Two
+# formations that do not join are answered by a formation of copies of
+# the fork, one per attribute, each holding the condition and the two
+# sides under the names "on🌵", "left🌵" and "right🌵" phino gives them;
+# the fork spells its own condition and sides under the same names, so
+# the one entry below answers a planted fork and a fabricated copy alike,
+# and names itself under "otherwise". Two sides that neither join nor
+# are formations get the firing stuck, and the formation that reached it
+# is a taint. The rendering turns every join into an if that assigns the
+# joined symbol.
 - λ: L_number_(plus|times|div)
   dataize:
     𝛿1: $.ρ
@@ -22,7 +38,9 @@
   dataize:
     𝛿1: $.ρ
     𝛿2: $.b
-  𝑛: ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ⟧ ) ⟧
+  𝑛: >-
+    ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
+    on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧
 - λ: L_bytes_size
   dataize:
     𝛿1: $.ρ
@@ -31,7 +49,9 @@
   dataize:
     𝛿1: $.ρ
     𝛿2: $.b
-  𝑛: ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ⟧ ) ⟧
+  𝑛: >-
+    ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
+    on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧
 - λ: L_bytes_(and|or|concat|right)
   dataize:
     𝛿1: $.ρ
@@ -51,62 +71,55 @@
   dataize:
     𝛿1: $.target
   𝑛: Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )
+- λ: L_os_name
+  𝑛: Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )
 - λ: L_fork
   dataize:
-    𝛿1: $.φ
+    𝛿1: $.on🌵
   morph:
-    𝑛1: $.left
-    𝑛2: $.right
-  rewrite:
-    𝑛3:
-      of: 𝑛1
-      rules: &bool
-        - name: false-literal
-          pattern: >-
-            ⟦ !B1, φ ↦ Φ.bool( if ↦ ⟦ ρ ↦ ∅, 𝜏1 ↦ ∅, 𝜏2 ↦ ∅,
-            φ ↦ ξ.𝜏2 ⟧ ), !B2 ⟧
-          result: >-
-            ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
-            φ ↦ ⟦ Δ ⤍ 00- ⟧ ⟧ ) ⟧
-        - name: true-literal
-          pattern: >-
-            ⟦ !B1, φ ↦ Φ.bool( if ↦ ⟦ ρ ↦ ∅, 𝜏1 ↦ ∅, 𝜏2 ↦ ∅,
-            φ ↦ ξ.𝜏1 ⟧ ), !B2 ⟧
-          result: >-
-            ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
-            φ ↦ ⟦ Δ ⤍ FF- ⟧ ⟧ ) ⟧
-        - name: bool-without-rho
-          pattern: >-
-            ⟦ !B1, φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
-            φ ↦ 𝑒1 ⟧ ), !B2 ⟧
-          result: >-
-            ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
-            φ ↦ 𝑒1 ⟧ ) ⟧
-        - name: decorated-bool
-          pattern: >-
-            ⟦ !B1, φ ↦ ⟦ !B3, φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅,
-            right ↦ ∅, φ ↦ 𝑒1 ⟧ ), !B4 ⟧, !B2 ⟧
-          result: >-
-            ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
-            φ ↦ 𝑒1 ⟧ ) ⟧
-    𝑛4:
-      of: 𝑛2
-      rules: *bool
-  symbolize:
+    𝑛1: $.left🌵
+    𝑛2: $.right🌵
+  undress:
+    𝑛15: 𝑛9
+    𝑛16: 𝑛10
+  stay:
+    𝑛3: 𝑛1
+    𝑛4: 𝑛2
+  evaluate:
     𝑛5: 𝑛3
     𝑛6: 𝑛4
+    𝑛17: 𝑛15
+    𝑛18: 𝑛16
+  rewrite:
+    𝑛9:
+      of: 𝑛5
+      rules: &bool
+        - name: true-literal
+          pattern: >-
+            ⟦ 𝐵1, φ ↦ Φ.bool( if ↦ ⟦ ρ ↦ ∅, 𝜏1 ↦ ∅, 𝜏2 ↦ ∅, φ ↦ ξ.𝜏1 ⟧ ) ⟧
+          result: >-
+            ⟦ 𝐵1, φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
+            on🌵 ↦ ⟦ Δ ⤍ FF- ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧
+        - name: false-literal
+          pattern: >-
+            ⟦ 𝐵1, φ ↦ Φ.bool( if ↦ ⟦ ρ ↦ ∅, 𝜏1 ↦ ∅, 𝜏2 ↦ ∅, φ ↦ ξ.𝜏2 ⟧ ) ⟧
+          result: >-
+            ⟦ 𝐵1, φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
+            on🌵 ↦ ⟦ Δ ⤍ 00- ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧
+    𝑛10:
+      of: 𝑛6
+      rules: *bool
+  symbolize:
+    𝑛11: 𝑛17
+    𝑛12: 𝑛18
+  defer:
+    𝑛13: 𝑛11
+    𝑛14: 𝑛12
+  cast:
+    𝑛19: 𝑛13
+    𝑛20: 𝑛14
   join:
-    𝑛7: [𝑛5, 𝑛6]
-  lenient: true
-  terminators: [L_throw]
-  𝑛: 𝑛7
-- λ: L_entry
-  dataize:
-    𝛿1: $.n
-  morph:
-    𝑛1: $.v.φ
-  𝑛: Φ.l/.root( 𝑛1 )
-- λ: L_root
-  dataize:
-    𝛿1: $.v
-  𝑛: ⟦ ⟧
+    'on': 𝛿1
+    left: 𝑛19
+    right: 𝑛20
+    otherwise: L_fork

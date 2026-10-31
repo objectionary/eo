@@ -18,13 +18,18 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import org.cactoos.Input;
-import org.cactoos.io.InputWithFallback;
 import org.cactoos.iterable.IterableOf;
 
 /**
  * The simple HTTP Objectionary server.
  *
  * <p>This class is supposed to be used together with {@link OyCached}.</p>
+ *
+ * <p>A program is read from {@code raw.githubusercontent.com} and a directory
+ * is asked of the GitHub API, because both are meant to be read by a program.
+ * The web page under {@code github.com} is not: GitHub answers it with 403 to
+ * a client it does not care to serve, and a refusal to answer used to stand
+ * for the directory being absent (#9402).</p>
  *
  * @since 0.1
  */
@@ -63,7 +68,7 @@ final class OyRemote implements Objectionary {
                 hash
             ),
             new UrlOy(
-                "https://github.com/objectionary/home/tree/%s/objects/%s",
+                "https://api.github.com/repos/objectionary/home/contents/objects/%2$s?ref=%1$s",
                 hash
             ),
             proxies
@@ -114,19 +119,7 @@ final class OyRemote implements Objectionary {
             this, "The object '%s' will be pulled from %s...",
             name, url
         );
-        return new InputWithFallback(
-            () -> this.fetch(url),
-            input -> {
-                throw new IOException(
-                    String.format(
-                        "EO object '%s' is not found in this GitHub repository: https://github.com/objectionary/home by url: %s. This means that you either misspelled the name of it or simply referred to your own local object somewhere in your code as if it was an object of 'org.eolang' package. Check the sources and make sure you always use +alias meta when you refer to an object outside of 'org.eolang', even if this object belongs to your package.",
-                        name,
-                        url
-                    ),
-                    input
-                );
-            }
-        );
+        return () -> this.fetch(name, url);
     }
 
     @Override
@@ -157,19 +150,34 @@ final class OyRemote implements Objectionary {
     @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
     private boolean exists(final URL url) throws IOException {
         final int code = this.send(url, HttpResponse.BodyHandlers.discarding()).statusCode();
-        if (code == HttpURLConnection.HTTP_CLIENT_TIMEOUT || code == 429) {
+        if (code == HttpURLConnection.HTTP_CLIENT_TIMEOUT || code == 429
+            || code >= HttpURLConnection.HTTP_INTERNAL_ERROR && code < 600) {
             throw new IOException(
                 String.format("Transient HTTP error %d for %s, will retry", code, url)
+            );
+        }
+        if (code == HttpURLConnection.HTTP_FORBIDDEN) {
+            throw new IOException(
+                String.format(
+                    "HTTP error %d for %s, where a refusal to serve the request is no answer about presence",
+                    code, url
+                )
             );
         }
         return code >= HttpURLConnection.HTTP_OK && code < HttpURLConnection.HTTP_BAD_REQUEST;
     }
 
     @RetryOnFailure(delay = 1L, unit = TimeUnit.SECONDS)
-    private InputStream fetch(final URL url) throws IOException {
-        final HttpResponse<InputStream> response = this.send(
-            url, HttpResponse.BodyHandlers.ofInputStream()
-        );
+    private InputStream fetch(final String name, final URL url) throws IOException {
+        final HttpResponse<InputStream> response;
+        try {
+            response = this.send(url, HttpResponse.BodyHandlers.ofInputStream());
+        } catch (final IOException ex) {
+            throw new IOException(
+                String.format("Failed to download EO object '%s' from %s", name, url),
+                ex
+            );
+        }
         final int code = response.statusCode();
         final InputStream body = response.body();
         if (code == HttpURLConnection.HTTP_CLIENT_TIMEOUT || code == 429) {
@@ -178,10 +186,23 @@ final class OyRemote implements Objectionary {
                 String.format("Transient HTTP error %d for %s, will retry", code, url)
             );
         }
+        if (code == HttpURLConnection.HTTP_NOT_FOUND) {
+            body.close();
+            throw new IOException(
+                String.format(
+                    "EO object '%s' is not found in this GitHub repository: https://github.com/objectionary/home by url: %s. This means that you either misspelled the name of it or simply referred to your own local object somewhere in your code as if it was an object of 'org.eolang' package. Check the sources and make sure you always use +alias meta when you refer to an object outside of 'org.eolang', even if this object belongs to your package.",
+                    name,
+                    url
+                )
+            );
+        }
         if (code < HttpURLConnection.HTTP_OK || code >= HttpURLConnection.HTTP_BAD_REQUEST) {
             body.close();
             throw new IOException(
-                String.format("HTTP error %d for %s", code, url)
+                String.format(
+                    "Failed to download EO object '%s' from %s, HTTP error %d",
+                    name, url, code
+                )
             );
         }
         return body;

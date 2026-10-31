@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# stat takes a path, a string, and says it gives a stat-return. The call with
+# a path is that stat-return, called read off it is a new stat-return, and the
+# voids it hands on are ones only Java fills.
+sources:
+  posix.eo: |
+    [name args] > posix
+      [] > @ /Q.posix.return
+        ? > ^
+      [^ code output] > return
+        output > @
+      [code mode size] > stat-return
+        posix.stat-return > called
+          code
+          mode
+          size
+      [] > stat /Q.posix.stat-return
+        ? > path /Q.string
+  app.eo: |
+    [] > app
+      (posix.stat "/tmp/весы").called > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.ρ.α0' and @lands='path']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.posix.stat.λ']/is[@loc='Φ.posix.stat-return']
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.posix.stat-return']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.posix.stat-return']
+  - /answers/o[@loc='Φ.posix.stat-return.called.α0' and @lands='code']/open[@by='java']
+  - /answers/o[@loc='Φ.posix.stat-return.called.α1' and @lands='mode']/open[@by='java']
+  - /answers/o[@loc='Φ.posix.stat-return.called.α2' and @lands='size']/open[@by='java']

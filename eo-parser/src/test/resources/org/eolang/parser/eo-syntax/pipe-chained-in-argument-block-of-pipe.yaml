@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@base='ξ.outer' and count(o)=1]
+  - //o[@base='ξ.outer']/o[@base='ξ.result']
+  - //o[@name='app']/o[@name='inner' and not(@base) and o[@base='∅' and @name='b']]
+  - //o[@name='app']/o[starts-with(@base,'ξ.inner') and o[@base='Φ.number']]
+  - //o[@name='app']/o[@name='result'][@base = concat('ξ.', //o[@name='app']/o[starts-with(@base,'ξ.inner')]/@name)]
+input: |
+  [x] > app
+    [a] > outer
+      a.plus 1 > @
+    | > @
+      [b] > inner
+        b.times 2 > @
+      | 1 >>
+      | 2 > result
