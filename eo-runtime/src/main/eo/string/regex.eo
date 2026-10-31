@@ -82,11 +82,6 @@
 #  metas below. It hides how deep `refused` in `pattern` nests its chain of
 #  `if.` over the escaped byte, up to 15 levels where the lint allows 12. Split
 #  the chain into objects of its own, so that `refused` nests no deeper.
-#
-# @todo #9650:30min Remove `+unlint too-deep-object:1934-1938` from the
-#  metas below. It hides how deep `braces` in `pattern` nests the parsing of a
-#  counted closure, up to 14 levels where the lint allows 12. Split the parsing
-#  into objects of its own, so that `braces` nests no deeper.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -94,9 +89,8 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-attachment
-+unlint too-deep-object:1546-1548
-+unlint too-deep-object:1721-1732
-+unlint too-deep-object:1898-1902
++unlint too-deep-object:1541-1543
++unlint too-deep-object:1716-1727
 +version 0.0.0
 
 [^text] > regex
@@ -1885,23 +1879,34 @@
                   n.at.plus 2
                   n.value
                   number 7F-F0-00-00-00-00-00-00
-                if.
-                  m.value.eq -2
-                  no
-                    at.
-                      counted -1 (n.at.plus 1) >> m
-                    "Illegal repetition range"
-                  if.
-                    0.gt m.value
-                    no (n.at.plus 1) "Unclosed counted closure"
-                    if.
-                      eq. (byte m.at) 7D-
-                      if.
-                        n.value.gt m.value
-                        no m.at "Illegal repetition range"
-                        bounds (m.at.plus 1) n.value m.value
-                      no m.at "Unclosed counted closure"
+                closing n
               no n.at "Unclosed counted closure"
+    [^ n] >> closing
+      if. > @
+        m.value.eq -2
+        no
+          at.
+            counted >> m
+              -1
+              n.at.plus 1
+          "Illegal repetition range"
+        if.
+          0.gt m.value
+          no
+            n.at.plus 1
+            "Unclosed counted closure"
+          if.
+            eq.
+              byte m.at
+              7D-
+            if.
+              n.value.gt m.value
+              no m.at "Illegal repetition range"
+              bounds
+                m.at.plus 1
+                n.value
+                m.value
+            no m.at "Unclosed counted closure"
   [^ child least most] >> possessive
     [^ s at caps k] > run
       [^ n at caps] >> drain
