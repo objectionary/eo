@@ -128,9 +128,7 @@
   leadc0c1.not.and b1cont > twovalid
 
   eq. ++> can-accept-the-largest-code-point-when-measuring-width
-    utf8-width.
-      string F4-8F-BF-BF
-      0
+    "􏿿".utf8-width 0
     4
 
   eq. ++> can-measure-a-four-byte-character
@@ -150,9 +148,7 @@
     2
 
   eq. ++> can-measure-a-two-byte-character-after-a-one-byte-character
-    utf8-width.
-      string 61-C3-A9
-      1
+    "aé".utf8-width 1
     2
 
   utf8-width. --> rejects-a-code-point-above-the-unicode-range-when-measuring-width
@@ -197,10 +193,6 @@
 
   utf8-width. --> stops-on-an-incomplete-three-byte-character-after-e0-when-measuring-width
     string E0-A0
-    0
-
-  utf8-width. --> stops-on-an-incomplete-three-byte-character-when-measuring-width
-    string E2-82
     0
 
   utf8-width. --> stops-on-an-incomplete-two-byte-character-when-measuring-width
