@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls helper, so a stop keeps its copy as written, where x is an open
+# void. The call of box on it waits for a stop (rule b), and from then on it
+# answers box as it is, so the @ of helper is box.
+sources:
+  box.eo: |
+    [item] > box
+      item > @
+      42 > size
+  helper.eo: |
+    [x] > helper
+      box x > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.helper.x' and @copies='1']/open
+  - /answers/o[@loc='Φ.helper.φ.α0' and @lands='item']/open
+  - /answers/o[@loc='Φ.helper.φ']/is[@loc='Φ.box']

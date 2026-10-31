@@ -99,7 +99,7 @@ final class LnMethod implements Line {
         if (!outer.isEmpty()) {
             final Level under = stack.below();
             Bindings.checkReceiverUpgrade(under, this.span);
-            under.upgradeArgBinding();
+            under.upgradeArgBinding(outer, this.span);
         }
         stack.seal();
         emit.object(

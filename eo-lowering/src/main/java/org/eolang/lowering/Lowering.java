@@ -33,7 +33,9 @@ import org.eolang.cache.GlobalCache;
  *
  * <ul>
  * <li>the home directory itself holds the world and the other files that
- * are made on the way to it;</li>
+ * are made on the way to it, among them {@code atoms.yaml}, the table of
+ * the operations phino may write down, where every formation that the
+ * planting gave a row to stands after the atoms of the library;</li>
  * <li>{@code 1-planting}, inside the home directory, holds the copies of the
  * sources, without the tests, and with every {@code T} turned into a copy
  * of {@code throw};</li>
@@ -67,8 +69,9 @@ public final class Lowering {
     private final Collection<Path> sources;
 
     /**
-     * The directory with the tables of {@code eo:inference}, which say the
-     * types of the voids.
+     * The directory with the tables of {@code eo:inference},
+     * {@code facts.xml} and {@code answers.xml}, which say what the voids
+     * hold and what the bodies give.
      */
     private final Path tables;
 
@@ -251,9 +254,10 @@ public final class Lowering {
         }
         Logger.info(
             this,
-            "Phino %s is found at '%s', though nothing is lowered yet",
+            "Phino %s is found at '%s', lowering %d sources",
             pinned,
-            this.phino
+            this.phino,
+            this.sources.size()
         );
         new IoCheckedProc<>(
             new Procs<>(

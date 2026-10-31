@@ -27,7 +27,6 @@
   eq. ++> can-decorate-a-string-after-building
     length.
       with.
-        buffer
-          "Hi, "
+        buffer "Hi, "
         "Mark"
     8

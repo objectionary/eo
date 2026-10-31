@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# sys renames the atom win32.closesocket to close. sys.close 3 reaches the
+# atom, which says it gives a number, so closed is a number and eq is read off
+# number.
+sources:
+  win32.eo: |
+    [name args] > win32
+      [] > @ /Q.win32.return
+        ? > ^
+      [^ code output] > return
+        output > @
+      [] > closesocket /Q.number
+        ? > descriptor /Q.number
+  app.eo: |
+    [] > app
+      [] > sys
+        win32.closesocket > close
+      sys.close 3 > closed
+      closed.eq -1 > @
+  number.eo: |
+    [@] > number
+      [b] > eq
+  bytes.eo: |
+    [@] > bytes
+      [] > as-number /Q.number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.sys.close.ρ']/is[@loc='Φ.win32']
+  - /answers/o[@loc='Φ.app.closed.α0' and @lands='descriptor']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.win32.closesocket.λ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.closed']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.number.eq']

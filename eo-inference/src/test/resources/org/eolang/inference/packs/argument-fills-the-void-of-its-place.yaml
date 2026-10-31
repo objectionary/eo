@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# pair 1 2 puts its first argument into left and its second into right, in the
+# order pair declares them. The @ of pair is left, so both is a number.
+sources:
+  app.eo: |
+    [] > app
+      pair 1 2 > both
+  pair.eo: |
+    [left right] > pair
+      left > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.both.α0' and @lands='left']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.both.α1' and @lands='right']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.pair.φ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.both']/is[@loc='Φ.number']

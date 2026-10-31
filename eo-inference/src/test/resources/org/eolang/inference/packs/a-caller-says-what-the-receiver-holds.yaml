@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# 42.halved puts the number into the ^ of halved, so ^.plus there is the plus
+# of number and gives back the 0 it is handed, a number. as-bytes read off
+# that is the bytes number.as-bytes returns.
+sources:
+  app.eo: |
+    [] > app
+      42.halved.as-bytes > @
+  number.eo: |
+    [@] > number
+      [] > as-bytes /Q.bytes
+        ? > ^
+      [x] > plus
+        x > @
+      [^] > halved
+        ^.plus 0 > @
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.number.halved.ρ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.number.halved.φ.α0' and @lands='x']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.number.halved.φ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.bytes']
