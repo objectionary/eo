@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# grip calls whatever is in its scope with an oak. app puts hold into one copy
+# of grip and pick into another, so the oak lands in the k of hold and in the
+# j of pick, and each grip is the hold or the pick it called.
+sources:
+  oak.eo: |
+    [] > oak
+  grip.eo: |
+    [scope] > grip
+      scope oak > @
+  app.eo: |
+    [] > app
+      grip hold > @
+      grip pick > twin
+      [k] > hold
+      [j] > pick
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.grip.φ.α0']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='scope']/is[@loc='Φ.app.hold']
+  - /answers/o[@loc='Φ.app.twin.α0' and @lands='scope']/is[@loc='Φ.app.pick']
+  - /answers/o[@loc='Φ.app.hold.k']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.pick.j']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.app.hold']
+  - /answers/o[@loc='Φ.app.twin']/is[@loc='Φ.app.pick']

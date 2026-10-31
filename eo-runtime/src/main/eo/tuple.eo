@@ -12,11 +12,12 @@
     if. > @
       or.
         0.gt
-          if. >> index!
-            0.gt
-              i >> idx!
-            list.length.plus idx
-            idx
+          number >> index
+            if. >>!
+              0.gt
+                number i! >> idx
+              list.length.plus idx
+              idx
         list.length.lte index
       fallback
         "Given index is out of tuple bounds"

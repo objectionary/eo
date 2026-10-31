@@ -95,10 +95,11 @@ one after another:
     module. It takes the source code in a plain text format and parses into
     XML document, using [ANTLR4](https://www.antlr.org/) and
     [Xembly](https://www.xembly.org). The output of the parser you can find
-    in the `target/eo/parse` directory. Parsed objects which are versioned
-    (normally pulled from
-    [Objectionary](https://github.com/objectionary/home)) are cached in
-    `.eo/parsed` folder.
+    in the `target/eo/parse` directory. The result of parsing every source,
+    the ones of the project included, is also kept in `~/.eo/parsed`, or
+    under the directory `eo.cache` names, keyed by the version of the plugin
+    and by the hash of the source. Set `eo.cacheEnabled` to `false` to turn
+    that off.
 
 * **Optimization**.
     There are a number of [XSL transformations](https://en.wikipedia.org/wiki/XSLT)
@@ -136,12 +137,14 @@ required objects
 and only download (and cache) them in case they are not found locally.
 
 This behaviour can be changed to always download objects from remote by
-providing Maven option `-U`
-(see [Maven CLI docs](https://maven.apache.org/ref/3.1.0/maven-embedder/cli.html)):
+setting `eo.overWrite`:
 
 ```shell
-mvn -U clean install
+mvn clean install -Deo.overWrite=true
 ```
+
+Setting `eo.cacheEnabled=false` does the same, by taking the cache out of
+the picture altogether.
 
 If you want to build your project or run your tests, which use eo-maven-plugin,
 you can change stack size for your purposes by stack-size option:
@@ -166,16 +169,17 @@ It will build the plugin and install it in your local Maven repository.
 
 ### How to run Integration Tests only
 
-If you want to run a specific integration test without waiting until other unit
+The integration tests are the `*IT` classes of `eo-integration-tests`, run by
+failsafe. If you want to run one of them without waiting until the other unit
 or integration tests are executed, you might execute the following command
-under the `eo-maven-plugin` directory:
+in the root of the repository:
 
 ```shell
-mvn clean integration-test invoker:run -Dinvoker.test=fibonacci -DskipTests
+mvn verify -pl eo-integration-tests -am -Dit.test=JarIT -DskipTests
 ```
 
-Here `fibonacci` is the name of the desired integration test, `-DskipTests` is
-used in order to skip `eo-maven-plugin` unit tests.
+Here `JarIT` is the name of the desired integration test, `-DskipTests` is
+used in order to skip unit tests.
 
 ### How to disable Integration Tests
 

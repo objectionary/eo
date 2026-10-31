@@ -1,0 +1,180 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A row with no `ρ` is about an object of the world, reached from the root
+# of the universe, and every void of it is bound to the operand the row
+# dataized for it, wrapped back into its carrier: a string is `string`
+# applied to its bytes, so that every attribute of a string is there when
+# the body of the row reads it.
+locator: Φ.twolen
+number: 5
+eo:
+  twolen.eo: |
+    [t] > twolen
+      (len t).plus 1 > @
+  len.eo: |
+    [s] > len
+      s.length > @
+  string.eo: |
+    [@] > string
+      [] > length /Q.number
+        ? > ^
+  number.eo: |
+    [@] > number
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+  app.eo: |
+    [] > app
+      twolen "ab" > used
+voids:
+  - "𝜎4\t5\tt\tstring"
+rows:
+  - "L_len\tΦ.len\tΦ.len\ts:string"
+protocol: |
+  <protocol>
+    <dataize at="Φ.l🌵.e5">
+      <morph at="Φ.l🌵.e5">
+        <applied meta="𝑒·0·1" of="Φ.bytes"><symbol attr="φ">𝜎4</symbol></applied>
+        <applied meta="𝑒·0·2" of="Φ.string"><meta attr="φ">𝑒·0·1</meta></applied>
+        <applied meta="𝑛·0·1" by="morph" at="Φ.l🌵.e5" of="Φ.twolen"><meta attr="t">𝑒·0·2</meta></applied>
+        <formed meta="𝑛·0·2" of="Φ.twolen"><meta attr="t">𝑒·0·2</meta></formed>
+        <morphed meta="𝑛·0·3">𝑛·0·2</morphed>
+      </morph>
+      <boxed meta="𝑛·0·4">𝑛·0·3.φ</boxed>
+      <morph at="𝑛·0·4">
+        <formed meta="𝑒·0·3"><meta attr="t">𝑒·0·2</meta></formed>
+        <applied meta="𝑒·0·4" of="𝑒·0·2"><meta attr="ρ">𝑒·0·3</meta></applied>
+        <applied meta="𝑛·0·5" by="morph" at="𝑛·0·4" of="Φ.len"><meta attr="s">𝑒·0·4</meta></applied>
+        <formed meta="𝑛·0·6" of="Φ.len"><meta attr="s">𝑒·0·4</meta></formed>
+        <evaluate λ="L_len" by="morph" at="𝑛·0·4">
+          <dataize at="ξ.s">
+            <morph at="ξ.s">
+              <applied meta="𝑛·1·1" by="morph" at="ξ.s" of="Φ.string"><meta attr="φ">𝑒·0·1</meta></applied>
+              <formed meta="𝑛·1·2" of="Φ.string"><meta attr="φ">𝑒·0·1</meta></formed>
+              <morphed meta="𝑛·1·3">𝑛·1·2</morphed>
+            </morph>
+            <boxed meta="𝑛·1·4">𝑛·1·3.φ</boxed>
+            <morph at="𝑛·1·4">
+              <applied meta="𝑛·1·5" by="morph" at="𝑛·1·4" of="Φ.bytes"><symbol attr="φ">𝜎4</symbol></applied>
+              <formed meta="𝑛·1·6" of="Φ.bytes"><symbol attr="φ">𝜎4</symbol></formed>
+              <morphed meta="𝑛·1·7">𝑛·1·6</morphed>
+            </morph>
+            <boxed meta="𝑛·1·8">𝑛·1·7.φ</boxed>
+            <manufactured meta="𝛿·1·1">𝜎4</manufactured>
+          </dataize>
+          <bound meta="𝛿1·1">𝛿·1·1</bound>
+          <minted symbol="𝜎5">𝜎4</minted>
+          <applied meta="𝑒·1·1" of="Φ.bytes"><symbol attr="φ">𝜎5</symbol></applied>
+          <applied meta="𝑒·1·2" of="Φ.number"><meta attr="φ">𝑒·1·1</meta></applied>
+          <built meta="𝑛·1·9">𝑒·1·2</built>
+          <morph at="𝑛·1·9">
+            <applied meta="𝑛·1·10" by="morph" at="𝑛·1·9" of="Φ.number"><meta attr="φ">𝑒·1·1</meta></applied>
+            <formed meta="𝑛·1·11" of="Φ.number"><meta attr="φ">𝑒·1·1</meta></formed>
+            <morphed meta="𝑛·1·12">𝑛·1·11</morphed>
+          </morph>
+          <answered meta="𝑛·1·13">𝑛·1·12</answered>
+        </evaluate>
+        <applied meta="𝑒·0·5" of="Φ.bytes"><datum attr="φ">3F-F0-00-00-00-00-00-00</datum></applied>
+        <applied meta="𝑒·0·6" of="Φ.number"><meta attr="φ">𝑒·0·5</meta></applied>
+        <applied meta="𝑛·0·7" by="morph" at="𝑛·0·4" of="𝑛·1·10.plus"><meta attr="b">𝑒·0·6</meta></applied>
+        <formed meta="𝑛·0·8" of="𝑛·1·10.plus"><meta attr="b">𝑒·0·6</meta></formed>
+        <morphed meta="𝑛·0·9">𝑛·0·8</morphed>
+      </morph>
+      <evaluate λ="L_number_plus" by="dataize" at="𝑛·0·4">
+        <dataize at="ξ.ρ">
+          <morph at="ξ.ρ">
+            <applied meta="𝑛·2·1" by="morph" at="ξ.ρ" of="Φ.number"><meta attr="φ">𝑒·1·1</meta></applied>
+            <formed meta="𝑛·2·2" of="Φ.number"><meta attr="φ">𝑒·1·1</meta></formed>
+            <morphed meta="𝑛·2·3">𝑛·2·2</morphed>
+          </morph>
+          <boxed meta="𝑛·2·4">𝑛·2·3.φ</boxed>
+          <morph at="𝑛·2·4">
+            <applied meta="𝑛·2·5" by="morph" at="𝑛·2·4" of="Φ.bytes"><symbol attr="φ">𝜎5</symbol></applied>
+            <formed meta="𝑛·2·6" of="Φ.bytes"><symbol attr="φ">𝜎5</symbol></formed>
+            <morphed meta="𝑛·2·7">𝑛·2·6</morphed>
+          </morph>
+          <boxed meta="𝑛·2·8">𝑛·2·7.φ</boxed>
+          <manufactured meta="𝛿·2·1">𝜎5</manufactured>
+        </dataize>
+        <bound meta="𝛿1·2">𝛿·2·1</bound>
+        <dataize at="ξ.b">
+          <morph at="ξ.b">
+            <applied meta="𝑛·2·9" by="morph" at="ξ.b" of="Φ.number"><meta attr="φ">𝑒·0·5</meta></applied>
+            <formed meta="𝑛·2·10" of="Φ.number"><meta attr="φ">𝑒·0·5</meta></formed>
+            <morphed meta="𝑛·2·11">𝑛·2·10</morphed>
+          </morph>
+          <boxed meta="𝑛·2·12">𝑛·2·11.φ</boxed>
+          <morph at="𝑛·2·12">
+            <applied meta="𝑛·2·13" by="morph" at="𝑛·2·12" of="Φ.bytes"><datum attr="φ">3F-F0-00-00-00-00-00-00</datum></applied>
+            <formed meta="𝑛·2·14" of="Φ.bytes"><datum attr="φ">3F-F0-00-00-00-00-00-00</datum></formed>
+            <morphed meta="𝑛·2·15">𝑛·2·14</morphed>
+          </morph>
+          <boxed meta="𝑛·2·16">𝑛·2·15.φ</boxed>
+          <dataized meta="𝛿·2·2" number="1.0">3F-F0-00-00-00-00-00-00</dataized>
+        </dataize>
+        <bound meta="𝛿2·2">𝛿·2·2</bound>
+        <minted symbol="𝜎6">𝜎5 3F-F0-00-00-00-00-00-00</minted>
+        <applied meta="𝑒·2·1" of="Φ.bytes"><symbol attr="φ">𝜎6</symbol></applied>
+        <applied meta="𝑒·2·2" of="Φ.number"><meta attr="φ">𝑒·2·1</meta></applied>
+        <built meta="𝑛·2·17">𝑒·2·2</built>
+        <morph at="𝑛·2·17">
+          <applied meta="𝑛·2·18" by="morph" at="𝑛·2·17" of="Φ.number"><meta attr="φ">𝑒·2·1</meta></applied>
+          <formed meta="𝑛·2·19" of="Φ.number"><meta attr="φ">𝑒·2·1</meta></formed>
+          <morphed meta="𝑛·2·20">𝑛·2·19</morphed>
+        </morph>
+        <answered meta="𝑛·2·21">𝑛·2·20</answered>
+      </evaluate>
+      <boxed meta="𝑛·0·10">𝑛·2·21.φ</boxed>
+      <morph at="𝑛·0·10">
+        <applied meta="𝑛·0·11" by="morph" at="𝑛·0·10" of="Φ.bytes"><symbol attr="φ">𝜎6</symbol></applied>
+        <formed meta="𝑛·0·12" of="Φ.bytes"><symbol attr="φ">𝜎6</symbol></formed>
+        <morphed meta="𝑛·0·13">𝑛·0·12</morphed>
+      </morph>
+      <boxed meta="𝑛·0·14">𝑛·0·13.φ</boxed>
+      <manufactured meta="𝛿·0·1">𝜎6</manufactured>
+    </dataize>
+    <msec>1</msec>
+    <firings>2</firings>
+    <fps>2000</fps>
+  </protocol>
+file: org/eolang/EOtwolen$EOφ.java
+java: |
+  /*
+   * This file was generated by eo-lowering, from the protocol of the entry
+   * 5, which is {@code Φ.twolen}.
+   * This code is not optimized, on purpose: it keeps a method for every
+   * symbol and a branch for every fork, even a branch that can never be
+   * taken. The Java compiler and the JIT are expected to optimize it.
+   */
+  package org.eolang;
+
+  import org.eolang.*;
+
+  /**
+   * The atom that took the place of the body of {@code Φ.twolen}.
+   */
+  @XmirObject(oname = "twolen.φ")
+  public final class EOtwolen$EOφ extends PhDefault implements Atom {
+      public EOtwolen$EOφ() {
+          super(new Attrs(new Attr(Phi.RHO, new AtRho())));
+      }
+
+      @Override
+      public Phi lambda() {
+          return new Data.ToPhi(java.nio.ByteBuffer.wrap(this.𝜎6()).getDouble());
+      }
+
+      private byte[] 𝜎4() {
+          return new Dataized(this.take("ρ").take("t")).take();
+      }
+
+      private byte[] 𝜎5() {
+          return new Dataized(new PhApplication(Phi.Φ.take("len"), new Bind("s", new PhApplication(Phi.Φ.take("string"), "φ", new Data.ToPhi(this.𝜎4()))))).take();
+      }
+
+      private byte[] 𝜎6() {
+          return java.nio.ByteBuffer.allocate(8).putDouble(java.nio.ByteBuffer.wrap(this.𝜎5()).getDouble() + 1.0d).array();
+      }
+  }

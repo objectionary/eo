@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/build-fqns.xsl
+asserts:
+  - /object[not(errors)]
+input: |-
+  # A program demonstrating most constructs.
+  # Comment block of two lines.
+
+  +author someone@example.com
+  +version 1.0
+
+  [args] > main
+    mem.alloc > @
+      0
+      [x] >>
+        run > @
+          *
+            x.put 2
+            loop
+              ^.x.lt 6 > [i] >>
+              [i] >>
+                true > @

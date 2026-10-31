@@ -25,7 +25,10 @@ import java.util.stream.Collectors;
  * own indented lines, a {@link Horizontal} one, where they are inlined, a
  * {@link Phi} one for a formation bound to nothing but its decoratee, and
  * a {@link Starred} one for a tuple applied at the tail — and keeps the
- * one with the smaller {@link Penalty}. The decision is made recursively,
+ * one with the smaller {@link Penalty}. The identity glyph is the one head
+ * that takes no horizontal arguments (R-3.16.1), so an application headed by
+ * it, with or without a method chain behind it, keeps every argument on a
+ * line of its own. The decision is made recursively,
  * bottom-up, against a {@link Style} that carries the indentation width
  * and the penalty weights, so the node never has to refer back to the
  * printer that started it.</p>
@@ -152,6 +155,14 @@ final class Node {
      * continuation under the same head, which dispatches on the lines above
      * it. Only a receiver-only dispatch is spelled that way, since the
      * grammar takes no arguments under a continuation line.</p>
+     *
+     * <p>A reversed dispatch whose receiver is a const has no inline shape at
+     * all. The suffix shape would have to glue the {@code !} in front of the
+     * dot, which {@link #braced()} turns down, and the reversed one-liner
+     * ({@code eq. 5! 40-14-...}) is no body an only-phi formation takes
+     * (R-3.10.6) and floats the const out into a handle of its own on the next
+     * parse anyway. Such a dispatch is laid out vertically, where the const is
+     * written as the {@code 5 >>!} handle that parse makes of it (#9446).</p>
      *
      * @param style The style to lay out in
      * @param indent The indentation level
@@ -463,7 +474,8 @@ final class Node {
         final Optional<String> result;
         if (this.abstractt) {
             result = this.phi(style, indent);
-        } else if (this.children.isEmpty()) {
+        } else if (this.children.isEmpty() || this.glyph()
+            || this.reversed && this.children.get(0).constant()) {
             result = Optional.empty();
         } else {
             result = new Horizontal(
@@ -527,9 +539,11 @@ final class Node {
 
     private Optional<String> spelled() {
         final Optional<String> result;
-        if (this.reversed && this.children.size() <= 1) {
+        if (this.reversed) {
             result = Optional.empty();
         } else if (this.abstractt || !this.tail.isEmpty() || "*".equals(this.base)) {
+            result = Optional.empty();
+        } else if (this.glyph() && !this.children.isEmpty()) {
             result = Optional.empty();
         } else if (this.children.isEmpty()) {
             result = Optional.of(this.base);
@@ -597,6 +611,10 @@ final class Node {
 
     private boolean bound() {
         return this.tail.startsWith(":");
+    }
+
+    private boolean glyph() {
+        return "I".equals(this.base) || this.base.startsWith("I.");
     }
 
     private boolean forced() {

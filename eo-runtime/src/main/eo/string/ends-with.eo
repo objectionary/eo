@@ -10,14 +10,13 @@
 [^text substring] > ends-with
   and. > @
     lte.
-      number
-        part.size >> size!
-      txt.size >> length!
+      number part.size! >> size
+      length
     eq.
       slice.
         text >> txt!
         minus.
-          number length
+          number txt.size! >> length
           size
         size
       substring >> part!
