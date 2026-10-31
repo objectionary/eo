@@ -729,7 +729,11 @@
   </xsl:template>
   <!-- Application -->
   <!--
-  Application of an object to its arguments. One that purify.xsl marked with
+  Application of an object to its arguments. The variable of an argument is
+  named after the application and the position of the argument, with an "_"
+  between them: without it the eleventh argument and the first argument of the
+  first one were both called "r11", and the method declared one variable twice
+  (#9343). One that purify.xsl marked with
   @pure is wrapped in PhSticky, so that the bytes it works out are remembered
   instead of being worked out on every read of it.
   A dispatch that takes no arguments, "x.neg" for example, arrives here with
@@ -746,6 +750,7 @@
     <xsl:for-each select="$inners">
       <xsl:variable name="next">
         <xsl:value-of select="$name"/>
+        <xsl:text>_</xsl:text>
         <xsl:value-of select="position()"/>
       </xsl:variable>
       <xsl:apply-templates select="." mode="object">
@@ -775,6 +780,7 @@
         </xsl:choose>
         <xsl:text>, </xsl:text>
         <xsl:value-of select="$name"/>
+        <xsl:text>_</xsl:text>
         <xsl:value-of select="position()"/>
         <xsl:text>)</xsl:text>
       </xsl:for-each>
