@@ -87,7 +87,7 @@ public final class PhSticky implements Phi {
      * many distinct inputs does not keep a lock for every key it has ever
      * seen.
      */
-    private final Map<String, ReentrantLock> guards;
+    private final Map<String, PhSticky.Guard> guards;
 
     /**
      * Ctor.
@@ -125,7 +125,7 @@ public final class PhSticky implements Phi {
         final Phi obj,
         final Map<String, byte[]> map,
         final List<Map.Entry<String, Phi>> puts,
-        final Map<String, ReentrantLock> busy
+        final Map<String, PhSticky.Guard> busy
     ) {
         this.origin = obj;
         this.cache = map;
@@ -213,10 +213,10 @@ public final class PhSticky implements Phi {
 
     private byte[] remembered(final String key) {
         final byte[] result;
-        final ReentrantLock guard = this.guards.computeIfAbsent(
-            key, ignored -> new ReentrantLock()
+        final PhSticky.Guard guard = this.guards.merge(
+            key, new Guard(new ReentrantLock(), 1), (held, fresh) -> held.joined(1)
         );
-        guard.lock();
+        guard.lock().lock();
         try {
             final byte[] found = this.cache.get(key);
             if (found == null) {
@@ -226,19 +226,13 @@ public final class PhSticky implements Phi {
                 result = found;
             }
         } finally {
-            this.guards.computeIfPresent(
-                key,
-                (ignored, existing) -> {
-                    final ReentrantLock left;
-                    if (guard.equals(existing) && !guard.hasQueuedThreads()) {
-                        left = null;
-                    } else {
-                        left = existing;
-                    }
-                    return left;
-                }
+            guard.lock().unlock();
+            final PhSticky.Guard left = this.guards.merge(
+                key, guard, (held, same) -> held.joined(-1)
             );
-            guard.unlock();
+            if (left.idle()) {
+                this.guards.remove(key, left);
+            }
         }
         return result.clone();
     }
@@ -265,5 +259,64 @@ public final class PhSticky implements Phi {
             result = Optional.empty();
         }
         return result;
+    }
+
+    /**
+     * The lock of one key and the number of callers that are using it.
+     *
+     * <p>Every change of the number happens inside an atomic operation of the
+     * map, so a caller that got the lock is counted before anyone can see the
+     * lock as idle, and the lock leaves the map only when nobody holds it,
+     * nobody waits on it and nobody is on the way to it. The object is
+     * immutable, so removing exactly the idle one fails if a new caller has
+     * joined it in the meantime.</p>
+     *
+     * @since 0.60
+     */
+    private final class Guard {
+        /**
+         * The lock of the key.
+         */
+        private final ReentrantLock mutex;
+
+        /**
+         * The number of callers using the lock.
+         */
+        private final int users;
+
+        /**
+         * Ctor.
+         * @param lock The lock of the key
+         * @param count The number of callers using the lock
+         */
+        Guard(final ReentrantLock lock, final int count) {
+            this.mutex = lock;
+            this.users = count;
+        }
+
+        /**
+         * The lock of the key.
+         * @return The lock
+         */
+        ReentrantLock lock() {
+            return this.mutex;
+        }
+
+        /**
+         * The same lock, with the number of its callers changed.
+         * @param delta How many callers came, or left if negative
+         * @return The new guard
+         */
+        PhSticky.Guard joined(final int delta) {
+            return new Guard(this.mutex, this.users + delta);
+        }
+
+        /**
+         * Is anybody using the lock?
+         * @return TRUE if nobody is
+         */
+        boolean idle() {
+            return this.users == 0;
+        }
     }
 }
