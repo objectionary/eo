@@ -38,14 +38,16 @@
           ^.attempted
             index.plus 1
           T
-            "Can't create a unique file in %s, OS error %d".printf
-              * ^.dir errno
+            "Can't create a unique file in %s: %s".printf
+              * ^.dir status.message
         seq *
           ^.closed descriptor
           path
-      number (^.opened path)! > descriptor
+      number status.code > descriptor
       os.is-windows.if win32.errno posix.errno > errno
       ^.candidate index > path!
+      called. > status
+        ^.opened path
     | 0 > @
     [^ index] > candidate
       path.separator.joined > @
@@ -60,20 +62,19 @@
     os.is-windows.if > [descriptor] > closed
       win32.close descriptor
       posix.close descriptor
-    code. > [name] > opened
-      os.is-windows.if
-        win32.open
-          name
-          plus.
-            win32.rdonly.plus win32.creat
-            win32.exclusive
-          win32.mode
-        posix.open
-          name
-          plus.
-            posix.rdonly.plus posix.creat
-            posix.exclusive
-          posix.private
+    os.is-windows.if > [name] > opened
+      win32.open
+        name
+        plus.
+          win32.rdonly.plus win32.creat
+          win32.exclusive
+        win32.mode
+      posix.open
+        name
+        plus.
+          posix.rdonly.plus posix.creat
+          posix.exclusive
+        posix.private
   folder.exists.if > [^folder] > tmpfile
     Q.file
       string
@@ -782,6 +783,9 @@
       9
       0.5
     mktemp.tmpfile.deleted.as-path.as-dir > parent
+
+  tmpfile. --> stops-on-a-tmpfile-in-a-regular-file
+    directory mktemp.tmpfile
 
   tmpfile. --> stops-on-a-tmpfile-in-an-absent-directory
     as-dir.
