@@ -39,8 +39,10 @@ import org.w3c.dom.NodeList;
  * reading it off the name.</p>
  *
  * <p>An argument with no name to take keeps its place, and is
- * counted. With the strict flag set, the build fails when there is one, after
- * every file is written and the numbers are in the log.</p>
+ * counted. The arguments of one application are named whole: when one of
+ * them has no name, none of them takes one, and every one is counted. With
+ * the strict flag set, the build fails when there is one, after every file is
+ * written and the numbers are in the log.</p>
  *
  * @since 0.69.0
  */
@@ -155,29 +157,40 @@ final class Dealphaing implements Step {
         final Map<String, Collection<String>> verdicts
     ) {
         final NodeList kids = node.getChildNodes();
+        final Collection<Node> args = new ArrayList<>(kids.getLength());
         for (int idx = 0; idx < kids.getLength(); ++idx) {
             final Node kid = kids.item(idx);
             if ("o".equals(kid.getNodeName())) {
-                Dealphaing.judged(kid, names, verdicts);
+                final Node alias = kid.getAttributes().getNamedItem("as");
+                if (alias != null && Dealphaing.ALPHA.matcher(alias.getNodeValue()).matches()) {
+                    args.add(kid);
+                }
             }
-            Dealphaing.walked(kid, names, verdicts);
+        }
+        Dealphaing.judged(args, names, verdicts);
+        for (int idx = 0; idx < kids.getLength(); ++idx) {
+            Dealphaing.walked(kids.item(idx), names, verdicts);
         }
     }
 
     private static void judged(
-        final Node arg,
+        final Collection<Node> args,
         final Map<String, String> names,
         final Map<String, Collection<String>> verdicts
     ) {
-        final Node alias = arg.getAttributes().getNamedItem("as");
-        if (alias != null && Dealphaing.ALPHA.matcher(alias.getNodeValue()).matches()) {
+        final boolean lands = args.stream().allMatch(
+            arg -> names.containsKey(Dealphaing.attr(arg, "loc"))
+        );
+        final String verdict;
+        if (lands) {
+            verdict = "named";
+        } else {
+            verdict = "lost";
+        }
+        for (final Node arg : args) {
             final String loc = Dealphaing.attr(arg, "loc");
-            final String verdict;
-            if (names.containsKey(loc)) {
-                alias.setNodeValue(names.get(loc));
-                verdict = "named";
-            } else {
-                verdict = "lost";
+            if (lands) {
+                arg.getAttributes().getNamedItem("as").setNodeValue(names.get(loc));
             }
             verdicts.computeIfAbsent(verdict, key -> new ArrayList<>(1)).add(loc);
         }
