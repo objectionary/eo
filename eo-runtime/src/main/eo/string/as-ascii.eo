@@ -26,9 +26,7 @@
 
   33.eq "!".as-ascii ++> can-read-the-code-of-a-punctuation-mark
 
-  eq. ++> can-read-the-code-of-a-space
-    32
-    " ".as-ascii
+  32.eq " ".as-ascii ++> can-read-the-code-of-a-space
 
   65.eq "A".as-ascii ++> can-read-the-code-of-an-uppercase-letter
 

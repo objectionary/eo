@@ -29,8 +29,7 @@
         arg.lt 0
         arg.gt 127
       arg.is-integer.not
-    T
-      "The receiver of as-char must be an integer within the range [0, 127]"
+    T "The receiver of as-char must be an integer within the range [0, 127]"
     slice.
       as-bytes.
         arg.plus 4503599627370496
@@ -70,10 +69,10 @@
     "0"
     string 48.as-char
 
-  128.as-char --> stops-on-a-code-past-the-ascii-range
-
   as-char. --> stops-on-a-code-that-is-not-a-number
     number "abc"
+
+  128.as-char --> stops-on-a-code-past-the-ascii-range
 
   3.5.as-char --> stops-on-a-fractional-code
 
