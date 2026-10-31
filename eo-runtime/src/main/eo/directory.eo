@@ -11,11 +11,19 @@
 #  below still costs one frame per entry, because every loop EO has grows the
 #  stack: `while` nests a frame per cycle and `tuple.reducedi` one per element,
 #  so a directory of a few thousand entries still overflows.
+#
+# @todo #9541:30min Stop skipping 'redundant-attachment' here. It reads the
+#  `>>` name of the fallback `walk` hands to `compile` as unreferenced, since
+#  the `^` its head declares masks the hop to `glob` in `walk`, while without
+#  the name the walk ends with the bare message of the regex. Remove this
+#  directive once objectionary/lints#1301 counts a hop through the receiver
+#  as reaching outward.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-attachment
 +version 0.0.0
 
 [file] > directory
@@ -30,51 +38,54 @@
           ^.attempted
             index.plus 1
           T
-            "Can't create a unique file in %s, OS error %d".printf
-              * ^.dir errno
+            "Can't create a unique file in %s: %s".printf
+              * ^.dir status.message
         seq *
           ^.closed descriptor
           path
-      ^.opened path > descriptor!
+      number status.code > descriptor
       os.is-windows.if win32.errno posix.errno > errno
       ^.candidate index > path!
+      called. > status
+        ^.opened path
     | 0 > @
     [^ index] > candidate
       path.separator.joined > @
-        * ^.dir name
-      "%d-%d-%d-%f".printf > name!
         *
-          ^.time
-          ^.process
-          index
-          ^.fraction
+          ^.dir
+          "%d-%d-%d-%f".printf >>!
+            *
+              ^.time
+              ^.process
+              index
+              ^.fraction
     os.is-windows.if > [descriptor] > closed
       win32.close descriptor
       posix.close descriptor
-    code. > [name] > opened
-      os.is-windows.if
-        win32.open
-          name
-          plus.
-            win32.rdonly.plus win32.creat
-            win32.exclusive
-          win32.mode
-        posix.open
-          name
-          plus.
-            posix.rdonly.plus posix.creat
-            posix.exclusive
-          posix.private
+    os.is-windows.if > [name] > opened
+      win32.open
+        name
+        plus.
+          win32.rdonly.plus win32.creat
+          win32.exclusive
+        win32.mode
+      posix.open
+        name
+        plus.
+          posix.rdonly.plus posix.creat
+          posix.exclusive
+        posix.private
   folder.exists.if > [^folder] > tmpfile
     Q.file
-      as-bytes.
-        folder.retried
-          folder.path
-          clock.as-number
-          os.is-windows.if win32.getpid posix.getpid
-          os.is-windows.if
-            clock.as-number.random
-            posix.gettimeofday.micros.div 1000000
+      string
+        as-bytes.
+          folder.retried
+            folder.path
+            clock.as-number
+            os.is-windows.if win32.getpid posix.getpid
+            os.is-windows.if
+              clock.as-number.random
+              posix.gettimeofday.micros.div 1000000
     T
       "Directory %s does not exist, can't create temporary file".printf
         * folder.file
@@ -89,20 +100,21 @@
             picked ^.accum ^.prefix
           if.
             and.
-              entry.is-directory false
+              is-directory.
+                child.as-file >> entry
+                false > [message]
               not.
                 entry.is-symlink false
-            ^.^.walked earlier sub child.as-dir
+            ^.^.walked
+              ^.stepped rest.tail >> earlier
+              if. >> sub
+                ^.prefix.length.eq 0
+                rest.head
+                path.separator.joined
+                  * ^.prefix rest.head
+              as-dir.
+                ^.dir.as-path.resolved rest.head >> child
             picked earlier sub
-        ^.dir.as-path.resolved name > child
-        ^.stepped rest.tail > earlier
-        child.as-file > entry
-        rest.head > name
-        if. > sub
-          ^.prefix.length.eq 0
-          name
-          path.separator.joined
-            * ^.prefix name
       | dir.listed > @
     | > @
       *
@@ -111,7 +123,8 @@
     if. > [^ accum rel] >> picked
       matched rel
       accum.with
-        Q.file (base.resolved rel).as-bytes
+        as-file.
+          base.resolved rel
       accum
     folder.as-path >> base
     if. > [char] >> escaped
@@ -132,10 +145,10 @@
                         *
                           "/^"
                           translated 0 "" false false
-                          "$/"
+                          "$/s"
                 T > [^ message] >>
                   "Can't parse '%s' as a glob pattern, %s".printf
-                    * ^.glob message
+                    * ^.^.glob message
               text
     "".joined >> single
       *
@@ -321,10 +334,9 @@
   ++> can-delete-a-tmpfile-without-orphans
     seq * > @
       temp.deleted
-      temp.exists.not
-      next.exists.not
+      gone
       parent.deleted
-      true
+      gone
     path.separator.joined > candidate
       *
         parent.path
@@ -339,13 +351,15 @@
       42
       8
       0.5
-    Q.file candidate.as-bytes > next
+    temp.exists.not.and next.exists.not > gone!
+    Q.file candidate > next
     mktemp.tmpfile.deleted.as-path.as-dir.made > parent
-    Q.file created.as-bytes > temp
+    Q.file > temp
+      string created.as-bytes
 
   is-directory. ++> can-recover-from-checking-an-absent-directory
     directory mktemp.tmpfile.deleted
-    true
+    true > [message]
 
   ++> can-retry-tmpfile-creation-after-a-collision
     seq * > @
@@ -355,8 +369,9 @@
       collision.deleted
       parent.deleted
       valid
-    Q.file created.as-bytes > actual
-    Q.file occupied.as-bytes > collision
+    Q.file > actual
+      string created.as-bytes
+    Q.file occupied > collision
     parent.retried > created
       parent.path
       42
@@ -385,7 +400,8 @@
 
   ++> can-tell-that-a-deleted-directory-is-no-longer-a-directory
     not. > @
-      d.deleted.is-directory false
+      d.deleted.is-directory
+        false > [message]
     made. > d
       as-dir.
         mktemp.tmpfile.deleted.as-path.resolved "gone"
@@ -393,12 +409,12 @@
   is-directory. ++> can-tell-that-a-directory-is-a-directory
     directory
       Q.file "."
-    false
+    false > [message]
 
   not. ++> can-tell-that-a-regular-file-is-not-a-directory
     is-directory.
       directory mktemp.tmpfile
-      true
+      true > [message]
 
   ++> can-walk-a-directory-before-its-children
     seq * > @
@@ -418,6 +434,18 @@
           *
             d.resolved "sub"
             d.resolved "sub/b.txt"
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  ++> can-walk-a-file-whose-name-has-a-line-break
+    os.is-windows.or > @
+      seq *
+        touched. (d.resolved "a\nb.txt").as-file
+        eq.
+          length.
+            d.as-dir.walk "**"
+          1
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted
@@ -756,8 +784,11 @@
       0.5
     mktemp.tmpfile.deleted.as-path.as-dir > parent
 
+  tmpfile. --> stops-on-a-tmpfile-in-a-regular-file
+    directory mktemp.tmpfile
+
   tmpfile. --> stops-on-a-tmpfile-in-an-absent-directory
-    @.
+    as-dir.
       mktemp.tmpfile.deleted.as-path.resolved "child"
 
   is-directory. --> stops-on-checking-an-absent-directory
@@ -777,7 +808,23 @@
       touched.
         as-file.
           d.resolved "a.txt"
-      eq. (d.as-dir.walk "[.txt").length 0
+      eq.
+        length.
+          d.as-dir.walk "[.txt"
+        0
+    as-path. > d
+      made.
+        directory mktemp.tmpfile.deleted
+
+  --> stops-on-walking-with-a-glob-that-is-not-a-regex
+    seq * > @
+      touched.
+        as-file.
+          d.resolved "a.txt"
+      eq.
+        length.
+          d.as-dir.walk "[z-a]"
+        0
     as-path. > d
       made.
         directory mktemp.tmpfile.deleted

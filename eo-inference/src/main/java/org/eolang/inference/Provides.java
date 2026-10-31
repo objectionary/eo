@@ -12,13 +12,14 @@ import com.yegor256.tojos.TjDeferred;
 import com.yegor256.tojos.Tojo;
 import com.yegor256.tojos.Tojos;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import org.xembly.Directives;
 
 /**
  * What every object certainly has.
@@ -64,21 +65,24 @@ import java.util.stream.Collectors;
  * the atom itself cannot answer.</p>
  *
  * <p>An annotation may name a variable rather than an object, and then it
- * names the void that carries the same letter. {@code [] > recovered /A} over
+ * names the voids that carry the same letter. {@code [] > recovered /A} over
  * {@code ? > value /A?} and {@code ? > alternative /A} says that what comes
  * back is what was put in, so the row keeps the {@code value}, and a caller
  * who put a {@code number} there is answered with a {@code number} rather
- * than with nothing (#8348). The letter stands on both voids, which is the
- * source saying the two are one type; where a caller makes them two, the
- * first is what the table has to go on. A mark of termination is dropped as
- * {@link Held} drops it, since a termination answers to every name.</p>
+ * than with nothing (#8348). The letter stands on both voids, so what comes
+ * back is the {@code value} or the {@code alternative}, and the facts name
+ * every void that carries it, a {@code return} element each under the row of
+ * the atom. The {@code returns} cell keeps the first alone, since the passes
+ * read it as one name and {@code Objects} leaves the elements out of the table
+ * they write into. A mark of termination is dropped as {@code Held} drops it,
+ * since a termination answers to every name.</p>
  *
  * <p>What a void says it will hold is written down for the same reason as an
  * atom's annotation, and only when it names an object. {@code ? > code
  * /Q.number} is how a formation that only Java ever copies says what goes into
  * its voids, since it has no caller in the program to say it for it, while a
  * letter says nothing about what goes in and is read only by the atom above
- * it. {@link Provided} walks through a void that says what it holds the way it
+ * it. {@code Provided} walks through a void that says what it holds the way it
  * walks behind a delegation, so a name asked of it is answered once and for
  * all rather than left to a caller.</p>
  *
@@ -88,14 +92,53 @@ import java.util.stream.Collectors;
  * does, and the row keeps that list as it stands. Nobody else in the program
  * says it: the formation {@code malloc.for} hands in is copied by Java alone,
  * so without the annotation its void is filled by nobody and looks empty to
- * every reader (#8380). {@link Handed} is where the list is spent.</p>
+ * every reader (#8380). {@code Handed} is where the list is spent.</p>
  *
  * <p>Not every attribute is written inside the formation it belongs to:
  * {@code minus} in the package {@code number} is {@code Φ.number.minus} and
  * belongs to {@code Φ.number} without ever appearing among its children,
- * which {@link Members} finds. It goes into this table after the attributes
+ * which {@link Packages} finds. It goes into this table after the attributes
  * a formation binds itself, since the order of those is what binds the
  * arguments of an application and this is not one of them.</p>
+ *
+ * <p>A type is "bare" when it has nothing public of its own besides its
+ * {@code @}: then every name it answers to it answers through what stands
+ * behind that {@code @}, and {@code Behaved} names it after that. Public
+ * means readable from outside the object, which is why the exclusions are not
+ * a matter of taste: a {@code 🌵} name is kept out of the {@code NAME} token
+ * by R-9.2.2 of the parser spec and no source file can write one down, which
+ * covers an auto-name and a test attribute alike, the latter under its
+ * {@code p🌵} or {@code n🌵} marker. One more public attribute, though, is
+ * one more thing a reader loses by being told something else, so an
+ * {@code english} that hands back its receiver and binds {@code lower} and
+ * {@code upper} besides is not bare.</p>
+ *
+ * <p>A void is ignored as well, and that clause has an expiry on it. A void is
+ * public today, so the rule as it is meant to read — nothing public but
+ * {@code @} — would leave almost nothing bare; voids are on their way to being
+ * named by the parser and unreadable from outside, like a moniker and a test,
+ * and the day they get there this clause is deleted and the rule reads as it
+ * was written. What it costs meanwhile was measured: of the 1,680 reads that
+ * land on a type {@code Behaved} reduces, 104 ask for a void the new name has
+ * no answer for. Eighty-eight of those are inside a test and eight more ask for
+ * {@code ρ}, which leaves eight on the library proper — {@code printf} wanting
+ * its {@code args}, {@code with} its {@code key} and its {@code value}, and
+ * three besides.</p>
+ *
+ * <p>The flag is decided last, once {@link Packages} has written what the
+ * packages hand to their objects, since a member is as public as an attribute
+ * written inside the formation: {@code [@] > number} binds nothing but a body
+ * in its own file, and is not bare for all that, because {@code abs} and
+ * {@code plus} sit in its package. Only the text of the program is read here;
+ * what stands behind the {@code @} is the business of the links table, which is
+ * why the walk itself stays with {@code Behaved}.</p>
+ *
+ * <p>A package is an object as well, though no file forms it: the runtime
+ * hands out a package object for a folder that has no object of its own.
+ * {@link Packages} gives every such package a row, complete, with the next
+ * level under it as its attributes, and the global object {@code Φ} is the
+ * package at the top, the one every chain of names off a bare {@code Φ} is
+ * read from. None of them is bare, having names of their own.</p>
  *
  * <p>Nothing is written down about what an object sits in. It was once read
  * off the locator, on the grounds that {@code ρ} is written nowhere and
@@ -107,36 +150,54 @@ import java.util.stream.Collectors;
  * which is a different claim and {@link Received}'s: an attribute of an
  * {@code oak} is reached by taking it off an {@code oak}, so the void holds
  * one. Only a formation that asked for a receiver is told what it gets, and
- * the row was already there for the asking.</p>
+ * the row was already there for the asking. It goes in as the {@code rho}
+ * of the void, the formation a declared {@code ^} sits in, rather than as
+ * what it {@code holds}, since nobody wrote it down, and {@code Objects}
+ * writes it back as {@code holds} for the passes that read the two
+ * alike.</p>
+ *
+ * <p>Every row here is stated by the text, so the rows are facts and go into
+ * the {@code objects} section of {@code facts.xml}, in exactly the shape and
+ * order they once had in a table of their own. This section writes no table:
+ * {@code provides.xml} is written first by {@code Resolved}, as a copy of these
+ * rows, and the passes after it add their answers to that copy, so the facts
+ * stay as the text stated them.</p>
  *
  * @since 0.67.0
  */
-final class Provides implements Clue {
+final class Provides implements Section {
 
     @Override
-    public void follow(final Path xmirs, final Path tables) throws IOException {
+    public Directives directives(final Path xmirs) throws IOException {
         final Xmirs world = new Xmirs(xmirs);
         final Collection<XML> made = world.formations();
+        final Directives slots = new Directives();
         try (Tojos rows = new TjDeferred(new MnMemory())) {
             for (final XML formation : made) {
-                Provides.fill(rows, new Xnav(formation.inner()));
+                Provides.fill(rows, slots, new Xnav(formation.inner()));
             }
-            new Members(made, world.roots()).fill(rows);
-            new Received(made).fill(rows);
-            Files.createDirectories(tables);
-            Files.write(
-                tables.resolve("provides.xml"),
-                new Grouped(rows, "provides").asXml().toString().getBytes(StandardCharsets.UTF_8)
-            );
+            new Packages(world.owners(), world.roots()).fill(rows);
+            Provides.mark(rows);
+            return new Grouped(rows, "objects").directives()
+                .append(slots)
+                .append(new Received(made).directives(rows));
         }
     }
 
-    private static void fill(final Tojos rows, final Xnav shape) {
+    private static void fill(final Tojos rows, final Directives slots, final Xnav shape) {
         final String owner = new Noted(shape).says("loc");
         final List<Xnav> kids = shape.elements(Filter.withName("o")).collect(Collectors.toList());
         rows.add(owner).set("complete", Boolean.toString(Provides.whole(kids)));
         for (final String back : Provides.returns(kids)) {
             rows.add(owner).set("returns", back);
+        }
+        for (final String slot : Provides.slots(kids)) {
+            slots.xpath(String.format("objects/type[@id='%s']", owner))
+                .add("return")
+                .attr("loc", slot)
+                .up()
+                .up()
+                .up();
         }
         for (final Xnav kid : Provides.named(kids)) {
             final Noted attr = new Noted(kid);
@@ -156,6 +217,21 @@ final class Provides implements Clue {
                     row.set("args", args);
                 }
             }
+        }
+    }
+
+    private static void mark(final Tojos rows) {
+        final Collection<String> kept = new HashSet<>(0);
+        for (final Tojo row : rows.select(one -> one.exists("owner"))) {
+            final Map<String, String> cells = row.toMap();
+            final String name = cells.getOrDefault("name", "");
+            if (!name.isEmpty() && !"φ".equals(name)
+                && !"true".equals(cells.get("void")) && !name.contains("🌵")) {
+                kept.add(cells.get("owner"));
+            }
+        }
+        for (final Tojo type : rows.select(one -> !one.exists("owner"))) {
+            type.set("bare", Boolean.toString(!kept.contains(type.get("id"))));
         }
     }
 
@@ -196,24 +272,36 @@ final class Provides implements Clue {
         return found;
     }
 
+    private static Collection<String> slots(final Collection<Xnav> kids) {
+        final Collection<String> found = new ArrayList<>(0);
+        for (final Xnav kid : kids) {
+            final Noted attr = new Noted(kid);
+            final String annotation = attr.says("atom");
+            if ("λ".equals(attr.says("name"))
+                && !annotation.isEmpty() && !annotation.startsWith("Φ.")) {
+                found.addAll(Provides.carrying(kids, annotation));
+            }
+        }
+        return found;
+    }
+
     private static String locator(final String annotation, final Collection<Xnav> kids) {
         String found = "";
         if (annotation.startsWith("Φ.")) {
             found = annotation;
         } else if (!annotation.isEmpty()) {
-            found = Provides.carrying(kids, annotation);
+            found = Provides.carrying(kids, annotation).stream().findFirst().orElse("");
         }
         return found;
     }
 
-    private static String carrying(final Collection<Xnav> kids, final String letter) {
-        String found = "";
+    private static List<String> carrying(final Collection<Xnav> kids, final String letter) {
+        final List<String> found = new ArrayList<>(0);
         for (final Xnav kid : kids) {
             final Noted attr = new Noted(kid);
             if ("∅".equals(attr.says("base"))
                 && letter.equals(attr.says("type").replace("?", ""))) {
-                found = attr.says("loc");
-                break;
+                found.add(attr.says("loc"));
             }
         }
         return found;
