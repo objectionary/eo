@@ -2,8 +2,9 @@
 # Removes all leading and trailing ASCII whitespace bytes: `20-`
 # (space), `09-` (horizontal tab), `0A-` (line feed), `0B-` (vertical
 # tab), `0C-` (form feed), and `0D-` (carriage return). Delegates to
-# `string.trimmed-left` and `string.trimmed-right`, so the strip-set matches
-# `String.strip()` in Java for the ASCII range.
+# `string.trimmed-left` and `string.trimmed-right`, so the strip-set is the
+# one `String.strip()` uses in Java for the ASCII range, except the four
+# separators `1C-` to `1F-`, which stay.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo

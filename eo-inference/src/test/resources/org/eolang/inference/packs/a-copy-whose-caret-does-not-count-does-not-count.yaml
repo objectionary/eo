@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The copy of inner made inside the copy of outer as written has that copy as
+# its ^. That copy has an empty void and nobody uses it, so it does not count,
+# and neither does inner there: only the inner of the called outer is
+# answered.
+sources:
+  outer.eo: |
+    [size] > outer
+      [] > inner
+        ^.size > @
+  app.eo: |
+    [] > app
+      (outer 3).inner > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.outer' and @copies='1']
+  - /answers[not(o[@loc='Φ.outer.size']//open)]
+  - /answers/o[@loc='Φ.outer.inner' and @copies='1']
+  - /answers/o[@loc='Φ.outer.inner.φ' and @copies='1']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.number']

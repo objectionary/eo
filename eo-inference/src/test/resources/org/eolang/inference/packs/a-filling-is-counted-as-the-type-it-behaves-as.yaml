@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# alias is nothing but a @ that gives an oak, so it goes into x as an oak:
+# both calls of inc fill x with an oak, and both get the leaf of oak back.
+sources:
+  app.eo: |
+    [] > app
+      inc oak > first
+      inc alias > second
+  inc.eo: |
+    [x] > inc
+      x.leaf > @
+  oak.eo: |
+    [] > oak
+      [] > leaf
+  alias.eo: |
+    [] > alias
+      oak > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.alias']/reduced/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.first.α0' and @lands='x']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.second.α0' and @lands='x']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.inc.x' and @copies='2']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.first']/is[@loc='Φ.oak.leaf']
+  - /answers/o[@loc='Φ.app.second']/is[@loc='Φ.oak.leaf']

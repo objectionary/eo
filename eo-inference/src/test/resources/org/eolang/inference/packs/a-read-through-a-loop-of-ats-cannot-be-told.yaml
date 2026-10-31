@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The @ of one is two, and the @ of two is one. Each reduces to two, since a
+# reduction that meets itself drops it, and nowhere, read off one, is found on
+# neither, so it cannot be told.
+sources:
+  app.eo: |
+    [] > app
+      one.nowhere > @
+  one.eo: |
+    [] > one
+      two > @
+  two.eo: |
+    [] > two
+      one > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.one.φ']/is[@loc='Φ.two']
+  - /answers/o[@loc='Φ.one']/reduced/is[@loc='Φ.two']
+  - /answers/o[@loc='Φ.two']/reduced/is[@loc='Φ.two']
+  - /answers/o[@loc='Φ.app.φ']/unknown

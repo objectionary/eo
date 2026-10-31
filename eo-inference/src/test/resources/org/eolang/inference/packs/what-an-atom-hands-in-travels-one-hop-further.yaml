@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# grip calls hold back with an oak, and hold hands its m on to keep, so the k of
+# keep is an oak as well.
+sources:
+  oak.eo: |
+    [] > oak
+  keep.eo: |
+    [k] > keep
+  grip.eo: |
+    [] > grip /Q.bytes
+      ? > scope /{Q.oak}
+  app.eo: |
+    [] > app
+      grip hold > @
+      [m] > hold
+        keep m > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.grip.scope']/is[@loc='Φ.app.hold']
+  - /answers/o[@loc='Φ.app.hold.m']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.hold.φ.α0' and @lands='k']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.keep.k']/is[@loc='Φ.oak']

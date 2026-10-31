@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# show is called, so it has a real copy, though the call leaves its tail
+# empty. Its code runs in that copy, where tail reads T, so no stop studies
+# it.
+sources:
+  show.eo: |
+    [head tail] > show
+      tail > @
+  app.eo: |
+    [] > app
+      (show 1).head > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.show.head']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.show.tail']/open
+  - /answers/o[@loc='Φ.show.φ']/terminator
+  - /answers[not(o[@loc='Φ.show.head']//open)]

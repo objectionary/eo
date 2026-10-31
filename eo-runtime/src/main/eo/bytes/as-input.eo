@@ -36,7 +36,7 @@
         size
     [^ data buffer] > input-block
       buffer > @
-      data.size >> available!
+      number data.size! >> available
       [^ size] > read
         if. > @
           size.is-finite.not.or
@@ -50,15 +50,13 @@
             ^.^.input-block
               as-bytes.
                 ^.data.slice
-                  if. >> next!
-                    gt.
-                      number available
-                      size >> requested!
-                    requested
-                    available
-                  minus.
-                    number available
-                    number next
+                  number >> next
+                    if. >>!
+                      available.gt
+                        number size! >> requested
+                      requested
+                      available
+                  available.minus next
               as-bytes.
                 ^.data.slice 0 next
 
@@ -76,30 +74,36 @@
     i1.read 4 > i2
     i2.read 4 > i3
 
-  01-02-03.as-input.read 3.5 --> stops-on-a-fractional-byte-count-above-available
+  eq. --> stops-on-a-fractional-byte-count-above-available
+    01-02-03.as-input.read 3.5
+    01-02-03
 
   01-02-03.as-input.read 0.5 --> stops-on-a-fractional-byte-count-below-available
 
   read. --> stops-on-a-fractional-byte-count-in-a-chained-read
-    01-02-03-04-05-06.as-input
-    3.read
+    01-02-03-04-05-06.as-input.read 3
     1.5
 
-  01-02-03.as-input.read nan --> stops-on-a-nan-byte-count
+  eq. --> stops-on-a-nan-byte-count
+    01-02-03.as-input.read nan
+    01-02-03
 
-  read. --> stops-on-a-nan-byte-count-in-a-chained-read
-    01-02-03-04-05-06.as-input
-    3.read
-    nan
+  eq. --> stops-on-a-nan-byte-count-in-a-chained-read
+    read.
+      01-02-03-04-05-06.as-input.read 3
+      nan
+    04-05-06
 
   read. --> stops-on-a-negative-byte-count-in-a-chained-read
-    01-02-03-04-05-06.as-input
-    3.read
+    01-02-03-04-05-06.as-input.read 3
     -5
 
-  01-02-03.as-input.read pinf --> stops-on-an-infinite-byte-count
+  eq. --> stops-on-an-infinite-byte-count
+    01-02-03.as-input.read pinf
+    01-02-03
 
-  read. --> stops-on-an-infinite-byte-count-in-a-chained-read
-    01-02-03-04-05-06.as-input
-    3.read
-    pinf
+  eq. --> stops-on-an-infinite-byte-count-in-a-chained-read
+    read.
+      01-02-03-04-05-06.as-input.read 3
+      pinf
+    04-05-06
