@@ -38,7 +38,7 @@
         C0-
       [^ width valid] >> checked
         if. > @
-          gt. (^.index.plus width) ^.^.as-bytes.size!
+          gt. (^.index.plus width) ^.^.as-bytes.size
           T
             "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
               * width ^.index ^.^.as-bytes
