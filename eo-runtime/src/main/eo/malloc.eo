@@ -232,8 +232,7 @@
     malloc.of > mem
       13
       seq * > [m]
-        m.put
-          "Hello, world!"
+        m.put "Hello, world!"
         m.put 42
 
   ++> can-read-with-an-offset-and-a-length
@@ -353,8 +352,7 @@
 
   malloc.for --> stops-on-overflowing-a-string-block
     "Hello"
-    m.put > [m]
-      "Much longer string!"
+    m.put "Much longer string!" > [m]
 
   malloc.for --> stops-on-reading-over-the-limit
     10

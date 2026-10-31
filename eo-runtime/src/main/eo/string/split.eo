@@ -12,8 +12,7 @@
 [^text delimiter cant-split] > split
   if. > @
     delimiter.size.eq 0
-    cant-split
-      "The delimiter must not be empty"
+    cant-split "The delimiter must not be empty"
     if.
       eq.
         size. >> len!
@@ -93,8 +92,7 @@
   eq. ++> can-split-into-strings
     length.
       at.
-        "hello world!".split
-          " "
+        "hello world!".split " "
         1
     6
 

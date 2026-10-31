@@ -220,7 +220,7 @@
     <dependency>
       <groupId>codes.ivanov</groupId>
       <artifactId>ephpo</artifactId>
-      <version>1.0.1</version>
+      <version>1.0.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -659,7 +659,7 @@
           <plugin>
             <groupId>org.eolang</groupId>
             <artifactId>hone-maven-plugin</artifactId>
-            <version>0.29.4</version>
+            <version>0.32.0</version>
             <executions>
               <execution>
                 <goals>
