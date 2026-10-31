@@ -317,6 +317,7 @@ public final class PhSticky implements Phi {
 
         /**
          * Is anybody using the lock?
+         *
          * @return TRUE if nobody is
          */
         boolean idle() {
