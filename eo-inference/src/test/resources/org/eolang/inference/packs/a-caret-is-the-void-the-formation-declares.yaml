@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# inner is walked where it is written, inside outer, so the ^ it declares
+# holds that outer: ^.held is the held of outer, and so is inner.
+sources:
+  outer.eo: |
+    [] > outer
+      [] > held
+      [^] > inner
+        ^.held > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.outer.inner.ρ']/is[@loc='Φ.outer']
+  - /answers/o[@loc='Φ.outer.inner.φ']/is[@loc='Φ.outer.held']
+  - /answers/o[@loc='Φ.outer.inner']/reduced/is[@loc='Φ.outer.held']

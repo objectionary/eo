@@ -18,7 +18,7 @@
 
 [text] > stdout
   seq * > @
-    console.write text
+    console.write text.as-bytes
     true
 
   stdout ++> can-print-to-the-console

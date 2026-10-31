@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The alias makes stdout a read off io, off eolang, off org, off Φ, steps the
+# source never writes. Each step is answered by its package, so write is the
+# write of org.eolang.io.stdout, and its text holds the string.
+sources:
+  app.eo: |
+    +alias org.eolang.io.stdout
+
+    [] > app
+      stdout.write > @
+        "hello"
+  org/eolang/io/stdout.eo: |
+    +package org.eolang.io
+
+    [] > stdout
+      [text] > write
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts:
+  - /facts/reads/read[@id='Φ.app.φ.ρ' and @name='stdout' and @of='Φ.app.φ.ρ.ρ']
+  - /facts/reads/read[@id='Φ.app.φ.ρ.ρ' and @name='io' and @of='Φ.app.φ.ρ.ρ.ρ']
+  - /facts/reads/read[@id='Φ.app.φ.ρ.ρ.ρ' and @name='eolang' and @of='Φ.app.φ.ρ.ρ.ρ.ρ']
+  - /facts/reads/read[@id='Φ.app.φ.ρ.ρ.ρ.ρ' and @name='org' and @of='Φ.app.φ.ρ.ρ.ρ.ρ.ρ']
+  - /facts/heads/type[@id='Φ.app.φ.ρ.ρ.ρ.ρ.ρ']/ref[@loc='Φ']
+answers:
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.org.eolang.io.stdout']
+  - /answers/o[@loc='Φ.app.φ.ρ.ρ']/is[@loc='Φ.org.eolang.io']
+  - /answers/o[@loc='Φ.app.φ.ρ.ρ.ρ']/is[@loc='Φ.org.eolang']
+  - /answers/o[@loc='Φ.app.φ.ρ.ρ.ρ.ρ']/is[@loc='Φ.org']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.org.eolang.io.stdout.write']
+  - /answers/o[@loc='Φ.org.eolang.io.stdout.write.text']/is[@loc='Φ.string']

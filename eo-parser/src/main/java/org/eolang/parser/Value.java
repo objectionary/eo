@@ -6,6 +6,7 @@ package org.eolang.parser;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -173,6 +174,16 @@ final class Value {
             tag = this.binding;
         }
         return tag;
+    }
+
+    /**
+     * Inline binding label, absent when no binding follows the value —
+     * the form {@link Ties} reads an argument's binding in.
+     *
+     * @return Binding tag, or empty when absent
+     */
+    Optional<String> tie() {
+        return Optional.ofNullable(this.binding);
     }
 
     /**

@@ -37,10 +37,12 @@
   os.is-macos.if > creat
     512
     64
-  [code name] > dir-return
+  [cde nme] > dir-return
     posix.dir-return > called
       code
       name
+    number cde! > code
+    string nme! > name
   17 > eexist
   22 > einval
   2 > enoent
@@ -50,10 +52,12 @@
     128
   [] > getenv /Q.posix.getenv-return
     ? > name /Q.string
-  [code value] > getenv-return
+  [cde vle] > getenv-return
     posix.getenv-return > called
       code
       value
+    FF-.eq cde! > code
+    string vle! > value
   [] > getpid /Q.number
   [] > gettimeofday /Q.posix.time-return
   2 > inet
@@ -82,11 +86,13 @@
   [] > read /Q.posix.read-return
     ? > descriptor /Q.number
     ? > size /Q.number
-  [code data] > read-return
+  [cde dta] > read-return
     data > @
     posix.read-return > called
       code
       data
+    number cde! > code
+    bytes dta! > data
   [] > readdir /Q.posix.dir-return
     ? > dirp /Q.number
   [] > recv /Q.posix.read-return
@@ -116,15 +122,22 @@
     ? > protocol /Q.number
   [] > stat /Q.posix.stat-return
     ? > path /Q.string
-  [code mode size] > stat-return
+  [cde msg mde sze] > stat-return
     posix.stat-return > called
       code
+      message
       mode
       size
-  [code message] > status-return
+    number cde! > code
+    string msg! > message
+    number mde! > mode
+    number sze! > size
+  [cde msg] > status-return
     posix.status-return > called
       code
       message
+    number cde! > code
+    string msg! > message
   2 > stderr
   0 > stdin
   1 > stdout
@@ -135,11 +148,14 @@
     ? > target /Q.string
     ? > path /Q.string
   6 > tcp
-  [code seconds micros] > time-return
+  [cde scnds mcrs] > time-return
     posix.time-return > called
       code
       seconds
       micros
+    number cde! > code
+    number mcrs! > micros
+    number scnds! > seconds
   os.is-macos.if > trunc
     1024
     512
@@ -169,9 +185,9 @@
   ++> can-compute-the-size-of-a-sockaddr-in
     addr.size.eq 16 > @
     posix.sockaddr-in > addr
-      00-00
-      00-00
-      00-00-00-00
+      i16 00-00
+      i16 00-00
+      i32 00-00-00-00
 
   os.is-windows.or ++> can-convert-the-limited-broadcast-address-without-an-error
     seq *
@@ -286,7 +302,7 @@
 
   posix.send --> stops-on-send-size-exceeding-buffer-length
     0
-    "ab"
+    "ab".as-bytes
     4096
     0
 

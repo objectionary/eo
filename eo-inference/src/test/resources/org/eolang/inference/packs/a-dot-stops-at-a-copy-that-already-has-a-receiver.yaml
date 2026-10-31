@@ -1,0 +1,54 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# flagged is label.has 1, so the ^ of has holds the text, never the host probe
+# reads flagged off, and host.label.has 2 in caller gives it the text too.
+# raised is a flag read off Φ, so its ^ holds Φ, not the board, and the ^ of
+# the fetch that got stands for holds the store.
+sources:
+  text.eo: |
+    [] > text
+      [^ other] > has
+        other > @
+  host.eo: |
+    [] > host
+      text > label
+      label.has 1 > flagged
+  probe.eo: |
+    [] > probe
+      host.flagged > @
+  caller.eo: |
+    [] > caller
+      host.label.has 2 > @
+  flag.eo: |
+    [^] > flag
+      text > @
+  board.eo: |
+    [] > board
+      flag > raised
+  reader.eo: |
+    [] > reader
+      board.raised > @
+  store.eo: |
+    [] > store
+      [^] > fetch
+        text > @
+      fetch > got
+  user.eo: |
+    [] > user
+      store.got > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.text.has.ρ']/is[@loc='Φ.text']
+  - /answers[not(o[@loc='Φ.text.has.ρ']//is[@loc='Φ.host'])]
+  - /answers/o[@loc='Φ.caller.φ.ρ']/is[@loc='Φ.text']
+  - /answers/o[@loc='Φ.board.raised.ρ']/is[@loc='Φ']
+  - /answers/o[@loc='Φ.flag.ρ']/is[@loc='Φ']
+  - /answers[not(o[@loc='Φ.flag.ρ']//is[@loc='Φ.board'])]
+  - /answers/o[@loc='Φ.store.fetch.ρ']/is[@loc='Φ.store']

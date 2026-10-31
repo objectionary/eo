@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls as-ascii, so cant-read is an open void, and so is the call of it
+# with an oak. The oak is an oak, but it lands in no void.
+sources:
+  as-ascii.eo: |
+    [^ cant-read] > as-ascii
+      cant-read oak > @
+  oak.eo: |
+    [] > oak
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.as-ascii.cant-read' and @copies='1']/open
+  - /answers/o[@loc='Φ.as-ascii.φ']/open
+  - /answers/o[@loc='Φ.as-ascii.φ.α0']/is[@loc='Φ.oak']
+  - /answers[not(o[@loc='Φ.as-ascii.φ.α0' and @lands])]
