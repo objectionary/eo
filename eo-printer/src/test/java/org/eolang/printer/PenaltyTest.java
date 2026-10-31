@@ -41,131 +41,39 @@ final class PenaltyTest {
         );
     }
 
-    @ParameterizedTest
-    @CsvSource({
-        "'@.eq @', 30",
-        "'foo.if a b c', 50",
-        "'if. foo a b c', 0",
-        "'foo.iffy a b', 0",
-        "'foo.if', 50",
-        "'x.if.gt y', 50"
-    })
-    void chargesForLineAttributes(final String code, final int points) {
-        final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
-        weights.put(PenaltyKey.SYMBOL, 0);
-        weights.put(PenaltyKey.SPACE, 0);
+    @Test
+    void chargesNothingForBracketInsideStringLiteral() {
         MatcherAssert.assertThat(
-            String.format(
-                "The line attributes in %s should cost %d points, phi and suffix if charged",
-                code, points
-            ),
-            new Penalty(code, weights).points(),
-            Matchers.equalTo(points)
-        );
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "'f (a) (b)', 38",
-        "'(a (b (c 1)))', 171",
-        "'f (a).eq b', 19",
-        "'(a).eq b', 76"
-    })
-    void chargesForParentheses(final String code, final int points) {
-        final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
-        weights.put(PenaltyKey.SYMBOL, 0);
-        weights.put(PenaltyKey.SPACE, 0);
-        MatcherAssert.assertThat(
-            String.format(
-                "The parentheses in %s should cost %d points, deeper nesting and a leading one charged more",
-                code, points
-            ),
-            new Penalty(code, weights).points(),
-            Matchers.equalTo(points)
+            "Code inside a string literal must cost what plain text costs, but it didnt",
+            new Penalty("\"(((\"").points(),
+            Matchers.equalTo(new Penalty("\"xxx\"").points())
         );
     }
 
     @Test
-    void chargesForOverflow() {
+    void chargesNothingForPhiInsideStringLiteral() {
         MatcherAssert.assertThat(
-            "Each character past the 80th column should cost three points",
-            new Penalty(
-                String.join("", Collections.nCopies(85, "x")),
-                Collections.singletonMap(PenaltyKey.SYMBOL, 0)
-            ).points(),
-            Matchers.equalTo(15)
+            "Code inside a string literal must cost what plain text costs, but it didnt",
+            new Penalty("\"@@@\"").points(),
+            Matchers.equalTo(new Penalty("\"xxx\"").points())
         );
     }
 
     @Test
-    void chargesForSymbols() {
-        final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
-        weights.put(PenaltyKey.INDENT, 0);
-        weights.put(PenaltyKey.BRACKET, 0);
-        weights.put(PenaltyKey.SPACE, 0);
+    void chargesNothingForIfInsideStringLiteral() {
         MatcherAssert.assertThat(
-            "Every symbol in the block should cost one point",
-            new Penalty("42.gt (bar.hello 88) > [] > foo", weights).points(),
-            Matchers.equalTo(31)
+            "Code inside a string literal must cost what plain text costs, but it didnt",
+            new Penalty("\".if .if\"").points(),
+            Matchers.equalTo(new Penalty("\"xxx xxx\"").points())
         );
     }
 
     @Test
-    void chargesForApplications() {
+    void stillChargesForBracketOutsideStringLiteral() {
         MatcherAssert.assertThat(
-            "Four application spaces should cost four squared times seven points",
-            new Penalty(
-                "foo 4 5 6 7",
-                Collections.singletonMap(PenaltyKey.SYMBOL, 0)
-            ).points(),
-            Matchers.equalTo(112)
-        );
-    }
-
-    @Test
-    void chargesApplicationsSuperLinearly() {
-        final Map<PenaltyKey, Integer> weights = new EnumMap<>(PenaltyKey.class);
-        weights.put(PenaltyKey.SYMBOL, 0);
-        MatcherAssert.assertThat(
-            "Doubling the applied arguments should more than double the charge",
-            new Penalty("foo a b c d", weights).points(),
-            Matchers.greaterThan(2 * new Penalty("foo a b", weights).points())
-        );
-    }
-
-    @Test
-    void treatsThrowingMarkerAsBinding() {
-        final Map<PenaltyKey, Integer> weights =
-            Collections.singletonMap(PenaltyKey.SYMBOL, 0);
-        MatcherAssert.assertThat(
-            "The throwing marker --> should bind a name like ++>, not apply arguments",
-            new Penalty("foo --> name", weights).points(),
-            Matchers.allOf(
-                Matchers.equalTo(new Penalty("foo ++> name", weights).points()),
-                Matchers.lessThan(new Penalty("foo bar name", weights).points())
-            )
-        );
-    }
-
-    @Test
-    void holdsStringLiteralOpaque() {
-        final Map<PenaltyKey, Integer> weights =
-            Collections.singletonMap(PenaltyKey.SYMBOL, 0);
-        MatcherAssert.assertThat(
-            "A string literal must hold its spaces as opaquely as a head does, but it didnt",
-            new Penalty("\"a b c\" > x", weights).points(),
-            Matchers.equalTo(new Penalty("[a b c] > x", weights).points())
-        );
-    }
-
-    @Test
-    void readsEscapedQuoteAsContent() {
-        final Map<PenaltyKey, Integer> weights =
-            Collections.singletonMap(PenaltyKey.SYMBOL, 0);
-        MatcherAssert.assertThat(
-            "An escaped quote must not close the literal and let its words out, but it did",
-            new Penalty("\"a \\\" b c\" > x", weights).points(),
-            Matchers.equalTo(new Penalty("[a \\\" b c] > x", weights).points())
+            "A bracket next to a string literal must still cost more than plain text, but it didnt",
+            new Penalty("(\"(\") x").points(),
+            Matchers.greaterThan(new Penalty("x\"x\"x x").points())
         );
     }
 
