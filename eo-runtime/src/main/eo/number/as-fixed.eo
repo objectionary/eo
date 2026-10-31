@@ -64,12 +64,7 @@
       "-".as-bytes.concat
         [^ a] >> positive
           if. > @
-            eq.
-              floor. >> digits
-                plus.
-                  times. (a.minus a.floor) ^.scale
-                  0.5
-              ^.scale
+            digits.eq scale
             if. > [^ unit rest] >> written
               ^.^.places.eq 0
               unit.as-decimal
@@ -134,11 +129,6 @@
         as-number.
           p.minus 1
       10
-  | >> scale
-    if.
-      places.gt 15
-      15
-      places
   if. > [^ value count acc] >> rec-pad
     count.eq 0
     acc
