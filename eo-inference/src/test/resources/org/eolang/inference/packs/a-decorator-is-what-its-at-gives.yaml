@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# five has nothing of its own but a @, so it reduces to what its @ gives: the
+# item box gets is a number, and so is every place that reads five.
+sources:
+  five.eo: |
+    [] > five
+      5 > @
+  box.eo: |
+    [item] > box
+      item > @
+      item > kept
+  app.eo: |
+    [] > app
+      (box five).kept > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.five']/reduced/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.box.item']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ.ρ.α0' and @lands='item']/is[@loc='Φ.number']
+  - /answers[not(o[@loc!='Φ.five']//is[@loc='Φ.five'])]

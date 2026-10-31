@@ -1,4 +1,6 @@
-# Elements of the tuple before `index` (supports negative indices).
+# First `index` elements of the tuple (an `index` larger than its `length`
+# returns the whole tuple, while a negative `index` gives the last
+# `index.neg` elements, the way `back` does).
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo

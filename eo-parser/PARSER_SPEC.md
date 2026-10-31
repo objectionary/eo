@@ -589,7 +589,7 @@ world
 
 R-3.12.1. After an object body in an argument position, `:label` may appear, setting the attribute the argument attaches to.
 R-3.12.2. `:N` (digit) maps to `α0`, `α1`, … positional slot names.
-R-3.12.2a. `:^` maps to `ρ`, binding the argument to the receiver the callee declares (R-3.4.11), so `lt x:0 y:^` fills `lt`'s `ρ` with `y`.
+R-3.12.2a. `:^` is forbidden: dispatch fills the receiver the callee declares (R-3.4.11), so it cannot be filled by an argument binding. Use `y.lt x` to dispatch `lt` from `y` and bind `x` to its first non-receiver void.
 R-3.12.3. Binding is forbidden inside formation context — plain children carry their name via the name suffix, not the binding (§6.2).
 R-3.12.4. Binding rules in same-indent groups (§6.6) apply.
 
@@ -865,8 +865,9 @@ Level {
   compact_tuple_n: int        // for compact-tuple
   child_count: int            // for compact-tuple's count check
   // for cross-sibling validation:
-  args_binding_state: { unknown, all-bound, all-unbound, mixed } // tracks the all-or-nothing
-                              // binding rule (R-6.6.2) across vertical args of this parent
+  args_binding_kind: { unknown, unbound, slot-numbers, names } // the one binding kind
+                              // R-6.6.2 allows across vertical args of this parent
+  args_binding_labels: set<string> // labels those args bound so far (R-6.6.5)
 }
 ```
 
@@ -1130,16 +1131,18 @@ Illegal:
 ### 6.6 Bindings
 
 R-6.6.1. A binding `:name` (or `:N`) names the attribute slot the argument attaches to. Without a binding, args attach by positional index.
-R-6.6.2. **All-or-nothing rule.** Within a same-indent group of application arguments, bindings must be all bound or all unbound. Mixing is rejected.
-R-6.6.3. **Receiver exclusion.** The receiver of a reversed dispatch is the dispatch target, not an argument, and cannot carry a binding. The remaining args of the dispatch form a normal application-arg group governed by R-6.6.2.
+R-6.6.2. **One binding kind per group.** Within a same-indent group of application arguments, the arguments are all unbound (`foo 1 2`), all bound by slot number (`foo 1:0 2:1`), or all bound by name (`foo 1:a 2:b`). A group that mixes bound and unbound arguments is rejected as not all-or-nothing, and a group that mixes slot numbers and names is rejected as well. Every binding label is one of the two bound kinds, since §3.12 rejects any other label and R-3.12.2a rejects `:^`. A vertical argument whose chain goes on in same-indent `.method` lines takes its binding from the last link (R-6.6.4).
+R-6.6.3. **Receiver exclusion.** The receiver of a reversed dispatch is the dispatch target, not an argument, and cannot carry a binding. The remaining args of the dispatch form a normal application-arg group governed by R-6.6.2 and R-6.6.5.
 R-6.6.4. Inline binding on a method dispatch is legal only when that method is the **last** in its chain.
+R-6.6.5. **No label twice.** Within a same-indent group of application arguments, each binding label appears at most once, whether it is a name (`foo 1:a 2:a`) or a slot number (`foo 1:0 2:1 3:0`). The error points at the second occurrence.
 
 Examples:
 
 ```
 if. true x y                              ← legal: all unbound
 if. true x:a y:b                          ← legal: receiver unbound, args all bound
-foo a:1 b:2                               ← legal: all bound
+foo a:1 b:2                               ← legal: all bound by slot number
+foo a:x b:y                               ← legal: all bound by name
 foo a b                                   ← legal: all unbound
 ```
 
@@ -1149,6 +1152,9 @@ Illegal:
 foo a:1 b                                 ← rejected: mixed binding
 if. true:a x y                            ← rejected: receiver carries binding
 if. true x:a y                            ← rejected: args mixed
+foo a:0 b:y                               ← rejected: slot number beside a name
+foo a:x b:x                               ← rejected: label x bound twice
+foo a:0 b:1 c:0                           ← rejected: slot 0 bound twice
 ```
 
 ---
@@ -1186,7 +1192,7 @@ R-8.1. Pop all stack entries and run close-time checks (§5.3). **If any close-t
 R-8.2. Report any unclosed text block.
 R-8.3. Flush a top comment block still pending in a comment-only file into `/object/comments` (§9.5).
 R-8.4. Report excessive trailing blank lines (>1).
-R-8.5. Run any all-or-nothing binding checks that span the popped entries.
+R-8.5. Run the argument-group binding checks (R-6.6.2, R-6.6.5) that span the popped entries.
 R-8.6. After all popping and end-of-stream checks complete, the parser emits the closing tags for the `<object>` document. Errors emitted during EOF do not prevent emission of valid XMIR for the rest of the file.
 
 ---
@@ -1279,7 +1285,7 @@ R-9.2.4. **Scope resolution adds no hops.** The `build-fqns` reshape that follow
 | Source token | XMIR character | Used as |
 | --- | --- | --- |
 | `@` (PHI) | `φ` | `@name='φ'` for the @-attribute |
-| `^` (RHO) | `ρ` | `@base='ρ'` for parent reference; `@name='ρ'` for the receiver void (R-3.4.11), with `@local='name'` when written `^name` (R-3.4.13); `@as='ρ'` for a `:^` binding (R-3.12.2a) |
+| `^` (RHO) | `ρ` | `@base='ρ'` for parent reference; `@name='ρ'` for the receiver void (R-3.4.11), with `@local='name'` when written `^name` (R-3.4.13); `:^` argument bindings are forbidden (R-3.12.2a) |
 | `Q` (ROOT) | `Φ` | `@base='Φ...'` for root-rooted FQNs |
 | `$` (XI) | `ξ` | `@base='ξ'` for self reference |
 | `T` (TERM) | `⊥` | `@base='⊥'` for the terminator term |
@@ -1363,7 +1369,7 @@ R-9.7.3. **Escape sequence table.** Recognised in both `STRING` and `TEXT`:
 | `\'` | `'` |
 | `\\` | `\` |
 | `\NNN` | Octal byte. `N` ∈ `[0-7]`, length 1–3 digits, value ≤ 0o377 (= 255 decimal). Pattern: `\\` followed by an optional `[0-3]`, an optional `[0-7]`, and a required `[0-7]` |
-| `\uXXXX` | Unicode codepoint, 4 hex digits, each one of `0`-`9`, `a`-`f`, `A`-`F` and nothing else: a character another alphabet counts as a digit, such as the fullwidth `Ｆ`, makes the escape `unicode escape \u… is not exactly four hexadecimal digits`. The grammar permits `\uu…uXXXX` (one or more `u`s) for legacy escape forms; the parser recognises any such sequence and decodes it to the codepoint. |
+| `\uXXXX` | Unicode codepoint, 4 hex digits, each one of `0`-`9`, `a`-`f`, `A`-`F` and nothing else: a character another alphabet counts as a digit, such as the fullwidth `Ｆ`, makes the escape `unicode escape \u… is not exactly four hexadecimal digits`. Exactly one `u` opens the escape: a second one, as in `\uu0041`, is not a legacy form but the same error, since `u` is not a hexadecimal digit. |
 
 R-9.7.4. **Escape decoding happens at parse time.** Every recognised escape — single-character, octal, and unicode — is decoded into its target codepoint(s) by the parser before the string body is fed into the `<o base='Φ.bytes'>` UTF-8 carrier (R-9.4 data carrier emission). The XMIR text body therefore contains decoded characters, never the source-level escape sequence; this applies equally to `STRING` and `TEXT` tokens (R-9.7.1 / R-9.7.2). Downstream consumers see the canonical UTF-8 bytes, not the literal `\uXXXX` / `\NNN` form.
 
@@ -1424,7 +1430,9 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Bare reversed dispatch missing receiver | `reversed dispatch missing receiver` |
 | Bare reversed dispatch receiver starts with `.` | `reversed dispatch receiver must not begin with dot` |
 | Compact tuple `*N` with N > children | `compact tuple requires at least N children, got K` (N and K substituted) |
-| Mixed bindings in arg group | `argument bindings must be all-or-nothing` |
+| Bound and unbound args mixed in arg group (R-6.6.2) | `argument bindings must be all-or-nothing` |
+| Slot numbers and names mixed in arg group (R-6.6.2) | `argument bindings must not mix slot numbers and names` |
+| Binding label repeated in arg group (R-6.6.5) | `duplicate argument binding '<label>'` (label substituted) |
 | Binding on a plain child of a formation or top level (R-3.12.3) | `binding allowed only in argument position` |
 | Receiver carrying binding | `reversed-dispatch receiver cannot carry a binding` |
 | Inline binding on non-last method in chain | `inline binding allowed only on the last method in a chain` |
@@ -1458,6 +1466,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | String literal closed by neither a quote nor the end of the line (§9.7) | `unterminated string literal` |
 | String opened inside a paren group and never closed | `unterminated string inside paren group` |
 | Paren group with no matching `)` | `unterminated paren group` |
+| Trailing tokens inside a parenthesised expression (R-3.6.6) | `unexpected content inside a parenthesised expression` |
 | `:` with no binding label after it (§3.12) | `` expected binding label after `:` `` |
 | Hexadecimal literal expected but the text does not open with `0x` (R-9.8.3) | `expected hexadecimal literal` |
 | `0x` with no hex digit after it (R-9.8.3) | `hexadecimal literal requires at least one digit` |
@@ -1475,18 +1484,23 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | `+package` carrying a number of parts other than one (§3.2) | `'+package' directive requires exactly one argument` |
 | `+package` path with an empty dotted segment (§3.2) | `'+package' path must not have an empty segment` |
 | `+package` path with a segment that is a scope token rather than an object name (§3.2) | `'+package' path must be made of object names, not a scope token` |
+| `+package` path with a segment that is not a `NAME` token (§3.2) | `'+package' path must be made of object names` |
 | `+alias` carrying no part (R-3.2.3) | `'+alias' directive requires at least one argument` |
 | `+alias` renaming the root token `Q` (R-3.2.3) | `'+alias' cannot rename the root token Q` |
 | `+alias` target with an empty dotted segment (R-3.2.3) | `'+alias' target must not have an empty segment` |
 | `+alias` target that is a scope token rather than an object name (R-3.2.3) | `'+alias' target must be an object name, not a scope token` |
+| `+alias` target with a segment that is not a `NAME` token (R-3.2.3) | `'+alias' target must be made of object names` |
 | `?` line whose suffix is neither a name nor an auto-name, or carries `!` (R-3.4.7) | `` a void attribute must be written as `? > name` or `? >> name` `` |
 | `?` line whose parent is not a formation (R-3.4.7) | `a void attribute is legal only as a direct child of a formation` |
 | `> ^` written on a line that is not a `?` void attribute (R-3.4.11) | `only a void attribute can declare the receiver ^` |
+| `?` void attribute declared below a non-void attribute (R-3.4.9) | `a void attribute must be declared above all other attributes` |
 | Void type annotation `/` with no type after it (R-3.4.8) | `a void type annotation requires a type` |
+| Void type annotation whose type is not a dotted path of `NAME` tokens (R-3.4.8) | `type must be a dotted path of NAME tokens` |
 | `/{…}` argument list with no closing `}` (R-3.4.8) | `` a `/{…}` argument list must end with `}` `` |
 | Empty `/{…}` argument list (R-3.4.8) | `` a `/{…}` argument list must name at least one type `` |
 | Only-phi parameter list `> [` with no closing `]` (R-3.10.1) | `` only-phi parameter list missing closing `]` `` |
 | Only-phi line carrying none of the arrows that introduce one (R-3.10.8) | `` only-phi formation must contain `> [`, `++>` or `-->` `` |
+| Only-phi formation carrying an atom signature (R-3.10.8) | `an only-phi formation cannot be an atom` |
 | Only-phi line with an empty body before its arrow (R-3.10.6) | `` only-phi formation requires a non-empty body before `> [` or `++>` `` |
 | Trailing text after the φ expression of an only-phi formation (R-3.10.1) | `unexpected content in the body of an only-phi formation` |
 | Only-phi body that is a reversed dispatch carrying horizontal arguments (R-3.10.6) | `only-phi formation body cannot be a reversed dispatch with horizontal arguments` |
@@ -1500,6 +1514,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Test attribute on a pipe application (§3.14) | `a pipe application cannot declare a test attribute` |
 | Pipe whose predecessor is missing, unnamed, or not a formation or pipe (§3.14) | `a pipe must follow a named formation or another pipe` |
 | Text block body line shallower than its opener (R-3.11.2) | `text block body line indented less than opener` |
+| Test attribute `+>` with no blank line above it (R-6.5.3) | `` missing blank line before a `+>` test attribute (R-6.5.3); exactly one blank line must precede every test attribute `` |
 | Two or more consecutive blank lines (R-6.5.3) | `consecutive blank lines forbidden — at most one blank may separate two non-blank lines (R-6.5.3)` |
 | First object of the file at an indent other than 0 (§5.2) | `unexpected indentation, the first object must start at indent 0` |
 | Blank line between two meta directives (R-6.5.7) | `blank line between meta directives is forbidden (R-6.5.7); the meta header is a single contiguous block` |
@@ -1588,9 +1603,9 @@ Reproduced from §3.1 for convenience:
         *                             ← R-3.6: star tuple as head; becomes vapplication
           x.put 2                     ← R-3.6: happlication, horizontally-completed (R-6.1.1)
           loop                        ← R-3.6: bare head
-            x.lt 6 > [i] >>           ← R-3.10 inline-phi: outer = inline-phi-formation; φ `x.lt 6` has a harg, so closed for deeper children (§4.5)
+            ^.x.lt 6 > [i] >>         ← R-3.10 inline-phi: outer = inline-phi-formation; φ `^.x.lt 6` has a harg, so closed for deeper children (§4.5); `x` belongs to `[x]`, so R-9.2.4 wants `^.x`
             [i] >>                    ← R-3.4: formation
-              true
+              true > @                ← R-6.2.1: plain child of a formation must carry a name
 ```
 
 ### C.2 Stack trace for a vmethod naming check
@@ -1670,8 +1685,8 @@ Notable points:
 - **Horizontal reversed dispatch (`eq. (mod. y 4) 0`)** appears 4× in this snippet. R-3.8.2 and R-6.6.3 govern it.
 - **Receiver as paren group**: `(mod. y 4)` is the receiver of `.eq`. Per R-3.8.2, the first horizontal arg is always the receiver.
 - **`mod. y 4`**: receiver = `y` (just an identifier — receivers don't have to be paren groups), method arg = `4`. Same as `y.mod 4` in regular notation.
-- **`year!` on a vapp arg**: a vapplication's vertical args may each carry an independent name suffix. This is orthogonal to the all-or-nothing binding rule (R-6.6.2 governs `:label` bindings, not `> name` suffixes). The sole exception is an argument of an only-phi formation's φ, which may not be named (§4.5 / R-5.3.6), since that formation binds only `φ`.
-- **`:y` binding on `leap year:y`**: inside the paren group, `leap` is applied to `year` with binding `:y`. Single-arg application, all-or-nothing trivially satisfied.
+- **`year!` on a vapp arg**: a vapplication's vertical args may each carry an independent name suffix. This is orthogonal to the binding rules of §6.6 (R-6.6.2 and R-6.6.5 govern `:label` bindings, not `> name` suffixes). The sole exception is an argument of an only-phi formation's φ, which may not be named (§4.5 / R-5.3.6), since that formation binds only `φ`.
+- **`:y` binding on `leap year:y`**: inside the paren group, `leap` is applied to `year` with binding `:y`. Single-arg application, so R-6.6.2 and R-6.6.5 hold trivially.
 
 This snippet exercises hmethod chains, horizontal reversed dispatch, paren groups, vapplication, name suffixes with `!`, and `:label` bindings — every major construct except text blocks and compact tuples.
 
