@@ -1868,11 +1868,11 @@
               n.value
             if.
               c.eq 2C-
-              ranged
+              capped
                 n.at.plus 1
                 n.value
               no n.at "Unclosed counted closure"
-    [^ start least] >> ranged
+    [^ start least] >> capped
       if. > @
         eq.
           byte start
