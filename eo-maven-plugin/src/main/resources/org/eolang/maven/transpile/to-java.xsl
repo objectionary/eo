@@ -295,10 +295,14 @@
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
-  <!-- Xmir comment -->
+  <!--
+  Xmir comment. The backslash is doubled the way "eo:literal" doubles it,
+  because Java reads a "\u" escape everywhere, a comment included, so a name
+  like "x\u" made the class refuse to compile (#9347).
+  -->
   <xsl:template match="xmir">
     <xsl:text>/**</xsl:text>
-    <xsl:for-each select="tokenize(text(), '&#10;')">
+    <xsl:for-each select="tokenize(replace(text(), '\\', '\\\\'), '&#10;')">
       <xsl:value-of select="eo:eol(0)"/>
       <xsl:text> * </xsl:text>
       <xsl:value-of select="."/>
@@ -958,7 +962,7 @@
         <xsl:text>@ExtendWith({Deadline.class, Maxmem.class})</xsl:text>
         <xsl:value-of select="eo:eol(1)"/>
         <xsl:text>void </xsl:text>
-        <xsl:value-of select="eo:identifier(replace(eo:unmarked(@name), '-', '_'))"/>
+        <xsl:value-of select="eo:underscored(eo:unmarked(@name))"/>
         <xsl:text>() throws java.lang.Exception {</xsl:text>
         <xsl:value-of select="eo:eol(2)"/>
         <xsl:choose>

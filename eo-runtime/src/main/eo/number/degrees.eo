@@ -1,4 +1,4 @@
-# Degrees of `num` radians as `org.eolang.number`, the same angle expressed in
+# Degrees of `num` radians as `number`, the same angle expressed in
 # degrees rather than radians, found by scaling the argument by 180 over pi.
 #
 # The argument is multiplied by 180 before it is divided by pi, the order
@@ -16,12 +16,14 @@
 
 [^num] > degrees
   scaled.is-finite.if > @
-    scaled.div pi
+    div.
+      rads.times 180 >> scaled
+      pi
     times.
-      rads.div pi
+      div.
+        number num.as-bytes >> rads
+        pi
       180
-  number num.as-bytes > rads
-  rads.times 180 > scaled
 
   lt. ++> can-convert-a-large-value-to-degrees-without-overflow
     abs.

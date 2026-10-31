@@ -1,0 +1,80 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# spare, the third arm sock hands to pick, is a void its callers fill: a dial
+# in held and a clock in other, one per copy of sock. choice has a not besides
+# its pick, as bool does, so the yes of held picks the first arm, dial 03-,
+# and the no of other picks the third, spare, the clock 07- that other put
+# there. The listen app reads off held is the listen of a dial, and it gives
+# the bytes 05-.
+sources:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+      [] > not
+        ^.pick no mid yes > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> middle
+          ? >> right
+          left > @
+  mid.eo: |
+    [^] > mid
+      choice > @
+        [^]
+          ? >> left
+          ? >> middle
+          ? >> right
+          middle > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> middle
+          ? >> right
+          right > @
+  dial.eo: |
+    [^ sys] > dial
+      [^ size] > listen
+        size > @
+  clock.eo: |
+    [^ tick] > clock
+      [^ size] > listen
+        size > @
+  sock.eo: |
+    [^ flag spare] > sock
+      flag.pick > @
+        dial 03-
+        clock 04-
+        spare
+  held.eo: |
+    [] > held
+      sock yes (dial 06-) > @
+  other.eo: |
+    [] > other
+      sock no (clock 07-) > @
+  app.eo: |
+    [] > app
+      listen. > @
+        held
+        05-
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.held.φ.α1' and @lands='spare']/is[@loc='Φ.dial']
+  - /answers/o[@loc='Φ.other.φ.α1' and @lands='spare']/is[@loc='Φ.clock']
+  - /answers/o[@loc='Φ.sock.spare' and @copies='2']/set[@copies='1']/is[@loc='Φ.dial']
+  - /answers/o[@loc='Φ.sock.spare' and @copies='2']/set[@copies='1']/is[@loc='Φ.clock']
+  - /answers/o[@loc='Φ.held.φ']/is[@loc='Φ.dial']
+  - /answers/o[@loc='Φ.other.φ']/is[@loc='Φ.clock']
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.dial']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.bytes']

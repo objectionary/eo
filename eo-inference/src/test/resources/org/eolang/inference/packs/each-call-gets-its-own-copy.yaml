@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# speak is called twice, once with a cat and once with a dog. Each call gets
+# a copy of speak of its own, so kitten is only a string and puppy only a number.
+sources:
+  speak.eo: |
+    [pet] > speak
+      pet.voice > @
+  cat.eo: |
+    [] > cat
+      "meow" > voice
+  dog.eo: |
+    [] > dog
+      42 > voice
+  home.eo: |
+    [] > home
+      speak cat > kitten
+      speak dog > puppy
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.home.kitten.α0' and @lands='pet']/is[@loc='Φ.cat']
+  - /answers/o[@loc='Φ.home.puppy.α0' and @lands='pet']/is[@loc='Φ.dog']
+  - /answers/o[@loc='Φ.speak' and @copies='2']
+  - /answers/o[@loc='Φ.home.kitten' and count(*)=1]/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.home.puppy' and count(*)=1]/is[@loc='Φ.number']

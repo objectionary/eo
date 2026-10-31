@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A name holding a quote, which §2.3 allows, standing inside a parenthesised
+# group. The scan that walks such a group used to take every quote for the
+# start of a string literal and look for its closing one to the end of the
+# line, so the group was reported as an unterminated string (#9427). The same
+# name works as a bare argument, so only the brackets around it used to
+# make the difference.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@base='Φ.f' and @name='x']/o[@base='Φ.g']/o[@base='Φ.a"b']
+input: |
+  +package foo
+
+  [] > foo
+    f (g a"b) > x
+    x > @
