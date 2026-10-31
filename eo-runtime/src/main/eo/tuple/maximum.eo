@@ -33,9 +33,9 @@
         -3
 
   eq. ++> can-recover-from-an-empty-list-when-taking-the-maximum
-    "recovered"
+    42
     tuple.empty.maximum
-      "recovered" > [msg]
+      42 > [msg]
 
   eq. ++> can-take-a-maximum-of-one-item
     maximum.

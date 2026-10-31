@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# app reads size off book, and nobody fills pages. The @ of book is pages, and
+# a void nobody set gives T, so book there is T, and so is book.size.
+sources:
+  app.eo: |
+    [] > app
+      book.size > @
+  book.eo: |
+    [pages] > book
+      pages > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.book.pages']/open
+  - /answers/o[@loc='Φ.book.φ']/terminator
+  - /answers/o[@loc='Φ.app.φ.ρ']/terminator
+  - /answers/o[@loc='Φ.app.φ']/terminator

@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The call inc t fills x with a t: its argument lands in x, x holds a t, and
+# held is a t.
+sources:
+  app.eo: |
+    [] > app
+      inc t > held
+  inc.eo: |
+    [x] > inc
+      x > @
+  t.eo: |
+    [] > t
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.held.α0' and @lands='x']/is[@loc='Φ.t']
+  - /answers/o[@loc='Φ.inc.x']/is[@loc='Φ.t']
+  - /answers/o[@loc='Φ.app.held']/is[@loc='Φ.t']

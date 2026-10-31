@@ -68,10 +68,10 @@
             abs-mod.neg
 
   eq. ++> can-recover-from-a-modulo-by-zero
-    "recovered"
+    42
     5.mod
       0
-      "recovered" > [message]
+      42 > [message]
 
   eq. ++> can-refuse-a-boolean-divisor
     recovered

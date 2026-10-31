@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# half says it gives a number, so its λ is a number. Nobody calls it and x
+# declares nothing, so x stays an open void.
+sources:
+  half.eo: |
+    [] > half /Q.number
+      ? > x
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.half.λ']/is[@loc='Φ.number']
+  - /answers[not(o[@lands='x'])]
+  - /answers/o[@loc='Φ.half.x']/open
