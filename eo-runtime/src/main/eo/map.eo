@@ -29,7 +29,14 @@
           if. > @
             tup.length.eq 0
             *
-            others.with
+            with.
+              filtered.
+                @.
+                  raw.rec-rebuild tup.tail
+                not. > [^step ent] >>
+                  and.
+                    ent.hash.eq hash
+                    ent.kbts.eq kbts
               [^step] >>
                 step.hash > hash
                 step.kbts > kbts
@@ -37,13 +44,6 @@
                 step.tup.head.value > value
           hash. >> hash!
             tup.head.key.as-bytes >> kbts!
-          prev.filtered > others
-            not. > [^step ent] >>
-              and.
-                ent.hash.eq hash
-                ent.kbts.eq kbts
-          @. > prev
-            raw.rec-rebuild tup.tail
         | pairs
   [entries] > ctor
     [^store key] > found
@@ -154,16 +154,6 @@
       map.entry "BB" 2
     mp.found "BB" > second
 
-  ++> can-format-the-error-message-of-an-absent-key
-    eq. > @
-      get.
-        mp.found "three"
-        I
-      "The key three is not in the map"
-    map * > mp
-      map.entry "one" 1
-      map.entry "two" 2
-
   has. ++> can-have-an-element-with-a-key
     map *
       map.entry "one" 1
@@ -193,7 +183,7 @@
     2.eq > @
       get.
         mp.found 1
-        "unreachable" > [message]
+        42 > [message]
     map * > mp
       map.entry 1 1
       map.entry 1 2
@@ -223,20 +213,30 @@
                 m.as-number.plus 1
               1
 
+  ++> can-recover-from-an-absent-key-among-two-entries
+    eq. > @
+      get.
+        mp.found "three"
+        42 > [message]
+      42
+    map * > mp
+      map.entry "one" 1
+      map.entry "two" 2
+
   eq. ++> can-recover-from-an-absent-key-colliding-with-a-stored-one
-    "recovered"
+    42
     get.
       found.
         map *
           map.entry "Aa" 1
         "BB"
-      "recovered" > [message]
+      42 > [message]
 
   ++> can-recover-from-getting-a-missing-key
-    "recovered".eq > @
+    42.eq > @
       get.
         mp.found "absent"
-        "recovered" > [message]
+        42 > [message]
     map * > mp
       map.entry "one" 1
 

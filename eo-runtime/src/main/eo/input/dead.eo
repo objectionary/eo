@@ -10,7 +10,7 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[] > dead
+[^] > dead
   [size] > read
     [^source] >> input-block
       -- > @
@@ -30,4 +30,7 @@
       eq.
         i1.read 10
         --
-    dead.read 10 > i1
+    read. > i1
+      dead.
+        input 01-02-03.as-input
+      10

@@ -13,9 +13,9 @@
       rest.length.eq 0
       acc
       seq *
-        next.length
+        length.
+          acc.with rest.head >> next
         list.rec rest.tail next
-    acc.with rest.head > next
   | > @
     list
     *

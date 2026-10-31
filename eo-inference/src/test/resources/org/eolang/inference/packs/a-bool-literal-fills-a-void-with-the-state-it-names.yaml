@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# true and false are formations of this program, so pick true false puts a
+# true into on and a false into off, and pick, whose @ is on, is a true.
+sources:
+  app.eo: |
+    [] > app
+      pick true false > @
+  pick.eo: |
+    [on off] > pick
+      on > @
+  true.eo: |
+    [] > true
+  false.eo: |
+    [] > false
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='on']/is[@loc='Φ.true']
+  - /answers/o[@loc='Φ.app.φ.α1' and @lands='off']/is[@loc='Φ.false']
+  - /answers/o[@loc='Φ.pick.φ']/is[@loc='Φ.true']
+  - /answers/o[@loc='Φ.pick']/reduced/is[@loc='Φ.true']

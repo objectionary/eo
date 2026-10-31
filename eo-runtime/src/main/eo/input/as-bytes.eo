@@ -32,5 +32,7 @@
 
   eq. ++> can-return-empty-bytes-from-a-dead-input
     as-bytes.
-      input input.dead
+      input
+        dead.
+          input 01-02-03.as-input
     --

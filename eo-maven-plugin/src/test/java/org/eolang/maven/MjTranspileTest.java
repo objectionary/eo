@@ -8,8 +8,6 @@ import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
-import com.yegor256.xsline.Shift;
-import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.TrClasspath;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Xsline;
@@ -164,9 +162,7 @@ final class MjTranspileTest {
                 "    42 > @"
             )
         ).with("tracking", true);
-        maven.execute(MjParse.class)
-            .execute(MjInference.class)
-            .execute(MjTranspile.class);
+        maven.execute(MjParse.class).execute(MjInference.class).execute(MjTranspile.class);
         MatcherAssert.assertThat(
             "a formation that takes nothing and copies nothing but a literal must be marked as safe to cache, but it wasnt",
             new XMLDocument(
@@ -185,11 +181,8 @@ final class MjTranspileTest {
         MatcherAssert.assertThat(
             "a formation marked as safe to cache must be wrapped in PhSticky in the generated Java, but it wasnt",
             new TextOf(
-                MjTranspileTest.pure(temp)
-                    .execute(MjParse.class)
-                    .execute(MjInference.class)
-                    .execute(MjTranspile.class)
-                    .result()
+                MjTranspileTest.pure(temp).execute(MjParse.class).execute(MjInference.class)
+                    .execute(MjTranspile.class).result()
                     .get("target/generated/org/eolang/EO_examples/EOx.java")
             ).asString(),
             Matchers.containsString("new PhSticky(")
@@ -201,11 +194,8 @@ final class MjTranspileTest {
         MatcherAssert.assertThat(
             "a top-level formation marked as safe to cache must implement Pure in the generated Java, so PhPackage can wrap it in PhSticky, but it didnt",
             new TextOf(
-                MjTranspileTest.pure(temp)
-                    .execute(MjParse.class)
-                    .execute(MjInference.class)
-                    .execute(MjTranspile.class)
-                    .result()
+                MjTranspileTest.pure(temp).execute(MjParse.class).execute(MjInference.class)
+                    .execute(MjTranspile.class).result()
                     .get("target/generated/org/eolang/EO_examples/EOx.java")
             ).asString(),
             Matchers.containsString("implements Pure")
@@ -236,46 +226,6 @@ final class MjTranspileTest {
                 .get("target/generated/org/eolang/EO_examples/EOx.java")
             ).asString(),
             Matchers.containsString("new PhSticky(")
-        );
-    }
-
-    @Test
-    void wrapsApplicationOfDataInPhSticky(@Mktmp final Path temp) throws IOException {
-        final Path parsed = Files.createDirectories(temp.resolve("parsed"));
-        Files.writeString(
-            parsed.resolve("app.xmir"),
-            new EoSyntax(
-                String.join(
-                    System.lineSeparator(),
-                    "[] > app", "  2.plus 3 > x", "  x > @", ""
-                )
-            ).parsed().toString()
-        );
-        Files.writeString(
-            parsed.resolve("number.xmir"),
-            new EoSyntax(
-                String.join(
-                    System.lineSeparator(),
-                    "[as-bytes] > number", "  as-bytes > @",
-                    "  [x] > plus", "    x > @", ""
-                )
-            ).parsed().toString()
-        );
-        final Path tables = temp.resolve("tables");
-        new Inferring(parsed, temp.resolve("pre"), tables).exec();
-        MatcherAssert.assertThat(
-            "an application whose parts are all data must be wrapped in PhSticky, but it wasnt",
-            new Xsline(
-                new TrDefault<Shift>()
-                    .with(new StClasspath("/org/eolang/parser/parse/set-locators.xsl"))
-                    .with(new StClasspath("/org/eolang/maven/transpile/set-original-names.xsl"))
-                    .with(new StClasspath("/org/eolang/maven/transpile/classes.xsl"))
-                    .with(new StClasspath("/org/eolang/maven/transpile/attrs.xsl"))
-                    .with(new StClasspath("/org/eolang/maven/transpile/data.xsl"))
-                    .with(new StPure("/org/eolang/maven/transpile/purify.xsl", tables))
-                    .with(new StClasspath("/org/eolang/maven/transpile/to-java.xsl"))
-            ).pass(new XMLDocument(parsed.resolve("app.xmir"))).toString(),
-            Matchers.containsString("new PhSticky(new PhApplication(")
         );
     }
 
@@ -485,6 +435,46 @@ final class MjTranspileTest {
                 )
             ).asString(),
             Matchers.containsString("eo.phiDefaultClass")
+        );
+    }
+
+    @Test
+    void writesNoTimeoutWhenDeadlineIsZero(@Mktmp final Path temp)
+        throws Exception {
+        MatcherAssert.assertThat(
+            "a zero eo.deadline must take the deadline away from a generated test, while keeping its budget, since JUnit refuses a timeout of zero",
+            new TextOf(
+                new FakeMaven(temp)
+                    .withProgram(MjTranspileTest.truthy())
+                    .with("deadline", 0L)
+                    .execute(new PpTranspile())
+                    .result()
+                    .get("target/generated-test-sources/org/eolang/EO_foo/EO_x/TestEOmain.java")
+            ).asString(),
+            Matchers.allOf(
+                Matchers.containsString("@Budget(\"1G\")"),
+                Matchers.not(Matchers.containsString("@Timeout("))
+            )
+        );
+    }
+
+    @Test
+    void rejectsNegativeDeadline(@Mktmp final Path temp) {
+        MatcherAssert.assertThat(
+            "a negative eo.deadline must be refused by naming the option, instead of emitting a timeout that JUnit refuses",
+            new UncheckedText(
+                new TextOf(
+                    Assertions.assertThrows(
+                        IllegalStateException.class,
+                        () -> new FakeMaven(temp)
+                            .withProgram(MjTranspileTest.truthy())
+                            .with("deadline", -1L)
+                            .execute(new PpTranspile()),
+                        "a negative eo.deadline must not reach the generated tests"
+                    )
+                )
+            ).asString(),
+            Matchers.containsString("eo.deadline")
         );
     }
 

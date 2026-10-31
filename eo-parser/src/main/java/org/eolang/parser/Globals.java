@@ -177,6 +177,20 @@ final class Globals {
     }
 
     /**
+     * Flush top comments without letting a header error escape the parser.
+     *
+     * @param emit XMIR emitter
+     * @param span Source span closing the header
+     */
+    void sealOrReport(final Emit emit, final Span span) {
+        try {
+            this.seal(emit, span);
+        } catch (final ParseError err) {
+            emit.error(err.line(), err.pos(), err.getMessage(), true);
+        }
+    }
+
+    /**
      * Whether the parser is still consuming the meta header (R-6.5.5).
      *
      * @return Flag

@@ -27,15 +27,41 @@
 [^num b cant-divide] > div
   if. > @
     b.as-bytes.eq 00-00-00-00-00-00-00-00
-    cant-divide
-      "i64 cannot be divided by zero"
+    cant-divide "i64 cannot be divided by zero"
     if.
       and.
         num.as-bytes.eq 80-00-00-00-00-00-00-00
         b.as-bytes.eq FF-FF-FF-FF-FF-FF-FF-FF
-      cant-divide
-        "the smallest i64 divided by minus one is past the largest i64"
-      quotiented
+      cant-divide "the smallest i64 divided by minus one is past the largest i64"
+      if.
+        eq.
+          and.
+            num.as-bytes.xor b.as-bytes
+            80-00-00-00-00-00-00-00
+          80-00-00-00-00-00-00-00
+        plus.
+          i64
+            not.
+              looped >> quotient
+                [^scan m acc step] >> topbit
+                  if. > @
+                    step.lt 1
+                    acc
+                    scan.topbit
+                      if.
+                        shifted.eq 00-00-00-00-00-00-00-00 >> empty
+                        m
+                        m.right step >> shifted!
+                      empty.if acc (acc.plus step)
+                      step.div 2
+                |
+                  magnitude num.as-bytes >> dividend
+                  0
+                  32
+                00-00-00-00-00-00-00-00
+                00-00-00-00-00-00-00-00
+          i64 00-00-00-00-00-00-00-01
+        i64 quotient
   00-00-00-00-00-00-00-01.left i > [i] >> bit
   [^loop index remainder quot] >> looped
     if. > @
@@ -67,35 +93,6 @@
               dividend.right index
               00-00-00-00-00-00-00-01
           quot
-  if. > quotiented
-    eq.
-      and.
-        num.as-bytes.xor b.as-bytes
-        80-00-00-00-00-00-00-00
-      80-00-00-00-00-00-00-00
-    as-bytes.
-      plus.
-        i64
-          not.
-            looped >> quotient
-              [^scan m acc step] >> topbit
-                if. > @
-                  step.lt 1
-                  acc
-                  scan.topbit
-                    empty.if m shifted
-                    empty.if acc (acc.plus step)
-                    step.div 2
-                shifted.eq 00-00-00-00-00-00-00-00 > empty
-                m.right step > shifted!
-              |
-                magnitude num.as-bytes >> dividend
-                0
-                32
-              00-00-00-00-00-00-00-00
-              00-00-00-00-00-00-00-00
-        i64 00-00-00-00-00-00-00-01
-    i64 quotient
   as-bytes. >> subtrahend!
     plus.
       i64
@@ -141,17 +138,17 @@
     -2.as-i64
 
   eq. ++> can-recover-from-division-by-zero
-    "recovered"
+    i64 00-00-00-00-00-00-00-2A
     2.as-i64.div
       0.as-i64
-      "recovered" > [message]
+      i64 00-00-00-00-00-00-00-2A > [message]
 
   eq. ++> can-recover-from-min-divided-by-minus-one
-    "recovered"
+    i64 00-00-00-00-00-00-00-2A
     div.
       i64 80-00-00-00-00-00-00-00
       -1.as-i64
-      "recovered" > [message]
+      i64 00-00-00-00-00-00-00-2A > [message]
 
   eq. ++> can-truncate-toward-zero
     -13.as-i64.div 5.as-i64

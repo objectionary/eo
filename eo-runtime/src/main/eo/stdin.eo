@@ -60,7 +60,7 @@
             false
     | > @
       stream.line-or-eof
-      ""
+      --
       true
   [] > line-or-eof
     first.as-bytes.size.eq 0 > eof

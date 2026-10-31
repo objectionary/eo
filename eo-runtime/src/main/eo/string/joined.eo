@@ -23,7 +23,7 @@
               delimiter
             acc
           tup.tail
-      | items.head items.tail
+      | (dataized items.head) items.tail
   text >> delimiter!
 
   matches. ++> can-apply-regex-to-a-joined-string

@@ -625,15 +625,77 @@ final class Tokens {
     }
 
     /**
+     * Whether the quote at this position opens a string literal, rather
+     * than standing inside a name. A {@code NAME} holds every character
+     * but the ones §2.3 lists, and {@code "} is not among them, so
+     * {@code a"b} is one name and a reader that takes its quote for the
+     * start of a literal walks past the rest of the line (#9378). A
+     * literal opens where a token opens: at the head of the text, or
+     * right after a glyph that ends the token before it.
+     *
+     * @param text Text being scanned
+     * @param idx Index of the quote
+     * @return Opening flag
+     */
+    static boolean opensString(final String text, final int idx) {
+        return idx == 0 || Tokens.terminates(text.charAt(idx - 1));
+    }
+
+    /**
+     * The index of the {@code > [} that opens an inline-phi suffix at the
+     * top level of this text, or {@code -1} when there is none. A quote
+     * standing inside a name is no literal (#9378), so the scan steps over
+     * it instead of looking for a closing one to the end of the text
+     * (#9427).
+     *
+     * @param text Text being scanned
+     * @return Index of the suffix, or -1
+     */
+    static int inlinePhi(final String text) {
+        int depth = 0;
+        int found = -1;
+        int idx = 0;
+        while (idx < text.length() - 2 && found < 0) {
+            final char glyph = text.charAt(idx);
+            if (glyph == '"' && Tokens.opensString(text, idx)) {
+                idx = Tokens.closingQuote(text, idx);
+            } else if (glyph == '(') {
+                depth = depth + 1;
+            } else if (glyph == ')') {
+                depth = depth - 1;
+            } else if (depth == 0 && Tokens.opensPhi(text, idx)) {
+                found = idx;
+            }
+            idx = idx + 1;
+        }
+        return found;
+    }
+
+    /**
      * Whether the glyph ends the token a reader is on. Shared with
      * {@link Bytes}, so a BYTES literal owns exactly the characters
-     * every other reader of this class would leave to it.
+     * every other reader of this class would leave to it. The slash is
+     * among them because §2.3 keeps it out of a {@code NAME}: it opens
+     * an atom signature, so a name ends where one starts (#9317).
      *
      * @param glyph The character to weigh
      * @return Terminator flag
      */
     static boolean terminates(final char glyph) {
-        return " \t,.|':;!?[]{}()".indexOf(glyph) >= 0;
+        return " \t,.|':;!?*/[]{}()".indexOf(glyph) >= 0;
+    }
+
+    private ParseError malformed(final int start) {
+        return new ParseError(
+            this.span.line(), this.span.indent() + start, "invalid number literal"
+        );
+    }
+
+    private ParseError exponential(final int start) {
+        return new ParseError(
+            this.span.line(), this.span.indent() + start,
+            "invalid number literal, a float needs a dot before the exponent, as in 1.0e5"
+        );
     }
 
     private Value readDigits() {
@@ -648,17 +710,14 @@ final class Tokens {
         while (Tokens.digitAt(this.body, idx)) {
             idx = idx + 1;
         }
-        if (sign && Tokens.letterAt(this.body, idx)) {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + start,
-                "invalid signed-number literal"
-            );
+        if (Tokens.letterAt(this.body, idx)) {
+            if (this.body.charAt(idx) == 'e' || this.body.charAt(idx) == 'E') {
+                throw this.exponential(start);
+            }
+            throw this.malformed(start);
         }
         if (idx == from) {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + start,
-                "invalid signed-number literal"
-            );
+            throw this.malformed(start);
         }
         this.cursor = idx;
         return new Value(
@@ -705,7 +764,7 @@ final class Tokens {
         int idx = 0;
         while (idx < inside.length()) {
             final char glyph = inside.charAt(idx);
-            if (glyph == '"') {
+            if (glyph == '"' && Tokens.opensString(inside, idx)) {
                 idx = Tokens.closingQuote(inside, idx);
             } else if (" ()[]".indexOf(glyph) >= 0) {
                 single = false;
@@ -721,7 +780,11 @@ final class Tokens {
     }
 
     private static boolean hexDigit(final char glyph) {
-        return Character.digit(glyph, 16) >= 0;
+        return Tokens.digit(glyph) || Tokens.hexLetter(glyph);
+    }
+
+    private static boolean hexLetter(final char glyph) {
+        return glyph >= 'a' && glyph <= 'f' || glyph >= 'A' && glyph <= 'F';
     }
 
     private static boolean letterAt(final String body, final int idx) {
@@ -767,6 +830,11 @@ final class Tokens {
         return glyph == '+' || glyph == '-';
     }
 
+    private static boolean opensPhi(final String text, final int idx) {
+        return text.charAt(idx) == '>' && text.charAt(idx + 1) == ' '
+            && text.charAt(idx + 2) == '[';
+    }
+
     private static boolean cactus(final String text) {
         return text.codePoints().anyMatch(cp -> cp == 0x1F335);
     }
@@ -775,8 +843,7 @@ final class Tokens {
         final boolean valid;
         if (text.isEmpty()) {
             valid = false;
-        } else if ("^".equals(text)
-            || text.charAt(0) >= 'a' && text.charAt(0) <= 'z') {
+        } else if (text.charAt(0) >= 'a' && text.charAt(0) <= 'z') {
             valid = true;
         } else if (text.chars().allMatch(ch -> ch >= '0' && ch <= '9')) {
             valid = text.charAt(0) != '0' || "0".equals(text);
@@ -788,10 +855,11 @@ final class Tokens {
 
     private void skipGroup(final int start) {
         int depth = 1;
+        int deepest = 1;
         this.cursor = this.cursor + 1;
         while (this.cursor < this.body.length() && depth > 0) {
             final char glyph = this.body.charAt(this.cursor);
-            if (glyph == '"') {
+            if (glyph == '"' && Tokens.opensString(this.body, this.cursor)) {
                 this.cursor = Tokens.closingQuote(this.body, this.cursor);
                 if (this.cursor >= this.body.length()) {
                     throw new ParseError(
@@ -801,6 +869,7 @@ final class Tokens {
                 }
             } else if (glyph == '(') {
                 depth = depth + 1;
+                deepest = Math.max(deepest, depth);
             } else if (glyph == ')') {
                 depth = depth - 1;
             }
@@ -810,6 +879,12 @@ final class Tokens {
             throw new ParseError(
                 this.span.line(), this.span.indent() + start,
                 "unterminated paren group"
+            );
+        }
+        if (deepest > Stack.DEEPEST) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + start,
+                String.format("object nested deeper than %d levels", Stack.DEEPEST)
             );
         }
     }
@@ -857,10 +932,7 @@ final class Tokens {
             this.cursor = this.cursor + 1;
         }
         if (this.skipDigits() == 0) {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + start,
-                "invalid signed-number literal"
-            );
+            throw this.malformed(start);
         }
     }
 

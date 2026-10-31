@@ -12,7 +12,8 @@
 [^data] > array
   data.size >> length!
   if. > [^array tup index] >> slice-byte
-    index.lt length
+    index.lt
+      number length
     array.slice-byte
       tup.with
         array.data.slice index 1

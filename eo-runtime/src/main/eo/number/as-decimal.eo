@@ -35,63 +35,63 @@
 
 [^num] > as-decimal
   num.is-finite.not.if > @
-    T
-      "Can't write a non-finite number as decimal"
+    T "Can't write a non-finite number as decimal"
     if.
       num.eq -9223372036854775808
       "-9223372036854775808".as-bytes
       if.
         num.abs.gte 9.223372036854776e18
-        T
-          "Can't write this number as decimal digits: its magnitude is 2^63 or larger, past the range of a signed 64-bit integer"
-        signed.if
-          "-".as-bytes.concat spelled
+        T "Can't write this number as decimal digits: its magnitude is 2^63 or larger, past the range of a signed 64-bit integer"
+        if.
+          or.
+            num.as-bytes.eq 80-00-00-00-00-00-00-00
+            and.
+              num.lt 0
+              not.
+                eq.
+                  num.abs.floor >> truncated
+                  0
+          "-".as-bytes.concat
+            if. >> spelled
+              truncated.lt 10000000000
+              [^num m] >> quick
+                if. > @
+                  m.lt 10
+                  as-char.
+                    m.plus 48
+                  concat.
+                    num.quick head
+                    as-char.
+                      plus.
+                        m.minus
+                          times.
+                            floor. (m.div 10) >> head
+                            10
+                        48
+              | num.abs.floor
+              concat.
+                quick top
+                slice.
+                  quick
+                    10000000000.plus
+                      truncated.minus
+                        times.
+                          if. >> top
+                            lt.
+                              truncated.minus >> slack
+                                times.
+                                  floor. (truncated.div 10000000000) >> guess
+                                  10000000000
+                              0
+                            guess.minus 1
+                            if.
+                              slack.gte 10000000000
+                              guess.plus 1
+                              guess
+                          10000000000
+                  1
+                  10
           spelled
-  floor. > guess
-    truncated.div tenbillion
-  truncated.minus > rest
-    top.times tenbillion
-  or. > signed
-    num.as-bytes.eq 80-00-00-00-00-00-00-00
-    and.
-      num.lt 0
-      not.
-        truncated.eq 0
-  truncated.minus > slack
-    guess.times tenbillion
-  if. > spelled
-    truncated.lt tenbillion
-    [^num m] >> quick
-      if. > @
-        m.lt 10
-        as-char.
-          m.plus 48
-        concat.
-          num.quick head
-          as-char.
-            plus.
-              m.minus
-                head.times 10
-              48
-      floor. > head
-        m.div 10
-    | truncated
-    concat.
-      quick top
-      slice.
-        quick
-          tenbillion.plus rest
-        1
-        10
-  10000000000 > tenbillion
-  if. > top
-    slack.lt 0
-    guess.minus 1
-    if.
-      slack.gte tenbillion
-      guess.plus 1
-      guess
-  num.abs.floor > truncated
 
   eq. ++> can-drop-the-sign-of-a-negative-below-one
     "0"

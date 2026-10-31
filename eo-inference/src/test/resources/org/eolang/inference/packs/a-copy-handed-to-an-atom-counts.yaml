@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The atom print takes a cell whose value nobody sets, and Java dataizes what
+# an atom takes, so that copy of cell counts though it has an empty void: its
+# value is an open void, and kept, which reads it, is T.
+sources:
+  cell.eo: |
+    [value] > cell
+      value > @
+      value > kept
+  io.eo: |
+    [] > io
+      [] > print /Q.number
+        ? > what
+  app.eo: |
+    [] > app
+      io.print cell > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='what']/is[@loc='Φ.cell']
+  - /answers/o[@loc='Φ.cell' and @copies='1']
+  - /answers/o[@loc='Φ.cell.value']/open
+  - /answers/o[@loc='Φ.cell.kept']/terminator

@@ -31,6 +31,44 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class UsesTest {
 
     @Test
+    void readsTheCopiesOfAnEarlierPlanting(@Mktmp final Path temp) throws IOException {
+        Files.write(
+            temp.resolve("entries.xmir"),
+            "<object><o><o name='e3'><o base='Φ.qz'/></o></o></object>"
+                .getBytes(StandardCharsets.UTF_8)
+        );
+        final Path copy = Files.createDirectories(temp.resolve("4-planting")).resolve("qz.xmir");
+        Files.write(copy, "<object><o loc='Φ.qz'/></object>".getBytes(StandardCharsets.UTF_8));
+        final String before = new Uses(temp).hash(3, "Φ.qz");
+        Files.write(
+            copy, "<object><o loc='Φ.qz' name='qz'/></object>".getBytes(StandardCharsets.UTF_8)
+        );
+        MatcherAssert.assertThat(
+            "the hash must change when a copy of an earlier planting changes, but it doesnt",
+            new Uses(temp).hash(3, "Φ.qz"),
+            Matchers.not(Matchers.equalTo(before))
+        );
+    }
+
+    @Test
+    void changesTheHashWhenTheThrowChanges(@Mktmp final Path temp) throws IOException {
+        final Path entries = temp.resolve("entries.xmir");
+        final String xmir = String.join(
+            "",
+            "<object><o><o name='throw'><o name='λ'>%s</o></o>",
+            "<o name='e7'><o base='Φ.qz'/></o></o></object>"
+        );
+        Files.write(entries, String.format(xmir, "L_throw").getBytes(StandardCharsets.UTF_8));
+        final String before = new Uses(temp).hash(7, "Φ.qz");
+        Files.write(entries, String.format(xmir, "L_fail").getBytes(StandardCharsets.UTF_8));
+        MatcherAssert.assertThat(
+            "the hash must change when the throw of the entries changes, but it doesnt",
+            new Uses(temp).hash(7, "Φ.qz"),
+            Matchers.not(Matchers.equalTo(before))
+        );
+    }
+
+    @Test
     void givesEveryThreadTheHashItGetsAlone(@Mktmp final Path temp) throws IOException {
         final int count = 300;
         final Collection<String> rows = new ArrayList<>(count);
@@ -46,7 +84,7 @@ final class UsesTest {
         Files.write(
             temp.resolve("entries.xmir"),
             String.format(
-                "<object><o><o name='mark'/><o name='root'/>%s</o></object>",
+                "<object><o>%s</o></object>",
                 String.join("", rows)
             ).getBytes(StandardCharsets.UTF_8)
         );

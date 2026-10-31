@@ -62,6 +62,42 @@ final class TokensTest {
     }
 
     @Test
+    void rejectsUnsignedDigitRunGluedToALetter() {
+        MatcherAssert.assertThat(
+            "readInt must not take an unsigned digit run glued to a letter for a number",
+            Assertions.assertThrows(
+                ParseError.class,
+                new Tokens("1foo", new Span("1foo", 1))::readInt
+            ).getMessage(),
+            Matchers.containsString("invalid number literal")
+        );
+    }
+
+    @Test
+    void hintsAtADotWhenADigitRunIsGluedToAnExponent() {
+        MatcherAssert.assertThat(
+            "readInt must tell that a float needs a dot before its exponent",
+            Assertions.assertThrows(
+                ParseError.class,
+                new Tokens("1e5", new Span("1e5", 1))::readInt
+            ).getMessage(),
+            Matchers.containsString("a float needs a dot before the exponent, as in 1.0e5")
+        );
+    }
+
+    @Test
+    void rejectsAFloatWhoseExponentHasNoDigits() {
+        MatcherAssert.assertThat(
+            "readNumber must blame the number itself when the exponent is empty",
+            Assertions.assertThrows(
+                ParseError.class,
+                new Tokens("1.5e", new Span("1.5e", 1))::readNumber
+            ).getMessage(),
+            Matchers.containsString("invalid number literal")
+        );
+    }
+
+    @Test
     void readsStarValue() {
         MatcherAssert.assertThat(
             "readValue must recognise the `*` star token",
@@ -501,6 +537,24 @@ final class TokensTest {
             ParseError.class,
             () -> new Tokens("0x", new Span("0x", 1)).readHex(),
             "a `0x` with no following hex digits must be rejected"
+        );
+    }
+
+    @Test
+    void rejectsHexWithFullwidthLetters() {
+        Assertions.assertThrows(
+            ParseError.class,
+            new Tokens("0xＦＦ", new Span("0xＦＦ", 1))::readHex,
+            "a HEX literal spelled with fullwidth letters must be rejected"
+        );
+    }
+
+    @Test
+    void rejectsHexWithFullwidthDigits() {
+        Assertions.assertThrows(
+            ParseError.class,
+            new Tokens("0x１２", new Span("0x１２", 1))::readHex,
+            "a HEX literal spelled with fullwidth digits must be rejected"
         );
     }
 

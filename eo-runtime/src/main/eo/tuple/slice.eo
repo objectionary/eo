@@ -24,27 +24,29 @@
               list.length.neg.lte start
               start.plus list.length
               0
-        if. >> e!
-          end.gte 0
-          if.
-            end.gte list.length
-            list.length
-            end
-          if.
-            list.length.neg.lte end
-            end.plus list.length
-            0
+        number
+          if. >> e!
+            end.gte 0
+            if.
+              end.gte list.length
+              list.length
+              end
+            if.
+              list.length.neg.lte end
+              end.plus list.length
+              0
       *
       list.reducedi
         *
         if. > [^list accum item index] >>
           and.
-            index.gte s
-            index.lt e
+            index.gte
+              number s
+            index.lt
+              number e
           accum.with item
           accum
-    T
-      "Given slice start and end must both be integers"
+    T "Given slice start and end must both be integers"
 
   eq. ++> can-slice-a-list
     slice.

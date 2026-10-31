@@ -18,15 +18,15 @@
       rest.length.eq 0
       acc
       seq *
-        next.length
+        length.
+          if. >> next
+            list.func rest.head index
+            acc.with rest.head
+            acc
         list.recfilter
           rest.tail
           next
           index.plus 1
-    if. > next
-      list.func rest.head index
-      acc.with rest.head
-      acc
   | > @
     list.reversed
     *
