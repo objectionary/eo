@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls inc, so it is walked once with x empty: x is an open void, and so
+# is the next read off it.
+sources:
+  inc.eo: |
+    [x] > inc
+      x.next > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.inc' and @copies='1']
+  - /answers/o[@loc='Φ.inc.x']/open
+  - /answers/o[@loc='Φ.inc.φ']/open

@@ -13,6 +13,6 @@ eo:
       ++> can-be-one
         1.eq 1 > @
 xmir:
-  - "//o[@name='e2']/o[@as='v' and @base='Φ.foo.p🌵can-be-one']"
+  - "//o[@name='e2' and @base='Φ.foo.p🌵can-be-one']"
 entries:
   - "2\tΦ.foo.p🌵can-be-one"

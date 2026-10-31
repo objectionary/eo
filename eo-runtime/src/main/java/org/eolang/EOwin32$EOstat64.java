@@ -6,6 +6,7 @@ package org.eolang;
 
 import com.sun.jna.WString;
 import org.eolang.sys.Cstring;
+import org.eolang.sys.win32.Errno;
 import org.eolang.sys.win32.Msvcrt;
 import org.eolang.sys.win32.WinStat;
 
@@ -36,9 +37,11 @@ public final class EOwin32$EOstat64 extends PhDefault implements Atom {
         final WString path = new WString(new Cstring(Expect.at(this, "path")).it());
         final WinStat info = new WinStat();
         final Phi result = Phi.Φ.take("win32").take("stat-return").copy();
-        result.put(0, new Data.ToPhi(Msvcrt.INSTANCE._wstat64(path, info)));
-        result.put(1, new Data.ToPhi((long) (info.mode & 0xFFFF)));
-        result.put(2, new Data.ToPhi(info.bytes));
+        final int code = Msvcrt.INSTANCE._wstat64(path, info);
+        result.put(0, new Data.ToPhi(code));
+        result.put(1, new Errno(code).get());
+        result.put(2, new Data.ToPhi((long) (info.mode & 0xFFFF)));
+        result.put(3, new Data.ToPhi(info.bytes));
         return result;
     }
 }

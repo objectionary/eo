@@ -1,0 +1,63 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# choice has a not besides its pick, as bool does, so yes and no go into the
+# flag of sock as a choice, and flag.pick picks impl 03- for held and impl 04-
+# for other. Both arms are copies of impl, so sock is an impl in both copies,
+# and the listen app reads off held, called with 05-, is the bytes it is
+# handed.
+sources:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+      [] > not
+        ^.pick no yes > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  sock.eo: |
+    [^ flag] > sock
+      flag.pick > @
+        impl 03-
+        impl 04-
+      [^ sys] > impl
+        [^ size] > listen
+          size > @
+  held.eo: |
+    [] > held
+      sock yes > @
+  other.eo: |
+    [] > other
+      sock no > @
+  app.eo: |
+    [] > app
+      listen. > @
+        held
+        05-
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.sock.flag']/is[@loc='Φ.choice']
+  - /answers/o[@loc='Φ.yes.φ.α0.φ']/is[@loc='Φ.sock.impl']
+  - /answers/o[@loc='Φ.no.φ.α0.φ']/is[@loc='Φ.sock.impl']
+  - /answers/o[@loc='Φ.sock.φ.α0' and @lands='a🌵4-6']/is[@loc='Φ.sock.impl']
+  - /answers/o[@loc='Φ.sock.φ.α1' and @lands='a🌵5-6']/is[@loc='Φ.sock.impl']
+  - /answers/o[@loc='Φ.sock.φ' and @copies='2']/is[@loc='Φ.sock.impl']
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='size']/is[@loc='Φ.bytes']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.bytes']

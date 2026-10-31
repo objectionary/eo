@@ -28,6 +28,7 @@
   they ignore the @local handle preserved for the same reason (#5681).
 
   When the pipe sits inside an argument block (its parent has a @base,
+  or is itself a pipe that gets one only in the copy written out here,
   so its siblings are collected as positional arguments) or inside a
   "*" star tuple (its parent has @star, its siblings are tuple elements),
   leaving the predecessor formation in place would give the enclosing
@@ -72,7 +73,7 @@
       <xsl:attribute name="base">
         <xsl:value-of select="preceding-sibling::o[1]/@name"/>
       </xsl:attribute>
-      <xsl:if test="@name and (../@base or ../@star) and following-sibling::o[1][@pipe]">
+      <xsl:if test="@name and (../@base or ../@star or ../@pipe) and following-sibling::o[1][@pipe]">
         <xsl:attribute name="float-up"/>
       </xsl:if>
       <xsl:apply-templates select="@*"/>
@@ -80,7 +81,7 @@
     </xsl:copy>
   </xsl:template>
   <!-- Predecessor formation of a pipe in an argument block or star tuple: float it up. -->
-  <xsl:template match="o[@name and not(@base) and not(@pipe) and (../@base or ../@star) and following-sibling::o[1][@pipe]]">
+  <xsl:template match="o[@name and not(@base) and not(@pipe) and (../@base or ../@star or ../@pipe) and following-sibling::o[1][@pipe]]">
     <xsl:copy>
       <xsl:attribute name="float-up"/>
       <xsl:apply-templates select="@*|node()"/>

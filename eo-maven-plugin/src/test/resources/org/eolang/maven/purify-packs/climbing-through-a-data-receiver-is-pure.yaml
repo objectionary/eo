@@ -14,5 +14,7 @@ eo:
       as-bytes > @
       [^] > deep
         ^.^.as-bytes > @
+  bytes.eo: |
+    [@] > bytes
 pure:
   - "//o[@name='deep' and @pure='true']"
