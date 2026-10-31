@@ -72,8 +72,7 @@
   if. > @
     arg.is-finite.and
       arg.abs.gt 1000000000000000
-    T
-      "Can't take a sine of an angle above 1e15, the reduction cannot hold it"
+    T "Can't take a sine of an angle above 1e15, the reduction cannot hold it"
     if.
       arg.as-bytes.eq 80-00-00-00-00-00-00-00
       arg
