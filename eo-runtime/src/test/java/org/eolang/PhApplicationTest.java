@@ -6,8 +6,10 @@ package org.eolang;
 
 import com.yegor256.Together;
 import java.nio.charset.StandardCharsets;
+import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -369,6 +371,44 @@ final class PhApplicationTest {
                 new PhApplication(dummy, "x", new Data.ToPhi(5L)).forma()
             )
         );
+    }
+
+    @Test
+    void returnsDefensiveKnownData() {
+        final byte[] source = {1, 2};
+        final PhApplication wrapper = new PhApplication(new PhDefault(), source);
+        source[0] = 9;
+        wrapper.dataized()[1] = 9;
+        MatcherAssert.assertThat(
+            "known data stays defensive across copy variants",
+            Stream.of(wrapper, wrapper.copy(), wrapper.normalized()).map(Phi::delta).toList(),
+            Matchers.everyItem(Matchers.equalTo(new byte[] {1, 2}))
+        );
+    }
+
+    @Test
+    void preservesRawTerminatorKnownData() {
+        MatcherAssert.assertThat(
+            "known terminators remain terminators",
+            new PhApplication(new PhTerminator(), new byte[] {7}).normalized(),
+            Matchers.instanceOf(PhTerminator.class)
+        );
+    }
+
+    @Test
+    void propagatesInterruptionThroughPhSafe() {
+        try {
+            Thread.currentThread().interrupt();
+            Assertions.assertThrows(
+                ExInterrupted.class,
+                () -> new PhSafe(
+                    new PhApplication(new PhDefault(), new byte[] {1}),
+                    "file.eo", 3, 5
+                ).delta(), "interruption must propagate"
+            );
+        } finally {
+            Thread.interrupted();
+        }
     }
 
     /**

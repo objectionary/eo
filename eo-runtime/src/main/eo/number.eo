@@ -124,6 +124,12 @@
 
   42.as-bytes.eq 42 ++> can-convert-to-bytes-and-back
 
+  and. ++> can-dataize-known-literals
+    42.as-bytes.eq 40-45-00-00-00-00-00-00
+    and.
+      "雪".as-bytes.eq E9-9B-AA
+      01-AF.eq 01-AF
+
   eq. ++> can-divide-a-positive-dividend
     256.div 16
     16
