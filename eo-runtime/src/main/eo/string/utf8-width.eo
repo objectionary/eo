@@ -16,8 +16,7 @@
 #  this object exists to remove. Replace the walk in each of them with a step
 #  of `index.plus (^.^.utf8-width index)`, drop the locals that only the walk
 #  used, and remove this puzzle once neither of them reads a lead byte on its
-#  own. The two moves are separate pull requests, since one of them together
-#  with this object is already past the 200-line limit of the `pr-size` job.
+#  own.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
