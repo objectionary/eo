@@ -42,8 +42,7 @@
             div.
               ^.b.minus ^.a
               ^.n
-    T
-      "the number of partitions must be a finite positive integer smaller than 2^53"
+    T "the number of partitions must be a finite positive integer smaller than 2^53"
   times. > [^ a b] >> subsection
     div.
       b.minus a

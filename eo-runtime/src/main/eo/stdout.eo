@@ -21,5 +21,4 @@
     console.write text.as-bytes
     true
 
-  stdout ++> can-print-to-the-console
-    "Hello, stdout-test!\n"
+  stdout "Hello, stdout-test!\n" ++> can-print-to-the-console
