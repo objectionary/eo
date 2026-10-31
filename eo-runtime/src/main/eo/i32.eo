@@ -8,7 +8,12 @@
 +version 0.0.0
 
 [as-bytes] > i32
-  as-bytes > @
+  if. > @
+    as-bytes.size.eq 4
+    as-bytes
+    T
+      "An i32 needs exactly 4 bytes, got %d".printf
+        * as-bytes.size
   [^num cant-convert] > as-i16
     if. > @
       num.eq
@@ -189,6 +194,8 @@
   eq. ++> can-wrap-a-product-modulo-two-to-the-thirty-second
     65536.as-i64.as-i32.times 65536.as-i64.as-i32
     0.as-i64.as-i32
+
+  i32 01-02-03 --> stops-on-bytes-of-the-wrong-width
 
   32768.as-i64.as-i32.as-i16 --> stops-on-converting-i16-max-plus-one-to-i16
 
