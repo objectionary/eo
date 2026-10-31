@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# square sits in the folder shapes and says it is in the package shapes, so it
+# is shapes.square, and the call in app fills its side with a number.
+sources:
+  shapes/square.eo: |
+    +package shapes
+
+    [side] > square
+      side.times side > area
+  app.eo: |
+    [] > app
+      (shapes.square 4).area > @
+  number.eo: |
+    [@] > number
+      [] > times /Q.number
+        ? > ^
+        ? > b /Q.number
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.shapes.square']/is[@loc='Φ.shapes.square']
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.shapes.square']
+  - /answers/o[@loc='Φ.app.φ.ρ.α0' and @lands='side']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.shapes.square.side']/is[@loc='Φ.number']

@@ -12,5 +12,7 @@ eo:
   number.eo: |
     [as-bytes] > number
       as-bytes > @
+  bytes.eo: |
+    [@] > bytes
 pure:
   - "//o[@name='forty-two' and @pure='true']"

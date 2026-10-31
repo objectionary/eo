@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nothing in EO calls status, so the pool of its code stays empty and a stop
+# decides Java alone fills it: the code read off what check returns is an
+# open void that Java fills.
+sources:
+  os.eo: |
+    [] > os
+      [] > check /Q.os.status
+      [code] > status
+        code > @
+  app.eo: |
+    [] > app
+      os.check.code > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.os.status.code']/open[@by='java']
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.os.status']
+  - /answers/o[@loc='Φ.app.φ']/open[@by='java']

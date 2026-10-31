@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A test is an attribute of the object it is written in, named with p🌵. It is
+# a call like any other, so inc gets a copy for the test with 41 in x.
+sources:
+  inc.eo: |
+    [x] > inc
+      x.plus 1 > @
+
+      eq. ++> adds-one-to-a-number
+        inc 41
+        42
+  number.eo: |
+    [@] > number
+      [] > eq /Q.bool
+        ? > ^
+        ? > b
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+  bool.eo: |
+    [@] > bool
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+facts:
+  - /facts/objects/type[@id='Φ.inc']/attr[@name='p🌵adds-one-to-a-number' and @type='Φ.inc.p🌵adds-one-to-a-number']
+answers:
+  - /answers/o[@loc='Φ.inc.p🌵adds-one-to-a-number.φ.ρ.α0' and @lands='x']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.inc.x' and @copies='1']/is[@loc='Φ.number']

@@ -93,6 +93,11 @@ public final class AtVoid implements Attribute {
     }
 
     @Override
+    public boolean voided() {
+        return true;
+    }
+
+    @Override
     public String φTerm() {
         final Phi phi = this.object.get();
         final String term;
