@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -35,7 +36,7 @@ final class MergingTest {
             new EoSyntax("[] > bar").parsed().toString().getBytes(StandardCharsets.UTF_8)
         );
         final Path target = new Place("foo").make(
-            new Subdir(temp, "merge").path(), MjAssemble.XMIR
+            new Seqdir(temp, 2).dirs().once("merge"), MjAssemble.XMIR
         );
         this.merge(pkg, member, temp);
         final FileTime before = Files.getLastModifiedTime(target);

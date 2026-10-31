@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# opened in shelf is kept.lid, and shelf reading its own opened puts nothing
+# into the ^ of lid: in every copy that ^ holds a box, and opened, like the
+# box.lid of cupboard, gives that box back.
+sources:
+  box.eo: |
+    [] > box
+      [^] > lid
+        ^ > @
+  shelf.eo: |
+    [] > shelf
+      box > kept
+      kept.lid > opened
+      opened > @
+  cupboard.eo: |
+    [] > cupboard
+      box.lid > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.shelf.opened.ρ']/is[@loc='Φ.box']
+  - /answers[not(o[@loc='Φ.box.lid.ρ']//is[@loc='Φ.shelf'])]
+  - /answers/o[@loc='Φ.box.lid.ρ' and @copies='3']/is[@loc='Φ.box']
+  - /answers/o[@loc='Φ.shelf.opened']/is[@loc='Φ.box']
+  - /answers/o[@loc='Φ.cupboard.φ']/is[@loc='Φ.box']

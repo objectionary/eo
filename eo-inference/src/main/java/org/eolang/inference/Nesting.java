@@ -21,7 +21,8 @@ import java.util.Collection;
  * says nothing about it.</p>
  *
  * <p>A top-level object is written inside a package rather than a formation,
- * and nothing is answered about it here.</p>
+ * so asking what it is written inside is a mistake, and the answer is an
+ * error rather than an empty name.</p>
  *
  * @since 0.69.0
  */
@@ -44,9 +45,11 @@ final class Nesting {
     /**
      * The formation this locator is written inside.
      *
+     * <p>A locator with no formation around it has nothing to answer, and
+     * asking about one is an error.</p>
+     *
      * @param locator The locator to walk out of
-     * @return The locator of the formation, or an empty string when no
-     *  formation is around it
+     * @return The locator of the formation
      */
     String around(final String locator) {
         String walked = locator;
@@ -57,6 +60,11 @@ final class Nesting {
                 found = walked;
                 break;
             }
+        }
+        if (found.isEmpty()) {
+            throw new IllegalStateException(
+                String.format("The locator %s is written inside no formation", locator)
+            );
         }
         return found;
     }

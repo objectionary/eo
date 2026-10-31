@@ -14,16 +14,16 @@
 
 [^text] > trimmed-left
   if. > @
-    0.eq
-      b.size >> len!
+    0.eq len
     text
     string
       slice.
         text >> b!
-        first-non-ws-index 0 >> idx!
+        number
+          first-non-ws-index 0 >> idx!
         minus.
-          number len
-          idx
+          number b.size! >> len
+          number idx
   [^ index] >> first-non-ws-index
     if. > @
       len.eq index
