@@ -202,7 +202,7 @@ final class Rendering implements Proc<Path> {
         this.clean();
         final Collection<String> rendered = new ArrayList<>(0);
         final Map<String, Collection<String>> claims = new HashMap<>(0);
-        int tainted = 0;
+        final Collection<String> tainted = new ArrayList<>(0);
         for (final String row : new Filtered<>(
             line -> !line.isEmpty(),
             new Mapped<>(Text::asString, new Split(new TextOf(entries), "\\R"))
@@ -218,7 +218,7 @@ final class Rendering implements Proc<Path> {
                     .with("source", tops.get(top).toUri().toString())
                     .transform(new XMLDocument(protocol));
                 if (out.nodes("/rendered/atom").isEmpty()) {
-                    tainted += 1;
+                    tainted.add(cells[1].replaceFirst("^Φ\\.", ""));
                     Logger.info(
                         this,
                         "The entry %s at %s gets no Java atom and stays in EO as written, because: %s",
@@ -254,16 +254,28 @@ final class Rendering implements Proc<Path> {
                 );
             }
         }
-        tainted += this.unshared(claims, rendered);
+        tainted.addAll(this.unshared(claims, rendered));
         Files.write(
             home.resolve("rendered.tsv"),
             String.join("", rendered).getBytes(StandardCharsets.UTF_8)
         );
-        Logger.info(
-            this,
-            "Rendered %d atoms into %[file]s, while %d entries were taints",
-            rendered.size(), this.atoms, tainted
-        );
+        this.summarize(rendered, tainted);
+    }
+
+    private void summarize(final Collection<String> rendered, final Collection<String> tainted) {
+        if (tainted.isEmpty()) {
+            Logger.info(
+                this,
+                "Rendered %d atoms into %[file]s, while no entries were taints",
+                rendered.size(), this.atoms
+            );
+        } else {
+            Logger.info(
+                this,
+                "Rendered %d atoms into %[file]s, while %d entries were taints: %s",
+                rendered.size(), this.atoms, tainted.size(), new Shortlist(tainted, 6).asString()
+            );
+        }
     }
 
     private void clean() throws IOException {
@@ -275,15 +287,17 @@ final class Rendering implements Proc<Path> {
         }
     }
 
-    private int unshared(
+    private Collection<String> unshared(
         final Map<String, Collection<String>> claims, final Collection<String> rendered
     ) throws IOException {
-        int dropped = 0;
+        final Collection<String> dropped = new ArrayList<>(0);
         for (final Map.Entry<String, Collection<String>> claim : claims.entrySet()) {
             if (claim.getValue().size() > 1) {
                 rendered.removeAll(claim.getValue());
                 Files.delete(this.atoms.resolve(claim.getKey()));
-                dropped += claim.getValue().size();
+                for (final String row : claim.getValue()) {
+                    dropped.add(row.split("\t", -1)[1].trim().replaceFirst("^Φ\\.", ""));
+                }
                 Logger.info(
                     this,
                     "%d entries get no Java atom and stay in EO as written, because all of them ask for %s",

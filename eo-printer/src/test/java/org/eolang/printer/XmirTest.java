@@ -244,6 +244,17 @@ final class XmirTest {
     }
 
     @Test
+    void walksArgumentsOneByOne() {
+        MatcherAssert.assertThat(
+            "The canonical run of labels must be read one argument at a time, not against the whole tail of siblings",
+            this.sheet("unnecessary-as.xsl"),
+            XhtmlMatchers.hasXPath(
+                "/*/*[local-name()='function' and @name='eo:all-alphas']//*[local-name()='variable' and @name='next' and @select='$elem/following-sibling::o[1]']"
+            )
+        );
+    }
+
+    @Test
     void sortsOnlyMultipleDispatches() {
         MatcherAssert.assertThat(
             "Dispatch ordering must sort only when at least two candidates exist",
@@ -432,11 +443,15 @@ final class XmirTest {
     }
 
     private XML mergeMonikers() {
+        return this.sheet("merge-monikers.xsl");
+    }
+
+    private XML sheet(final String name) {
         return new XMLDocument(
             new UncheckedText(
                 new TextOf(
                     new ResourceOf(
-                        "org/eolang/printer/print/merge-monikers.xsl",
+                        String.format("org/eolang/printer/print/%s", name),
                         XmirTest.class
                     )
                 )
