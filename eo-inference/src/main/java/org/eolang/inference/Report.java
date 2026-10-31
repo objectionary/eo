@@ -124,7 +124,9 @@ public final class Report {
                 all = walked.sorted(Comparator.reverseOrder()).toList();
             }
             for (final Path path : all) {
-                Files.delete(path);
+                if (path.toString().endsWith(".html")) {
+                    Files.delete(path);
+                }
             }
         }
     }

@@ -40,6 +40,32 @@ final class ReportTest {
     }
 
     @Test
+    void keepsFilesItDidNotWrite(@Mktmp final Path temp) throws IOException {
+        final Path out = temp.resolve("out");
+        Files.createDirectories(out);
+        Files.write(out.resolve("notes.txt"), new byte[] {1});
+        new Report(ReportTest.program(temp), ReportTest.answers(temp)).written(out);
+        MatcherAssert.assertThat(
+            "A file the report did not write must stay in its directory, but it was deleted",
+            Files.exists(out.resolve("notes.txt")),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void removesPageOfSourceThatIsGone(@Mktmp final Path temp) throws IOException {
+        final Path out = temp.resolve("out");
+        Files.createDirectories(out);
+        Files.write(out.resolve("gone.eo.html"), new byte[] {1});
+        new Report(ReportTest.program(temp), ReportTest.answers(temp)).written(out);
+        MatcherAssert.assertThat(
+            "A page of an earlier run must go, but it stayed",
+            Files.exists(out.resolve("gone.eo.html")),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void writesAPageAnyBrowserCanOpen(@Mktmp final Path temp) throws IOException {
         new Report(ReportTest.program(temp), ReportTest.answers(temp)).written(temp.resolve("out"));
         MatcherAssert.assertThat(
