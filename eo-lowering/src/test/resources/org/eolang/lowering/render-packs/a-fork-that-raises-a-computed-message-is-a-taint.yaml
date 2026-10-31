@@ -2,11 +2,12 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# The message the flow throws is a printf over the sizes, which only a run
-# can compute, so it is no string literal, and the entry stays in EO.
+# The message the flow throws is a printf over the sizes, and the protocol
+# names it through a dispatch, not through a chain of objects of the world,
+# so the atom has nothing to build it from, and the entry stays in EO.
 locator: Φ.bytes.xor
 number: 7
-taint: its message 𝑛·1·25 is not a string literal
+taint: its message 𝑛·1·25 is no object of the world applied to its φ, so the atom cannot build it
 eo:
   bytes.eo: |
     [@] > bytes

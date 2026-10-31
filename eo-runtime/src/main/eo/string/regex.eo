@@ -73,11 +73,6 @@
 # objectionary/lints#1301 counts a hop through the receiver as reaching
 # outward even when the head declares a void of the same name.
 #
-# @todo #9650:30min Remove `+unlint too-deep-object:1367-1392` from the
-#  metas below. It hides how deep `atom` in `pattern` nests its chain of `if.`
-#  over the next byte, up to 18 levels where the lint allows 12. Split the
-#  chain into objects of its own, so that `atom` nests no deeper.
-#
 # @todo #9650:30min Remove `+unlint too-deep-object:1565-1567` from the
 #  metas below. It hides how deep `entry` in `pattern` nests the check of a
 #  character range, 13 levels where the lint allows 12. Move that check into
@@ -99,10 +94,9 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-attachment
-+unlint too-deep-object:1352-1376
-+unlint too-deep-object:1545-1547
-+unlint too-deep-object:1720-1731
-+unlint too-deep-object:1897-1901
++unlint too-deep-object:1546-1548
++unlint too-deep-object:1721-1732
++unlint too-deep-object:1898-1902
 +version 0.0.0
 
 [^text] > regex
@@ -1347,34 +1341,41 @@
                   if.
                     b.eq 7B-
                     yes index opened bits empty --
-                    r.ok.if
-                      if.
-                        r.at.as-bytes.eq index.as-bytes
-                        escaped (index.plus 1) opened bits
-                        if.
-                          and.
-                            r.text.eq --
-                            or.
-                              eq.
-                                byte
-                                  at.
-                                    scanned index bits -- >> r
-                                2A-
-                              ((byte r.at).eq 2B-).or
-                                eq. (byte r.at) 3F-
-                          no
-                            index
-                            string
-                              concat.
-                                "Dangling meta character '".as-bytes.concat (byte r.at)
-                                "'".as-bytes
-                          yes
-                            r.at
-                            opened
-                            bits
-                            plain bits r.text
-                            r.text
-                      r
+                    braced index opened bits
+    [^regex index opened bits] >> braced
+      r.ok.if > @
+        if.
+          r.at.as-bytes.eq index.as-bytes
+          escaped
+            index.plus 1
+            opened
+            bits
+          if.
+            and.
+              r.text.eq --
+              or.
+                eq.
+                  byte
+                    at.
+                      scanned index bits -- >> r
+                  2A-
+                or.
+                  eq. (byte r.at) 2B-
+                  eq. (byte r.at) 3F-
+            no
+              index
+              string
+                concat.
+                  "Dangling meta character '".as-bytes.concat
+                    byte r.at
+                  "'".as-bytes
+            yes
+              r.at
+              opened
+              bits
+              plain bits r.text
+              r.text
+        r
     [^regex index mode acc] >> scanned
       if. > @
         or.
