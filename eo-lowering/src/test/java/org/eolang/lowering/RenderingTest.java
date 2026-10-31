@@ -18,7 +18,6 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -80,9 +79,12 @@ final class RenderingTest {
         for (int idx = 0; idx < size; ++idx) {
             expected[idx] = (byte) idx;
         }
-        String bytes = "--";
-        if (size > 0) {
-            bytes = HexFormat.ofDelimiter("-").withUpperCase().formatHex(expected).concat("-");
+        final StringBuilder bytes = new StringBuilder();
+        for (final byte value : expected) {
+            bytes.append(String.format("%02X-", value));
+        }
+        if (size == 0) {
+            bytes.append("--");
         }
         final String expression = new XSLDocument(
             String.join(
@@ -94,7 +96,7 @@ final class RenderingTest {
                 "<xsl:value-of select=\"eo:literal-of($bytes, 'byte[]')\"/>",
                 "</literal></xsl:template></xsl:stylesheet>"
             )
-        ).with(new Hrefs()).with("bytes", bytes)
+        ).with(new Hrefs()).with("bytes", bytes.toString())
             .transform(new XMLDocument("<input/>"))
             .xpath("/literal/text()").get(0);
         final Path output = Files.createTempDirectory(this.dir, "literal-");
