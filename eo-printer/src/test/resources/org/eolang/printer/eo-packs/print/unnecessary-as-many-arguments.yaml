@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #9377: the canonical run of labels is checked one argument at a time, so a
+# wide application costs time in proportion to its arguments. The answer it
+# gives has to stay what it was: every label goes from a run that is in
+# order, and a run that is not keeps all of them, however long it is.
+sheets:
+  - /org/eolang/parser/parse/resolve-before-stars.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/mandatory-as.xsl
+  - /org/eolang/printer/print/unnecessary-as.xsl
+asserts:
+  - //o[@name='wide' and count(o)=12 and count(o[@as])=0]
+  - //o[@name='mixed' and count(o)=3 and count(o[@as])=3]
+input: |
+  [] > foo
+    f x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 > wide
+    g a:p b:q c:r > mixed

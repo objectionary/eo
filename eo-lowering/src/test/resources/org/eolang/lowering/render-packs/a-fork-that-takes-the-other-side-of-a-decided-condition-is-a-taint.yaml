@@ -1,0 +1,105 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The run forks on two conditions, the second inside the left side of the
+# first, and the right side of the second fork takes the right side of the
+# first condition again, while it stands inside the left side of it: the
+# record contradicts the fork above it, and the entry stays in EO.
+locator: Φ.both
+number: 1
+taint: The entry 1 takes the right side of 𝜎5 after 𝜎5+ 𝜎6-, while a fork above took the other side of it
+eo:
+  both.eo: |
+    [x y p q] > both
+      plus. > @
+        if.
+          x.gt 0
+          x
+          y
+        if.
+          p.gt 0
+          p
+          q
+  number.eo: |
+    [@] > number
+      [] > gt /Q.bool
+        ? > ^
+        ? > b /Q.number
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+  app.eo: |
+    [] > app
+      both 1 2 3 4 > used
+voids:
+  - "𝜎1\t1\tx\tnumber"
+  - "𝜎2\t1\ty\tnumber"
+  - "𝜎3\t1\tp\tnumber"
+  - "𝜎4\t1\tq\tnumber"
+protocol: |
+  <protocol>
+    <dataize at="Φ.l🌵.e1">
+      <evaluate λ="L_number_gt" by="morph" at="Φ.a🌵1">
+        <minted symbol="𝜎5">𝜎1 00-00-00-00-00-00-00-00</minted>
+      </evaluate>
+      <evaluate λ="L_number_gt" by="morph" at="Φ.a🌵2">
+        <minted symbol="𝜎6">𝜎3 00-00-00-00-00-00-00-00</minted>
+      </evaluate>
+      <evaluate λ="L_number_plus" by="dataize" at="Φ.a🌵3">
+        <dataize at="Φ.a🌵4">
+          <evaluate λ="L_fork" by="dataize" at="Φ.a🌵4">
+            <forked on="𝜎5">
+              <left>
+                <answered meta="𝑛·4·2">𝑛·4·1</answered>
+                <manufactured meta="𝛿·3·1">𝜎1</manufactured>
+                <bound meta="𝛿1·3">𝛿·3·1</bound>
+                <dataize at="Φ.a🌵5">
+                  <evaluate λ="L_fork" by="dataize" at="Φ.a🌵5">
+                    <forked on="𝜎6">
+                      <left>
+                        <answered meta="𝑛·5·2">𝑛·5·1</answered>
+                        <manufactured meta="𝛿·3·2">𝜎3</manufactured>
+                        <bound meta="𝛿2·3">𝛿·3·2</bound>
+                        <minted symbol="𝜎7">𝜎1 𝜎3</minted>
+                        <manufactured meta="𝛿·2·1">𝜎7</manufactured>
+                      </left>
+                      <right>
+                        <answered meta="𝑛·10·2">𝑛·10·1</answered>
+                        <evaluate λ="L_fork" by="dataize" at="Φ.a🌵4">
+                          <forked side="right">𝜎5</forked>
+                          <answered meta="𝑛·11·2">𝑛·11·1</answered>
+                        </evaluate>
+                        <manufactured meta="𝛿·9·2">𝜎4</manufactured>
+                        <bound meta="𝛿2·9">𝛿·9·2</bound>
+                        <minted symbol="𝜎9">𝜎2 𝜎4</minted>
+                        <manufactured meta="𝛿·12·1">𝜎9</manufactured>
+                      </right>
+                    </forked>
+                  </evaluate>
+                </dataize>
+              </left>
+              <right>
+                <answered meta="𝑛·6·2">𝑛·6·1</answered>
+                <manufactured meta="𝛿·7·1">𝜎2</manufactured>
+                <bound meta="𝛿1·7">𝛿·7·1</bound>
+                <dataize at="Φ.a🌵5">
+                  <evaluate λ="L_fork" by="dataize" at="Φ.a🌵5">
+                    <forked side="right">𝜎6</forked>
+                    <answered meta="𝑛·8·2">𝑛·8·1</answered>
+                  </evaluate>
+                  <manufactured meta="𝛿·7·2">𝜎4</manufactured>
+                </dataize>
+                <bound meta="𝛿2·7">𝛿·7·2</bound>
+                <minted symbol="𝜎8">𝜎2 𝜎4</minted>
+                <manufactured meta="𝛿·6·1">𝜎8</manufactured>
+              </right>
+            </forked>
+          </evaluate>
+        </dataize>
+      </evaluate>
+    </dataize>
+    <msec>90</msec>
+    <firings>11</firings>
+    <fps>133</fps>
+  </protocol>

@@ -18,8 +18,6 @@
 
   "äöü".eq "äöü".lower ++> can-keep-non-ascii-letters-when-lower-casing
 
-  eq. ++> can-lower-case-text
-    "good evening"
-    "Good evening".lower
+  "good evening".eq "Good evening".lower ++> can-lower-case-text
 
   "hello".eq "HELLO".lower ++> can-lower-case-text-through-the-package
