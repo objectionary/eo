@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A formation nested in another one cannot name itself bare - "foo.b" is
+# rejected by "build-fqns", which asks for "^.foo.b" instead - so the
+# spelling it is left with reaches the scope through a dispatch on a pinned
+# receiver: "^.foo.b" from inside "foo", "^.^.foo.b" from a formation nested
+# in it (#9315). Before, "eo:scope" pinned nothing for a ".foo" receiver,
+# so both references kept dispatching on the readable handle name, which
+# nothing owns once the handle takes a cactus one.
+sheets:
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+asserts:
+  - /object[not(errors)]
+  # the handle keeps its "@local" marker and gets a cactus name
+  - //o[@local='b' and @name]
+  # both references that reach "foo" through its parent bind to the cactus name
+  - /object[count(//o[@method and @base=concat('.', //o[@local='b']/@name)])=2]
+  # the receivers stay as the author wrote them
+  - /object[count(//o[@method and @base='.foo'])=2]
+  # none is left dispatching on the readable handle name
+  - /object[count(//o[@base='.b'])=0]
+input: |
+  [] > top
+    [a] > foo
+      [n] >> b
+        n > @
+      ^.foo.b > x
+        42
+      [] > inner
+        ^.^.foo.b > y
+          7

@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The spelling "build-fqns" asks for when a nested formation names itself,
+# "^.foo.b", must lead to a working reference: the handle "b" of the nested
+# "foo" is reached by its cactus name through "ξ.ρ.foo", one more "ρ" per
+# formation nested in "foo" (#9315). Before, it parsed with no errors but
+# dispatched on "b", which "foo" does not own.
+sheets:
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+asserts:
+  - /object[not(errors)]
+  - //o[@local='b' and @name]
+  - //o[@name='x' and @base=concat('ξ.ρ.foo.', //o[@local='b']/@name)]
+  - //o[@name='y' and @base=concat('ξ.ρ.ρ.foo.', //o[@local='b']/@name)]
+  - /object[not(//o[@base='ξ.ρ.foo.b' or @base='ξ.ρ.ρ.foo.b'])]
+input: |
+  [] > top
+    [a] > foo
+      [n] >> b
+        n > @
+      ^.foo.b > x
+        42
+      [] > inner
+        ^.^.foo.b > y
+          7
