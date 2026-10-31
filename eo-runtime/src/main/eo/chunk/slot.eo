@@ -1,0 +1,193 @@
+# Bounded view over a region of an existing chunk.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package chunk
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++version 0.0.0
+
+[^ start length] > slot
+  window > @
+    ^
+    start
+    length
+  [^ parent start length] > window
+    get > @
+    [^ source target count] > copy
+      seq * > @
+        ^.read source count >> data!
+        ^.write target data
+    read > get
+      0
+      size
+    ^.parent.id > id
+    if. > [^ object] > put
+      and.
+        ^.size.gt 0
+        object.size.gt ^.size
+      T
+        "Can't put %d bytes into a chunk sized %d bytes; call .resized first to grow it".printf
+          * object.size ^.size
+      ^.write 0 object
+    if. > [^ offset count cant-read] > read
+      ^.valid.and
+        and.
+          0.lte offset
+          lte.
+            offset.plus count
+            ^.length
+      ^.parent.read
+        ^.start.plus offset
+        count
+      cant-read
+        "Can't read %f bytes from slot offset %f, because the slot has length %f".printf
+          * count offset ^.length
+    printf. > [^ capacity] > resized
+      "Can't resize a chunk slot of length %f"
+      * ^.length
+    ^.valid.if > [^] > size
+      ^.length
+      "Can't get the size of an invalid chunk slot"
+    ^.^.window > [^ begin width] > slot
+      ^
+      begin
+      width
+    ^.parent.valid.if > [^] > valid
+      and.
+        and.
+          and.
+            ^.start.is-finite.and ^.start.is-integer
+            0.lte ^.start
+          and.
+            ^.length.is-finite.and ^.length.is-integer
+            0.lte ^.length
+        lte.
+          ^.start.plus ^.length
+          ^.parent.size
+      false
+    if. > [^ offset data] > write
+      ^.valid.and
+        and.
+          0.lte offset
+          lte.
+            offset.plus data.size
+            ^.length
+      ^.parent.write
+        ^.start.plus offset
+        data
+      "Can't write %f bytes at slot offset %f, because the slot has length %f".printf
+        *
+          data.size
+          offset
+          ^.length
+
+  ++> can-compose-offsets-through-three-nested-slots
+    eq. > @
+      malloc.of
+        32
+        [mem]
+          seq * > @
+            outer
+            middle
+            inner
+            inner.put 0A-0B-0C-0D
+            mem.read 9 4
+          middle.slot 3 8 > inner
+          outer.slot 2 12 > middle
+          mem.slot 4 20 > outer
+      0A-0B-0C-0D
+
+  ++> can-create-a-slot-with-parent-id
+    malloc.of > @
+      16
+      [mem]
+        and. > @
+          part.size.eq 4
+          part.id.eq mem.id
+        mem.slot 2 4 > part
+
+  ++> can-have-a-zero-length-slot
+    eq. > @
+      malloc.of
+        8
+        [mem]
+          empty.size > @
+          mem.slot 8 0 > empty
+      0
+
+  ++> can-invalidate-nested-child-after-root-shrink
+    not. > @
+      malloc.of
+        16
+        [mem]
+          seq * > @
+            child
+            mem.resized 8
+            child.valid
+          parent.slot 0 4 > child
+          mem.slot 4 8 > parent
+
+  ++> can-isolate-neighbouring-slots
+    eq. > @
+      malloc.of
+        8
+        [mem]
+          seq * > @
+            left
+            right
+            left.put 01-02-03-04
+            right.put 05-06-07-08
+            and.
+              left.get.eq 01-02-03-04
+              right.get.eq 05-06-07-08
+          mem.slot 0 4 > left
+          mem.slot 4 4 > right
+      true
+
+  ++> can-propagate-parent-validity-after-resize
+    eq. > @
+      malloc.of
+        16
+        [mem]
+          seq * > @
+            parent.valid.and child.valid
+            mem.resized 8
+            parent.valid.not.and child.valid.not
+          parent.slot 0 4 > child
+          mem.slot 4 8 > parent
+      true
+
+  ++> can-read-and-write-at-slot-edges
+    eq. > @
+      malloc.of
+        8
+        [mem]
+          seq * > @
+            part
+            part.write 0 01-02
+            part.write 2 03-04
+            part.read 0 4
+          mem.slot 2 4 > part
+      01-02-03-04
+
+  ++> can-reject-child-that-exceeds-its-direct-parent
+    not. > @
+      malloc.of
+        16
+        [mem]
+          child.valid > @
+          parent.slot 7 2 > child
+          mem.slot 0 8 > parent
+
+  ++> can-reject-invalid-slot-regions
+    malloc.of > @
+      8
+      [mem]
+        and. > @
+          fractional.valid.not.and negative.valid.not
+          infinite.valid.not.and overrun.valid.not
+        mem.slot 1 2.5 > fractional
+        mem.slot pinf 2 > infinite
+        mem.slot -1 2 > negative
+        mem.slot 7 2 > overrun
