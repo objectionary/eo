@@ -133,6 +133,29 @@ final class JavaFilesTest {
     }
 
     @Test
+    void writesTheJunitCompanionOfAnAtom(@Mktmp final Path temp) throws IOException {
+        final Path xmir = temp.resolve("main.xmir");
+        new Saved(
+            String.join(
+                "",
+                "<object><o name='foo'><o name='λ' atom='org.example.Foo'/></o>",
+                "<class java-name='Foo' skip-java='true'>",
+                "<tests>final class TestFoo { @Test void works() {} }</tests>",
+                "</class></object>"
+            ),
+            xmir
+        ).value();
+        new JavaFiles(temp.resolve("generated")).total(
+            true, xmir, "", true, new GlobalCache.GcFresh()
+        );
+        MatcherAssert.assertThat(
+            "the JUnit companion of an atom must be written, but it was not",
+            Files.exists(temp.resolve("generated-test-sources/TestFoo.java")),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
     void removesTheClassOfAnObjectThatBecameAnAtom(@Mktmp final Path temp) throws IOException {
         final Path generated = temp.resolve("generated");
         final Path plain = temp.resolve("plain.xmir");

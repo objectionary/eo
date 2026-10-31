@@ -59,6 +59,48 @@ final class MjLintTest {
     }
 
     @Test
+    void refusesRootReferencesInArgumentsBeforeTranspiling(@Mktmp final Path temp)
+        throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            "+architect yegor256@gmail.com",
+            "+package foo.x",
+            "",
+            "stdout > main",
+            "  $.x"
+        );
+        final List<Object> evidence = new ArrayList<>(2);
+        evidence.add(
+            new UncheckedText(
+                new TextOf(
+                    Assertions.assertThrows(
+                        IllegalStateException.class,
+                        () -> maven.execute(new PpTranspile()),
+                        "a root self reference in an argument must stop before Java generation"
+                    )
+                )
+            ).asString()
+        );
+        evidence.add(
+            maven.result().keySet().stream()
+                .filter(path -> path.endsWith(".java"))
+                .collect(Collectors.toList())
+        );
+        MatcherAssert.assertThat(
+            "a root self reference in an argument must fail before Java generation",
+            evidence,
+            Matchers.<Object>contains(
+                Matchers.hasToString(
+                    Matchers.allOf(
+                        Matchers.containsString("foo.x.main:5"),
+                        Matchers.containsString("(validate-root-base)")
+                    )
+                ),
+                Matchers.<Object>equalTo(List.of())
+            )
+        );
+    }
+
+    @Test
     void includesDefectDetailsInExceptionMessage(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(MjLintTest.erroneous());
         final IllegalStateException thrown = Assertions.assertThrows(

@@ -42,59 +42,55 @@
   if. > @
     arg.is-finite.and
       arg.abs.gt 1000000000000000
-    T
-      "Can't take a sine of an angle above 1e15, the reduction cannot hold it"
-    summed
-  minus. > angle!
-    minus.
-      arg.minus product
-      slip
-    turns.times tail
-  number num.as-bytes > arg
-  spread.minus tau > away
-  foot.times crown > cross
-  spread.minus away > crown
-  turns.minus top > foot
-  134217729 > gap
-  top.times crown > high
-  foot.times stub > low
-  top.times stub > mid
-  turns.times tau > product
-  number angle > reduced
-  wide.minus turns > shed
-  plus. > slip
-    plus.
-      plus.
-        high.minus product
-        mid
-      cross
-    low
-  tau.times gap > spread
-  tau.minus crown > stub
-  reduced.times > summed
-    if. > [^ depth] >> factor
-      depth.gt 15
-      1
-      1.minus
-        times.
-          div.
-            ^.reduced.times ^.reduced
-            times.
-              depth.times 2
+    T "Can't take a sine of an angle above 1e15, the reduction cannot hold it"
+    times.
+      number >> reduced
+        minus. >> angle!
+          minus.
+            minus.
+              number num.as-bytes >> arg
+              turns.times tau >> product
+            plus.
               plus.
+                plus.
+                  minus.
+                    times.
+                      minus. >> top
+                        turns.times 134217729 >> wide
+                        wide.minus turns
+                      minus. >> crown
+                        times. >> spread
+                          pi.times 2 >> tau
+                          134217729
+                        spread.minus tau
+                    product
+                  top.times
+                    tau.minus crown >> stub
+                times.
+                  turns.minus top >> foot
+                  crown
+              foot.times stub
+          times.
+            floor. >> turns
+              plus.
+                arg.div tau
+                0.5
+            2.4492935982947064e-16
+      if. > [^ depth] >> factor
+        depth.gt 15
+        1
+        1.minus
+          times.
+            div.
+              reduced.times reduced
+              times.
                 depth.times 2
-                1
-          ^.factor
-            depth.plus 1
-    | 1
-  2.4492935982947064e-16 > tail
-  pi.times 2 > tau
-  wide.minus shed > top
-  floor. > turns
-    plus.
-      arg.div tau
-      0.5
-  turns.times gap > wide
+                plus.
+                  depth.times 2
+                  1
+            ^.factor
+              depth.plus 1
+      | 1
 
   lt. ++> can-be-accurate-near-the-documented-four-hundred-million-boundary
     abs.

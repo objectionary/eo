@@ -28,8 +28,7 @@
             tup
             ^.rechead tup.tail
           | list
-    T
-      "Given index must be an integer"
+    T "Given index must be an integer"
 
   eq. ++> can-take-a-front-slice
     front.

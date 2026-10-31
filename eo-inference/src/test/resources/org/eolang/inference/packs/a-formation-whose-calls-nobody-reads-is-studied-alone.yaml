@@ -1,0 +1,58 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls hold, so it is studied with other open. first and second call
+# pick but leave m empty, and nobody reads them, so pick is walked only in its
+# study copy, where flag, m and its @ are open, and the call other.pick yes
+# oak on the open void is open too.
+sources:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+      [] > not
+        ^.pick no yes > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  dial.eo: |
+    [^ sys] > dial
+  oak.eo: |
+    [] > oak
+  app.eo: |
+    [] > app
+      [other] > hold
+        [^ flag m] > pick
+          flag.pick > @
+            dial 03-
+            m
+        pick yes > first
+        pick no > second
+        other.pick yes oak > third
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.hold.other']/open
+  - /answers/o[@loc='Φ.app.hold.first']/is[@loc='Φ.app.hold.pick']
+  - /answers/o[@loc='Φ.app.hold.second']/is[@loc='Φ.app.hold.pick']
+  - /answers[not(o[@lands='m'])]
+  - /answers/o[@loc='Φ.app.hold.pick.φ' and @copies='1']
+  - /answers/o[@loc='Φ.app.hold.pick.flag']/open
+  - /answers/o[@loc='Φ.app.hold.pick.m']/open
+  - /answers/o[@loc='Φ.app.hold.pick.φ']/open
+  - /answers/o[@loc='Φ.app.hold.third']/open

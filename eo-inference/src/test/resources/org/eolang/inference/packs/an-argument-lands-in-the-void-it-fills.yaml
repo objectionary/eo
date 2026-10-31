@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The first argument of the call of point goes into x and the second into y in
+# every copy, so each lands in one void.
+sources:
+  point.eo: |
+    [x y] > point
+      x > @
+      y > second
+  app.eo: |
+    [] > app
+      point 1 2 > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.point']
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='x']
+  - /answers/o[@loc='Φ.app.φ.α1' and @lands='y']
