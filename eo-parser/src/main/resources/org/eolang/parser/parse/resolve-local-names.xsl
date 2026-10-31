@@ -122,20 +122,25 @@
   (#5960). The name is taken as the scope only when the nearest formation
   that declares it at all is the one carrying it, so a nearer attribute of
   the same name shadows the formation and pins nothing, as it does for a bare
-  reference above.
+  reference above. A nested formation can only be named through the scope
+  that owns it, since "build-fqns" rejects a bare name of an enclosing scope
+  (R-9.2.4): so "^.bar.foo" pins the formation "bar" owned by the scope "^"
+  names, and likewise after any receiver that pins a scope, as long as the
+  reference sits inside "bar" (#9315).
 
   A dispatch is still flat at this point in the train - "wrap-method-calls"
   nests it later - so the receiver of a "@method" node is its preceding
   sibling; a reversed dispatch ("plus. &gt; y") carries no "@method" and holds
   its receiver as a child, so it never reaches here. The empty sequence for
   every other receiver (an application, a global, a name of no enclosing
-  formation), which names no scope known at parse time.
+  formation, a dispatch on a formation the reference is not inside), which
+  names no scope known at parse time.
   -->
   <xsl:function name="eo:scope" as="element()?">
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="receiver" as="element()?" select="$ref/preceding-sibling::o[1]"/>
     <xsl:variable name="owner" as="element()?" select="$ref/ancestor::o[not(@base)][@name=$receiver/@base or exists(key('attributes', concat($receiver/@base, '#', generate-id(.))))][1]"/>
-    <xsl:sequence select="if (empty($receiver/@base)) then () else if ($receiver/@base='ξ' and empty($receiver/@method)) then $ref/ancestor::o[not(@base)][1] else if ($receiver/@base='ρ' and empty($receiver/@method)) then $ref/ancestor::o[not(@base)][2] else if ($receiver/@base='.ρ' and exists($receiver/@method)) then eo:scope($receiver)/ancestor::o[not(@base)][1] else if (empty($receiver/@method) and $owner/@name=$receiver/@base) then $owner else ()"/>
+    <xsl:sequence select="if (empty($receiver/@base)) then () else if ($receiver/@base='ξ' and empty($receiver/@method)) then $ref/ancestor::o[not(@base)][1] else if ($receiver/@base='ρ' and empty($receiver/@method)) then $ref/ancestor::o[not(@base)][2] else if ($receiver/@base='.ρ' and exists($receiver/@method)) then eo:scope($receiver)/ancestor::o[not(@base)][1] else if (exists($receiver/@method)) then (for $f in eo:scope($receiver)/o[not(@base) and @name=substring-after($receiver/@base, '.')] return $ref/ancestor::o[. is $f]) else if (empty($receiver/@method) and $owner/@name=$receiver/@base) then $owner else ()"/>
   </xsl:function>
   <!--
   How many formations separate a bare, ancestor-search-captured reference
