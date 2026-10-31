@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Proxies}.
+ *
  * @since 0.62.0
  */
 final class ProxiesTest {

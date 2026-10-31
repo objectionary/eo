@@ -9,29 +9,36 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package range
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-attachment
++version 0.0.0
 
-[^] > naturals
+[^span] > naturals
   if. > @
     and.
-      ^.start.is-integer.and ^.end.is-integer
+      span.start.is-integer.and span.end.is-integer
       and.
-        ^.start.abs.lt safe
-        ^.end.abs.lt safe
+        span.start.abs.lt
+          2.power 53 >> safe
+        span.end.abs.lt safe
     range
       [^] >>
-        build ^.^.start > @
-        [^ num] > build
+        [^ num] >> build
           num > @
           ^.build > next
             1.plus @
-      ^.end
+        | ^.span.start > @
+      span.end
     T
-      "Range bounds must be integers within the safe unit-step range (|x| < 2^53), but were %f and %f".printf
-        * ^.start ^.end
-  2.power 53 > safe
+      "Range bounds must be integers within the safe unit-step range (|x| < 2^53), but were %s and %s".printf
+        *
+          num.is-finite.if > [num] >> printed
+            "%f".printf
+              * num
+            string num.as-scientific
+          | span.start
+          printed span.end
 
   eq. ++> can-build-a-range-of-negatives
     naturals.

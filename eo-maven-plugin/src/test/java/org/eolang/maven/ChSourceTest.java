@@ -21,6 +21,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test case for {@link ChSource}.
+ *
  * @since 0.60
  */
 @ExtendWith(MktmpResolver.class)

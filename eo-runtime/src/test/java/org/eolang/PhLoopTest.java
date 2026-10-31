@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Timeout;
 
 /**
  * Test case for {@link PhLoop}.
+ *
  * @since 0.76
  */
 final class PhLoopTest {

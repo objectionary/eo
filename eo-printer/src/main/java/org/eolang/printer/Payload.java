@@ -33,6 +33,7 @@ final class Payload {
 
     /**
      * Ctor.
+     *
      * @param wrapper The {@code <o>} element of the literal
      */
     Payload(final Xnav wrapper) {
@@ -41,6 +42,7 @@ final class Payload {
 
     /**
      * Put the given text in place of the payload.
+     *
      * @param text The readable EO text of the literal
      */
     void replace(final String text) {

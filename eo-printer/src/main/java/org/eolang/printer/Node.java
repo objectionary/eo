@@ -25,7 +25,10 @@ import java.util.stream.Collectors;
  * own indented lines, a {@link Horizontal} one, where they are inlined, a
  * {@link Phi} one for a formation bound to nothing but its decoratee, and
  * a {@link Starred} one for a tuple applied at the tail — and keeps the
- * one with the smaller {@link Penalty}. The decision is made recursively,
+ * one with the smaller {@link Penalty}. The identity glyph is the one head
+ * that takes no horizontal arguments (R-3.16.1), so an application headed by
+ * it, with or without a method chain behind it, keeps every argument on a
+ * line of its own. The decision is made recursively,
  * bottom-up, against a {@link Style} that carries the indentation width
  * and the penalty weights, so the node never has to refer back to the
  * printer that started it.</p>
@@ -80,6 +83,7 @@ final class Node {
 
     /**
      * Ctor, from a {@code <line>} element.
+     *
      * @param line The {@code <line>} element
      */
     Node(final Xnav line) {
@@ -98,6 +102,7 @@ final class Node {
 
     /**
      * Ctor.
+     *
      * @param head The rendered head
      * @param suffix The rendered suffix
      * @param formation Whether it is a formation
@@ -143,6 +148,22 @@ final class Node {
      * suffix shape puts the receiver in front of the dot and leaves the
      * binding after a name, where it parses.</p>
      *
+     * <p>A receiver too long to sit in front of that dot leaves no suffix
+     * shape at all, and the binding used to be glued onto the reversed head
+     * after all (#9173). The dispatch is then written the way the source
+     * wrote it: the receiver on its own lines, and a {@code .method:hey}
+     * continuation under the same head, which dispatches on the lines above
+     * it. Only a receiver-only dispatch is spelled that way, since the
+     * grammar takes no arguments under a continuation line.</p>
+     *
+     * <p>A reversed dispatch whose receiver is a const has no inline shape at
+     * all. The suffix shape would have to glue the {@code !} in front of the
+     * dot, which {@link #braced()} turns down, and the reversed one-liner
+     * ({@code eq. 5! 40-14-...}) is no body an only-phi formation takes
+     * (R-3.10.6) and floats the const out into a handle of its own on the next
+     * parse anyway. Such a dispatch is laid out vertically, where the const is
+     * written as the {@code 5 >>!} handle that parse makes of it (#9446).</p>
+     *
      * @param style The style to lay out in
      * @param indent The indentation level
      * @return The rendered block
@@ -155,6 +176,8 @@ final class Node {
             if (this.labelled() || style.points(alt) <= style.points(best)) {
                 best = alt;
             }
+        } else if (this.labelled() && this.children.size() == 1) {
+            best = this.continued(style, indent);
         }
         return best;
     }
@@ -163,6 +186,7 @@ final class Node {
      * Print this node on the lines below the head of its parent: the block
      * itself, preceded by the newline that opens it and, for a test
      * attribute, by the blank line R-6.5.3 requires in front of it.
+     *
      * @param style The style to lay out in
      * @param indent The indentation level
      * @return The rendered block with its leading newlines
@@ -198,6 +222,7 @@ final class Node {
      * Whether this node is a nameless method-dispatch continuation
      * ({@code .y}, {@code ?.y}), which dispatches on the lines above it
      * instead of carrying a receiver of its own.
+     *
      * @return True when this node continues the sibling above it
      */
     boolean continuation() {
@@ -207,6 +232,7 @@ final class Node {
 
     /**
      * Print this node with its children laid out beneath its head.
+     *
      * @param style The style to lay out in
      * @param indent The indentation level
      * @return The rendered block
@@ -397,6 +423,7 @@ final class Node {
      * inline-phi form: not a formation, whose children are bindings rather
      * than arguments, and not a bare token, which has nothing to lay out
      * beneath a marker.
+     *
      * @return True when this node applies arguments
      */
     boolean applied() {
@@ -406,6 +433,7 @@ final class Node {
     /**
      * Whether no line in this node's children carries a name suffix, so
      * their subtrees are safe to fold into a compact only-phi formation.
+     *
      * @return True when every child subtree is nameless
      * @see #nameless()
      */
@@ -446,7 +474,8 @@ final class Node {
         final Optional<String> result;
         if (this.abstractt) {
             result = this.phi(style, indent);
-        } else if (this.children.isEmpty()) {
+        } else if (this.children.isEmpty() || this.glyph()
+            || this.reversed && this.children.get(0).constant()) {
             result = Optional.empty();
         } else {
             result = new Horizontal(
@@ -459,7 +488,8 @@ final class Node {
     private Optional<String> phi(final Style style, final int indent) {
         final Optional<String> result;
         if (this.children.size() == 1
-            && " > @".equals(this.children.get(0).tail)) {
+            && " > @".equals(this.children.get(0).tail)
+            && !this.bound()) {
             result = new Phi(
                 this.base, this.tail, this.children.get(0)
             ).print(style, indent);
@@ -509,9 +539,11 @@ final class Node {
 
     private Optional<String> spelled() {
         final Optional<String> result;
-        if (this.reversed && this.children.size() <= 1) {
+        if (this.reversed) {
             result = Optional.empty();
         } else if (this.abstractt || !this.tail.isEmpty() || "*".equals(this.base)) {
+            result = Optional.empty();
+        } else if (this.glyph() && !this.children.isEmpty()) {
             result = Optional.empty();
         } else if (this.children.isEmpty()) {
             result = Optional.of(this.base);
@@ -557,8 +589,32 @@ final class Node {
         return "!".equals(this.tail);
     }
 
+    private String continued(final Style style, final int indent) {
+        final String dot;
+        if (this.base.endsWith("?.")) {
+            dot = "?.";
+        } else {
+            dot = ".";
+        }
+        return new StringBuilder(this.children.get(0).print(style, indent))
+            .append('\n')
+            .append(style.indent(indent))
+            .append(dot)
+            .append(this.base, 0, this.base.length() - dot.length())
+            .append(this.tail)
+            .toString();
+    }
+
     private boolean labelled() {
-        return this.reversed && this.tail.startsWith(":");
+        return this.reversed && this.bound();
+    }
+
+    private boolean bound() {
+        return this.tail.startsWith(":");
+    }
+
+    private boolean glyph() {
+        return "I".equals(this.base) || this.base.startsWith("I.");
     }
 
     private boolean forced() {

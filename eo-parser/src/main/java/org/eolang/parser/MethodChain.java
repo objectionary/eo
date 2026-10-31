@@ -33,6 +33,7 @@ final class MethodChain {
 
     /**
      * Ctor.
+     *
      * @param ident Method name
      * @param dot Column of the dot
      * @param weak Whether the link is a fragile {@code ?.} dispatch
@@ -45,6 +46,7 @@ final class MethodChain {
 
     /**
      * Whether this link is a fragile {@code ?.} dispatch.
+     *
      * @return True for {@code ?.}, false for plain {@code .}
      */
     boolean fragile() {
@@ -53,6 +55,7 @@ final class MethodChain {
 
     /**
      * Method name (no leading dot).
+     *
      * @return Name
      */
     String name() {
@@ -61,6 +64,7 @@ final class MethodChain {
 
     /**
      * Column of the leading dot.
+     *
      * @return Dot column
      */
     int dot() {

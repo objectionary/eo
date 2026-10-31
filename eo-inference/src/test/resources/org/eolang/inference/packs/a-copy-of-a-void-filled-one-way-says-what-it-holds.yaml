@@ -1,0 +1,44 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# box is only ever handed a bell, so its body is a bell. crate is handed a
+# bell by two and a chime by three, and each call has a copy of its own, so
+# one copy of crate is a bell and the other a chime.
+sources:
+  bell.eo: |
+    [] > bell
+      [^] > ring
+        01- > @
+  chime.eo: |
+    [] > chime
+      [^] > ring
+        02- > @
+  box.eo: |
+    [item] > box
+      item > @
+  crate.eo: |
+    [thing] > crate
+      thing > @
+  one.eo: |
+    [] > one
+      box bell > @
+  two.eo: |
+    [] > two
+      crate bell > @
+  three.eo: |
+    [] > three
+      crate chime > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.box.item' and @copies='1']/is[@loc='Φ.bell']
+  - /answers/o[@loc='Φ.box.φ']/is[@loc='Φ.bell']
+  - /answers/o[@loc='Φ.two.φ.α0' and @lands='thing']/is[@loc='Φ.bell']
+  - /answers/o[@loc='Φ.three.φ.α0' and @lands='thing']/is[@loc='Φ.chime']
+  - /answers/o[@loc='Φ.crate' and @copies='2']/reduced/set[@copies='1']/is[@loc='Φ.bell']
+  - /answers/o[@loc='Φ.crate' and @copies='2']/reduced/set[@copies='1']/is[@loc='Φ.chime']

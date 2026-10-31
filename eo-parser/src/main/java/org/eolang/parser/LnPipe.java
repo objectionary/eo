@@ -16,8 +16,9 @@ import java.util.List;
  * predecessor is formed, then the pipe supplies its arguments.</p>
  *
  * <p>The predecessor (stack top at the pipe's indent) must be a formation
- * ({@link Kind#BARE_FORMATION} / {@link Kind#ONLY_PHI}) or
- * another {@link Kind#PIPE_APPLICATION}, and must be named — a pipe refers
+ * ({@link Kind#BARE_FORMATION} / {@link Kind#ONLY_PHI}), the identity
+ * object {@link Kind#IDENTITY_OBJECT} of §3.16, or another
+ * {@link Kind#PIPE_APPLICATION}, and must be named — a pipe refers
  * to it by name, so an unnamed formation is not a valid target (R-3.14.2).
  * A pipe after a {@code .method} dispatch is rejected (R-3.14.4): the
  * attribute has already been taken, so the formation is no longer in
@@ -52,6 +53,7 @@ final class LnPipe implements Line {
 
     /**
      * Ctor.
+     *
      * @param source The source span
      */
     LnPipe(final Span source) {
@@ -62,6 +64,10 @@ final class LnPipe implements Line {
     public void into(final Stack stack, final Globals globals, final Emit emit) {
         Blanks.checkPlain(this.span, globals, emit);
         this.precheck(stack);
+        this.rejectTest(
+            Eo.topLevelPlusPlusArrowIndex(this.span.body()) >= 0
+                || Eo.topLevelMinusMinusArrowIndex(this.span.body()) >= 0
+        );
         final Tokens tokens = this.piped();
         final List<Value> args = tokens.readArgs();
         Bindings.checkAllOrNothing(args, this.span);
@@ -69,12 +75,7 @@ final class LnPipe implements Line {
             tokens.tail(), this.span, this.span.indent() + tokens.cursor()
         );
         suffix.rejectAtomOutsideFormation(this.span);
-        if (suffix.test()) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "a pipe application cannot declare a test attribute"
-            );
-        }
+        this.rejectTest(suffix.test());
         globals.seal(emit, this.span);
         final Openness openness;
         if (args.isEmpty()) {
@@ -100,6 +101,15 @@ final class LnPipe implements Line {
         }
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, this.span.line());
+        }
+    }
+
+    private void rejectTest(final boolean tested) {
+        if (tested) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "a pipe application cannot declare a test attribute"
+            );
         }
     }
 

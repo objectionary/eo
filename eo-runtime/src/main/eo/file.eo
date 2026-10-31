@@ -1,213 +1,206 @@
 # Represents a file in the filesystem for reading and writing.
+#
+# @todo #9650:30min Remove `+unlint redundant-attachment:101` from the metas
+#  below once objectionary/lints#1301 counts a hop through the receiver as
+#  reaching outward. The lint reads the `>>` name of the formation `open` hands
+#  to `seq` as never referenced, while that formation reaches out through the
+#  `^` its head declares.
+#
+# @todo #9650:30min Remove `+unlint too-deep-object:170` from the metas
+#  below. It hides how deep `write` of the output block in `open` nests the
+#  slice of a buffer written in part, 14 levels where the lint allows 12. Move
+#  the stream of `open` into an object of its own, so that it nests no deeper.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-attachment:100
++unlint too-deep-object:169
++version 0.0.0
 
 [path] > file
   path > @
   @. > as-path
     Q.path path
-  or. > [^] > exists
+  or. > [^entry] > exists
     eq.
-      code.
-        os.is-windows.if
-          win32 *1
-            "_access"
-            ^.path
-            0
-          posix *1
-            "access"
-            ^.path
-            0
+      os.is-windows.if
+        win32.access entry.path 0
+        posix.access entry.path 0
       0
-    ^.is-symlink false
-  [^ cant-check] > is-directory
+    entry.is-symlink false
+  [^entry cant-check] > is-directory
     if. > @
       info.code.eq 0
       eq.
         floor.
-          info.output.mode.div 4096
+          info.mode.div 4096
         4
       cant-check
-    called. > info
-      os.is-windows.if
-        win32 *1
-          "_stat64"
-          ^.path
-        posix *1
-          "stat"
-          ^.path
-  [^ cant-check] > is-symlink
+        "Can't check whether '%s' is a directory: %s".printf
+          *
+            entry.path
+            message.
+              called. >> info
+                os.is-windows.if
+                  win32.stat64 entry.path
+                  posix.stat entry.path
+  [^entry cant-check] > is-symlink
     os.is-windows.if > @
       if.
-        attributes.eq win32.invalid
+        eq.
+          win32.get-file-attributes entry.path >> attributes
+          win32.invalid
         cant-check
         not.
           eq.
             attributes.as-i64.as-bytes.and win32.reparse
             00-00-00-00-00-00-00-00
       if.
-        info.code.eq 0
+        eq.
+          code.
+            called. >> info
+              posix.lstat entry.path
+          0
         eq.
           floor.
-            info.output.mode.div 4096
+            info.mode.div 4096
           10
         cant-check
-    code. > attributes
-      win32 *1
-        "GetFileAttributesW"
-        ^.path
-    called. > info
-      posix *1
-        "lstat"
-        ^.path
-  [^ mode scope cant-open] > open
-    known.not.if > @
-      T
-        "Wrong access mode. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
+  [^entry mode scope cant-open] > open
+    if. > @
+      not.
+        or. >> known
+          existing.or
+            or. >> truncate
+              as-bool.
+                access.eq "w"
+              as-bool.
+                access.eq "w+"
+          or. >> appending
+            as-bool.
+              access.eq "a"
+            as-bool.
+              access.eq "a+"
+      T "Wrong access mode. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
       if.
-        existing.and ^.exists.not
+        and.
+          or. >> existing
+            as-bool.
+              access.eq "r"
+            as-bool.
+              access.eq "r+"
+          entry.exists.not
         cant-open
           "File must exist for given access mode: '%s'".printf
             *
               mode >> access!
         seq *
-          open-file
-          ^
-    or. > appending
-      as-bool.
-        access.eq "a"
-      as-bool.
-        access.eq "a+"
-    or. > existing
-      as-bool.
-        access.eq "r"
-      as-bool.
-        access.eq "r+"
-    or. > known
-      existing.or truncate
-      appending
-    [^] > open-file
-      os.is-windows.if > @
-        open-through
-          []
-            win32 > @
-            win32 "_close" > close
-            win32 "_open" > open
-            win32 "_read" > read
-            win32 "_write" > write
-        open-through
-          []
-            posix > @
-            posix "close" > close
-            posix "open" > open
-            posix "read" > read
-            posix "write" > write
-      [^ syscall] > open-through
-        if. > @
-          descriptor.eq -1
-          ^.^.cant-open
-            "Couldn't open file '%s': %s".printf
-              * ^.^.^.path opened.output
-          if.
-            recovered
-              seq *
-                ^.^.scope
-                  stream descriptor
-                true
-              false
-            seq *
-              code.
-                syscall.close
-                  * descriptor
-              true
-            seq *
-              code.
-                syscall.close
-                  * descriptor
-              ^.^.cant-open
-                "The scope given to '%s'.open() failed; the descriptor was closed before propagating the failure".printf
-                  * ^.^.^.path
-        ^.^.appending.if syscall.append 0 > append
-        ^.^.existing.not.if syscall.creat 0 > creat
-        opened.code > descriptor
-        if. > direction
-          ^.^.readable.and ^.^.writable
-          syscall.rdwr
-          ^.^.writable.if syscall.wronly syscall.rdonly
-        plus. > flags
-          plus.
-            direction.plus creat
-            trunc
-          append
-        called. > opened
-          syscall.open
-            * ^.^.^.path flags syscall.mode
-        [^ descriptor] > stream
-          [^ size] > read
-            read. > @
-              input-block --
-              size
-            [^ buffer] > input-block
-              buffer > @
-              [^ size] > read
-                ^.^.^.^.^.^.readable.not.if > @
-                  T
-                    "Can't read from file with provided access mode '%s'".printf
-                      * access
-                  seq *
-                    if. >> chunk!
-                      received.code.eq -1
-                      T
-                        "Failed to read from file"
-                      received.output
-                    received
-                    ^.^.input-block chunk
-                called. > received
-                  ^.^.^.^.syscall.read
-                    * ^.^.^.descriptor size
-          [^ buffer] > write
-            output-block.write buffer > @
-            [^] > output-block
-              true > @
-              [^ buffer] > write
-                ^.^.^.^.^.^.writable.not.if > @
-                  T
-                    "Can't write to file with provided access mode '%s'".printf
-                      * access
-                  seq *
-                    if. >>!
-                      code.eq -1
-                      T
-                        "Failed to write to file"
-                      ^.^.output-block
-                    code
-                    remainder
-                code. > code
-                  ^.^.^.^.syscall.write
-                    * ^.^.^.descriptor buffer buffer.size
-                if. > remainder
-                  code.lt buffer.size
-                  ^.^.output-block.write
-                    buffer.slice code (buffer.size.minus code)
-                  ^.^.output-block
-        ^.^.truncate.if syscall.trunc 0 > trunc
-    and. > readable
+          [^] >>
+            os.is-windows.if > @
+              [^ syscall] >> open-through
+                if. > @
+                  opened.code.eq -1
+                  ^.^.cant-open
+                    "Couldn't open file '%s': %s".printf
+                      *
+                        ^.^.entry.path
+                        message.
+                          called. >> opened
+                            syscall.open
+                              ^.^.entry.path
+                              plus.
+                                plus.
+                                  plus.
+                                    if.
+                                      readable.and writable
+                                      syscall.rdwr
+                                      writable.if syscall.wronly syscall.rdonly
+                                    existing.not.if syscall.creat 0
+                                  truncate.if syscall.trunc 0
+                                appending.if syscall.append 0
+                              syscall.mode
+                  if.
+                    recovered
+                      seq *
+                        ^.^.scope >> scoped!
+                          [^ descriptor] >> stream
+                            [^ size] > read
+                              read. > @
+                                [^ buffer] >> input-block
+                                  buffer > @
+                                  [^ size] > read
+                                    readable.not.if > @
+                                      T
+                                        "Can't read from file with provided access mode '%s'".printf
+                                          * access
+                                      seq *
+                                        if. >> chunk!
+                                          received.code.eq -1
+                                          T "Failed to read from file"
+                                          data.
+                                            called. >> received
+                                              ^.^.^.^.syscall.read ^.^.^.descriptor size
+                                        received
+                                        ^.^.input-block chunk
+                                | --
+                                size
+                            [^ buffer] > write
+                              write. > @
+                                [^] >> output-block
+                                  true > @
+                                  [^ buffer] > write
+                                    writable.not.if > @
+                                      T
+                                        "Can't write to file with provided access mode '%s'".printf
+                                          * access
+                                      seq *
+                                        if. >>!
+                                          code.eq -1
+                                          T "Failed to write to file"
+                                          ^.^.output-block
+                                        code
+                                        if.
+                                          lt.
+                                            number (^.^.^.^.syscall.write ^.^.^.descriptor buffer buffer.size)! >> code
+                                            buffer.size
+                                          ^.^.output-block.write
+                                            buffer.slice code (buffer.size.minus code)
+                                          ^.^.output-block
+                                buffer
+                          | opened.code
+                        true
+                      false
+                    seq *
+                      syscall.close opened.code
+                      true
+                    seq *
+                      syscall.close opened.code
+                      scoped
+              |
+                []
+                  win32 > @
+                  win32.close > close
+                  win32.open > open
+                  win32.read > read
+                  win32.write > write
+              open-through
+                []
+                  posix > @
+                  posix.close > close
+                  posix.open > open
+                  posix.read > read
+                  posix.write > write
+          entry
+    and. >> readable
       not.
         as-bool.
           access.eq "w"
       not.
         as-bool.
           access.eq "a"
-    or. > truncate
-      as-bool.
-        access.eq "w"
-      as-bool.
-        access.eq "w+"
-    not. > writable
+    not. >> writable
       as-bool.
         access.eq "r"
 
@@ -222,11 +215,18 @@
     13
 
   ++> can-close-a-descriptor-when-the-scope-fails
-    eq. > @
-      drain 300
-      true
-      drain
-      tmp
+    os.is-windows.or > @
+      seq *
+        before
+        drain 300
+        after.as-number.lt
+          before.as-number.plus 100
+    seq * > after!
+      posix.close second
+      second
+    seq * > before!
+      posix.close first
+      first
     if. > [^ n] > drain
       n.lte 0
       true
@@ -238,16 +238,23 @@
           true
         ^.drain
           n.minus 1
+    code. > first!
+      posix.open
+        "/dev/null"
+        0
+        0
+    code. > second!
+      posix.open
+        "/dev/null"
+        0
+        0
     mktemp.tmpfile > tmp
 
   ++> can-create-the-target-of-a-dangling-symlink-on-writing
     os.is-windows.or > @
       seq *
         code.
-          posix *1
-            "symlink"
-            target
-            link
+          posix.symlink target link
         link.as-file.open
           "w"
           f.write "created" > [f]
@@ -285,6 +292,13 @@
         "a+"
         true > [f]
     12
+
+  ++> can-name-the-file-whose-kind-it-cannot-check
+    starts-with. > @
+      f.is-directory I
+      "Can't check whether '%s' is a directory: ".printf
+        * f.path
+    mktemp.tmpfile.deleted > f
 
   ++> can-read-from-a-file
     eq. > @
@@ -324,8 +338,7 @@
     seq * > @
       temp.open
         "w"
-        f.write > [f]
-          "Shrek is love"
+        f.write "Shrek is love" > [f]
       "Shrek is love".eq
         malloc.of
           13
@@ -344,14 +357,14 @@
     mktemp.tmpfile.deleted.is-symlink true > @
 
   mktemp.tmpfile.deleted.is-directory ++> can-recover-from-checking-an-absent-file
-    true
+    true > [message]
 
   eq. ++> can-recover-from-opening-a-missing-file
-    "recovered"
+    file "recovered"
     mktemp.tmpfile.deleted.open
       "r"
       I
-      "recovered" > [reason]
+      file "recovered" > [reason]
 
   eq. ++> can-represent-a-file-as-a-path
     as-path.
@@ -379,8 +392,7 @@
     os.is-windows.or > @
       seq *
         code.
-          posix *1
-            "symlink"
+          posix.symlink
             d.resolved "absent"
             link
         link.as-file.exists
@@ -391,8 +403,7 @@
     os.is-windows.or > @
       seq *
         code.
-          posix *1
-            "symlink"
+          posix.symlink
             d
             d.resolved "ссылка"
         not.
@@ -408,10 +419,7 @@
     os.is-windows.or > @
       seq *
         code.
-          posix *1
-            "symlink"
-            d
-            link
+          posix.symlink d link
         link.as-file.is-symlink false
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
     d.resolved "ссылка" > link
@@ -469,7 +477,7 @@
     eq. > @
       malloc.of
         5
-        [^ m]
+        [m]
           seq * > @
             open.
               mktemp.tmpfile.open
@@ -487,8 +495,7 @@
     size.
       mktemp.tmpfile.open
         "w"
-        f.write > [f]
-          "Hello, world"
+        f.write "Hello, world" > [f]
     12
 
   eq. ++> can-write-to-a-file-sequentially
@@ -504,8 +511,7 @@
     seq * > @
       temp.open
         "w"
-        f.write > [f]
-          "Shrek is love"
+        f.write "Shrek is love" > [f]
       open.
         file source
         "a"
@@ -550,7 +556,7 @@
     I
 
   tmpfile. --> stops-on-touching-a-temp-file-in-an-absent-directory
-    @.
+    as-dir.
       mktemp.as-path.resolved "foo"
 
   mktemp.tmpfile.open --> stops-on-writing-with-a-wrong-mode

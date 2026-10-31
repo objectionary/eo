@@ -5,12 +5,12 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package tuple
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^ func] > each
-  ^.eachi > @
+[^list func] > each
+  list.eachi > @
     ^.func item > [^ item index] >>
 
   ++> can-iterate-over-a-list

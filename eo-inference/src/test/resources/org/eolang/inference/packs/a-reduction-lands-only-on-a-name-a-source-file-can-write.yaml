@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The @ of shaded is a copy of hue, which the parser names a🌵4-4, so shaded
+# keeps its own name: it reduces to itself, not to that hidden name.
+sources:
+  tree.eo: |
+    [] > tree
+      [^] > shaded
+        hue 1 > @
+        [k] >> hue
+          k > @
+          [] > leaf
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.tree.shaded.φ']/is[@loc='Φ.tree.shaded.a🌵4-4']
+  - /answers/o[@loc='Φ.tree.shaded']/reduced/is[@loc='Φ.tree.shaded']
+  - /answers[not(o[@loc='Φ.tree.shaded']/reduced/is[@loc='Φ.tree.shaded.a🌵4-4'])]

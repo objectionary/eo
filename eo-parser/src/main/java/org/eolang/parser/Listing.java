@@ -41,6 +41,7 @@ final class Listing implements Iterable<Directive> {
 
     /**
      * Ctor.
+     *
      * @param text The source text
      */
     Listing(final String text) {

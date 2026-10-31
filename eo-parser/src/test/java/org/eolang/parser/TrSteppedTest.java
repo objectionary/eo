@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link TrStepped}.
+ *
  * @since 0.51
  */
 final class TrSteppedTest {

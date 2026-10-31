@@ -10,6 +10,7 @@ import org.apache.maven.plugin.AbstractMojo;
 
 /**
  * Parse full pipeline.
+ *
  * @since 0.28.12
  */
 final class PpParse implements Iterable<Class<? extends AbstractMojo>> {

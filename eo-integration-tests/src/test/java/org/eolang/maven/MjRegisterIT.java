@@ -17,6 +17,7 @@ import com.yegor256.tojos.TjSmart;
 import com.yegor256.tojos.TjSynchronized;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +29,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Integration tests for eo-maven-plugin:register goal.
+ *
  * @since 0.52
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
@@ -47,7 +49,7 @@ final class MjRegisterIT {
                 MjRegisterIT.succeeds(f);
                 MatcherAssert.assertThat(
                     "Old pulled files must were removed, but it didn't",
-                    temp.resolve("target/eo/2-pull").toFile().exists(),
+                    MjRegisterIT.subdir(temp, "pull").toFile().exists(),
                     Matchers.is(false)
                 );
             }
@@ -67,7 +69,7 @@ final class MjRegisterIT {
                 MjRegisterIT.succeeds(f);
                 MatcherAssert.assertThat(
                     "Old resolved files must were removed, but it didn't",
-                    temp.resolve("target/eo/2-pull").toFile().exists(),
+                    MjRegisterIT.subdir(temp, "pull").toFile().exists(),
                     Matchers.is(false)
                 );
             }
@@ -75,33 +77,33 @@ final class MjRegisterIT {
     }
 
     @Test
-    void removesOldForeignFile(@Mktmp final Path temp) throws Exception {
+    void completesRootPackageInForeign(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
                 MjRegisterIT.runForeign(f);
                 MjRegisterIT.succeeds(f);
                 final TjSmart foreign = MjRegisterIT.loadForeign(temp);
                 MatcherAssert.assertThat(
-                    "Foreign must contain only 3 references to objects, but it doesn't",
-                    foreign.size(),
-                    Matchers.equalTo(3)
-                );
-                MatcherAssert.assertThat(
                     "Foreign must contain refs to Number, Bytes, and current object",
                     MjRegisterIT.existences(foreign, "number", "bytes", "foo"),
                     Matchers.everyItem(Matchers.is(true))
                 );
                 MatcherAssert.assertThat(
-                    "Foreign must not contain a reference to an old object",
+                    "Foreign must complete the root package with string, but it didnt",
                     foreign.select(tojo -> "string".equals(tojo.get("id"))).isEmpty(),
-                    Matchers.is(true)
+                    Matchers.is(false)
+                );
+                MatcherAssert.assertThat(
+                    "Foreign must grow past its 3 direct refs with the root package, but it didnt",
+                    foreign.size(),
+                    Matchers.greaterThan(3)
                 );
             }
         );
     }
 
     @Test
-    void removesUnnecessaryPulledObjects(@Mktmp final Path temp) throws Exception {
+    void pullsRootPackageSiblingsAlongsideNeededObject(@Mktmp final Path temp) throws Exception {
         new Farea(temp).together(
             f -> {
                 MjRegisterIT.run(
@@ -113,13 +115,13 @@ final class MjRegisterIT {
                 MjRegisterIT.succeeds(f);
                 MatcherAssert.assertThat(
                     "Necessary objects must were pulled",
-                    temp.resolve("target/eo/2-pull/number.eo").toFile().exists(),
+                    MjRegisterIT.subdir(temp, "pull").resolve("number.eo").toFile().exists(),
                     Matchers.is(true)
                 );
                 MatcherAssert.assertThat(
-                    "Unnecessary objects were not removed",
-                    temp.resolve("target/eo/2-pull/string.eo").toFile().exists(),
-                    Matchers.is(false)
+                    "The whole root package must be pulled, string too, but it wasnt",
+                    MjRegisterIT.subdir(temp, "pull").resolve("string.eo").toFile().exists(),
+                    Matchers.is(true)
                 );
             }
         );
@@ -193,5 +195,15 @@ final class MjRegisterIT {
         return Stream.of(ids)
             .map(id -> foreign.getById(id).exists("id"))
             .collect(Collectors.toList());
+    }
+
+    private static Path subdir(final Path home, final String name) throws IOException {
+        final Path target = home.resolve("target/eo");
+        try (Stream<Path> kids = Files.list(target)) {
+            return kids
+                .filter(kid -> kid.getFileName().toString().matches(String.format("\\d+-%s", name)))
+                .findFirst()
+                .orElse(target.resolve(name));
+        }
     }
 }

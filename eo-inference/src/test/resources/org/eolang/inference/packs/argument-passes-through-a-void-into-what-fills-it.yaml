@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# as-ascii calls its void cant-read with an oak. app fills cant-read with a
+# formation whose void is message, so the oak lands in message, and as-ascii
+# and the @ of app are the string that formation gives.
+sources:
+  as-ascii.eo: |
+    [^ cant-read] > as-ascii
+      cant-read oak > @
+  oak.eo: |
+    [] > oak
+  app.eo: |
+    [] > app
+      as-ascii > @
+        "bar" > [message]
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.as-ascii.φ.α0']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='cant-read']/is[@loc='Φ.app.φ.α0']
+  - /answers/o[@loc='Φ.as-ascii.φ.α0' and @lands='message']
+  - /answers/o[@loc='Φ.as-ascii']/reduced/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.string']

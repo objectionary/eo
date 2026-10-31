@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Both methods of one object were rendered, so the φ of each of them becomes
+# its own atom, and the object gets none.
+eo:
+  pair.eo: |
+    [] > pair
+      [x] > twice
+        x.times 2 > @
+      [x] > thrice
+        x.times 3 > @
+rendered:
+  - "4\tΦ.pair.twice"
+  - "5\tΦ.pair.thrice"
+patched:
+  pair.xmir:
+    - "/object/o[@name='pair']/o[@name='twice']/o[@name='φ' and not(@base)]\
+      /o[@name='λ']"
+    - "/object/o[@name='pair']/o[@name='thrice']/o[@name='φ' and not(@base)]\
+      /o[@name='λ']"
+    - "/object/o[@name='pair'][not(o[@name='φ'])]"

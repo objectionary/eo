@@ -12,6 +12,7 @@ import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 /**
  * Test case for {@link AtomTyped}.
+ *
  * @since 0.57
  */
 final class AtomTypedTest {
@@ -50,6 +51,7 @@ final class AtomTypedTest {
 
     /**
      * An atom that computes a fixed object.
+     *
      * @since 0.57
      */
     private static final class Computing extends PhDefault implements Atom {
@@ -61,6 +63,7 @@ final class AtomTypedTest {
 
         /**
          * Ctor.
+         *
          * @param phi The object to compute
          */
         Computing(final Phi phi) {

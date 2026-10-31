@@ -40,6 +40,7 @@ final class LnBlank implements Line {
 
     /**
      * Ctor.
+     *
      * @param source Source span
      * @param closing Whether this blank belongs to the run that closes the file
      */

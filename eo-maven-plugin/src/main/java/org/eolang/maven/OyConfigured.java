@@ -46,6 +46,7 @@ final class OyConfigured implements Scalar<Objectionary> {
 
     /**
      * Ctor.
+     *
      * @param hash The hash of the commit to pull from
      * @param settings The settings of the build
      */

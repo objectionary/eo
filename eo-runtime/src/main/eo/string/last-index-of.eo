@@ -4,64 +4,62 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^ substring] > last-index-of
+[^text substring] > last-index-of
   if. > @
     or.
       or.
         gt.
-          number
-            part.size >> size!
-          txt.size >> tlen!
+          number part.size! >> size
+          tlen
         and.
           size.eq tlen
           not.
             eq.
               substring >> part!
-              ^ >> txt!
-      found.eq -1
+              text >> txt!
+      eq.
+        number >> found
+          rec-index-of >>!
+            minus.
+              number txt.size! >> tlen
+              size
+        -1
     -1
     length.
       string
-        txt.slice
-          0
-          rec-index-of >> found!
-            minus.
-              number tlen
-              size
+        txt.slice 0 found
   [^ idx] >> rec-index-of
     if. > @
       0.eq idx
-      includes.if idx -1
+      if.
+        eq. >> includes
+          txt.slice idx size
+          part
+        idx
+        -1
       includes.if
         idx
         ^.rec-index-of (idx.plus -1).as-number
-    eq. > includes
-      txt.slice idx size
-      part
 
   eq. ++> can-find-no-last-index-of-an-absent-substring
     -1
-    "Hello, world".last-index-of
-      "somebody"
+    "Hello, world".last-index-of "somebody"
 
   eq. ++> can-find-no-last-index-of-an-absent-substring-in-utf-text
     -1
-    "привет, друг!".last-index-of
-      "x"
+    "привет, друг!".last-index-of "x"
 
   eq. ++> can-find-the-last-index-of-a-substring
     5
-    "Hey, Hey, Hey".last-index-of
-      "Hey,"
+    "Hey, Hey, Hey".last-index-of "Hey,"
 
   eq. ++> can-find-the-last-index-of-a-substring-in-utf-text
     3
-    "привет, друг!".last-index-of
-      "в"
+    "привет, друг!".last-index-of "в"
 
   eq. ++> can-find-the-last-index-of-the-whole-string
     0

@@ -14,6 +14,7 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/objectionary/eo/blob/master/LICENSE.txt)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcqfn%2Feo.svg?type=shield)](https://app.fossa.com/reports/0ebb3149-4934-4565-bf6f-6fa41aed3b49)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=objectionary_eo&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=objectionary_eo)
+[![Striff](https://striff.io/badge/objectionary/eo.svg)](https://striff.io/objectionary/eo)
 
 **EO** (stands for [Elegant Objects][book] or ISO 639-1 code of [Esperanto])
 is an object-oriented programming language based on [𝜑-calculus].
@@ -241,7 +242,7 @@ This makes every intermediate state inspectable with
 
 All transformations at both parse-time normalization
   and transpile-time code generation are implemented as
-  pipelines of [XSLT 2.0](https://www.w3.org/TR/xslt20/) stylesheets
+  pipelines of [XSLT 3.0](https://www.w3.org/TR/xslt-30/) stylesheets
   rather than visitor passes written in the host language.
 In most compilers transformations are encoded as Java/C++ AST visitors
   (e.g. [Eclipse JDT](https://eclipse.dev/jdt/),
@@ -298,6 +299,19 @@ You will need [Maven] 3.3+ and [Java] 21+ installed,
 You will also need [git] installed and on your `PATH`,
   since some of the quality checks the `qulice` profile runs shell out to it.
 Also, if you have [xcop] installed, make sure it is version `0.8.0`+.
+
+The site is built one module at a time, and only once the artifacts exist:
+
+```bash
+mvn clean install -DskipTests
+mvn clean site -Psite -pl eo-maven-plugin
+```
+
+The `site` lifecycle holds no `package` phase, so no module in the reactor
+  ever produces a jar of its own, and `eo-parser` is never published as a
+  snapshot for one to be downloaded instead.
+A plain `mvn clean site` in a fresh clone therefore has nothing to resolve
+  `org.eolang:eo-parser:1.0-SNAPSHOT` against and stops at `eo-printer`.
 
 A few rules we ask you to follow:
 

@@ -50,6 +50,7 @@ final class Span {
 
     /**
      * Ctor.
+     *
      * @param body Line text
      * @param line Line number (1-indexed)
      */
@@ -59,6 +60,7 @@ final class Span {
 
     /**
      * Ctor.
+     *
      * @param body Line text
      * @param line Line number
      * @param leading Count of leading whitespace chars
@@ -69,6 +71,7 @@ final class Span {
 
     /**
      * Primary ctor.
+     *
      * @param body Line text
      * @param line Line number
      * @param leading Count of leading whitespace chars
@@ -91,6 +94,7 @@ final class Span {
 
     /**
      * The full line text.
+     *
      * @return Text without terminator
      */
     String text() {
@@ -99,6 +103,7 @@ final class Span {
 
     /**
      * Source line number (1-indexed).
+     *
      * @return Line number
      */
     int line() {
@@ -107,6 +112,7 @@ final class Span {
 
     /**
      * Leading-whitespace count.
+     *
      * @return Indent
      */
     int indent() {
@@ -115,6 +121,7 @@ final class Span {
 
     /**
      * True if leading whitespace contains a tab character.
+     *
      * @return Tab flag
      */
     boolean tab() {
@@ -126,7 +133,11 @@ final class Span {
      * space nor a tab. An indent is made of spaces (R-2.2.1), and a
      * character nobody can see in an editor must not decide how deep a
      * line sits: a pair of form feeds reads as indent 1 to a counter that
-     * takes every whitespace character (#7924).
+     * takes every whitespace character (#7924). A no-break space and its
+     * Unicode kin belong to the leading run too, although Java does not
+     * call them whitespace, since a line copied from a web page carries
+     * them where an editor shows plain spaces (#9179).
+     *
      * @return Alien-whitespace flag
      */
     boolean alien() {
@@ -143,6 +154,7 @@ final class Span {
 
     /**
      * True if the line is entirely whitespace.
+     *
      * @return Blank flag
      */
     boolean blank() {
@@ -153,6 +165,7 @@ final class Span {
      * True if the line is not blank and its last character is a space or a
      * tab. Whitespace nobody can see in an editor must not decide what a
      * program means (R-2.2.5).
+     *
      * @return Trailing-whitespace flag
      */
     boolean trailing() {
@@ -168,6 +181,7 @@ final class Span {
 
     /**
      * The substring after leading whitespace.
+     *
      * @return Tail text (empty for blank lines)
      */
     String body() {
@@ -176,6 +190,7 @@ final class Span {
 
     /**
      * The first non-whitespace character.
+     *
      * @return First non-whitespace character
      */
     char head() {
@@ -192,7 +207,9 @@ final class Span {
 
     private static int leading(final String body) {
         int count = 0;
-        while (count < body.length() && Character.isWhitespace(body.charAt(count))) {
+        while (count < body.length()
+            && (Character.isWhitespace(body.charAt(count))
+                || Character.isSpaceChar(body.charAt(count)))) {
             count = count + 1;
         }
         return count;

@@ -11,6 +11,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Random;
+import org.eolang.cache.GcShared;
+import org.eolang.cache.GlobalCache;
+import org.eolang.cache.Saved;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -18,6 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link JavaFiles}.
+ *
  * @since 0.74
  */
 @ExtendWith(MktmpResolver.class)
@@ -124,6 +128,29 @@ final class JavaFilesTest {
         MatcherAssert.assertThat(
             "an atom test class must be written",
             Files.exists(temp.resolve("generated/EOatomTest.java")),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
+    void writesTheJunitCompanionOfAnAtom(@Mktmp final Path temp) throws IOException {
+        final Path xmir = temp.resolve("main.xmir");
+        new Saved(
+            String.join(
+                "",
+                "<object><o name='foo'><o name='λ' atom='org.example.Foo'/></o>",
+                "<class java-name='Foo' skip-java='true'>",
+                "<tests>final class TestFoo { @Test void works() {} }</tests>",
+                "</class></object>"
+            ),
+            xmir
+        ).value();
+        new JavaFiles(temp.resolve("generated")).total(
+            true, xmir, "", true, new GlobalCache.GcFresh()
+        );
+        MatcherAssert.assertThat(
+            "the JUnit companion of an atom must be written, but it was not",
+            Files.exists(temp.resolve("generated-test-sources/TestFoo.java")),
             Matchers.equalTo(true)
         );
     }

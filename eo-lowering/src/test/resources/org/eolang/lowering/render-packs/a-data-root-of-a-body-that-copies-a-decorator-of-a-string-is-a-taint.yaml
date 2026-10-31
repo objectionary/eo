@@ -1,0 +1,47 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The root is bytes the atom computed, and the protocol does not name the
+# object around them: the body copies `Φ.string.joined`, a formation of the
+# world that binds nothing but its body and voids, and the answer of the
+# morph of the body is that copy, not `Φ.string` applied to its `φ`. The tables say
+# the body behaves as a string, since `joined` gives back the string it is
+# taken off, and bare bytes are no string, since they lose every attribute
+# of one, so the entry stays in EO (#9248).
+locator: Φ.slashed
+number: 1
+taint: The root 𝜎4 of the entry 1 is bare data, while inference says Φ.slashed returns Φ.string, and bare data would lose the object around it
+eo:
+  slashed.eo: |
+    [parts] > slashed
+      separator.joined parts > @
+      "/" > separator
+  string.eo: |
+    [@] > string
+      [^ items] > joined
+        ^ > @
+voids:
+  - "𝜎1\t1\tparts.length\tnumber"
+  - "𝜎2\t1\tparts.head\tobject"
+  - "𝜎3\t1\tparts.tail\ttuple"
+protocol: |
+  <protocol>
+    <dataize at="Φ.l🌵.e1">
+      <evaluate λ="L_bytes_concat" by="morph" at="Φ.a🌵1">
+        <dataize at="Φ.a🌵2">
+          <manufactured meta="𝛿·2·1">𝜎2</manufactured>
+        </dataize>
+        <bound meta="𝛿1·2">𝛿·2·1</bound>
+        <dataize at="Φ.a🌵3">
+          <dataized meta="𝛿·2·2">2F-</dataized>
+        </dataize>
+        <bound meta="𝛿2·2">𝛿·2·2</bound>
+        <minted symbol="𝜎4">𝜎2 2F-</minted>
+      </evaluate>
+      <manufactured meta="𝛿·3·1">𝜎4</manufactured>
+    </dataize>
+    <msec>130</msec>
+    <firings>2</firings>
+    <fps>23</fps>
+  </protocol>

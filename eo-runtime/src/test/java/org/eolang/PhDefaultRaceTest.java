@@ -12,6 +12,7 @@ import org.junit.jupiter.api.RepeatedTest;
 
 /**
  * Test case for {@link PhDefault}'s lazy attribute loading under concurrency.
+ *
  * @since 0.75.0
  */
 final class PhDefaultRaceTest {

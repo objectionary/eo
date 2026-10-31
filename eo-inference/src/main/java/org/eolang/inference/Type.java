@@ -33,12 +33,14 @@ interface Type {
 
     /**
      * This type as the contents of a row.
+     *
      * @return The directives
      */
     Directives directives();
 
     /**
      * The object of the program this type names.
+     *
      * @return The locator, empty where the type names no one object
      */
     default String names() {

@@ -15,10 +15,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Supplier;
+import org.eolang.cache.Sha;
 
 /**
  * Fingerprint of XMIR inputs, skip flags and the WPA artifact version that
  * change a WPA verdict.
+ *
  * @since 0.62.0
  */
 final class WpaCacheKey implements Supplier<String> {
@@ -47,6 +49,7 @@ final class WpaCacheKey implements Supplier<String> {
 
     /**
      * Ctor.
+     *
      * @param files XMIR files WPA reads
      * @param programlints Program lints to skip
      * @param skip Whether experimental lints are skipped

@@ -9,6 +9,7 @@ import org.cactoos.Text;
 
 /**
  * Hash of tag from objectionary.
+ *
  * @since 0.26
  */
 final class ChRemote implements CommitHash {
@@ -25,6 +26,7 @@ final class ChRemote implements CommitHash {
 
     /**
      * Constructor.
+     *
      * @param tag Tag
      */
     ChRemote(final String tag) {

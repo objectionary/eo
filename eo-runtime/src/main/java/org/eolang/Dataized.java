@@ -5,6 +5,9 @@
 
 package org.eolang;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
@@ -29,6 +32,7 @@ public final class Dataized {
 
     /**
      * Ctor.
+     *
      * @param src The object
      */
     public Dataized(final Phi src) {
@@ -59,6 +63,7 @@ public final class Dataized {
 
     /**
      * Take the data with a type.
+     *
      * @param type The type
      * @param <T> The type
      * @return The data
@@ -91,14 +96,31 @@ public final class Dataized {
 
     /**
      * Extract the data from the object and convert to string.
+     *
      * @return Data as string
      */
     public String asString() {
-        return new String(this.take(), StandardCharsets.UTF_8);
+        final byte[] bytes = this.take();
+        try {
+            return StandardCharsets.UTF_8.newDecoder()
+                .onMalformedInput(CodingErrorAction.REPORT)
+                .onUnmappableCharacter(CodingErrorAction.REPORT)
+                .decode(ByteBuffer.wrap(bytes))
+                .toString();
+        } catch (final CharacterCodingException ex) {
+            throw new ExFailure(
+                String.format(
+                    "Can't dataize the bytes %s to string, they are not valid UTF-8",
+                    new VerboseBytesAsString(bytes).get()
+                ),
+                ex
+            );
+        }
     }
 
     /**
      * Extract the data from the object and convert to number.
+     *
      * @return Data as number
      */
     public Double asNumber() {
@@ -107,6 +129,7 @@ public final class Dataized {
 
     /**
      * Extract the data from the object and convert to boolean.
+     *
      * @return Data as boolean
      */
     public Boolean asBool() {
@@ -117,17 +140,18 @@ public final class Dataized {
                 weak.length, Arrays.toString(weak)
             );
         }
-        if (weak[0] != 0 && weak[0] != 1) {
+        if (weak[0] != 0 && weak[0] != -1) {
             throw new ExFailure(
-                "Can't dataize the byte %s to boolean, only 00- and 01- are booleans",
+                "Can't dataize the byte %s to boolean, only 00- and FF- are booleans",
                 Arrays.toString(weak)
             );
         }
-        return weak[0] == 1;
+        return weak[0] == -1;
     }
 
     /**
      * Extract the data from the object and convert to {@link Bytes}.
+     *
      * @return Data as {@link Bytes}
      */
     public Bytes asBytes() {

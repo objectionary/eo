@@ -14,6 +14,7 @@ import org.eolang.XmirObject;
  * Fixture object sitting deep in the {@code org.eolang.EO_org.EO_eolang} Java
  * package, used to verify that {@link PhDefault#forma()} drops only the single
  * runtime root {@code org.eolang} prefix and keeps the rest of the EO package.
+ *
  * @since 0.73.1
  */
 @XmirObject(oname = "dummy")

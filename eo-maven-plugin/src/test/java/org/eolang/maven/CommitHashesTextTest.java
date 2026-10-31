@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link CommitHashesText}.
+ *
  * @since 0.37.0
  */
 final class CommitHashesTextTest {
@@ -28,7 +29,7 @@ final class CommitHashesTextTest {
                     throw new SSLException("handshake failed");
                 }
             ).asString(),
-            Matchers.containsString("0.28.9")
+            Matchers.containsString("0.63.2")
         );
     }
 
@@ -42,9 +43,25 @@ final class CommitHashesTextTest {
                         throw new SSLException("handshake failed");
                     }
                 )::asString,
-                "0.23.15"
+                "0.40.5"
             ).value(),
-            Matchers.equalTo("5fe5ad8d21dbe418038fa4c86e096fb037f290a9")
+            Matchers.equalTo("ee14a1e30a9e0f8f64404e7a52f40c2a07f88359")
+        );
+    }
+
+    @Test
+    void findsTheDefaultTagInTheFallbackTable() {
+        MatcherAssert.assertThat(
+            "The fallback table must hold a SHA for 'master', the default eo.tag, while it holds none",
+            new ChText(
+                new CommitHashesText(
+                    () -> {
+                        throw new SSLException("handshake failed");
+                    }
+                )::asString,
+                "master"
+            ).value(),
+            Matchers.matchesRegex("[0-9a-f]{40}")
         );
     }
 

@@ -9,6 +9,7 @@ import com.google.errorprone.annotations.FormatMethod;
 
 /**
  * Common exception.
+ *
  * @since 0.21
  */
 public class ExFailure extends ExAbstract {
@@ -20,6 +21,7 @@ public class ExFailure extends ExAbstract {
 
     /**
      * Ctor.
+     *
      * @param cause Exception cause
      * @param args Arguments for {@link String#format(String, Object...)}
      */
@@ -30,6 +32,7 @@ public class ExFailure extends ExAbstract {
 
     /**
      * Ctor.
+     *
      * @param cause Exception cause
      * @param root Cause exception
      */

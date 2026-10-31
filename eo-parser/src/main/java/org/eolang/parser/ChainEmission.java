@@ -54,6 +54,7 @@ final class ChainEmission {
 
     /**
      * Ctor.
+     *
      * @param sink The directives sink
      * @param src The line span (line + indent for positions)
      * @param start The head value of the chain
@@ -91,6 +92,7 @@ final class ChainEmission {
 
     /**
      * Emit the head + chain, leaving the last opened {@code <o>} open.
+     *
      * @param sink The directives sink
      * @param line Source line
      * @param head The head value

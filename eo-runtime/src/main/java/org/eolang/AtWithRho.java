@@ -17,6 +17,7 @@ package org.eolang;
  * language is made of these attributes and there are millions of them in the heap of a
  * program that runs for a while: a lock costs two objects each, while a monitor costs
  * nothing until two threads want it at the same time.
+ *
  * @since 0.36.0
  * @checkstyle RegexpSinglelineCheck (60 lines)
  */
@@ -35,6 +36,7 @@ final class AtWithRho implements Attribute {
 
     /**
      * Ctor.
+     *
      * @param attr Attribute
      * @param rho Rho
      */
@@ -71,6 +73,11 @@ final class AtWithRho implements Attribute {
     @Override
     public boolean vacant() {
         return this.original.vacant();
+    }
+
+    @Override
+    public boolean voided() {
+        return this.original.voided();
     }
 
     @Override

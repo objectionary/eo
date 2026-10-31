@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" exclude-result-prefixes="eo" id="const-to-dataized" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" exclude-result-prefixes="eo" id="const-to-dataized" version="3.0">
   <!--
   Replace @const with dataized.as-bytes
   1. a > b!     => (dataized a).as-bytes > b
@@ -64,18 +64,51 @@
       <xsl:if test="@as">
         <xsl:attribute name="as" select="@as"/>
       </xsl:if>
+      <!--
+      "float-up" (put here by "wrap-applications" on the formation that
+      precedes a pipe inside an argument block) names the slot of the
+      enclosing application, and after this template that slot holds the
+      wrapper, not the object inside it. Sending the marker down with the
+      rest of the attributes would make "vars-float-up" hoist the object
+      out of "Φ.dataized" and leave the wrapper with no argument, while
+      the slot stayed where it was (#9299).
+      -->
+      <xsl:if test="@float-up">
+        <xsl:attribute name="float-up"/>
+      </xsl:if>
       <o>
         <xsl:attribute name="base" select="'Φ.dataized'"/>
         <xsl:attribute name="line" select="@line"/>
+        <xsl:attribute name="pos" select="@pos"/>
         <o>
-          <xsl:for-each select="@*[name()!='const' and name()!='name' and name()!='as']">
+          <!--
+          @local (the file-local handle, R-3.10.12) belongs to the object
+          the author actually marked with ">> name" - here, the reference
+          nested inside Φ.dataized - not to the synthetic .as-bytes wrapper
+          this template floats above it. resolve-local-names has already
+          run and resolved every reference against that handle by the time
+          this template fires, but it deliberately leaves the "@local"
+          marker itself in place on the declaring object so that later
+          passes (the printer, see #5563) can recover the readable handle;
+          moving it up to the wrapper would strand it on a node the handle
+          was never written on. So "local" is left out of this exclusion
+          list and travels with the rest of the node's attributes onto the
+          nested copy below.
+          -->
+          <xsl:for-each select="@*[name()!='const' and name()!='name' and name()!='as' and name()!='float-up']">
             <xsl:attribute name="{name()}">
               <xsl:value-of select="."/>
             </xsl:attribute>
           </xsl:for-each>
           <xsl:if test="eo:abstract(.)">
+            <!--
+            Phi stays on the wrapper: appending a suffix to it would make
+            an invalid XMIR name. Give its hidden formation a cactus name,
+            as for other anonymous formations, so the printer can inline it.
+            -->
+            <xsl:variable name="hidden" select="if ($cname = $eo:phi) then concat('a', $eo:cactoos, @line, '-', @pos) else $cname"/>
             <xsl:attribute name="name">
-              <xsl:value-of select="eo:unique-name($cname, ./parent::o, 0)"/>
+              <xsl:value-of select="eo:unique-name($hidden, ./parent::o, 0)"/>
             </xsl:attribute>
           </xsl:if>
           <xsl:for-each select="o">

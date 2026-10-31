@@ -6,6 +6,7 @@ package org.eolang.maven;
 
 /**
  * Short version of hash.
+ *
  * @since 0.28.11
  */
 final class ChNarrow implements CommitHash {
@@ -17,6 +18,7 @@ final class ChNarrow implements CommitHash {
 
     /**
      * The main constructor.
+     *
      * @param full Delegate
      */
     ChNarrow(final CommitHash full) {

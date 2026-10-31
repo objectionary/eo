@@ -79,6 +79,7 @@ final class LnOnlyPhi implements Line {
 
     /**
      * Ctor.
+     *
      * @param source The source span
      */
     LnOnlyPhi(final Span source) {
@@ -206,7 +207,10 @@ final class LnOnlyPhi implements Line {
     private void emitVoids(final Emit emit, final List<String> params, final int origin) {
         int column = this.span.indent() + origin;
         for (final String param : params) {
-            emit.voidParam(new VoidName(param).asString(), this.span.line(), column);
+            emit.voidParam(
+                new VoidName(param).asString(), new VoidHandle(param).asString(),
+                this.span.line(), column
+            );
             column = column + param.length() + 1;
         }
     }

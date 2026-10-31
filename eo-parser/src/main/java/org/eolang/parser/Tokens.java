@@ -23,6 +23,13 @@ import java.util.List;
  * Errors thrown are {@link ParseError} with the canonical message
  * texts from §9.9.</p>
  *
+ * <p>A dispatch chain is refused past {@link Stack#DEEPEST} hops (R-3.5.3c),
+ * since every hop becomes one more level of the emitted tree even though the
+ * source holds them all on one flat line. The limit is the one R-5.2.7a puts
+ * on indentation, and it is there for the same reason: the XSL chain behind
+ * the parser walks that tree recursively and dies on a few hundred levels
+ * with an overflow no caller can report (#9184).</p>
+ *
  * @since 0.1
  */
 final class Tokens {
@@ -44,6 +51,7 @@ final class Tokens {
 
     /**
      * Ctor.
+     *
      * @param text Line body
      * @param source Source span
      */
@@ -55,6 +63,7 @@ final class Tokens {
 
     /**
      * Current cursor position.
+     *
      * @return Cursor
      */
     int cursor() {
@@ -63,6 +72,7 @@ final class Tokens {
 
     /**
      * Move the cursor.
+     *
      * @param idx New position
      */
     void seek(final int idx) {
@@ -71,6 +81,7 @@ final class Tokens {
 
     /**
      * Whether the cursor is past the end of the body.
+     *
      * @return End flag
      */
     boolean atEnd() {
@@ -79,6 +90,7 @@ final class Tokens {
 
     /**
      * Peek the current character (must not be {@link #atEnd()}).
+     *
      * @return Current character
      */
     char current() {
@@ -88,6 +100,7 @@ final class Tokens {
     /**
      * Read one value at the cursor — identifier, INT, FLOAT, STRING,
      * STAR, or ROOT. Advances the cursor past the value.
+     *
      * @return Parsed value
      */
     Value readValue() {
@@ -99,7 +112,7 @@ final class Tokens {
         }
         final Value value;
         final char first = this.current();
-        if (Tokens.bytesStart(this.body, this.cursor)) {
+        if (new Bytes(this.body, this.cursor, this.span).opens()) {
             value = this.readBytes();
         } else if (first == '"') {
             value = this.readString();
@@ -119,20 +132,16 @@ final class Tokens {
      * Read a BYTES literal at the cursor — {@code --}, {@code BB-}, or
      * {@code BB-BB(-BB)*} per §3.13.1. Multi-line continuation
      * (R-3.13.2/R-3.13.3) is not yet supported here.
+     *
      * @return BYTES value
      */
     Value readBytes() {
         final int start = this.cursor;
-        final String raw;
-        if (this.cursor + 1 < this.body.length()
-            && this.body.charAt(this.cursor) == '-'
-            && this.body.charAt(this.cursor + 1) == '-') {
-            this.cursor = this.cursor + 2;
-            raw = "--";
-        } else {
-            raw = this.readPairs(start);
-        }
-        return new Value(Value.Kind.BYTES, raw, this.span.indent() + start);
+        this.cursor = new Bytes(this.body, start, this.span).end();
+        return new Value(
+            Value.Kind.BYTES, this.body.substring(start, this.cursor),
+            this.span.indent() + start
+        );
     }
 
     /**
@@ -140,6 +149,7 @@ final class Tokens {
      * matching {@code )} with nested-paren and string awareness.
      * Returns a {@link Value.Kind#GROUP} carrying the literal bracketed
      * text (parens included). Used both as a head and as an arg.
+     *
      * @return GROUP value
      */
     Value readGroup() {
@@ -169,6 +179,7 @@ final class Tokens {
     /**
      * Read a {@code NAME} identifier starting at the cursor. Advances
      * past the name.
+     *
      * @return Identifier value
      */
     Value readName() {
@@ -214,7 +225,11 @@ final class Tokens {
      * a FLOAT (R-9.8.1 / R-9.8.2). The choice between INT and FLOAT is
      * decided by lookahead: a dot followed by a digit continues as
      * FLOAT; otherwise the digits stop and the dot belongs to a
-     * subsequent chain link.
+     * subsequent chain link. The leading-zero prohibition is spent only
+     * once the INT branch is taken, since R-9.8.1 holds it against an
+     * INT and R-9.8.2 asks nothing of the integer part of a FLOAT, so
+     * {@code 00.5} is a number and {@code 007} is an error.
+     *
      * @return INT or FLOAT value
      */
     Value readNumber() {
@@ -224,17 +239,15 @@ final class Tokens {
             && this.body.charAt(this.cursor) == '0'
             && this.body.charAt(this.cursor + 1) == 'x') {
             value = this.readHex();
+        } else if (this.fractional()) {
+            this.readDigits();
+            this.readFloatTail(start);
+            value = new Value(
+                Value.Kind.FLOAT, this.body.substring(start, this.cursor),
+                this.span.indent() + start
+            );
         } else {
-            final Value integer = this.readInt();
-            if (this.dottedDigit()) {
-                this.readFloatTail(start);
-                value = new Value(
-                    Value.Kind.FLOAT, this.body.substring(start, this.cursor),
-                    this.span.indent() + start
-                );
-            } else {
-                value = integer;
-            }
+            value = this.readInt();
         }
         return value;
     }
@@ -242,48 +255,17 @@ final class Tokens {
     /**
      * Read an INT literal at the cursor — optional sign then digits,
      * per R-9.8.1 (no leading zeros). Advances past it.
+     *
      * @return INT value
      */
     Value readInt() {
-        final int start = this.cursor;
-        int idx = start;
-        final boolean sign = idx < this.body.length()
-            && (this.body.charAt(idx) == '+' || this.body.charAt(idx) == '-');
-        if (sign) {
-            idx = idx + 1;
-        }
-        final int from = idx;
-        while (Tokens.digitAt(this.body, idx)) {
-            idx = idx + 1;
-        }
-        if (sign && Tokens.letterAt(this.body, idx)) {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + start,
-                "invalid signed-number literal"
-            );
-        }
-        if (idx == from) {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + start,
-                "invalid signed-number literal"
-            );
-        }
-        final String digits = this.body.substring(from, idx);
-        if (digits.length() >= 2 && digits.charAt(0) == '0') {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + start,
-                "integer literal must not have leading zeros"
-            );
-        }
-        this.cursor = idx;
-        return new Value(
-            Value.Kind.INTEGER, this.body.substring(start, idx), this.span.indent() + start
-        );
+        return this.integer(this.readDigits());
     }
 
     /**
      * Read a HEX literal at the cursor ({@code 0x} followed by hex
      * digits, per R-9.8.3). Advances past it.
+     *
      * @return HEX value
      */
     Value readHex() {
@@ -319,6 +301,7 @@ final class Tokens {
      * or a digit — the legacy {@code QQ} above all — is rejected here,
      * so that the offending token names itself instead of surfacing as
      * trailing garbage after a one-character expression.
+     *
      * @return Root value
      */
     Value readRoot() {
@@ -349,6 +332,7 @@ final class Tokens {
      * escape sequences (R-9.7). The returned {@link Value#raw()}
      * preserves the literal text <em>including the surrounding double
      * quotes</em>, so the emitter can strip and unescape consistently.
+     *
      * @return STRING value
      */
     Value readString() {
@@ -395,6 +379,7 @@ final class Tokens {
     /**
      * Read zero or more {@code .NAME} chain links following the
      * cursor.
+     *
      * @return Chain links in source order
      */
     List<MethodChain> readChain() {
@@ -404,6 +389,12 @@ final class Tokens {
             int dot = this.span.indent() + this.cursor;
             if (fragile) {
                 dot = dot + 1;
+            }
+            if (chain.size() >= Stack.DEEPEST) {
+                throw new ParseError(
+                    this.span.line(), dot,
+                    String.format("object nested deeper than %d levels", Stack.DEEPEST)
+                );
             }
             this.consumeDispatch();
             final Value name = this.readMethodName();
@@ -416,6 +407,7 @@ final class Tokens {
      * Whether a dispatch operator begins at the cursor — a plain
      * {@code .} or the fragile {@code ?.} (R-3.5). The {@code ?} alone,
      * not followed by {@code .}, is not a dispatch.
+     *
      * @return True if a {@code .} or {@code ?.} dispatch starts here
      */
     boolean dispatchAhead() {
@@ -428,12 +420,13 @@ final class Tokens {
      * reads (R-3.6). A name after the operator makes it an ordinary
      * chain link instead, and only a head that may be reversed at all
      * can start one.
+     *
      * @param head The value read right before the cursor
      * @return True if the head is the name of a reversed dispatch
      */
     boolean reversedAhead(final Value head) {
         final boolean result;
-        if (head.reversible() && !this.atEnd() && this.dispatchAhead()) {
+        if (head.reversible() && !head.global() && !this.atEnd() && this.dispatchAhead()) {
             final int skip;
             if (this.current() == '?') {
                 skip = 2;
@@ -452,6 +445,7 @@ final class Tokens {
      * Consume a dispatch operator at the cursor — a plain {@code .} or
      * the fragile {@code ?.} (R-3.5) — and report which it was. The
      * cursor must sit on a {@link #dispatchAhead()} position.
+     *
      * @return True if the consumed operator was the fragile {@code ?.}
      */
     boolean consumeDispatch() {
@@ -467,6 +461,7 @@ final class Tokens {
      * Read a method-dispatch name — either a regular {@code NAME}, or
      * the {@code @}/{@code ^} root tokens which map to {@code φ} /
      * {@code ρ} per R-3.5.2 / R-9.3.
+     *
      * @return Method name value
      */
     Value readMethodName() {
@@ -490,6 +485,7 @@ final class Tokens {
      * Read zero or more space-separated horizontal arguments. Stops at
      * a suffix marker ({@code >}, {@code >>}, {@code +>}, {@code ->}) or
      * end of body.
+     *
      * @return Arguments in source order
      */
     List<Value> readArgs() {
@@ -513,6 +509,7 @@ final class Tokens {
      * Read an inline-binding label or numeric slot — characters up to
      * the next whitespace or NAME terminator. Used for {@code :label}
      * and {@code :N} per §3.12.
+     *
      * @return Binding text
      */
     String readBinding() {
@@ -536,17 +533,16 @@ final class Tokens {
      * reject anything that is neither a NAME-initial label nor a plain
      * slot number. Shared by {@link Tokens#readBinding()} and the outer
      * binding of a vertical formation, so both spell the same grammar.
+     * The glyph gate of {@link Suffix#checkGlyphs(String, int, int)} runs
+     * first, since a label is an identifier and a control character in one
+     * reaches xembly and breaks the parse instead of being reported.
+     *
      * @param text Binding text, without the leading {@code :}
      * @param span Source span
      * @param pos Source column of the label (for errors)
      */
     static void checkBinding(final String text, final Span span, final int pos) {
-        if (Tokens.cactus(text)) {
-            throw new ParseError(
-                span.line(), pos,
-                "cactus emoji is reserved for auto-names; not allowed in identifiers"
-            );
-        }
+        Suffix.checkGlyphs(text, span.line(), pos);
         if (!Tokens.validBinding(text)) {
             throw new ParseError(
                 span.line(), pos,
@@ -560,6 +556,7 @@ final class Tokens {
 
     /**
      * Whether the cursor is positioned at a name suffix marker.
+     *
      * @return True if a suffix starts here
      */
     boolean suffixAhead() {
@@ -569,6 +566,7 @@ final class Tokens {
 
     /**
      * The remainder of the body from the cursor onwards.
+     *
      * @return Tail substring
      */
     String tail() {
@@ -580,6 +578,7 @@ final class Tokens {
      * owns the whole body it was handed — a parenthesised expression, for
      * one — says so once its reader is done, and the content the reader
      * could not place is reported rather than dropped.
+     *
      * @param message What to say about the leftovers
      */
     void checkEnd(final String message) {
@@ -595,6 +594,7 @@ final class Tokens {
 
     /**
      * The full source body the token stream operates on.
+     *
      * @return Body string
      */
     String body() {
@@ -608,6 +608,7 @@ final class Tokens {
      * leaves the literal open. Every scanner in this package walks a
      * literal through here, so quoted text stays opaque the same way
      * whether it is met by the lexer or by a top-level marker search.
+     *
      * @param text Text being scanned
      * @param start Index of the opening quote
      * @return Index of the closing quote
@@ -623,6 +624,137 @@ final class Tokens {
         return idx;
     }
 
+    /**
+     * Whether the quote at this position opens a string literal, rather
+     * than standing inside a name. A {@code NAME} holds every character
+     * but the ones §2.3 lists, and {@code "} is not among them, so
+     * {@code a"b} is one name and a reader that takes its quote for the
+     * start of a literal walks past the rest of the line (#9378). A
+     * literal opens where a token opens: at the head of the text, or
+     * right after a glyph that ends the token before it.
+     *
+     * @param text Text being scanned
+     * @param idx Index of the quote
+     * @return Opening flag
+     */
+    static boolean opensString(final String text, final int idx) {
+        return idx == 0 || Tokens.terminates(text.charAt(idx - 1));
+    }
+
+    /**
+     * The index of the {@code > [} that opens an inline-phi suffix at the
+     * top level of this text, or {@code -1} when there is none. A quote
+     * standing inside a name is no literal (#9378), so the scan steps over
+     * it instead of looking for a closing one to the end of the text
+     * (#9427).
+     *
+     * @param text Text being scanned
+     * @return Index of the suffix, or -1
+     */
+    static int inlinePhi(final String text) {
+        int depth = 0;
+        int found = -1;
+        int idx = 0;
+        while (idx < text.length() - 2 && found < 0) {
+            final char glyph = text.charAt(idx);
+            if (glyph == '"' && Tokens.opensString(text, idx)) {
+                idx = Tokens.closingQuote(text, idx);
+            } else if (glyph == '(') {
+                depth = depth + 1;
+            } else if (glyph == ')') {
+                depth = depth - 1;
+            } else if (depth == 0 && Tokens.opensPhi(text, idx)) {
+                found = idx;
+            }
+            idx = idx + 1;
+        }
+        return found;
+    }
+
+    /**
+     * Whether the glyph ends the token a reader is on. Shared with
+     * {@link Bytes}, so a BYTES literal owns exactly the characters
+     * every other reader of this class would leave to it. The slash is
+     * among them because §2.3 keeps it out of a {@code NAME}: it opens
+     * an atom signature, so a name ends where one starts (#9317).
+     *
+     * @param glyph The character to weigh
+     * @return Terminator flag
+     */
+    static boolean terminates(final char glyph) {
+        return " \t,.|':;!?*/[]{}()".indexOf(glyph) >= 0;
+    }
+
+    private ParseError malformed(final int start) {
+        return new ParseError(
+            this.span.line(), this.span.indent() + start, "invalid number literal"
+        );
+    }
+
+    private ParseError exponential(final int start) {
+        return new ParseError(
+            this.span.line(), this.span.indent() + start,
+            "invalid number literal, a float needs a dot before the exponent, as in 1.0e5"
+        );
+    }
+
+    private Value readDigits() {
+        final int start = this.cursor;
+        int idx = start;
+        final boolean sign = idx < this.body.length()
+            && (this.body.charAt(idx) == '+' || this.body.charAt(idx) == '-');
+        if (sign) {
+            idx = idx + 1;
+        }
+        final int from = idx;
+        while (Tokens.digitAt(this.body, idx)) {
+            idx = idx + 1;
+        }
+        if (Tokens.letterAt(this.body, idx)) {
+            if (this.body.charAt(idx) == 'e' || this.body.charAt(idx) == 'E') {
+                throw this.exponential(start);
+            }
+            throw this.malformed(start);
+        }
+        if (idx == from) {
+            throw this.malformed(start);
+        }
+        this.cursor = idx;
+        return new Value(
+            Value.Kind.INTEGER, this.body.substring(start, idx), this.span.indent() + start
+        );
+    }
+
+    private Value integer(final Value digits) {
+        final String raw = digits.raw();
+        final int from;
+        if (raw.charAt(0) == '+' || raw.charAt(0) == '-') {
+            from = 1;
+        } else {
+            from = 0;
+        }
+        if (raw.length() - from >= 2 && raw.charAt(from) == '0') {
+            throw new ParseError(
+                this.span.line(), digits.pos(),
+                "integer literal must not have leading zeros"
+            );
+        }
+        return digits;
+    }
+
+    private boolean fractional() {
+        int idx = this.cursor;
+        if (idx < this.body.length()
+            && (this.body.charAt(idx) == '+' || this.body.charAt(idx) == '-')) {
+            idx = idx + 1;
+        }
+        while (Tokens.digitAt(this.body, idx)) {
+            idx = idx + 1;
+        }
+        return idx < this.body.length() && this.body.charAt(idx) == '.'
+            && Tokens.digitAt(this.body, idx + 1);
+    }
+
     private static int clamped(final int pos, final Span source) {
         return Math.min(pos, source.text().length() - 1);
     }
@@ -632,7 +764,7 @@ final class Tokens {
         int idx = 0;
         while (idx < inside.length()) {
             final char glyph = inside.charAt(idx);
-            if (glyph == '"') {
+            if (glyph == '"' && Tokens.opensString(inside, idx)) {
                 idx = Tokens.closingQuote(inside, idx);
             } else if (" ()[]".indexOf(glyph) >= 0) {
                 single = false;
@@ -647,30 +779,18 @@ final class Tokens {
         return idx + 1 < body.length() && body.charAt(idx) == '?' && body.charAt(idx + 1) == '.';
     }
 
-    private static boolean bytesStart(final String body, final int idx) {
-        return idx + 1 < body.length()
-            && body.charAt(idx) == '-'
-            && body.charAt(idx + 1) == '-'
-            || Tokens.byteChunk(body, idx);
-    }
-
-    private static boolean byteChunk(final String body, final int idx) {
-        return idx + 2 < body.length() && Tokens.byteDigit(body.charAt(idx))
-            && Tokens.byteDigit(body.charAt(idx + 1)) && body.charAt(idx + 2) == '-';
-    }
-
     private static boolean hexDigit(final char glyph) {
-        return Tokens.byteDigit(glyph) || glyph >= 'a' && glyph <= 'f';
+        return Tokens.digit(glyph) || Tokens.hexLetter(glyph);
+    }
+
+    private static boolean hexLetter(final char glyph) {
+        return glyph >= 'a' && glyph <= 'f' || glyph >= 'A' && glyph <= 'F';
     }
 
     private static boolean letterAt(final String body, final int idx) {
         return idx < body.length()
             && body.charAt(idx) < 128
             && Character.isLetter(body.charAt(idx));
-    }
-
-    private static boolean byteDigit(final char glyph) {
-        return Tokens.digit(glyph) || glyph >= 'A' && glyph <= 'F';
     }
 
     private static boolean rootStart(final char glyph) {
@@ -710,8 +830,9 @@ final class Tokens {
         return glyph == '+' || glyph == '-';
     }
 
-    private static boolean terminates(final char glyph) {
-        return " \t,.|':;!?[]{}()".indexOf(glyph) >= 0;
+    private static boolean opensPhi(final String text, final int idx) {
+        return text.charAt(idx) == '>' && text.charAt(idx + 1) == ' '
+            && text.charAt(idx + 2) == '[';
     }
 
     private static boolean cactus(final String text) {
@@ -722,8 +843,7 @@ final class Tokens {
         final boolean valid;
         if (text.isEmpty()) {
             valid = false;
-        } else if ("^".equals(text)
-            || text.charAt(0) >= 'a' && text.charAt(0) <= 'z') {
+        } else if (text.charAt(0) >= 'a' && text.charAt(0) <= 'z') {
             valid = true;
         } else if (text.chars().allMatch(ch -> ch >= '0' && ch <= '9')) {
             valid = text.charAt(0) != '0' || "0".equals(text);
@@ -735,10 +855,11 @@ final class Tokens {
 
     private void skipGroup(final int start) {
         int depth = 1;
+        int deepest = 1;
         this.cursor = this.cursor + 1;
         while (this.cursor < this.body.length() && depth > 0) {
             final char glyph = this.body.charAt(this.cursor);
-            if (glyph == '"') {
+            if (glyph == '"' && Tokens.opensString(this.body, this.cursor)) {
                 this.cursor = Tokens.closingQuote(this.body, this.cursor);
                 if (this.cursor >= this.body.length()) {
                     throw new ParseError(
@@ -748,6 +869,7 @@ final class Tokens {
                 }
             } else if (glyph == '(') {
                 depth = depth + 1;
+                deepest = Math.max(deepest, depth);
             } else if (glyph == ')') {
                 depth = depth - 1;
             }
@@ -757,6 +879,12 @@ final class Tokens {
             throw new ParseError(
                 this.span.line(), this.span.indent() + start,
                 "unterminated paren group"
+            );
+        }
+        if (deepest > Stack.DEEPEST) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + start,
+                String.format("object nested deeper than %d levels", Stack.DEEPEST)
             );
         }
     }
@@ -804,10 +932,7 @@ final class Tokens {
             this.cursor = this.cursor + 1;
         }
         if (this.skipDigits() == 0) {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + start,
-                "invalid signed-number literal"
-            );
+            throw this.malformed(start);
         }
     }
 
@@ -829,7 +954,7 @@ final class Tokens {
                 "horizontal formation not allowed as argument"
             );
         }
-        if (this.oddHexRun()) {
+        if (new Bytes(this.body, this.cursor, this.span).odd()) {
             throw new ParseError(
                 this.span.line(), this.span.indent() + this.cursor,
                 "invalid bytes literal"
@@ -856,53 +981,6 @@ final class Tokens {
     private Value reserved(final Value.Kind kind, final String raw) {
         this.cursor = this.cursor + 1;
         return new Value(kind, raw, this.span.indent() + this.cursor - 1);
-    }
-
-    private String readPairs(final int start) {
-        if (!this.bytePair(this.cursor)) {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + start,
-                "invalid bytes literal"
-            );
-        }
-        this.cursor = this.cursor + 2;
-        while (this.cursor < this.body.length()
-            && this.body.charAt(this.cursor) == '-'
-            && this.bytePair(this.cursor + 1)) {
-            this.cursor = this.cursor + 3;
-        }
-        if (this.cursor < this.body.length() && this.body.charAt(this.cursor) == '-') {
-            if (this.cursor - start > 2) {
-                throw new ParseError(
-                    this.span.line(), this.span.indent() + this.cursor,
-                    "bytes literal ends with a dangling continuation dash"
-                );
-            }
-            this.cursor = this.cursor + 1;
-        }
-        return this.body.substring(start, this.cursor);
-    }
-
-    private boolean oddHexRun() {
-        int idx = this.cursor;
-        while (idx < this.body.length() && Tokens.byteDigit(this.body.charAt(idx))) {
-            idx = idx + 1;
-        }
-        return idx > this.cursor
-            && idx < this.body.length()
-            && this.body.charAt(idx) == '-';
-    }
-
-    private boolean bytePair(final int idx) {
-        return idx + 1 < this.body.length()
-            && Tokens.byteDigit(this.body.charAt(idx))
-            && Tokens.byteDigit(this.body.charAt(idx + 1));
-    }
-
-    private boolean dottedDigit() {
-        return this.cursor < this.body.length()
-            && this.body.charAt(this.cursor) == '.'
-            && Tokens.digitAt(this.body, this.cursor + 1);
     }
 
     private boolean plusArrow() {

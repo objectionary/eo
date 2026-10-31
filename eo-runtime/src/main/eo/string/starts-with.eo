@@ -3,27 +3,23 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^ substring] > starts-with
+[^text substring] > starts-with
   and. > @
     lte.
-      number
-        part.size >> size!
-      txt.size >> length!
+      number part.size! >> size
+      number txt.size!
     eq.
       slice.
-        ^ >> txt!
+        text >> txt!
         0
         size
       substring >> part!
 
-  starts-with. ++> can-start-with-a-substring
-    "Hello, world"
-    "Hello"
+  "Hello, world".starts-with "Hello" ++> can-start-with-a-substring
 
   not. ++> can-tell-it-does-not-start-with-an-absent-substring
-    "Hello, world".starts-with
-      "world"
+    "Hello, world".starts-with "world"

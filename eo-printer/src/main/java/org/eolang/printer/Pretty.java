@@ -40,6 +40,7 @@ final class Pretty {
 
     /**
      * Ctor, using the default penalty weights.
+     *
      * @param element The {@code <eo>} element
      */
     Pretty(final Xnav element) {
@@ -48,6 +49,7 @@ final class Pretty {
 
     /**
      * Ctor.
+     *
      * @param element The {@code <eo>} element
      * @param config The overridden weights; absent keys use their defaults
      */
@@ -58,6 +60,7 @@ final class Pretty {
 
     /**
      * Render the whole program as pretty EO source.
+     *
      * @return EO source code
      */
     String asString() {

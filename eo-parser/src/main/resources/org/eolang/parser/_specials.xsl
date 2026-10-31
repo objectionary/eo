@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" exclude-result-prefixes="eo" id="_specials" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" exclude-result-prefixes="eo" id="_specials" version="3.0">
   <xsl:variable name="eo:cactoos" select="'🌵'"/>
   <xsl:variable name="eo:alpha" select="'α'"/>
   <xsl:variable name="eo:xi" select="'ξ'"/>
@@ -13,6 +13,8 @@
   <xsl:variable name="eo:lambda" select="'λ'"/>
   <xsl:variable name="eo:empty" select="'∅'"/>
   <xsl:variable name="eo:bottom" select="'⊥'"/>
+  <xsl:variable name="eo:positive" select="concat('p', $eo:cactoos)"/>
+  <xsl:variable name="eo:negative" select="concat('n', $eo:cactoos)"/>
   <xsl:variable name="eo:space" select="' '"/>
   <xsl:variable name="eo:new-line" select="'&#10;'"/>
 </xsl:stylesheet>

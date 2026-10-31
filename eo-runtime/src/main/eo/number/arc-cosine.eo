@@ -1,19 +1,35 @@
-# Arc cosine of `num` as `org.eolang.number`, the angle in radians whose cosine
-# is `num`, taken as pi/2 minus the arc sine of the argument, since acos(x)
-# equals pi/2 minus asin(x). Arguments outside [-1, 1] and non-finite ones
-# collapse to nan.
+# Arc cosine of `num` as `number`, the angle in radians whose cosine
+# is `num`. Below one half the angle is pi/2 minus the arc sine of the
+# argument, since acos(x) equals pi/2 minus asin(x).
+#
+# Above one half that subtraction cancels its leading digits, because the
+# arc sine is itself close to pi/2 and what is left keeps only the absolute
+# accuracy of pi/2, about 2e-16, while the answer there is far smaller than
+# one. The half-angle identity acos(x) equals twice asin(sqrt((1 minus x)
+# div 2)) says the same angle with no subtraction of close numbers, and its
+# argument is at most one half, so the series of `arc-sine` runs in its fast
+# region. Arguments outside [-1, 1] and non-finite ones collapse to nan.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^] > arc-cosine
-  minus. > @
-    pi.div 2
-    ^.arc-sine
+[^num] > arc-cosine
+  if. > @
+    arg.gt 0.5
+    2.times half
+    minus.
+      pi.div 2
+      arg.arc-sine
+  number num.as-bytes > arg
+  arc-sine. > half
+    sqrt.
+      div.
+        1.minus arg
+        2
 
   2.arc-cosine.is-nan ++> can-return-nan-for-an-arc-cosine-above-one
 
@@ -24,6 +40,13 @@
   ninf.arc-cosine.is-nan ++> can-return-nan-for-an-arc-cosine-of-negative-infinity
 
   pinf.arc-cosine.is-nan ++> can-return-nan-for-an-arc-cosine-of-positive-infinity
+
+  lt. ++> can-take-an-arc-cosine-of-an-argument-just-below-one
+    abs.
+      minus.
+        0.999999999999.arc-cosine.div 1.4141979198683931e-6
+        1
+    1.0e-13
 
   -1.arc-cosine.eq pi ++> can-take-an-arc-cosine-of-minus-one
 

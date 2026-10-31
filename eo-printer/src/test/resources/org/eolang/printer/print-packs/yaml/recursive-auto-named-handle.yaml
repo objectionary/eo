@@ -14,7 +14,10 @@
 # single-segment dispatch onto a named reference (keeping the "&gt; @"), so the
 # formation is inlined back as the anonymous receiver of the reversed dispatch
 # "q. &gt; @" — no dangling reference — with its "$"-application decoratee in
-# the canonical compact form ("$ &gt; [n] &gt;&gt;"), re-parsing to the same graph.
+# the canonical compact form ("$ &gt; [n]"), re-parsing to the same graph. The
+# merge spends the cactus name, so the receiver carries none: the nameless
+# "&gt;&gt;" it used to print names an object nothing refers to, which
+# "redundant-attachment" refuses (#8655).
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -34,8 +37,7 @@ origin: |
 printed: |
   +package foo
 
-  [] > bar
-    q. > @
-      $ > [n] >>
-        n.minus 1
-      5
+  q. > [] > bar
+    $ > [n]
+      n.minus 1
+    5

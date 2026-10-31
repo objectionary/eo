@@ -11,6 +11,7 @@ import java.util.Collection;
 
 /**
  * Where a transpile writes its Java output, and the report of it.
+ *
  * @since 0.77
  */
 final class Written {
@@ -31,27 +32,40 @@ final class Written {
     private final Collection<Path> roots;
 
     /**
+     * Configured test source roots.
+     */
+    private final Path[] testroots;
+
+    /**
      * Ctor.
+     *
      * @param generated Generated sources directory
      * @param tests Whether to transpile tests
      * @param roots Directories with the Java sources a human wrote
+     * @param testroots Configured test source roots
      */
-    Written(final Path generated, final boolean tests, final Collection<Path> roots) {
+    Written(
+        final Path generated, final boolean tests, final Collection<Path> roots,
+        final Path... testroots
+    ) {
         this.generated = generated;
         this.tests = tests;
         this.roots = roots;
+        this.testroots = testroots.clone();
     }
 
     /**
      * Java files this run writes into.
+     *
      * @return The files
      */
     JavaFiles files() {
-        return new JavaFiles(this.generated);
+        return new JavaFiles(this.generated, this.testroots);
     }
 
     /**
      * Whether a tojo transpiles into test sources.
+     *
      * @param tojo The tojo
      * @return True if it does
      */
@@ -62,6 +76,7 @@ final class Written {
     /**
      * Log how many Java files this run wrote, creating package-info
      * files for the directories it touched.
+     *
      * @param transpiled Amount of Java files created directly
      * @param sources Amount of XMIRs given to transpile
      * @param files The Java files this run wrote

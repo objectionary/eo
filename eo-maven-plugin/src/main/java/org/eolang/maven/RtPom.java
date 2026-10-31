@@ -11,6 +11,7 @@ import org.cactoos.Scalar;
 
 /**
  * Runtime dependency from the project POM file.
+ *
  * @since 0.62.0
  */
 final class RtPom implements Scalar<Dep> {
@@ -22,6 +23,7 @@ final class RtPom implements Scalar<Dep> {
 
     /**
      * Ctor.
+     *
      * @param mvn Maven project
      */
     RtPom(final MavenProject mvn) {
@@ -38,6 +40,7 @@ final class RtPom implements Scalar<Dep> {
 
     /**
      * Checks if runtime dependency is present in pom.xml.
+     *
      * @return True if runtime dependency found
      */
     boolean isPresent() {
@@ -60,6 +63,7 @@ final class RtPom implements Scalar<Dep> {
 
     private static boolean isRuntime(final Dependency dep) {
         return "org.eolang".equals(dep.getGroupId())
-            && "eo-runtime".equals(dep.getArtifactId());
+            && "eo-runtime".equals(dep.getArtifactId())
+            && (dep.getClassifier() == null || dep.getClassifier().isEmpty());
     }
 }

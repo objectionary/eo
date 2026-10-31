@@ -5,6 +5,7 @@
 
 /**
  * Fixtures.
+ *
  * @since 0.51
  */
 package fixtures;

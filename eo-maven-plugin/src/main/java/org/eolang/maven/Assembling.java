@@ -10,6 +10,7 @@ import java.io.IOException;
 /**
  * Assembles EO sources by running Parsing, Probing, and Pulling in a loop
  * until no new objects are discovered.
+ *
  * @since 0.61.0
  */
 final class Assembling implements Step {
@@ -36,6 +37,7 @@ final class Assembling implements Step {
 
     /**
      * Constructor.
+     *
      * @param tjs Foreign tojos
      * @param prs Parse step
      * @param prb Probe step

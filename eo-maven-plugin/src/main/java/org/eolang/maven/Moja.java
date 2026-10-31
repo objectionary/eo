@@ -22,6 +22,7 @@ import org.cactoos.set.SetOf;
 
 /**
  * Mutable mojo builder.
+ *
  * @param <T> Type of mojo
  * @since 0.1
  */
@@ -39,6 +40,7 @@ final class Moja<T extends AbstractMojo> {
 
     /**
      * Ctor.
+     *
      * @param mojo The type of Mojo
      */
     Moja(final Class<T> mojo) {
@@ -53,6 +55,7 @@ final class Moja<T extends AbstractMojo> {
 
     /**
      * Add one more attribute and return self.
+     *
      * @param attr The name
      * @param value The value
      * @return Itself
@@ -64,6 +67,7 @@ final class Moja<T extends AbstractMojo> {
 
     /**
      * Copy attributes from the given Mojo.
+     *
      * @param mojo Another mojo
      * @return Itself
      */

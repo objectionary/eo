@@ -30,6 +30,7 @@ final class Escaped implements Supplier<String> {
 
     /**
      * Ctor.
+     *
      * @param glyph The glyph
      */
     Escaped(final char glyph) {

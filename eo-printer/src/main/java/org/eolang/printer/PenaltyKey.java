@@ -85,6 +85,7 @@ public enum PenaltyKey {
 
     /**
      * Ctor.
+     *
      * @param fallback The default value of this key
      */
     PenaltyKey(final int fallback) {
@@ -93,6 +94,7 @@ public enum PenaltyKey {
 
     /**
      * The default value of this key.
+     *
      * @return The value to use when the key is absent from the weights map
      */
     public int fallback() {

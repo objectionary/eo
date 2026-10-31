@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link AtVoid}.
+ *
  * @since 0.16
  */
 final class AtVoidTest {

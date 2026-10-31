@@ -15,6 +15,7 @@ import org.hamcrest.TypeSafeMatcher;
 
 /**
  * Asserting that path contains a files matching provided globs.
+ *
  * @since 0.31.0
  */
 @SuppressWarnings({
@@ -31,6 +32,7 @@ final class ContainsFiles extends TypeSafeMatcher<Path> {
 
     /**
      * Ctor.
+     *
      * @param glbs Patterns
      */
     ContainsFiles(final String... glbs) {

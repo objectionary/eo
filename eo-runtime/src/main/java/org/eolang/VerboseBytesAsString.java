@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 /**
  * Makes a {@link String} byte array that can represent bool,
  * double, int or {@link String}.
+ *
  * @since 0.36
  */
 public final class VerboseBytesAsString implements Supplier<String> {
@@ -27,6 +28,7 @@ public final class VerboseBytesAsString implements Supplier<String> {
 
     /**
      * Ctor.
+     *
      * @param data Data
      */
     public VerboseBytesAsString(final byte[] data) {
@@ -38,11 +40,11 @@ public final class VerboseBytesAsString implements Supplier<String> {
         final String result;
         if (this.data.length == 0) {
             result = "[<no bytes>]";
-        } else if (this.data.length == 1) {
+        } else if (this.data.length == 1 && (this.data[0] == 0 || this.data[0] == -1)) {
             result = String.format(
                 "[0x%02X] = %s",
                 this.data[0],
-                this.data[0] == 1
+                this.data[0] == -1
             );
         } else if (this.data.length == Double.BYTES) {
             result = String.format(

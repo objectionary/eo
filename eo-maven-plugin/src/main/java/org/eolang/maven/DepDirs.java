@@ -31,6 +31,7 @@ final class DepDirs extends ListEnvelope<String> {
 
     /**
      * Ctor.
+     *
      * @param dir The directory
      * @throws IOException If fails
      */

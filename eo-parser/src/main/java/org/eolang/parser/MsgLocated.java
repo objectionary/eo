@@ -6,6 +6,7 @@ package org.eolang.parser;
 
 /**
  * Error message that includes the location of the error.
+ *
  * @since 0.50
  */
 final class MsgLocated {
@@ -27,6 +28,7 @@ final class MsgLocated {
 
     /**
      * Ctor.
+     *
      * @param line The line where the error occurred
      * @param position The position in the line where the error occurred
      * @param message The error message
@@ -39,6 +41,7 @@ final class MsgLocated {
 
     /**
      * Formats the error message.
+     *
      * @return The formatted error message
      */
     String formatted() {

@@ -11,9 +11,11 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -57,7 +59,13 @@ final class DpsDefault implements Dependencies {
     private final boolean jna;
 
     /**
+     * Tojos associated with each dependency coordinate.
+     */
+    private final Map<String, List<TjForeign>> sources;
+
+    /**
      * Ctor.
+     *
      * @param tjs Tojos
      * @param self Self
      * @param skip Skip
@@ -68,6 +76,7 @@ final class DpsDefault implements Dependencies {
         this.discover = self;
         this.skip = skip;
         this.jna = jna;
+        this.sources = new HashMap<>(0);
     }
 
     @Override
@@ -109,9 +118,24 @@ final class DpsDefault implements Dependencies {
                 tojo.description(), coords
             );
             deps.add(dep);
-            tojo.withJar(coords);
+            this.sources.computeIfAbsent(coords, key -> new ArrayList<>(0)).add(tojo);
         }
         return deps.iterator();
+    }
+
+    /**
+     * Mark the tojos for a dependency after it has been resolved.
+     *
+     * @param dependency Resolved dependency
+     */
+    void resolved(final Dep dependency) {
+        final String coordinates = dependency.toString();
+        final List<TjForeign> related = this.sources.get(coordinates);
+        if (related != null) {
+            for (final TjForeign tojo : related) {
+                tojo.withJar(coordinates);
+            }
+        }
     }
 
     private static Optional<Dep> artifact(final Path file) {

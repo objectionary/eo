@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Span}.
+ *
  * @since 0.1
  */
 final class SpanTest {
@@ -218,6 +219,33 @@ final class SpanTest {
         MatcherAssert.assertThat(
             "leading whitespace with no tab at all must not be reported as tabbed",
             new Span("\ffoo", 1).tab(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void countsNoBreakSpacesInIndent() {
+        MatcherAssert.assertThat(
+            "a no-break space in front of the line must count towards the indent",
+            new Span(String.format("%1$s%1$sfoo", Character.toString(0xA0)), 1).indent(),
+            Matchers.equalTo(2)
+        );
+    }
+
+    @Test
+    void detectsNoBreakSpaceInLeadingWhitespace() {
+        MatcherAssert.assertThat(
+            "a no-break space inside the leading-whitespace region must be reported",
+            new Span("  ".concat(Character.toString(0xA0)).concat("foo"), 1).alien(),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void ignoresNoBreakSpaceAfterFirstNonSpace() {
+        MatcherAssert.assertThat(
+            "a no-break space past the line head says nothing about the indent",
+            new Span("  foo".concat(Character.toString(0xA0)).concat("bar"), 1).alien(),
             Matchers.is(false)
         );
     }

@@ -42,6 +42,7 @@ final class PhPackage implements Phi {
 
     /**
      * Ctor.
+     *
      * @param name The name
      */
     PhPackage(final String name) {
@@ -102,7 +103,7 @@ final class PhPackage implements Phi {
     @Override
     public void put(final int pos, final Phi object) {
         throw new ExFailure(
-            "Can't #put(%d, %s) to package object \"%s\"", pos, object, this.pkg
+            "Can't #put(%d, %s) to package object \"%s\"", pos, object.forma(), this.pkg
         );
     }
 
@@ -111,7 +112,7 @@ final class PhPackage implements Phi {
         if (!name.equals(Phi.RHO)) {
             throw new ExFailure(
                 "Can't #put(\"%s\", %s) to package object \"%s\", only %s is accepted",
-                name, object, this.pkg, Phi.RHO
+                name, object.forma(), this.pkg, Phi.RHO
             );
         }
         this.objects.put(name, object);

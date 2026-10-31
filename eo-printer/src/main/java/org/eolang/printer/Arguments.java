@@ -30,6 +30,7 @@ final class Arguments {
 
     /**
      * Ctor.
+     *
      * @param nodes The arguments, in order
      */
     Arguments(final List<Node> nodes) {
@@ -38,6 +39,7 @@ final class Arguments {
 
     /**
      * Join the arguments into one space-separated string.
+     *
      * @return The inlined string, or empty if any argument cannot be inlined
      */
     Optional<String> joined() {

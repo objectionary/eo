@@ -1,5 +1,7 @@
 # Convenient wrapper `stdout` on `console` object which
-# uses it as output only and allows to print the given argument to console as `string`:
+# uses it as output only and allows to print the given argument to console.
+# The argument is not converted: its bytes are printed as they are,
+# so, to print text, give it a `string`, as here:
 # ```
 # [args] > app
 #   Q.stdout > @
@@ -10,14 +12,13 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [text] > stdout
   seq * > @
-    console.write text
+    console.write text.as-bytes
     true
 
-  stdout ++> can-print-to-the-console
-    "Hello, stdout-test!\n"
+  stdout "Hello, stdout-test!\n" ++> can-print-to-the-console

@@ -18,6 +18,7 @@ public interface Atom {
 
     /**
      * Executes λ function and calculates object.
+     *
      * @return Object calculated from λ function
      * @throws Exception If the calculation fails
      */

@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets:
+  - /org/eolang/parser/parse/set-locators.xsl
+document:
+  <?xml version="1.0" encoding="UTF-8"?>
+  <object>
+    <o name="a">
+      <o base="b"/>
+    </o>
+  </object>
+asserts:
+  - /object/o[@loc='Φ.a']/o[@loc='Φ.a.α0']

@@ -12,6 +12,7 @@ import org.cactoos.Scalar;
 
 /**
  * Configures the EO Maven plugin within a {@link Farea}.
+ *
  * @since 0.52
  */
 final class AppendedPlugin implements Scalar<Execution> {
@@ -23,6 +24,7 @@ final class AppendedPlugin implements Scalar<Execution> {
 
     /**
      * Ctor.
+     *
      * @param farea The Farea
      */
     AppendedPlugin(final Farea farea) {

@@ -10,6 +10,7 @@ import org.apache.maven.plugin.AbstractMojo;
 
 /**
  * Printing pipeline.
+ *
  * @since 0.33.0
  */
 final class PpPrint implements Iterable<Class<? extends AbstractMojo>> {

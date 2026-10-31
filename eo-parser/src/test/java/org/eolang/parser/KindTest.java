@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 /**
  * Test case for {@link Kind}.
+ *
  * @since 0.1
  */
 final class KindTest {

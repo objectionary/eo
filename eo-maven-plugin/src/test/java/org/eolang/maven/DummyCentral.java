@@ -15,6 +15,7 @@ import org.apache.maven.model.Dependency;
 /**
  * The class for emulating of Maven Central repository.
  * DummyCentral creates an empty dependency jar file under the path.
+ *
  * @since 0.28.11
  */
 final class DummyCentral implements BiConsumer<Dependency, Path> {

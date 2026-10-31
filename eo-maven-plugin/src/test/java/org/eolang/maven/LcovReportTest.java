@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link LcovReport}.
+ *
  * @since 0.75.0
  */
 final class LcovReportTest {

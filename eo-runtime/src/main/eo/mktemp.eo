@@ -6,43 +6,57 @@
 # For Windows uses the path reported by the Windows "GetTempPath" API function which
 # takes the first environment variable in the list TMP, TEMP, USERPROFILE.
 # If none of these are found, it returns the Windows directory (C:\Windows).
+#
+# A trailing separator of the supplied path is dropped, the way macOS sets
+# TMPDIR, so that the path of a temporary file is this path, one separator
+# and a name, and its dirname is this path again.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [] > mktemp
   directory > @
     file
       string
         [] >>!
-          os.is-windows.if > @
-            if.
-              tmp.eq empty
+          if. > @
+            and.
+              raw.size.gt 1
+              eq.
+                raw.slice
+                  raw.size.minus 1
+                  1
+                path.separator.as-bytes
+            raw.slice
+              0
+              raw.size.minus 1
+            os.is-windows.if >> raw!
               if.
-                temp.eq empty
+                tmp.eq ""
                 if.
-                  userprofile.eq empty
-                  "C:\\Windows"
-                  getenv "USERPROFILE" empty >> userprofile!
-                getenv "TEMP" empty >> temp!
-              getenv "TMP" empty >> tmp!
-            if.
-              tmpdir.eq empty
-              if.
-                tmp.eq empty
-                if.
-                  temp.eq empty
+                  temp.eq ""
                   if.
-                    tempdir.eq empty
-                    "/tmp"
-                    getenv "TEMPDIR" empty >> tempdir!
-                  temp
-                tmp
-              getenv "TMPDIR" empty >> tmpdir!
-          -- > empty
+                    userprofile.eq ""
+                    "C:\\Windows".as-bytes
+                    getenv "USERPROFILE" "" >> userprofile!
+                  getenv "TEMP" "" >> temp!
+                getenv "TMP" "" >> tmp!
+              if.
+                tmpdir.eq ""
+                if.
+                  tmp.eq ""
+                  if.
+                    temp.eq ""
+                    if.
+                      tempdir.eq ""
+                      "/tmp".as-bytes
+                      getenv "TEMPDIR" "" >> tempdir!
+                    temp
+                  tmp
+                getenv "TMPDIR" "" >> tmpdir!
 
   mktemp.tmpfile.exists ++> can-create-a-temp-file
 

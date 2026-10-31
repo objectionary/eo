@@ -26,6 +26,7 @@ public final class AtomTypes {
 
     /**
      * Ctor.
+     *
      * @param types Forma of the atom to forma of its computed object
      */
     public AtomTypes(final Map<String, String> types) {
@@ -34,6 +35,7 @@ public final class AtomTypes {
 
     /**
      * The forma declared for the object computed by the atom of this forma.
+     *
      * @param forma Forma of the atom
      * @return Declared forma, or empty string when nothing is declared
      */

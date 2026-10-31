@@ -27,6 +27,7 @@ final class Hashed implements Supplier<String> {
 
     /**
      * Ctor.
+     *
      * @param txt The text to hash
      */
     Hashed(final String txt) {

@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * A piece of text generated in runtime, to be injected into the files
  * that we generate as output, for example .java files.
+ *
  * @since 0.27
  */
 final class Disclaimer {

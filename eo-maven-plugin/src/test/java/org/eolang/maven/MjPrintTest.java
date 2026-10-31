@@ -20,6 +20,7 @@ import org.cactoos.io.InputOf;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
 import org.cactoos.text.TextOf;
+import org.eolang.cache.Saved;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
 import org.eolang.printer.PenaltyKey;
@@ -35,6 +36,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test cases for {@link MjPrint}.
+ *
  * @since 0.33.0
  */
 @ExtendWith(MktmpResolver.class)

@@ -31,13 +31,13 @@
 #
 # Here `"Hello, world!".as-bytes` bytes are printed to console.
 # The object `write` is an output block.
-# It dataizes the given argument, converts it to string,
-# prints it to the operating system console and returns the next output block
-# ready to `write` again.
+# It dataizes the given argument, prints its bytes to the operating system
+# console as they are, with no conversion to string, and returns the next
+# output block ready to `write` again.
 #
 # One implementation does the reading and the writing, and the platform
-# enters it as an adapter carrying the raw syscall object and, for each of
-# the two streams, the name of the call and the descriptor. Each access
+# enters it as an adapter carrying, for each of the two streams, the call
+# and the descriptor. Each access
 # to the `console` object creates a new console instance, so reusing the
 # returned input/output blocks improves performance by maintaining the
 # same console session:
@@ -60,9 +60,9 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [] > console
   os.is-windows.if > @
@@ -76,16 +76,12 @@
                 seq * > @
                   if. >> chunk!
                     received.code.eq -1
-                    T
-                      "Failed to read from standard input"
-                    received.output
+                    T "Failed to read from standard input"
+                    data.
+                      called. >> received
+                        ^.^.^.sys.input.read ^.^.^.sys.input.descriptor size
                   received
                   ^.^.input-block chunk
-                called. > received
-                  ^.^.^.sys.raw *1
-                    ^.^.^.sys.input.name
-                    ^.^.^.sys.input.descriptor
-                    size
             | --
             size
       [^ buffer] > write
@@ -97,58 +93,47 @@
                 seq * > @
                   if. >>!
                     code.eq -1
-                    T
-                      "Failed to write to standard output"
+                    T "Failed to write to standard output"
                     ^.^.output-block
                   code
-                  remainder
-                code. > code
-                  ^.^.^.sys.raw *1
-                    ^.^.^.sys.output.name
-                    ^.^.^.sys.output.descriptor
-                    buffer
-                    buffer.size
-                if. > remainder
-                  code.lt buffer.size
-                  ^.^.output-block.write
-                    buffer.slice code (buffer.size.minus code)
-                  ^.^.output-block
+                  if.
+                    lt.
+                      number (^.^.^.sys.output.write ^.^.^.sys.output.descriptor buffer buffer.size)! >> code
+                      buffer.size
+                    ^.^.output-block.write
+                      buffer.slice code (buffer.size.minus code)
+                    ^.^.output-block
             buffer
     |
       []
         [] > input
           win32.stdin > descriptor
-          "_read" > name
+          win32.read > read
         [] > output
           win32.stdout > descriptor
-          "_write" > name
-        win32 > raw
+          win32.write > write
     impl
       []
         [] > input
           posix.stdin > descriptor
-          "read" > name
+          posix.read > read
         [] > output
           posix.stdout > descriptor
-          "write" > name
-        posix > raw
+          posix.write > write
 
   ++> can-chain-writes-across-output-blocks
     seq * > @
       o1
-      o1.write
-        "part two.\n"
-    console.write > o1
-      "part one, "
+      o1.write "part two.\n".as-bytes
+    console.write "part one, ".as-bytes > o1
 
   console.write ++> can-write-a-non-ascii-string-to-the-console
-    "héllo, wörld! 日本語\n"
+    "héllo, wörld! 日本語\n".as-bytes
 
-  console.write "" ++> can-write-an-empty-string-to-the-console
+  console.write "".as-bytes ++> can-write-an-empty-string-to-the-console
 
   console.write 48-65-6C-6C-6F-0A ++> can-write-raw-bytes-to-the-console
 
-  console.write ++> can-write-to-the-console
-    "Hello, console-test!\n"
+  console.write "Hello, console-test!\n".as-bytes ++> can-write-to-the-console
 
   console --> cannot-dataize-console-directly

@@ -49,15 +49,17 @@ final class Emissions {
 
     /**
      * A valid void parameter name, other than the {@code @} and {@code ^}
-     * special forms — §4.5. Shared by every producer of a void parameter
-     * list ({@link LnFormation}, {@link LnOnlyPhi}, this class's own
-     * {@link #inlinePhi}), so a bracket list is validated the same way
-     * regardless of which line shape it appears on. The cactus emoji is
+     * special forms — §4.5. The same shape follows the {@code ^} of a
+     * receiver that carries a handle, {@code ^name} (R-3.4.13). Shared by
+     * every producer of a void parameter list ({@link LnFormation},
+     * {@link LnOnlyPhi}, this class's own {@link #inlinePhi}), so a bracket
+     * list is validated the same way regardless of which line shape it
+     * appears on. The cactus emoji is
      * excluded along with the ordinary NAME terminators, since §2.3 keeps
      * that glyph for auto-names.
      */
     private static final Pattern PARAM_NAME = Pattern.compile(
-        "[a-z][^ \\t,.|':;!?\\[\\]{}()\\x{1F335}]*"
+        "[a-z][^ \\t,.|':;!?/\\[\\]{}()\\x{1F335}]*"
     );
 
     /**
@@ -71,6 +73,7 @@ final class Emissions {
      * head, optional {@code .method} chain, and optional horizontal
      * args (§9.0.3). The outermost {@code <o>} (head or chain's last
      * link) is left <em>open</em> for the caller to close.
+     *
      * @param emit Emitter
      * @param name Name to attach to the outermost {@code <o>}, or
      *  {@code null}
@@ -86,9 +89,9 @@ final class Emissions {
         if (Emissions.reversedDispatch(tokens, head)) {
             final boolean fragile = tokens.consumeDispatch();
             final List<Value> rargs = tokens.readArgs();
-            Bindings.checkAllOrNothing(rargs, span);
             if (!rargs.isEmpty()) {
                 Bindings.checkReceiver(rargs.get(0), span);
+                Bindings.checkAllOrNothing(rargs.subList(1, rargs.size()), span);
             }
             emit.object(name, ".".concat(Emissions.reversedHead(head)), line, head.pos());
             if (fragile) {
@@ -164,6 +167,7 @@ final class Emissions {
      * Emit a value as a self-contained argument child — opened and
      * immediately closed. If the value carries an inline binding
      * (§3.12), attaches {@code @as}.
+     *
      * @param emit Emitter
      * @param value The value
      * @param line Source line
@@ -195,6 +199,7 @@ final class Emissions {
      * Translate an inline-binding label to its {@code @as} value.
      * Numeric bindings become {@code αN}; identifier bindings are
      * emitted verbatim per R-9.4 inline-binding row.
+     *
      * @param raw Binding label or N
      * @return The {@code @as} attribute value
      */
@@ -202,8 +207,6 @@ final class Emissions {
         final String tag;
         if (!raw.isEmpty() && raw.chars().allMatch(c -> c >= '0' && c <= '9')) {
             tag = "α".concat(raw);
-        } else if ("^".equals(raw)) {
-            tag = "ρ";
         } else {
             tag = raw;
         }
@@ -215,6 +218,7 @@ final class Emissions {
      * data carrier used by numeric, hex and string literals to hold
      * the IEEE-754/UTF-8 byte representation. The cursor is left back
      * at the parent (both nested elements are closed).
+     *
      * @param emit Emitter
      * @param line Source line
      * @param pos Source column
@@ -233,17 +237,24 @@ final class Emissions {
 
     /**
      * Reject a void parameter name the grammar does not accept — §4.5.
+     *
+     * <p>The shape check leaves a control character through, since §2.3
+     * does not count one among the NAME terminators, so the glyph check
+     * every other identifier position runs happens here too.</p>
+     *
      * @param raw The parameter text, as written
      * @param line Source line (for error reporting)
      * @param pos Source column of the parameter's first character
      */
     static void validParam(final String raw, final int line, final int pos) {
-        if (!"@".equals(raw) && !"^".equals(raw) && !Emissions.PARAM_NAME.matcher(raw).matches()) {
+        if (!"@".equals(raw) && !"^".equals(raw) && !Emissions.PARAM_NAME.matcher(raw).matches()
+            && !Emissions.PARAM_NAME.matcher(new VoidHandle(raw).asString()).matches()) {
             throw new ParseError(
                 line, pos,
-                "parameter names in voids must be NAME, @ or ^"
+                "parameter names in voids must be NAME, @, ^ or ^NAME"
             );
         }
+        Suffix.checkGlyphs(raw, line, pos);
     }
 
     /**
@@ -251,6 +262,7 @@ final class Emissions {
      * formation binds its φ from the left-hand side, so a {@code @} void
      * would leave it holding two attributes of that name and the object
      * would keep only one of them.
+     *
      * @param raw The parameter text, as written
      * @param line Source line (for error reporting)
      * @param pos Source column of the parameter's first character
@@ -405,7 +417,7 @@ final class Emissions {
         final String str;
         if (Double.isFinite(num) && "-0.0".equals(Double.toString(num))) {
             str = "-0";
-        } else if (Double.isFinite(num) && Math.abs(num) < 0x1p63) {
+        } else if (Double.isFinite(num) && num >= -0x1p63 && num < 0x1p63) {
             str = Long.toString((long) num);
         } else {
             str = Double.toString(num);
@@ -417,7 +429,7 @@ final class Emissions {
         final Emit emit, final String name, final Value value, final int line
     ) {
         final String inner = value.raw().substring(1, value.raw().length() - 1);
-        final int phi = Emissions.topLevelInlinePhi(inner);
+        final int phi = Tokens.inlinePhi(inner);
         if (phi >= 0) {
             Emissions.inlinePhi(emit, name, inner, phi, value.pos() + 1, line);
         } else {
@@ -432,7 +444,7 @@ final class Emissions {
 
     private static boolean reversedDispatch(final Tokens tokens, final Value head) {
         final boolean reversed;
-        if (head.reversible() && !tokens.atEnd() && tokens.dispatchAhead()) {
+        if (head.reversible() && !head.global() && !tokens.atEnd() && tokens.dispatchAhead()) {
             final int skip;
             if (tokens.current() == '?') {
                 skip = 2;
@@ -451,32 +463,11 @@ final class Emissions {
     private static String reversedHead(final Value head) {
         final String mapped;
         if (head.kind() == Value.Kind.ROOT) {
-            mapped = LnReversed.rootSymbol(head.raw().charAt(0));
+            mapped = head.rootSymbol();
         } else {
             mapped = head.raw();
         }
         return mapped;
-    }
-
-    private static int topLevelInlinePhi(final String body) {
-        int depth = 0;
-        int found = -1;
-        int idx = 0;
-        while (idx < body.length() - 2 && found < 0) {
-            final char glyph = body.charAt(idx);
-            if (glyph == '"') {
-                idx = Tokens.closingQuote(body, idx);
-            } else if (glyph == '(') {
-                depth = depth + 1;
-            } else if (glyph == ')') {
-                depth = depth - 1;
-            } else if (depth == 0 && glyph == '>'
-                && body.charAt(idx + 1) == ' ' && body.charAt(idx + 2) == '[') {
-                found = idx;
-            }
-            idx = idx + 1;
-        }
-        return found;
     }
 
     private static void inlinePhi(
@@ -528,7 +519,9 @@ final class Emissions {
         int pcol = column + bracket + 1;
         for (final String param : Emissions.splitParams(params, line, pcol)) {
             Emissions.validPhiParam(param, line, pcol);
-            emit.voidParam(new VoidName(param).asString(), line, pcol);
+            emit.voidParam(
+                new VoidName(param).asString(), new VoidHandle(param).asString(), line, pcol
+            );
             pcol = pcol + param.length() + 1;
         }
         final Tokens tokens = new Tokens(sub.body(), sub);

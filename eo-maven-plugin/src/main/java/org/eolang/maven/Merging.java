@@ -8,6 +8,7 @@ import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import org.eolang.cache.Saved;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -58,14 +60,24 @@ import org.w3c.dom.NodeList;
  * package that holds it, so a test written three files deep arrives at the top
  * one level at a time and nothing has to look for it.</p>
  *
+ * <p>A lifted test takes the name of the member it came from in front of its
+ * own, so {@code works} of {@code box/left.eo} arrives as
+ * {@code left-works}. Each file names its tests on its own, and two files of
+ * one package naming a test alike is as ordinary as two files naming an
+ * attribute alike, so the name a test arrives under has to say which member
+ * wrote it. Without the prefix the second {@code works} read as a name the
+ * object already held and stopped the build.</p>
+ *
  * @since 0.68.0
  */
 final class Merging implements Step {
 
     /**
-     * The directory for the merged XMIR.
+     * The length of the mark the parser puts in front of a test: one letter,
+     * {@code p} for a test that must hold and {@code n} for one that must
+     * throw, and the cactus that follows it.
      */
-    static final String DIR = "4-merge";
+    private static final int MARK = "p🌵".length();
 
     /**
      * The tojos of everything this build compiles.
@@ -73,18 +85,19 @@ final class Merging implements Step {
     private final TjsForeign tojos;
 
     /**
-     * The directory to write the merged XMIR to.
+     * Target directory.
      */
-    private final Path dir;
+    private final Path target;
 
     /**
      * Ctor.
+     *
      * @param foreign The tojos of everything this build compiles
-     * @param target The directory for the merged XMIR
+     * @param tgt Target directory
      */
-    Merging(final TjsForeign foreign, final Path target) {
+    Merging(final TjsForeign foreign, final Path tgt) {
         this.tojos = foreign;
-        this.dir = target;
+        this.target = tgt;
     }
 
     @Override
@@ -100,9 +113,13 @@ final class Merging implements Step {
         } else {
             Logger.info(
                 this, "Put %d member(s) into %d package object(s), XMIR is in %[file]s",
-                done, found.size(), this.dir
+                done, found.size(), this.dir()
             );
         }
+    }
+
+    private Path dir() throws IOException {
+        return new Seqdir(this.target, 2).dirs().once("merge");
     }
 
     private static Collection<String> deepest(final Map<String, TjForeign> all) {
@@ -150,22 +167,24 @@ final class Merging implements Step {
             Merging.claimed(taken, name, member.getKey(), pkg);
             formation.appendChild(top);
             for (final Node test : Merging.tests(top)) {
-                Merging.claimed(taken, Merging.named(test), member.getKey(), pkg);
+                final String lifted = Merging.prefixed(Merging.named(test), name);
+                Merging.claimed(taken, lifted, member.getKey(), pkg);
+                test.getAttributes().getNamedItem("name").setNodeValue(lifted);
                 formation.appendChild(top.removeChild(test));
             }
         }
-        final Path target = new Place(pkg).make(this.dir, MjAssemble.XMIR);
+        final Path dest = new Place(pkg).make(this.dir(), MjAssemble.XMIR);
         final String merged = new XMLDocument(formation.getOwnerDocument()).toString();
-        if (!Files.exists(target) || !new Diff(Files.readString(target), merged).same()) {
-            new Saved(merged, target).value();
+        if (!Files.exists(dest) || !new Diff(Files.readString(dest), merged).same()) {
+            new Saved(merged, dest).value();
         }
-        object.withXmir(target);
+        object.withXmir(dest);
         for (final TjForeign member : members.values()) {
             member.withMerged(pkg);
         }
         Logger.debug(
             this, "Put %d member(s) of '%s' into %[file]s",
-            members.size(), pkg, target
+            members.size(), pkg, dest
         );
         return members.size();
     }
@@ -190,11 +209,20 @@ final class Merging implements Step {
         for (int idx = 0; idx < kids.getLength(); ++idx) {
             final Node kid = kids.item(idx);
             final String name = Merging.named(kid);
-            if (name.startsWith("+") || name.startsWith("-")) {
+            if (name.startsWith("p🌵") || name.startsWith("n🌵")) {
                 found.add(kid);
             }
         }
         return found;
+    }
+
+    private static String prefixed(final String test, final String owner) {
+        return String.format(
+            "%s%s-%s",
+            test.substring(0, Merging.MARK),
+            owner,
+            test.substring(Merging.MARK)
+        );
     }
 
     private static String named(final Node object) {

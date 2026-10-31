@@ -18,6 +18,7 @@ import org.cactoos.Scalar;
 /**
  * The scalar that builds the canonical pipeline out of
  * {@link Canonical#XSLS}.
+ *
  * @since 0.60
  */
 final class Pipeline implements Scalar<UnaryOperator<XML>> {
@@ -40,6 +41,7 @@ final class Pipeline implements Scalar<UnaryOperator<XML>> {
 
     /**
      * Ctor.
+     *
      * @param objs Space separated qualified names of local package objects
      */
     Pipeline(final String objs) {

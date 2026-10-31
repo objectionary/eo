@@ -12,9 +12,12 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.stream.Stream;
 import org.cactoos.BiProc;
+import org.eolang.cache.Footprint;
+import org.eolang.cache.Saved;
 
 /**
  * Placed Java generated code.
+ *
  * @since 0.56.7
  */
 final class JavaPlaced implements BiProc<Xnav, Boolean> {
@@ -35,15 +38,25 @@ final class JavaPlaced implements BiProc<Xnav, Boolean> {
     private final Path generated;
 
     /**
+     * Configured test source roots.
+     */
+    private final Path[] roots;
+
+    /**
      * Ctor.
+     *
      * @param ftprnt The footprint
      * @param tgt The target path
      * @param gen Generated sources dir
+     * @param roots Configured test source roots
      */
-    JavaPlaced(final Footprint ftprnt, final Path tgt, final Path gen) {
+    JavaPlaced(
+        final Footprint ftprnt, final Path tgt, final Path gen, final Path... roots
+    ) {
         this.footprint = ftprnt;
         this.target = tgt;
         this.generated = gen;
+        this.roots = roots.clone();
     }
 
     @Override
@@ -73,11 +86,10 @@ final class JavaPlaced implements BiProc<Xnav, Boolean> {
         final Path resulted;
         final String content;
         if (
-            Files.exists(
-                tests.getParent().getParent().resolve("src").resolve("test")
-                    .resolve("java")
-                    .resolve(tests.relativize(resolved))
-            )
+            Arrays.stream(this.roots).filter(
+                root -> !root.toAbsolutePath().normalize()
+                    .equals(tests.toAbsolutePath().normalize())
+            ).anyMatch(root -> Files.exists(root.resolve(tests.relativize(resolved))))
         ) {
             final String atomized = String.format(
                 "TestAtom%s.java", jparts[jparts.length - 1]

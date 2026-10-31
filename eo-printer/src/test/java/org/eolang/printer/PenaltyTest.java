@@ -15,6 +15,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link Penalty}.
+ *
  * @since 0.57.0
  */
 final class PenaltyTest {
@@ -143,6 +144,28 @@ final class PenaltyTest {
                 Matchers.equalTo(new Penalty("foo ++> name", weights).points()),
                 Matchers.lessThan(new Penalty("foo bar name", weights).points())
             )
+        );
+    }
+
+    @Test
+    void holdsStringLiteralOpaque() {
+        final Map<PenaltyKey, Integer> weights =
+            Collections.singletonMap(PenaltyKey.SYMBOL, 0);
+        MatcherAssert.assertThat(
+            "A string literal must hold its spaces as opaquely as a head does, but it didnt",
+            new Penalty("\"a b c\" > x", weights).points(),
+            Matchers.equalTo(new Penalty("[a b c] > x", weights).points())
+        );
+    }
+
+    @Test
+    void readsEscapedQuoteAsContent() {
+        final Map<PenaltyKey, Integer> weights =
+            Collections.singletonMap(PenaltyKey.SYMBOL, 0);
+        MatcherAssert.assertThat(
+            "An escaped quote must not close the literal and let its words out, but it did",
+            new Penalty("\"a \\\" b c\" > x", weights).points(),
+            Matchers.equalTo(new Penalty("[a \\\" b c] > x", weights).points())
         );
     }
 

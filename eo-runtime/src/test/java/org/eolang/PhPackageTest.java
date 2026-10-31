@@ -17,6 +17,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test case for {@link PhPackage}.
+ *
  * @since 0.24
  */
 final class PhPackageTest {
@@ -29,6 +30,21 @@ final class PhPackageTest {
             "a first take from many threads must build the member once, but every thread built its own",
             EOprobe.BUILT.get(),
             Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    void namesTheObjectItRefusesToPut() {
+        MatcherAssert.assertThat(
+            "the message must name the object by its forma, while it named a Java class",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new PhPackage("org.eolang").put(0, new Data.ToPhi(1.0)),
+                "putting into a package object must fail"
+            ).getMessage(),
+            Matchers.containsString(
+                "Can't #put(0, Φ.number) to package object \"org.eolang\""
+            )
         );
     }
 

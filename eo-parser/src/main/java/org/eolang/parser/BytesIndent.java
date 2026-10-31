@@ -33,6 +33,7 @@ final class BytesIndent {
 
     /**
      * Ctor.
+     *
      * @param span The continuation line
      * @param opener Indent of the line that opened the literal
      * @param previous Indent of the line right above this one
@@ -45,6 +46,7 @@ final class BytesIndent {
 
     /**
      * Report what is wrong with this line, if anything is.
+     *
      * @param emit Where the complaint goes
      * @return True when the line was reported
      */

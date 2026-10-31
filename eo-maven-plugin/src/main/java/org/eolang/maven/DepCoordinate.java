@@ -8,6 +8,7 @@ import org.apache.maven.model.Dependency;
 
 /**
  * A dependency's coordinate, without its version: {@code groupId:artifactId:classifier}.
+ *
  * @since 0.61.0
  */
 final class DepCoordinate {
@@ -19,6 +20,7 @@ final class DepCoordinate {
 
     /**
      * Ctor.
+     *
      * @param dep The dependency
      */
     DepCoordinate(final Dependency dep) {
@@ -27,6 +29,7 @@ final class DepCoordinate {
 
     /**
      * The coordinate string.
+     *
      * @return The coordinate, without the version
      */
     String value() {
@@ -40,6 +43,7 @@ final class DepCoordinate {
 
     /**
      * The dependency's classifier, normalized to {@code "-"} when absent.
+     *
      * @return The classifier
      */
     String classifier() {

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link MvnProxy}.
+ *
  * @since 0.73.4
  */
 final class MvnProxyTest {
@@ -51,6 +52,32 @@ final class MvnProxyTest {
             "A host name is case-insensitive, so a capitalised one matching a nonProxyHosts pattern cannot be sent through the proxy",
             new MvnProxy(origin).excludes("BUILD.Internal.EXAMPLE.com"),
             Matchers.is(true)
+        );
+    }
+
+    @Test
+    void excludesABracketedAddressListedInNonProxyHosts() {
+        final Proxy origin = new Proxy();
+        origin.setHost("prox.eolang.org");
+        origin.setPort(8080);
+        origin.setNonProxyHosts("[::1]|localhost");
+        MatcherAssert.assertThat(
+            "the brackets of an IPv6 literal are not regular expression syntax, so a bracketed host listed in nonProxyHosts cannot be sent through the proxy",
+            new MvnProxy(origin).excludes("[::1]"),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void readsAQuantifierInNonProxyHostsAsAnOrdinaryCharacter() {
+        final Proxy origin = new Proxy();
+        origin.setHost("prox.eolang.org");
+        origin.setPort(8080);
+        origin.setNonProxyHosts("ci+.example.com");
+        MatcherAssert.assertThat(
+            "only '*' is a wildcard in nonProxyHosts, so a host that merely satisfies the pattern read as a regular expression cannot be excluded",
+            new MvnProxy(origin).excludes("ciii.example.com"),
+            Matchers.is(false)
         );
     }
 

@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -44,6 +45,7 @@ public final class MjRegister extends MjSafe {
      * List of inclusion GLOB filters for finding EO files
      * in the {@code <includeSources>} directory, which can be
      * pretty global (or even a root one).
+     *
      * @implNote {@code property} attribute is omitted for collection
      *  properties since there is no way of passing it via command line.
      */
@@ -54,6 +56,7 @@ public final class MjRegister extends MjSafe {
      * List of exclusion GLOB filters for finding EO files
      * in the {@code <includeSources>} directory, which can be
      * pretty global (or even a root one).
+     *
      * @implNote {@code defaultValue} attribute is omitted, because an empty
      *  one is not rendered into the descriptor of the plugin by
      *  the {@code maven-plugin-plugin}, thus this may stay {@code NULL}.
@@ -148,11 +151,13 @@ public final class MjRegister extends MjSafe {
         return 1;
     }
 
-    private void removeOldFiles() {
+    private void removeOldFiles() throws IOException {
         final File[] files = {
             this.foreign,
-            this.targetDir.toPath().resolve(Pulling.DIR).toFile(),
-            this.targetDir.toPath().resolve(MjResolve.DIR).toFile(),
+            new Seqdir(this.target.toPath(), 2).dirs().find("pull")
+                .orElse(this.target.toPath().resolve("pull")).toFile(),
+            new Seqdir(this.target.toPath(), 2).dirs().find("resolve")
+                .orElse(this.target.toPath().resolve("resolve")).toFile(),
         };
         for (final File file : files) {
             if (file.exists() && !new Deleted(file).get() && file.exists()) {

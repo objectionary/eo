@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * Parsing result as XMIR with possible errors.
+ *
  * @since 0.60
  */
 final class Xmir {
@@ -25,6 +26,7 @@ final class Xmir {
 
     /**
      * Ctor.
+     *
      * @param res Resulting XML
      * @param errors List of errors
      */
@@ -35,6 +37,7 @@ final class Xmir {
 
     /**
      * Resulting XML.
+     *
      * @return XML xmir representation of the EO object
      */
     XML xml() {
@@ -43,6 +46,7 @@ final class Xmir {
 
     /**
      * Is the XMIR broken.
+     *
      * @return Is broken or not
      */
     boolean broken() {

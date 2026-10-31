@@ -7,6 +7,7 @@ package org.eolang.maven;
 /**
  * Which optional diagnostic artifacts the transpiler emits: transformation
  * steps (intermediate XMIR dumps) and source locations (PhSafe wrappers).
+ *
  * @since 0.73.1
  */
 final class Tracking {
@@ -23,6 +24,7 @@ final class Tracking {
 
     /**
      * Ctor.
+     *
      * @param steps Whether to track transformation steps
      * @param locations Whether to wrap dispatched objects with location info
      */
@@ -33,6 +35,7 @@ final class Tracking {
 
     /**
      * Whether to track transformation steps into intermediate XMIR files.
+     *
      * @return True if steps are tracked
      */
     boolean steps() {
@@ -41,6 +44,7 @@ final class Tracking {
 
     /**
      * Whether to wrap dispatched objects with location info.
+     *
      * @return True if locations are tracked
      */
     boolean locations() {

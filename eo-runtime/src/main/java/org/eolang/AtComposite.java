@@ -28,6 +28,7 @@ public final class AtComposite implements Attribute {
 
     /**
      * Ctor.
+     *
      * @param obj The \rho
      * @param exp The expression
      */
@@ -55,6 +56,11 @@ public final class AtComposite implements Attribute {
 
     @Override
     public boolean vacant() {
+        return false;
+    }
+
+    @Override
+    public boolean voided() {
         return false;
     }
 

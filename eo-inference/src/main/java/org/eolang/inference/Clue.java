@@ -18,8 +18,8 @@ import java.nio.file.Path;
  * unique across the whole program and needs no dictionary to be read.</p>
  *
  * <p>Following one clue is all a rule ever does, which is what lets the
- * checker grow: a new rule is a new clue in {@link Clues}, and nothing
- * around it has to change. The XMIR it reads is prepared beforehand —
+ * checker grow: a new rule is a new clue, or a new section of
+ * {@link Facts}, and nothing around it has to change. The XMIR it reads is prepared beforehand —
  * every composite base split into one object per dispatch step — because
  * a rule can only notice an attribute being taken when the taking is an
  * object of its own.</p>
@@ -31,6 +31,7 @@ public interface Clue {
 
     /**
      * Read the program and write down what is understood.
+     *
      * @param xmirs The directory with the prepared XMIR of the whole
      *  program, since an object in one file is used by objects in others
      *  and no single file can be typed on its own

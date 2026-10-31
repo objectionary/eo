@@ -5,6 +5,7 @@
 
 /**
  * EO Maven Plugin, tests.
+ *
  * @since 0.1
  */
 package org.eolang.maven;

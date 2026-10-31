@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Bindings}.
+ *
  * @since 0.63
  */
 final class BindingsTest {

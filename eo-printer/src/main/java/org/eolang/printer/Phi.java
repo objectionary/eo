@@ -62,6 +62,14 @@ import java.util.Optional;
  * {@code  > @} layout gives the decoratee its own scope, where named
  * arguments are legal.</p>
  *
+ * <p>The collapsed form is withheld altogether when the formation
+ * carries an inline binding ({@code :0}, {@code :x}), which one argument
+ * bound by name puts on every other argument of the same application. The
+ * binding would land after the closing bracket, where the parser accepts
+ * nothing ("unexpected content after name suffix"), while the bracket head
+ * of a vertical formation carries it ({@code [m]:0}), so the labelled
+ * formation keeps that shape (issue #9380).</p>
+ *
  * @since 0.57.0
  */
 final class Phi {
@@ -84,6 +92,7 @@ final class Phi {
 
     /**
      * Ctor.
+     *
      * @param head The rendered head of the formation
      * @param suffix The rendered suffix of the formation
      * @param phi The {@code φ} decoratee
@@ -96,6 +105,7 @@ final class Phi {
 
     /**
      * Render the collapsed formation at the given indentation level.
+     *
      * @param style The style to lay out in
      * @param indent The indentation level
      * @return The rendered block, or empty if the inline-phi form doesn't apply

@@ -13,53 +13,48 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^] > english
-  ^ > @
+[^text] > english
+  text > @
   [^] > lower
     string > @
-      ^.^.as-bytes.array.reduced
+      ^.text.as-bytes.array.reduced
         --
         [^ accum byte] >>
           accum.concat > @
             if.
               and.
-                code.lte "Z".as-ascii!
+                lte.
+                  as-ascii. >> code
+                    string byte
+                  number "Z".as-ascii!
                 code.gte mincode
-              slice.
-                as-bytes.
-                  as-i64.
-                    code.plus
-                      "a".as-ascii.minus (number mincode)
+              (code.plus ("a".as-ascii.minus mincode)).as-i64.as-bytes.slice
                 7
                 1
               byte
-          as-ascii. > code
-            string byte
-    "A".as-ascii >> mincode!
+    number "A".as-ascii! >> mincode
   [^] > upper
     string > @
-      ^.^.as-bytes.array.reduced
+      ^.text.as-bytes.array.reduced
         --
         [^ accum byte] >>
           accum.concat > @
             if.
               and.
-                code.lte "z".as-ascii!
+                lte.
+                  as-ascii. >> code
+                    string byte
+                  number "z".as-ascii!
                 code.gte mincode
-              slice.
-                as-bytes.
-                  as-i64.
-                    code.minus ((number mincode).minus "A".as-ascii)
+              (code.minus (mincode.minus "A".as-ascii)).as-i64.as-bytes.slice
                 7
                 1
               byte
-          as-ascii. > code
-            string byte
-    "a".as-ascii >> mincode!
+    number "a".as-ascii! >> mincode
 
   5.eq "hello".english.length ++> can-behave-like-the-wrapped-english-string
 

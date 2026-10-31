@@ -33,6 +33,7 @@ public final class AtOnce implements Attribute {
 
     /**
      * Ctor.
+     *
      * @param attr Origin attribute
      */
     public AtOnce(final Attribute attr) {
@@ -70,6 +71,11 @@ public final class AtOnce implements Attribute {
 
     @Override
     public boolean vacant() {
+        return false;
+    }
+
+    @Override
+    public boolean voided() {
         return false;
     }
 

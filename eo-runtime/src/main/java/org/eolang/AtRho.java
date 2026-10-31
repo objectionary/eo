@@ -33,6 +33,7 @@ public final class AtRho implements Attribute {
 
     /**
      * Ctor.
+     *
      * @param rho Rho
      */
     private AtRho(final Phi rho) {
@@ -74,6 +75,11 @@ public final class AtRho implements Attribute {
     @Override
     public boolean vacant() {
         return this.rho.get() == null;
+    }
+
+    @Override
+    public boolean voided() {
+        return false;
     }
 
     @Override

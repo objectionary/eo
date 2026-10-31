@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# app puts loud into the fail of guard, so the call of fail puts "it broke"
+# into the message of loud, and guard is the bytes the @ of loud gives. box,
+# handed 42, is a number.
+sources:
+  guard.eo: |
+    [fail] > guard
+      fail > @
+        "it broke"
+  app.eo: |
+    [] > app
+      guard > @
+        01- > [message] > loud
+  box.eo: |
+    [item] > box
+      item > @
+  held.eo: |
+    [] > held
+      box 42 > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='fail']/is[@loc='Φ.app.loud']
+  - /answers/o[@loc='Φ.guard.φ.α0' and @lands='message']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.loud.message']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.loud.φ']/is[@loc='Φ.bytes']
+  - /answers/o[@loc='Φ.guard']/reduced/is[@loc='Φ.bytes']
+  - /answers/o[@loc='Φ.box']/reduced/is[@loc='Φ.number']

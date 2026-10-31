@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,7 +28,8 @@ import org.cactoos.text.Joined;
 
 /**
  * Resolves all required runtime dependencies: downloads from Maven Central,
- * unpacks and places them into the target directory.
+ * unpacks and places them into a directory {@code Seqdir} numbers "resolve".
+ *
  * @since 0.61.0
  */
 final class Resolving implements Step {
@@ -38,7 +40,7 @@ final class Resolving implements Step {
     private final TjsForeign tojos;
 
     /**
-     * Target directory.
+     * Base target directory.
      */
     private final Path target;
 
@@ -86,8 +88,9 @@ final class Resolving implements Step {
 
     /**
      * Ctor.
+     *
      * @param tjs Tojos
-     * @param tgt Target directory
+     * @param tgt Base target directory
      * @param cntrl Central dependency consumer
      * @param self Discover self
      * @param zero Skip zero versions
@@ -120,8 +123,12 @@ final class Resolving implements Step {
     }
 
     @Override
-    public void exec() {
-        final Collection<Dep> deps = this.deps();
+    public void exec() throws IOException {
+        final Path dir = new Seqdir(this.target, 2).dirs().once("resolve");
+        final DpsDefault defaults = new DpsDefault(
+            this.tojos, this.discover, this.skipzero, this.jna
+        );
+        final Collection<Dep> deps = this.deps(defaults);
         final int unpacked;
         if (deps.isEmpty()) {
             unpacked = 0;
@@ -129,7 +136,11 @@ final class Resolving implements Step {
             final Map<String, Set<String>> versions = new ResolvedVersions(deps).byCoordinate();
             unpacked = new Threaded<>(
                 deps,
-                dep -> this.resolved(dep, this.target, versions)
+                dep -> {
+                    final int files = this.resolved(dep, dir, versions);
+                    defaults.resolved(dep);
+                    return files;
+                }
             ).total();
         }
         if (unpacked == 0) {
@@ -138,7 +149,7 @@ final class Resolving implements Step {
             Logger.info(
                 this,
                 "New %d dependenc(ies) unpacked to %[file]s: %s",
-                unpacked, this.target,
+                unpacked, dir,
                 new Joined(", ", new Mapped<>(Dep::toString, deps))
             );
         }
@@ -146,6 +157,7 @@ final class Resolving implements Step {
 
     /**
      * Delete every stale sibling version found in the given directory.
+     *
      * @param dir The directory shared by every version of one dependency
      * @param version The version being resolved
      * @param keep The versions to keep, everything else in {@code dir} is stale
@@ -239,10 +251,8 @@ final class Resolving implements Step {
         return 1;
     }
 
-    private Collection<Dep> deps() {
-        Dependencies result = new DpsDefault(
-            this.tojos, this.discover, this.skipzero, this.jna
-        );
+    private Collection<Dep> deps(final DpsDefault defaults) {
+        Dependencies result = defaults;
         if (this.noruntime) {
             Logger.info(this, "Runtime dependency is ignored because eo:ignoreRuntime=TRUE");
             result = new DpsWithoutRuntime(result);

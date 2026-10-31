@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link MsgUnderlined}.
+ *
  * @since 0.50
  */
 final class MsgUnderlinedTest {

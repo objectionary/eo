@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="restore-local-names" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="restore-local-names" version="3.0">
   <!--
   Inverse of the parser's "resolve-local-names" pass, applied before
   printing (#5563). A void declared with a file-local handle
@@ -58,6 +58,28 @@
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:variable name="auto" select="concat('a', $eo:cactoos)"/>
   <!--
+  The dotted cactus prefix, hoisted out of the hot functions below: "$auto"
+  is a global variable rather than a literal, so Saxon rebuilds the same
+  concatenation at every call instead of folding it (#8529).
+  -->
+  <xsl:variable name="auto-dot" select="concat('.', $auto)"/>
+  <!--
+  Every reference to a cactus name, by the name it resolves to, and by the
+  head segment of that name, which is the same thing for a bare reference
+  ("ξ.ρ.a🌵4-2") and the receiver for a method dispatch ("ξ.ρ.a🌵4-2.seg").
+  The functions below used to answer "which references name this binding?"
+  with a "$target/..//o[...]" subtree scan, from template patterns Saxon
+  evaluates against every "o" node, which made a print quadratic in the size
+  of the largest formation (#8529). An index answers the same question
+  without walking anything, the way "merge-monikers" (#6511) and
+  "resolve-local-names" (#6502) already do; the scoping each function
+  enforced by hand stays where it was, as a predicate on what comes back,
+  and keys return nodes in document order, so "the first reference" and
+  "the second one" keep their meaning.
+  -->
+  <xsl:key name="local-ref" match="o[contains(@base, $auto)]" use="eo:resolved-name(@base)"/>
+  <xsl:key name="local-head" match="o[contains(@base, $auto)]" use="substring-before(concat(eo:resolved-name(@base), '.'), '.')"/>
+  <!--
   A reference resolves to its own auto-name: given a base such as
   "ξ.ρ.a🌵4-2", everything up to the cactus prefix is stripped, so the
   resolved name is the trailing "a🌵4-2". Mirrors "inline-cactoos".
@@ -86,7 +108,7 @@
   <xsl:function name="eo:recursive" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string?"/>
-    <xsl:sequence select="exists($target//o[contains(@base, concat('.', $auto)) and eo:resolved-name(@base) = $name])"/>
+    <xsl:sequence select="exists(key('local-ref', $name, root($target))[contains(@base, $auto-dot)][ancestor::*[. is $target]])"/>
   </xsl:function>
   <!--
   The references in the binding's owner that resolve to the auto-name "$name"
@@ -96,7 +118,7 @@
   <xsl:function name="eo:references" as="element()*">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string?"/>
-    <xsl:sequence select="$target/..//o[contains(@base, concat('.', $auto)) and (eo:resolved-name(@base) = $name or starts-with(eo:resolved-name(@base), concat($name, '.'))) and not(ancestor-or-self::o[. is $target])]"/>
+    <xsl:sequence select="key('local-head', $name, root($target))[contains(@base, $auto-dot)][ancestor::*[. is $target/..]][not(ancestor-or-self::o[. is $target])]"/>
   </xsl:function>
   <!--
   Whether more than one reference in the binding's owner resolves to the
@@ -174,7 +196,7 @@
   <xsl:function name="eo:applied-receiver" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string?"/>
-    <xsl:sequence select="eo:abstract($target) and exists($target/..//o[contains(@base, concat('.', $auto)) and eo:resolved-name(@base) = $name and (o or @name) and not(ancestor-or-self::o[. is $target]) and not(preceding-sibling::o[. is $target])])"/>
+    <xsl:sequence select="eo:abstract($target) and exists(key('local-ref', $name, root($target))[contains(@base, $auto-dot)][ancestor::*[. is $target/..]][o or @name][not(ancestor-or-self::o[. is $target])][not(preceding-sibling::o[. is $target])])"/>
   </xsl:function>
   <!--
   Whether the based "&gt;&gt; name" handle "$target" is itself an application
@@ -193,7 +215,7 @@
   <xsl:function name="eo:reapplied" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string?"/>
-    <xsl:sequence select="not(eo:abstract($target)) and not(exists($target/@const)) and not($target/@base = '.as-bytes') and exists($target/o) and exists($target/..//o[contains(@base, concat('.', $auto)) and eo:resolved-name(@base) = $name and o and not(ancestor-or-self::o[. is $target])])"/>
+    <xsl:sequence select="not(eo:abstract($target)) and not(exists($target/@const)) and not($target/@base = '.as-bytes') and exists($target/o) and exists(key('local-ref', $name, root($target))[contains(@base, $auto-dot)][ancestor::*[. is $target/..]][o][not(ancestor-or-self::o[. is $target])])"/>
   </xsl:function>
   <!--
   Whether a reference in the auto-named binding's owner reaches it through a
@@ -208,7 +230,7 @@
   <xsl:function name="eo:dispatched" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string?"/>
-    <xsl:sequence select="exists($target/../o[contains(@base, concat($name, '.')) and not(. is $target)])"/>
+    <xsl:sequence select="exists(key('local-head', $name, root($target))[contains(@base, concat($name, '.'))][.. is $target/..][not(. is $target)])"/>
   </xsl:function>
   <!--
   Whether "$wrapper" is a dataized-const file-local handle (`a &gt;&gt; b!`,
@@ -232,7 +254,7 @@
   <xsl:function name="eo:const-handle" as="xs:boolean">
     <xsl:param name="wrapper" as="element()*"/>
     <xsl:variable name="value" select="$wrapper/o[@base='Φ.dataized']/o[1]"/>
-    <xsl:sequence select="exists($wrapper) and $wrapper/@base='.as-bytes' and exists($wrapper/@name) and exists($value/@local) and count($wrapper/..//o[contains(@base, concat('.', $auto)) and (eo:resolved-name(@base) = $wrapper/@name or starts-with(eo:resolved-name(@base), concat($wrapper/@name, '.'))) and not(ancestor-or-self::o[. is $wrapper])]) &gt; 1"/>
+    <xsl:sequence select="if (empty($wrapper) or not($wrapper/@base='.as-bytes') or empty($wrapper/@name) or empty($value/@local)) then false() else exists(key('local-head', $wrapper/@name/string(), root($wrapper))[contains(@base, $auto-dot)][ancestor::*[. is $wrapper/..]][not(ancestor-or-self::o[. is $wrapper])][2])"/>
   </xsl:function>
   <!--
   Whether the applied reference "$ref" resolves to a recursive "&gt;&gt;" handle
@@ -246,9 +268,34 @@
   -->
   <xsl:function name="eo:relocated" as="xs:boolean">
     <xsl:param name="ref" as="element()"/>
-    <xsl:sequence select="exists($ref/following-sibling::o[@local and eo:recursive(., @name/string()) and @name = eo:resolved-name($ref/@base)])"/>
+    <xsl:sequence select="exists($ref/following-sibling::o[@name = eo:resolved-name($ref/@base)][@local][eo:recursive(., @name/string())])"/>
   </xsl:function>
-  <xsl:key name="void-handle" match="o[@local and (@base=$eo:empty or eo:recursive(., @name/string()) or @pipe)]" use="@name"/>
+  <xsl:key name="void-handle" match="o[@local and not(@name=$eo:rho) and (@base=$eo:empty or eo:recursive(., @name/string()) or @pipe)]" use="@name"/>
+  <!--
+  Whether some formation of this file names its receiver, "[^s …]"
+  (R-3.4.13, #8227). Most files name none, so "eo:receiver-handled" below
+  hands their references back untouched without climbing their ancestors.
+  -->
+  <xsl:variable name="eo:receivers" as="xs:boolean" select="exists(//o[@name=$eo:rho and @base=$eo:empty and @local])"/>
+  <!--
+  The segments of a reference with the receiver handle put back (#8227). A
+  receiver written as "^s" is the void "ρ" carrying the handle "s" in
+  "@local", and it keeps the name "ρ", so the head still declares the
+  receiver. A reference reaches it through a run of "ρ" hops: "ξ.ρ" from the
+  formation that declares it, one "ρ" more from each formation nested inside
+  that one. The hop that leaves such a formation becomes its handle, so
+  "ξ.ρ.ρ.bar" reads "ξ.s.ρ.bar" where it is declared and "ξ.ρ.s.bar" one
+  formation further in, the way a nested reference to any other handle keeps
+  its "ρ" hops in front of the handle. When the run leaves several formations
+  that name their receivers, the outermost of them takes the handle.
+  -->
+  <xsl:function name="eo:receiver-handled" as="xs:string*">
+    <xsl:param name="ref" as="element()"/>
+    <xsl:param name="segments" as="xs:string*"/>
+    <xsl:variable name="scopes" as="element()*" select="if ($eo:receivers and $segments[1] = $eo:xi and $segments[2] = $eo:rho) then reverse($ref/ancestor::o[not(@base)]) else ()"/>
+    <xsl:variable name="hop" as="xs:integer?" select="max(for $at in 1 to count($scopes) return if (count($segments) gt $at and (every $seg in subsequence($segments, 2, $at) satisfies $seg = $eo:rho) and exists($scopes[$at]/o[@name=$eo:rho and @base=$eo:empty and @local])) then $at else ())"/>
+    <xsl:sequence select="if (empty($hop)) then $segments else (subsequence($segments, 1, $hop), string($scopes[$hop]/o[@name=$eo:rho and @base=$eo:empty and @local][1]/@local), subsequence($segments, $hop + 2))"/>
+  </xsl:function>
   <!--
   References: rewrite each cactus segment that names a handled void, a
   recursive formation, or a pipe-application handle (`| args &gt;&gt; name`,
@@ -265,9 +312,13 @@
   from the other side reaches "string-join" unatomised and the sheet dies with
   "DOMNodeWrapper cannot be cast to AtomicValue". Wrapping the node in
   "string()" leaves nothing mixed to type, as in "eo:signature".
+
+  A "ρ" hop onto a receiver that carries a handle is put back first (see
+  "eo:receiver-handled"); the handle it leaves is no cactus name, so the
+  segment rewrite after it passes the handle through unchanged.
   -->
   <xsl:template match="@base">
-    <xsl:attribute name="base" select="string-join(for $seg in tokenize(., '\.') return (if (key('void-handle', $seg)) then string(key('void-handle', $seg)[1]/@local) else $seg), '.')"/>
+    <xsl:attribute name="base" select="string-join(for $seg in eo:receiver-handled(.., tokenize(., '\.')) return (if (key('void-handle', $seg)) then string(key('void-handle', $seg)[1]/@local) else $seg), '.')"/>
   </xsl:template>
   <!--
   Handled declaration (void or recursive formation): promote the handle
@@ -275,9 +326,11 @@
   pipe-application handle (#6015) are not promoted — only their "@local" marker
   is kept (below) — so their cactus name survives: the dispatch receiver for
   "inline-cactoos" to pipe against, the pipe handle to read as a `|` line whose
-  "&gt;&gt; name" comes from "@local" rather than a promoted "@name".
+  "&gt;&gt; name" comes from "@local" rather than a promoted "@name". Nor is a
+  receiver that carries a handle (#8227): it stays the void "ρ", which is what
+  makes its head declare the receiver.
   -->
-  <xsl:template match="o[@local and (@base=$eo:empty or eo:recursive(., @name/string()))]/@name">
+  <xsl:template match="o[@local and not(@name=$eo:rho) and (@base=$eo:empty or eo:recursive(., @name/string()))]/@name">
     <xsl:attribute name="name" select="../@local"/>
   </xsl:template>
   <!--
@@ -318,7 +371,7 @@
   that already carries "@pipe" (an already-piped handle round-tripping) is
   left as is.
   -->
-  <xsl:template match="o[contains(@base, concat('.', $auto)) and (o or @name) and preceding-sibling::o[1][@local and eo:recursive(., @name/string())] and eo:resolved-name(@base) = preceding-sibling::o[1]/@name]">
+  <xsl:template match="o[contains(@base, $auto-dot) and (o or @name) and preceding-sibling::o[1][@local and eo:recursive(., @name/string())] and eo:resolved-name(@base) = preceding-sibling::o[1]/@name]">
     <xsl:copy>
       <xsl:if test="not(@pipe)">
         <xsl:attribute name="pipe"/>
@@ -345,7 +398,7 @@
   siblings ("eo:relocated"); a reference resolving to a different binding still
   prints in place, through the identity template.
   -->
-  <xsl:template match="o[contains(@base, concat('.', $auto)) and (o or @name) and eo:relocated(.)]"/>
+  <xsl:template match="o[contains(@base, $auto-dot) and (o or @name) and eo:relocated(.)]"/>
   <!--
   Re-emit the suppressed reference below the handle. Match the recursive handle,
   copy it, then for each applied reference among its preceding siblings that
@@ -358,7 +411,7 @@
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
-    <xsl:for-each select="preceding-sibling::o[contains(@base, concat('.', $auto)) and (o or @name) and eo:resolved-name(@base) = current()/@name]">
+    <xsl:for-each select="preceding-sibling::o[contains(@base, $auto-dot) and (o or @name) and eo:resolved-name(@base) = current()/@name]">
       <xsl:copy>
         <xsl:if test="not(@pipe)">
           <xsl:attribute name="pipe"/>

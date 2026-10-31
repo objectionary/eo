@@ -6,8 +6,6 @@ package org.eolang;
 
 import com.yegor256.Together;
 import java.lang.reflect.Field;
-import java.security.SecureRandom;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.set.SetOf;
 import org.eolang.EO_org.EO_eolang.EOdummy;
 import org.hamcrest.MatcherAssert;
@@ -18,7 +16,17 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link PhDefault}.
+ *
  * @since 0.1
+ * @todo #7974:30min Give the last three fixtures files of their own.
+ *  {@code Int}, {@code Foo} and {@code Kid} still sit at the bottom of this
+ *  file, which keeps it within two hundred lines of the thousand that
+ *  qulice allows, and the next regression to pin on {@link PhDefault} needs
+ *  that room. They could not travel together with {@code Rnd},
+ *  {@code WithVoidPhi} and {@code Counter}, since one pull request may
+ *  change two hundred lines and the six of them change more than twice
+ *  that. {@code Int} also needs a new name on the way out, because
+ *  {@link Int} already holds that one in the main sources of this package.
  */
 final class PhDefaultTest {
 
@@ -63,7 +71,36 @@ final class PhDefaultTest {
         MatcherAssert.assertThat(
             "Number without injected bytes must fall back to its structural φ-term, but it didnt",
             Phi.Φ.take("number").φTerm(),
-            Matchers.containsString("as-bytes->?")
+            Matchers.containsString("φ->?")
+        );
+    }
+
+    @Test
+    void printsFilledNumberAsLiteral() {
+        MatcherAssert.assertThat(
+            "Number with injected bytes must print as the literal it stands for, but it didnt",
+            new Data.ToPhi(42.5).φTerm(),
+            Matchers.equalTo("42.5")
+        );
+    }
+
+    @Test
+    void printsFilledStringAsLiteral() {
+        MatcherAssert.assertThat(
+            "String with injected bytes must print as the literal it stands for, but it didnt",
+            new Data.ToPhi("привет").φTerm(),
+            Matchers.equalTo("\"привет\"")
+        );
+    }
+
+    @Test
+    void printsNumberOfTheWrongWidthStructurally() {
+        final Phi phi = Phi.Φ.take("number").copy();
+        phi.put(0, new PhDefault(new byte[] {(byte) 0x01}));
+        MatcherAssert.assertThat(
+            "Number carrying bytes that are not eight must fall back to its structural φ-term, but it didnt",
+            phi.φTerm(),
+            Matchers.containsString("D> 01-")
         );
     }
 
@@ -379,37 +416,37 @@ final class PhDefaultTest {
 
     @Test
     void printsEndlessRecursionObject() {
-        PhDefaultTest.EndlessRecursion.COUNT.set(2);
+        EndlessRecursion.COUNT.set(2);
         MatcherAssert.assertThat(
             "Dataization should discover the infinite recursion, but it didn't",
-            new Dataized(new PhDefaultTest.EndlessRecursion()).asNumber(),
+            new Dataized(new EndlessRecursion()).asNumber(),
             Matchers.equalTo(0.0)
         );
     }
 
     @Test
     void hesPhiRecursively() {
-        PhDefaultTest.RecursivePhi.COUNT.set(3);
+        RecursivePhi.COUNT.set(3);
         MatcherAssert.assertThat(
             "Dataization should discover the infinite recursion, but it didn't",
-            new Dataized(PhDefaultTest.RecursivePhi.made()).asNumber(),
+            new Dataized(RecursivePhi.made()).asNumber(),
             Matchers.equalTo(0.0)
         );
     }
 
     @Test
     void cachesPhiViaNewRecursively() {
-        PhDefaultTest.RecursivePhiViaNew.COUNT.set(3);
+        RecursivePhiViaNew.COUNT.set(3);
         MatcherAssert.assertThat(
             "Does not cache phi via new recursively",
-            new Dataized(new PhDefaultTest.RecursivePhiViaNew()).asNumber(),
+            new Dataized(new RecursivePhiViaNew()).asNumber(),
             Matchers.equalTo(0.0)
         );
     }
 
     @Test
     void doesNotReadMultipleTimes() {
-        final Phi phi = PhDefaultTest.Counter.made();
+        final Phi phi = Counter.made();
         final long total = 2L;
         for (long idx = 0L; idx < total; ++idx) {
             new Dataized(phi).take();
@@ -458,11 +495,11 @@ final class PhDefaultTest {
     }
 
     @Test
-    void keepsSubPackageInForma() {
+    void keepsOwnerInForma() {
         MatcherAssert.assertThat(
-            "forma must keep the EO sub-package without its EO marker, but it didnt",
-            new EOstring$EOregex$EOpattern$EOchecked().forma(),
-            Matchers.equalTo("Φ.string.regex.pattern.checked")
+            "forma must keep the EO owner without its EO marker, but it didnt",
+            new EObytes$EOsize().forma(),
+            Matchers.equalTo("Φ.bytes.size")
         );
     }
 
@@ -485,7 +522,7 @@ final class PhDefaultTest {
                 Matchers.equalTo(
                     new PhApplication(
                         five.take(this.plus()).copy(),
-                        "x",
+                        "b",
                         new Data.ToPhi(5)
                     ).forma()
                 )
@@ -499,13 +536,13 @@ final class PhDefaultTest {
             "Similar Phis with different data should have the same forma, but they didn't",
             new PhApplication(
                 new Data.ToPhi(5L).take(this.plus()).copy(),
-                "x",
+                "b",
                 new Data.ToPhi(5L)
             ).forma(),
             Matchers.equalTo(
                 new PhApplication(
                     new Data.ToPhi(6L).take(this.plus()).copy(),
-                    "x",
+                    "b",
                     new Data.ToPhi(6L)
                 ).forma()
             )
@@ -514,7 +551,7 @@ final class PhDefaultTest {
 
     @Test
     void injectsPhi() {
-        final Phi phi = new PhDefaultTest.WithVoidPhi();
+        final Phi phi = new WithVoidPhi();
         phi.put(0, new Data.ToPhi(5));
         MatcherAssert.assertThat(
             "Object must be injected to phi attribute and dataized",
@@ -529,7 +566,7 @@ final class PhDefaultTest {
             new PhDispatch(
                 new PhApplication(
                     new PhDispatch(
-                        new PhDefaultTest.Rnd(), this.plus()
+                        new Rnd(), this.plus()
                     ),
                     0, new Data.ToPhi(1.2)
                 ),
@@ -545,15 +582,102 @@ final class PhDefaultTest {
     }
 
     @Test
+    void rendersAFailingComputationWithoutRunningIt() {
+        final Phi num = Phi.Φ.take("number").copy();
+        num.put(
+            0,
+            new PhApplication(
+                new PhDispatch(new Data.ToPhi(5.0), "div"), 0, new Data.ToPhi("x")
+            )
+        );
+        MatcherAssert.assertThat(
+            "a term must render the division as it stands, while it ran it and threw",
+            num.φTerm(),
+            Matchers.containsString("div")
+        );
+    }
+
+    @Test
+    void namesTheObjectWhenTheAttributePositionIsTooBig() {
+        MatcherAssert.assertThat(
+            "the message must name the object by its forma, while it named a Java class",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Data.ToPhi(5.0).take("plus").put(1, new Data.ToPhi(1.0)),
+                "putting into a position past the last attribute must fail"
+            ).getMessage(),
+            Matchers.containsString(
+                "Φ.number.plus has just 1 attribute(s), can't read the 1-th one"
+            )
+        );
+    }
+
+    @Test
+    void keepsTwoConstructionsApartInATerm() {
+        final Phi num = Phi.Φ.take("number").copy();
+        num.put(
+            0,
+            new PhApplication(
+                new PhDispatch(new Data.ToPhi(5.0), "plus"), 0, new Data.ToPhi(1.0)
+            )
+        );
+        MatcherAssert.assertThat(
+            "a term of an application must not read as the number it would give",
+            num.φTerm(),
+            Matchers.not(Matchers.equalTo("6"))
+        );
+    }
+
+    @Test
+    void namesBothObjectsWhenTheAttributeIsAbsent() {
+        MatcherAssert.assertThat(
+            "the message must name both objects by their forma, while it named Java classes",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Data.ToPhi(5.0).take("plus").put("zz", new Data.ToPhi(1.0)),
+                "putting into an absent attribute must fail"
+            ).getMessage(),
+            Matchers.containsString(
+                "Can't #put(\"zz\", Φ.number) to Φ.number.plus, because the attribute is absent"
+            )
+        );
+    }
+
+    @Test
     void failsCorrectlyWhenTooManyAttributesPut() {
         MatcherAssert.assertThat(
             "the message explains what's going on",
             Assertions.assertThrows(
-                ExAbstract.class,
+                ExReadOnly.class,
                 () -> new PhCached().put(1, new Data.ToPhi(1)),
                 "fails when trying to set attribute with too big position"
             ).getMessage(),
-            Matchers.containsString("Can't overwrite the cached attribute ")
+            Matchers.equalTo(
+                "Φ.PhCached has just 1 void attribute(s), can't put the 1-th one"
+            )
+        );
+    }
+
+    @Test
+    void countsVoidAttributesWhenRefusingToPut() {
+        final Phi phi = new PhDefault(
+            new Attrs(
+                new Attr("alpha", new AtVoid("alpha")),
+                new Attr("beta", new AtVoid("beta"))
+            )
+        );
+        phi.put(0, new Data.ToPhi(1L));
+        phi.put(1, new Data.ToPhi(2L));
+        MatcherAssert.assertThat(
+            "the message must count the void attributes of the object, but it didnt",
+            Assertions.assertThrows(
+                ExReadOnly.class,
+                () -> phi.put(0, new Data.ToPhi(3L)),
+                "putting into an object with no vacant void must fail"
+            ).getMessage(),
+            Matchers.equalTo(
+                "[] has just 2 void attribute(s), can't put the 0-th one"
+            )
         );
     }
 
@@ -699,31 +823,8 @@ final class PhDefaultTest {
     }
 
     /**
-     * Rnd.
-     * @since 0.1.0
-     */
-    private static final class Rnd extends PhDefault {
-
-        /**
-         * Ctor.
-         */
-        Rnd() {
-            super(
-                new Attrs(
-                    new Attr(
-                        "φ",
-                        new AtComposite(
-                            new PhDefault(),
-                            self -> new Data.ToPhi(new SecureRandom().nextDouble())
-                        )
-                    )
-                )
-            );
-        }
-    }
-
-    /**
      * Int.
+     *
      * @since 0.36.0
      */
     private static final class Int extends PhDefault {
@@ -776,6 +877,7 @@ final class PhDefaultTest {
 
     /**
      * Foo.
+     *
      * @since 0.1.0
      */
     static final class Foo extends PhDefault {
@@ -801,60 +903,8 @@ final class PhDefaultTest {
     }
 
     /**
-     * Dummy.
-     * @since 0.1.0
-     */
-    static final class WithVoidPhi extends PhDefault {
-
-        /**
-         * Ctor.
-         */
-        WithVoidPhi() {
-            super(new Attrs(new Attr(Phi.PHI, new AtVoid(Phi.PHI))));
-        }
-    }
-
-    /**
-     * Counter.
-     * @since 0.1.0
-     */
-    static final class Counter extends PhDefault {
-
-        /**
-         * Count.
-         */
-        private long count;
-
-        /**
-         * Make one, with all its attributes in place.
-         *
-         * <p>The attributes are attached here, and not in a constructor,
-         * because both of them are expressions over the object itself, which
-         * does not exist yet while its constructor runs.</p>
-         *
-         * @return The object
-         */
-        static Counter made() {
-            final PhDefaultTest.Counter made = new PhDefaultTest.Counter();
-            made.add(
-                Phi.PHI,
-                new AtOnce(
-                    new AtComposite(
-                        made,
-                        rho -> {
-                            ++made.count;
-                            return new Data.ToPhi(new byte[]{(byte) 0x01});
-                        }
-                    )
-                )
-            );
-            made.add("count", new AtComposite(made, rho -> new Data.ToPhi(made.count)));
-            return made;
-        }
-    }
-
-    /**
      * Kid.
+     *
      * @since 0.1.0
      */
     static final class Kid extends PhDefault {
@@ -869,125 +919,6 @@ final class PhDefaultTest {
                     new Attr(
                         Phi.PHI,
                         new AtComposite(new PhDefault(), rho -> new Data.ToPhi(true))
-                    )
-                )
-            );
-        }
-    }
-
-    /**
-     * Endless Recursion.
-     * @since 0.1.0
-     */
-    static final class EndlessRecursion extends PhDefault {
-
-        /**
-         * Count.
-         */
-        private static final AtomicInteger COUNT = new AtomicInteger();
-
-        /**
-         * Ctor.
-         */
-        EndlessRecursion() {
-            super(
-                new Attrs(
-                    new Attr(
-                        Phi.PHI,
-                        new AtComposite(
-                            new PhDefault(),
-                            self -> {
-                                final Phi result;
-                                if (PhDefaultTest.EndlessRecursion.COUNT.decrementAndGet() <= 0) {
-                                    result = new Data.ToPhi(0L);
-                                } else {
-                                    result = new PhDefaultTest.EndlessRecursion().copy();
-                                }
-                                return result;
-                            }
-                        )
-                    )
-                )
-            );
-        }
-    }
-
-    /**
-     * Recursive Phi.
-     * @since 0.1.0
-     */
-    static final class RecursivePhi extends PhDefault {
-
-        /**
-         * Count.
-         */
-        private static final AtomicInteger COUNT = new AtomicInteger();
-
-        /**
-         * Make one, with its φ in place.
-         *
-         * <p>The φ is attached here, and not in a constructor, because it is
-         * an expression over the object itself, which does not exist yet
-         * while its constructor runs.</p>
-         *
-         * @return The object
-         */
-        static Phi made() {
-            final PhDefaultTest.RecursivePhi made = new PhDefaultTest.RecursivePhi();
-            made.add(
-                "φ",
-                new AtComposite(
-                    made,
-                    rho -> {
-                        final Phi result;
-                        if (PhDefaultTest.RecursivePhi.COUNT.decrementAndGet() <= 0) {
-                            result = new Data.ToPhi(0L);
-                        } else {
-                            result = new Data.ToPhi(new Dataized(rho).asNumber());
-                        }
-                        return result;
-                    }
-                )
-            );
-            return made;
-        }
-    }
-
-    /**
-     * RecursivePhiViaNew.
-     * @since 0.1.0
-     */
-    static final class RecursivePhiViaNew extends PhDefault {
-
-        /**
-         * Count.
-         */
-        private static final AtomicInteger COUNT = new AtomicInteger();
-
-        /**
-         * Ctor.
-         */
-        RecursivePhiViaNew() {
-            super(
-                new Attrs(
-                    new Attr(
-                        "φ",
-                        new AtComposite(
-                            new PhDefault(),
-                            rho -> {
-                                final Phi result;
-                                if (PhDefaultTest.RecursivePhiViaNew.COUNT.decrementAndGet() <= 0) {
-                                    result = new Data.ToPhi(0L);
-                                } else {
-                                    result = new Data.ToPhi(
-                                        new Dataized(
-                                            new PhDefaultTest.RecursivePhiViaNew()
-                                        ).asNumber()
-                                    );
-                                }
-                                return result;
-                            }
-                        )
                     )
                 )
             );

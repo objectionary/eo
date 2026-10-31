@@ -31,6 +31,7 @@ public final class BytesOf implements Bytes {
 
     /**
      * Ctor.
+     *
      * @param str UTF-8 Text
      */
     public BytesOf(final String str) {
@@ -39,6 +40,7 @@ public final class BytesOf implements Bytes {
 
     /**
      * Ctor.
+     *
      * @param number Integer number
      */
     public BytesOf(final int number) {
@@ -47,6 +49,7 @@ public final class BytesOf implements Bytes {
 
     /**
      * Ctor.
+     *
      * @param chr Character
      */
     public BytesOf(final char chr) {
@@ -55,6 +58,7 @@ public final class BytesOf implements Bytes {
 
     /**
      * Ctor.
+     *
      * @param number Long number
      */
     public BytesOf(final long number) {
@@ -63,6 +67,7 @@ public final class BytesOf implements Bytes {
 
     /**
      * Ctor.
+     *
      * @param number Double number
      */
     public BytesOf(final double number) {
@@ -71,6 +76,7 @@ public final class BytesOf implements Bytes {
 
     /**
      * Ctor.
+     *
      * @param data Data
      */
     public BytesOf(final byte[] data) {
@@ -79,6 +85,7 @@ public final class BytesOf implements Bytes {
 
     /**
      * Ctor.
+     *
      * @param bytes Bytes
      */
     public BytesOf(final Bytes bytes) {

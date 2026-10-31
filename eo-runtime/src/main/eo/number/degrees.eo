@@ -1,19 +1,29 @@
-# Degrees of `num` radians as `org.eolang.number`, the same angle expressed in
+# Degrees of `num` radians as `number`, the same angle expressed in
 # degrees rather than radians, found by scaling the argument by 180 over pi.
+#
+# The argument is multiplied by 180 before it is divided by pi, the order
+# `Math.toDegrees` takes, so that the smallest magnitudes keep their digits
+# instead of underflowing to zero in the division. A magnitude so large that
+# the multiplication leaves the range of a double is divided first instead,
+# which is what #6238 asked for, so neither end of the range is lost.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^] > degrees
-  times. > @
+[^num] > degrees
+  scaled.is-finite.if > @
     div.
-      number ^.as-bytes
+      rads.times 180 >> scaled
       pi
-    180
+    times.
+      div.
+        number num.as-bytes >> rads
+        pi
+      180
 
   lt. ++> can-convert-a-large-value-to-degrees-without-overflow
     abs.
@@ -37,6 +47,8 @@
     abs.
       pi.degrees.minus 180
     1.0e-4
+
+  4.9e-324.degrees.gt 0 ++> can-convert-the-smallest-magnitude-without-underflow
 
   lt. ++> can-convert-two-pi-to-degrees
     abs.

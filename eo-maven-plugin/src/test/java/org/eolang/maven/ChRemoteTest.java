@@ -18,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link ChRemote}.
+ *
  * @since 0.26
  */
 @ExtendWith(WeAreOnline.class)

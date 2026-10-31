@@ -11,10 +11,11 @@ import java.util.Set;
 /**
  * Cross-argument inline-binding validation — §6.6 of the spec.
  *
- * <p>Within a same-indent group of application arguments, bindings
- * must be all-bound or all-unbound (R-6.6.2). The receiver of a
- * reversed dispatch is exempt from this rule and cannot itself carry
- * a binding (R-6.6.3).</p>
+ * <p>A same-indent group of application arguments holds one kind of
+ * argument: all unbound, all bound by slot number, or all bound by
+ * name (R-6.6.2), and binds no label twice (R-6.6.5); {@link Ties}
+ * spells both rules. The receiver of a reversed dispatch is exempt
+ * from them and cannot itself carry a binding (R-6.6.3).</p>
  *
  * <p>This class collects the small rule set as static helpers shared
  * by every line shape that reads an argument group — {@link
@@ -27,7 +28,7 @@ final class Bindings {
 
     /**
      * The parent kinds whose deeper children are application arguments,
-     * so the all-or-nothing rule of R-6.6.2 governs the group they form.
+     * so R-6.6.2 and R-6.6.5 govern the group they form.
      * An inline-phi formation is one of them: the block under a bare
      * {@code φ} is the argument group of the expression the line binds to
      * {@code φ}, and an application is no less one for being written with
@@ -45,12 +46,14 @@ final class Bindings {
     }
 
     /**
-     * Verify the all-or-nothing rule across an argument group.
+     * Verify that a horizontal argument group holds one kind of
+     * argument and binds no label twice — R-6.6.2 and R-6.6.5.
      *
-     * <p>The args must either all carry a binding or none. When the
-     * mix is non-uniform, throws a {@link ParseError} at the column of
-     * the first divergent arg — i.e., the first arg whose
-     * binding-presence differs from the group's first arg's.</p>
+     * <p>The args must carry no binding at all, a slot number each, or
+     * a name each, every label once. Throws a {@link ParseError} at the
+     * column of the first arg that breaks either rule: one whose kind
+     * differs from the first arg's, or whose label an earlier arg
+     * already binds.</p>
      *
      * <p>An empty list or a single arg is always valid.</p>
      *
@@ -58,23 +61,16 @@ final class Bindings {
      * @param span Source span (for error positioning)
      */
     static void checkAllOrNothing(final List<Value> args, final Span span) {
-        if (args.size() >= 2) {
-            final boolean head = args.get(0).bound();
-            for (int idx = 1; idx < args.size(); idx = idx + 1) {
-                final boolean bound = args.get(idx).bound();
-                if (bound != head) {
-                    throw new ParseError(
-                        span.line(), args.get(idx).pos(),
-                        "argument bindings must be all-or-nothing"
-                    );
-                }
-            }
+        Ties ties = new Ties();
+        for (final Value arg : args) {
+            ties = ties.with(arg.tie(), span.line(), arg.pos());
         }
     }
 
     /**
      * Verify that a reversed-dispatch receiver carries no binding —
      * R-6.6.3.
+     *
      * @param receiver The receiver value (first arg of a horizontal
      *  reversed line)
      * @param span Source span
@@ -94,6 +90,7 @@ final class Bindings {
      * R-6.6.3. When the chain being extended is the receiver of a
      * reversed dispatch, a binding on a later link names the whole
      * reversed expression, which is the same as binding the receiver.
+     *
      * @param below The chain head's parent (what the upgrade would
      *  touch), or the stack's bottom sentinel when there is none
      * @param span Source span of the continuation line
@@ -109,14 +106,14 @@ final class Bindings {
 
     /**
      * Observe a freshly-pushed child line's outer binding against its
-     * parent context — cross-line R-6.6.2 / R-6.6.3 / R-3.12.3.
+     * parent context — cross-line R-6.6.2 / R-6.6.3 / R-6.6.5 / R-3.12.3.
      *
      * <p>For arg-bearing parents — every kind of {@link #TRACKED},
-     * {@code VMETHOD} among them — the binding presence updates the
-     * parent's binding mode and rejects mismatches. For {@code BARE_REVERSED}
-     * parents the first child is the receiver (no binding allowed);
-     * subsequent children participate in the all-or-nothing group. For
-     * formation / top-level parents, any binding is rejected per
+     * {@code VMETHOD} among them — the binding label joins the parent's
+     * argument group, which rejects a second kind or a repeated label.
+     * For {@code BARE_REVERSED} parents the first child is the receiver
+     * (no binding allowed); subsequent children form the argument group.
+     * For formation / top-level parents, any binding is rejected per
      * R-3.12.3.</p>
      *
      * @param stack Indent stack (the new child is already on top)
@@ -130,7 +127,7 @@ final class Bindings {
         } else if (parent.kind() == Kind.BARE_REVERSED) {
             Bindings.observeReversedChild(parent, outer, span);
         } else if (Bindings.tracksBindings(parent.kind())) {
-            parent.observeBinding(!outer.isEmpty(), span);
+            parent.observeBinding(outer, span);
         }
     }
 
@@ -151,7 +148,7 @@ final class Bindings {
         final Level parent, final String outer, final Span span
     ) {
         if (parent.children() > 1) {
-            parent.observeBinding(!outer.isEmpty(), span);
+            parent.observeBinding(outer, span);
         } else if (!outer.isEmpty()) {
             throw new ParseError(
                 span.line(), span.indent(),

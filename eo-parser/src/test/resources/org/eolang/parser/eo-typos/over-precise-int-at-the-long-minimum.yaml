@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The advice an over-precise INT is given must be an INT a reader can write
+# back. -2^63 is the double this literal rounds to and the smallest long there
+# is, so it is the canonical spelling; a magnitude test against 2^63 turned it
+# away and offered a FLOAT in its place, which R-9.8.2 says is another kind of
+# literal altogether.
+line: 2
+message: |-
+  [2:2] error: '-9223372036854775807 is over-precise, write -9223372036854775808 instead'
+    -9223372036854775807 > n
+    ^
+input: |
+  [] > app
+    -9223372036854775807 > n

@@ -38,6 +38,7 @@ public final class Bind {
 
     /**
      * Ctor.
+     *
      * @param pos The position
      * @param obj The object to bind
      */
@@ -51,12 +52,13 @@ public final class Bind {
 
     /**
      * Ctor.
+     *
      * @param name The name of the attribute
      * @param obj The object to bind
      */
     public Bind(final String name, final Phi obj) {
         this(
-            false,
+            "φ".equals(name),
             target -> target.put(name, obj),
             () -> String.format("%s->%s", name, obj.φTerm())
         );
@@ -64,6 +66,7 @@ public final class Bind {
 
     /**
      * Ctor.
+     *
      * @param first Whether the binding fills the first slot
      * @param command Attaches the bound object to a target
      * @param term Renders the φ-term fragment
@@ -82,9 +85,13 @@ public final class Bind {
      * <p>A literal is an object applied to its bytes in that slot and
      * nothing else, so whoever renders one has to tell that application
      * from a named binding of the same object, which is no literal and
-     * cannot even be dataized (#7692).</p>
+     * cannot even be dataized (#7692). The only slot of {@code number},
+     * {@code string} and {@code bytes} is their {@code φ}, and once the
+     * compiler binds arguments by the names of their voids (#8301), a
+     * literal fills it by that name instead of by position.</p>
      *
-     * @return True if the binding is positional and fills slot zero
+     * @return True if the binding is positional and fills slot zero, or
+     *  fills the {@code φ} by name
      */
     boolean first() {
         return this.zero;
@@ -92,6 +99,7 @@ public final class Bind {
 
     /**
      * Attach this binding to the given object.
+     *
      * @param phi The object to bind into
      */
     void attach(final Phi phi) {
@@ -100,6 +108,7 @@ public final class Bind {
 
     /**
      * The φ-term fragment of this binding, like {@code 0->x} or {@code name->y}.
+     *
      * @return The fragment
      * @checkstyle MethodNameCheck (5 lines)
      */

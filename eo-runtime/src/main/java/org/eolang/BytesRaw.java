@@ -9,6 +9,7 @@ import java.util.Arrays;
 
 /**
  * Bytes to be created from byte array only.
+ *
  * @since 0.1.0
  */
 @SuppressWarnings("PMD.GodClass")
@@ -21,6 +22,7 @@ final class BytesRaw implements Bytes {
 
     /**
      * Ctor.
+     *
      * @param data Data
      */
     BytesRaw(final byte[] data) {
@@ -200,7 +202,7 @@ final class BytesRaw implements Bytes {
             } else {
                 byte dst = (byte) (bytes[source] << mod);
                 if (source + 1 < bytes.length) {
-                    dst |= (byte) (bytes[source + 1] >>> (Byte.SIZE - mod) & carry & 0xFF);
+                    dst |= (byte) ((bytes[source + 1] & 0xFF) >>> (Byte.SIZE - mod) & carry);
                 }
                 bytes[index] = dst;
             }
@@ -217,7 +219,7 @@ final class BytesRaw implements Bytes {
             } else {
                 byte dst = (byte) ((0xFF & bytes[source]) >>> mod);
                 if (source - 1 >= 0) {
-                    dst |= (byte) (bytes[source - 1] << (Byte.SIZE - mod) & carry & 0xFF);
+                    dst |= (byte) ((bytes[source - 1] & 0xFF) << (Byte.SIZE - mod) & carry);
                 }
                 bytes[index] = dst;
             }

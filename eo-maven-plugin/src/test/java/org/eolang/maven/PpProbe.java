@@ -10,6 +10,7 @@ import org.apache.maven.plugin.AbstractMojo;
 
 /**
  * Probe full pipeline.
+ *
  * @since 0.29
  */
 final class PpProbe implements Iterable<Class<? extends AbstractMojo>> {

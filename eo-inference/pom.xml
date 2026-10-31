@@ -16,6 +16,16 @@
   <description>XMIR Type Inference</description>
   <dependencies>
     <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>eo-parser</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.yegor256</groupId>
+      <artifactId>xsline</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
       <groupId>com.github.volodya-lombrozo</groupId>
       <artifactId>xnav</artifactId>
       <!-- version from parent POM -->
@@ -31,6 +41,11 @@
       <!-- version from parent POM -->
     </dependency>
     <dependency>
+      <groupId>com.jcabi</groupId>
+      <artifactId>jcabi-log</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
       <groupId>com.yegor256</groupId>
       <artifactId>tojos</artifactId>
       <version>0.20.0</version>
@@ -39,12 +54,13 @@
       <groupId>org.cactoos</groupId>
       <artifactId>cactoos</artifactId>
       <!-- version from parent POM -->
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>net.sf.saxon</groupId>
       <artifactId>Saxon-HE</artifactId>
       <!-- version from parent POM -->
-      <scope>runtime</scope>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.jcabi</groupId>
@@ -65,6 +81,24 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>jucs</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>xax</artifactId>
+      <!-- version from parent POM -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-reload4j</artifactId>
       <!-- version from parent POM -->
@@ -73,7 +107,7 @@
     <dependency>
       <groupId>ch.qos.reload4j</groupId>
       <artifactId>reload4j</artifactId>
-      <version>1.2.26</version>
+      <version>1.2.27</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

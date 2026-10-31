@@ -17,6 +17,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Random;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -30,6 +31,7 @@ import org.xembly.Xembler;
 
 /**
  * Test case for {@link StrictXmir}.
+ *
  * @since 0.5
  */
 final class StrictXmirTest {
@@ -123,7 +125,7 @@ final class StrictXmirTest {
     @ParameterizedTest
     @CsvSource({
         "'Φ.chunk.read.λ', true",
-        "'Φ.set.+can-append-a-new-item.φ.ρ.ρ.α0', true",
+        "'Φ.set.p🌵can-append-a-new-item.φ.ρ.ρ.α0', true",
         "'Φ.foo.bar', true",
         "'Φ', true",
         "'Φ.a.WRONG', false",
@@ -143,6 +145,43 @@ final class StrictXmirTest {
                 String.format("locator '%s' should have been rejected, but wasn't", loc)
             );
         }
+    }
+
+    @Test
+    @ExtendWith(MktmpResolver.class)
+    void acceptsZeroMillisecondsSpent(@Mktmp final Path tmp) {
+        Assertions.assertDoesNotThrow(
+            new StrictXmir(
+                new XMLDocument(
+                    new Xembler(
+                        new Directives().append(new DrProgram()).xpath("/object").attr("ms", 0)
+                    ).xmlQuietly()
+                ),
+                tmp
+            )::inner,
+            "XMIR spending zero milliseconds is not accepted by the schema"
+        );
+    }
+
+    @Test
+    @ExtendWith(MktmpResolver.class)
+    void rejectsNegativeMillisecondsSpent(@Mktmp final Path tmp) {
+        final long seed = System.nanoTime();
+        final long span = -1L - new Random(seed).nextInt(Integer.MAX_VALUE);
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            new StrictXmir(
+                new XMLDocument(
+                    new Xembler(
+                        new Directives().append(new DrProgram()).xpath("/object").attr("ms", span)
+                    ).xmlQuietly()
+                ),
+                tmp
+            )::inner,
+            String.format(
+                "XMIR spending %d milliseconds is accepted by the schema, seed is %d", span, seed
+            )
+        );
     }
 
     @Test

@@ -16,9 +16,9 @@
 +home https://github.com/objectionary/eo
 +rt jvm org.eolang:eo-runtime:0.0.0
 +rt node eo2js-runtime:0.0.0
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
 [@] > bytes
   [] > and /Q.bytes
@@ -30,6 +30,9 @@
   [] > eq /Q.bool
     ? > ^
     ? > b
+  [] > left /Q.bytes
+    ? > ^
+    ? > b /Q.number
   [] > not /Q.bytes
     ? > ^
   [] > or /Q.bytes
@@ -37,7 +40,7 @@
     ? > b /Q.bytes
   [] > right /Q.bytes
     ? > ^
-    ? > x /Q.number
+    ? > b /Q.number
   [] > size /Q.number
     ? > ^
   [] > slice /Q.bytes
@@ -81,7 +84,7 @@
 
   eq. ++> can-concat-bools-as-bytes
     true.as-bytes.concat false.as-bytes
-    01-00
+    FF-00
 
   eq. ++> can-concat-bytes-with-empty-ones
     05-5E-78.concat --
@@ -93,8 +96,7 @@
 
   eq. ++> can-concat-strings-as-bytes
     string
-      "hello ".as-bytes.concat
-        "world".as-bytes
+      "hello ".as-bytes.concat "world".as-bytes
     "hello world"
 
   eq. ++> can-concat-two-empty-bytes
@@ -169,18 +171,52 @@
     C0-26-00-00-00-00-00-00
 
   eq. ++> can-recover-from-a-slice-whose-start-plus-length-overflows
-    "recovered"
+    2A-
     20-1F-EE-B5-90.slice
       2000000000
       2000000000
-      "recovered" > [message]
+      2A- > [message]
 
   eq. ++> can-recover-from-an-out-of-bounds-slice
-    "recovered"
+    2A-
     20-1F-EE-B5-90.slice
       3
       10
-      "recovered" > [message]
+      2A- > [message]
+
+  eq. ++> can-shift-left-an-even-negative
+    FF-FF-FF-FF-FF-FF-FF-EE.left 2
+    00-00-00-00-00-00-00-47.not
+
+  eq. ++> can-shift-left-an-even-positive
+    4.as-bytes.left 3
+    00-80-00-00-00-00-00-00
+
+  eq. ++> can-shift-left-an-odd-negative
+    -17.as-bytes.left 1
+    80-62-00-00-00-00-00-00
+
+  eq. ++> can-shift-left-an-odd-positive
+    5.as-bytes.left 3
+    00-A0-00-00-00-00-00-00
+
+  eq. ++> can-shift-left-by-the-smallest-count
+    -1.as-bytes.left -2147483648
+    00-00-00-00-00-00-00-00
+
+  eq. ++> can-shift-left-by-zero
+    2.as-bytes.left 0
+    40-00-00-00-00-00-00-00
+
+  eq. ++> can-shift-left-minus-one
+    eq.
+      -1.as-bytes.left 3
+      7.as-bytes
+    false
+
+  eq. ++> can-shift-left-zero-bytes
+    0.as-bytes.left 1
+    00-00-00-00-00-00-00-00
 
   eq. ++> can-shift-right-an-even-negative
     -38.as-bytes.right 1
@@ -218,9 +254,7 @@
       3
     1F-EE-B5
 
-  eq. ++> can-turn-bytes-into-a-string
-    "你好, друг!"
-    "你好, друг!"
+  "你好, друг!".eq "你好, друг!" ++> can-turn-bytes-into-a-string
 
   slice. --> stops-on-a-slice-offset-exceeding-the-int-range
     20-1F-EE-B5-90

@@ -38,6 +38,11 @@ import java.util.List;
  * <li>R-6.3.3 — a {@code .method} continuation on a predecessor whose
  * naming line declared it a test attribute, which would otherwise
  * overwrite that attribute's label with the chain's own.</li>
+ * <li>R-3.5.3c — a continuation that takes the chain past
+ * {@link Stack#DEEPEST} hops. Every hop becomes one more level of the
+ * emitted tree whichever way the chain is spelled, so the chain written
+ * as continuation lines is counted toward the same limit as one written
+ * on a single line (#9301).</li>
  * </ul>
  *
  * <p>Emission follows §9.0.3: each chain link is a separate flat
@@ -63,6 +68,7 @@ final class LnMethod implements Line {
 
     /**
      * Ctor.
+     *
      * @param source The source span
      */
     LnMethod(final Span source) {
@@ -73,6 +79,7 @@ final class LnMethod implements Line {
     public void into(final Stack stack, final Globals globals, final Emit emit) {
         this.precheck(stack);
         final Level top = stack.top();
+        stack.hop(1, this.span.line(), this.span.indent());
         final Tokens tokens = this.dottedTokens();
         final boolean fragile = tokens.consumeDispatch();
         final Value method = tokens.readMethodName();
@@ -92,7 +99,7 @@ final class LnMethod implements Line {
         if (!outer.isEmpty()) {
             final Level under = stack.below();
             Bindings.checkReceiverUpgrade(under, this.span);
-            under.upgradeArgBinding();
+            under.upgradeArgBinding(outer, this.span);
         }
         stack.seal();
         emit.object(

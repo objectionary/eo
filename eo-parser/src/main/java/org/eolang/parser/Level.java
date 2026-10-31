@@ -28,9 +28,11 @@ import java.util.Optional;
 final class Level {
 
     /**
-     * The label an entry carries while no naming line has claimed it.
+     * An absent label: the name an entry carries while no naming line
+     * has claimed it, and the binding of the in-progress arg while none
+     * is tracked.
      */
-    private static final Optional<String> NO_NAME = Optional.empty();
+    private static final Optional<String> ABSENT = Optional.empty();
 
     /**
      * Indent (spaces) at which this entry's expression starts.
@@ -136,20 +138,21 @@ final class Level {
     private boolean star;
 
     /**
-     * Cross-line binding mode for arg-bearing parents — 0 unset, 1
-     * all-unbound, 2 all-bound. Updated by
-     * {@link #observeBinding(boolean, Span)} per R-6.6.2.
+     * Cross-line argument group of an arg-bearing parent — the kind its
+     * args hold (none bound, slot numbers, or names) and the labels they
+     * bind. Joined by {@link #commitArg()} per R-6.6.2 and R-6.6.5.
      */
-    private int bindings;
+    private Ties ties;
 
     /**
-     * The in-progress child arg, in the same spelling as
-     * {@link #bindings} — 0 none tracked yet, 1 unbound, 2 bound. Held
-     * apart from {@link #bindings} until {@link #commitArg()} joins it,
-     * since {@link #upgradeArgBinding()} may still turn it to bound when
-     * a {@code .method} continuation picks up an outer binding.
+     * The outer binding label of the in-progress child arg — the empty
+     * string when that arg carries none, and absent while no arg is
+     * tracked. Held apart from {@link #ties} until {@link #commitArg()}
+     * joins it, since {@link #upgradeArgBinding(String, Span)} may still
+     * give it a label when a {@code .method} continuation picks up an
+     * outer binding.
      */
-    private int arg;
+    private Optional<String> arg;
 
     /**
      * Why a same-indent {@code .method} continuation must be refused on
@@ -161,15 +164,16 @@ final class Level {
     private String refusal;
 
     /**
-     * Source span recorded with the in-progress arg, used for error
-     * positioning when {@link #commitArg()} rejects the arg
-     * against the group mode.
+     * Source span of the line that gave the in-progress arg its binding
+     * label (or its lack of one), used for error positioning when
+     * {@link #commitArg()} rejects the arg against the group.
      */
     private Span argspan;
 
     /**
      * Ctor — fresh level pushed at {@code indent} on {@code line} under
      * {@code parent}.
+     *
      * @param ind Indent
      * @param line Start line (1-indexed)
      * @param outer Initial outer kind
@@ -187,18 +191,21 @@ final class Level {
         this.openness = state;
         this.parent = parent;
         this.patom = patom;
-        this.label = Level.NO_NAME;
+        this.label = Level.ABSENT;
         this.atom = false;
         this.taken = false;
         this.count = 0;
         this.children = 0;
         this.tupled = false;
         this.star = false;
+        this.ties = new Ties();
+        this.arg = Level.ABSENT;
         this.refusal = "";
     }
 
     /**
      * Indent of this entry.
+     *
      * @return Indent
      */
     int indent() {
@@ -207,6 +214,7 @@ final class Level {
 
     /**
      * Source line on which the entry was first pushed.
+     *
      * @return Start line
      */
     int start() {
@@ -215,6 +223,7 @@ final class Level {
 
     /**
      * Current outer kind.
+     *
      * @return Kind
      */
     Kind kind() {
@@ -223,6 +232,7 @@ final class Level {
 
     /**
      * Current openness.
+     *
      * @return Openness
      */
     Openness openness() {
@@ -231,6 +241,7 @@ final class Level {
 
     /**
      * Parent kind (or {@link Kind#TOP_LEVEL}).
+     *
      * @return Parent kind
      */
     Kind parent() {
@@ -239,6 +250,7 @@ final class Level {
 
     /**
      * Whether the parent entry is an atom.
+     *
      * @return Parent-atom flag
      */
     boolean patom() {
@@ -247,6 +259,7 @@ final class Level {
 
     /**
      * Whether this entry has been given a name on its naming line.
+     *
      * @return Named flag
      */
     boolean named() {
@@ -259,6 +272,7 @@ final class Level {
      * {@link Kind#ONLY_PHI}, otherwise the name propagated
      * onto it (see {@link #argues(String)}). Never {@code null} — an
      * anonymous formation propagates as the empty string.
+     *
      * @return Governing formation name (possibly empty)
      */
     String governingFormation() {
@@ -280,6 +294,7 @@ final class Level {
     /**
      * The §4.5 diagnostic naming the offending attribute and the
      * formation (generic when auto-named / anonymous).
+     *
      * @return The error message
      */
     String onlyPhiNamingError() {
@@ -298,6 +313,7 @@ final class Level {
 
     /**
      * Whether this entry's expression is itself an atom.
+     *
      * @return Atom flag
      */
     boolean atom() {
@@ -306,6 +322,7 @@ final class Level {
 
     /**
      * Whether the bare-reversed receiver child has been seen.
+     *
      * @return Receiver-consumed flag
      */
     boolean taken() {
@@ -314,6 +331,7 @@ final class Level {
 
     /**
      * Whether this entry is an argument of an only-phi formation's φ.
+     *
      * @return Argument-position flag
      */
     boolean argument() {
@@ -326,6 +344,7 @@ final class Level {
      * the only-phi entry, and for a deeper child that stays in argument
      * position — the flag propagates down through nested applications
      * but resets at a formation boundary, where naming resumes.
+     *
      * @return True if a child of this entry is an only-phi argument
      */
     boolean argumentative() {
@@ -336,6 +355,7 @@ final class Level {
     /**
      * Flag this entry as an argument of an only-phi formation's φ,
      * recording the formation's name for the §4.5 diagnostic.
+     *
      * @param owner The formation's name (empty if anonymous, non-null)
      */
     void argues(final String owner) {
@@ -344,6 +364,7 @@ final class Level {
 
     /**
      * Compact-tuple {@code N} count.
+     *
      * @return Compact N
      */
     int count() {
@@ -352,6 +373,7 @@ final class Level {
 
     /**
      * Deeper-indent child count (for compact-tuple validation).
+     *
      * @return Child count
      */
     int children() {
@@ -361,6 +383,7 @@ final class Level {
     /**
      * Mutate the outer kind (e.g., promote {@link Kind#HEAD} to
      * {@link Kind#VAPPLICATION}).
+     *
      * @param next New kind
      */
     void become(final Kind next) {
@@ -369,6 +392,7 @@ final class Level {
 
     /**
      * Mutate the openness state.
+     *
      * @param next New openness
      */
     void close(final Openness next) {
@@ -378,6 +402,7 @@ final class Level {
     /**
      * Record the suffix's source name, which also marks the entry named
      * ({@link #named()}).
+     *
      * @param text The name label (empty for a bare {@code >>}); never
      *  {@code null}
      * @param form Whether the suffix that set this name was a
@@ -409,6 +434,7 @@ final class Level {
      * entry, enforcing the void-ordering rule (R-3.4.9): a
      * {@link Kind#VOID} child is rejected once a non-void child has
      * appeared, and every non-void child records that fact.
+     *
      * @param shape Kind of the child being added
      * @param line Source line of the child (for the error)
      * @param column Source indent of the child (for the error)
@@ -427,6 +453,7 @@ final class Level {
 
     /**
      * Set the compact-tuple {@code N} count.
+     *
      * @param value N
      */
     void compact(final int value) {
@@ -442,6 +469,7 @@ final class Level {
 
     /**
      * Whether the compact-tuple wrapper has been opened.
+     *
      * @return Flag
      */
     boolean tupled() {
@@ -452,6 +480,7 @@ final class Level {
      * Whether this only-phi formation's φ is a compact tuple that
      * absorbs deeper-indent lines as {@code Φ.tuple} elements (R-3.9.1
      * + R-3.10.6).
+     *
      * @return Compact-φ flag
      */
     boolean star() {
@@ -480,9 +509,9 @@ final class Level {
         this.tupled = false;
         this.children = 0;
         this.count = 0;
-        this.bindings = 0;
-        this.arg = 0;
-        this.label = Level.NO_NAME;
+        this.ties = new Ties();
+        this.arg = Level.ABSENT;
+        this.label = Level.ABSENT;
     }
 
     /**
@@ -495,63 +524,59 @@ final class Level {
     }
 
     /**
-     * Observe a child arg's binding presence and validate against the
-     * group's mode — R-6.6.2. The first observation sets the mode;
-     * subsequent ones must match.
+     * Observe a child arg's outer binding label and validate it against
+     * the group — R-6.6.2 and R-6.6.5. The first arg fixes the kind of
+     * the group; later ones must match it and bind a label of their own.
      *
      * <p>For vmethod chains (head + same-indent {@code .method}
      * continuations), the binding may live on the last link rather
      * than on the head. This method tracks the currently in-progress
-     * arg separately and only commits it to the group mode when the
+     * arg separately and only commits it to the group when the
      * next sibling arg starts or the parent closes. A late binding
-     * picked up via {@link #upgradeArgBinding()} is reflected at
-     * commit time.</p>
+     * picked up via {@link #upgradeArgBinding(String, Span)} is
+     * reflected at commit time.</p>
      *
-     * @param bound Whether the child carries an inline binding
+     * @param outer The child's outer binding label, empty when it carries none
      * @param span Source span of the child (for error positioning)
      */
-    void observeBinding(final boolean bound, final Span span) {
+    void observeBinding(final String outer, final Span span) {
         this.commitArg();
-        if (bound) {
-            this.arg = 2;
-        } else {
-            this.arg = 1;
-        }
+        this.arg = Optional.of(outer);
         this.argspan = span;
     }
 
     /**
-     * Mark the currently in-progress arg as bound — used when a
-     * {@code .method} chain continuation carries an outer binding
-     * that names the whole expression (binding lives on the last
-     * link per the chain-binding rule).
+     * Give the currently in-progress arg the binding label a
+     * {@code .method} chain continuation carries, which names the whole
+     * expression (binding lives on the last link per the chain-binding
+     * rule). A rejection of that label then points at the continuation.
+     *
+     * @param outer The continuation's outer binding label
+     * @param span Source span of the continuation line
      */
-    void upgradeArgBinding() {
-        this.arg = 2;
+    void upgradeArgBinding(final String outer, final Span span) {
+        this.arg = Optional.of(outer);
+        this.argspan = span;
     }
 
     /**
-     * Commit the currently in-progress arg's binding state into the
-     * group mode and verify against the all-or-nothing rule. Called
-     * before starting a new arg and at parent close time.
+     * Commit the currently in-progress arg's binding label into the
+     * group and verify it against R-6.6.2 and R-6.6.5. Called before
+     * starting a new arg and at parent close time.
      */
     void commitArg() {
-        if (this.arg != 0) {
-            final int code = this.arg;
-            this.arg = 0;
-            if (this.bindings == 0) {
-                this.bindings = code;
-            } else if (this.bindings != code) {
-                throw new ParseError(
-                    this.argspan.line(), this.argspan.indent(),
-                    "argument bindings must be all-or-nothing"
-                );
-            }
+        if (this.arg.isPresent()) {
+            final Optional<String> tie = this.arg.filter(text -> !text.isEmpty());
+            this.arg = Level.ABSENT;
+            this.ties = this.ties.with(
+                tie, this.argspan.line(), this.argspan.indent()
+            );
         }
     }
 
     /**
      * Why a {@code .method} continuation is refused on this entry.
+     *
      * @return The diagnostic, empty when a continuation is allowed
      */
     String refusal() {
@@ -572,6 +597,7 @@ final class Level {
      * A detached twin of this entry, carrying the same mutable state at
      * the moment of copying. Lets {@link Stack} take a savepoint that
      * later mutation of this entry cannot reach (R-7.3).
+     *
      * @return A copy of this entry
      */
     Level twin() {
@@ -592,7 +618,7 @@ final class Level {
         this.children = other.children;
         this.tupled = other.tupled;
         this.star = other.star;
-        this.bindings = other.bindings;
+        this.ties = other.ties;
         this.arg = other.arg;
         this.argspan = other.argspan;
         this.refusal = other.refusal;

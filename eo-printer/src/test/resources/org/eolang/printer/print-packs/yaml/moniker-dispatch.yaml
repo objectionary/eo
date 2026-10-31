@@ -11,7 +11,9 @@
 # as the receiver of a reversed dispatch exactly as a bare reference is inlined
 # as a plain receiver (#5782). The printer drops the standalone `>> auto`
 # binding and rewrites `auto.gte 0` into `gte.` over the inlined block, keeping
-# the dispatch's `0` argument. Without the fix the handle had no bare
+# the dispatch's `0` argument. The merge spends the handle's name — nothing
+# refers to `auto` any more — so the inlined block carries none, rather than the
+# nameless `>>` a surviving cactus name used to print (#8655). Without the fix the handle had no bare
 # reference to land on, so `inline-cactoos` stranded the dispatch on a synthetic
 # `v_` placeholder instead. Only one trailing segment is hostable this way; a
 # multi-segment chain would need nested reversed dispatches and stays expanded.
@@ -35,10 +37,9 @@ origin: |
 printed: |
   +package number
 
-  [num] > abs
-    if. > @
-      gte.
-        number num.as-bytes >>
-        0
-      num
-      num
+  if. > [num] > abs
+    gte.
+      number num.as-bytes
+      0
+    num
+    num

@@ -6,6 +6,7 @@ package org.eolang.maven;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -25,8 +26,19 @@ import org.cactoos.scalar.Unchecked;
 /**
  * The rows of the inference tables, indexed by the locator each one is about.
  *
- * <p>{@code purify.xsl} reads {@code provides.xml} and {@code links.xml} by
- * locator only, so a transpile of one file reads that file's rows (#7945).</p>
+ * <p>{@code purify.xsl} reads {@code answers.xml} and {@code facts.xml} by
+ * locator only, so a transpile of one file reads that file's rows (#7945):
+ * the rows {@code answers.xml} has for the places of the file, and the rows
+ * the {@code objects} of {@code facts.xml} have for its formations.</p>
+ *
+ * <p>Both tables go into the digest. The rows of {@code answers.xml} change
+ * with any file of the program, since what a place turns out to be depends
+ * on its callers. The rows of {@code facts.xml} mostly follow the text of the
+ * file, which the cache key already holds, though whether a row calls a
+ * formation bare depends on what other files put into its package. With both
+ * tables in, nobody has to work out which of the rows the stylesheet reads
+ * can change while the file stays the same. The price is an extra transpile
+ * when a row changes that the stylesheet does not read.</p>
  *
  * <p>The reading is remembered under a lock, because a parallel transpile
  * asks one of these from every worker at once. A {@link Sticky} on its own
@@ -45,6 +57,7 @@ final class Rows {
 
     /**
      * Ctor.
+     *
      * @param tables The directory with the tables of {@link MjInference}
      */
     Rows(final Path tables) {
@@ -52,18 +65,8 @@ final class Rows {
             new Sticky<>(
                 () -> {
                     final SortedMap<String, String> rows = new TreeMap<>();
-                    for (final String name : new String[] {"provides.xml", "links.xml"}) {
-                        final Path table = tables.resolve(name);
-                        if (Files.exists(table)) {
-                            for (final XML row : new XMLDocument(table).nodes("/*/type[@id]")) {
-                                rows.merge(
-                                    row.xpath("@id").get(0),
-                                    String.format("%s:%s", name, row),
-                                    String::concat
-                                );
-                            }
-                        }
-                    }
+                    Rows.merge(rows, tables.resolve("answers.xml"), "/answers/o", "@loc");
+                    Rows.merge(rows, tables.resolve("facts.xml"), "/facts/objects/type", "@id");
                     return rows;
                 }
             )
@@ -73,6 +76,7 @@ final class Rows {
     /**
      * Digest of the rows these objects and what they hold are named in.
      * Absent tables and empty ones answer alike.
+     *
      * @param locators The locators of the objects a file holds
      * @return Twelve hex characters
      */
@@ -81,10 +85,13 @@ final class Rows {
         try {
             final MessageDigest sha = MessageDigest.getInstance("SHA-256");
             for (final String locator : new TreeSet<>(locators)) {
-                for (final Map.Entry<String, String> row : rows.tailMap(locator).entrySet()) {
-                    if (!row.getKey().equals(locator)
-                        && !row.getKey().startsWith(String.format("%s.", locator))) {
-                        break;
+                final String prefix = String.format("%s.", locator);
+                final SortedMap<String, String> subtree = rows.subMap(
+                    locator, String.format("%s%c", prefix, Character.MAX_VALUE)
+                );
+                for (final Map.Entry<String, String> row : subtree.entrySet()) {
+                    if (!row.getKey().equals(locator) && !row.getKey().startsWith(prefix)) {
+                        continue;
                     }
                     Rows.feed(sha, row.getKey());
                     Rows.feed(sha, row.getValue());
@@ -93,6 +100,21 @@ final class Rows {
             return String.format("%064x", new BigInteger(1, sha.digest())).substring(0, 12);
         } catch (final NoSuchAlgorithmException ex) {
             throw new IllegalStateException("SHA-256 is not available", ex);
+        }
+    }
+
+    private static void merge(
+        final SortedMap<String, String> rows, final Path table, final String path,
+        final String key
+    ) throws IOException {
+        if (Files.exists(table)) {
+            for (final XML row : new XMLDocument(table).nodes(path)) {
+                rows.merge(
+                    row.xpath(key).get(0),
+                    String.format("%s:%s", table.getFileName(), row),
+                    String::concat
+                );
+            }
         }
     }
 

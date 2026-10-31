@@ -5,7 +5,6 @@
 package org.eolang.maven;
 
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,6 +37,7 @@ final class WkDefault extends ListEnvelope<Path> implements Walk {
 
     /**
      * Ctor.
+     *
      * @param dir The directory
      */
     WkDefault(final Path dir) {
@@ -46,6 +46,7 @@ final class WkDefault extends ListEnvelope<Path> implements Walk {
 
     /**
      * Ctor.
+     *
      * @param dir The directory
      * @param list The list
      */
@@ -56,11 +57,14 @@ final class WkDefault extends ListEnvelope<Path> implements Walk {
 
     @Override
     public Walk includes(final Collection<String> globs) {
+        final Collection<Globbed> patterns = globs.stream()
+            .map(glob -> new Globbed(glob, "includes files into the walk"))
+            .collect(Collectors.toList());
         return new WkDefault(
             this.home,
             this.stream().filter(
-                file -> globs.stream().anyMatch(
-                    glob -> this.matches(glob, file)
+                file -> patterns.stream().anyMatch(
+                    glob -> glob.matches(this.relative(file))
                 )
             )
             .collect(Collectors.toList())
@@ -69,11 +73,14 @@ final class WkDefault extends ListEnvelope<Path> implements Walk {
 
     @Override
     public Walk excludes(final Collection<String> globs) {
+        final Collection<Globbed> patterns = globs.stream()
+            .map(glob -> new Globbed(glob, "excludes files from the walk"))
+            .collect(Collectors.toList());
         return new WkDefault(
             this.home,
             this.stream().filter(
-                file -> globs.stream().noneMatch(
-                    glob -> this.matches(glob, file)
+                file -> patterns.stream().noneMatch(
+                    glob -> glob.matches(this.relative(file))
                 )
             )
             .collect(Collectors.toList())
@@ -102,12 +109,10 @@ final class WkDefault extends ListEnvelope<Path> implements Walk {
         }
     }
 
-    private boolean matches(final String text, final Path file) {
-        return FileSystems.getDefault().getPathMatcher(String.format("glob:%s", text)).matches(
-            Paths.get(
-                file.toAbsolutePath().toString().substring(
-                    this.home.toAbsolutePath().toString().length() + 1
-                )
+    private Path relative(final Path file) {
+        return Paths.get(
+            file.toAbsolutePath().toString().substring(
+                this.home.toAbsolutePath().toString().length() + 1
             )
         );
     }

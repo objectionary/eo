@@ -4,177 +4,178 @@
  */
 package org.eolang.inference;
 
-import java.util.Collection;
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
- * How deeply an object of a program is understood.
+ * The file {@code answers.xml}: what the walk tells of every place
+ * (design doc 5.1, {@code eo-inference-answers.md}).
  *
- * <p>Knowing something about an object is not one thing, and counting the
- * objects we wrote a row about says almost nothing on its own. That
- * {@code Φ.inc.x.next} is the {@code next} of whatever fills {@code x} is a
- * fact, and a shallower one than that an object is a {@code Φ.number}, which
- * is itself shallower than a copy with no void left free. So the objects go on
- * a ladder and the rungs are counted apart.</p>
+ * <p>One {@code <o>} per place, sorted by its locator code point by code
+ * point, with the number of copies that say something there, the sets of
+ * labels they say, the most copies first, what the copies of a formation
+ * reduce to, and the void an argument lands in. With one set its labels sit
+ * right under {@code <o>}. The text is written by hand, one element per line
+ * and two spaces per level, so that it is the same bytes the Python engine
+ * wrote.</p>
  *
- * <p>The rungs run: nothing at all; a name rooted at a void, true of every
- * caller and concrete for none; a formation with voids still free, so it is
- * known which object this is but not what it holds; a formation with nothing
- * left free; and, at the top, an object with nothing left to find out about
- * it. A formation needs no rung of its own: it is a copy of itself that has
- * filled none of its own voids, and lands where that puts it.</p>
- *
- * <p>A datum and a termination go straight to the top. The bytes of a literal
- * are the ground the program stands on, and asking what more there is to know
- * about {@code 01-} is asking nothing; an object that never comes back with a
- * value has nothing further to say either.</p>
- *
- * <p>Where the walk stopped is given back along with the rung, in one
- * {@link Answer}, because that locator is the answer a reader wants and it was
- * already worked out on the way to the rung. Whoever counts the program and
- * whoever shows it to somebody read the same one.</p>
- *
- * <p>A void the program fills one way and no other is that one thing and
- * climbs the ladder as that thing, which is {@link Sole}'s question. A void
- * that keeps itself stays on the rung where a name rooted at a void belongs,
- * true of every caller and concrete for none.</p>
- *
- * <p>Where the void keeps itself, what {@link Seen} found in it goes back
- * beside it, for a reader who is told their object is whatever
- * {@code Φ.bool.and.x} turns out to be and would rather be told that
- * {@code Φ.true} and {@code Φ.false} have both been put there.</p>
- *
- * @since 0.69.0
+ * @since 0.76.0
  */
-final class Answers {
+public final class Answers {
 
     /**
-     * The rows of the provides table, by the locator of their owner.
+     * The end of every line, the same on every system.
      */
-    private final Map<String, Collection<Map<String, String>>> table;
+    private static final String EOL = String.valueOf('\n');
 
     /**
-     * Every void, with what the program was seen putting into it.
+     * The elements of the labels that always read the same, by label.
      */
-    private final Map<String, Collection<Type>> hollows;
+    private static final Map<String, String> FIXED = Map.of(
+        "D", "<data/>",
+        "T", "<terminator/>",
+        "?can't-tell", "<unknown/>",
+        "?open-void", "<open/>",
+        "?open-void-atom", "<open by=\"java\"/>",
+        Telling.ONLY_JAVA, "<fails name=\"ρ\" by=\"java\"/>"
+    );
 
     /**
-     * The objects the table answers by itself.
+     * The walk.
      */
-    private final Collection<String> ground;
-
-    /**
-     * Where the answer for every object is to be looked for.
-     */
-    private final Map<String, String> ends;
+    private final Walk walk;
 
     /**
      * Ctor.
-     * @param rows The rows of the provides table, by the locator of their
-     *  owner, from {@link Ungrouped}
-     * @param voids Every void, with what the program was seen putting into
-     *  it, from {@link Seen}
-     * @param answered The objects the table answers by itself, from
-     *  {@link Pairs}
-     * @param names Where the answer for every object is to be looked for,
-     *  which is the end of its chain of copies, and for the body of an atom
-     *  the forma the atom declares
+     *
+     * @param source The walk
      */
-    Answers(
-        final Map<String, Collection<Map<String, String>>> rows,
-        final Map<String, Collection<Type>> voids,
-        final Collection<String> answered,
-        final Map<String, String> names
-    ) {
-        this.table = rows;
-        this.hollows = voids;
-        this.ground = answered;
-        this.ends = names;
+    public Answers(final Walk source) {
+        this.walk = source;
     }
 
     /**
-     * What this object turns out to be.
-     * @param locator The locator of the object
-     * @param filled The locators of the voids this object has filled, its own
-     *  and the ones filled earlier in its chain of copies
-     * @return The answer, saying what it settled on and how deep that is
+     * Walk and write the answers into a file.
+     *
+     * @param file The file
+     * @throws IOException If it cannot be written
      */
-    Answer of(final String locator, final Collection<String> filled) {
-        final String end = this.ends.getOrDefault(locator, locator);
-        final String root = this.root(end);
-        final String sole = this.sole(end);
-        final Answer found;
-        if (this.ground.contains(end)) {
-            found = new Answer(end, 4);
-        } else if (this.table.containsKey(end)) {
-            found = new Answer(end, this.depth(end, this.free(end, filled)));
-        } else if (root.isEmpty()) {
-            found = new Answer(end, 0);
-        } else if (sole.isEmpty()) {
-            found = new Answer(end, 1, this.hollows.get(root));
+    public void write(final Path file) throws IOException {
+        final Told told = this.walk.told();
+        final Set<String> places = new TreeSet<>(new CodeOrder());
+        places.addAll(told.sets().keySet());
+        places.addAll(told.reduction().keySet());
+        places.addAll(told.lands().keySet());
+        Files.createDirectories(file.toAbsolutePath().getParent());
+        try (Writer out = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
+            out.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").append(Answers.EOL)
+                .append("<answers>").append(Answers.EOL);
+            for (final String place : places) {
+                out.write(Answers.place(told, place));
+            }
+            out.append("</answers>").append(Answers.EOL);
+        }
+    }
+
+    private static String place(final Told told, final String place) {
+        final Map<String, Integer> sets = told.sets().getOrDefault(
+            place, Collections.emptyMap()
+        );
+        final StringBuilder line = new StringBuilder(128)
+            .append("  <o loc=\"").append(Answers.quoted(place))
+            .append("\" copies=\"").append(Answers.sum(sets)).append('"');
+        if (told.lands().containsKey(place)) {
+            line.append(" lands=\"").append(Answers.quoted(told.lands().get(place)))
+                .append('"');
+        }
+        line.append('>').append(Answers.EOL);
+        Answers.groups(sets, "\t", "    ", line);
+        if (told.reduction().containsKey(place)) {
+            final Map<String, Integer> reduced = told.reduction().get(place);
+            line.append("    <reduced copies=\"").append(Answers.sum(reduced))
+                .append("\">").append(Answers.EOL);
+            Answers.groups(reduced, " ", "      ", line);
+            line.append("    </reduced>").append(Answers.EOL);
+        }
+        return line.append("  </o>").append(Answers.EOL).toString();
+    }
+
+    private static void groups(
+        final Map<String, Integer> counted, final String sep, final String indent,
+        final StringBuilder out
+    ) {
+        final List<Map.Entry<String, Integer>> found = new ArrayList<>(counted.entrySet());
+        final CodeOrder order = new CodeOrder();
+        found.sort((left, right) -> Answers.compared(left, right, sep, order));
+        if (found.size() == 1) {
+            for (final String label : found.get(0).getKey().split(sep, -1)) {
+                out.append(indent).append(Answers.element(label)).append(Answers.EOL);
+            }
         } else {
-            found = new Answer(sole, this.depth(sole, this.free(sole, filled)));
+            for (final Map.Entry<String, Integer> entry : found) {
+                out.append(indent).append("<set copies=\"").append(entry.getValue())
+                    .append("\">").append(Answers.EOL);
+                for (final String label : entry.getKey().split(sep, -1)) {
+                    out.append(indent).append("  ").append(Answers.element(label))
+                        .append(Answers.EOL);
+                }
+                out.append(indent).append("</set>").append(Answers.EOL);
+            }
         }
-        return found;
     }
 
-    private String sole(final String end) {
-        return new Sole(
-            this.hollows.getOrDefault(end, Collections.emptyList()), this.table.keySet()
-        ).names();
+    private static int compared(
+        final Map.Entry<String, Integer> left, final Map.Entry<String, Integer> right,
+        final String sep, final CodeOrder order
+    ) {
+        int cmp = Integer.compare(right.getValue(), left.getValue());
+        if (cmp == 0) {
+            final String[] lefts = left.getKey().split(sep, -1);
+            final String[] rights = right.getKey().split(sep, -1);
+            for (int idx = 0; idx < Math.min(lefts.length, rights.length) && cmp == 0; ++idx) {
+                cmp = order.compare(lefts[idx], rights[idx]);
+            }
+            if (cmp == 0) {
+                cmp = Integer.compare(lefts.length, rights.length);
+            }
+        }
+        return cmp;
     }
 
-    private int depth(final String type, final int free) {
-        final int found;
-        if (free > 0) {
-            found = 2;
-        } else if (this.whole(type)) {
-            found = 4;
+    private static String element(final String label) {
+        if (label.charAt(0) == '?' && !Answers.FIXED.containsKey(label)) {
+            throw new IllegalStateException(
+                String.format("%s is a mark answers.xml has no element for", label)
+            );
+        }
+        final String elem;
+        if (Answers.FIXED.containsKey(label)) {
+            elem = Answers.FIXED.get(label);
+        } else if (label.charAt(0) == '!') {
+            elem = String.format("<fails name=\"%s\"/>", Answers.quoted(label.substring(1)));
         } else {
-            found = 3;
+            elem = String.format("<is loc=\"%s\"/>", Answers.quoted(label));
         }
-        return found;
+        return elem;
     }
 
-    private int free(final String type, final Collection<String> filled) {
-        int found = 0;
-        for (final Map<String, String> row : this.own(type)) {
-            if ("true".equals(row.get("void")) && !"ρ".equals(row.get("name"))
-                && !filled.contains(row.getOrDefault("type", ""))) {
-                found = found + 1;
-            }
-        }
-        return found;
+    private static String quoted(final String text) {
+        return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+            .replace("\"", "&quot;");
     }
 
-    private boolean whole(final String type) {
-        boolean found = false;
-        for (final Map<String, String> row : this.own(type)) {
-            if (row.containsKey("id")) {
-                found = "true".equals(row.get("complete"));
-            }
-        }
-        return found;
-    }
-
-    private String root(final String locator) {
-        String found = "";
-        String walked = locator;
-        while (!walked.isEmpty()) {
-            if (this.hollows.containsKey(walked)) {
-                found = walked;
-                break;
-            }
-            if (!walked.contains(".")) {
-                break;
-            }
-            walked = walked.substring(0, walked.lastIndexOf('.'));
-        }
-        return found;
-    }
-
-    private Collection<Map<String, String>> own(final String type) {
-        return this.table.getOrDefault(type, Collections.emptyList());
+    private static int sum(final Map<String, Integer> counted) {
+        return Arrays.stream(counted.values().toArray(new Integer[0]))
+            .mapToInt(Integer::intValue).sum();
     }
 }

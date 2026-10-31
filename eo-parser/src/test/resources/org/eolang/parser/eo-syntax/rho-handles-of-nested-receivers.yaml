@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='a']/o[@name='b']/o[@name='x' and @base='ξ.ρ.ρ.foo']
+  - /object/o[@name='a']/o[@name='b']/o[@name='y' and @base='ξ.ρ.foo']
+input: |
+  [^s] > a
+    [^t] > b
+      s.foo > x
+      t.foo > y

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link DpsWithoutRuntime}.
+ *
  * @since 0.29
  */
 final class DpsWithoutRuntimeTest {
@@ -28,6 +29,23 @@ final class DpsWithoutRuntimeTest {
                 ).iterator()
             ),
             Matchers.emptyIterable()
+        );
+    }
+
+    @Test
+    void keepsTheClassifiedArtifactOfTheRuntime() {
+        MatcherAssert.assertThat(
+            "a classified artifact of the runtime must stay, but it didnt",
+            new DpsWithoutRuntime(
+                () -> new ListOf<>(
+                    new Dep()
+                        .withGroupId("org.eolang")
+                        .withArtifactId("eo-runtime")
+                        .withClassifier("tests")
+                        .withVersion("0.30.0")
+                ).iterator()
+            ),
+            Matchers.iterableWithSize(1)
         );
     }
 

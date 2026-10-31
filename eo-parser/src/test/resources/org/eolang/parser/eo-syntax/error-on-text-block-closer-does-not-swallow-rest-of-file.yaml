@@ -5,6 +5,7 @@
 sheets: []
 asserts:
   - /object/errors/error[contains(text(),'unicode')]
+  - /object/errors/error[contains(text(),'unicode')][@lossy]
   - /object[not(errors/error[contains(text(),'unclosed')])]
   - //o[@name='y']
   - //o[@name='z']

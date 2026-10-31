@@ -13,12 +13,14 @@ import org.cactoos.scalar.Unchecked;
 
 /**
  * Objectionary.
+ *
  * @since 0.1.0
  */
 interface Objectionary {
 
     /**
      * Resolve object.
+     *
      * @param name Object name
      * @return Object code
      * @throws IOException If fails to fetch.
@@ -27,6 +29,7 @@ interface Objectionary {
 
     /**
      * Checks whether an Objectionary contains a provided object.
+     *
      * @param name Object name
      * @return Boolean: "true" if found, "false" if not
      * @throws IOException If fails to fetch.
@@ -35,6 +38,7 @@ interface Objectionary {
 
     /**
      * Checks whether a provided object is a directory.
+     *
      * @param name Object name
      * @return Boolean: "true" if directory, "false" if not
      * @throws IOException If fails to fetch.
@@ -42,8 +46,22 @@ interface Objectionary {
     boolean isDirectory(String name) throws IOException;
 
     /**
+     * Checks whether a provided name is a program of its own, as opposed to
+     * the package of other objects a directory stands for. A name may be
+     * both, and {@link #contains(String)} answers "true" for either, so it
+     * cannot tell one from the other (see
+     * <a href="https://github.com/objectionary/eo/issues/9368">#9368</a>).
+     *
+     * @param name Object name
+     * @return Boolean: "true" if there is a program under that name
+     * @throws IOException If fails to fetch.
+     */
+    boolean isProgram(String name) throws IOException;
+
+    /**
      * List the objects that live directly inside a package (see
      * <a href="https://github.com/objectionary/eo/issues/6175">#6175</a>).
+     *
      * @param pkg Package name, e.g. {@code "tuple"} or {@code "math.vector"}
      * @return Names of the objects located directly in that package
      * @throws IOException If fails to fetch.
@@ -52,6 +70,7 @@ interface Objectionary {
 
     /**
      * Objectionary with lambda-function Ctor-s for testing.
+     *
      * @since 0.28.11
      */
     final class Fake implements Objectionary {
@@ -62,7 +81,9 @@ interface Objectionary {
         private final Func<? super String, ? extends Input> getter;
 
         /**
-         * Function that emulates 'contains()' method in {@link Objectionary}.
+         * Function that emulates 'contains()' and 'isProgram()' methods in
+         * {@link Objectionary}. A fake that needs the two apart gives it a
+         * function that tells the names apart.
          */
         private final Func<? super String, Boolean> container;
 
@@ -84,6 +105,7 @@ interface Objectionary {
 
         /**
          * Ctor.
+         *
          * @param gett Lambda func for get()
          */
         Fake(final Func<? super String, ? extends Input> gett) {
@@ -96,6 +118,7 @@ interface Objectionary {
 
         /**
          * Ctor.
+         *
          * @param gett Lambda func for get()
          * @param cont Lambda func for contains()
          * @param dirs Lambda func for isDirectory()
@@ -123,6 +146,11 @@ interface Objectionary {
         @Override
         public boolean isDirectory(final String name) {
             return new Unchecked<>(() -> this.directories.apply(name)).value();
+        }
+
+        @Override
+        public boolean isProgram(final String name) {
+            return new Unchecked<>(() -> this.container.apply(name)).value();
         }
 
         @Override

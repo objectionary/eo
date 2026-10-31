@@ -12,6 +12,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test case for {@link Escaped}.
+ *
  * @since 0.73.3
  */
 final class EscapedTest {

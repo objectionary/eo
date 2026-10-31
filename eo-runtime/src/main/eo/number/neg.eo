@@ -1,14 +1,14 @@
-# Negation of `n`: the same magnitude with the opposite sign.
+# Negation of `num`: the same magnitude with the opposite sign.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^] > neg
-  ^.times -1 > @
+[^num] > neg
+  num.times -1 > @
 
   ninf.neg.eq pinf ++> can-negate-negative-infinity
 

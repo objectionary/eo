@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Rows}.
+ *
  * @since 0.50
  */
 final class RowsTest {

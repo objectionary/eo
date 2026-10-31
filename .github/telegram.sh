@@ -20,7 +20,7 @@ git fetch --tags --force
   printf 'in the [repository](https://github.com/objectionary/eo) on GitHub '
   printf '(%d commits total); ' \
     "$(git rev-list --count origin/master)"
-  printf '[%d objects](https://github.com/objectionary/eo/tree/master/eo-runtime/src/main/eo/org/eolang) ' \
+  printf '[%d objects](https://github.com/objectionary/eo/tree/master/eo-runtime/src/main/eo) ' \
     "$(find eo-runtime/src/main/eo -name '*.eo' | wc -l)"
   printf 'and [%d atoms](https://github.com/objectionary/eo/tree/master/eo-runtime/src/main/java/org/eolang) ' \
     "$(find eo-runtime/src/main/java/org -name 'EO*.java' | wc -l)"

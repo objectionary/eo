@@ -6,9 +6,9 @@ sheets: []
 asserts:
   - /object[not(errors)]
   - /object/o[@name='foo'][count(o[not(starts-with(@name, 'a🌵'))])=3]
-  - /object/o[@name='foo']/o[@base='Φ.true' and @name='-test-throws']
-  - /object/o[@name='foo']/o[@base='Φ.false' and @name='-never-throws']
-  - /object/o[@name='foo']/o[@base='.eq' and @name='-compares-something']
+  - /object/o[@name='foo']/o[@base='Φ.true' and @name='n🌵test-throws']
+  - /object/o[@name='foo']/o[@base='Φ.false' and @name='n🌵never-throws']
+  - /object/o[@name='foo']/o[@base='.eq' and @name='n🌵compares-something']
 input: |-
   [] > foo
 

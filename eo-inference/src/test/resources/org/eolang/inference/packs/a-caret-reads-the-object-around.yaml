@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# next reads start off ^, the copy of counter it is an attribute of, so the
+# start it adds one to is the number the call put into counter.
+sources:
+  counter.eo: |
+    [start] > counter
+      [] > next
+        ^.start.plus 1 > @
+  app.eo: |
+    [] > app
+      clock.next > @
+      counter 5 > clock
+  number.eo: |
+    [@] > number
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.counter.next.φ.ρ.ρ']/is[@loc='Φ.counter']
+  - /answers/o[@loc='Φ.counter.next.φ.ρ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.clock.α0' and @lands='start']/is[@loc='Φ.number']

@@ -5,7 +5,6 @@
 package org.eolang.maven;
 
 import com.jcabi.matchers.XhtmlMatchers;
-import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
@@ -13,17 +12,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import org.eolang.jucs.ClasspathSource;
+import java.util.Collections;
+import org.cactoos.io.Directory;
 import org.eolang.parser.EoSyntax;
-import org.eolang.xax.XtSticky;
-import org.eolang.xax.XtYaml;
-import org.eolang.xax.Xtory;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -32,50 +23,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
 
 /**
  * Test case for {@link Inferring}.
  *
- * <p>What the clues understand about a program is checked by the packs in
- * {@code inference-packs}: each one carries the EO source and the XPaths its
- * tables must satisfy, so a rule is described by the program it reads rather
- * than by XMIR written out by hand. What is left here are the mechanics no EO
- * source can express — how many files there are, where they land, and what
- * happens to a file whose source is gone.</p>
+ * <p>What the facts say about a program is checked by the packs of
+ * {@code eo-inference}. What is left here are the mechanics no EO source
+ * can express: how many files there are, where they land, and what happens
+ * to a file whose source is gone.</p>
  *
  * @since 0.67.0
  */
 @ExtendWith(MktmpResolver.class)
 final class InferringTest {
-
-    /**
-     * Temp directory, injected into every test instance, since a
-     * parameterized test cannot also take one as an argument.
-     */
-    @Mktmp
-    private Path dir;
-
-    @ParameterizedTest
-    @ClasspathSource(value = "org/eolang/maven/inference-packs/", glob = "**.yaml")
-    void understandsProgramOfPack(final String yaml) throws IOException {
-        final Xtory pack = new XtSticky(new XtYaml(yaml));
-        final Path parsed = Files.createDirectories(this.dir.resolve("parsed"));
-        for (final Map.Entry<String, String> source : this.sources(pack).entrySet()) {
-            Files.writeString(
-                parsed.resolve(source.getKey()),
-                new EoSyntax(source.getValue()).parsed().toString()
-            );
-        }
-        new Inferring(
-            this.dir.resolve("parsed"), this.dir.resolve("pre"), this.dir.resolve("tables")
-        ).exec();
-        MatcherAssert.assertThat(
-            "every XPath of the pack must match what the clues wrote, but some didnt",
-            this.unmatched(pack, this.dir),
-            Matchers.empty()
-        );
-    }
 
     @Test
     void putsEveryFileOfProgramInOneTable(@Mktmp final Path temp) throws IOException {
@@ -93,14 +53,63 @@ final class InferringTest {
                 String.join(System.lineSeparator(), "[] > cup", "  [] > handle", "")
             ).parsed().toString()
         );
-        new Inferring(many, temp.resolve("all"), temp.resolve("tables")).exec();
+        new Inferring(
+            new Directory(many), many, temp.resolve("all"), temp.resolve("tables"),
+            new RuntimeNames().get()
+        ).exec();
         MatcherAssert.assertThat(
-            "one table must cover the whole program, but a file was left out of it",
-            new XMLDocument(temp.resolve("tables").resolve("provides.xml")),
+            "one document must cover the whole program, but a file was left out of it",
+            new XMLDocument(temp.resolve("tables").resolve("facts.xml")),
             XhtmlMatchers.hasXPaths(
-                "/provides/type[@id='Φ.kettle']/attr[@name='steam']",
-                "/provides/type[@id='Φ.cup']/attr[@name='handle']"
+                "/facts/objects/type[@id='Φ.kettle']/attr[@name='steam']",
+                "/facts/objects/type[@id='Φ.cup']/attr[@name='handle']"
             )
+        );
+    }
+
+    @Test
+    void writesAnswersOfProgramBesideItsFacts(@Mktmp final Path temp) throws IOException {
+        final Path sources = Files.createDirectories(temp.resolve("garden"));
+        Files.writeString(
+            sources.resolve("pond.xmir"),
+            new EoSyntax(
+                String.join(System.lineSeparator(), "[] > pond", "  [] > frog", "")
+            ).parsed().toString()
+        );
+        new Inferring(
+            new Directory(sources), sources, temp.resolve("pre"), temp.resolve("tables"),
+            new RuntimeNames().get()
+        ).exec();
+        MatcherAssert.assertThat(
+            "the answers must be written beside the facts and tell what the frog is, but they werent",
+            new XMLDocument(temp.resolve("tables").resolve("answers.xml")),
+            XhtmlMatchers.hasXPath("/answers/o[@loc='Φ.pond.frog']/is[@loc='Φ.pond.frog']")
+        );
+    }
+
+    @Test
+    void leavesOutAnXmirTheCallerDidNotName(@Mktmp final Path temp) throws IOException {
+        final Path parsed = Files.createDirectories(temp.resolve("parsed"));
+        Files.writeString(
+            parsed.resolve("app.xmir"),
+            new EoSyntax(String.join(System.lineSeparator(), "[] > app", "")).parsed().toString()
+        );
+        Files.writeString(
+            parsed.resolve("bee.xmir"),
+            new EoSyntax(String.join(System.lineSeparator(), "[] > bee", "")).parsed().toString()
+        );
+        new Inferring(
+            Collections.singletonList(parsed.resolve("app.xmir")),
+            parsed,
+            temp.resolve("pre"),
+            temp.resolve("tables"),
+            new RuntimeNames().get()
+        ).exec();
+        MatcherAssert.assertThat(
+            "a file left behind by a deleted source must stay out of the facts, but it didnt",
+            new XMLDocument(temp.resolve("tables").resolve("facts.xml"))
+                .nodes("/facts/objects/type[@id='Φ.bee']"),
+            Matchers.empty()
         );
     }
 
@@ -113,7 +122,10 @@ final class InferringTest {
                 String.join(System.lineSeparator(), "[] > rake", "  [] > teeth", "")
             ).parsed().toString()
         );
-        new Inferring(sources, temp.resolve("pre"), temp.resolve("rows")).exec();
+        new Inferring(
+            new Directory(sources), sources, temp.resolve("pre"), temp.resolve("rows"),
+            new RuntimeNames().get()
+        ).exec();
         Files.delete(sources.resolve("rake.xmir"));
         Files.writeString(
             sources.resolve("hoe.xmir"),
@@ -121,11 +133,14 @@ final class InferringTest {
                 String.join(System.lineSeparator(), "[] > hoe", "  [] > blade", "")
             ).parsed().toString()
         );
-        new Inferring(sources, temp.resolve("pre"), temp.resolve("rows")).exec();
+        new Inferring(
+            new Directory(sources), sources, temp.resolve("pre"), temp.resolve("rows"),
+            new RuntimeNames().get()
+        ).exec();
         MatcherAssert.assertThat(
-            "a file whose source is gone must leave the table, but it stayed",
-            new XMLDocument(temp.resolve("rows").resolve("provides.xml")),
-            XhtmlMatchers.hasXPath("/provides[not(type[@id='Φ.rake'])]")
+            "a file whose source is gone must leave the facts, but it stayed",
+            new XMLDocument(temp.resolve("rows").resolve("facts.xml")),
+            XhtmlMatchers.hasXPath("/facts/objects[not(type[@id='Φ.rake'])]")
         );
     }
 
@@ -137,7 +152,10 @@ final class InferringTest {
                 String.join(System.lineSeparator(), "[] > leaf", "  [] > vein", "")
             ).parsed().toString()
         );
-        new Inferring(temp.resolve("tree"), temp.resolve("copy"), temp.resolve("rows")).exec();
+        new Inferring(
+            new Directory(temp.resolve("tree")), temp.resolve("tree"),
+            temp.resolve("copy"), temp.resolve("rows"), new RuntimeNames().get()
+        ).exec();
         MatcherAssert.assertThat(
             "a file in a folder must be written to the same folder again, but it wasnt",
             Files.exists(temp.resolve("copy").resolve("one").resolve("leaf.xmir")),
@@ -155,11 +173,14 @@ final class InferringTest {
             ).parsed().toString()
         );
         Files.createDirectories(sources.resolve("stale.xmir"));
-        new Inferring(sources, temp.resolve("pre"), temp.resolve("rows")).exec();
+        new Inferring(
+            new Directory(sources), sources, temp.resolve("pre"), temp.resolve("rows"),
+            new RuntimeNames().get()
+        ).exec();
         MatcherAssert.assertThat(
             "a folder whose name ends with .xmir must be left alone, but it was read",
-            new XMLDocument(temp.resolve("rows").resolve("provides.xml")),
-            XhtmlMatchers.hasXPath("/provides/type[@id='Φ.spade']/attr[@name='handle']")
+            new XMLDocument(temp.resolve("rows").resolve("facts.xml")),
+            XhtmlMatchers.hasXPath("/facts/objects/type[@id='Φ.spade']/attr[@name='handle']")
         );
     }
 
@@ -184,7 +205,10 @@ final class InferringTest {
             );
             Assertions.assertThrows(
                 IOException.class,
-                () -> new Inferring(sources, pre, temp.resolve("rows")).exec(),
+                () -> new Inferring(
+                    new Directory(sources), sources, pre, temp.resolve("rows"),
+                    new RuntimeNames().get()
+                ).exec(),
                 "a prepared XMIR of an earlier run that could not be removed must stop inference, not be read together with the current ones"
             );
         } finally {
@@ -202,78 +226,11 @@ final class InferringTest {
             ).parsed().toString()
         );
         Assertions.assertDoesNotThrow(
-            () -> new Inferring(sources, temp.resolve("pre"), temp.resolve("rows")).exec(),
+            () -> new Inferring(
+                new Directory(sources), sources, temp.resolve("pre"), temp.resolve("rows"),
+                new RuntimeNames().get()
+            ).exec(),
             "a prepared directory that was never made is not a failed cleanup, but it was taken for one"
         );
-    }
-
-    private Map<String, String> sources(final Xtory pack) {
-        final Map<String, String> found = new LinkedHashMap<>(0);
-        for (final Map.Entry<?, ?> entry : ((Map<?, ?>) pack.map().get("eo")).entrySet()) {
-            found.put(
-                entry.getKey().toString().replace(".eo", ".xmir"),
-                entry.getValue().toString()
-            );
-        }
-        return found;
-    }
-
-    private Collection<String> unmatched(final Xtory pack, final Path temp) throws IOException {
-        final Collection<String> failed = new ArrayList<>(0);
-        final Collection<String> tables = Arrays.asList(
-            "provides", "needs", "links"
-        );
-        for (final Object key : pack.map().keySet()) {
-            if (!"eo".equals(key) && !"xmir".equals(key) && !tables.contains(key)) {
-                failed.add(String.format("unknown key: %s", key));
-            }
-        }
-        for (final String table : tables) {
-            if (pack.map().containsKey(table)) {
-                failed.addAll(
-                    this.absent(
-                        new XMLDocument(temp.resolve("tables").resolve(table.concat(".xml"))),
-                        table,
-                        (List<String>) pack.map().get(table)
-                    )
-                );
-            }
-        }
-        failed.addAll(this.unprepared(pack, temp));
-        return failed;
-    }
-
-    private Collection<String> unprepared(final Xtory pack, final Path temp) throws IOException {
-        final Collection<String> failed = new ArrayList<>(0);
-        if (pack.map().containsKey("xmir")) {
-            final Map<String, String> sources = this.sources(pack);
-            for (final Map.Entry<?, ?> entry : ((Map<?, ?>) pack.map().get("xmir")).entrySet()) {
-                final String name = entry.getKey().toString().replace(".eo", ".xmir");
-                if (sources.containsKey(name)) {
-                    failed.addAll(
-                        this.absent(
-                            new XMLDocument(temp.resolve("pre").resolve(name)),
-                            entry.getKey().toString(),
-                            (List<String>) entry.getValue()
-                        )
-                    );
-                } else {
-                    failed.add(String.format("unknown file: %s", entry.getKey()));
-                }
-            }
-        }
-        return failed;
-    }
-
-    private Collection<String> absent(
-        final XML document, final String about, final List<String> xpaths
-    ) {
-        final Collection<String> failed = new ArrayList<>(0);
-        for (final String xpath : xpaths) {
-            if (document.nodes(xpath).isEmpty()) {
-                failed.add(String.format("%s: %s", about, xpath));
-            }
-        }
-        return failed;
     }
 }

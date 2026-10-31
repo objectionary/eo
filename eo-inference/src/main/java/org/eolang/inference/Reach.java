@@ -15,13 +15,13 @@ package org.eolang.inference;
  *
  * <p>What counts as running out depends on what was started. A name runs to
  * the first character that cannot be part of one. A literal number carries its
- * digits, its hex letters, its sign and one decimal point. A string runs to
- * its closing quote, and a backslash inside it takes the next character with
- * it, so that {@code "a\"b"} is one string and not two. A dispatch takes its
- * dot along with what follows it, be that a name or the {@code ^} of
- * {@code .^}, since a dot alone marks nothing a reader can read. Anything else
- * is one character, which is the honest answer for a glyph nobody taught this
- * about.</p>
+ * digits, its hex letters, its dashes and one decimal point at a time; the hex
+ * letters are the ASCII ones only. A string runs to its closing quote, and a
+ * backslash inside it takes the next character with it, so that
+ * {@code "a\"b"} is one string and not two. A dispatch takes its dot along
+ * with what follows it, be that a name or the {@code ^} of {@code .^}, since a
+ * dot alone marks nothing a reader can read. Anything else is one character,
+ * which is the honest answer for a glyph nobody taught this about.</p>
  *
  * @since 0.70.0
  */
@@ -34,6 +34,7 @@ final class Reach {
 
     /**
      * Ctor.
+     *
      * @param text The line, as the source wrote it
      */
     Reach(final String text) {
@@ -42,6 +43,7 @@ final class Reach {
 
     /**
      * How many characters the thing at this column covers.
+     *
      * @param column The column it starts at, counted from nought
      * @return The characters, never fewer than none
      */
@@ -95,7 +97,7 @@ final class Reach {
         int cursor = column + 1;
         while (cursor < this.line.length()) {
             final char here = this.line.charAt(cursor);
-            if (Character.digit(here, 16) >= 0 || here == '-') {
+            if ("0123456789abcdefABCDEF-".indexOf(here) >= 0) {
                 cursor = cursor + 1;
             } else if (here == '.' && Character.isDigit(this.after(cursor))) {
                 cursor = cursor + 2;

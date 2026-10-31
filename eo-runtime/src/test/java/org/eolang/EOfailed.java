@@ -22,6 +22,7 @@ public final class EOfailed extends PhDefault {
 
     /**
      * Ctor.
+     *
      * @param arg Argument
      * @checkstyle ConstructorsCodeFreeCheck (5 lines)
      */

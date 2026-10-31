@@ -5,6 +5,7 @@
 
 /**
  * Type inference for XMIR, tests.
+ *
  * @since 0.67.0
  */
 package org.eolang.inference;

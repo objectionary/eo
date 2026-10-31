@@ -10,11 +10,11 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^ width fill cant-pad] > padded-left
+[^text width fill cant-pad] > padded-left
   if. > @
     or.
       or.
@@ -32,13 +32,13 @@
             fill
     if.
       width.gt
-        ^.length >> len!
+        text.length >> len!
       string
         concat.
           as-bytes.
             fill.repeated (width.minus len).as-number cant-pad
-          ^.as-bytes
-      ^
+          text.as-bytes
+      text
 
   eq. ++> can-count-characters-and-not-bytes-when-padding-left
     "  Ж"

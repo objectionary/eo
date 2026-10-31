@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link LnPipe}.
+ *
  * @since 0.1
  */
 final class LnPipeTest {
@@ -25,6 +26,40 @@ final class LnPipeTest {
                 ParseError.class,
                 () -> new LnPipe(new Span("| +> x", 2))
                     .into(stack, new Globals(), new Emit())
+            ).getMessage(),
+            Matchers.equalTo("a pipe application cannot declare a test attribute")
+        );
+    }
+
+    @Test
+    void rejectsPlusPlusArrowSuffix() {
+        final Stack stack = new Stack();
+        final Globals globals = new Globals();
+        final Emit emit = new Emit();
+        new LnFormation(new Span("[] > foo", 1)).into(stack, globals, emit);
+        final LnPipe pipe = new LnPipe(new Span("| 5 ++> t", 2));
+        MatcherAssert.assertThat(
+            "a pipe carrying a `++>` suffix must be rejected the way `+>` is",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> pipe.into(stack, globals, emit)
+            ).getMessage(),
+            Matchers.equalTo("a pipe application cannot declare a test attribute")
+        );
+    }
+
+    @Test
+    void rejectsMinusMinusArrowSuffix() {
+        final Stack stack = new Stack();
+        final Globals globals = new Globals();
+        final Emit emit = new Emit();
+        new LnFormation(new Span("[] > foo", 1)).into(stack, globals, emit);
+        final LnPipe pipe = new LnPipe(new Span("| 5 --> t", 2));
+        MatcherAssert.assertThat(
+            "a pipe carrying a `-->` suffix must be rejected instead of reading `--` as bytes",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> pipe.into(stack, globals, emit)
             ).getMessage(),
             Matchers.equalTo("a pipe application cannot declare a test attribute")
         );

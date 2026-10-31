@@ -34,6 +34,7 @@ final class Unescaped {
 
     /**
      * Ctor.
+     *
      * @param raw The literal's text, without its surrounding quotes
      * @param row Source line of the literal
      * @param col Column position of the literal
@@ -46,6 +47,7 @@ final class Unescaped {
 
     /**
      * The decoded bytes.
+     *
      * @return Bytes the literal stands for
      */
     byte[] bytes() {

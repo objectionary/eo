@@ -24,7 +24,8 @@ import org.cactoos.list.ListOf;
  * sources provide is not completed: a sibling that the index still lists,
  * but no local source names, is a leftover of an older release and not a
  * missing member of the local package, so {@link Pulling} must not fetch
- * it.</p>
+ * it. An object whose name carries no dot belongs to the root package, which
+ * is completed the same way as any other.</p>
  *
  * @since 0.61.0
  */
@@ -47,6 +48,7 @@ final class Probing implements Step {
 
     /**
      * Constructor.
+     *
      * @param tjs Tojos
      * @param obj Objectionary
      * @param net Whether we are online
@@ -146,9 +148,8 @@ final class Probing implements Step {
         final Path src,
         final Set<String> completed
     ) throws IOException {
-        final int split = object.lastIndexOf('.');
-        final String pkg = object.substring(0, Math.max(split, 0));
-        if (split > 0 && completed.add(pkg)) {
+        final String pkg = object.substring(0, Math.max(object.lastIndexOf('.'), 0));
+        if (completed.add(pkg)) {
             final String root = "org.eolang.";
             final boolean rooted = object.startsWith(root);
             for (final String sibling : this.objectionary.children(pkg)) {

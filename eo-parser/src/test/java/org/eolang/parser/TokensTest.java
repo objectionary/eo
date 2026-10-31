@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Tokens}.
+ *
  * @since 0.1
  */
 final class TokensTest {
@@ -57,6 +58,42 @@ final class TokensTest {
             ParseError.class,
             () -> new Tokens("+abc", new Span("+abc", 1)).readInt(),
             "readInt must reject a sign that is not followed by digits"
+        );
+    }
+
+    @Test
+    void rejectsUnsignedDigitRunGluedToALetter() {
+        MatcherAssert.assertThat(
+            "readInt must not take an unsigned digit run glued to a letter for a number",
+            Assertions.assertThrows(
+                ParseError.class,
+                new Tokens("1foo", new Span("1foo", 1))::readInt
+            ).getMessage(),
+            Matchers.containsString("invalid number literal")
+        );
+    }
+
+    @Test
+    void hintsAtADotWhenADigitRunIsGluedToAnExponent() {
+        MatcherAssert.assertThat(
+            "readInt must tell that a float needs a dot before its exponent",
+            Assertions.assertThrows(
+                ParseError.class,
+                new Tokens("1e5", new Span("1e5", 1))::readInt
+            ).getMessage(),
+            Matchers.containsString("a float needs a dot before the exponent, as in 1.0e5")
+        );
+    }
+
+    @Test
+    void rejectsAFloatWhoseExponentHasNoDigits() {
+        MatcherAssert.assertThat(
+            "readNumber must blame the number itself when the exponent is empty",
+            Assertions.assertThrows(
+                ParseError.class,
+                new Tokens("1.5e", new Span("1.5e", 1))::readNumber
+            ).getMessage(),
+            Matchers.containsString("invalid number literal")
         );
     }
 
@@ -245,6 +282,24 @@ final class TokensTest {
             "a signed FLOAT must round-trip the sign in raw()",
             new Tokens("-2.4E3", new Span("-2.4E3", 1)).readNumber().raw(),
             Matchers.equalTo("-2.4E3")
+        );
+    }
+
+    @Test
+    void readsFloatWhoseIntegerPartLeadsWithZero() {
+        MatcherAssert.assertThat(
+            "R-9.8.2 asks nothing of the integer part of a FLOAT, so `00.5` must read whole",
+            new Tokens("00.5", new Span("00.5", 1)).readNumber().raw(),
+            Matchers.equalTo("00.5")
+        );
+    }
+
+    @Test
+    void readsSignedFloatWhoseIntegerPartLeadsWithZeros() {
+        MatcherAssert.assertThat(
+            "a sign and an exponent cannot turn a leading zero into an INT error, but they did",
+            new Tokens("-007.25e2", new Span("-007.25e2", 1)).readNumber().raw(),
+            Matchers.equalTo("-007.25e2")
         );
     }
 
@@ -482,6 +537,24 @@ final class TokensTest {
             ParseError.class,
             () -> new Tokens("0x", new Span("0x", 1)).readHex(),
             "a `0x` with no following hex digits must be rejected"
+        );
+    }
+
+    @Test
+    void rejectsHexWithFullwidthLetters() {
+        Assertions.assertThrows(
+            ParseError.class,
+            new Tokens("0xＦＦ", new Span("0xＦＦ", 1))::readHex,
+            "a HEX literal spelled with fullwidth letters must be rejected"
+        );
+    }
+
+    @Test
+    void rejectsHexWithFullwidthDigits() {
+        Assertions.assertThrows(
+            ParseError.class,
+            new Tokens("0x１２", new Span("0x１２", 1))::readHex,
+            "a HEX literal spelled with fullwidth digits must be rejected"
         );
     }
 

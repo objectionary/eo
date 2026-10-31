@@ -8,27 +8,25 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^ cant-read] > as-ascii
+[^text cant-read] > as-ascii
   if. > @
-    ^.as-bytes.size.eq 1
+    text.as-bytes.size.eq 1
     as-number.
       as-i16.
-        00-.concat ^.as-bytes
+        00-.concat text.as-bytes
     cant-read
       "Can't read %x as an ASCII code, it is not a single byte".printf
-        * ^.as-bytes
+        * text.as-bytes
 
   97.eq "a".as-ascii ++> can-read-the-code-of-a-lowercase-letter
 
   33.eq "!".as-ascii ++> can-read-the-code-of-a-punctuation-mark
 
-  eq. ++> can-read-the-code-of-a-space
-    32
-    " ".as-ascii
+  32.eq " ".as-ascii ++> can-read-the-code-of-a-space
 
   65.eq "A".as-ascii ++> can-read-the-code-of-an-uppercase-letter
 
@@ -43,14 +41,14 @@
   48.eq "0".as-ascii ++> can-read-the-code-of-the-zero-digit
 
   eq. ++> can-recover-from-a-multi-byte-character
-    "recovered"
+    42
     "Ж".as-ascii
-      "recovered" > [message]
+      42 > [message]
 
   eq. ++> can-recover-from-an-empty-string
-    "recovered"
+    42
     "".as-ascii
-      "recovered" > [message]
+      42 > [message]
 
   "Ж".as-ascii --> stops-on-a-multi-byte-character
 

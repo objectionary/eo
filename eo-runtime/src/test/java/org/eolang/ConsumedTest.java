@@ -11,9 +11,10 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Consumed}.
+ *
  * @since 0.75.0
  */
-@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "PMD.AvoidThreadGroup"})
+@SuppressWarnings("PMD.AvoidThreadGroup")
 final class ConsumedTest {
 
     @Test
@@ -27,12 +28,33 @@ final class ConsumedTest {
     }
 
     @Test
+    void countsBytesOfThreadThatNobodySampled() throws InterruptedException {
+        final int chunk = 8 * 1024 * 1024;
+        MatcherAssert.assertThat(
+            "The bytes of a thread that was born and gone between two readings must still be charged to its group, but they werent",
+            ConsumedTest.missed(chunk),
+            Matchers.greaterThan(chunk - 1024L * 1024L)
+        );
+    }
+
+    @Test
     void countsNothingForEmptyGroup() {
         MatcherAssert.assertThat(
             "A group with no threads in it must have allocated nothing, but it didnt",
             new Consumed(new ThreadGroup("consumed-empty")).bytes(),
             Matchers.equalTo(0L)
         );
+    }
+
+    private static long missed(final int chunk) throws InterruptedException {
+        final ThreadGroup group = new ThreadGroup("consumed-missed");
+        final Consumed consumed = new Consumed(group);
+        final byte[][] junk = new byte[1][];
+        final Thread thread = new Thread(group, () -> junk[0] = new byte[chunk]);
+        thread.setDaemon(true);
+        thread.start();
+        thread.join();
+        return consumed.bytes();
     }
 
     private static long sampled(final int chunk) throws InterruptedException {

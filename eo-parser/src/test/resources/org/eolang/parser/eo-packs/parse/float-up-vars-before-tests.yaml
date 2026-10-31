@@ -8,8 +8,8 @@ asserts:
   - /object[not(errors)]
   - //o[@name='main' and count(o)=5]
   - //o[@name='main']/o[contains(@name,'🌵')]
-  - //o[@name='main']/o[@name='+tests-foo']/preceding-sibling::o[contains(@name,'🌵')]
-  - //o[@name='main']/o[@name='+tests-foo' and not(following-sibling::o)]
+  - //o[@name='main']/o[@name='p🌵tests-foo']/preceding-sibling::o[contains(@name,'🌵')]
+  - //o[@name='main']/o[@name='p🌵tests-foo' and not(following-sibling::o)]
 input: |
   [lst func] > main
     filteredi > @

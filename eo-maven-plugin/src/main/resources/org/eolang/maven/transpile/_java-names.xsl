@@ -3,23 +3,27 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="_java-names" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="_java-names" version="3.0">
   <!--
   How EO names become Java names: identifier escaping, class and package
   naming with the 250-character fingerprint cut, attribute naming, and the
   locator-to-class mapping. Extracted from "to-java.xsl" so that every sheet
-  rendering Java (see #8137) derives a name the same way, since a declaration
-  and a reference produced by two different sheets must never diverge.
+  rendering Java derives a name the same way, since a declaration and a
+  reference produced by two different sheets must never diverge.
   The "$eo:phi"/"$eo:alpha"/"$eo:cactoos" variables come from "_specials.xsl",
   which an importing sheet must bring in alongside (importing it from here
   trips Saxon's cycle check under the classpath resolver, whose sources
   carry no system identifiers).
   -->
-  <!-- Unicode escape of a character Java forbids in an identifier -->
+  <!--
+  Unicode escape of a character Java forbids in an identifier. Six digits,
+  not four: four dropped everything above the sixteenth bit of a code point,
+  so U+1F600 and U+F600 both read as "$uF600" (#9047).
+  -->
   <xsl:function name="eo:escape-char" as="xs:string">
     <xsl:param name="c" as="xs:string"/>
     <xsl:variable name="code" select="string-to-codepoints($c)[1]"/>
-    <xsl:value-of select="concat('$u', string-join(for $w in (4096, 256, 16, 1) return substring('0123456789ABCDEF', ($code idiv $w) mod 16 + 1, 1), ''))"/>
+    <xsl:value-of select="concat('$u', string-join(for $w in (1048576, 65536, 4096, 256, 16, 1) return substring('0123456789ABCDEF', ($code idiv $w) mod 16 + 1, 1), ''))"/>
   </xsl:function>
   <!-- Turn a name into a Java identifier, escaping every character Java forbids there -->
   <xsl:function name="eo:identifier" as="xs:string">
@@ -41,10 +45,15 @@
     <xsl:param name="n" as="xs:string"/>
     <xsl:value-of select="replace(replace($n, '\\', '\\\\'), '&quot;', '\\&quot;')"/>
   </xsl:function>
-  <!-- Get clean escaped object name -->
+  <!--
+  Get clean escaped object name. The "-" becomes "_" and the "_" an escape of
+  its own, which no "-" can produce: mapping "_" to "__" beside them made
+  "a-_b" and "a_-b" one name (#9047). The dollar is escaped ahead of them, so
+  that the escape is never read as a dollar the name itself carried.
+  -->
   <xsl:function name="eo:clean" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
-    <xsl:value-of select="concat('EO', eo:identifier(replace(replace(translate(translate(replace($n, '_', '__'), '-', '_'), '@', $eo:phi), $eo:alpha, '_'), '\$', '\$EO')))"/>
+    <xsl:value-of select="concat('EO', eo:identifier(replace(translate(translate(string-join(tokenize(replace($n, '\$', '\$EO'), '_'), eo:escape-char('_')), '-', '_'), '@', $eo:phi), $eo:alpha, '_')))"/>
   </xsl:function>
   <!--
   A deterministic digit fingerprint of a name, computed purely from the name's own
@@ -142,10 +151,10 @@
     <xsl:variable name="last" select="tokenize($full, '\.')[last()]"/>
     <xsl:value-of select="concat(substring($full, 1, string-length($full) - string-length($last)), 'Test', $last)"/>
   </xsl:function>
-  <!-- Get clean escaped package segment, prefixed to never clash with an object class -->
+  <!-- Get clean escaped package segment, prefixed to never clash with an object class, mapped the way "eo:clean" maps a name -->
   <xsl:function name="eo:clean-package" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
-    <xsl:value-of select="concat('EO_', eo:identifier(replace(replace(translate(translate(replace($n, '_', '__'), '-', '_'), '@', $eo:phi), $eo:alpha, '_'), '\$', '\$EO')))"/>
+    <xsl:value-of select="concat('EO_', eo:identifier(replace(translate(translate(string-join(tokenize(replace($n, '\$', '\$EO'), '_'), eo:escape-char('_')), '-', '_'), '@', $eo:phi), $eo:alpha, '_')))"/>
   </xsl:function>
   <!-- Get Java package name for the EO package, one clean-package per segment -->
   <xsl:function name="eo:package-name" as="xs:string">
@@ -208,10 +217,12 @@
   which made "x.a.bc" and "x.ab.c" one name and declared the same nested class
   twice in one file (#7761); it maps to "$" now, which Java accepts inside an
   identifier. A "$" the locator itself carries is escaped ahead of the join,
-  so it cannot be read back as a separator.
+  so it cannot be read back as a separator. The "_" is escaped rather than
+  doubled since #9047, because doubling it beside the "-" that becomes "_"
+  made "a-_b" and "a_-b" one name again.
   -->
   <xsl:function name="eo:loc-to-class">
     <xsl:param name="loc"/>
-    <xsl:value-of select="concat('EO', eo:identifier(replace(translate(replace(string-join(tokenize(replace($loc, '\$', '\$u0024'), '\.'), '$'), '_', '__'), '-', '_'), $eo:cactoos, $eo:alpha)))"/>
+    <xsl:value-of select="concat('EO', eo:identifier(translate(translate(string-join(tokenize(string-join(tokenize(replace($loc, '\$', concat('\', eo:escape-char('$'))), '\.'), '$'), '_'), eo:escape-char('_')), '-', '_'), $eo:cactoos, $eo:alpha)))"/>
   </xsl:function>
 </xsl:stylesheet>

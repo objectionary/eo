@@ -10,6 +10,7 @@ import org.apache.maven.plugin.AbstractMojo;
 
 /**
  * Plan all eo dependencies full pipeline.
+ *
  * @since 0.29.0
  */
 final class PpPlace implements Iterable<Class<? extends AbstractMojo>> {

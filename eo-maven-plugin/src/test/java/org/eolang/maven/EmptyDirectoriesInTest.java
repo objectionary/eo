@@ -18,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link EmptyDirectoriesIn}.
+ *
  * @since 0.55
  */
 @ExtendWith(MktmpResolver.class)
@@ -44,6 +45,20 @@ final class EmptyDirectoriesInTest {
         new EmptyDirectoriesIn(classes).clear();
         MatcherAssert.assertThat(
             "a directory reached through a link was never created by EO, so it must not be deleted, but it was",
+            Files.exists(outside),
+            Matchers.equalTo(true)
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void keepsATreeBehindALinkedRoot(@Mktmp final Path temp) throws IOException {
+        final Path outside = Files.createDirectories(temp.resolve("outside/keep-me"));
+        final Path classes = temp.resolve("classes");
+        Files.createSymbolicLink(classes, temp.resolve("outside"));
+        new EmptyDirectoriesIn(classes).clear();
+        MatcherAssert.assertThat(
+            "a root that is itself a link leads out of the build output, so the tree behind it must not be pruned, but it was",
             Files.exists(outside),
             Matchers.equalTo(true)
         );

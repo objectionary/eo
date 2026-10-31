@@ -7,23 +7,22 @@
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package input
-+version 0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++version 0.0.0
 
-[^] > length
+[^source] > length
   [^ input length] >> rec-read
     if. > @
       chunk.size.eq 0
       length
       ^.rec-read
         chunk
-        length.plus chunk.size
-    ^. > chunk
-      read.
-        input.read 1048576
+        length.plus
+          size.
+            ^. (input.read 1048576).read >> chunk
   | > @
-    ^
+    source
     0
 
   eq. ++> can-read-all-bytes-and-return-the-length

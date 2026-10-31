@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@base='Φ.foo' and @local='saved' and o[@base='Φ.tuple']]
+  - /object/o[@name='app']/o[@name='φ' and @base='ξ.a🌵2-2']
+input: |
+  [] > app
+    foo *1 >> saved
+      42
+      43
+    saved > @

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test case for {@link Reach}.
+ *
  * @since 0.70.0
  */
 final class ReachTest {
@@ -73,6 +74,15 @@ final class ReachTest {
         MatcherAssert.assertThat(
             "the dispatch .^ is two characters counting its dot, but it wasnt",
             new Reach("* ^.^").from(3),
+            Matchers.equalTo(2)
+        );
+    }
+
+    @Test
+    void readsOnlyAsciiHexLettersIntoANumber() {
+        MatcherAssert.assertThat(
+            "a full-width letter is no hex digit, so the number must stop before it, but it didnt",
+            new Reach("x 1FＡ").from(2),
             Matchers.equalTo(2)
         );
     }
