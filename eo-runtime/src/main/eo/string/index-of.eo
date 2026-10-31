@@ -13,9 +13,8 @@
     or.
       or.
         gt.
-          number
-            part.size >> size!
-          txt.size >> tlen!
+          number part.size! >> size
+          tlen
         and.
           size.eq tlen
           not.
@@ -28,20 +27,23 @@
       string
         txt.slice
           0
-          rec-index-of 0 >> found!
+          number
+            rec-index-of 0 >> found!
   minus. >> end!
-    number tlen
+    number txt.size! >> tlen
     size
   [^ idx] >> rec-index-of
     if. > @
       end.eq idx
-      includes.if idx -1
+      if.
+        eq. >> includes
+          txt.slice idx size
+          part
+        idx
+        -1
       includes.if
         idx
         ^.rec-index-of (idx.plus 1).as-number
-    eq. > includes
-      txt.slice idx size
-      part
 
   eq. ++> can-find-a-present-substring-in-utf-text
     3

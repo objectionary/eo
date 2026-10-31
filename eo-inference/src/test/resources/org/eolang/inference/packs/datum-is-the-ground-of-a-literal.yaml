@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# 42 is a number made of bytes made of a datum: answer is a number, its
+# argument is bytes, and the argument of that is the datum.
+sources:
+  app.eo: |
+    [] > app
+      42 > answer
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.answer']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.answer.α0']/is[@loc='Φ.bytes']
+  - /answers/o[@loc='Φ.app.answer.α0.α0']/data

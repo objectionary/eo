@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# sys binds write to the atom posix.write, and app calls it through sys. The
+# atom says it gives a number, so written is a number and lt is read off
+# number. buffer, with no declared type, holds the string it gets.
+sources:
+  posix.eo: |
+    [name args] > posix
+      [] > @ /Q.posix.return
+        ? > ^
+      [^ code output] > return
+        output > @
+      [] > write /Q.number
+        ? > descriptor /Q.number
+        ? > buffer
+        ? > size /Q.number
+  app.eo: |
+    [] > app
+      [] > sys
+        posix.write > write
+      sys.write 1 "hi" 2 > written
+      written.lt 5 > @
+  number.eo: |
+    [@] > number
+      [b] > lt
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.sys.write.ρ']/is[@loc='Φ.posix']
+  - /answers/o[@loc='Φ.app.written.ρ']/is[@loc='Φ.app.sys']
+  - /answers/o[@loc='Φ.posix.write.λ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.written']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.number.lt']
+  - /answers/o[@loc='Φ.posix.write.buffer']/is[@loc='Φ.string']

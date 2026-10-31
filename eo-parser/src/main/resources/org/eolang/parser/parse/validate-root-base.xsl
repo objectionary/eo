@@ -5,12 +5,13 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="validate-root-base" version="3.0">
   <!--
-  Here we add an error with severity 'critical' when the object of the file
-  is based on 'ξ', which is what '$' and '^' turn into.
+  Here we add an error with severity 'critical' when an object outside a
+  formation is based on 'ξ', which is what '$' and '^' turn into.
 
   A file holds one object and that object is the program. There is no
   formation around it, so '$' points at nothing and '^' has no parent to
-  reach. The transpiler used to accept such a program and write Java that
+  reach. Inner formations do provide a receiver, so their references remain
+  valid. The transpiler used to accept such a program and write Java that
   does not compile, like 'Phi r = ;' (#9345).
 
   Incorrect:
@@ -21,12 +22,12 @@
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:template match="/object">
     <xsl:variable name="error" as="element()*">
-      <xsl:for-each select="o[@base = 'ξ' or starts-with(@base, 'ξ.')]">
+      <xsl:for-each select="o[@base]/descendant-or-self::o[(@base = 'ξ' or starts-with(@base, 'ξ.')) and not(ancestor::o[not(@base)])]">
         <error>
           <xsl:attribute name="check" select="'validate-root-base'"/>
           <xsl:attribute name="line" select="if (@line) then @line else 0"/>
           <xsl:attribute name="severity" select="'critical'"/>
-          <xsl:text>The object of a source file cannot be based on '$' or '^', since nothing surrounds it</xsl:text>
+          <xsl:text>An object outside a formation cannot be based on '$' or '^', since nothing surrounds it</xsl:text>
         </error>
       </xsl:for-each>
     </xsl:variable>

@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# water is an attribute of tap, so the @ of tap is tap.water, one read with no
+# step after it.
+sources:
+  tap.eo: |
+    [] > tap
+      water > @
+      [] > water
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts:
+  - /facts/objects/type[@id='Φ.tap']/attr[@name='water' and @type='Φ.tap.water']
+  - /facts/reads/read[@id='Φ.tap.φ' and @name='water' and @of='Φ.tap.φ.ρ']
+  - /facts/reads[count(read)=1]
+  - /facts[not(reads/read[@of='Φ.tap.φ'])]
+answers:
+  - /answers/o[@loc='Φ.tap.φ']/is[@loc='Φ.tap.water']
