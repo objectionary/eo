@@ -1,172 +1,43 @@
-# Counts the characters in the string, and not its bytes. The UTF-8 sequence
-# is walked character by character, so a multi-byte character counts as one.
-# Every multi-byte sequence is validated against the UTF-8 rules of the
-# Unicode standard (Table 3-7): the leading byte fixes the character width and
-# each following byte must be a `10xxxxxx` continuation byte, while the second
-# byte is additionally range-checked so that overlong encodings (`C0`/`C1`
-# leads, `E0` with an `80`-`9F` second byte, `F0` with an `80`-`8F` second
-# byte), UTF-16 surrogates (`ED` with an `A0`-`BF` second byte) and code points
-# above U+10FFFF (`F4` with a `90`-`BF` second byte, and `F5`-`FF` leads) are
-# rejected. A sequence that is incomplete or malformed terminates the
-# computation, exactly like `slice` does for a truncated character.
-#
-# @todo #9650:30min Remove `+unlint too-deep-object:93-111` from the
-#  metas below. It hides how deep `reclen` nests the checks of a four-byte
-#  character, up to 14 levels where the lint allows 12. Move those checks
-#  into objects of their own, so that `reclen` nests no deeper.
+# Reads all the bytes from an input and returns its length. It is a method of
+# `input`, taken off the input it reads. Bytes are pulled in
+# 1 MiB chunks: since each chunk costs one level of recursion, a chunk this
+# large keeps an ordinary multi-megabyte or few-gigabyte input well inside
+# the evaluation stack instead of one recursive call per 4 KiB.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+package string
++package input
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint too-deep-object:93-111
 +version 0.0.0
 
-[^text] > length
-  if. > @
-    eq.
-      text.as-bytes.size >> size!
-      0
+[^source] > length
+  [^source input length] >> rec-read
+    if. > @
+      chunk.size.eq 0
+      length
+      source.rec-read
+        chunk
+        length.plus
+          size.
+            source. (input.read 1048576).read >> chunk
+  | > @
+    source
     0
-    [^text index accum] >> reclen
-      if. > @
-        index.eq size
-        accum
-        if.
-          eq.
-            and.
-              text.text.as-bytes.slice index 1 >> lead
-              80-
-            00-
-          text.reclen
-            index.plus 1
-            accum.plus 1
-          if.
-            eq.
-              lead.and E0-
-              C0-
-            step
-              index
-              2
-              ((lead.and FE-).eq C0-).not.and
-                eq. >> b1cont
-                  b1.and C0-
-                  80-
-              accum
-            if.
-              eq.
-                lead.and F0-
-                E0-
-              step
-                index
-                3
-                and.
-                  eq. >> b2cont
-                    and.
-                      text.text.as-bytes.slice (index.plus 2) 1
-                      C0-
-                    80-
-                  if.
-                    lead.eq E0-
-                    eq.
-                      and.
-                        text.text.as-bytes.slice (index.plus 1) 1 >> b1
-                        E0-
-                      A0-
-                    if.
-                      lead.eq ED-
-                      eq. (b1.and E0-) 80-
-                      b1cont
-                accum
-              if.
-                eq.
-                  lead.and F8-
-                  F0-
-                step
-                  index
-                  4
-                  b2cont.and
-                    and.
-                      eq.
-                        and.
-                          text.text.as-bytes.slice (index.plus 3) 1
-                          C0-
-                        80-
-                      if.
-                        lead.eq F0-
-                        or.
-                          eq. (b1.and F0-) 90-
-                          eq. (b1.and E0-) A0-
-                        if.
-                          lead.eq F4-
-                          eq. (b1.and F0-) 80-
-                          if.
-                            or. >>
-                              lead.eq F1- >> leadf1
-                              or.
-                                lead.eq F2-
-                                lead.eq F3-
-                            b1cont
-                            false
-                  accum
-                T
-                  "Unknown byte format (%x), can't recognize character".printf
-                    * lead
-    | 0 0
-  if. > [^text idx csize valid accum] >> step
-    gt.
-      idx.plus csize
-      size
-    T
-      "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
-        *
-          csize
-          idx
-          text.text.as-bytes
-    valid.if
-      reclen
-        idx.plus csize
-        accum.plus 1
-      T
-        "Malformed UTF-8 sequence (%x) at %d index".printf
-          *
-            text.text.as-bytes.slice idx csize
-            idx
 
-  " ".length.eq 1 ++> can-count-a-text-of-spaces-only
+  eq. ++> can-read-all-bytes-and-return-the-length
+    length.
+      input 01-02-03-04-05-06-07-08-09-10.as-input
+    10
 
-  ++> can-count-four-byte-characters
-    and. > @
-      str.length.eq 11
-      str.as-bytes.size.eq 14
-    "The 😀 smile" > str
-
-  "Hello, world!".length.eq 13 ++> can-count-the-characters-of-the-origin-text
-
-  ++> can-count-three-byte-characters
-    and. > @
-      str.length.eq 16
-      str.as-bytes.size.eq 18
-    "The अ devanagari" > str
-
-  ++> can-count-two-byte-characters
-    and. > @
-      str.length.eq 12
-      str.as-bytes.size.eq 16
-    "Hello, друг!" > str
-
-  length. --> rejects-a-non-continuation-after-a-four-byte-lead
-    string F0-90-80-41
-
-  length. --> rejects-a-non-continuation-after-a-three-byte-lead-when-measuring
-    string E1-80-41
-
-  length. --> rejects-a-non-continuation-after-a-two-byte-lead
-    string C2-41
-
-  length. --> rejects-an-overlong-two-byte-encoding-when-measuring
-    string C0-80
-
-  length. --> stops-on-an-incomplete-four-byte-character
-    string F0-9F-98
+  eq. ++> can-copy-all-bytes-to-an-output-and-return-the-length
+    malloc.of
+      10
+      seq * > [m]
+        length.
+          input
+            tee.
+              input 01-02-03-04-05-06-07-08-09-10.as-input
+              m.to-output
+        m
+    01-02-03-04-05-06-07-08-09-10
