@@ -73,17 +73,17 @@
 # objectionary/lints#1301 counts a hop through the receiver as reaching
 # outward even when the head declares a void of the same name.
 #
-# @todo #9650:30min Remove `+unlint too-deep-object:1565-1567` from the
+# @todo #9650:30min Remove the `+unlint too-deep-object` that guards `entry` from the
 #  metas below. It hides how deep `entry` in `pattern` nests the check of a
 #  character range, 13 levels where the lint allows 12. Move that check into
 #  an object of its own, so that `entry` nests no deeper.
 #
-# @todo #9650:30min Remove `+unlint too-deep-object:1744-1755` from the
+# @todo #9650:30min Remove the `+unlint too-deep-object` that guards `refused` from the
 #  metas below. It hides how deep `refused` in `pattern` nests its chain of
 #  `if.` over the escaped byte, up to 15 levels where the lint allows 12. Split
 #  the chain into objects of its own, so that `refused` nests no deeper.
 #
-# @todo #9650:30min Remove `+unlint too-deep-object:1934-1938` from the
+# @todo #9650:30min Remove the `+unlint too-deep-object` that guards `braces` from the
 #  metas below. It hides how deep `braces` in `pattern` nests the parsing of a
 #  counted closure, up to 14 levels where the lint allows 12. Split the parsing
 #  into objects of its own, so that `braces` nests no deeper.
