@@ -1054,7 +1054,7 @@
   <xsl:function name="eo:java-char" as="xs:string">
     <xsl:param name="octet" as="xs:string"/>
     <xsl:variable name="code" select="eo:octet($octet)"/>
-    <xsl:sequence select="if ($code = (34, 92)) then concat('\', codepoints-to-string($code)) else if ($code ge 32 and $code le 126) then codepoints-to-string($code) else concat('\', $code idiv 64, $code idiv 8 mod 8, $code mod 8)"/>
+    <xsl:sequence select="if ($code = (34, 92)) then '\' || codepoints-to-string($code) else if ($code ge 32 and $code le 126) then codepoints-to-string($code) else '\' || $code idiv 64 || $code idiv 8 mod 8 || $code mod 8"/>
   </xsl:function>
   <!--
   The Java literal of bytes, as a value of a type. A double is the number
@@ -1085,7 +1085,7 @@
         <xsl:sequence select="'new byte[0]'"/>
       </xsl:when>
       <xsl:when test="$want = 'byte[]' and count($octets) gt $eo:inline">
-        <xsl:sequence select="concat('String.join(&quot;&quot;, ', string-join((0 to (count($octets) - 1) idiv $eo:chunk) ! concat('&quot;', string-join(subsequence($octets, . * $eo:chunk + 1, $eo:chunk) ! eo:java-char(.), ''), '&quot;'), ', '), ').getBytes(java.nio.charset.StandardCharsets.ISO_8859_1)')"/>
+        <xsl:sequence select="'String.join(&quot;&quot;, ' || string-join((0 to (count($octets) - 1) idiv $eo:chunk) ! ('&quot;' || string-join(subsequence($octets, . * $eo:chunk + 1, $eo:chunk) ! eo:java-char(.), '') || '&quot;'), ', ') || ').getBytes(java.nio.charset.StandardCharsets.ISO_8859_1)'"/>
       </xsl:when>
       <xsl:when test="$want = 'byte[]'">
         <xsl:sequence select="concat('new byte[] {', string-join($octets ! concat('(byte) 0x', upper-case(.)), ', '), '}')"/>
