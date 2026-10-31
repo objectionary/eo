@@ -1,0 +1,83 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# choice has a not besides its pick, as bool does, so the yes that held hands
+# to sock picks dial 03-. ready is the ring read off the listen of held, the
+# bell of dial, so ready reduces to the ring of bell, and the peal app reads
+# off ready is the peal of that ring, whose @ is the bytes 06-. The chime of
+# clock, which other picks, never reaches ready.
+sources:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+      [] > not
+        ^.pick no yes > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  bell.eo: |
+    [^] > bell
+      [^] > ring
+        [^] > peal
+          06- > @
+  chime.eo: |
+    [^] > chime
+      [^] > ring
+        [^] > peal
+          07- > @
+  dial.eo: |
+    [^ sys] > dial
+      [^ size] > listen
+        bell > @
+  clock.eo: |
+    [^ tick] > clock
+      [^ size] > listen
+        chime > @
+  sock.eo: |
+    [^ flag] > sock
+      flag.pick > @
+        dial 03-
+        clock 04-
+  held.eo: |
+    [] > held
+      sock yes > @
+  other.eo: |
+    [] > other
+      sock no > @
+  gauge.eo: |
+    [] > gauge
+      [^] > ready
+        ring. > @
+          listen.
+            held
+            05-
+  app.eo: |
+    [] > app
+      gauge.ready.peal > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.held.φ' and not(is[@loc='Φ.clock'])]/is[@loc='Φ.dial']
+  - /answers/o[@loc='Φ.gauge.ready.φ.ρ']/is[@loc='Φ.bell']
+  - /answers/o[@loc='Φ.gauge.ready.φ']/is[@loc='Φ.bell.ring']
+  - /answers/o[@loc='Φ.gauge.ready']/reduced/is[@loc='Φ.bell.ring']
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.bell.ring']
+  - /answers/o[@loc='Φ.bell.ring.peal']/reduced/is[@loc='Φ.bytes']
+  - /answers/o[@loc='Φ.other.φ']/is[@loc='Φ.clock']
+  - /answers[not(o[starts-with(@loc, 'Φ.gauge.ready')]//is[starts-with(@loc, 'Φ.chime')])]

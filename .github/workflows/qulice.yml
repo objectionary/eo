@@ -9,7 +9,9 @@ name: qulice
       - master
     paths:
       - '**.java'
+      - '**.xsl'
       - '**/pom.xml'
+      - 'src/test/groovy/**'
       - '.github/workflows/qulice.yml'
 permissions:
   contents: read

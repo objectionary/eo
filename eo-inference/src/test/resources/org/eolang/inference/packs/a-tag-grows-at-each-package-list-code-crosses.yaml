@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# add of set calls put of map, and put calls with of tuple: two calls across
+# packages, so the tag of each place in app grows by one place at each. The
+# lists that the two callers of add build never meet: the x of with is a
+# number in one copy and a string in the other.
+sources:
+  tuple.eo: |
+    [item rest] > tuple
+      [x] > with
+        tuple x ^ > @
+  map.eo: |
+    [pairs] > map
+      [key] > put
+        ^.pairs.with key > @
+  set.eo: |
+    [keys] > set
+      [k] > add
+        (map ^.keys).put k > @
+  app.eo: |
+    [] > app
+      (set (tuple 0 0)).add 1 > one
+      (set (tuple 0 0)).add "one" > word
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.set.add.φ.α0' and @lands='key']
+  - /answers/o[@loc='Φ.map.put.φ.α0' and @lands='x']
+  - /answers/o[@loc='Φ.tuple.with.x' and @copies='2']/set[@copies='1']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.tuple.with.x' and @copies='2']/set[@copies='1']/is[@loc='Φ.string']
+  - /answers[not(o[@loc='Φ.tuple.with.x']/set[is[@loc='Φ.number'] and is[@loc='Φ.string']])]

@@ -85,10 +85,10 @@
     00-2A.as-u16
 
   eq. ++> can-recover-from-division-by-zero
-    "recovered"
+    u16 00-2A
     00-02.as-u16.div
       00-00.as-u16
-      "recovered" > [message]
+      u16 00-2A > [message]
 
   eq. ++> can-subtract
     00-05.as-u16.minus 00-03.as-u16

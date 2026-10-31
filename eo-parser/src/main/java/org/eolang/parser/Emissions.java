@@ -59,7 +59,7 @@ final class Emissions {
      * that glyph for auto-names.
      */
     private static final Pattern PARAM_NAME = Pattern.compile(
-        "[a-z][^ \\t,.|':;!?\\[\\]{}()\\x{1F335}]*"
+        "[a-z][^ \\t,.|':;!?/\\[\\]{}()\\x{1F335}]*"
     );
 
     /**
@@ -207,8 +207,6 @@ final class Emissions {
         final String tag;
         if (!raw.isEmpty() && raw.chars().allMatch(c -> c >= '0' && c <= '9')) {
             tag = "α".concat(raw);
-        } else if ("^".equals(raw)) {
-            tag = "ρ";
         } else {
             tag = raw;
         }
@@ -431,7 +429,7 @@ final class Emissions {
         final Emit emit, final String name, final Value value, final int line
     ) {
         final String inner = value.raw().substring(1, value.raw().length() - 1);
-        final int phi = Eo.topLevelGreaterBracketIndex(inner);
+        final int phi = Tokens.inlinePhi(inner);
         if (phi >= 0) {
             Emissions.inlinePhi(emit, name, inner, phi, value.pos() + 1, line);
         } else {
