@@ -582,6 +582,22 @@ final class PhDefaultTest {
     }
 
     @Test
+    void rendersAFailingComputationWithoutRunningIt() {
+        final Phi num = Phi.Φ.take("number").copy();
+        num.put(
+            0,
+            new PhApplication(
+                new PhDispatch(new Data.ToPhi(5.0), "div"), 0, new Data.ToPhi("x")
+            )
+        );
+        MatcherAssert.assertThat(
+            "a term must render the division as it stands, while it ran it and threw",
+            num.φTerm(),
+            Matchers.containsString("div")
+        );
+    }
+
+    @Test
     void namesTheObjectWhenTheAttributePositionIsTooBig() {
         MatcherAssert.assertThat(
             "the message must name the object by its forma, while it named a Java class",
@@ -593,6 +609,22 @@ final class PhDefaultTest {
             Matchers.containsString(
                 "Φ.number.plus has just 1 attribute(s), can't read the 1-th one"
             )
+        );
+    }
+
+    @Test
+    void keepsTwoConstructionsApartInATerm() {
+        final Phi num = Phi.Φ.take("number").copy();
+        num.put(
+            0,
+            new PhApplication(
+                new PhDispatch(new Data.ToPhi(5.0), "plus"), 0, new Data.ToPhi(1.0)
+            )
+        );
+        MatcherAssert.assertThat(
+            "a term of an application must not read as the number it would give",
+            num.φTerm(),
+            Matchers.not(Matchers.equalTo("6"))
         );
     }
 
