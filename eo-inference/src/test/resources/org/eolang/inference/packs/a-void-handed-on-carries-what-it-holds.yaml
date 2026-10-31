@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# bee puts an oak into inc, and wrap hands on its own y, which app fills with
+# an elm. Each call gets its own copy of inc, so x is an oak in one and an elm
+# in the other.
+sources:
+  app.eo: |
+    [] > app
+      wrap elm > @
+  wrap.eo: |
+    [y] > wrap
+      inc y > @
+  bee.eo: |
+    [] > bee
+      inc oak > @
+  inc.eo: |
+    [x] > inc
+      x > @
+  oak.eo: |
+    [] > oak
+  elm.eo: |
+    [] > elm
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.bee.φ.α0' and @lands='x']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.wrap.φ.α0' and @lands='x']/is[@loc='Φ.elm']
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='y']/is[@loc='Φ.elm']
+  - /answers/o[@loc='Φ.inc' and @copies='2']
+  - /answers/o[@loc='Φ.inc.x']/set[@copies='1']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.inc.x']/set[@copies='1']/is[@loc='Φ.elm']

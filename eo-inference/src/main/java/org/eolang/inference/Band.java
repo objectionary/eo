@@ -5,103 +5,107 @@
 package org.eolang.inference;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
- * Which band an answer belongs to.
+ * Which of ten bands a place falls in, by what it answers over all its copies.
  *
- * <p>A rung is a number and a band is a colour, and the two are not the same
- * thing. The ladder has five rungs because a walk can end in five places, and
- * a page has five colours because a reader wants five different things done
- * about what they are looking at: a name they can go and read, a name that
- * waits on whoever calls them, a name that waits on Java, a name that waits on
- * a caller who never came, and nothing at all.</p>
+ * <p>A place is green when it answers one name and nothing else in any copy,
+ * lime when that name comes with a gap in other copies, teal when it answers
+ * exactly two names and nothing else, and blue when it answers two or more
+ * names any other way. A gap is an error ({@code T}), "can't tell", or an
+ * open void. With no name at all, a place is brown when it answers only
+ * errors, violet when it answers only voids an atom fills, slate when some of
+ * its voids nobody fills, and amber when it cannot tell. A read that fails in
+ * any copy, or a {@code ^} that only Java fills, makes it red whatever else it
+ * answers, and a place no copy reached is grey.</p>
  *
- * <p>Two rungs share the green band, since a formation with voids still free
- * and a formation with none are both a place a reader can go and look at, and
- * one rung splits in three. A name rooted at a void is amber when the callers
- * of the program fill that void with several different things, violet when
- * only an atom fills it, and slate when nobody fills it at all. A void an atom
- * fills is not a gap in what we know — it is filled, in Java, where no caller
- * of the program can be looked at to find out with what, and telling a reader
- * to go and find the caller would send them looking for something that is not
- * there (#8352). A void nobody fills sends them looking for the same missing
- * thing, and each colour is worth having only while it asks for one thing
- * (#8355).</p>
- *
- * <p>The band is worked out here and nowhere else. A page that colours a word
- * and a tally that counts it are two readers of the same answer, and the one
- * way to be sure they cannot disagree is for neither of them to know how a
- * colour is arrived at.</p>
+ * <p>The labels are the ones the place answers, with the formations of one
+ * shape folded into one name first, so two copies of one lambda count as one
+ * name and not as two. The band is worked out here and nowhere else, so that
+ * the colour of a mark and the tally above it cannot disagree.</p>
  *
  * @since 0.71.0
  */
 final class Band {
 
     /**
-     * The bands, from the least known to the most.
+     * The bands, in the order a tally lists them.
      */
-    private static final List<String> NAMES = Arrays.asList(
-        "blank", "unfilled", "rooted", "atom", "named"
+    static final List<String> ORDER = Arrays.asList(
+        "named", "gaps", "pair", "mixed", "lost", "atom", "unfilled", "error", "unreached", "fails"
     );
 
     /**
-     * The answer.
+     * The labels the place answers, each shape folded into one name.
      */
-    private final Answer told;
+    private final Collection<String> labels;
 
     /**
      * Ctor.
      *
-     * @param answer The answer, which says where a walk ended and how far up
+     * @param said The labels the place answers, each shape folded into one name
      */
-    Band(final Answer answer) {
-        this.told = answer;
+    Band(final Collection<String> said) {
+        this.labels = said;
     }
 
     /**
      * The name of the band.
      *
-     * @return The name, which a page puts on a span and a tally counts under
+     * @return The name, which a page puts on a mark and a tally counts under
      */
     String name() {
-        return Band.NAMES.get(this.rank());
-    }
-
-    /**
-     * How much is known, on the bands rather than on the rungs.
-     *
-     * @return The rank, from nothing at all up to a formation we can name
-     */
-    int rank() {
-        final int found;
-        if (this.told.rung() == 0) {
-            found = 0;
-        } else if (this.hollow()) {
-            found = this.shade();
+        final Set<String> all = new HashSet<>(this.labels);
+        final Set<String> names = all.stream()
+            .filter(label -> !label.startsWith("?") && !label.startsWith("!") && !"T".equals(label))
+            .collect(Collectors.toSet());
+        final String found;
+        if (all.stream().anyMatch(label -> label.startsWith("!"))) {
+            found = "fails";
+        } else if (all.stream().allMatch(label -> label.startsWith("?skipped"))) {
+            found = "unreached";
+        } else if (all.equals(names)) {
+            found = Band.named(names.size());
+        } else if (names.isEmpty()) {
+            found = this.unnamed();
+        } else if (names.size() == 1) {
+            found = "gaps";
         } else {
-            found = Band.NAMES.size() - 1;
+            found = "mixed";
         }
         return found;
     }
 
-    /**
-     * Whether the walk ended at somebody else's void.
-     *
-     * @return TRUE when the answer is a void rather than a formation
-     */
-    boolean hollow() {
-        return this.told.rung() == 1;
+    private static String named(final int count) {
+        final String found;
+        if (count == 1) {
+            found = "named";
+        } else if (count == 2) {
+            found = "pair";
+        } else {
+            found = "mixed";
+        }
+        return found;
     }
 
-    private int shade() {
-        final int found;
-        if (this.told.forged()) {
-            found = 3;
-        } else if (this.told.seen().isEmpty()) {
-            found = 1;
+    private String unnamed() {
+        final Set<String> unknown = this.labels.stream()
+            .filter(label -> label.startsWith("?"))
+            .collect(Collectors.toSet());
+        final String found;
+        if (unknown.isEmpty()) {
+            found = "error";
+        } else if (unknown.equals(Set.of("?open-void-atom"))) {
+            found = "atom";
+        } else if (Set.of("?open-void", "?open-void-atom").containsAll(unknown)) {
+            found = "unfilled";
         } else {
-            found = 2;
+            found = "lost";
         }
         return found;
     }

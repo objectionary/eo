@@ -1,0 +1,70 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# This choice has nothing but pick and a @ that gives it, unlike the bool of
+# eo-runtime, which has and, not and or next to its if. So choice is a
+# decorator: yes and no reduce through it to the arm each hands in, and
+# through that arm to its @, a void nobody fills there, which gives T. flag is
+# T in both copies of sock, and so are flag.pick, held, other and the listen
+# app reads off held.
+sources:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  dial.eo: |
+    [^ sys] > dial
+      [^ size] > listen
+        size > @
+  clock.eo: |
+    [^ tick] > clock
+      [^] > face
+        ^.tick > @
+  sock.eo: |
+    [^ flag] > sock
+      flag.pick > @
+        dial 03-
+        clock 04-
+  held.eo: |
+    [] > held
+      sock yes > @
+  other.eo: |
+    [] > other
+      sock no > @
+  app.eo: |
+    [] > app
+      listen. > @
+        held
+        05-
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.yes.φ']/is[@loc='Φ.yes.φ.α0']
+  - /answers/o[@loc='Φ.no.φ']/is[@loc='Φ.no.φ.α0']
+  - /answers/o[@loc='Φ.yes.φ.α0.a🌵4-6']/open
+  - /answers/o[@loc='Φ.no.φ.α0.a🌵5-6']/open
+  - /answers/o[@loc='Φ.yes']/reduced/terminator
+  - /answers/o[@loc='Φ.no']/reduced/terminator
+  - /answers/o[@loc='Φ.sock.flag' and @copies='2']/terminator
+  - /answers/o[@loc='Φ.sock.φ']/terminator
+  - /answers/o[@loc='Φ.held.φ']/terminator
+  - /answers/o[@loc='Φ.other.φ']/terminator
+  - /answers/o[@loc='Φ.app.φ']/terminator

@@ -10,7 +10,7 @@
 [^num b] > gte
   or. > @
     num.gt
-      b >> value!
+      number b! >> value
     num.eq value
 
   eq. ++> can-be-greater-than-or-equal-to-a-float-when-positive-infinity

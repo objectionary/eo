@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A literal is a number, so neg and plus are read off number: neg is written in
+# EO and gives what times gives, and plus is an atom that says it gives a number.
+sources:
+  app.eo: |
+    [] > app
+      5.neg > @
+      5.plus 3 > sum
+  number.eo: |
+    [@] > number
+      [] > neg
+        ^.times -1 > @
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+      [] > times /Q.number
+        ? > ^
+        ? > b /Q.number
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.sum.ρ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.number.neg.φ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.number.plus.λ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.sum']/is[@loc='Φ.number']
