@@ -73,27 +73,27 @@
 # objectionary/lints#1301 counts a hop through the receiver as reaching
 # outward even when the head declares a void of the same name.
 #
-# @todo #9650:30min Remove `+unlint too-deep-object:681-682` from the
+# @todo #9650:30min Remove `+unlint too-deep-object:649-650` from the
 #  metas below. It hides how deep `run` in `member` nests the lookup of the
 #  case-folded character, 14 levels where the lint allows 12. Move the folding
 #  into objects of its own, so that `run` nests no deeper.
 #
-# @todo #9650:30min Remove `+unlint too-deep-object:1372-1397` from the
+# @todo #9650:30min Remove `+unlint too-deep-object:1314-1339` from the
 #  metas below. It hides how deep `atom` in `pattern` nests its chain of `if.`
 #  over the next byte, up to 18 levels where the lint allows 12. Split the
 #  chain into objects of its own, so that `atom` nests no deeper.
 #
-# @todo #9650:30min Remove `+unlint too-deep-object:1570-1572` from the
+# @todo #9650:30min Remove `+unlint too-deep-object:1502-1504` from the
 #  metas below. It hides how deep `entry` in `pattern` nests the check of a
 #  character range, 13 levels where the lint allows 12. Move that check into
 #  an object of its own, so that `entry` nests no deeper.
 #
-# @todo #9650:30min Remove `+unlint too-deep-object:1749-1760` from the
+# @todo #9650:30min Remove `+unlint too-deep-object:1679-1690` from the
 #  metas below. It hides how deep `refused` in `pattern` nests its chain of
 #  `if.` over the escaped byte, up to 15 levels where the lint allows 12. Split
 #  the chain into objects of its own, so that `refused` nests no deeper.
 #
-# @todo #9650:30min Remove `+unlint too-deep-object:1939-1943` from the
+# @todo #9650:30min Remove `+unlint too-deep-object:1859-1863` from the
 #  metas below. It hides how deep `braces` in `pattern` nests the parsing of a
 #  counted closure, up to 14 levels where the lint allows 12. Split the parsing
 #  into objects of its own, so that `braces` nests no deeper.
@@ -104,11 +104,11 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-attachment
-+unlint too-deep-object:1372-1397
-+unlint too-deep-object:1570-1572
-+unlint too-deep-object:1749-1760
-+unlint too-deep-object:1939-1943
-+unlint too-deep-object:681-682
++unlint too-deep-object:1314-1339
++unlint too-deep-object:1502-1504
++unlint too-deep-object:1679-1690
++unlint too-deep-object:1859-1863
++unlint too-deep-object:649-650
 +version 0.0.0
 
 [^text] > regex
@@ -246,26 +246,16 @@
         caps
         ^.k > [^ at caps] >>
           at
-          mark
-            ^.at
-            ^.^.index
-            caps
-            at
+          mark ^.at ^.^.index caps at
   if. > [^ letter rest] >> chain
     letter.eq 64-
-    range
-      26
-      16
-      rest
+    range 26 16 rest
     if.
       letter.eq 73-
       range
         3.75
         3.125
-        range
-          8.5
-          8
-          rest
+        range 8.5 8 rest
       range
         26
         16
@@ -286,11 +276,7 @@
             caps
             k
         tried
-        ^.right.run
-          s
-          at
-          caps
-          k
+        ^.right.run s at caps k
   slice. > [^ value] >> cipher
     as-bytes.
       value.plus 16
@@ -300,9 +286,7 @@
     except
       chain letter none
       rest
-    chain
-      letter
-      rest
+    chain letter rest
   [^ cant-compile] > compile
     if. > @
       if. >> opens
@@ -417,14 +401,8 @@
   [^ multiline unix] >> end
     if. > [^ s at caps k] > run
       ^.multiline.if
-        starts
-          s
-          at
-          ^.unix
-        terminal
-          s
-          at
-          ^.unix
+        starts s at ^.unix
+        terminal s at ^.unix
       k at caps
       nothing
   [inner rest] >> except
@@ -455,13 +433,9 @@
     lower
       upper c true
       true
-    lower
-      c
-      false
+    lower c false
   [^ text unicode] >> folded
-    fold > norm!
-      text
-      unicode
+    fold text unicode > norm!
     [^ s at caps k] > run
       if. > @
         s.size.gt at
@@ -508,10 +482,7 @@
               nothing
               ^.k at caps
           ^.k at caps
-      | > @
-        0
-        at
-        caps
+      | 0 at caps > @
   number > [c] >> key
     slice.
       concat.
@@ -550,10 +521,7 @@
               ^.^.most.gt n
               ^.^.child.run ^.s at caps anew
               nothing
-      | > @
-        0
-        at
-        caps
+      | 0 at caps > @
   [^ text] >> literal
     [^ s at caps k] > run
       if. > @
@@ -734,9 +702,7 @@
             index.plus 1
             mode.or bit
         mode
-    | > initial
-      0
-      00-
+    | 0 00- > initial
     [^ txt] > match
       [^ position start offset hit] > matched
         ^.^.parsed.groups.plus 1 > count
@@ -809,11 +775,7 @@
         if. > @
           exists.
             sought offset >> hit
-          ^.matched
-            position
-            start
-            offset
-            hit
+          ^.matched position start offset hit
           ^.missing position
       [^ position] > missing
         T > count
@@ -836,10 +798,7 @@
           "Matched block does not exist, can't get text"
         T > to
           "Matched block does not exist, can't get 'to' position"
-      matched-from-index > next
-        1
-        0
-        0
+      matched-from-index 1 0 0 > next
       [^ start] > searched
         if. > @
           start.is-integer.not.or
@@ -887,10 +846,7 @@
             subj.size.gt at
             nothing
             found at caps
-    alternatives > outcome
-      0
-      0
-      initial
+    alternatives 0 0 initial > outcome
     if. > parsed
       initial.eq --
       [at reason] >> no
@@ -983,9 +939,7 @@
           "Braced hexadecimal escapes are not supported"
         if.
           0.gt h
-          no
-            index
-            "Illegal hexadecimal escape sequence"
+          no index "Illegal hexadecimal escape sequence"
           if.
             0.gt
               nibble >> l
@@ -1024,10 +978,7 @@
     if. > [^ index] >> indexed
       0.gt index
       index
-      measured
-        0
-        0
-        index
+      measured 0 0 index
     [^ at count index] >> measured
       if. > @
         and.
@@ -1260,20 +1211,11 @@
         index
     if. > [^ greed least most node] >> repeat
       1.gt greed
-      greedy
-        node
-        least
-        most
+      greedy node least most
       if.
         2.gt greed
-        lazy
-          node
-          least
-          most
-        possessive
-          node
-          least
-          most
+        lazy node least most
+        possessive node least most
     if. > [^ mode text] >> plain
       1.gt text.size
       empty
@@ -1478,13 +1420,7 @@
         none
         true
         true
-      members
-        index
-        opened
-        bits
-        none
-        false
-        true
+      members index opened bits none false true
     [^ index opened bits items negated first] >> members
       if. > @
         eq.
@@ -1512,9 +1448,7 @@
             --
           if.
             b.eq 5B-
-            no
-              start
-              "Nested character classes are not supported"
+            no start "Nested character classes are not supported"
             if.
               and.
                 b.eq 26-
@@ -1522,9 +1456,7 @@
                   byte
                     start.plus 1
                   26-
-              no
-                start
-                "Character class intersections are not supported"
+              no start "Character class intersections are not supported"
               e.ok.if
                 ^.members
                   at.
@@ -1596,9 +1528,7 @@
         eq.
           byte index >> e
           --
-        no
-          index
-          "Unescaped trailing backslash"
+        no index "Unescaped trailing backslash"
         if.
           e.eq 78-
           h.ok.if
@@ -1760,9 +1690,7 @@
                       "The escape sequence '\\".as-bytes.concat
                         e
                       "' is not supported".as-bytes
-                no
-                  index
-                  "Illegal/unsupported escape sequence"
+                no index "Illegal/unsupported escape sequence"
     [^ index opened bits] >> group
       if. > @
         eq.
@@ -1856,16 +1784,12 @@
             or.
               b.eq 55-
               b.eq 63-
-            no
-              index
-              "The inline modifiers 'U' and 'c' are not supported"
+            no index "The inline modifiers 'U' and 'c' are not supported"
             if.
               eq.
                 flag b >> bit
                 --
-              no
-                index
-                "Unknown inline modifier"
+              no index "Unknown inline modifier"
               ^.modifiers
                 index.plus 1
                 on.if
@@ -1889,9 +1813,7 @@
               r.node
               captured r.node index
             --
-          no
-            ^.size
-            "Unclosed group"
+          no ^.size "Unclosed group"
         r
     [^ index] >> braces
       if. > @
@@ -1902,9 +1824,7 @@
           "Illegal repetition range"
         if.
           0.gt n.value
-          no
-            index
-            "Illegal repetition"
+          no index "Illegal repetition"
           if.
             eq.
               byte n.at >> c
@@ -1942,9 +1862,7 @@
                         no m.at "Illegal repetition range"
                         bounds (m.at.plus 1) n.value m.value
                       no m.at "Unclosed counted closure"
-              no
-                n.at
-                "Unclosed counted closure"
+              no n.at "Unclosed counted closure"
   [^ child least most] >> possessive
     [^ s at caps k] > run
       [^ n at caps] >> drain
@@ -1965,10 +1883,7 @@
               nothing
               ^.k at caps
           ^.k at caps
-      | > @
-        0
-        at
-        caps
+      | 0 at caps > @
   [c] >> raised
     if. > @
       3.gt c.size

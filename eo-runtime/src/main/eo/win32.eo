@@ -39,9 +39,7 @@
     ? > length /Q.number
   256 > creat
   [cde nme] > dir-return
-    win32.dir-return > called
-      code
-      name
+    win32.dir-return code name > called
     number cde! > code
     string nme! > name
   17 > eexist
@@ -61,9 +59,7 @@
   [] > getenv /Q.win32.getenv-return
     ? > name /Q.string
   [cde vle] > getenv-return
-    win32.getenv-return > called
-      code
-      value
+    win32.getenv-return code value > called
     FF-.eq cde! > code
     string vle! > value
   [] > getpid /Q.number
@@ -89,9 +85,7 @@
     ? > size /Q.number
   [cde dta] > read-return
     data > @
-    win32.read-return > called
-      code
-      data
+    win32.read-return code data > called
     number cde! > code
     bytes dta! > data
   [] > recv /Q.win32.read-return
@@ -105,10 +99,7 @@
   [] > rmdir /Q.win32.status-return
     ? > path /Q.string
   [cde nme msg] > search-return
-    win32.search-return > called
-      code
-      name
-      message
+    win32.search-return code name message > called
     number cde! > code
     string msg! > message
     string nme! > name
@@ -129,11 +120,7 @@
     ? > type /Q.number
     ? > protocol /Q.number
   [cde msg mde sze] > stat-return
-    win32.stat-return > called
-      code
-      message
-      mode
-      size
+    win32.stat-return code message mode size > called
     number cde! > code
     string msg! > message
     number mde! > mode
@@ -141,9 +128,7 @@
   [] > stat64 /Q.win32.stat-return
     ? > path /Q.string
   [cde msg] > status-return
-    win32.status-return > called
-      code
-      message
+    win32.status-return code message > called
     number cde! > code
     string msg! > message
   2 > stderr
@@ -152,10 +137,7 @@
   1 > stream
   6 > tcp
   [cde scnds mcrs] > time-return
-    win32.time-return > called
-      code
-      seconds
-      micros
+    win32.time-return code seconds micros > called
     number cde! > code
     number mcrs! > micros
     number scnds! > seconds
@@ -275,9 +257,7 @@
       16777343
 
   eq. ++> can-stand-for-the-bytes-a-read-returned
-    win32.read-return
-      3
-      D0-B6-21
+    win32.read-return 3 D0-B6-21
     D0-B6-21
 
   ++> can-stat-the-size-of-nul

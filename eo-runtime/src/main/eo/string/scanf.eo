@@ -220,9 +220,7 @@
             as-ascii.
               ^.text.slice index 1
             48
-    | > @
-      0
-      0
+    | 0 0 > @
   next. >> matched
     match.
       regex.

@@ -40,15 +40,11 @@
 
   eq. ++> can-format-the-error-message-of-a-negative-count
     "Can't repeat text -1.000000 times"
-    "x".repeated
-      -1
-      I
+    "x".repeated -1 I
 
   eq. ++> can-format-the-error-message-of-an-infinite-count
     "Can't repeat text infinity times"
-    "x".repeated
-      pinf
-      I
+    "x".repeated pinf I
 
   eq. ++> can-recover-from-a-negative-count
     "recovered"

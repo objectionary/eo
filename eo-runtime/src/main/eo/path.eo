@@ -251,17 +251,13 @@
                   p.size.gt 0 > [p]
         location.posix jpath
   [^location uri] > posix
-    location.impl > @
-      sys
-      uri
+    location.impl sys uri > @
     "/" > separator
     [^] > sys
       "" > [uri] > drive
       I > sanitized
       ^.separator > separator
-  os.is-windows.if > separator
-    win32.separator
-    posix.separator
+  os.is-windows.if win32.separator posix.separator > separator
   [^location uri] > win32
     location.impl > @
       sys
@@ -325,9 +321,7 @@
         path.win32 "C:\\foo"
 
   path.separator.eq ++> can-determine-the-separator-from-the-os
-    os.is-windows.if
-      path.win32.separator
-      path.posix.separator
+    os.is-windows.if path.win32.separator path.posix.separator
 
   eq. ++> can-join-a-path-skipping-an-empty-first-element
     path.joined
