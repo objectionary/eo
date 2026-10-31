@@ -7,18 +7,14 @@ package org.eolang.lowering;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.time.Duration;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
-import org.cactoos.text.TextOf;
-import org.cactoos.text.Trimmed;
-import org.cactoos.text.UncheckedText;
+import org.cactoos.map.MapOf;
 import org.eolang.cache.GlobalCache;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -43,9 +39,9 @@ final class LoweringTest {
         final Path home = temp.resolve("home");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), home, LoweringTest.binary(temp),
-            new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
-            new Scope(".*", "(?!)"), 16,
-            Duration.ofMinutes(1L)
+            "7.2.19", new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
+            new Scope(".*", "(?!)"), 16, 2,
+            Duration.ofMinutes(1L), false
         ).exec();
         MatcherAssert.assertThat(
             "the lowering must make the home it was given, but it didnt",
@@ -61,9 +57,9 @@ final class LoweringTest {
         final Path home = temp.resolve("home");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), home, LoweringTest.binary(temp),
-            new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
-            new Scope(".*", "(?!)"), 16,
-            Duration.ofMinutes(1L)
+            "7.2.19", new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
+            new Scope(".*", "(?!)"), 16, 2,
+            Duration.ofMinutes(1L), false
         ).exec();
         MatcherAssert.assertThat(
             "the lowering must make the directory of the protocols inside its home, but it didnt",
@@ -79,9 +75,9 @@ final class LoweringTest {
         final Path home = temp.resolve("home");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), home, LoweringTest.binary(temp),
-            new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
-            new Scope(".*", "(?!)"), 16,
-            Duration.ofMinutes(1L)
+            "7.2.19", new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
+            new Scope(".*", "(?!)"), 16, 2,
+            Duration.ofMinutes(1L), false
         ).exec();
         MatcherAssert.assertThat(
             "the lowering must make the directory of the pruned sources inside its home, but it didnt",
@@ -97,18 +93,18 @@ final class LoweringTest {
         final Path home = temp.resolve("home");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), home, LoweringTest.binary(temp),
-            new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
-            new Scope(".*", "(?!)"), 16,
-            Duration.ofMinutes(1L)
+            "7.2.19", new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
+            new Scope(".*", "(?!)"), 16, 2,
+            Duration.ofMinutes(1L), false
         ).exec();
         try (Stream<Path> made = Files.list(home)) {
             MatcherAssert.assertThat(
                 "a build with nothing in it must be planted as an empty world, but it wasnt",
                 made.map(Path::getFileName).map(Path::toString).collect(Collectors.toList()),
                 Matchers.containsInAnyOrder(
-                    "entries.xmir", "voids.tsv", "entries.tsv",
+                    "entries.xmir", "voids.tsv", "entries.tsv", "rows.tsv",
                     "world.phi", "atoms.yaml", "rendered.tsv", "patched.tsv",
-                    "1-planting", "2-protocols"
+                    "1-planting", "2-protocols", ".seqdir.lock"
                 )
             );
         }
@@ -116,12 +112,12 @@ final class LoweringTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void failsWhenTheBinaryReportsAnotherVersion(@Mktmp final Path temp) throws IOException {
+    void checksTheBinaryAgainstThePinItWasGiven(@Mktmp final Path temp) throws IOException {
         final Path binary = temp.resolve("phino");
         Files.write(binary, new ListOf<>("#!/bin/sh", "echo 0.0.1"));
         Files.setPosixFilePermissions(binary, PosixFilePermissions.fromString("rwxr-xr-x"));
         MatcherAssert.assertThat(
-            "the failure must name both the version found and the one pinned, but it doesnt",
+            "the failure must name the version the lowering was pinned to, but it doesnt",
             Assertions.assertThrows(
                 IllegalStateException.class,
                 () -> new Lowering(
@@ -129,14 +125,14 @@ final class LoweringTest {
                     temp.resolve("tables"),
                     temp.resolve("home"),
                     binary.toString(),
-                    new GlobalCache.GcFresh(),
+                    "4.5.61", new GlobalCache.GcFresh(),
                     temp.resolve("atoms"), temp.resolve("patched"),
-                    new Scope(".*", "(?!)"), 16,
-                    Duration.ofMinutes(1L)
+                    new Scope(".*", "(?!)"), 16, 2,
+                    Duration.ofMinutes(1L), false
                 ).exec(),
-                "a binary of another version must fail the lowering"
+                "a binary of another version than the pin given must fail the lowering"
             ).getMessage(),
-            Matchers.stringContainsInOrder("0.0.1", LoweringTest.pin())
+            Matchers.stringContainsInOrder("0.0.1", "4.5.61")
         );
     }
 
@@ -152,10 +148,10 @@ final class LoweringTest {
                     temp.resolve("tables"),
                     temp.resolve("home"),
                     binary.toString(),
-                    new GlobalCache.GcFresh(),
+                    "7.2.19", new GlobalCache.GcFresh(),
                     temp.resolve("atoms"), temp.resolve("patched"),
-                    new Scope(".*", "(?!)"), 16,
-                    Duration.ofMinutes(1L)
+                    new Scope(".*", "(?!)"), 16, 2,
+                    Duration.ofMinutes(1L), false
                 ).exec(),
                 "a binary that is not there must fail the lowering"
             ).getMessage(),
@@ -172,10 +168,10 @@ final class LoweringTest {
                 temp.resolve("tables"),
                 temp.resolve("home"),
                 temp.resolve("absent").toString(),
-                new GlobalCache.GcFresh(),
+                "7.2.19", new GlobalCache.GcFresh(),
                 temp.resolve("atoms"), temp.resolve("patched"),
-                new Scope(".*", "(?!)"), 16,
-                Duration.ofMinutes(1L)
+                new Scope(".*", "(?!)"), 16, 2,
+                Duration.ofMinutes(1L), false
             ).available(),
             Matchers.is(false)
         );
@@ -191,19 +187,13 @@ final class LoweringTest {
                 temp.resolve("tables"),
                 temp.resolve("home"),
                 LoweringTest.binary(temp),
-                new GlobalCache.GcFresh(),
+                "7.2.19", new GlobalCache.GcFresh(),
                 temp.resolve("atoms"), temp.resolve("patched"),
-                new Scope(".*", "(?!)"), 16,
-                Duration.ofMinutes(1L)
+                new Scope(".*", "(?!)"), 16, 2,
+                Duration.ofMinutes(1L), false
             ).available(),
             Matchers.is(true)
         );
-    }
-
-    private static String pin() {
-        return new UncheckedText(
-            new Trimmed(new TextOf(new ResourceOf("org/eolang/lowering/phino-version.txt")))
-        ).asString();
     }
 
     private static String binary(final Path temp) throws IOException {
@@ -212,8 +202,9 @@ final class LoweringTest {
             made,
             new ListOf<>(
                 "#!/bin/sh",
+                "case $1 in --pin=*) shift;; esac",
                 "case $1 in",
-                String.format("--version) echo %s;;", LoweringTest.pin()),
+                "--version) echo 7.2.19;;",
                 "merge) while [ $# -gt 0 ]; do [ \"$1\" = --target ] && : > \"$2\"; shift; done;;",
                 "morph) for a; do case $a in --protocol=*) : > \"${a#--protocol=}\";; esac; done;;",
                 "esac"
@@ -224,16 +215,6 @@ final class LoweringTest {
     }
 
     private static Path tables(final Path temp) throws IOException {
-        final Path made = Files.createDirectories(temp.resolve("tables"));
-        Files.write(
-            made.resolve("provides.xml"), "<provides/>".getBytes(StandardCharsets.UTF_8)
-        );
-        Files.write(
-            made.resolve("links.xml"),
-            "<links><type id='Φ.gap.φ'><ref loc='Φ.number'/></type></links>"
-                .getBytes(StandardCharsets.UTF_8)
-        );
-        Files.write(made.resolve("atoms.xml"), "<atoms/>".getBytes(StandardCharsets.UTF_8));
-        return made;
+        return new Inferred(temp.resolve("engine"), new MapOf<String, String>()).value();
     }
 }

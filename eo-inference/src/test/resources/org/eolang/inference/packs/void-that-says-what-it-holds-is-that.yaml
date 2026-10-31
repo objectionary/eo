@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The code of the atom reader declares it holds a number, so reading it off a
+# bare reader answers number, and the eq read off it is number.eq.
+sources:
+  app.eo: |
+    [] > app
+      reader.code.eq > @
+  reader.eo: |
+    [] > reader /Q.bytes
+      ? > code /Q.number
+  number.eo: |
+    [@] > number
+      [x] > eq
+        x > @
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.reader.code']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.number.eq']

@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# tri 5:1 puts 5 into b. half "x":1 asks for slot 1 again, but b is already
+# bound in half, so "x" moves right to c, the next empty void. The @ of tri
+# is c, so app is a string.
+sources:
+  tri.eo: |
+    [a b c] > tri
+      c > @
+  app.eo: |
+    [] > app
+      tri 5:1 > half
+      half "x":1 > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.half.α1' and @lands='b']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ.α1' and @lands='c']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.string']

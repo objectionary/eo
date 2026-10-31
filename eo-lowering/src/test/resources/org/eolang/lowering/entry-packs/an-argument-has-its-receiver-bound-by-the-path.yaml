@@ -4,25 +4,23 @@
 # The `ρ` of a formation written as an argument is the copy of the callee
 # the argument was bound into, and the path to the formation walks through
 # that very copy, so the calculus binds the `ρ` on the way. Whatever the
-# tables say the `ρ` holds, nothing is planted for it: a planted copy of the
+# copies hold in the `ρ`, nothing is planted for it: a planted copy of the
 # callee would have the void empty where this formation stands, and a
-# dispatch off it would reach the bottom rather than the formation.
+# dispatch off it would reach the bottom rather than the formation. `app`
+# hands the `if` of `yes` two numbers, so the engine says that `left` and
+# `right` hold numbers.
 eo:
-  true.eo: |
-    [] > true
-      bool > @
+  yes.eo: |
+    [] > yes
+      choice > @
         [^ left right]
           left > @
+  choice.eo: |
+    [if] > choice
+  app.eo: |
+    [] > app
+      yes.if 1 2 > used
 dealpha:
-  Φ.true.φ.α0: if
-provides: |
-  <provides>
-    <type id="Φ.true.φ.α0">
-      <attr name="ρ" type="Φ.true.φ.α0.ρ" void="true" settled="Φ.bool"/>
-      <attr name="left" type="Φ.true.φ.α0.left" void="true" holds="Φ.number"/>
-      <attr name="right" type="Φ.true.φ.α0.right" void="true"
-        holds="Φ.number"/>
-    </type>
-  </provides>
+  Φ.yes.φ.α0: if
 xmir:
-  - "//o[@name='e2']/o[@as='v' and @base='Φ.true.φ.if'][not(o[not(@as)])]"
+  - "//o[@name='e2' and @base='Φ.yes.φ.if'][not(o[not(@as)])]"

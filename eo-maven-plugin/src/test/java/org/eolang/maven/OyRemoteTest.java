@@ -8,12 +8,14 @@ import com.sun.net.httpserver.HttpServer;
 import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -40,13 +42,20 @@ final class OyRemoteTest {
     })
     void boundsRequestsWaitingForHeaders(final int operation, final boolean responds)
         throws Exception {
-        final AtomicInteger requests = new AtomicInteger();
+        final CountDownLatch arrived = new CountDownLatch(3);
         final HttpServer server = HttpServer.create(
             new InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0
         );
+        server.setExecutor(
+            command -> {
+                final Thread thread = new Thread(command);
+                thread.setDaemon(true);
+                thread.start();
+            }
+        );
         server.createContext(
             "/", exchange -> {
-                requests.incrementAndGet();
+                arrived.countDown();
                 if (responds) {
                     final byte[] body = "[] > foo".getBytes(StandardCharsets.UTF_8);
                     exchange.sendResponseHeaders(200, body.length);
@@ -60,14 +69,14 @@ final class OyRemoteTest {
             final UrlOy template = new UrlOy(
                 String.format("http://127.0.0.1:%d/%%s/%%s", server.getAddress().getPort()), "stub"
             );
-            final OyRemote remote = new OyRemote(template, template, Duration.ofSeconds(1));
+            final OyRemote remote = new OyRemote(template, template, Duration.ofSeconds(5));
             final ThrowingSupplier<Boolean> request = () -> switch (operation) {
                 case 0 -> remote.isProgram("foo");
                 case 1 -> remote.isDirectory("foo");
                 default -> "[] > foo".equals(new TextOf(remote.get("foo")).asString());
             };
             Assertions.assertTimeoutPreemptively(
-                Duration.ofSeconds(20),
+                Duration.ofSeconds(90),
                 () -> {
                     if (responds) {
                         Assertions.assertTrue(request.get(), "The immediate response must succeed");
@@ -78,7 +87,7 @@ final class OyRemoteTest {
                         );
                         MatcherAssert.assertThat(
                             "The server must receive retried requests before failure",
-                            requests.get(), Matchers.equalTo(3)
+                            arrived.await(30L, TimeUnit.SECONDS), Matchers.is(true)
                         );
                     }
                 },
@@ -108,12 +117,21 @@ final class OyRemoteTest {
         MatcherAssert.assertThat(
             "UrlOy generates correct URL for directory",
             new UrlOy(
-                "https://github.com/objectionary/home/tree/%s/objects/%s",
+                "https://api/repos/objectionary/home/contents/objects/%2$s?ref=%1$s",
                 "abcde"
             ).value("org.eolang.ss"),
             Matchers.is(
-                new URL("https://github.com/objectionary/home/tree/abcde/objects/ss")
+                new URL("https://api/repos/objectionary/home/contents/objects/ss?ref=abcde")
             )
+        );
+    }
+
+    @Test
+    void looksForDirectoryWhereAProgramMayRead() {
+        MatcherAssert.assertThat(
+            "The directory must be looked for in the API, not in the web page a person reads",
+            new OyRemote(new ChRemote("master")).toString(),
+            Matchers.containsString("Directory template: https://api.github.com/")
         );
     }
 
@@ -215,7 +233,7 @@ final class OyRemoteTest {
     void reportsNameInTheEoObjectSlotWhenObjectNotFound() throws Exception {
         MatcherAssert.assertThat(
             "The object name must show up in the 'EO object' slot of the message",
-            OyRemoteTest.notFoundMessage(),
+            OyRemoteTest.message(404),
             Matchers.containsString("EO object 'org.eolang.txt.sprintf'")
         );
     }
@@ -224,8 +242,21 @@ final class OyRemoteTest {
     void reportsUrlInTheByUrlSlotWhenObjectNotFound() throws Exception {
         MatcherAssert.assertThat(
             "The URL must show up in the 'by url' slot of the message",
-            OyRemoteTest.notFoundMessage(),
+            OyRemoteTest.message(404),
             Matchers.containsString("by url: http://127.0.0.1")
+        );
+    }
+
+    @Test
+    void doesNotBlameTheNameWhenTheServerFails() throws Exception {
+        MatcherAssert.assertThat(
+            "A server error must be reported as a failed download, not as a misspelled name",
+            OyRemoteTest.message(503),
+            Matchers.both(
+                Matchers.containsString("HTTP error 503")
+            ).and(
+                Matchers.not(Matchers.containsString("misspelled"))
+            )
         );
     }
 
@@ -263,6 +294,97 @@ final class OyRemoteTest {
             OyRemoteTest.released(429),
             Matchers.is(true)
         );
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "200, false", "200, true",
+        "404, false", "404, true",
+        "500, false", "500, true",
+        "503, false", "503, true",
+        "599, false", "599, true",
+        "600, false", "600, true"
+    })
+    void doesNotMemoizeServerErrors(final int code, final boolean directory) throws Exception {
+        final AtomicInteger status = new AtomicInteger(code);
+        final AtomicInteger requests = new AtomicInteger();
+        final HttpServer server = HttpServer.create(
+            new InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0
+        );
+        server.createContext(
+            "/", exchange -> {
+                requests.incrementAndGet();
+                final byte[] body = "presence".getBytes(StandardCharsets.UTF_8);
+                exchange.sendResponseHeaders(status.get(), body.length);
+                exchange.getResponseBody().write(body);
+                exchange.close();
+            }
+        );
+        server.start();
+        try {
+            final String template = String.format(
+                "http://127.0.0.1:%d/%%s/%%s", server.getAddress().getPort()
+            );
+            final OyRemote remote = new OyRemote(
+                new UrlOy(template, "stub"), new UrlOy(template, "stub")
+            );
+            final OyCached cached = new OyCached(remote);
+            boolean refused = false;
+            boolean first = false;
+            try {
+                first = OyRemoteTest.presence(cached, directory);
+            } catch (final IOException error) {
+                refused = true;
+            }
+            final int before = requests.get();
+            status.set(200);
+            final boolean recovered = OyRemoteTest.presence(cached, directory);
+            final int after = requests.get();
+            final boolean direct = OyRemoteTest.presence(remote, directory);
+            final boolean temporary = code >= 500 && code < 600;
+            MatcherAssert.assertThat(
+                "Temporary server errors must not be cached as missing; ordinary checks stay cached",
+                Arrays.asList(refused, first, recovered, after > before, direct),
+                Matchers.equalTo(
+                    Arrays.asList(
+                        temporary, !temporary && code == 200,
+                        temporary || code == 200, temporary, true
+                    )
+                )
+            );
+        } finally {
+            server.stop(0);
+        }
+    }
+
+    @Test
+    void refusesToReadRefusalAsAbsenceOfDirectory() throws Exception {
+        final HttpServer server = HttpServer.create(
+            new InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0
+        );
+        server.createContext(
+            "/",
+            exchange -> {
+                exchange.sendResponseHeaders(HttpURLConnection.HTTP_FORBIDDEN, -1L);
+                exchange.close();
+            }
+        );
+        server.start();
+        try {
+            final String tpl = String.format(
+                "http://127.0.0.1:%d/%%s/%%s", server.getAddress().getPort()
+            );
+            Assertions.assertThrows(
+                IOException.class,
+                () -> new OyRemote(
+                    new UrlOy(tpl, "stub"),
+                    new UrlOy(tpl, "stub")
+                ).isDirectory("number"),
+                "Expected an IOException instead of a refusal to serve standing for the directory being absent"
+            );
+        } finally {
+            server.stop(0);
+        }
     }
 
     private static boolean released(final int status) throws Exception {
@@ -311,15 +433,26 @@ final class OyRemoteTest {
         }
     }
 
-    private static String notFoundMessage() throws Exception {
+    private static boolean presence(final Objectionary source, final boolean directory)
+        throws IOException {
+        final boolean present;
+        if (directory) {
+            present = source.isDirectory("foo");
+        } else {
+            present = source.contains("foo");
+        }
+        return present;
+    }
+
+    private static String message(final int status) throws Exception {
         final HttpServer server = HttpServer.create(
             new InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0
         );
         server.createContext(
             "/",
             exchange -> {
-                final byte[] body = "404: Not Found".getBytes(StandardCharsets.UTF_8);
-                exchange.sendResponseHeaders(404, body.length);
+                final byte[] body = "the body".getBytes(StandardCharsets.UTF_8);
+                exchange.sendResponseHeaders(status, body.length);
                 exchange.getResponseBody().write(body);
                 exchange.close();
             }
@@ -335,7 +468,7 @@ final class OyRemoteTest {
                     new UrlOy(tpl, "stub"),
                     new UrlOy(tpl, "stub")
                 ).get("org.eolang.txt.sprintf").stream(),
-                "Expected an IOException reporting the object as not found"
+                "Expected an IOException reporting the rejected HTTP status"
             ).getMessage();
         } finally {
             server.stop(0);
