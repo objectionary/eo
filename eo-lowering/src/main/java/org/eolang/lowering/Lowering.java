@@ -69,8 +69,9 @@ public final class Lowering {
     private final Collection<Path> sources;
 
     /**
-     * The directory with the tables of {@code eo:inference}, which say the
-     * types of the voids.
+     * The directory with the tables of {@code eo:inference},
+     * {@code facts.xml} and {@code answers.xml}, which say what the voids
+     * hold and what the bodies give.
      */
     private final Path tables;
 
@@ -253,9 +254,10 @@ public final class Lowering {
         }
         Logger.info(
             this,
-            "Phino %s is found at '%s', though nothing is lowered yet",
+            "Phino %s is found at '%s', lowering %d sources",
             pinned,
-            this.phino
+            this.phino,
+            this.sources.size()
         );
         new IoCheckedProc<>(
             new Procs<>(

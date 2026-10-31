@@ -49,11 +49,11 @@
                       if.
                         is-integer. (n.div 2)
                         times.
-                          number half
+                          number
+                            ^.ipow factor (n.div 2) >> half!
                           number half
                         factor.times
                           ^.ipow factor (n.minus 1)
-                    ^.ipow factor (n.div 2) > half!
                   | (1.div base) expo.abs
                   ipow base expo.abs
                 if.
@@ -61,24 +61,29 @@
                   [^ y] >> expon
                     times. > @
                       if.
-                        lt. (number k) 0
+                        lt.
+                          number
+                            floor. >> k!
+                              plus.
+                                number
+                                  y >> arg!
+                                0.5
+                          0
                         1.div
                           ipow e (number k).abs
                         ipow e (number k).abs
-                      fraction 1
-                    y > arg!
-                    if. > [^ j] > fraction
-                      j.gt 20
-                      1
-                      1.plus
-                        times.
-                          div.
-                            minus.
-                              number ^.arg
-                              number ^.k
-                            j
-                          ^.fraction (j.plus 1)
-                    floor. ((number arg).plus 0.5) > k!
+                      if. > [^ j] >> fraction
+                        j.gt 20
+                        1
+                        1.plus
+                          times.
+                            div.
+                              minus.
+                                number arg
+                                number k
+                              j
+                            ^.fraction (j.plus 1)
+                      | 1
                   | (expo.times base.ln)
                   nan
             if.
@@ -202,6 +207,11 @@
     ninf.power 9
     ninf
 
+  eq. ++> can-raise-negative-infinity-to-an-odd-negative-integer
+    as-bytes.
+      ninf.power -3
+    80-00-00-00-00-00-00-00
+
   eq. ++> can-raise-negative-infinity-to-negative-infinity
     ninf.power ninf
     0
@@ -219,8 +229,9 @@
     ninf
 
   eq. ++> can-raise-negative-zero-to-odd-positive
-    -0.power 3
-    -0
+    as-bytes.
+      -0.power 3
+    80-00-00-00-00-00-00-00
 
   lt. ++> can-raise-one-to-a-fraction
     abs.

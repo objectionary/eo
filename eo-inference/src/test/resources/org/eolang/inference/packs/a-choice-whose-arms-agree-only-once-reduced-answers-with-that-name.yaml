@@ -1,0 +1,46 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# and hands FF-.eq x and false to the if of its bool. FF-.eq x is what
+# bytes.eq returns, a bool, and false reduces to the bool its @ gives, so both
+# arms are a bool, and so is and.
+sources:
+  bool.eo: |
+    [if] > bool
+      if > @
+        FF-
+        00-
+      ^.if > [^ x] > and
+        FF-.eq x
+        false
+  true.eo: |
+    [^] > true
+      bool > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  false.eo: |
+    [^] > false
+      bool > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  bytes.eo: |
+    [@] > bytes
+      [] > eq /Q.bool
+        ? > ^
+        ? > b
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.bool.and.φ.ρ']/is[@loc='Φ.bool']
+  - /answers/o[@loc='Φ.bool.and.φ.α0' and @lands='a🌵4-6']/is[@loc='Φ.bool']
+  - /answers/o[@loc='Φ.false']/reduced/is[@loc='Φ.bool']
+  - /answers/o[@loc='Φ.bool.and.φ.α1' and @lands='a🌵5-6']/is[@loc='Φ.bool']
+  - /answers/o[@loc='Φ.bool.and.φ']/is[@loc='Φ.bool']
+  - /answers/o[@loc='Φ.bool.and']/reduced/is[@loc='Φ.bool']

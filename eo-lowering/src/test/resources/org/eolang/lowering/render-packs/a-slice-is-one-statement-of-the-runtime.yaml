@@ -11,14 +11,17 @@ eo:
   head.eo: |
     [x] > head
       x.slice 1 2 > @
+  bytes.eo: |
+    [@] > bytes
+      [] > slice /Q.bytes
+        ? > ^
+        ? > start /Q.number
+        ? > len /Q.number
+  app.eo: |
+    [] > app
+      head 01-02-03 > used
 voids:
   - "𝜎1\t6\tx\tbytes"
-links: |
-  <links>
-    <type id="Φ.head.φ">
-      <ref loc="Φ.bytes"/>
-    </type>
-  </links>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e6">

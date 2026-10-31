@@ -1,23 +1,20 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# A void the tables type as an object other than a number, a string, a bool,
+# A void the tables say holds an object other than a number, a string, a bool,
 # bytes or a tuple leaves the formation out. Planting it as the formation the
 # tables name would fold the attributes of that formation into the atom,
 # whatever object a caller passes, so the formation gets no entry and stays in
-# EO as its author wrote it.
+# EO as its author wrote it. `app` hands `uses` a `printf`, so the engine says
+# that `p` holds one.
 eo:
   uses.eo: |
     [p] > uses
       p.fmt > @
-provides: |
-  <provides>
-    <type id="Φ.uses">
-      <attr name="p" type="Φ.uses.p" void="true" holds="Φ.string.printf"/>
-    </type>
-    <type id="Φ.string.printf">
-      <attr name="fmt" type="Φ.string.printf.fmt" void="true" holds="Φ.string"/>
-    </type>
-  </provides>
+  printf.eo: |
+    [fmt] > printf
+  app.eo: |
+    [] > app
+      uses (printf "%d") > used
 xmir:
   - "/object/o[@name='l🌵'][not(o[starts-with(@name, 'e')])]"

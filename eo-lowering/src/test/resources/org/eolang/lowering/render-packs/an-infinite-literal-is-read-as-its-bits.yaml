@@ -9,17 +9,14 @@ locator: Φ.number.grown
 number: 217
 eo:
   number.eo: |
-    [] > number
-      [] > grown
+    [@] > number
+      [^] > grown
         ^.times positive-infinity > @
+      [] > times /Q.number
+        ? > ^
+        ? > b /Q.number
 voids:
   - "𝜎200\t217\tρ\tnumber"
-links: |
-  <links>
-    <type id="Φ.number.grown.φ">
-      <ref loc="Φ.number"/>
-    </type>
-  </links>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e217">

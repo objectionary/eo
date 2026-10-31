@@ -16,14 +16,19 @@ eo:
         x.gt 0
         x.plus 1
         2
+  number.eo: |
+    [@] > number
+      [] > gt /Q.bool
+        ? > ^
+        ? > b /Q.number
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+  app.eo: |
+    [] > app
+      pick 5 > used
 voids:
   - "𝜎1\t1\tx\tnumber"
-links: |
-  <links>
-    <type id="Φ.pick.φ">
-      <ref loc="Φ.number"/>
-    </type>
-  </links>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e1">

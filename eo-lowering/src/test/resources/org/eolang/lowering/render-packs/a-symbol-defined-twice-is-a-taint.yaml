@@ -10,9 +10,12 @@ taint: >-
   while phino mints every symbol once
 eo:
   number.eo: |
-    [] > number
-      [] > neg
+    [@] > number
+      [^] > neg
         ^.times -1 > @
+      [] > times /Q.number
+        ? > ^
+        ? > b /Q.number
 voids:
   - "𝜎200\t217\tρ\tnumber"
 protocol: |

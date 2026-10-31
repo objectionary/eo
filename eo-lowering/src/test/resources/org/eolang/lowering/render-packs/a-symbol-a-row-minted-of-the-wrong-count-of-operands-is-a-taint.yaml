@@ -11,16 +11,25 @@ eo:
   twolen.eo: |
     [t] > twolen
       (len t).plus 1 > @
+  len.eo: |
+    [s] > len
+      s.length > @
+  string.eo: |
+    [@] > string
+      [] > length /Q.number
+        ? > ^
+  number.eo: |
+    [@] > number
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+  app.eo: |
+    [] > app
+      twolen "ab" > used
 voids:
   - "𝜎4\t5\tt\tstring"
 rows:
   - "L_len\tΦ.len\tΦ.len\ts:string"
-provides: |
-  <provides>
-    <type id="Φ.twolen" reduced="Φ.number">
-      <attr name="t" type="Φ.twolen.t" void="true" holds="Φ.string"/>
-    </type>
-  </provides>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e5">

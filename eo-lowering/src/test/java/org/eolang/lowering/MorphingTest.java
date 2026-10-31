@@ -18,6 +18,8 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.cactoos.list.ListOf;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.eolang.cache.GcShared;
 import org.eolang.cache.GlobalCache;
 import org.eolang.parser.EoSyntax;
@@ -629,14 +631,16 @@ final class MorphingTest {
         MorphingTest.xmir(temp, "number", "<o name=\"φ\" base=\"∅\" loc=\"Φ.number.φ\"/>");
         MorphingTest.xmir(temp, "string", "<o name=\"φ\" base=\"∅\" loc=\"Φ.string.φ\"/>");
         MorphingTest.xmir(temp, "bytes", "<o name=\"φ\" base=\"∅\" loc=\"Φ.bytes.φ\"/>");
-        final Path tables = Files.createDirectories(temp.resolve("tables"));
-        Files.write(
-            tables.resolve("provides.xml"),
-            "<provides><type id=\"Φ.broken\"/></provides>".getBytes(StandardCharsets.UTF_8)
-        );
-        Files.write(tables.resolve("links.xml"), "<links/>".getBytes(StandardCharsets.UTF_8));
-        Files.write(tables.resolve("atoms.xml"), "<atoms/>".getBytes(StandardCharsets.UTF_8));
-        new Planting(tables).exec(temp);
+        new Planting(
+            new Inferred(
+                temp.resolve("engine"),
+                new MapOf<String, String>(
+                    new MapEntry<>(
+                        "broken.eo", String.format("[] > broken%n  T \"%s\" > @%n", message)
+                    )
+                )
+            ).value()
+        ).exec(temp);
         new Merging(phino).exec(temp);
         new Morphing(
             phino, new GlobalCache.GcFresh(), new Scope(".*", "(?!)"), 32, 2,
@@ -679,23 +683,15 @@ final class MorphingTest {
         MorphingTest.xmir(
             temp, "number", "<o name=\"φ\" base=\"∅\" loc=\"Φ.number.φ\"/>"
         );
-        final Path tables = Files.createDirectories(temp.resolve("tables"));
-        Files.write(
-            tables.resolve("provides.xml"),
-            String.join(
-                "",
-                "<provides><type id=\"Φ.len\">",
-                "<attr name=\"a\" type=\"Φ.len.a\" void=\"true\" settled=\"Φ.bytes\"/>",
-                "</type></provides>"
-            ).getBytes(StandardCharsets.UTF_8)
-        );
-        Files.write(
-            tables.resolve("links.xml"),
-            "<links><type id='Φ.len.φ'><ref loc='Φ.number'/></type></links>"
-                .getBytes(StandardCharsets.UTF_8)
-        );
-        Files.write(tables.resolve("atoms.xml"), "<atoms/>".getBytes(StandardCharsets.UTF_8));
-        new Planting(tables).exec(temp);
+        new Planting(
+            new Inferred(
+                temp.resolve("engine"),
+                new MapOf<String, String>(
+                    new MapEntry<>("len.eo", String.format("[a] > len%n  a.size > @%n")),
+                    new MapEntry<>("app.eo", String.format("[] > app%n  len 0A-1B > used%n"))
+                )
+            ).value()
+        ).exec(temp);
         new Merging(phino).exec(temp);
         new Morphing(
             phino, new GlobalCache.GcFresh(), new Scope(".*", "(?!)"), 32, 2,
@@ -728,25 +724,26 @@ final class MorphingTest {
                 String.format("+package number%n%n[^ b] > both%n  ^.twice.plus b.twice > @%n")
             ).parsed().toString().getBytes(StandardCharsets.UTF_8)
         );
-        final Path tables = this.library(temp);
-        Files.write(
-            tables.resolve("provides.xml"),
-            String.join(
-                "",
-                "<provides>",
-                "<type id=\"Φ.number.twice\" reduced=\"Φ.number\">",
-                "<attr name=\"ρ\" type=\"Φ.number.twice.ρ\" void=\"true\" holds=\"Φ.number\"/>",
-                "</type>",
-                "<type id=\"Φ.number.both\" reduced=\"Φ.number\">",
-                "<attr name=\"ρ\" type=\"Φ.number.both.ρ\" void=\"true\" holds=\"Φ.number\"/>",
-                "<attr name=\"b\" type=\"Φ.number.both.b\" void=\"true\" holds=\"Φ.number\"/>",
-                "</type>",
-                "</provides>"
-            ).getBytes(StandardCharsets.UTF_8)
-        );
-        Files.write(tables.resolve("links.xml"), "<links/>".getBytes(StandardCharsets.UTF_8));
-        Files.write(tables.resolve("atoms.xml"), "<atoms/>".getBytes(StandardCharsets.UTF_8));
-        new Planting(tables).exec(temp);
+        MorphingTest.library(temp);
+        new Planting(
+            new Inferred(
+                temp.resolve("engine"),
+                new MapOf<String, String>(
+                    new MapEntry<>(
+                        "twice.eo",
+                        String.format("+package number%n%n[^] > twice%n  ^.plus ^ > @%n")
+                    ),
+                    new MapEntry<>(
+                        "both.eo",
+                        String.format(
+                            "+package number%n%n[^ b] > both%n  ^.twice.plus b.twice > @%n"
+                        )
+                    ),
+                    new MapEntry<>("number.eo", MorphingTest.number()),
+                    new MapEntry<>("app.eo", String.format("[] > app%n  5.both 6 > used%n"))
+                )
+            ).value()
+        ).exec(temp);
         new Merging(phino).exec(temp);
         new Morphing(
             phino, new GlobalCache.GcFresh(), new Scope(".*", "(?!)"), 32, 2,
@@ -801,28 +798,27 @@ final class MorphingTest {
             new EoSyntax(String.format("[a b] > gap%n  a.plus b > @%n")).parsed()
                 .toString().getBytes(StandardCharsets.UTF_8)
         );
-        final Path tables = this.library(temp);
-        Files.write(
-            tables.resolve("provides.xml"),
-            String.join(
-                "",
-                "<provides><type id=\"Φ.gap\">",
-                "<attr name=\"a\" type=\"Φ.gap.a\" void=\"true\" settled=\"Φ.number\"/>",
-                "<attr name=\"b\" type=\"Φ.gap.b\" void=\"true\" settled=\"Φ.number\"/>",
-                "</type></provides>"
-            ).getBytes(StandardCharsets.UTF_8)
-        );
-        Files.write(
-            tables.resolve("links.xml"),
-            "<links><type id='Φ.gap.φ'><ref loc='Φ.number'/></type></links>"
-                .getBytes(StandardCharsets.UTF_8)
-        );
-        Files.write(tables.resolve("atoms.xml"), "<atoms/>".getBytes(StandardCharsets.UTF_8));
-        new Planting(tables).exec(temp);
+        MorphingTest.library(temp);
+        new Planting(
+            new Inferred(
+                temp.resolve("engine"),
+                new MapOf<String, String>(
+                    new MapEntry<>("gap.eo", String.format("[a b] > gap%n  a.plus b > @%n")),
+                    new MapEntry<>("number.eo", MorphingTest.number()),
+                    new MapEntry<>("app.eo", String.format("[] > app%n  gap 2 3 > used%n"))
+                )
+            ).value()
+        ).exec(temp);
         new Merging(phino).exec(temp);
     }
 
-    private Path library(final Path temp) throws IOException {
+    private static String number() {
+        return String.format(
+            "[@] > number%n  [] > plus /Q.number%n    ? > ^%n    ? > b /Q.number%n"
+        );
+    }
+
+    private static void library(final Path temp) throws IOException {
         MorphingTest.xmir(
             temp,
             "number",
@@ -833,7 +829,6 @@ final class MorphingTest {
             "</o>"
         );
         MorphingTest.xmir(temp, "bytes", "<o name=\"φ\" base=\"∅\" loc=\"Φ.bytes.φ\"/>");
-        return Files.createDirectories(temp.resolve("tables"));
     }
 
     private static Path xmir(final Path temp, final String name, final String... body)

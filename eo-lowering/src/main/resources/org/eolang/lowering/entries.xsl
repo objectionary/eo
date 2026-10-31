@@ -29,16 +29,21 @@
   formation is going to dispatch on its inputs. So a number arrives as the
   formation of "number" with the symbol where its bytes would be, and every
   attribute the body takes off it dispatches exactly as it would on a literal.
-  What a void holds is read off "provides.xml" and worked out nowhere here.
-  A row says it in one of two cells: "holds" is the annotation of the source,
-  true of every caller there will ever be, and "settled" is the one type the
-  census of the callers of this build agree on, which "eo:inference" has
-  already chased through its links. Only those two cells are read: chasing
-  anything from here would be a second, worse copy of a job another module
-  does. A formation gets an entry only when every void of it holds a
-  number, a string, a bool, bytes or a tuple. A void that holds any other
-  object, or one that module says nothing about, leaves the whole formation
-  out, and it stays in EO exactly as it was written. Such a void cannot be
+  What a void holds is read off the tables of "eo:inference" and worked out
+  nowhere here. The "holds" of the void in "facts.xml" is the annotation of
+  the source, true of every caller there will ever be, and it answers first.
+  Otherwise the row of the place of the void in "answers.xml" says what the
+  copies of the formation hold there, and it answers when, with the
+  terminations, the open voids and the failing reads left out, it names one
+  object and nothing else. A declared "ρ" is not read off that row, since a
+  decorator in it is named by what its "φ" gives: it holds the formation it
+  is written in, the "rho" of the void in "facts.xml", which comes from the
+  locators alone. Nothing else is read: chasing anything from here would be
+  a second, worse copy of a job another module does. A formation gets an
+  entry only when every void of it holds a number, a string, a bool, bytes
+  or a tuple. A void that holds any other object, or one that module says
+  nothing about, leaves the whole formation out, and it stays in EO exactly
+  as it was written. Such a void cannot be
   left unfilled, because the calculus cuts a branch that reaches ⊥ there
   and keeps only the condition under which the run would end, so the atom
   would lose that branch. Nor can it be planted as the formation the tables
@@ -84,14 +89,13 @@
   <xsl:output encoding="UTF-8" method="xml"/>
   <!--
   The directory with the tables of "eo:inference", as a URI. The stage that
-  runs this stylesheet has made sure "provides.xml" is there, so the table
-  is opened and never asked about.
+  runs this stylesheet has made sure "facts.xml" and "answers.xml" are
+  there, so the tables are opened and never asked about.
   -->
   <xsl:param name="inference" as="xs:string" select="''"/>
   <xsl:variable name="eo:tables" as="xs:string" select="if (ends-with($inference, '/')) then $inference else concat($inference, '/')"/>
-  <xsl:variable name="eo:provides" as="document-node()" select="document(concat($eo:tables, 'provides.xml'))"/>
-  <xsl:variable name="eo:links" as="document-node()" select="document(concat($eo:tables, 'links.xml'))"/>
-  <xsl:variable name="eo:atoms" as="document-node()" select="document(concat($eo:tables, 'atoms.xml'))"/>
+  <xsl:variable name="eo:facts" as="document-node()" select="document(concat($eo:tables, 'facts.xml'))"/>
+  <xsl:variable name="eo:answers" as="document-node()" select="document(concat($eo:tables, 'answers.xml'))"/>
   <xsl:include href="/org/eolang/lowering/_returns.xsl"/>
   <!-- A source that holds a formation with a row is copied again, with the row in it. -->
   <xsl:mode name="eo:rowing" on-no-match="shallow-copy"/>
@@ -163,14 +167,26 @@
     <xsl:sequence select="not(matches($path, '\.α[0-9]+(\.|$)'))"/>
   </xsl:function>
   <!--
-  What the named void of the type with this locator holds, declared or
-  settled, with the trailing "?" of a maybe-⊥ annotation dropped, or an
-  empty string where the tables say nothing.
+  What the named void of the formation with this locator holds, declared,
+  the formation a declared "ρ" is written in, or the one object the
+  answers name, with the trailing "?" of a maybe-⊥ annotation dropped, or
+  an empty string where the tables say nothing.
   -->
   <xsl:function name="eo:holds" as="xs:string">
     <xsl:param name="loc" as="xs:string"/>
     <xsl:param name="name" as="xs:string"/>
-    <xsl:sequence select="replace(string((key('eo:type', $loc, $eo:provides)[1]/attr[@name = $name][@void = 'true'][1]/(@holds, @settled))[1]), '\?$', '')"/>
+    <xsl:variable name="void" as="element(attr)?" select="key('eo:type', $loc, $eo:facts)[1]/attr[@name = $name][@void = 'true'][1]"/>
+    <xsl:sequence select="replace(string(($void/@holds, if ($name = 'ρ') then $void/@rho else eo:one(eo:labels(key('eo:row', concat($loc, '.', $name), $eo:answers))))[1]), '\?$', '')"/>
+  </xsl:function>
+  <!--
+  The object these labels name, when they name one object and nothing
+  else, neither another object, nor a datum, nor a place the engine cannot
+  tell.
+  -->
+  <xsl:function name="eo:one" as="xs:string?">
+    <xsl:param name="labels" as="element()*"/>
+    <xsl:variable name="kinds" as="xs:string*" select="distinct-values($labels ! (if (self::is) then string(@loc) else local-name()))"/>
+    <xsl:sequence select="if (count($kinds) = 1 and exists($labels/self::is)) then $kinds else ()"/>
   </xsl:function>
   <!--
   The carrier of what a void holds: one of the five kinds of data the

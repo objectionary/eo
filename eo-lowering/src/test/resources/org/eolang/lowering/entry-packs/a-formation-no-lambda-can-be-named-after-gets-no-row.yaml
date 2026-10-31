@@ -3,7 +3,8 @@
 ---
 # A λ is spelled with a capital letter first and lowercase letters, digits,
 # underscores and `φ` after it, so a formation whose path holds any other
-# letter, the cactus of a test for one, gets an entry but no row.
+# letter, the cactus of a test for one, gets an entry but no row, though its
+# body is a call of the atom `eq`, which returns a bool.
 eo:
   foo.eo: |
     [] > foo
@@ -11,12 +12,11 @@ eo:
 
       ++> can-be-one
         1.eq 1 > @
-provides: |
-  <provides>
-    <type id="Φ.foo.p🌵can-be-one" reduced="Φ.bool">
-      <attr name="φ" type="Φ.foo.p🌵can-be-one.φ"/>
-    </type>
-  </provides>
+  number.eo: |
+    [@] > number
+      [] > eq /Q.bool
+        ? > ^
+        ? > b
 xmir:
   - "//o[@name='e2' and @base='Φ.foo.p🌵can-be-one'][not(o[@name='φ'])]"
 copies:

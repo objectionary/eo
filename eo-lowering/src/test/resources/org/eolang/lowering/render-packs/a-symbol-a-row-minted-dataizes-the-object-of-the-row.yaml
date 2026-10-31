@@ -12,23 +12,22 @@ locator: Φ.number.both
 number: 2
 eo:
   number.eo: |
-    [] > number
-      [b] > both
-        (^.twice).plus b.twice > @
-      [] > twice
+    [@] > number
+      [^ b] > both
+        ^.twice.plus b.twice > @
+      [^] > twice
         ^.plus ^ > @
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+  app.eo: |
+    [] > app
+      5.both 6 > used
 voids:
   - "𝜎2\t2\tρ\tnumber"
   - "𝜎3\t2\tb\tnumber"
 rows:
   - "L_number_twice\tΦ.number.twice\tΦ.number.twice\tρ:number"
-provides: |
-  <provides>
-    <type id="Φ.number.both" reduced="Φ.number">
-      <attr name="ρ" type="Φ.number.both.ρ" void="true" holds="Φ.number"/>
-      <attr name="b" type="Φ.number.both.b" void="true" holds="Φ.number"/>
-    </type>
-  </provides>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e2">

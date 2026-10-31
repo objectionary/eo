@@ -4,27 +4,36 @@
 # yamllint disable rule:line-length
 # The root is a number the atom computed, so the atom returns it bare, and
 # the tables must say the body is a number, a string, a bool or bytes. The
-# body is a copy of the atom `Φ.number.plus`, so it returns what that atom
-# returns, and "atoms.xml" tells what that is.
+# row of the body names the atom `Φ.number.plus`, so it returns what that
+# atom returns, and "facts.xml" tells what that is. The engine names an atom
+# there only when the program has no object the atom says it returns, and a
+# program always has `number`, so the tables are written here by hand.
 locator: Φ.sum
 number: 1
 eo:
   sum.eo: |
     [m n] > sum
       m.plus n > @
+facts: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <facts>
+     <objects>
+        <type bare="true" complete="false" id="Φ.number.plus" returns="Φ.number">
+           <attr name="ρ" rho="Φ.number" type="Φ.number.plus.ρ" void="true"/>
+           <attr holds="Φ.number" name="b" type="Φ.number.plus.b" void="true"/>
+        </type>
+     </objects>
+  </facts>
+answers: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <answers>
+    <o loc="Φ.sum.φ" copies="1">
+      <is loc="Φ.number.plus"/>
+    </o>
+  </answers>
 voids:
   - "𝜎1\t1\tm\tnumber"
   - "𝜎2\t1\tn\tnumber"
-links: |
-  <links>
-    <type id="Φ.sum.φ">
-      <ref loc="Φ.number.plus"/>
-    </type>
-  </links>
-atoms: |
-  <atoms>
-    <atom forma="Φ.number" loc="Φ.number.plus"/>
-  </atoms>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e1">

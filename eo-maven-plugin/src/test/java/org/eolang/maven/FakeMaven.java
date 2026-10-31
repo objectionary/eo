@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -482,6 +483,15 @@ final class FakeMaven {
         this.params.putIfAbsent("tests", true);
         this.params.putIfAbsent("strict", true);
         this.params.putIfAbsent("included", new SetOf<>("**.eo"));
+        Map.of(
+            "canon", List.of("Φ.bytes", "Φ.number", "Φ.string"),
+            "roots", List.of("Φ.tuple", "Φ.map", "Φ.set"),
+            "scalars", List.of(
+                "Φ.number", "Φ.bytes", "Φ.string", "Φ.bool", "Φ.true", "Φ.false",
+                "Φ.i8", "Φ.i16", "Φ.i32", "Φ.i64", "Φ.u8", "Φ.u16", "Φ.u32", "Φ.u64",
+                "Φ.dataized"
+            )
+        ).forEach(this.params::putIfAbsent);
     }
 
     private String scope() {

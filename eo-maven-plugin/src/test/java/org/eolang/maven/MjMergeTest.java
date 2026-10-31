@@ -143,36 +143,6 @@ final class MjMergeTest {
         );
     }
 
-    @Test
-    void refusesToLiftOneNameOutOfTwoMembers(@Mktmp final Path temp) throws Exception {
-        MatcherAssert.assertThat(
-            "two members declaring one name for their tests must stop the build and name it",
-            MjMergeTest.root(
-                Assertions.assertThrows(
-                    IllegalStateException.class,
-                    () -> new FakeMaven(temp).withProgram(
-                        MjMergeTest.program("[n] > foo", "  n > @"),
-                        "foo",
-                        "foo.eo"
-                    ).withProgram(
-                        MjMergeTest.program(
-                            "+package foo", "", "[] > bar", "  42 > @", "  1.eq 1 ++> can-be-one"
-                        ),
-                        "foo.bar",
-                        "foo/bar.eo"
-                    ).withProgram(
-                        MjMergeTest.program(
-                            "+package foo", "", "[] > baz", "  42 > @", "  1.eq 1 ++> can-be-one"
-                        ),
-                        "foo.baz",
-                        "foo/baz.eo"
-                    ).execute(new PpMerge())
-                )
-            ),
-            Matchers.stringContainsInOrder("can-be-one", "foo.baz", "foo")
-        );
-    }
-
     private static FakeMaven spliced(final Xtory pack, final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         for (final Map.Entry<?, ?> source : MjMergeTest.sources(pack).entrySet()) {

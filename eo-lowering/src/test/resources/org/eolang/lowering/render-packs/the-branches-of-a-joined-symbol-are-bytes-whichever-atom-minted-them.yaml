@@ -15,15 +15,25 @@ eo:
         x.gt 0
         x.plus 1
         b.or 01-
+  number.eo: |
+    [@] > number
+      [] > gt /Q.bool
+        ? > ^
+        ? > b /Q.number
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+  bytes.eo: |
+    [@] > bytes
+      [] > or /Q.number
+        ? > ^
+        ? > b
+  app.eo: |
+    [] > app
+      pick 5 0F- > used
 voids:
   - "𝜎1\t1\tx\tnumber"
   - "𝜎2\t1\tb\tbytes"
-links: |
-  <links>
-    <type id="Φ.pick.φ">
-      <ref loc="Φ.number"/>
-    </type>
-  </links>
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e1">
