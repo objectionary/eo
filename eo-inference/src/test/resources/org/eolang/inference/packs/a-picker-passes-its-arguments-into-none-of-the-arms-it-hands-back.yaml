@@ -1,0 +1,57 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# both calls the pick of the flag of box with ^.grip and ^.hold. choice has a
+# not besides its pick, as bool does, so the no that user hands in picks the
+# second, and both is the hold of box. The two go into the voids of the arm
+# that no hands to choice, never into the size of grip or the weight of hold,
+# which stay open.
+sources:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+      [] > not
+        ^.pick no yes > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  box.eo: |
+    [flag] > box
+      [^ size] > grip
+        size > @
+      [^ weight] > hold
+        weight > @
+      ^.flag.pick > [^] > both
+        ^.grip
+        ^.hold
+  user.eo: |
+    [] > user
+      (box no).both > @
+  other.eo: |
+    [] > other
+      box yes > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.box.both']/reduced/is[@loc='Φ.box.hold']
+  - /answers/o[@loc='Φ.no.φ.α0.a🌵4-6']/is[@loc='Φ.box.grip']
+  - /answers/o[@loc='Φ.no.φ.α0.a🌵5-6']/is[@loc='Φ.box.hold']
+  - /answers[not(o[@lands='size' or @lands='weight'])]
+  - /answers/o[@loc='Φ.box.grip.size']/open
+  - /answers/o[@loc='Φ.box.hold.weight']/open

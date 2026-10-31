@@ -23,39 +23,38 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class MjInferenceReportTest {
 
     @Test
-    void drawsPagesOfProgram(@Mktmp final Path temp) throws IOException {
+    void drawsAPagePerSourceFromTheAnswers(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(System.lineSeparator(), "[] > app", "  [] > t", "")
+        );
+        maven.execute(MjParse.class).execute(MjInference.class);
+        Files.writeString(
+            maven.targetPath().resolve(maven.dirName("inference")).resolve("answers.xml"),
+            "<answers><o loc='Φ.foo.x.main' copies='1'><is loc='Φ.foo.x.main'/></o></answers>"
+        );
+        maven.execute(MjInferenceReport.class);
         MatcherAssert.assertThat(
-            "a page for the reader must be drawn from the tables, but it wasnt",
+            "a page of the program must be drawn from answers.xml, but it wasnt",
             Files.exists(
-                new FakeMaven(temp).withProgram(
-                    String.join(System.lineSeparator(), "[] > app", "  [] > t", "")
-                )
-                .execute(MjParse.class)
-                .execute(MjInference.class)
-                .execute(MjInferenceReport.class)
-                .targetPath()
-                .getParent()
-                .resolve("site")
-                .resolve("inference")
-                .resolve("index.html")
+                maven.targetPath().getParent().resolve("site/inference/foo/x/main.eo.html")
             ),
             Matchers.is(true)
         );
     }
 
     @Test
-    void drawsNothingWhenInferenceNeverRan(@Mktmp final Path temp) throws IOException {
+    void drawsNothingWithoutAnswers(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(System.lineSeparator(), "[] > app", "  [] > t", "")
+        );
+        maven.execute(MjParse.class).execute(MjInference.class);
+        Files.delete(
+            maven.targetPath().resolve(maven.dirName("inference")).resolve("answers.xml")
+        );
+        maven.execute(MjInferenceReport.class);
         MatcherAssert.assertThat(
-            "no page may be drawn when there are no tables, but one was",
-            Files.exists(
-                new FakeMaven(temp)
-                    .execute(MjInferenceReport.class)
-                    .targetPath()
-                    .getParent()
-                    .resolve("site")
-                    .resolve("inference")
-                    .resolve("index.html")
-            ),
+            "no page may be drawn when the engine wrote no answers, but one was",
+            Files.exists(maven.targetPath().getParent().resolve("site/inference/index.html")),
             Matchers.is(false)
         );
     }
