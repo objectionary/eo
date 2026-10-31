@@ -1,0 +1,44 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# listen is an atom that gives a number, and the const marker turns its call
+# into (dataized x).as-bytes. dataized reduces to that number, as-bytes gives
+# bytes, as-number off them gives a number, and eq is read off number.
+sources:
+  posix.eo: |
+    [name args] > posix
+      [] > @ /Q.posix.return
+        ? > ^
+      [^ code output] > return
+        output > @
+      [] > listen /Q.number
+        ? > descriptor /Q.number
+        ? > backlog /Q.number
+  app.eo: |
+    [] > app
+      [] > sys
+        posix.listen > listen
+      as-number. > listened
+        sys.listen 3 2048 >>!
+      listened.eq -1 > @
+  dataized.eo: |
+    [x] > dataized
+      x > @
+  number.eo: |
+    [@] > number
+      [] > as-bytes /Q.bytes
+        ? > ^
+      [b] > eq
+  bytes.eo: |
+    [@] > bytes
+      [] > as-number /Q.number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.posix.listen.λ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.a🌵5-4.ρ.α0' and @lands='x']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.dataized']/reduced/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.a🌵5-4']/is[@loc='Φ.bytes']
+  - /answers/o[@loc='Φ.app.listened']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.number.eq']

@@ -40,7 +40,10 @@ final class TranspilationTest {
     @Test
     void tellsInferenceTablesApartInTheCacheKey(@Mktmp final Path temp) throws IOException {
         final Path tables = Files.createDirectories(temp.resolve("tables"));
-        Files.writeString(tables.resolve("provides.xml"), "<provides><type id='Q.f'/></provides>");
+        Files.writeString(
+            tables.resolve("answers.xml"),
+            "<answers><o loc='Q.f' copies='1'><is loc='Q.f'/></o></answers>"
+        );
         MatcherAssert.assertThat(
             "a build that read the rows of this object must not take one that had none",
             this.transpilation(tables).version(Collections.singletonList("Q.f")),

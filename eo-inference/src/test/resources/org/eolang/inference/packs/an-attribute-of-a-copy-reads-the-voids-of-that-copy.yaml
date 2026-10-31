@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# sum reads x and y off ^, the copy of point the call in app made, so both are
+# numbers there and so is what plus gives.
+sources:
+  point.eo: |
+    [x y] > point
+      [] > sum
+        ^.x.plus ^.y > @
+  app.eo: |
+    [] > app
+      (point 1 2).sum > @
+  number.eo: |
+    [@] > number
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.point.sum.φ.ρ.ρ']/is[@loc='Φ.point']
+  - /answers/o[@loc='Φ.point.sum.φ.α0.ρ']/is[@loc='Φ.point']
+  - /answers/o[@loc='Φ.point.sum.φ.ρ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.point.sum.φ.α0' and @lands='b']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.point.sum.φ']/is[@loc='Φ.number']
