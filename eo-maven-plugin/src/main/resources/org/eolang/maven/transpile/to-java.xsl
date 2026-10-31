@@ -958,7 +958,7 @@
         <xsl:text>@ExtendWith({Deadline.class, Maxmem.class})</xsl:text>
         <xsl:value-of select="eo:eol(1)"/>
         <xsl:text>void </xsl:text>
-        <xsl:value-of select="eo:identifier(replace(eo:unmarked(@name), '-', '_'))"/>
+        <xsl:value-of select="eo:underscored(eo:unmarked(@name))"/>
         <xsl:text>() throws java.lang.Exception {</xsl:text>
         <xsl:value-of select="eo:eol(2)"/>
         <xsl:choose>
