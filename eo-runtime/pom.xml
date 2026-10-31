@@ -433,15 +433,6 @@
                 -->
                 <lint>excessive-visibility</lint>
                 <!--
-                @todo #9108:30min Stop skipping 'no-attribute-formation' here.
-                The lint rejects a formation without void attributes, and 125
-                of its 150 reports are tests, which take no arguments by
-                design (objectionary/lints#1527). The other 25, like 'clock',
-                'console', 'os', 'stdin', or 'malloc', are objects with no
-                arguments on purpose.
-                -->
-                <lint>no-attribute-formation</lint>
-                <!--
                 @todo #9108:30min Stop skipping 'missed-obfuscation' here.
                 The lint wants a formation that decorates another object to
                 make its void attributes private, and it complains 595 times,
