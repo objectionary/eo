@@ -1,16 +1,10 @@
 # Generates a pseudo-random number.
-#
-# @todo #9650:30min Remove `+unlint too-deep-object:53-54` from the
-#  metas below. It hides how deep `next` nests its arithmetic, up to 18
-#  levels where the lint allows 12. Split the arithmetic into objects of its
-#  own, so that `next` nests no deeper.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint too-deep-object:53-54
 +version 0.0.0
 
 [^num] > random
@@ -39,27 +33,32 @@
                   minus. (one.left 35).as-i64 00-00-00-00-00-00-00-01
             as-i64.
               tbytes.and ((one.left 17).as-i64.minus 00-00-00-00-00-00-00-01).as-bytes
+  as-i64. > high
+    and.
+      as-bytes.
+        num.as-i64.div 67108864.as-i64
+      00-00-00-00-03-FF-FF-FF
+  as-i64. > low
+    num.as-i64.as-bytes.and 00-00-00-00-03-FF-FF-FF
+  as-i64. > lowered
+    low.times 25214903917.as-i64
   random. > next
     as-number.
       as-i64.
         and.
           as-bytes.
             plus.
-              plus.
-                as-i64.
-                  left.
-                    and.
-                      as-bytes.
-                        ((num.as-i64.div 67108864.as-i64).as-bytes.and 00-00-00-00-03-FF-FF-FF).as-i64.times
-                          25214903917.as-i64
-                      00-00-00-00-03-FF-FF-FF
-                    26
-                as-i64.
-                  (num.as-i64.as-bytes.and 00-00-00-00-03-FF-FF-FF).as-i64.times
-                    25214903917.as-i64
+              shifted.plus lowered
               11.as-i64
           00-1F-FF-FF-FF-FF-FF-FF
   clocked clock > pseudo
+  as-i64. > shifted
+    left.
+      and.
+        as-bytes.
+          high.times 25214903917.as-i64
+        00-00-00-00-03-FF-FF-FF
+      26
 
   not. ++> can-differ-between-two-draws
     eq.
