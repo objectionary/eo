@@ -108,7 +108,7 @@
         two
         bit.minus 1
       lit.eq 00-
-  if. > [^folder rest] >>
+  if. > [^folder rest] >> sorted
     rest.length.eq 0
     rest
     inserted
