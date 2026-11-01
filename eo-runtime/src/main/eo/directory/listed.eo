@@ -71,15 +71,15 @@
         read.code.eq -2
         T
           "Can't read the directory '%s': %s".printf
-            * dir.folder.path read.name
+            *
+              dir.folder.path
+              name.
+                called. >> read
+                  os.is-windows.if
+                    win32.find-next-file opened.code
+                    posix.readdir opened.code
         dir.gathered
-          added
-            acc
-            name.
-              called. >> read
-                os.is-windows.if
-                  win32.find-next-file opened.code
-                  posix.readdir opened.code
+          added acc read.name
   if. > [^folder rest item] >> inserted
     rest.length.eq 0
     * item
@@ -106,7 +106,7 @@
         two
         bit.minus 1
       lit.eq 00-
-  if. > [^folder rest] >> sorted
+  if. > [^folder rest] >>
     rest.length.eq 0
     rest
     inserted
