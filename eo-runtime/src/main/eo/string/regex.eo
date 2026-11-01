@@ -303,7 +303,7 @@
           checked.
             regex.pattern
               slice.
-                ^.text.as-bytes >> raw
+                regex.text.as-bytes >> raw
                 1
                 closes.plus -1
               raw.slice >> flags
