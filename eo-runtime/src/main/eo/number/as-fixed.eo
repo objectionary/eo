@@ -52,10 +52,10 @@
         [^num a] >> positive
           if. > @
             eq.
-              floor. >> digits
-                plus.
-                  times. (a.minus a.floor) num.scale
-                  0.5
+              round >> digits
+                times.
+                  a.minus a.floor
+                  num.scale
               num.scale
             if. > [^frac unit rest] >> written
               frac.num.places.eq 0
@@ -72,16 +72,20 @@
         num.lt 0
         if. > [^num a] >> signed
           eq.
-            floor.
-              plus.
-                a.times num.scale
-                0.5
+            round
+              a.times num.scale
             0
           positive a
           "-".as-bytes.concat
             positive a
         | (num.times -1)
         positive num
+  if. > [value] >> round
+    gte.
+      value.minus value.floor
+      0.5
+    value.floor.plus 1
+    value.floor
   if. > [^num p] >> pow10
     p.eq 0
     1
