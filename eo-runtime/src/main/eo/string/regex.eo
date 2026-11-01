@@ -62,18 +62,7 @@
 # where its bytes end, so `next` neither rescans the text nor parses the
 # pattern again.
 #
-# @todo #7485:30min Stop skipping 'redundant-attachment' here. It complains
-# about three formations, the fallback of `compiled`, the continuation
-# `sought` hands to `run` and the one the parser builds for `\z`, and reads
-# their `>>` names as unreferenced. At least the one in `sought` does reach
-# out of itself, through the receiver its own head declares, and the lint
-# misses it, because a void of the same name masks the reference. Dropping
-# the names breaks the engine and everything built on it, `string.scanf`,
-# `string.as-number` and `path` among them. Remove this directive once
-# objectionary/lints#1301 counts a hop through the receiver as reaching
-# outward even when the head declares a void of the same name.
-#
-# @todo #9650:30min Remove `+unlint too-deep-object:1713-1724` from the
+# @todo #9650:30min Remove `+unlint too-deep-object:1701-1712` from the
 #  metas below. It hides how deep `refused` in `pattern` nests its chain of
 #  `if.` over the escaped byte, up to 15 levels where the lint allows 12. Split
 #  the chain into objects of its own, so that `refused` nests no deeper.
@@ -83,8 +72,7 @@
 +package string
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-attachment
-+unlint too-deep-object:1713-1724
++unlint too-deep-object:1701-1712
 +version 0.0.0
 
 [^text] > regex
