@@ -28,6 +28,8 @@ jobs:
           key: ubuntu-qulice-jdk-21-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ubuntu-qulice-jdk-21-maven-
       - run: mvn clean install -ntp -Psnippets --errors --batch-mode
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   telegram:
     needs: snippets
     runs-on: ubuntu-24.04
