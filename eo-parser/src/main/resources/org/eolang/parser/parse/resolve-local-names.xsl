@@ -125,7 +125,10 @@
   reference above. A receiver handle ("[^me n] &gt; bar", R-3.4.11) is
   another spelling of "^": "me.foo" reaches the parent of the formation whose
   "ρ" the handle names, and a chain of handles climbs one formation per
-  handle, as "^.^" does (#9245).
+  handle, as "^.^" does (#9245). Such a handle is checked before the name
+  of an enclosing formation, since the handle lookup already stops at the
+  nearest declaration and a handle that repeats an outer formation name is
+  the nearer of the two.
 
   A dispatch is still flat at this point in the train - "wrap-method-calls"
   nests it later - so the receiver of a "@method" node is its preceding
@@ -138,7 +141,8 @@
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="receiver" as="element()?" select="$ref/preceding-sibling::o[1]"/>
     <xsl:variable name="owner" as="element()?" select="$ref/ancestor::o[not(@base)][@name=$receiver/@base or exists(key('attributes', concat($receiver/@base, '#', generate-id(.))))][1]"/>
-    <xsl:sequence select="if (empty($receiver/@base)) then () else if ($receiver/@base='ξ' and empty($receiver/@method)) then $ref/ancestor::o[not(@base)][1] else if ($receiver/@base='ρ' and empty($receiver/@method)) then $ref/ancestor::o[not(@base)][2] else if ($receiver/@base='.ρ' and exists($receiver/@method)) then eo:scope($receiver)/ancestor::o[not(@base)][1] else if (empty($receiver/@method) and $owner/@name=$receiver/@base) then $owner else for $void in eo:captor($receiver)[@name='ρ'] return $void/ancestor::o[not(@base)][2]"/>
+    <xsl:variable name="handled" as="element()?" select="if (empty($receiver/@base)) then () else eo:captor($receiver)[@name='ρ']"/>
+    <xsl:sequence select="if (empty($receiver/@base)) then () else if ($receiver/@base='ξ' and empty($receiver/@method)) then $ref/ancestor::o[not(@base)][1] else if ($receiver/@base='ρ' and empty($receiver/@method)) then $ref/ancestor::o[not(@base)][2] else if ($receiver/@base='.ρ' and exists($receiver/@method)) then eo:scope($receiver)/ancestor::o[not(@base)][1] else if (exists($handled)) then $handled/ancestor::o[not(@base)][2] else if (empty($receiver/@method) and $owner/@name=$receiver/@base) then $owner else ()"/>
   </xsl:function>
   <!--
   How many formations separate a bare, ancestor-search-captured reference
