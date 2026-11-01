@@ -70,7 +70,7 @@ java: |
 
       @Override
       public Phi lambda() {
-          return new Data.ToPhi(java.nio.ByteBuffer.wrap(this.𝜎135()).getDouble());
+          return new Data.ToPhi(new Dataized(new Data.ToPhi(this.𝜎135())).asNumber());
       }
 
       private Phi 𝜎134() {

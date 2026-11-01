@@ -78,7 +78,7 @@ java: |
 
       @Override
       public Phi lambda() {
-          return new Data.ToPhi(java.nio.ByteBuffer.wrap(this.𝜎3()).getDouble());
+          return new Data.ToPhi(new Dataized(new Data.ToPhi(this.𝜎3())).asNumber());
       }
 
       private byte[] 𝜎1() {
@@ -90,6 +90,6 @@ java: |
       }
 
       private byte[] 𝜎3() {
-          return java.nio.ByteBuffer.allocate(8).putDouble(java.nio.ByteBuffer.wrap(this.𝜎1()).getDouble() + java.nio.ByteBuffer.wrap(this.𝜎2()).getDouble()).array();
+          return java.nio.ByteBuffer.allocate(8).putDouble(new Dataized(new Data.ToPhi(this.𝜎1())).asNumber() + new Dataized(new Data.ToPhi(this.𝜎2())).asNumber()).array();
       }
   }

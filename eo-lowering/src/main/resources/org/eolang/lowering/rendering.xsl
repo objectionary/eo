@@ -1111,7 +1111,7 @@
         <xsl:sequence select="concat('new Dataized(', $java, ').', map {'byte[]': 'take()', 'double': 'asNumber()', 'boolean': 'asBool()'}($to))"/>
       </xsl:when>
       <xsl:when test="$from = 'byte[]' and $to = 'double'">
-        <xsl:sequence select="concat('java.nio.ByteBuffer.wrap(', $java, ').getDouble()')"/>
+        <xsl:sequence select="concat('new Dataized(new Data.ToPhi(', $java, ')).asNumber()')"/>
       </xsl:when>
       <xsl:when test="$from = 'double' and $to = 'byte[]'">
         <xsl:sequence select="concat('java.nio.ByteBuffer.allocate(8).putDouble(', $java, ').array()')"/>
