@@ -46,12 +46,15 @@
 # one-character text of U+0000 is accepted as a boolean, since its byte is
 # the byte of `false`.
 #
-# The `%d` conversion refuses an argument whose bytes are not eight wide,
-# naming the argument and the conversion the way `%b` does. Without that
-# guard the bytes were read as a number anyway and the comparison that met
-# them answered for its own receiver, so a text or a boolean came back
-# naming the receiver of that comparison, which says neither which argument
-# nor which conversion was wrong (#9036).
+# The `%d` and `%f` conversions refuse an argument whose bytes are not eight
+# wide, naming the argument and the conversion the way `%b` does. Without that
+# guard the bytes were read as a number anyway and whatever met them answered
+# for itself: `%d` came back naming the receiver of the comparison it fell
+# into (#9036), and `%f` called a text a non-finite number, naming what the
+# reading made of the argument instead of the argument (#9037). Eight bytes
+# is as far as the check reaches, since the bytes of a number are the bytes
+# of any other object of the same length, so a text of eight bytes is still
+# written as the number they spell.
 #
 # The `%d` guard names the number it rejects through `as-scientific` and not
 # through `%f`, because every magnitude it rejects is past the range `as-fixed`
@@ -287,20 +290,25 @@
                                 * datum
                           if.
                             66-.eq conv
-                            as-fixed.
-                              number numeric
-                              if.
-                                as-bool.
-                                  ((number dot).lt (number span)).and >> precise!
-                                    2E-.eq (byte (number dot))
-                                number
-                                  precise.as-bool.if >> precision!
-                                    digits-value
-                                      plus. (number dot) 1
-                                      number end
+                            if.
+                              datum.size.eq 8
+                              as-fixed.
+                                number numeric
+                                if.
+                                  as-bool.
+                                    ((number dot).lt (number span)).and >> precise!
+                                      2E-.eq (byte (number dot))
+                                  number
+                                    precise.as-bool.if >> precision!
+                                      digits-value
+                                        plus. (number dot) 1
+                                        number end
+                                        0
                                       0
-                                    0
-                                6
+                                  6
+                              T
+                                "The argument %x is not a number, the %%f conversion takes one".printf
+                                  * datum
                             if.
                               78-.eq conv
                               capped
@@ -558,6 +566,13 @@
     "stopped"
     recovered
       "%b".printf
+        * "x"
+      "stopped"
+
+  eq. ++> can-stop-formatting-a-text-as-a-fixed-point
+    "stopped"
+    recovered
+      "%f".printf
         * "x"
       "stopped"
 

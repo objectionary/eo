@@ -5,6 +5,10 @@
 # tangent series. The limiting cases follow the usual conventions: zero is
 # negative infinity, a negative number and negative infinity are nan, and
 # positive infinity stays.
+#
+# `n` says that the receiver is not a number itself, rather than letting
+# the first comparison blame its own `b`, which is an attribute the caller
+# never wrote (#9283).
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -18,7 +22,10 @@
     nan
     if.
       lt.
-        number num.as-bytes >> n
+        if. >> n
+          num.as-bytes.size.eq 8
+          number num.as-bytes
+          T "the 'ρ' attribute must be a number"
         0
       nan
       if.

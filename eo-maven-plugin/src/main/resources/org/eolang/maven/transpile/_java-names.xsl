@@ -46,14 +46,20 @@
     <xsl:value-of select="replace(replace($n, '\\', '\\\\'), '&quot;', '\\&quot;')"/>
   </xsl:function>
   <!--
-  Get clean escaped object name. The "-" becomes "_" and the "_" an escape of
-  its own, which no "-" can produce: mapping "_" to "__" beside them made
-  "a-_b" and "a_-b" one name (#9047). The dollar is escaped ahead of them, so
-  that the escape is never read as a dollar the name itself carried.
+  Map an EO name onto the characters a Java identifier admits, one name to one
+  identifier. The "-" becomes "_" and the "_" an escape of its own, which no
+  "-" can produce: mapping "_" to "__" beside them made "a-_b" and "a_-b" one
+  name (#9047). The dollar is escaped ahead of them, so that the escape is
+  never read as a dollar the name itself carried.
   -->
+  <xsl:function name="eo:underscored" as="xs:string">
+    <xsl:param name="n" as="xs:string"/>
+    <xsl:value-of select="eo:identifier(replace(translate(translate(string-join(tokenize(replace($n, '\$', '\$EO'), '_'), eo:escape-char('_')), '-', '_'), '@', $eo:phi), $eo:alpha, '_'))"/>
+  </xsl:function>
+  <!-- Get clean escaped object name -->
   <xsl:function name="eo:clean" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
-    <xsl:value-of select="concat('EO', eo:identifier(replace(translate(translate(string-join(tokenize(replace($n, '\$', '\$EO'), '_'), eo:escape-char('_')), '-', '_'), '@', $eo:phi), $eo:alpha, '_')))"/>
+    <xsl:value-of select="concat('EO', eo:underscored($n))"/>
   </xsl:function>
   <!--
   A deterministic digit fingerprint of a name, computed purely from the name's own
@@ -154,7 +160,7 @@
   <!-- Get clean escaped package segment, prefixed to never clash with an object class, mapped the way "eo:clean" maps a name -->
   <xsl:function name="eo:clean-package" as="xs:string">
     <xsl:param name="n" as="xs:string"/>
-    <xsl:value-of select="concat('EO_', eo:identifier(replace(translate(translate(string-join(tokenize(replace($n, '\$', '\$EO'), '_'), eo:escape-char('_')), '-', '_'), '@', $eo:phi), $eo:alpha, '_')))"/>
+    <xsl:value-of select="concat('EO_', eo:underscored($n))"/>
   </xsl:function>
   <!-- Get Java package name for the EO package, one clean-package per segment -->
   <xsl:function name="eo:package-name" as="xs:string">

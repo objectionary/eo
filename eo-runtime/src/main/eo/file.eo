@@ -1,22 +1,9 @@
 # Represents a file in the filesystem for reading and writing.
-#
-# @todo #9650:30min Remove `+unlint redundant-attachment:101` from the metas
-#  below once objectionary/lints#1301 counts a hop through the receiver as
-#  reaching outward. The lint reads the `>>` name of the formation `open` hands
-#  to `seq` as never referenced, while that formation reaches out through the
-#  `^` its head declares.
-#
-# @todo #9650:30min Remove `+unlint too-deep-object:170` from the metas
-#  below. It hides how deep `write` of the output block in `open` nests the
-#  slice of a buffer written in part, 14 levels where the lint allows 12. Move
-#  the stream of `open` into an object of its own, so that it nests no deeper.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-attachment:101
-+unlint too-deep-object:170
 +version 0.0.0
 
 [path] > file
@@ -83,8 +70,7 @@
               access.eq "a"
             as-bool.
               access.eq "a+"
-      T
-        "Wrong access mode. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
+      T "Wrong access mode. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
       if.
         and.
           or. >> existing
@@ -126,51 +112,7 @@
                     recovered
                       seq *
                         ^.^.scope >> scoped!
-                          [^ descriptor] >> stream
-                            [^ size] > read
-                              read. > @
-                                [^ buffer] >> input-block
-                                  buffer > @
-                                  [^ size] > read
-                                    readable.not.if > @
-                                      T
-                                        "Can't read from file with provided access mode '%s'".printf
-                                          * access
-                                      seq *
-                                        if. >> chunk!
-                                          received.code.eq -1
-                                          T "Failed to read from file"
-                                          data.
-                                            called. >> received
-                                              ^.^.^.^.syscall.read ^.^.^.descriptor size
-                                        received
-                                        ^.^.input-block chunk
-                                | --
-                                size
-                            [^ buffer] > write
-                              write. > @
-                                [^] >> output-block
-                                  true > @
-                                  [^ buffer] > write
-                                    writable.not.if > @
-                                      T
-                                        "Can't write to file with provided access mode '%s'".printf
-                                          * access
-                                      seq *
-                                        if. >>!
-                                          code.eq -1
-                                          T "Failed to write to file"
-                                          ^.^.output-block
-                                        code
-                                        if.
-                                          lt.
-                                            number (^.^.^.^.syscall.write ^.^.^.descriptor buffer buffer.size)! >> code
-                                            buffer.size
-                                          ^.^.output-block.write
-                                            buffer.slice code (buffer.size.minus code)
-                                          ^.^.output-block
-                                buffer
-                          | opened.code
+                          stream ^.syscall opened.code
                         true
                       false
                     seq *
@@ -201,6 +143,50 @@
       not.
         as-bool.
           access.eq "a"
+    [^ syscall descriptor] >> stream
+      [^ size] > read
+        read. > @
+          [^ buffer] >> input-block
+            buffer > @
+            [^ size] > read
+              readable.not.if > @
+                T
+                  "Can't read from file with provided access mode '%s'".printf
+                    * access
+                seq *
+                  if. >> chunk!
+                    received.code.eq -1
+                    T "Failed to read from file"
+                    data.
+                      called. >> received
+                        ^.^.^.syscall.read ^.^.^.descriptor size
+                  received
+                  ^.^.input-block chunk
+          | --
+          size
+      [^ buffer] > write
+        write. > @
+          [^] >> output-block
+            true > @
+            [^ buffer] > write
+              writable.not.if > @
+                T
+                  "Can't write to file with provided access mode '%s'".printf
+                    * access
+                seq *
+                  if. >>!
+                    code.eq -1
+                    T "Failed to write to file"
+                    ^.^.output-block
+                  code
+                  if.
+                    lt.
+                      number (^.^.^.syscall.write ^.^.^.descriptor buffer buffer.size)! >> code
+                      buffer.size
+                    ^.^.output-block.write
+                      buffer.slice code (buffer.size.minus code)
+                    ^.^.output-block
+          buffer
     not. >> writable
       as-bool.
         access.eq "r"
@@ -339,8 +325,7 @@
     seq * > @
       temp.open
         "w"
-        f.write > [f]
-          "Shrek is love"
+        f.write "Shrek is love" > [f]
       "Shrek is love".eq
         malloc.of
           13
@@ -497,8 +482,7 @@
     size.
       mktemp.tmpfile.open
         "w"
-        f.write > [f]
-          "Hello, world"
+        f.write "Hello, world" > [f]
     12
 
   eq. ++> can-write-to-a-file-sequentially
@@ -514,8 +498,7 @@
     seq * > @
       temp.open
         "w"
-        f.write > [f]
-          "Shrek is love"
+        f.write "Shrek is love" > [f]
       open.
         file source
         "a"
