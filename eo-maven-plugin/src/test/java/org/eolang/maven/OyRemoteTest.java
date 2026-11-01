@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -92,6 +93,45 @@ final class OyRemoteTest {
                     }
                 },
                 "Remote calls must finish even when the server withholds headers"
+            );
+        } finally {
+            server.stop(0);
+        }
+    }
+
+    @ParameterizedTest
+    @CsvSource({"s3cret,Bearer s3cret", "NULL,NULL"}, nullValues = "NULL")
+    void sendsTheTokenToTheServer(final String token, final String expected)
+        throws Exception {
+        final AtomicReference<String> seen = new AtomicReference<>();
+        final HttpServer server = HttpServer.create(
+            new InetSocketAddress(InetAddress.getLoopbackAddress(), 0), 0
+        );
+        server.createContext(
+            "/", exchange -> {
+                seen.set(exchange.getRequestHeaders().getFirst("Authorization"));
+                final byte[] body = "[] > foo".getBytes(StandardCharsets.UTF_8);
+                exchange.sendResponseHeaders(200, body.length);
+                exchange.getResponseBody().write(body);
+                exchange.close();
+            }
+        );
+        server.start();
+        try {
+            final UrlOy template = new UrlOy(
+                String.format(
+                    "http://127.0.0.1:%d/%%s/%%s", server.getAddress().getPort()
+                ),
+                "stub"
+            );
+            Assertions.assertTrue(
+                new OyRemote(template, template, Duration.ofSeconds(5), token)
+                    .isDirectory("foo"),
+                "The server answered 200, so the directory must be reported as present"
+            );
+            MatcherAssert.assertThat(
+                "The token must reach the server, or GitHub counts the request as anonymous",
+                seen.get(), Matchers.is(expected)
             );
         } finally {
             server.stop(0);

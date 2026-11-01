@@ -29,7 +29,9 @@ import org.cactoos.iterable.IterableOf;
  * is asked of the GitHub API, because both are meant to be read by a program.
  * The web page under {@code github.com} is not: GitHub answers it with 403 to
  * a client it does not care to serve, and a refusal to answer used to stand
- * for the directory being absent (#9402).</p>
+ * for the directory being absent (#9402). The token from the environment, when
+ * there is one, is sent along, because the anonymous budget of the API is
+ * sixty requests per hour per IP and the runners of a CI share the pool.</p>
  *
  * @since 0.1
  */
@@ -54,6 +56,11 @@ final class OyRemote implements Objectionary {
      * Deadline for connecting and waiting for response headers, per attempt.
      */
     private final Duration timeout;
+
+    /**
+     * Token for the GitHub API, may be empty.
+     */
+    private final String token;
 
     /**
      * Constructor.
@@ -97,9 +104,25 @@ final class OyRemote implements Objectionary {
      */
     OyRemote(final UrlOy program, final UrlOy directory, final Duration timeout,
         final MvnProxy... proxies) {
+        this(program, directory, timeout, System.getenv("GITHUB_TOKEN"), proxies);
+    }
+
+    /**
+     * Ctor with a token, for testing.
+     *
+     * @param program Address template to program
+     * @param directory Address template to directory
+     * @param timeout Connection and request timeout
+     * @param token Token for the GitHub API, may be null
+     * @param proxies Proxies to use
+     * @checkstyle ConstructorsCodeFreeCheck (15 lines)
+     */
+    OyRemote(final UrlOy program, final UrlOy directory, final Duration timeout,
+        final String token, final MvnProxy... proxies) {
         this.program = program;
         this.directory = directory;
         this.timeout = timeout;
+        this.token = token;
         this.http = OyRemote.client(timeout, proxies);
     }
 
@@ -211,12 +234,15 @@ final class OyRemote implements Objectionary {
     private <T> HttpResponse<T> send(
         final URL url, final HttpResponse.BodyHandler<T> handler
     ) throws IOException {
+        final HttpRequest.Builder request = HttpRequest.newBuilder()
+            .uri(URI.create(url.toString()))
+            .timeout(this.timeout)
+            .GET();
+        if (this.token != null && !this.token.isEmpty()) {
+            request.header("Authorization", String.format("Bearer %s", this.token));
+        }
         try {
-            return this.http.send(
-                HttpRequest.newBuilder().uri(URI.create(url.toString()))
-                    .timeout(this.timeout).GET().build(),
-                handler
-            );
+            return this.http.send(request.build(), handler);
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw new IOException(ex);

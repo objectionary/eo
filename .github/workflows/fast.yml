@@ -119,7 +119,12 @@ jobs:
           version: 0.0.160
       - if: ${{ matrix.os != 'ubuntu-24.04' }}
         run: echo "LOWERING=-Deo.lowering=false" >> "$GITHUB_ENV"
+      # `OyRemote` reads `GITHUB_TOKEN`: without it every directory check asks
+      # `api.github.com` anonymously, on a budget of sixty requests per hour
+      # that the whole runner pool shares, and answers 403 instead.
       - run: mvn -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Deo.transpileTests=false' ${{ env.LOWERING }} clean install
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # The build above transpiled no tests at all, so `eo-runtime` is rebuilt
       # here from a clean target with them. An hour per test leaves `Deadline`
       # nothing to swallow, so a test that fails is reported as a failure and
