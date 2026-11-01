@@ -154,10 +154,13 @@
                                       concat. >> core!
                                         location.drive.concat
                                           location.is-absolute.if
-                                            location.unc.if (location.separator.concat location.separator) location.separator.as-bytes
+                                            location.unc.if
+                                              location.separator.concat location.separator
+                                              location.separator.as-bytes
                                             --
                                         location.separator.joined >> body!
-                                          (location.driveless.split location.separator).reduced
+                                          reduced.
+                                            location.driveless.split location.separator
                                             *
                                             if. > [^fold accum segment] >>
                                               segment.eq ".."

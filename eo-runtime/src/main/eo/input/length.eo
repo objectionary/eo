@@ -20,7 +20,7 @@
         chunk
         length.plus
           size.
-            source. (input.read 1048576).read >> chunk
+            ^. (input.read 1048576).read >> chunk
   | > @
     source
     0

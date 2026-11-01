@@ -74,11 +74,18 @@
             if. > @
               eq.
                 as-number.
-                  attempt.conn.sock.sys.connect attempt.conn.sock.sd attempt.conn.sock.sockaddr attempt.conn.sock.sockaddr.size >>!
+                  attempt.conn.sock.sys.connect >>!
+                    attempt.conn.sock.sd
+                    attempt.conn.sock.sockaddr
+                    attempt.conn.sock.sockaddr.size
                 -1
               attempt.cant-connect
                 "Couldn't connect to %s:%d on socket #%d because %s".printf
-                  * attempt.conn.sock.address attempt.conn.sock.port attempt.conn.sock.sd attempt.conn.sock.sys.message
+                  *
+                    attempt.conn.sock.address
+                    attempt.conn.sock.port
+                    attempt.conn.sock.sd
+                    attempt.conn.sock.sys.message
               attempt.scope
                 attempt.conn.sock.scoped-socket attempt.conn.sock.sd
           cant-connect
@@ -88,11 +95,18 @@
             if. > @
               eq.
                 as-number.
-                  setup.host.sock.sys.bind setup.host.sock.sd setup.host.sock.sockaddr setup.host.sock.sockaddr.size >>!
+                  setup.host.sock.sys.bind >>!
+                    setup.host.sock.sd
+                    setup.host.sock.sockaddr
+                    setup.host.sock.sockaddr.size
                 -1
               setup.cant-listen
                 "Couldn't bind the socket #%d to %s:%d because %s".printf
-                  * setup.host.sock.sd setup.host.sock.address setup.host.sock.port setup.host.sock.sys.message
+                  *
+                    setup.host.sock.sd
+                    setup.host.sock.address
+                    setup.host.sock.port
+                    setup.host.sock.sys.message
               if.
                 eq.
                   as-number.
@@ -100,7 +114,11 @@
                   -1
                 setup.cant-listen
                   "Failed to listen to %s:%d on the socket #%d because %s".printf
-                    * setup.host.sock.address setup.host.sock.port setup.host.sock.sd setup.host.sock.sys.message
+                    *
+                      setup.host.sock.address
+                      setup.host.sock.port
+                      setup.host.sock.sd
+                      setup.host.sock.sys.message
                 setup.scope
                   [^ready] >>
                     ready.setup.host.sock.scoped-socket ready.setup.host.sock.sd > @
@@ -113,7 +131,8 @@
                           "Failed to accept a connection on the socket #%d because %s".printf
                             * incoming.ready.setup.host.sock.sd incoming.ready.setup.host.sock.sys.message
                         incoming.ready.setup.host.sock.guarded
-                          scope (incoming.ready.setup.host.sock.scoped-socket client)
+                          scope
+                            incoming.ready.setup.host.sock.scoped-socket client
                           incoming.ready.setup.host.sock.closed-socket client
           cant-listen
       if. > [^prep scope cant] > safe-socket
