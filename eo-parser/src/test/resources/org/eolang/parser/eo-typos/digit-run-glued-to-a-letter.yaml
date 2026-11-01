@@ -3,8 +3,8 @@
 ---
 line: 1
 message: |-
-  [1:1] error: 'unexpected content after name suffix'
+  [1:0] error: 'invalid number literal'
   5x
-   ^
+  ^
 input: |
   5x

@@ -29,27 +29,26 @@
 +version 0.0.0
 
 [^data] > as-input
-  [^ size] > read
+  [^source size] > read
     @. > @
       read.
-        input-block ^.data --
+        input-block source.data --
         size
-    [^ data buffer] > input-block
+    [^piece data buffer] > input-block
       buffer > @
       number data.size! >> available
-      [^ size] > read
+      [^block size] > read
         if. > @
           size.is-finite.not.or
             size.is-integer.not.or
               0.gt size
-          T
-            "Can't read a non-integer, non-finite, or negative byte count"
+          T "Can't read a non-integer, non-finite, or negative byte count"
           if.
             available.eq 0
-            ^.^.input-block -- --
-            ^.^.input-block
+            block.piece.input-block -- --
+            block.piece.input-block
               as-bytes.
-                ^.data.slice
+                block.data.slice
                   number >> next
                     if. >>!
                       available.gt
@@ -58,7 +57,7 @@
                       available
                   available.minus next
               as-bytes.
-                ^.data.slice 0 next
+                block.data.slice 0 next
 
   ++> can-make-an-input-from-bytes-and-read-it
     and. > @

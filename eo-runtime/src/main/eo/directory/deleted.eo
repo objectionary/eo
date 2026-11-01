@@ -22,17 +22,17 @@
 
 [^folder] > deleted
   seq * > @
-    if. > [^ tup] >> r
+    if. > [^dir tup] >> r
       tup.length.eq 0
       true
       seq *
         tup.head.deleted
-        ^.r tup.tail
+        dir.r tup.tail
     |
-      recovered > [^] >>
-        ^.folder.walk "**"
-        ^.folder.exists.if
-          ^.folder.walk "**"
+      recovered > [^dir] >>
+        dir.folder.walk "**"
+        dir.folder.exists.if
+          dir.folder.walk "**"
           *
     folder.as-path.as-file.deleted
     folder

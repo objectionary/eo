@@ -100,7 +100,12 @@ import org.cactoos.text.TextOf;
  * answers it, and the protocol keeps the message that copy got. So when
  * the root of an entry is such a copy, the atom only throws that message,
  * through {@code ExFailure}, which is what {@code T} does in eo-runtime,
- * and {@code recovered} catches it the same way.</p>
+ * and {@code recovered} catches it the same way. A message phino could
+ * not write as a string literal, like the one of {@code T (string b)}, is
+ * an object, which the atom builds and dataizes into the reason it
+ * throws, the way {@code PhTerminator} dataizes its own reason. An object
+ * the protocol names through anything but a chain of objects of the world
+ * is a taint, since this stage never parses a phi-expression.</p>
  *
  * <p>A fork is an {@code if} whose condition nobody worked out, such as
  * the check of {@code bytes.xor} that its operands have one length. phino
@@ -113,8 +118,8 @@ import org.cactoos.text.TextOf;
  * every fork, with the statements only one side needs inside that side,
  * and a {@code return} or a {@code throw} at the end of every flow. A flow
  * whose side is a copy of {@code throw} ends in the throw of its message,
- * the way the root of a whole entry does, and an entry that throws a
- * message it would have to compute is a taint.</p>
+ * the way the root of a whole entry does, computing the message first
+ * where the message is an object.</p>
  *
  * @since 0.64.0
  * @todo #9248:45min Put the object around a root that comes out of an
@@ -127,11 +132,6 @@ import org.cactoos.text.TextOf;
  *  parts}, is a taint now for the same reason. Once phino names, in the
  *  dataization of the entry, the object each root reduced to, read the
  *  object around the root there as well.
- * @todo #9373:45min Write an atom for an entry that throws a message it
- *  computes. When the message of a {@code T} is not a string literal, like
- *  {@code T (string FF-FE)} or {@code T (x.as-string)}, phino writes it as
- *  an object, and the entry is a taint now. But its atom could compute the
- *  message first, and then throw it.
  */
 final class Rendering implements Proc<Path> {
 
@@ -195,7 +195,7 @@ final class Rendering implements Proc<Path> {
         Rendering.clean(atoms);
         final Collection<String> rendered = new ArrayList<>(0);
         final Map<String, Collection<String>> claims = new HashMap<>(0);
-        int tainted = 0;
+        final Collection<String> tainted = new ArrayList<>(0);
         for (final String row : new Filtered<>(
             line -> !line.isEmpty(),
             new Mapped<>(Text::asString, new Split(new TextOf(entries), "\\R"))
@@ -211,7 +211,7 @@ final class Rendering implements Proc<Path> {
                     .with("source", tops.get(top).toUri().toString())
                     .transform(new XMLDocument(protocol));
                 if (out.nodes("/rendered/atom").isEmpty()) {
-                    tainted += 1;
+                    tainted.add(cells[1].replaceFirst("^Φ\\.", ""));
                     Logger.info(
                         this,
                         "The entry %s at %s gets no Java atom and stays in EO as written, because: %s",
@@ -247,16 +247,31 @@ final class Rendering implements Proc<Path> {
                 );
             }
         }
-        tainted += this.unshared(atoms, claims, rendered);
+        tainted.addAll(this.unshared(atoms, claims, rendered));
         Files.write(
             home.resolve("rendered.tsv"),
             String.join("", rendered).getBytes(StandardCharsets.UTF_8)
         );
-        Logger.info(
-            this,
-            "Rendered %d atoms into %[file]s, while %d entries were taints",
-            rendered.size(), atoms, tainted
-        );
+        this.summarize(atoms, rendered, tainted);
+    }
+
+    private void summarize(
+        final Path atoms, final Collection<String> rendered,
+        final Collection<String> tainted
+    ) {
+        if (tainted.isEmpty()) {
+            Logger.info(
+                this,
+                "Rendered %d atoms into %[file]s, while no entries were taints",
+                rendered.size(), atoms
+            );
+        } else {
+            Logger.info(
+                this,
+                "Rendered %d atoms into %[file]s, while %d entries were taints: %s",
+                rendered.size(), atoms, tainted.size(), new Shortlist(tainted, 6).asString()
+            );
+        }
     }
 
     private static void clean(final Path atoms) throws IOException {
@@ -271,16 +286,18 @@ final class Rendering implements Proc<Path> {
         }
     }
 
-    private int unshared(
+    private Collection<String> unshared(
         final Path atoms, final Map<String, Collection<String>> claims,
         final Collection<String> rendered
     ) throws IOException {
-        int dropped = 0;
+        final Collection<String> dropped = new ArrayList<>(0);
         for (final Map.Entry<String, Collection<String>> claim : claims.entrySet()) {
             if (claim.getValue().size() > 1) {
                 rendered.removeAll(claim.getValue());
                 Files.delete(atoms.resolve(claim.getKey()));
-                dropped += claim.getValue().size();
+                for (final String row : claim.getValue()) {
+                    dropped.add(row.split("\t", -1)[1].trim().replaceFirst("^Φ\\.", ""));
+                }
                 Logger.info(
                     this,
                     "%d entries get no Java atom and stay in EO as written, because all of them ask for %s",
