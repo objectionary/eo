@@ -4,9 +4,13 @@
  */
 package org.eolang.lowering;
 
+import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -38,6 +44,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Isolated;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Tests of the class {@link Rendering}.
@@ -64,6 +71,52 @@ final class RenderingTest {
             new RenderingTest.Pack(new XtSticky(new XtYaml(yaml)), this.dir).unmet(),
             Matchers.empty()
         );
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {0, 1, 255, 256, 257, 1023, 1024, 1025, 4696, 10_000, 65_536})
+    void preservesTheBytesOfACompiledLiteral(final int size) throws Exception {
+        final byte[] expected = new byte[size];
+        for (int idx = 0; idx < size; ++idx) {
+            expected[idx] = (byte) idx;
+        }
+        final StringBuilder bytes = new StringBuilder();
+        for (final byte value : expected) {
+            bytes.append(String.format("%02X-", value));
+        }
+        if (size == 0) {
+            bytes.append("--");
+        }
+        final String expression = new XSLDocument(
+            String.join(
+                "", "<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" ",
+                "xmlns:eo=\"https://www.eolang.org\" version=\"3.0\">",
+                "<xsl:import href=\"/org/eolang/lowering/rendering.xsl\"/>",
+                "<xsl:param name=\"bytes\"/>",
+                "<xsl:template match=\"/\"><literal>",
+                "<xsl:value-of select=\"eo:literal-of($bytes, 'byte[]')\"/>",
+                "</literal></xsl:template></xsl:stylesheet>"
+            )
+        ).with(new Hrefs()).with("bytes", bytes.toString())
+            .transform(new XMLDocument("<input/>"))
+            .xpath("/literal/text()").get(0);
+        final Path output = Files.createTempDirectory(this.dir, "literal-");
+        final Path source = output.resolve("Literal.java");
+        Files.writeString(
+            source,
+            String.format(
+                "public final class Literal { public static byte[] bytes() { return %s; } }",
+                expression
+            ),
+            StandardCharsets.UTF_8
+        );
+        RenderingTest.compile(source);
+        try (URLClassLoader loader = new URLClassLoader(new URL[]{output.toUri().toURL()})) {
+            Assertions.assertArrayEquals(
+                expected, (byte[]) loader.loadClass("Literal").getMethod("bytes").invoke(null),
+                "the compiled literal must preserve every byte"
+            );
+        }
     }
 
     @Test
@@ -251,6 +304,18 @@ final class RenderingTest {
                 "tables without the answers must fail the rendering"
             ).getMessage(),
             Matchers.containsString("answers.xml")
+        );
+    }
+
+    private static void compile(final Path source) {
+        final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        Assertions.assertNotNull(compiler, "a JDK compiler is required");
+        Assertions.assertEquals(
+            0,
+            compiler.run(
+                null, null, null, "--release", "17", "-encoding", "UTF-8", source.toString()
+            ),
+            source.toString()
         );
     }
 
