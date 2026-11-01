@@ -20,7 +20,8 @@ package org.eolang.inference;
  * backslash inside it takes the next character with it, so that
  * {@code "a\"b"} is one string and not two. A dispatch takes its dot along
  * with what follows it, be that a name or the {@code ^} of {@code .^}, since a
- * dot alone marks nothing a reader can read. Anything else is one character,
+ * dot alone marks nothing a reader can read. The void literal is its two
+ * dashes, since one dash alone is not a literal. Anything else is one character,
  * which is the honest answer for a glyph nobody taught this about.</p>
  *
  * @since 0.70.0
@@ -65,6 +66,8 @@ final class Reach {
         } else if (Character.isDigit(head)
             || head == '-' && Character.isDigit(this.after(column))) {
             found = this.numbered(column);
+        } else if (head == '-' && this.after(column) == '-') {
+            found = 2;
         } else if (Character.isLetterOrDigit(head) || head == '_') {
             found = this.named(column);
         } else if (head == '.'
