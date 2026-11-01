@@ -72,11 +72,6 @@
 # `string.as-number` and `path` among them. Remove this directive once
 # objectionary/lints#1301 counts a hop through the receiver as reaching
 # outward even when the head declares a void of the same name.
-#
-# @todo #9650:30min Remove `+unlint too-deep-object:1713-1724` from the
-#  metas below. It hides how deep `refused` in `pattern` nests its chain of
-#  `if.` over the escaped byte, up to 15 levels where the lint allows 12. Split
-#  the chain into objects of its own, so that `refused` nests no deeper.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -84,7 +79,6 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-attachment
-+unlint too-deep-object:1713-1724
 +version 0.0.0
 
 [^text] > regex
@@ -309,7 +303,7 @@
           checked.
             regex.pattern
               slice.
-                regex.text.as-bytes >> raw
+                ^.text.as-bytes >> raw
                 1
                 closes.plus -1
               raw.slice >> flags
@@ -459,7 +453,7 @@
     e
   [^regex child least most] >> greedy
     [^node s at caps k] > run
-      [^rep n at caps] >> step
+      [^rep n at caps] >>
         if. > @
           rep.node.most.gt n
           if.
@@ -504,7 +498,7 @@
     marks
   [^regex child least most] >> lazy
     [^node s at caps k] > run
-      [^rep n at caps] >> pace
+      [^rep n at caps] >>
         if. > @
           rep.node.least.gt n
           rep.node.child.run
@@ -696,7 +690,7 @@
         worded offset reason
     flags.as-bytes > fraw
     fraw.size > fsize
-    [^regex index mode] >> modes
+    [^regex index mode] >>
       if. > @
         regex.fsize.gt index
         if.
@@ -717,7 +711,7 @@
         hunt.pat.parsed.groups.plus 1 > count
         from.plus > ending!
           hunt.subj.chars hit.begin hit.end
-        if. > [^frame acc index] >> presence
+        if. > [^frame acc index] >>
           frame.count.gt index
           frame.presence
             acc.with
@@ -731,7 +725,7 @@
         number origin > from
         frame.groups.at index > [^frame index] > group
         frame.existing.at index > [^frame index] > group-exists
-        if. > [^frame acc index] >> texts
+        if. > [^frame acc index] >>
           frame.count.gt index
           frame.texts
             acc.with
@@ -1694,36 +1688,37 @@
             no
               index.plus -1
               "Octal escapes are not supported"
-            if.
+            barred index e
+    if. > [^regex index e] >> barred
+      or.
+        e.eq 6B-
+        gt.
+          digit e
+          0
+      no
+        index.plus -1
+        "Back references are not supported"
+      if.
+        or.
+          e.eq 47-
+          or.
+            e.eq 52-
+            or.
               or.
-                e.eq 6B-
-                gt.
-                  digit e
-                  0
-              no
-                index.plus -1
-                "Back references are not supported"
-              if.
+                e.eq 48-
+                e.eq 68-
+              or.
+                e.eq 76-
                 or.
-                  e.eq 47-
-                  or.
-                    e.eq 52-
-                    or.
-                      or.
-                        e.eq 48-
-                        e.eq 68-
-                      or.
-                        e.eq 76-
-                        or.
-                          e.eq 58-
-                          e.eq 4E-
-                no
-                  index.plus -1
-                  string
-                    concat.
-                      "The escape sequence '\\".as-bytes.concat e
-                      "' is not supported".as-bytes
-                no index "Illegal/unsupported escape sequence"
+                  e.eq 58-
+                  e.eq 4E-
+        no
+          index.plus -1
+          string
+            concat.
+              "The escape sequence '\\".as-bytes.concat e
+              "' is not supported".as-bytes
+        no index "Illegal/unsupported escape sequence"
     [^regex index opened bits] >> group
       if. > @
         eq.
@@ -1904,7 +1899,7 @@
               no m.at "Unclosed counted closure"
   [^regex child least most] >> possessive
     [^node s at caps k] > run
-      [^rep n at caps] >> drain
+      [^rep n at caps] >>
         if. > @
           rep.node.most.gt n
           hit.exists.if
@@ -2051,7 +2046,7 @@
       width
         subj.text.slice at 1
     [^subj from to] > chars
-      [^walk at count] >> tallied
+      [^walk at count] >>
         if. > @
           walk.to.gt at
           walk.tallied
@@ -2063,7 +2058,7 @@
           count
       | from 0 > @
     [^subj n] > offset
-      [^walk at count] >> advanced
+      [^walk at count] >>
         if. > @
           walk.n.gt count
           if.
