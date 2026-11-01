@@ -24,6 +24,15 @@
 # value inside the double range past its edge into infinity; 200 keeps the
 # same one-step shape for every exponent this parser is ever asked to
 # handle while landing on a smaller power of ten to start the drift from.
+#
+# The four tests of a `%d` value past the long range read the `head` of the
+# answer and then ask whether it is an integer, rather than standing on the
+# `scanf` call itself. `scanf` answers a tuple, the range check only runs
+# when an element is taken, and a generated `-->` test reads a boolean off
+# what it was given, which a tuple is not: all four passed on the missing
+# `D` of the tuple and would have passed with no range check at all
+# (#9020). Taking the head reaches the check, and reading it as a boolean
+# is what makes the test fail if the check ever stops firing.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -35,210 +44,197 @@
 +version 0.0.0
 
 [^text read] > scanf
-  [^ pattern specifiers] >>
-    [^ text] > as-float
-      negative.if negated scaled > @
-      mantissa.index-of "." > dot
-      esign.index-of "e" > eloc
-      unsigned.replaced "/[eE]/".regex "e" > esign
-      [^ txt] > exp-value
-        if. > @
-          eq.
-            txt.slice 0 1
-            "-"
-          folded.times -1
-          folded
-        ^.^.fold-digits > folded
-          signed.if
-            txt.slice
-              1
-              txt.length.minus 1
-            txt
-        or. > signed
-          eq.
-            txt.slice 0 1
-            "-"
-          eq.
-            txt.slice 0 1
-            "+"
-      if. > exponent
-        eloc.eq -1
-        0
-        exp-value
-          esign.slice
-            eloc.plus 1
-            esign.length.minus
-              eloc.plus 1
-      if. > [^ value power] > lowered
-        and.
-          power.gt 200
-          ^.scalable value
-        ^.lowered
-          value.div
-            10.power 200
-          power.minus 200
-        value.div
-          10.power power
-      if. > magnitude
-        not.
-          dot.eq -1
-        plus.
-          ^.fold-digits
-            mantissa.slice 0 dot
-          div.
-            ^.fold-digits
-              mantissa.slice
-                dot.plus 1
-                places
-            10.power places
-        ^.fold-digits mantissa
-      if. > mantissa
-        eloc.eq -1
-        esign
-        esign.slice 0 eloc
-      scaled.times -1 > negated
-      eq. > negative
+  [^fmt text] >> as-float
+    if. > @
+      eq. >> negative
         text.slice 0 1
         "-"
-      mantissa.length.minus > places
-        dot.plus 1
-      if. > [^ value power] > raised
-        and.
-          power.gt 200
-          ^.scalable value
-        ^.raised
-          value.times
-            10.power 200
-          power.minus 200
-        value.times
-          10.power power
-      and. > [value] > scalable
-        not.
-          value.eq 0
-        value.is-finite
-      if. > scaled
-        exponent.eq 0
-        magnitude
-        if.
-          exponent.gt 0
-          raised magnitude exponent
-          lowered
-            magnitude
-            exponent.times -1
-      negative.or > signed
-        eq.
-          text.slice 0 1
-          "+"
-      signed.if > unsigned
-        text.slice
-          1
-          text.length.minus 1
-        text
-    [^ text] > as-integer
-      if. > @
-        or.
-          normalized.length.gt 19
-          and.
-            normalized.length.eq 19
+      times.
+        if. >> scaled
+          eq.
+            if. >> exponent
+              eq.
+                index-of. >> eloc
+                  replaced. >> esign
+                    if. >> unsigned
+                      negative.or ((text.slice 0 1).eq "+") >> signed
+                      text.slice 1 (text.length.minus 1)
+                      text
+                    "/[eE]/".regex
+                    "e"
+                  "e"
+                -1
+              0
+              [^exp txt] >> exp-value
+                if. > @
+                  eq.
+                    txt.slice 0 1
+                    "-"
+                  times.
+                    fold-digits >> folded
+                      if.
+                        ((txt.slice 0 1).eq "-").or
+                          eq. (txt.slice 0 1) "+"
+                        txt.slice 1 (txt.length.minus 1)
+                        txt
+                    -1
+                  folded
+              | (esign.slice (eloc.plus 1) (esign.length.minus (eloc.plus 1)))
+            0
+          if. >> magnitude
             not.
-              negative.if
-                digits-lte normalized "9223372036854775808"
-                digits-lte normalized "9223372036854775807"
-        T
-          "The number doesn't fit into long range for the '%%d' conversion".printf
-            *
-        negative.if negated folded
-      [a b] > digits-lte
-        if. > [^ index] >> rec
-          index.eq ^.a.length
-          true
+              eq.
+                index-of. >> dot
+                  if. >> mantissa
+                    eloc.eq -1
+                    esign
+                    esign.slice 0 eloc
+                  "."
+                -1
+            plus.
+              fold-digits
+                mantissa.slice 0 dot
+              div.
+                fold-digits
+                  mantissa.slice
+                    dot.plus 1
+                    mantissa.length.minus (dot.plus 1) >> places
+                10.power places
+            fold-digits mantissa
           if.
-            lt.
-              as-ascii.
-                ^.a.slice index 1
-              as-ascii.
-                ^.b.slice index 1
-            true
+            exponent.gt 0
+            if. > [^fmt value power] >> raised
+              and.
+                power.gt 200
+                scalable value
+              fmt.raised
+                value.times
+                  10.power 200
+                power.minus 200
+              value.times
+                10.power power
+            | magnitude exponent
+            if. > [^fmt value power] >> lowered
+              and.
+                power.gt 200
+                scalable value
+              fmt.lowered
+                value.div
+                  10.power 200
+                power.minus 200
+              value.div
+                10.power power
+            | magnitude (exponent.times -1)
+        -1
+      scaled
+    and. > [value] >> scalable
+      not.
+        value.eq 0
+      value.is-finite
+  [^fmt text] >> as-integer
+    if. > @
+      or.
+        gt.
+          length.
+            if. >> normalized
+              eq.
+                replaced. >> stripped
+                  if.
+                    negative.or
+                      eq.
+                        text.slice 0 1
+                        "+"
+                    text.slice 1 (text.length.minus 1)
+                    text
+                  "/^0+/".regex
+                  ""
+                ""
+              "0"
+              stripped
+          19
+        and.
+          normalized.length.eq 19
+          not.
             if.
-              gt.
-                as-ascii.
-                  ^.a.slice index 1
-                as-ascii.
-                  ^.b.slice index 1
-              false
-              ^.rec
-                index.plus 1
-        | 0 > @
-      ^.fold-digits normalized > folded
-      folded.times -1 > negated
-      eq. > negative
-        text.slice 0 1
-        "-"
-      if. > normalized
-        stripped.eq ""
-        "0"
-        stripped
-      negative.or > signed
-        eq.
-          text.slice 0 1
-          "+"
-      replaced. > stripped
-        signed.if
-          text.slice
-            1
-            text.length.minus 1
-          text
-        "/^0+/".regex
-        ""
-    ^.matched.exists.not.if > [^ group acc] >> convert
-      *
-      if.
-        group.gt ^.specifiers.length
-        acc
-        ^.convert
-          group.plus 1
-          acc.with
-            ^.converted
-              ^.specifiers.at
-                group.minus 1
-                T
-              ^.matched.group group
+              eq. >> negative
+                text.slice 0 1
+                "-"
+              [a b] >> digits-lte
+                if. > [^cmp index] >> rec
+                  index.eq cmp.a.length
+                  true
+                  if.
+                    (cmp.a.slice index 1).as-ascii.lt
+                      as-ascii.
+                        cmp.b.slice index 1
+                    true
+                    if.
+                      (cmp.a.slice index 1).as-ascii.gt
+                        as-ascii.
+                          cmp.b.slice index 1
+                      false
+                      cmp.rec (index.plus 1)
+                | 0 > @
+              | normalized "9223372036854775808"
+              digits-lte normalized "9223372036854775807"
+      T
+        "The number doesn't fit into long range for the '%%d' conversion".printf
+          *
+      negative.if
+        times.
+          fold-digits normalized >> folded
+          -1
+        folded
+  matched.exists.not.if > [^fmt group acc] >> convert
+    *
+    if.
+      group.gt specifiers.length
+      acc
+      fmt.convert
+        group.plus 1
+        acc.with
+          converted
+            specifiers.at
+              group.minus 1
+              T
+            matched.group group
+  | > @
+    1
+    *
+  if. > [^fmt spec text] >> converted
+    spec.eq "s"
+    text
+    if.
+      spec.eq "d"
+      as-integer text
+      as-float text
+  [text] >> fold-digits
+    if. > [^digits index acc] >> rec
+      index.eq digits.text.length
+      acc
+      digits.rec
+        index.plus 1
+        plus.
+          acc.times 10
+          minus.
+            as-ascii.
+              digits.text.slice index 1
+            48
     | > @
-      1
-      *
-    if. > [^ spec text] > converted
-      spec.eq "s"
-      text
-      if.
-        spec.eq "d"
-        ^.as-integer text
-        ^.as-float text
-    [text] > fold-digits
-      if. > [^ index acc] >> rec
-        index.eq ^.text.length
-        acc
-        ^.rec
-          index.plus 1
-          plus.
-            acc.times 10
-            minus.
-              as-ascii.
-                ^.text.slice index 1
-              48
-      | 0 0 > @
-    match. > found
+      0
+      0
+  next. >> matched
+    match.
       regex.
         "/".chained
-          * "^" pattern "/"
-      ^.read
-    found.next > matched
-  | > @
-    tokens.at
-      0
-      T
-    tokens.at
-      1
-      T
+          *
+            "^"
+            tokens.at 0 T
+            "/"
+      read
+  tokens.at >> specifiers
+    1
+    T
   if. > [ch] >> escaped
     contains.
       *
@@ -261,18 +257,19 @@
     "\\".chained
       * ch
     ch
-  [^ position accumulated found pending] >> tokenize
+  [^text position accumulated found pending] >> tokenize
     if. > @
-      position.gte ^.text.length
+      position.gte text.text.length
       pending.if *1
-        T
-          "The format string ends with a dangling percent and no specifier after it"
+        T "The format string ends with a dangling percent and no specifier after it"
         accumulated
         found
       pending.if
         if.
-          ch.eq "%"
-          ^.tokenize
+          eq.
+            text.text.slice position 1 >> ch
+            "%"
+          text.tokenize
             position.plus 1
             accumulated.chained
               * "%"
@@ -280,7 +277,7 @@
             false
           if.
             ch.eq "d"
-            ^.tokenize
+            text.tokenize
               position.plus 1
               accumulated.chained
                 * "([+-]?\\d+)"
@@ -288,7 +285,7 @@
               false
             if.
               ch.eq "f"
-              ^.tokenize
+              text.tokenize
                 position.plus 1
                 accumulated.chained
                   * "([+-]?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?)"
@@ -296,7 +293,7 @@
                 false
               if.
                 ch.eq "s"
-                ^.tokenize
+                text.tokenize
                   position.plus 1
                   accumulated.chained
                     * "(\\S*)"
@@ -305,29 +302,26 @@
                 T "Unsupported format specifier"
         if.
           ch.eq "%"
-          ^.tokenize
+          text.tokenize
             position.plus 1
             accumulated
             found
             true
           if.
             ch.eq " "
-            ^.tokenize
+            text.tokenize
               position.plus 1
               accumulated.chained
                 * "\\s+"
               found
               false
-            ^.tokenize
+            text.tokenize
               position.plus 1
               accumulated.chained
                 *
                   escaped ch
               found
               false
-    ^.text.slice > ch
-      position
-      1
   | >> tokens
     0
     ""
@@ -347,8 +341,7 @@
   eq. ++> can-scan-a-complex-float
     1991.01
     head.
-      "this will be=%f".scanf
-        "this will be=1991.01"
+      "this will be=%f".scanf "this will be=1991.01"
 
   eq. ++> can-scan-a-complex-integer
     734987259
@@ -423,8 +416,7 @@
     * ""
 
   eq. ++> can-scan-a-string-an-integer-and-a-float
-    "%s %d %f".scanf
-      "hello 33 0.24"
+    "%s %d %f".scanf "hello 33 0.24"
     *
       "hello"
       33
@@ -436,15 +428,13 @@
       "%s!".scanf "hello!"
 
   eq. ++> can-scan-two-fields-separated-by-extra-spaces
-    "%s %s".scanf
-      "a  b"
+    "%s %s".scanf "a  b"
     *
       "a"
       "b"
 
   eq. ++> can-scan-three-fields-separated-by-extra-spaces
-    "%s %s %s".scanf
-      "a  b c"
+    "%s %s %s".scanf "a  b c"
     *
       "a"
       "b"
@@ -453,18 +443,18 @@
   eq. ++> can-scan-while-ignoring-trailing-text
     42
     head.
-      "id=%d".scanf
-        "id=42 suffix"
+      "id=%d".scanf "id=42 suffix"
 
   eq. ++> can-scan-nothing-past-unmatched-leading-text
     length.
-      "id=%d".scanf
-        "prefix id=42"
+      "id=%d".scanf "prefix id=42"
     0
 
   "hello%".scanf "hello" --> stops-on-a-dangling-percent
 
-  "%d".scanf "99999999999999999999" --> stops-on-an-oversized-integer
+  is-integer. --> stops-on-an-oversized-integer
+    head.
+      "%d".scanf "99999999999999999999"
 
   eq. ++> can-format-the-oversized-integer-message-with-a-single-percent
     "The number doesn't fit into long range for the '%%d' conversion".printf
@@ -481,17 +471,17 @@
       "%d".scanf "-9223372036854775808"
     -9000000000000000000
 
-  scanf. --> stops-on-a-nineteen-digit-value-above-long-max
-    "%d"
-    "9223372036854775808"
+  is-integer. --> stops-on-a-nineteen-digit-value-above-long-max
+    head.
+      "%d".scanf "9223372036854775808"
 
-  scanf. --> stops-on-a-nineteen-digit-value-below-long-min
-    "%d"
-    "-9223372036854775809"
+  is-integer. --> stops-on-a-nineteen-digit-value-below-long-min
+    head.
+      "%d".scanf "-9223372036854775809"
 
-  scanf. --> stops-on-a-zero-padded-integer-above-long-max
-    "%d"
-    "00009223372036854775808"
+  is-integer. --> stops-on-a-zero-padded-integer-above-long-max
+    head.
+      "%d".scanf "00009223372036854775808"
 
   "%l".scanf "error" --> stops-on-a-wrong-format
 

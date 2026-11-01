@@ -61,6 +61,7 @@ final class LnTextBlock implements Line {
         }
         final byte[] joined = this.decoded(globals.tbody());
         this.transition(stack, suffix);
+        stack.hop(chain.size(), this.span.line(), this.span.indent());
         Bindings.observeChild(stack, outer, this.span);
         this.emit(emit, suffix, chain, joined);
         if (!outer.isEmpty()) {

@@ -5,30 +5,37 @@
 # The root is removed by the step after it, once the walk is done and the
 # directory is empty, through `file.deleted`, which reaches for `rmdir` over
 # `unlink` when the path it is given is a directory.
+#
+# @todo #9650:30min Remove `+unlint redundant-attachment:32` from the metas
+#  below once objectionary/lints#1301 counts a hop through the receiver as
+#  reaching outward. The lint reads the `>>` name of the formation around
+#  `recovered` as never referenced, while that formation reaches `folder`
+#  through the `^` its head declares.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package directory
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-attachment:32
 +version 0.0.0
 
 [^folder] > deleted
   seq * > @
-    if. > [^ tup] >> r
+    if. > [^dir tup] >> r
       tup.length.eq 0
       true
       seq *
         tup.head.deleted
-        ^.r tup.tail
-    | entries
+        dir.r tup.tail
+    |
+      recovered > [^dir] >>
+        dir.folder.walk "**"
+        dir.folder.exists.if
+          dir.folder.walk "**"
+          *
     folder.as-path.as-file.deleted
     folder
-  recovered > [^] > entries
-    ^.folder.walk "**"
-    ^.folder.exists.if
-      ^.folder.walk "**"
-      *
 
   ++> can-delete-a-directory-containing-a-dangling-symlink
     os.is-windows.or > @

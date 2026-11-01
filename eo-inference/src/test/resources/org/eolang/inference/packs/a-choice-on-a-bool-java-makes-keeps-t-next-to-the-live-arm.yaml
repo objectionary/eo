@@ -1,0 +1,61 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# exists is a bool Java makes, so the if in temp reads both arms, leaf "tmp"
+# and T, and temp is a leaf or T. So is the file of outer, which inner.temp
+# fills, while the file of inner is the leaf "a" alone.
+sources:
+  leaf.eo: |
+    [path] > leaf
+      path > @
+      [] > exists /Q.bool
+        ? > ^
+  dir.eo: |
+    [file] > dir
+      file > @
+      file.exists > there
+      [^] > temp
+        ^.exists.if > @
+          leaf "tmp"
+          T
+            "no such dir"
+  app.eo: |
+    [] > app
+      outer.temp > @
+      dir > outer
+        inner.temp
+      dir > inner
+        leaf "a"
+  bool.eo: |
+    [if] > bool
+      if > @
+      [] > not
+        ^.if false true > @
+  true.eo: |
+    [^] > true
+      bool > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  false.eo: |
+    [^] > false
+      bool > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.bool.if']/set/open[@by='java']
+  - /answers/o[@loc='Φ.dir.temp.φ' and terminator]/is[@loc='Φ.leaf']
+  - /answers/o[@loc='Φ.dir.temp']/reduced[terminator]/is[@loc='Φ.leaf']
+  - /answers/o[@loc='Φ.app.outer.α0' and @lands='file' and terminator]/is[@loc='Φ.leaf']
+  - /answers/o[@loc='Φ.app.inner.α0' and @lands='file']/is[@loc='Φ.leaf']
+  - /answers[not(o[@loc='Φ.app.inner.α0']/terminator)]

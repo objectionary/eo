@@ -17,8 +17,9 @@ import java.util.regex.Pattern;
  * - "Φ.number" -> "org.eolang.EOnumber"
  * - "Φ.number.power" -> "org.eolang.EO_number.EOpower"
  * - "Φ.io.stdout$bytes" -> "org.eolang.EO_io.EOstdout$EObytes"
- * Since EOLANG allows using dashes in object names, they are converted to
- * underscores for Java.</p>
+ * Every segment is escaped by {@link Cleaned}, the way the transpiler
+ * escapes it, so that a name the transpiler accepted is found at
+ * runtime.</p>
  *
  * @since 0.29
  */
@@ -69,9 +70,7 @@ final class JavaPath {
             } else {
                 prefix = "EO_";
             }
-            out.append('.').append(prefix).append(
-                parts[idx].replace("_", "__").replace("-", "_").replace("$", "$EO")
-            );
+            out.append('.').append(prefix).append(new Cleaned(parts[idx]));
         }
         return out.toString();
     }

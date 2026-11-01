@@ -1,0 +1,75 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# choice has a not besides its pick, as bool does, so the yes that held hands
+# to sock picks dial 03-, and the no of other picks clock 04-. app reads ring
+# off the listen of held, which is the bell of dial, so app reads the ring of
+# bell, whose @ is the bytes 06-. The chime of clock is never read there.
+sources:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+      [] > not
+        ^.pick no yes > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  bell.eo: |
+    [^] > bell
+      [^] > ring
+        06- > @
+  chime.eo: |
+    [^] > chime
+      [^] > ring
+        07- > @
+  dial.eo: |
+    [^ sys] > dial
+      [^ size] > listen
+        bell > @
+  clock.eo: |
+    [^ tick] > clock
+      [^ size] > listen
+        chime > @
+  sock.eo: |
+    [^ flag] > sock
+      flag.pick > @
+        dial 03-
+        clock 04-
+  held.eo: |
+    [] > held
+      sock yes > @
+  other.eo: |
+    [] > other
+      sock no > @
+  app.eo: |
+    [] > app
+      ring. > @
+        listen.
+          held
+          05-
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.held.φ']/is[@loc='Φ.dial']
+  - /answers/o[@loc='Φ.other.φ']/is[@loc='Φ.clock']
+  - /answers/o[@loc='Φ.app.φ.ρ.ρ']/is[@loc='Φ.dial']
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.bell']
+  - /answers/o[@loc='Φ.bell.ring.φ']/is[@loc='Φ.bytes']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.bytes']
+  - /answers[not(o[@loc='Φ.app.φ.ρ']//is[@loc='Φ.chime'])]
