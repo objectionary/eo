@@ -13,7 +13,7 @@
 [^list start func] > reduced
   list.reducedi > @
     start
-    ^.func > [^ accum item index] >>
+    list.func > [^list accum item index] >>
       accum
       item
 

@@ -35,15 +35,13 @@
 
 [^num] > as-decimal
   num.is-finite.not.if > @
-    T
-      "Can't write a non-finite number as decimal"
+    T "Can't write a non-finite number as decimal"
     if.
       num.eq -9223372036854775808
       "-9223372036854775808".as-bytes
       if.
         num.abs.gte 9.223372036854776e18
-        T
-          "Can't write this number as decimal digits: its magnitude is 2^63 or larger, past the range of a signed 64-bit integer"
+        T "Can't write this number as decimal digits: its magnitude is 2^63 or larger, past the range of a signed 64-bit integer"
         if.
           or.
             num.as-bytes.eq 80-00-00-00-00-00-00-00
@@ -56,13 +54,13 @@
           "-".as-bytes.concat
             if. >> spelled
               truncated.lt 10000000000
-              [^ m] >> quick
+              [^num m] >> quick
                 if. > @
                   m.lt 10
                   as-char.
                     m.plus 48
                   concat.
-                    ^.quick head
+                    num.quick head
                     as-char.
                       plus.
                         m.minus

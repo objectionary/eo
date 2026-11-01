@@ -4,6 +4,8 @@
  */
 package org.eolang.maven;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -50,6 +52,31 @@ final class DiffTest {
             "the diff must keep the common line and color the changed ones",
             new Diff(String.format("a%nb%nc"), String.format("a%nB%nc")).colored(),
             Matchers.stringContainsInOrder(" a", "[31m-b", "[32m+B", " c")
+        );
+    }
+
+    @Test
+    void printsOnlyTheLinesAroundTheChange() {
+        final List<String> before = new ArrayList<>(0);
+        final List<String> after = new ArrayList<>(0);
+        for (int idx = 1; idx <= 100; idx += 1) {
+            before.add(String.format("line %d", idx));
+            if (idx == 50) {
+                after.add("changed");
+            } else {
+                after.add(String.format("line %d", idx));
+            }
+        }
+        MatcherAssert.assertThat(
+            "one changed line must print a hunk around it and nothing of the rest of the file",
+            new Diff(
+                String.format("%s%n", String.join(System.lineSeparator(), before)),
+                String.format("%s%n", String.join(System.lineSeparator(), after))
+            ).colored(),
+            Matchers.allOf(
+                Matchers.stringContainsInOrder("@@ -47,7 +47,7 @@", "-line 50", "+changed"),
+                Matchers.not(Matchers.containsString("line 46"))
+            )
         );
     }
 

@@ -63,7 +63,7 @@
                   string num.as-scientific
                 | nstart
         minus. >> blen
-          [^ index accum result cause] >> recidx
+          [^ctx index accum result cause] >> recidx
             if. > @
               accum.eq result
               index
@@ -73,24 +73,24 @@
                 if.
                   eq.
                     and.
-                      ^.text.as-bytes.slice index 1 >> byte
+                      ctx.text.as-bytes.slice index 1 >> byte
                       80-
                     00-
-                  ^.recidx
+                  ctx.recidx
                     increase index 1 true
                     accum.plus 1
                     result
                     cause
                   if.
                     eq. (byte.and E0-) C0-
-                    ^.recidx
+                    ctx.recidx
                       increase
                         index
                         2
                         ((byte.and FE-).eq C0-).not.and
                           eq. >> b1cont
                             and.
-                              ^.text.as-bytes.slice (index.plus 1) 1 >> b1
+                              ctx.text.as-bytes.slice (index.plus 1) 1 >> b1
                               C0-
                             80-
                       accum.plus 1
@@ -98,14 +98,14 @@
                       cause
                     if.
                       eq. (byte.and F0-) E0-
-                      ^.recidx
+                      ctx.recidx
                         increase
                           index
                           3
                           and.
                             eq. >> b2cont
                               and.
-                                ^.text.as-bytes.slice (index.plus 2) 1
+                                ctx.text.as-bytes.slice (index.plus 2) 1
                                 C0-
                               80-
                             b1three
@@ -114,7 +114,7 @@
                         cause
                       if.
                         eq. (byte.and F8-) F0-
-                        ^.recidx
+                        ctx.recidx
                           increase
                             index
                             4
@@ -160,7 +160,7 @@
                 b1cont
             eq. > b3cont
               and.
-                ^.text.as-bytes.slice
+                ctx.text.as-bytes.slice
                   index.plus 3
                   1
                 C0-
@@ -179,7 +179,7 @@
           ""
           string
             text.as-bytes.slice bstart blen
-  if. > [^ index csize valid] >> increase
+  if. > [^ctx index csize valid] >> increase
     gt.
       index.plus csize
       size
@@ -188,13 +188,13 @@
         *
           csize
           index
-          ^.text.as-bytes
+          ctx.text.as-bytes
     valid.if
       index.plus csize
       T
         "Malformed UTF-8 sequence (%x) at %d index".printf
           *
-            ^.text.as-bytes.slice index csize
+            ctx.text.as-bytes.slice index csize
             index
   text.as-bytes.size >> size!
 

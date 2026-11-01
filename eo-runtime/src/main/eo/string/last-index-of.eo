@@ -32,7 +32,7 @@
     length.
       string
         txt.slice 0 found
-  [^ idx] >> rec-index-of
+  [^text idx] >> rec-index-of
     if. > @
       0.eq idx
       if.
@@ -43,27 +43,23 @@
         -1
       includes.if
         idx
-        ^.rec-index-of (idx.plus -1).as-number
+        text.rec-index-of (idx.plus -1).as-number
 
   eq. ++> can-find-no-last-index-of-an-absent-substring
     -1
-    "Hello, world".last-index-of
-      "somebody"
+    "Hello, world".last-index-of "somebody"
 
   eq. ++> can-find-no-last-index-of-an-absent-substring-in-utf-text
     -1
-    "привет, друг!".last-index-of
-      "x"
+    "привет, друг!".last-index-of "x"
 
   eq. ++> can-find-the-last-index-of-a-substring
     5
-    "Hey, Hey, Hey".last-index-of
-      "Hey,"
+    "Hey, Hey, Hey".last-index-of "Hey,"
 
   eq. ++> can-find-the-last-index-of-a-substring-in-utf-text
     3
-    "привет, друг!".last-index-of
-      "в"
+    "привет, друг!".last-index-of "в"
 
   eq. ++> can-find-the-last-index-of-the-whole-string
     0
