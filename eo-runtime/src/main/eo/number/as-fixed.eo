@@ -71,21 +71,25 @@
       if.
         num.lt 0
         if. > [^num a] >> signed
-          eq.
-            round
-              a.times num.scale
-            0
+          lt.
+            a.times num.scale
+            0.5
           positive a
           "-".as-bytes.concat
             positive a
         | (num.times -1)
         positive num
-  if. > [value] >> round
-    gte.
-      value.minus value.floor
-      0.5
-    value.floor.plus 1
-    value.floor
+  [value] >> round
+    if. > @
+      gte.
+        value.minus
+          number whole
+        0.5
+      plus.
+        number whole
+        1
+      number whole
+    value.floor > whole!
   if. > [^num p] >> pow10
     p.eq 0
     1
