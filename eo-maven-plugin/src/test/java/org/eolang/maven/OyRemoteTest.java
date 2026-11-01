@@ -100,7 +100,7 @@ final class OyRemoteTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"s3cret,Bearer s3cret", "NULL,NULL"}, nullValues = "NULL")
+    @CsvSource(value = {"s3cret,Bearer s3cret", "NULL,NULL"}, nullValues = "NULL")
     void sendsTheTokenToTheServer(final String token, final String expected)
         throws Exception {
         final AtomicReference<String> seen = new AtomicReference<>();
