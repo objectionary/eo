@@ -453,7 +453,7 @@
     e
   [^regex child least most] >> greedy
     [^node s at caps k] > run
-      [^rep n at caps] >>
+      [^rep n at caps] >> step
         if. > @
           rep.node.most.gt n
           if.
@@ -498,7 +498,7 @@
     marks
   [^regex child least most] >> lazy
     [^node s at caps k] > run
-      [^rep n at caps] >>
+      [^rep n at caps] >> pace
         if. > @
           rep.node.least.gt n
           rep.node.child.run
@@ -690,7 +690,7 @@
         worded offset reason
     flags.as-bytes > fraw
     fraw.size > fsize
-    [^regex index mode] >>
+    [^regex index mode] >> modes
       if. > @
         regex.fsize.gt index
         if.
@@ -711,7 +711,7 @@
         hunt.pat.parsed.groups.plus 1 > count
         from.plus > ending!
           hunt.subj.chars hit.begin hit.end
-        if. > [^frame acc index] >>
+        if. > [^frame acc index] >> presence
           frame.count.gt index
           frame.presence
             acc.with
@@ -725,7 +725,7 @@
         number origin > from
         frame.groups.at index > [^frame index] > group
         frame.existing.at index > [^frame index] > group-exists
-        if. > [^frame acc index] >>
+        if. > [^frame acc index] >> texts
           frame.count.gt index
           frame.texts
             acc.with
@@ -1899,7 +1899,7 @@
               no m.at "Unclosed counted closure"
   [^regex child least most] >> possessive
     [^node s at caps k] > run
-      [^rep n at caps] >>
+      [^rep n at caps] >> drain
         if. > @
           rep.node.most.gt n
           hit.exists.if
@@ -2046,7 +2046,7 @@
       width
         subj.text.slice at 1
     [^subj from to] > chars
-      [^walk at count] >>
+      [^walk at count] >> tallied
         if. > @
           walk.to.gt at
           walk.tallied
@@ -2058,7 +2058,7 @@
           count
       | from 0 > @
     [^subj n] > offset
-      [^walk at count] >>
+      [^walk at count] >> advanced
         if. > @
           walk.n.gt count
           if.
