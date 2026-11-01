@@ -638,7 +638,8 @@ final class Tokens {
      * @return Opening flag
      */
     static boolean opensString(final String text, final int idx) {
-        return idx == 0 || Tokens.terminates(text.charAt(idx - 1));
+        return text.charAt(idx) == '"'
+            && (idx == 0 || Tokens.terminates(text.charAt(idx - 1)));
     }
 
     /**
