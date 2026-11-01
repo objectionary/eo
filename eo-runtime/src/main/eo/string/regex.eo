@@ -72,11 +72,6 @@
 # `string.as-number` and `path` among them. Remove this directive once
 # objectionary/lints#1301 counts a hop through the receiver as reaching
 # outward even when the head declares a void of the same name.
-#
-# @todo #9650:30min Remove `+unlint too-deep-object:1713-1724` from the
-#  metas below. It hides how deep `refused` in `pattern` nests its chain of
-#  `if.` over the escaped byte, up to 15 levels where the lint allows 12. Split
-#  the chain into objects of its own, so that `refused` nests no deeper.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -84,7 +79,6 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-attachment
-+unlint too-deep-object:1713-1724
 +version 0.0.0
 
 [^text] > regex
@@ -1694,36 +1688,37 @@
             no
               index.plus -1
               "Octal escapes are not supported"
-            if.
+            barred index e
+    if. > [^regex index e] >> barred
+      or.
+        e.eq 6B-
+        gt.
+          digit e
+          0
+      no
+        index.plus -1
+        "Back references are not supported"
+      if.
+        or.
+          e.eq 47-
+          or.
+            e.eq 52-
+            or.
               or.
-                e.eq 6B-
-                gt.
-                  digit e
-                  0
-              no
-                index.plus -1
-                "Back references are not supported"
-              if.
+                e.eq 48-
+                e.eq 68-
+              or.
+                e.eq 76-
                 or.
-                  e.eq 47-
-                  or.
-                    e.eq 52-
-                    or.
-                      or.
-                        e.eq 48-
-                        e.eq 68-
-                      or.
-                        e.eq 76-
-                        or.
-                          e.eq 58-
-                          e.eq 4E-
-                no
-                  index.plus -1
-                  string
-                    concat.
-                      "The escape sequence '\\".as-bytes.concat e
-                      "' is not supported".as-bytes
-                no index "Illegal/unsupported escape sequence"
+                  e.eq 58-
+                  e.eq 4E-
+        no
+          index.plus -1
+          string
+            concat.
+              "The escape sequence '\\".as-bytes.concat e
+              "' is not supported".as-bytes
+        no index "Illegal/unsupported escape sequence"
     [^regex index opened bits] >> group
       if. > @
         eq.
