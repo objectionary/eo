@@ -63,16 +63,27 @@ final class Reach {
         final int found;
         if (head == '"') {
             found = this.quoted(column);
-        } else if (Character.isDigit(head)
-            || head == '-' && Character.isDigit(this.after(column))) {
+        } else if (head == '-') {
+            found = this.dashed(column);
+        } else if (Character.isDigit(head)) {
             found = this.numbered(column);
-        } else if (head == '-' && this.after(column) == '-') {
-            found = 2;
         } else if (Character.isLetterOrDigit(head) || head == '_') {
             found = this.named(column);
         } else if (head == '.'
             && (Character.isLetterOrDigit(this.after(column)) || this.after(column) == '^')) {
             found = 1 + this.from(column + 1);
+        } else {
+            found = 1;
+        }
+        return found;
+    }
+
+    private int dashed(final int column) {
+        final int found;
+        if (this.after(column) == '-') {
+            found = 2;
+        } else if (Character.isDigit(this.after(column))) {
+            found = this.numbered(column);
         } else {
             found = 1;
         }
