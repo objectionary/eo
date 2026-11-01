@@ -709,6 +709,22 @@ final class EoSyntaxTest {
         );
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"#", "# first"})
+    void writesCommentThatSchemaAccepts(final String comment) throws Exception {
+        MatcherAssert.assertThat(
+            "A top comment, even an empty one, must give XMIR valid against the schema",
+            new XMLDocument(
+                new EoSyntax(
+                    new InputOf(
+                        String.join(System.lineSeparator(), comment, "", "[] > foo")
+                    )
+                ).parsed().toString()
+            ).validate(new XMLDocument(new ResourceOf("XMIR.xsd").stream())),
+            Matchers.empty()
+        );
+    }
+
     @Test
     void checksProhibitionCactusInObjectName() throws Exception {
         MatcherAssert.assertThat(
