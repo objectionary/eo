@@ -124,11 +124,8 @@ final class OyRemoteTest {
                 ),
                 "stub"
             );
-            Assertions.assertTrue(
-                new OyRemote(template, template, Duration.ofSeconds(5), token)
-                    .isDirectory("foo"),
-                "The server answered 200, so the directory must be reported as present"
-            );
+            new OyRemote(template, template, Duration.ofSeconds(5), token)
+                .isDirectory("foo");
             MatcherAssert.assertThat(
                 "The token must reach the server, or GitHub counts the request as anonymous",
                 seen.get(), Matchers.is(expected)

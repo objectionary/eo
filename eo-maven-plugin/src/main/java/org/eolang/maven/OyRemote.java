@@ -100,7 +100,6 @@ final class OyRemote implements Objectionary {
      * @param directory Address template to directory
      * @param timeout Connection and request timeout
      * @param proxies Proxies to use
-     * @checkstyle ConstructorsCodeFreeCheck (10 lines)
      */
     OyRemote(final UrlOy program, final UrlOy directory, final Duration timeout,
         final MvnProxy... proxies) {
