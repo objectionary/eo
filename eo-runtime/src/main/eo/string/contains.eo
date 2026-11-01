@@ -18,7 +18,7 @@
         eq.
           text >> txt!
           substring >> part!
-      [^ index] >> rec-contains
+      [^text index] >> rec-contains
         if. > @
           end.eq index
           includes
@@ -27,7 +27,7 @@
               txt.slice index size
               part
             true
-            ^.rec-contains (index.plus 1).as-number
+            text.rec-contains (index.plus 1).as-number
       | 0
   length.minus size >> end!
 

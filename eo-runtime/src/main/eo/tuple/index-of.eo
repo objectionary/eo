@@ -10,16 +10,16 @@
 
 [^list wanted] > index-of
   number > @
-    [^ tup found] >> recidx
+    [^list tup found] >> recidx
       if. > @
         tup.length.eq 0
         found
         seq *
           found
-          ^.recidx tup.tail next
+          list.recidx tup.tail next
       as-number. > next
         if.
-          tup.head.eq ^.wanted
+          tup.head.eq list.wanted
           tup.length.minus 1
           found
     | list -1

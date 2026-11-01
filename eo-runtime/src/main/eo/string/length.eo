@@ -29,17 +29,17 @@
       text.as-bytes.size >> size!
       0
     0
-    [^ index accum] >> reclen
+    [^text index accum] >> reclen
       if. > @
         index.eq size
         accum
         if.
           eq.
             and.
-              ^.text.as-bytes.slice index 1 >> lead
+              text.text.as-bytes.slice index 1 >> lead
               80-
             00-
-          ^.reclen
+          text.reclen
             index.plus 1
             accum.plus 1
           if.
@@ -64,14 +64,14 @@
                 and.
                   eq. >> b2cont
                     and.
-                      ^.text.as-bytes.slice (index.plus 2) 1
+                      text.text.as-bytes.slice (index.plus 2) 1
                       C0-
                     80-
                   if.
                     lead.eq E0-
                     eq.
                       and.
-                        ^.text.as-bytes.slice (index.plus 1) 1 >> b1
+                        text.text.as-bytes.slice (index.plus 1) 1 >> b1
                         E0-
                       A0-
                     if.
@@ -90,7 +90,7 @@
                     and.
                       eq.
                         and.
-                          ^.text.as-bytes.slice (index.plus 3) 1
+                          text.text.as-bytes.slice (index.plus 3) 1
                           C0-
                         80-
                       if.
@@ -114,7 +114,7 @@
                   "Unknown byte format (%x), can't recognize character".printf
                     * lead
     | 0 0
-  if. > [^ idx csize valid accum] >> step
+  if. > [^text idx csize valid accum] >> step
     gt.
       idx.plus csize
       size
@@ -123,7 +123,7 @@
         *
           csize
           idx
-          ^.text.as-bytes
+          text.text.as-bytes
     valid.if
       reclen
         idx.plus csize
@@ -131,7 +131,7 @@
       T
         "Malformed UTF-8 sequence (%x) at %d index".printf
           *
-            ^.text.as-bytes.slice idx csize
+            text.text.as-bytes.slice idx csize
             idx
 
   " ".length.eq 1 ++> can-count-a-text-of-spaces-only

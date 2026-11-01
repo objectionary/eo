@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #9343: the variable of an argument was named after the application and the
+# position, with nothing between them, so the eleventh argument and the first
+# argument of the first one were both called "r11", and javac refused the
+# class, saying the variable is already defined.
+sheets:
+  - /org/eolang/parser/parse/set-locators.xsl
+  - /org/eolang/maven/transpile/set-original-names.xsl
+  - /org/eolang/maven/transpile/classes.xsl
+  - /org/eolang/maven/transpile/attrs.xsl
+  - /org/eolang/maven/transpile/data.xsl
+  - /org/eolang/maven/transpile/to-java.xsl
+asserts:
+  - /object[not(errors)]
+  - //java[contains(text(), 'Phi r_11 = ')]
+  - //java[contains(text(), 'Phi r_1_1 = ')]
+input: |
+  [] > app
+    f 1 2 3 4 5 6 7 8 9 10 11 > @
+    [a b c d e g h i j k l] > f
+      a > @

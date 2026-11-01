@@ -1,22 +1,9 @@
 # Represents a file in the filesystem for reading and writing.
-#
-# @todo #9650:30min Remove `+unlint redundant-attachment:101` from the metas
-#  below once objectionary/lints#1301 counts a hop through the receiver as
-#  reaching outward. The lint reads the `>>` name of the formation `open` hands
-#  to `seq` as never referenced, while that formation reaches out through the
-#  `^` its head declares.
-#
-# @todo #9650:30min Remove `+unlint too-deep-object:170` from the metas
-#  below. It hides how deep `write` of the output block in `open` nests the
-#  slice of a buffer written in part, 14 levels where the lint allows 12. Move
-#  the stream of `open` into an object of its own, so that it nests no deeper.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-attachment:100
-+unlint too-deep-object:169
 +version 0.0.0
 
 [path] > file
@@ -97,19 +84,19 @@
             *
               mode >> access!
         seq *
-          [^] >>
+          [^pick] >>
             os.is-windows.if > @
-              [^ syscall] >> open-through
+              [^req syscall] >> open-through
                 if. > @
                   opened.code.eq -1
-                  ^.^.cant-open
+                  req.pick.cant-open
                     "Couldn't open file '%s': %s".printf
                       *
-                        ^.^.entry.path
+                        req.pick.entry.path
                         message.
                           called. >> opened
                             syscall.open
-                              ^.^.entry.path
+                              req.pick.entry.path
                               plus.
                                 plus.
                                   plus.
@@ -124,52 +111,8 @@
                   if.
                     recovered
                       seq *
-                        ^.^.scope >> scoped!
-                          [^ descriptor] >> stream
-                            [^ size] > read
-                              read. > @
-                                [^ buffer] >> input-block
-                                  buffer > @
-                                  [^ size] > read
-                                    readable.not.if > @
-                                      T
-                                        "Can't read from file with provided access mode '%s'".printf
-                                          * access
-                                      seq *
-                                        if. >> chunk!
-                                          received.code.eq -1
-                                          T "Failed to read from file"
-                                          data.
-                                            called. >> received
-                                              ^.^.^.^.syscall.read ^.^.^.descriptor size
-                                        received
-                                        ^.^.input-block chunk
-                                | --
-                                size
-                            [^ buffer] > write
-                              write. > @
-                                [^] >> output-block
-                                  true > @
-                                  [^ buffer] > write
-                                    writable.not.if > @
-                                      T
-                                        "Can't write to file with provided access mode '%s'".printf
-                                          * access
-                                      seq *
-                                        if. >>!
-                                          code.eq -1
-                                          T "Failed to write to file"
-                                          ^.^.output-block
-                                        code
-                                        if.
-                                          lt.
-                                            number (^.^.^.^.syscall.write ^.^.^.descriptor buffer buffer.size)! >> code
-                                            buffer.size
-                                          ^.^.output-block.write
-                                            buffer.slice code (buffer.size.minus code)
-                                          ^.^.output-block
-                                buffer
-                          | opened.code
+                        req.pick.scope >> scoped!
+                          stream req.syscall opened.code
                         true
                       false
                     seq *
@@ -200,6 +143,50 @@
       not.
         as-bool.
           access.eq "a"
+    [^desc syscall descriptor] >> stream
+      [^chan size] > read
+        read. > @
+          [^piece buffer] >> input-block
+            buffer > @
+            [^slot size] > read
+              readable.not.if > @
+                T
+                  "Can't read from file with provided access mode '%s'".printf
+                    * access
+                seq *
+                  if. >> chunk!
+                    received.code.eq -1
+                    T "Failed to read from file"
+                    data.
+                      called. >> received
+                        slot.piece.chan.syscall.read slot.piece.chan.descriptor size
+                  received
+                  slot.piece.input-block chunk
+          | --
+          size
+      [^flow buffer] > write
+        write. > @
+          [^sink] >> output-block
+            true > @
+            [^spot buffer] > write
+              writable.not.if > @
+                T
+                  "Can't write to file with provided access mode '%s'".printf
+                    * access
+                seq *
+                  if. >>!
+                    code.eq -1
+                    T "Failed to write to file"
+                    spot.sink.output-block
+                  code
+                  if.
+                    lt.
+                      number (spot.sink.flow.syscall.write spot.sink.flow.descriptor buffer buffer.size)! >> code
+                      buffer.size
+                    spot.sink.output-block.write
+                      buffer.slice code (buffer.size.minus code)
+                    spot.sink.output-block
+          buffer
     not. >> writable
       as-bool.
         access.eq "r"
