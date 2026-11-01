@@ -29,7 +29,7 @@
                 times. > @
                   number
                     point >> bts!
-                  if. > [^ depth] >> poly
+                  if. > [^point depth] >> poly
                     depth.gt 30
                     1
                     1.plus
@@ -43,7 +43,7 @@
                           times.
                             depth.times 2
                             plus. (depth.times 2) 1
-                        ^.poly (depth.plus 1)
+                        point.poly (depth.plus 1)
                   | 1
                 times. >> squared!
                   number bts

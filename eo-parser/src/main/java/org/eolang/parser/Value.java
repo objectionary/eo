@@ -342,25 +342,7 @@ final class Value {
     }
 
     private boolean wrapsInlinePhi() {
-        final String inner = this.raw.substring(1, this.raw.length() - 1);
-        boolean found = false;
-        int depth = 0;
-        int idx = 0;
-        while (idx < inner.length() - 2 && !found) {
-            final char glyph = inner.charAt(idx);
-            if (glyph == '"') {
-                idx = Tokens.closingQuote(inner, idx);
-            } else if (glyph == '(') {
-                depth = depth + 1;
-            } else if (glyph == ')') {
-                depth = depth - 1;
-            } else if (depth == 0 && glyph == '>'
-                && inner.charAt(idx + 1) == ' ' && inner.charAt(idx + 2) == '[') {
-                found = true;
-            }
-            idx = idx + 1;
-        }
-        return found;
+        return Tokens.inlinePhi(this.raw.substring(1, this.raw.length() - 1)) >= 0;
     }
 
     /**

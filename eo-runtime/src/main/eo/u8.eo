@@ -9,7 +9,12 @@
 +version 0.0.0
 
 [as-bytes] > u8
-  as-bytes > @
+  if. > @
+    as-bytes.size.eq 1
+    as-bytes
+    T
+      "A u8 needs exactly 1 byte, got %d".printf
+        * as-bytes.size
   i16 > [^num] > as-i16
     00-.concat num.as-bytes
   as-i16.as-number > as-number
@@ -125,5 +130,7 @@
   eq. ++> can-wrap-a-product-modulo-two-to-the-eighth
     10-.as-u8.times 10-.as-u8
     00-.as-u8
+
+  u8 01-02-03 --> stops-on-bytes-of-the-wrong-width
 
   02-.as-u8.div 00-.as-u8 --> stops-on-division-by-zero

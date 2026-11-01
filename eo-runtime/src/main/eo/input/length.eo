@@ -12,11 +12,11 @@
 +version 0.0.0
 
 [^source] > length
-  [^ input length] >> rec-read
+  [^source input length] >> rec-read
     if. > @
       chunk.size.eq 0
       length
-      ^.rec-read
+      source.rec-read
         chunk
         length.plus
           size.

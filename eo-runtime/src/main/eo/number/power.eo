@@ -9,6 +9,11 @@
 # the natural logarithm of the base. Zeros, infinities and nan follow the
 # same IEEE rules that Math.pow obeys.
 #
+# `expo` says that `b` is not a number itself, rather than letting the
+# first atom it reaches say it of its own attribute: the exponent of a
+# string is eight bytes short, and the comparison that met it blamed its
+# own receiver, which is an attribute the caller never wrote (#9283).
+#
 # @todo #9030:30min Keep the pair for powers above about 1.3e300. There
 #  `halved` overflows multiplying a factor by 134217729, and the power falls
 #  back to single doubles: `10.power 305` is 9.999999999999995E304. Splitting
@@ -24,9 +29,7 @@
 
 [^num b] > power
   if. > @
-    eq.
-      number b.as-bytes >> expo
-      0
+    expo.eq 0
     1
     base.is-nan.if
       nan
@@ -56,7 +59,7 @@
                   answer
                   if.
                     expo.lt 0
-                    [^ factor n] >> ipow
+                    [^num factor n] >> ipow
                       if. > @
                         n.eq 0
                         1
@@ -64,15 +67,15 @@
                           is-integer. (n.div 2)
                           times.
                             number
-                              ^.ipow factor (n.div 2) >> half!
+                              num.ipow factor (n.div 2) >> half!
                             number half
                           factor.times
-                            ^.ipow factor (n.minus 1)
+                            num.ipow factor (n.minus 1)
                     | (1.div base) expo.abs
                     ipow base expo.abs
                 if.
                   base.gt 0
-                  [^ y] >> expon
+                  [^num y] >> expon
                     times. > @
                       if.
                         lt.
@@ -86,7 +89,7 @@
                         1.div
                           ipow e (number k).abs
                         ipow e (number k).abs
-                      if. > [^ j] >> fraction
+                      if. > [^num j] >> fraction
                         j.gt 20
                         1
                         1.plus
@@ -96,7 +99,7 @@
                                 number arg
                                 number k
                               j
-                            ^.fraction (j.plus 1)
+                            num.fraction (j.plus 1)
                       | 1
                   | (expo.times base.ln)
                   nan
@@ -141,7 +144,11 @@
   wide > exact!
     base
     expo.abs
-  [^ a] > halved
+  if. > expo
+    b.as-bytes.size.eq 8
+    number b.as-bytes
+    T "the 'b' attribute must be a number"
+  [^num a] > halved
     a.minus top > foot
     a.times 134217729 > spread
     spread.minus > top
@@ -150,16 +157,16 @@
     exact.slice
       0
       8
-  [^ x y] > joined
-    ^.paired > @
+  [^num x y] > joined
+    num.paired > @
       hi
       lo
     product.plus slip > hi
-    ^.halved xh > left
+    num.halved xh > left
     slip.minus > lo
       hi.minus product
     xh.times yh > product
-    ^.halved yh > right
+    num.halved yh > right
     plus. > slip
       plus.
         plus.
@@ -189,21 +196,21 @@
         check.lo
       high
   1.div high > rough
-  [^ factor n] > wide
+  [^num factor n] > wide
     if. > @
       n.eq 0
-      ^.paired 1 0
+      num.paired 1 0
       if.
         is-integer.
           n.div 2
-        ^.joined half half
-        ^.joined
-          ^.paired factor 0
+        num.joined half half
+        num.joined
+          num.paired factor 0
           rest
-    ^.wide > half!
+    num.wide > half!
       factor
       n.div 2
-    ^.wide > rest!
+    num.wide > rest!
       factor
       n.minus 1
 
@@ -319,6 +326,11 @@
     4.power -3
     0.015625
 
+  eq. ++> can-raise-negative-infinity-to-a-negative-odd-integer
+    as-bytes.
+      ninf.power -3
+    80-00-00-00-00-00-00-00
+
   eq. ++> can-raise-negative-infinity-to-a-positive-float
     ninf.power 9.9
     pinf
@@ -330,6 +342,11 @@
   eq. ++> can-raise-negative-infinity-to-an-odd-integer
     ninf.power 9
     ninf
+
+  eq. ++> can-raise-negative-infinity-to-an-odd-negative-integer
+    as-bytes.
+      ninf.power -3
+    80-00-00-00-00-00-00-00
 
   eq. ++> can-raise-negative-infinity-to-negative-infinity
     ninf.power ninf
@@ -348,8 +365,9 @@
     ninf
 
   eq. ++> can-raise-negative-zero-to-odd-positive
-    -0.power 3
-    -0
+    as-bytes.
+      -0.power 3
+    80-00-00-00-00-00-00-00
 
   lt. ++> can-raise-one-to-a-fraction
     abs.
@@ -493,3 +511,5 @@
         2.power 0.5
         1.4142135623730951
     1.0e-9
+
+  2.power "abc" --> stops-on-an-exponent-that-is-not-a-number
