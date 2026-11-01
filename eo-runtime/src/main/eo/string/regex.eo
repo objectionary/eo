@@ -53,7 +53,10 @@
 # Every node has a `run` that takes the subject, a byte position, the
 # captures found so far and a continuation, and either applies the
 # continuation to the position it stops at or answers `nothing`, so
-# alternation and quantifiers backtrack by returning to the caller. The
+# alternation and quantifiers backtrack by returning to the caller.
+# A quantifier over a node with one way to match, marked `fixed`, walks the
+# text in a loop instead of nesting a continuation per character, so a long
+# run needs no deep stack. The
 # `/i` flag folds ASCII; with `/u` it also folds Latin-1, Greek and
 # Cyrillic letters and treats `i`, `I`, the dotless i and the dotted
 # capital I as one letter. `\b` looks at ASCII word characters only.
@@ -73,7 +76,7 @@
 # objectionary/lints#1301 counts a hop through the receiver as reaching
 # outward even when the head declares a void of the same name.
 #
-# @todo #9650:30min Remove `+unlint too-deep-object:1713-1724` from the
+# @todo #9650:30min Remove `+unlint too-deep-object:1778-1789` from the
 #  metas below. It hides how deep `refused` in `pattern` nests its chain of
 #  `if.` over the escaped byte, up to 15 levels where the lint allows 12. Split
 #  the chain into objects of its own, so that `refused` nests no deeper.
@@ -84,7 +87,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-attachment
-+unlint too-deep-object:1713-1724
++unlint too-deep-object:1778-1789
 +version 0.0.0
 
 [^text] > regex
@@ -95,6 +98,7 @@
       capital c
       small c
   [^regex dotall unix] >> any
+    true > fixed
     [^node s at caps k] > run
       if. > @
         s.size.gt at
@@ -113,6 +117,7 @@
               caps
         nothing
   [^regex multiline unix] >> begin
+    false > fixed
     if. > [^node s at caps k] > run
       1.gt at
       k at caps
@@ -145,6 +150,7 @@
   [begin marks end] >> block
     true > exists
   [^regex negated] >> border
+    false > fixed
     if. > [^node s at caps k] > run
       eq.
         eq.
@@ -215,6 +221,7 @@
             c.and FC-
             5C-
   [^regex child index] >> captured
+    false > fixed
     [^node s at caps k] > run
       node.child.run > @
         s
@@ -253,6 +260,7 @@
             124
             range 432 136 rest
   [left right] >> choice
+    false > fixed
     [^alt s at caps k] > run
       if. > @
         exists.
@@ -309,7 +317,7 @@
           checked.
             regex.pattern
               slice.
-                regex.text.as-bytes >> raw
+                ^.text.as-bytes >> raw
                 1
                 closes.plus -1
               raw.slice >> flags
@@ -370,6 +378,7 @@
           acc
         number tenfold
   [] >> empty
+    false > fixed
     k > [^node s at caps k] > run
       at
       caps
@@ -389,6 +398,7 @@
               -128
               -192
   [^regex multiline unix] >> end
+    false > fixed
     if. > [^node s at caps k] > run
       node.multiline.if
         starts
@@ -433,6 +443,7 @@
       c
       false
   [^regex text unicode] >> folded
+    true > fixed
     fold > norm!
       text
       unicode
@@ -458,34 +469,67 @@
     control e
     e
   [^regex child least most] >> greedy
+    false > fixed
     [^node s at caps k] > run
-      [^rep n at caps] >> step
+      node.child.fixed.if > @
+        [^rep n at caps pile] >> gathered
+          if. > @
+            and.
+              rep.node.most.gt n
+              hit.exists.and
+                hit.end.gt at
+            rep.gathered
+              number (n.plus 1)!
+              number hit.end!
+              hit.marks
+              stop at caps pile
+            rep.unwound
+              n
+              stop at caps pile
+          rep.node.child.run > hit
+            rep.s
+            at
+            caps
+            found
+        | 0 at caps nothing
+        [^rep n at caps] >> step
+          if. > @
+            rep.node.most.gt n
+            if.
+              exists.
+                rep.node.child.run >> tried
+                  rep.s
+                  at
+                  caps
+                  [^cont at caps] >>
+                    if. > @
+                      at.gt cont.at
+                      cont.rep.step
+                        number (cont.n.plus 1)!
+                        number at!
+                        caps
+                      cont.rep.k at caps
+              tried
+              if.
+                rep.node.least.gt n
+                nothing
+                rep.k at caps
+            rep.k at caps
+        | 0 at caps
+      [^rep n pile] >> unwound
         if. > @
-          rep.node.most.gt n
+          rep.node.least.gt n
+          nothing
           if.
             exists.
-              rep.node.child.run >> tried
-                rep.s
-                at
-                caps
-                [^cont at caps] >>
-                  if. > @
-                    at.gt cont.at
-                    cont.rep.step
-                      number (cont.n.plus 1)!
-                      number at!
-                      caps
-                    cont.rep.k at caps
+              rep.k pile.at pile.caps >> tried
             tried
             if.
-              rep.node.least.gt n
+              n.eq 0
               nothing
-              rep.k at caps
-          rep.k at caps
-      | > @
-        0
-        at
-        caps
+              rep.unwound
+                n.plus -1
+                pile.rest
   items.has > [^regex items c] >> has-cased
     key
       fold c true
@@ -503,35 +547,54 @@
       regex.latest group marks.next
     marks
   [^regex child least most] >> lazy
+    false > fixed
     [^node s at caps k] > run
-      [^rep n at caps] >> pace
-        if. > @
-          rep.node.least.gt n
-          rep.node.child.run
-            rep.s
-            at
-            caps
-            [^cont at caps] >> anew
-              if. > @
-                at.gt cont.at
-                cont.rep.pace
-                  number (cont.n.plus 1)!
-                  number at!
-                  caps
-                cont.rep.k at caps
-          if.
-            exists.
-              rep.k at caps >> tried
+      node.child.fixed.if > @
+        [^rep n at caps] >> walked
+          if. > @
+            if.
+              rep.node.least.gt n
+              false
+              exists.
+                rep.k at caps >> tried
             tried
             if.
-              rep.node.most.gt n
-              rep.node.child.run rep.s at caps anew
+              and.
+                rep.node.most.gt n
+                exists.
+                  rep.node.child.run rep.s at caps found >> hit
+              rep.walked
+                number (n.plus 1)!
+                number hit.end!
+                hit.marks
               nothing
-      | > @
-        0
-        at
-        caps
+        | 0 at caps
+        [^rep n at caps] >> pace
+          if. > @
+            rep.node.least.gt n
+            rep.node.child.run
+              rep.s
+              at
+              caps
+              [^cont at caps] >> anew
+                if. > @
+                  at.gt cont.at
+                  cont.rep.pace
+                    number (cont.n.plus 1)!
+                    number at!
+                    caps
+                  cont.rep.k at caps
+            if.
+              exists.
+                rep.k at caps >> tried
+              tried
+              if.
+                rep.node.most.gt n
+                rep.node.child.run rep.s at caps anew
+                nothing
+        | 0 at caps
   [^regex text] >> literal
+    true > fixed
     [^node s at caps k] > run
       if. > @
         gt.
@@ -628,6 +691,7 @@
   [from group next to] >> mark
     true > some
   [^regex fold items negated unicode] >> member
+    true > fixed
     [^node s at caps k] > run
       if. > @
         s.size.gt at
@@ -696,7 +760,7 @@
         worded offset reason
     flags.as-bytes > fraw
     fraw.size > fsize
-    [^regex index mode] >> modes
+    [^regex index mode] >>
       if. > @
         regex.fsize.gt index
         if.
@@ -717,7 +781,7 @@
         hunt.pat.parsed.groups.plus 1 > count
         from.plus > ending!
           hunt.subj.chars hit.begin hit.end
-        if. > [^frame acc index] >> presence
+        if. > [^frame acc index] >>
           frame.count.gt index
           frame.presence
             acc.with
@@ -731,7 +795,7 @@
         number origin > from
         frame.groups.at index > [^frame index] > group
         frame.existing.at index > [^frame index] > group-exists
-        if. > [^frame acc index] >> texts
+        if. > [^frame acc index] >>
           frame.count.gt index
           frame.texts
             acc.with
@@ -1656,6 +1720,7 @@
                   opened
                   bits
                   [^zed] >>
+                    false > fixed
                     if. > [^node s at caps k] > run
                       s.size.gt at
                       nothing
@@ -1903,8 +1968,9 @@
                   m.value
               no m.at "Unclosed counted closure"
   [^regex child least most] >> possessive
+    false > fixed
     [^node s at caps k] > run
-      [^rep n at caps] >> drain
+      [^rep n at caps] >>
         if. > @
           rep.node.most.gt n
           hit.exists.if
@@ -2005,6 +2071,7 @@
         true
         set.rest.has code
   [left right] >> sequence
+    left.fixed.and right.fixed > fixed
     [^seq s at caps k] > run
       seq.left.run > @
         s
@@ -2045,13 +2112,14 @@
                   1
         breaks c unix
       true
+  [at caps rest] >> stop
   [^regex text] >> subject
     subj.text.slice > [^subj at] > char
       at
       width
         subj.text.slice at 1
     [^subj from to] > chars
-      [^walk at count] >> tallied
+      [^walk at count] >>
         if. > @
           walk.to.gt at
           walk.tallied
@@ -2063,7 +2131,7 @@
           count
       | from 0 > @
     [^subj n] > offset
-      [^walk at count] >> advanced
+      [^walk at count] >>
         if. > @
           walk.n.gt count
           if.
@@ -2358,6 +2426,14 @@
     text.
       next.
         "/a+?/".regex.match "aaa"
+
+  matches. ++> can-match-a-long-run-with-a-greedy-quantifier
+    "/a*/".regex.compiled
+    "a".repeated 3000
+
+  matches. ++> can-match-a-long-run-with-a-lazy-quantifier
+    "/a*?/".regex.compiled
+    "a".repeated 3000
 
   matches. ++> can-match-a-negated-class-against-a-multibyte-character
     "/[^a-z]/".regex.compiled
