@@ -470,16 +470,6 @@
               </keepBinaries>
             </configuration>
           </execution>
-          <execution>
-            <id>coverage-report</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>coverage-report</goal>
-            </goals>
-            <configuration>
-              <minCoverage>55</minCoverage>
-            </configuration>
-          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -519,6 +509,43 @@
     </plugins>
   </build>
   <profiles>
+    <profile>
+      <id>coverage</id>
+      <!--
+      The LCOV report and its minimum only make sense when the transpiler
+      wraps objects into PhCoverage, so the goal lives here and not in the
+      default build: a build that never opts into coverage tracking has no
+      hits file, and the goal now fails rather than pass a gate it cannot
+      measure. The path is the same one surefire hands the test JVM.
+      -->
+      <activation>
+        <property>
+          <name>eo.coverageTracking</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.eolang</groupId>
+            <artifactId>eo-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>coverage-report</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>coverage-report</goal>
+                </goals>
+                <configuration>
+                  <coverageFile>${project.build.directory}/coverage.txt</coverageFile>
+                  <minCoverage>55</minCoverage>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>jacoco</id>
       <build>

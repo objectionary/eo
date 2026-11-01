@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -26,10 +27,11 @@ import org.eolang.parser.EoSyntax;
  * <p>Bound to the {@code verify} phase, after the tests that actually
  * populate the raw hits file have run (unlike {@code transpile}, which
  * only decides whether locations get wrapped in {@code PhCoverage} in
- * the first place, long before any test executes). Silently does
- * nothing when {@code eo.coverageFile} is not set or the file does not
- * exist yet, the same "no-op when disabled" contract {@code PhCoverage}
- * itself follows.</p>
+ * the first place, long before any test executes). Does nothing when
+ * {@code eo.coverageFile} is not set or the file does not exist yet, the
+ * same "no-op when disabled" contract {@code PhCoverage} itself follows,
+ * unless {@code eo.minCoverage} is above zero: then the build fails,
+ * because a gate that measured nothing must not pass.</p>
  *
  * <p>Every {@code .eo} file is re-parsed from its own source instead of
  * reading the {@code xmir} stored in its tojo, because that xmir is the
@@ -106,14 +108,29 @@ public final class MjCoverageReport extends MjSafe {
     @Override
     public void exec() throws IOException {
         if (this.hits == null || !this.hits.exists()) {
-            Logger.info(
-                this,
-                "No coverage hits file at %[file]s, skipping the LCOV report",
-                this.hits
-            );
+            this.skipped();
         } else {
             this.report();
         }
+    }
+
+    private void skipped() throws IOException {
+        if (this.minimum > 0.0d) {
+            throw new IOException(
+                String.format(
+                    "Can't check the %.1f%% coverage minimum, no hits file at %s",
+                    this.minimum,
+                    Objects.toString(
+                        this.hits, "eo.coverageFile (unset)"
+                    )
+                )
+            );
+        }
+        Logger.info(
+            this,
+            "No coverage hits file at %[file]s, skipping the LCOV report",
+            this.hits
+        );
     }
 
     private void report() throws IOException {
