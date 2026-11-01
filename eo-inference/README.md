@@ -75,8 +75,8 @@ mixed names, lost track, voids an atom fills, voids nobody fills, only an
 error, not reached, and red where a read fails. The goal logs how many
 objects fall in each band.
 
-`Report` draws the same bytes as `report.py`, the Python report it is ported
-from, with the same `page.xsl` and `index.xsl`. `ReportTest` compares the two
+`Report` draws the same bytes as the Python report it is ported from, with the
+same `page.xsl` and `index.xsl`. `ReportTest` compares the two
 on a whole run when given its files:
 
 ```bash
