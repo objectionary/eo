@@ -19,8 +19,8 @@
 [^source] > as-bytes
   malloc.of > @
     0
-    seq * > [^ m] >>
-      ^.source.copied m.to-output
+    seq * > [^stream m] >>
+      stream.source.copied m.to-output
       m
 
   ++> can-convert-bytes-to-an-input-and-back
@@ -32,5 +32,7 @@
 
   eq. ++> can-return-empty-bytes-from-a-dead-input
     as-bytes.
-      input input.dead
+      input
+        dead.
+          input 01-02-03.as-input
     --

@@ -10,8 +10,8 @@
 [^list element] > without
   list.reduced > @
     *
-    if. > [^ accum item] >>
-      ^.element.eq item
+    if. > [^list accum item] >>
+      list.element.eq item
       accum
       accum.with item
 

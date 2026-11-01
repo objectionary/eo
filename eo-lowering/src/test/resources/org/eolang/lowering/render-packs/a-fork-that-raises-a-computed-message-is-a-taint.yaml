@@ -1,0 +1,108 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The message the flow throws is a printf over the sizes, and the protocol
+# names it through a dispatch, not through a chain of objects of the world,
+# so the atom has nothing to build it from, and the entry stays in EO.
+locator: Φ.bytes.xor
+number: 7
+taint: its message 𝑛·1·25 is no object of the world applied to its φ, so the atom cannot build it
+eo:
+  bytes.eo: |
+    [@] > bytes
+      [^ b] > xor
+        if. > @
+          ^.size.as-bytes.eq b.size.as-bytes
+          ^.or b
+          T "bytes.xor requires operands of the same length"
+      [] > and /Q.bytes
+        ? > ^
+        ? > b /Q.bytes
+      [] > eq /Q.bool
+        ? > ^
+        ? > b
+      [] > or /Q.bytes
+        ? > ^
+        ? > b /Q.bytes
+      [] > size /Q.number
+        ? > ^
+  number.eo: |
+    [@] > number
+      [] > as-bytes /Q.bytes
+        ? > ^
+voids:
+  - "𝜎7\t7\tρ\tbytes"
+  - "𝜎8\t7\tb\tbytes"
+protocol: |
+  <protocol>
+    <dataize at="Φ.l🌵.e7">
+      <boxed meta="𝑛·0·1">Φ.l🌵.e7.φ</boxed>
+      <morph at="𝑛·0·1">
+        <evaluate λ="L_bytes_size" by="morph" at="Φ.a🌵1">
+          <dataize at="Φ.a🌵12">
+            <manufactured meta="𝛿·2·1">𝜎7</manufactured>
+          </dataize>
+          <bound meta="𝛿1·2">𝛿·2·1</bound>
+          <minted symbol="𝜎135">𝜎7</minted>
+        </evaluate>
+        <evaluate λ="L_bytes_eq" by="morph" at="Φ.a🌵1">
+          <dataize at="Φ.a🌵13">
+            <manufactured meta="𝛿·3·1">𝜎135</manufactured>
+          </dataize>
+          <bound meta="𝛿1·3">𝛿·3·1</bound>
+          <evaluate λ="L_bytes_size" by="morph" at="Φ.a🌵4">
+            <dataize at="Φ.a🌵15">
+              <manufactured meta="𝛿·4·1">𝜎8</manufactured>
+            </dataize>
+            <bound meta="𝛿1·4">𝛿·4·1</bound>
+            <minted symbol="𝜎136">𝜎8</minted>
+          </evaluate>
+          <dataize at="Φ.a🌵14">
+            <manufactured meta="𝛿·3·2">𝜎136</manufactured>
+          </dataize>
+          <bound meta="𝛿2·3">𝛿·3·2</bound>
+          <minted symbol="𝜎137">𝜎135 𝜎136</minted>
+        </evaluate>
+        <applied meta="𝑛·1·17" of="Φ.bytes"><datum attr="φ">62-79-74-65-73-2E-78-6F-72-20-72-65-71-75-69-72-65-73-20-6F-70-65-72-61-6E-64-73-20-6F-66-20-74-68-65-20-73-61-6D-65-20-6C-65-6E-67-74-68-2C-20-67-6F-74-20-25-64</datum></applied>
+        <applied meta="𝑛·1·18" of="Φ.string"><meta attr="φ">𝑛·1·17</meta></applied>
+        <applied meta="𝑛·1·19" of="Φ.bytes"><datum attr="φ">3F-F0-00-00-00-00-00-00</datum></applied>
+        <applied meta="𝑛·1·20" of="Φ.number"><meta attr="φ">𝑛·1·19</meta></applied>
+        <applied meta="𝑛·1·21" of="Φ.tuple"><ref attr="tail">Φ.tuple.empty</ref><meta attr="head">𝑛·1·12.size</meta><meta attr="length">𝑛·1·20</meta></applied>
+        <applied meta="𝑛·1·25" of="𝑛·1·18.printf"><meta attr="args">𝑛·1·21</meta></applied>
+        <applied meta="𝑛·1·26" of="Φ.l🌵.throw"><meta attr="message">𝑛·1·25</meta></applied>
+        <morphed meta="𝑛·0·2">𝑛·1·30</morphed>
+      </morph>
+      <evaluate λ="L_fork" by="dataize" at="Φ.a🌵7">
+        <dataize at="Φ.a🌵17">
+          <manufactured meta="𝛿·7·1">𝜎137</manufactured>
+        </dataize>
+        <bound meta="𝛿1·7">𝛿·7·1</bound>
+        <evaluate λ="L_bytes_or" by="morph" at="Φ.a🌵8">
+          <dataize at="Φ.a🌵18">
+            <manufactured meta="𝛿·8·1">𝜎7</manufactured>
+          </dataize>
+          <bound meta="𝛿1·8">𝛿·8·1</bound>
+          <dataize at="Φ.a🌵19">
+            <manufactured meta="𝛿·8·2">𝜎8</manufactured>
+          </dataize>
+          <bound meta="𝛿2·8">𝛿·8·2</bound>
+          <minted symbol="𝜎138">𝜎7 𝜎8</minted>
+        </evaluate>
+        <forked on="𝜎137">
+          <left>
+            <answered meta="𝑛·7·2">𝑛·7·1</answered>
+            <manufactured meta="𝛿·6·1">𝜎138</manufactured>
+          </left>
+          <right>
+            <answered meta="𝑛·11·2">𝑛·1·26</answered>
+            <unanswered λ="L_throw" by="dataize">𝑛·1·26</unanswered>
+            <stuck λ="L_throw"/>
+          </right>
+        </forked>
+      </evaluate>
+    </dataize>
+    <msec>32</msec>
+    <firings>8</firings>
+    <fps>281</fps>
+  </protocol>

@@ -11,11 +11,12 @@
 
 [^data] > array
   data.size >> length!
-  if. > [^ tup index] >> slice-byte
-    index.lt length
-    ^.slice-byte
+  if. > [^array tup index] >> slice-byte
+    index.lt
+      number length
+    array.slice-byte
       tup.with
-        ^.data.slice index 1
+        array.data.slice index 1
       as-number.
         index.plus 1
     tup

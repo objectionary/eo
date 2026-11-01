@@ -97,7 +97,7 @@
     <xsl:variable name="pckg" select="/object/class/@package"/>
     <xsl:variable name="obj" select="/object/class/@name"/>
     <xsl:choose>
-      <xsl:when test="$pckg">
+      <xsl:when test="$pckg != ''">
         <xsl:value-of select="$pckg"/>
         <xsl:text>.</xsl:text>
         <xsl:value-of select="$obj"/>
@@ -295,10 +295,14 @@
     <xsl:text>}</xsl:text>
     <xsl:value-of select="eo:eol(0)"/>
   </xsl:template>
-  <!-- Xmir comment -->
+  <!--
+  Xmir comment. The backslash is doubled the way "eo:literal" doubles it,
+  because Java reads a "\u" escape everywhere, a comment included, so a name
+  like "x\u" made the class refuse to compile (#9347).
+  -->
   <xsl:template match="xmir">
     <xsl:text>/**</xsl:text>
-    <xsl:for-each select="tokenize(text(), '&#10;')">
+    <xsl:for-each select="tokenize(replace(text(), '\\', '\\\\'), '&#10;')">
       <xsl:value-of select="eo:eol(0)"/>
       <xsl:text> * </xsl:text>
       <xsl:value-of select="."/>
@@ -725,7 +729,11 @@
   </xsl:template>
   <!-- Application -->
   <!--
-  Application of an object to its arguments. One that purify.xsl marked with
+  Application of an object to its arguments. The variable of an argument is
+  named after the application and the position of the argument, with an "_"
+  between them: without it the eleventh argument and the first argument of the
+  first one were both called "r11", and the method declared one variable twice
+  (#9343). One that purify.xsl marked with
   @pure is wrapped in PhSticky, so that the bytes it works out are remembered
   instead of being worked out on every read of it.
   A dispatch that takes no arguments, "x.neg" for example, arrives here with
@@ -742,6 +750,7 @@
     <xsl:for-each select="$inners">
       <xsl:variable name="next">
         <xsl:value-of select="$name"/>
+        <xsl:text>_</xsl:text>
         <xsl:value-of select="position()"/>
       </xsl:variable>
       <xsl:apply-templates select="." mode="object">
@@ -771,6 +780,7 @@
         </xsl:choose>
         <xsl:text>, </xsl:text>
         <xsl:value-of select="$name"/>
+        <xsl:text>_</xsl:text>
         <xsl:value-of select="position()"/>
         <xsl:text>)</xsl:text>
       </xsl:for-each>
@@ -937,7 +947,8 @@
   Every test carries its own deadline and memory budget, so that it keeps them
   in any build that compiles it, even one that tells JUnit nothing: a runaway
   test is stopped and reported as skipped, instead of eating the heap of the
-  whole build (#9074).
+  whole build (#9074). A zero deadline means no deadline, so no @Timeout is
+  written, since JUnit refuses a timeout of zero.
   -->
   <xsl:template match="class" mode="tests">
     <xsl:value-of select="eo:eol(1)"/>
@@ -948,14 +959,16 @@
       <xsl:if test="eo:test-attr(.)">
         <xsl:text>@Test</xsl:text>
         <xsl:value-of select="eo:eol(1)"/>
-        <xsl:value-of select="concat('@Timeout(value = ', $deadline, ', unit = TimeUnit.SECONDS)')"/>
-        <xsl:value-of select="eo:eol(1)"/>
+        <xsl:if test="$deadline != '0'">
+          <xsl:value-of select="concat('@Timeout(value = ', $deadline, ', unit = TimeUnit.SECONDS)')"/>
+          <xsl:value-of select="eo:eol(1)"/>
+        </xsl:if>
         <xsl:value-of select="concat('@Budget(&quot;', eo:literal($maxmem), '&quot;)')"/>
         <xsl:value-of select="eo:eol(1)"/>
         <xsl:text>@ExtendWith({Deadline.class, Maxmem.class})</xsl:text>
         <xsl:value-of select="eo:eol(1)"/>
         <xsl:text>void </xsl:text>
-        <xsl:value-of select="eo:identifier(replace(eo:unmarked(@name), '-', '_'))"/>
+        <xsl:value-of select="eo:underscored(eo:unmarked(@name))"/>
         <xsl:text>() throws java.lang.Exception {</xsl:text>
         <xsl:value-of select="eo:eol(2)"/>
         <xsl:choose>

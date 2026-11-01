@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# gettimeofday says it gives a time-return, so Java makes that copy, and
+# called read off it is a new time-return. The code, seconds and micros it
+# hands on are voids only Java fills.
+sources:
+  posix.eo: |
+    [name args] > posix
+      [] > @ /Q.posix.return
+        ? > ^
+      [^ code output] > return
+        output > @
+      [code seconds micros] > time-return
+        posix.time-return > called
+          code
+          seconds
+          micros
+      [] > gettimeofday /Q.posix.time-return
+  app.eo: |
+    [] > app
+      posix.gettimeofday.called > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.posix.gettimeofday.λ']/is[@loc='Φ.posix.time-return']
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.posix.time-return']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.posix.time-return']
+  - /answers/o[@loc='Φ.posix.time-return.called.α0' and @lands='code']/open[@by='java']
+  - /answers/o[@loc='Φ.posix.time-return.called.α1' and @lands='seconds']/open[@by='java']
+  - /answers/o[@loc='Φ.posix.time-return.called.α2' and @lands='micros']/open[@by='java']

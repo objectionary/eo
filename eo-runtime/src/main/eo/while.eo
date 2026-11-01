@@ -34,15 +34,15 @@
   if. > @
     as-bool.
       condition 0
-    [^ index] >> loop
+    [^spec index] >> loop
       if. > @
         as-bool.
-          ^.condition next
+          spec.condition next
         seq *
           current
-          ^.loop next
+          spec.loop next
         current
-      ^.body index > current
+      spec.body index > current
       index.plus 1 > next
     | 0
     false

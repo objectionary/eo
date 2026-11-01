@@ -15,7 +15,10 @@ import java.nio.file.Path;
  * is called the "protocol" of the entry. This class decides where that file
  * is. It drops the {@code Φ} at the start, turns every dot into a slash,
  * and adds {@code .xml} at the end. So, the protocol of
- * {@code Φ.bytes.as-hex} is the file {@code bytes/as-hex.xml}.</p>
+ * {@code Φ.bytes.as-hex} is the file {@code bytes/as-hex.xml}. phino may
+ * also write the same protocol as indented text, for a person to read
+ * without any tool. That file is called the "text" of the entry, and it
+ * gets {@code .txt} at the end instead, as {@code bytes/as-hex.txt}.</p>
  *
  * <p>Two stages use this class: {@link Morphing}, which writes the
  * protocols, and {@link Rendering}, which reads them. Because both use
@@ -45,6 +48,19 @@ final class Locator {
      * @return The path of the protocol file
      */
     Path protocol() {
+        return this.path(".xml");
+    }
+
+    /**
+     * The path of the text file, inside the directory of all texts.
+     *
+     * @return The path of the text file
+     */
+    Path text() {
+        return this.path(".txt");
+    }
+
+    private Path path(final String suffix) {
         if (!this.text.startsWith("Φ.")) {
             throw new IllegalStateException(
                 String.format(
@@ -53,6 +69,6 @@ final class Locator {
                 )
             );
         }
-        return Path.of(String.format("%s.xml", this.text.substring(2).replace('.', '/')));
+        return Path.of(this.text.substring(2).replace('.', '/').concat(suffix));
     }
 }

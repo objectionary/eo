@@ -25,80 +25,80 @@
       pairs.length.eq 0
       *
       @.
-        [^ tup] >> rec-rebuild
+        [^raw tup] >> rec-rebuild
           if. > @
             tup.length.eq 0
             *
-            others.with
-              [^] >>
-                ^.hash > hash
-                ^.kbts > kbts
-                ^.tup.head.key > key
-                ^.tup.head.value > value
+            with.
+              filtered.
+                @.
+                  raw.rec-rebuild tup.tail
+                not. > [^step ent] >>
+                  and.
+                    ent.hash.eq hash
+                    ent.kbts.eq kbts
+              [^step] >>
+                step.hash > hash
+                step.kbts > kbts
+                step.tup.head.key > key
+                step.tup.head.value > value
           hash. >> hash!
             tup.head.key.as-bytes >> kbts!
-          prev.filtered > others
-            not. > [^ ent] >>
-              and.
-                ent.hash.eq hash
-                ent.kbts.eq kbts
-          @. > prev
-            ^.rec-rebuild tup.tail
         | pairs
   [entries] > ctor
-    [^ key] > found
+    [^store key] > found
       if. > @
-        ^.size.eq 0
+        store.size.eq 0
         not-found
-        [^ tup] >> rec-key-search
+        [^search tup] >> rec-key-search
           if. > @
             tup.length.eq 0
-            ^.not-found
+            search.not-found
             if.
               and.
                 tup.head.hash.eq hash
                 tup.head.kbts.eq kbts
-              [^] >>
+              [^hit] >>
                 true > exists
-                ^.^.tup.head.value > [^ cant-get] > get
-              ^.rec-key-search tup.tail
-        | ^.entries
+                res.hit.tup.head.value > [^res cant-get] > get
+              search.rec-key-search tup.tail
+        | store.entries
       hash. >> hash!
         key.as-bytes >> kbts!
-      [^] > not-found
+      [^store] > not-found
         false > exists
-        cant-get > [^ cant-get] > get
+        cant-get > [^res cant-get] > get
           recovered
             "The key %s is not in the map".printf
               * kbts
             "The key %x is not in the map".printf
               * kbts
-    exists. > [^ key] > has
-      ^.found key
+    exists. > [^store key] > has
+      store.found key
     entries.mapped > keys
       entry.key > [entry]
     entries.length > size
     entries.mapped > values
       entry.value > [entry]
-    [^ key value] > with
+    [^store key value] > with
       map.ctor > @
         with.
-          ^.entries.filtered
-            not. > [^ entry] >>
+          store.entries.filtered
+            not. > [^merge entry] >>
               and.
                 hash.eq entry.hash
                 kbts.eq entry.kbts
-          [^] >>
-            ^.hash > hash
-            ^.kbts > kbts
-            ^.key > key
-            ^.value > value
+          [^merge] >>
+            merge.hash > hash
+            merge.kbts > kbts
+            merge.key > key
+            merge.value > value
       hash. >> hash!
         key.as-bytes >> kbts!
-    [^ key] > without
+    [^store key] > without
       map.ctor > @
-        ^.entries.filtered
-          not. > [^ entry] >>
+        store.entries.filtered
+          not. > [^drop entry] >>
             and.
               hash.eq entry.hash
               kbts.eq entry.kbts
@@ -154,16 +154,6 @@
       map.entry "BB" 2
     mp.found "BB" > second
 
-  ++> can-format-the-error-message-of-an-absent-key
-    eq. > @
-      get.
-        mp.found "three"
-        I
-      "The key three is not in the map"
-    map * > mp
-      map.entry "one" 1
-      map.entry "two" 2
-
   has. ++> can-have-an-element-with-a-key
     map *
       map.entry "one" 1
@@ -193,7 +183,7 @@
     2.eq > @
       get.
         mp.found 1
-        "unreachable" > [message]
+        42 > [message]
     map * > mp
       map.entry 1 1
       map.entry 1 2
@@ -223,20 +213,30 @@
                 m.as-number.plus 1
               1
 
+  ++> can-recover-from-an-absent-key-among-two-entries
+    eq. > @
+      get.
+        mp.found "three"
+        42 > [message]
+      42
+    map * > mp
+      map.entry "one" 1
+      map.entry "two" 2
+
   eq. ++> can-recover-from-an-absent-key-colliding-with-a-stored-one
-    "recovered"
+    42
     get.
       found.
         map *
           map.entry "Aa" 1
         "BB"
-      "recovered" > [message]
+      42 > [message]
 
   ++> can-recover-from-getting-a-missing-key
-    "recovered".eq > @
+    42.eq > @
       get.
         mp.found "absent"
-        "recovered" > [message]
+        42 > [message]
     map * > mp
       map.entry "one" 1
 
