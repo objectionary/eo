@@ -67,6 +67,10 @@ final class ReachTest {
             new Reach("--.size > sz").from(0),
             Matchers.equalTo(2)
         );
+    }
+
+    @Test
+    void extendsTheVoidAfterAGapToBothItsDashes() {
         MatcherAssert.assertThat(
             "-- after a gap is two characters of one literal, but only its first dash was measured",
             new Reach("x --.size").from(2),
@@ -90,6 +94,10 @@ final class ReachTest {
             new Reach("a - b").from(2),
             Matchers.equalTo(1)
         );
+    }
+
+    @Test
+    void stopsALoneDashAtTheEndOfTheLine() {
         MatcherAssert.assertThat(
             "a dash at the end of the line is one character, but it grew",
             new Reach("x -").from(2),
