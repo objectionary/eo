@@ -236,10 +236,12 @@
     and. > unc
       separator.eq "\\"
       and.
-        driveless.size.gt 1
-        driveless.starts-with
-          string
-            separator.concat separator
+        drive.size.eq 0
+        and.
+          driveless.size.gt 1
+          driveless.starts-with
+            string
+              separator.concat separator
   [^location paths] > joined
     normalized. > @
       os.is-windows.if
@@ -483,6 +485,11 @@
     normalized.
       path.win32 "/var/www/../html/"
     "\\var\\html\\"
+
+  eq. ++> can-normalize-a-win32-path-with-a-doubled-separator-after-its-drive
+    normalized.
+      path.win32 "C:\\\\a\\b"
+    "C:\\a\\b"
 
   eq. ++> can-normalize-an-absolute-win32-path-with-a-drive
     normalized.
@@ -754,6 +761,11 @@
     dirname.
       path.win32 "C:\\aaaaaaaaaaaa\\aaaaaaaaaaaa\\aaaaaaaaaaaa"
     "C:\\aaaaaaaaaaaa\\aaaaaaaaaaaa"
+
+  eq. ++> can-return-the-dirname-of-a-win32-path-with-a-doubled-separator-after-its-drive
+    dirname.
+      path.win32 "C:\\\\a\\b"
+    "C:\\\\a"
 
   eq. ++> can-return-the-dirname-of-a-win32-path-with-a-drive
     dirname.
