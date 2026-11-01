@@ -77,12 +77,6 @@ import java.util.Map;
  * <pre> 42.gt (bar.hello 88) &gt; [] &gt; foo</pre>
  *
  * @since 0.57.0
- * @todo #8949:30min Hold a string literal opaque in the other counters too.
- *  {@code brackets()}, {@code phis()} and {@code ifs()} read every
- *  character of a line, so a {@code (}, an {@code @} or a {@code .if}
- *  written inside a {@code "..."} is charged as if it were code. Only
- *  {@code tokens()} knows about quotes today, and the same guard belongs
- *  in the other three.
  */
 final class Penalty {
 
@@ -131,10 +125,11 @@ final class Penalty {
         for (final String line : this.code.split(String.valueOf('\n'), -1)) {
             final int spaces = Penalty.spaces(line);
             final int applied = Penalty.applied(line);
+            final String bare = Penalty.bare(line);
             total += this.indents(line) * this.weight(PenaltyKey.INDENT);
-            total += this.brackets(line) * this.weight(PenaltyKey.BRACKET);
-            total += Penalty.phis(line) * this.weight(PenaltyKey.PHI);
-            total += Penalty.ifs(line) * this.weight(PenaltyKey.IF);
+            total += this.brackets(bare) * this.weight(PenaltyKey.BRACKET);
+            total += Penalty.phis(bare) * this.weight(PenaltyKey.PHI);
+            total += Penalty.ifs(bare) * this.weight(PenaltyKey.IF);
             total += Math.max(0, line.length() - this.weight(PenaltyKey.WIDTH))
                 * this.weight(PenaltyKey.EXCESS);
             total += line.length() * this.weight(PenaltyKey.SYMBOL);
@@ -213,6 +208,21 @@ final class Penalty {
         }
         out.add(token.toString());
         return out.toArray(new String[0]);
+    }
+
+    private static String bare(final String line) {
+        final StringBuilder out = new StringBuilder(line.length());
+        int idx = 0;
+        while (idx < line.length()) {
+            final char chr = line.charAt(idx);
+            if (chr == '"') {
+                idx = Penalty.closing(line, idx);
+            } else {
+                out.append(chr);
+                ++idx;
+            }
+        }
+        return out.toString();
     }
 
     private static int closing(final String text, final int start) {
