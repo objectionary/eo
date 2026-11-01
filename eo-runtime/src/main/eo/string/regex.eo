@@ -2129,6 +2129,20 @@
   [^regex child least most] >> sweep
     false > fixed
     [^node s at caps k] > run
+      [^rep n pile] >> unwound
+        if. > @
+          rep.node.least.gt n
+          nothing
+          if.
+            exists.
+              rep.k pile.at pile.caps >> tried
+            tried
+            if.
+              n.eq 0
+              nothing
+              rep.unwound
+                n.plus -1
+                pile.rest
       [^rep n at caps pile] >> gathered
         if. > @
           and.
@@ -2148,20 +2162,6 @@
           at
           caps
           found
-      [^rep n pile] >> unwound
-        if. > @
-          rep.node.least.gt n
-          nothing
-          if.
-            exists.
-              rep.k pile.at pile.caps >> tried
-            tried
-            if.
-              n.eq 0
-              nothing
-              rep.unwound
-                n.plus -1
-                pile.rest
       | > @
         0
         at
