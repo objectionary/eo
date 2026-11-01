@@ -13,10 +13,10 @@
 +version 0.0.0
 
 [^data] > as-hex
-  [^ index acc] >> rec-hex
+  [^hex index acc] >> rec-hex
     if. > @
-      ^.data.size.gt index
-      ^.rec-hex
+      hex.data.size.gt index
+      hex.rec-hex
         index.plus 1
         concat.
           if.
@@ -24,7 +24,7 @@
             acc.concat 2D-
             acc
           concat.
-            slice. > [^ nibble] >> digit
+            slice. > [^hex nibble] >> digit
               "0123456789ABCDEF".as-bytes
               minus.
                 number
@@ -34,7 +34,7 @@
               1
             |
               right.
-                ^.data.slice index 1 >> byte
+                hex.data.slice index 1 >> byte
                 4
             digit
               byte.and 0F-

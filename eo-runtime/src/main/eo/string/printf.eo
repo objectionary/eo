@@ -80,7 +80,7 @@
 
 [^text args] > printf
   string > @
-    [^ index auto acc] >> walk
+    [^text index auto acc] >> walk
       if. > @
         gt.
           number span
@@ -96,7 +96,7 @@
             number cursor
             auto
             acc
-          ^.walk
+          text.walk
             plus.
               number cursor
               1
@@ -104,14 +104,14 @@
             acc.concat char
         acc
     | 0 0 --
-  slice. > [^ i] >> byte
+  slice. > [^text i] >> byte
     bytes raw
     i
     1
-  as-ascii. > [^ i] >> code
+  as-ascii. > [^text i] >> code
     string
       byte i
-  if. > [^ i] >> digits-end
+  if. > [^text i] >> digits-end
     i.gte
       number span
     i
@@ -121,13 +121,13 @@
           code i
         57.gte
           code i
-      ^.digits-end
+      text.digits-end
         i.plus 1
       i
-  if. > [^ from to acc] >> digits-value
+  if. > [^text from to acc] >> digits-value
     from.gte to
     acc
-    ^.digits-value
+    text.digits-value
       from.plus 1
       to
       plus.
@@ -135,7 +135,7 @@
         minus.
           code from
           48
-  if. > [^ i] >> flags-end
+  if. > [^text i] >> flags-end
     i.gte
       number span
     i
@@ -145,13 +145,13 @@
           byte i
         30-.eq
           byte i
-      ^.flags-end
+      text.flags-end
         i.plus 1
       i
   size. >> span!
     bytes
       text.as-bytes >> raw!
-  [^ index auto acc] >> spec
+  [^format index auto acc] >> spec
     if. > @
       gte.
         number
@@ -174,7 +174,7 @@
         number span
       T
         "The format %s ends with an incomplete specifier, a conversion character is missing".printf
-          * ^.text
+          * format.text
       if.
         25-.eq
           byte >> conv!
@@ -191,7 +191,7 @@
             acc.concat 25-
           T
             "The escaped %% conversion in the format %s does not take flags, width or precision".printf
-              * ^.text
+              * format.text
         walk
           plus.
             number end
@@ -219,7 +219,7 @@
                     index.plus 1
               T
                 "The positional argument index in the format %s is too large".printf
-                  * ^.text
+                  * format.text
               if.
                 positional.as-bool.and
                   lt. (number idx) 0
@@ -227,10 +227,10 @@
                   "The positional argument index %d in the format must be 1 or greater".printf
                     * ((number idx).plus 1)
                 if.
-                  gte. (number idx) ^.args.length
+                  gte. (number idx) format.args.length
                   T
                     "The argument index %d in the format is out of bounds, only %d given".printf
-                      * ((number idx).plus 1) ^.args.length
+                      * ((number idx).plus 1) format.args.length
                   if. >> guarded!
                     precise.as-bool.and (64-.eq conv)
                     T
@@ -249,7 +249,7 @@
                           * (string conv)
                       if. >> converted!
                         73-.eq conv
-                        as-bytes. > [^ text] >> capped
+                        as-bytes. > [^format text] >> capped
                           precise.as-bool.if
                             truncated.
                               string text
@@ -261,7 +261,7 @@
                             length.
                               string
                                 as-bytes. >> datum!
-                                  ^.args.at >> arg
+                                  format.args.at >> arg
                                     number
                                       positional.as-bool.if >> idx!
                                         minus.
@@ -326,14 +326,14 @@
                                     * (string conv)
             acc.concat
               if. >> padded!
-                if. > [^ i c] >> flagged
+                if. > [^format i c] >> flagged
                   i.gte
                     number digits
                   false
                   if.
                     c.eq (byte i)
                     true
-                    ^.flagged (i.plus 1) c
+                    format.flagged (i.plus 1) c
                 | (number flags) 2D-
                 as-bytes.
                   padded-right.

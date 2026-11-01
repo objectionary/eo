@@ -44,7 +44,7 @@
 +version 0.0.0
 
 [^text read] > scanf
-  [^ text] >> as-float
+  [^fmt text] >> as-float
     if. > @
       eq. >> negative
         text.slice 0 1
@@ -65,7 +65,7 @@
                   "e"
                 -1
               0
-              [^ txt] >> exp-value
+              [^exp txt] >> exp-value
                 if. > @
                   eq.
                     txt.slice 0 1
@@ -103,22 +103,22 @@
             fold-digits mantissa
           if.
             exponent.gt 0
-            if. > [^ value power] >> raised
+            if. > [^fmt value power] >> raised
               and.
                 power.gt 200
                 scalable value
-              ^.raised
+              fmt.raised
                 value.times
                   10.power 200
                 power.minus 200
               value.times
                 10.power power
             | magnitude exponent
-            if. > [^ value power] >> lowered
+            if. > [^fmt value power] >> lowered
               and.
                 power.gt 200
                 scalable value
-              ^.lowered
+              fmt.lowered
                 value.div
                   10.power 200
                 power.minus 200
@@ -131,7 +131,7 @@
       not.
         value.eq 0
       value.is-finite
-  [^ text] >> as-integer
+  [^fmt text] >> as-integer
     if. > @
       or.
         gt.
@@ -160,20 +160,20 @@
                 text.slice 0 1
                 "-"
               [a b] >> digits-lte
-                if. > [^ index] >> rec
-                  index.eq ^.a.length
+                if. > [^cmp index] >> rec
+                  index.eq cmp.a.length
                   true
                   if.
-                    (^.a.slice index 1).as-ascii.lt
+                    (cmp.a.slice index 1).as-ascii.lt
                       as-ascii.
-                        ^.b.slice index 1
+                        cmp.b.slice index 1
                     true
                     if.
-                      (^.a.slice index 1).as-ascii.gt
+                      (cmp.a.slice index 1).as-ascii.gt
                         as-ascii.
-                          ^.b.slice index 1
+                          cmp.b.slice index 1
                       false
-                      ^.rec (index.plus 1)
+                      cmp.rec (index.plus 1)
                 | 0 > @
               | normalized "9223372036854775808"
               digits-lte normalized "9223372036854775807"
@@ -185,12 +185,12 @@
           fold-digits normalized >> folded
           -1
         folded
-  matched.exists.not.if > [^ group acc] >> convert
+  matched.exists.not.if > [^fmt group acc] >> convert
     *
     if.
       group.gt specifiers.length
       acc
-      ^.convert
+      fmt.convert
         group.plus 1
         acc.with
           converted
@@ -201,7 +201,7 @@
   | > @
     1
     *
-  if. > [^ spec text] >> converted
+  if. > [^fmt spec text] >> converted
     spec.eq "s"
     text
     if.
@@ -209,16 +209,16 @@
       as-integer text
       as-float text
   [text] >> fold-digits
-    if. > [^ index acc] >> rec
-      index.eq ^.text.length
+    if. > [^digits index acc] >> rec
+      index.eq digits.text.length
       acc
-      ^.rec
+      digits.rec
         index.plus 1
         plus.
           acc.times 10
           minus.
             as-ascii.
-              ^.text.slice index 1
+              digits.text.slice index 1
             48
     | 0 0 > @
   next. >> matched
@@ -255,9 +255,9 @@
     "\\".chained
       * ch
     ch
-  [^ position accumulated found pending] >> tokenize
+  [^text position accumulated found pending] >> tokenize
     if. > @
-      position.gte ^.text.length
+      position.gte text.text.length
       pending.if *1
         T "The format string ends with a dangling percent and no specifier after it"
         accumulated
@@ -265,9 +265,9 @@
       pending.if
         if.
           eq.
-            ^.text.slice position 1 >> ch
+            text.text.slice position 1 >> ch
             "%"
-          ^.tokenize
+          text.tokenize
             position.plus 1
             accumulated.chained
               * "%"
@@ -275,7 +275,7 @@
             false
           if.
             ch.eq "d"
-            ^.tokenize
+            text.tokenize
               position.plus 1
               accumulated.chained
                 * "([+-]?\\d+)"
@@ -283,7 +283,7 @@
               false
             if.
               ch.eq "f"
-              ^.tokenize
+              text.tokenize
                 position.plus 1
                 accumulated.chained
                   * "([+-]?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?)"
@@ -291,7 +291,7 @@
                 false
               if.
                 ch.eq "s"
-                ^.tokenize
+                text.tokenize
                   position.plus 1
                   accumulated.chained
                     * "(\\S*)"
@@ -300,20 +300,20 @@
                 T "Unsupported format specifier"
         if.
           ch.eq "%"
-          ^.tokenize
+          text.tokenize
             position.plus 1
             accumulated
             found
             true
           if.
             ch.eq " "
-            ^.tokenize
+            text.tokenize
               position.plus 1
               accumulated.chained
                 * "\\s+"
               found
               false
-            ^.tokenize
+            text.tokenize
               position.plus 1
               accumulated.chained
                 *

@@ -357,7 +357,7 @@ final class MjParseTest {
             ),
             XhtmlMatchers.hasXPaths(
                 "//error[@severity='critical']",
-                "//error[@check='mandatory-object-name'][contains(text(), 'found 0')]"
+                "//error[@check='mandatory-object-name'][contains(text(), 'XMIR should have either')]"
             )
         );
     }

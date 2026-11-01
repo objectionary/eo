@@ -20,15 +20,15 @@
       file uri
     file uri > as-file
     basename >> base!
-    [^] > basename
+    [^location] > basename
       string > @
         if.
           or.
             pth.size.eq 0
             eq.
-              number ((text.last-index-of ^.separator).plus 1)! >> index
+              number ((text.last-index-of location.separator).plus 1)! >> index
               0
-          ^.stripped ^.driveless >> pth!
+          location.stripped location.driveless >> pth!
           as-bytes.
             slice.
               string pth >> text
@@ -45,41 +45,41 @@
           eq.
             driveless.slice 2 1
             "?"
-    [^] > dirname
+    [^location] > dirname
       if. > @
-        ^.unc.and
+        location.unc.and
           and.
             text.length.gt 2
             and.
               not.
                 eq.
-                  tail.index-of ^.separator >> first!
+                  tail.index-of location.separator >> first!
                   -1
               first.eq
                 last-index-of.
                   string >> tail
                     as-bytes.
                       text.slice 2 (text.length.minus 2)
-                  ^.separator
+                  location.separator
         text
         string
-          ^.drive.concat
+          location.drive.concat
             if.
               eq.
-                number (text.last-index-of ^.separator)! >> len
+                number (text.last-index-of location.separator)! >> len
                 -1
               if.
-                ^.drive.size.eq 0
+                location.drive.size.eq 0
                 "."
                 ""
               if.
                 len.eq 0
-                ^.separator
-                ^.stripped
+                location.separator
+                location.stripped
                   string
                     as-bytes.
                       slice.
-                        string (^.stripped ^.driveless)! >> text
+                        string (location.stripped location.driveless)! >> text
                         0
                         len
     sys.drive uri > drive
@@ -89,7 +89,7 @@
       uri.slice
         drive.length
         uri.length.minus drive.length
-    [^] > extname
+    [^location] > extname
       if. > @
         or.
           or.
@@ -112,31 +112,31 @@
       eq.
         driveless.slice 0 1
         separator
-    [^] > normalized
-      ^.location.impl > @
-        ^.sys
+    [^location] > normalized
+      location.location.impl > @
+        location.sys
         if.
           result.eq
-            ^.separator.concat ^.separator
-          ^.separator
+            location.separator.concat location.separator
+          location.separator
           if.
             result.size.eq 0
             "."
             string
               as-bytes. >> result!
                 if.
-                  ^.driveless.size.eq 0
+                  location.driveless.size.eq 0
                   if.
-                    ^.drive.size.eq 0
+                    location.drive.size.eq 0
                     ".".as-bytes
-                    ^.drive.as-bytes
+                    location.drive.as-bytes
                   if.
                     core.size.eq 0
                     ".".as-bytes
                     if.
                       and.
                         body.size.eq 0
-                        and. (^.drive.size.gt 0) ^.is-absolute.not
+                        and. (location.drive.size.gt 0) location.is-absolute.not
                       core.concat
                         ".".concat
                           if. >> closing
@@ -145,28 +145,31 @@
                                 ubts.size.gt 0
                                 eq.
                                   ubts.slice (ubts.size.plus -1) 1
-                                  ^.separator
+                                  location.separator
                               not.
                                 and.
                                   core.size.gt 0
                                   eq.
                                     slice.
                                       concat. >> core!
-                                        ^.drive.concat
-                                          ^.is-absolute.if
-                                            ^.unc.if (^.separator.concat ^.separator) ^.separator.as-bytes
+                                        location.drive.concat
+                                          location.is-absolute.if
+                                            location.unc.if
+                                              location.separator.concat location.separator
+                                              location.separator.as-bytes
                                             --
-                                        ^.separator.joined >> body!
-                                          (^.driveless.split ^.separator).reduced
+                                        location.separator.joined >> body!
+                                          reduced.
+                                            location.driveless.split location.separator
                                             *
-                                            if. > [^ accum segment] >>
+                                            if. > [^fold accum segment] >>
                                               segment.eq ".."
                                               if.
                                                 and. (accum.length.gt 0) (accum.head.eq "..").not
-                                                if. (^.^.unc.and (accum.length.lte 2)) accum accum.tail
-                                                ^.^.is-absolute.not.if (accum.with segment) accum
+                                                if. (fold.location.unc.and (accum.length.lte 2)) accum accum.tail
+                                                fold.location.is-absolute.not.if (accum.with segment) accum
                                               if.
-                                                ^.^.device.and
+                                                fold.location.device.and
                                                   (accum.length.eq 0).and
                                                     or. (segment.eq ".") (segment.eq "?")
                                                 accum.with segment
@@ -176,38 +179,38 @@
                                                   accum.with segment
                                       core.size.plus -1
                                       1
-                                    ^.separator
-                            ^.separator.as-bytes
+                                    location.separator
+                            location.separator.as-bytes
                             --
                       core.concat closing
-    [^ other] > resolved
+    [^location other] > resolved
       normalized. > @
-        ^.location.impl
-          ^.sys
+        location.location.impl
+          location.sys
           string
             if.
               valid.size.eq 0
-              ^.uri.as-bytes
+              location.uri.as-bytes
               if.
-                gt. (^.sys.drive valid).size 0
+                gt. (location.sys.drive valid).size 0
                 as-bytes.
-                  string (^.sys.sanitized other)! >> valid
+                  string (location.sys.sanitized other)! >> valid
                 if.
                   starts-with.
                     string valid
-                    string (^.separator.concat ^.separator)
+                    string (location.separator.concat location.separator)
                   valid.as-bytes
                   if.
                     eq.
                       valid.slice 0 1
-                      ^.separator
-                    ^.unc.if
-                      ^.share.concat valid
-                      ^.drive.concat valid
+                      location.separator
+                    location.unc.if
+                      location.share.concat valid
+                      location.drive.concat valid
                     if.
-                      ^.uri.size.eq 0
+                      location.uri.size.eq 0
                       valid.as-bytes
-                      concat. (^.uri.concat ^.separator) valid
+                      concat. (location.uri.concat location.separator) valid
     sys.separator > separator
     if. > share
       chunks.length.gt 3
@@ -218,19 +221,19 @@
         separator.concat
           chunks.at 3
       uri.as-bytes
-    if. > [^ tail] > stripped
+    if. > [^location tail] > stripped
       or.
         tail.size.eq 0
-        tail.eq ^.separator
+        tail.eq location.separator
       tail
       if.
-        tail.ends-with ^.separator
-        ^.stripped
+        tail.ends-with location.separator
+        location.stripped
           string
             as-bytes.
               tail.slice
                 0
-                tail.length.minus ^.separator.length
+                tail.length.minus location.separator.length
         tail
     uri >> ubts!
     and. > unc
@@ -253,22 +256,22 @@
   [^location uri] > posix
     location.impl sys uri > @
     "/" > separator
-    [^] > sys
+    [^location] > sys
       "" > [uri] > drive
       I > sanitized
-      ^.separator > separator
+      location.separator > separator
   os.is-windows.if win32.separator posix.separator > separator
   [^location uri] > win32
     location.impl > @
       sys
       sys.sanitized uri
     "\\" > separator
-    [^] > sys
+    [^location] > sys
       if. > [uri] > drive
         as-bool. ("/^[a-zA-Z]:/".regex.match uri).next.exists
         uri.slice 0 2
         ""
-      [^ uri] > sanitized
+      [^location uri] > sanitized
         if. > @
           eq.
             index-of.
@@ -277,8 +280,8 @@
             -1
           string
             uri >> ubts!
-          string (pth.replaced "/\\//".regex ^.separator)!
-      ^.separator > separator
+          string (pth.replaced "/\\//".regex location.separator)!
+      location.separator > separator
 
   and. ++> can-classify-a-drive-relative-win32-path-as-non-absolute
     and.

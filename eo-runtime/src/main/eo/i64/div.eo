@@ -43,11 +43,11 @@
           i64
             not.
               looped >> quotient
-                [^ m acc step] >> topbit
+                [^scan m acc step] >> topbit
                   if. > @
                     step.lt 1
                     acc
-                    ^.topbit
+                    scan.topbit
                       if.
                         shifted.eq 00-00-00-00-00-00-00-00 >> empty
                         m
@@ -63,7 +63,7 @@
           i64 00-00-00-00-00-00-00-01
         i64 quotient
   00-00-00-00-00-00-00-01.left i > [i] >> bit
-  [^ index remainder quot] >> looped
+  [^loop index remainder quot] >> looped
     if. > @
       index.lt 0
       quot
@@ -77,7 +77,7 @@
               shifted-sign.xor divisor-sign >> signs-differ!
               next-rem.xor 80-00-00-00-00-00-00-00 >> trial-nonnegative!
           80-00-00-00-00-00-00-00
-        ^.looped
+        loop.looped
           index.minus 1
           as-bytes. >> next-rem!
             plus.
@@ -85,7 +85,7 @@
               i64 subtrahend
           quot.or >>!
             bit index
-        ^.looped
+        loop.looped
           index.minus 1
           or. >> shifted!
             remainder.left 1

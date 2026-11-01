@@ -303,14 +303,15 @@
   "ξ.ρ.ρ.bar" reads "ξ.s.ρ.bar" where it is declared and "ξ.ρ.s.bar" one
   formation further in, the way a nested reference to any other handle keeps
   its "ρ" hops in front of the handle. When the run leaves several formations
-  that name their receivers, the outermost of them takes the handle.
+  that name their receivers, each of them takes its own handle, so
+  "ξ.ρ.ρ.bar" reads "ξ.t.s.bar" from a formation "[^t]" inside "[^s]": the
+  parser reads a chain of handles back one formation per handle (#9245).
   -->
   <xsl:function name="eo:receiver-handled" as="xs:string*">
     <xsl:param name="ref" as="element()"/>
     <xsl:param name="segments" as="xs:string*"/>
     <xsl:variable name="scopes" as="element()*" select="if ($eo:receivers and $segments[1] = $eo:xi and $segments[2] = $eo:rho) then reverse($ref/ancestor::o[not(@base)]) else ()"/>
-    <xsl:variable name="hop" as="xs:integer?" select="max(for $at in 1 to count($scopes) return if (count($segments) gt $at and (every $seg in subsequence($segments, 2, $at) satisfies $seg = $eo:rho) and exists($scopes[$at]/o[@name=$eo:rho and @base=$eo:empty and @local])) then $at else ())"/>
-    <xsl:sequence select="if (empty($hop)) then $segments else (subsequence($segments, 1, $hop), string($scopes[$hop]/o[@name=$eo:rho and @base=$eo:empty and @local][1]/@local), subsequence($segments, $hop + 2))"/>
+    <xsl:sequence select="if (empty($scopes)) then $segments else for $at in 1 to count($segments) return if ($at gt 1 and $at le count($scopes) + 1 and (every $seg in subsequence($segments, 2, $at - 1) satisfies $seg = $eo:rho) and exists($scopes[$at - 1]/o[@name=$eo:rho and @base=$eo:empty and @local])) then string($scopes[$at - 1]/o[@name=$eo:rho and @base=$eo:empty and @local][1]/@local) else $segments[$at]"/>
   </xsl:function>
   <!--
   References: rewrite each cactus segment that names a handled void, a
