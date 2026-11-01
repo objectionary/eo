@@ -346,11 +346,7 @@
             8
             1
             0.5
-    parent.retried > created
-      parent.path
-      42
-      8
-      0.5
+    parent.retried parent.path 42 8 0.5 > created
     temp.exists.not.and next.exists.not > gone!
     Q.file candidate > next
     mktemp.tmpfile.deleted.as-path.as-dir.made > parent
@@ -372,11 +368,7 @@
     Q.file > actual
       string created.as-bytes
     Q.file occupied > collision
-    parent.retried > created
-      parent.path
-      42
-      7
-      0.5
+    parent.retried parent.path 42 7 0.5 > created
     path.separator.joined > expected
       *
         parent.path
@@ -777,11 +769,7 @@
         directory mktemp.tmpfile.deleted
 
   --> stops-on-a-permanent-open-failure
-    parent.retried > @
-      parent.path
-      42
-      9
-      0.5
+    parent.retried parent.path 42 9 0.5 > @
     mktemp.tmpfile.deleted.as-path.as-dir > parent
 
   tmpfile. --> stops-on-a-tmpfile-in-a-regular-file

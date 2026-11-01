@@ -73,7 +73,7 @@
 # objectionary/lints#1301 counts a hop through the receiver as reaching
 # outward even when the head declares a void of the same name.
 #
-# @todo #9650:30min Remove `+unlint too-deep-object:1713-1724` from the
+# @todo #9650:30min Remove `+unlint too-deep-object:1651-1662` from the
 #  metas below. It hides how deep `refused` in `pattern` nests its chain of
 #  `if.` over the escaped byte, up to 15 levels where the lint allows 12. Split
 #  the chain into objects of its own, so that `refused` nests no deeper.
@@ -84,7 +84,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-attachment
-+unlint too-deep-object:1713-1724
++unlint too-deep-object:1651-1662
 +version 0.0.0
 
 [^text] > regex
@@ -222,26 +222,16 @@
         caps
         wrap.k > [^wrap at caps] >>
           at
-          mark
-            wrap.at
-            wrap.node.index
-            caps
-            at
+          mark wrap.at wrap.node.index caps at
   if. > [^regex letter rest] >> chain
     letter.eq 64-
-    range
-      26
-      16
-      rest
+    range 26 16 rest
     if.
       letter.eq 73-
       range
         3.75
         3.125
-        range
-          8.5
-          8
-          rest
+        range 8.5 8 rest
       range
         26
         16
@@ -262,11 +252,7 @@
             caps
             k
         tried
-        alt.right.run
-          s
-          at
-          caps
-          k
+        alt.right.run s at caps k
   slice. > [^regex value] >> cipher
     as-bytes.
       value.plus 16
@@ -276,9 +262,7 @@
     except
       chain letter none
       rest
-    chain
-      letter
-      rest
+    chain letter rest
   [^regex cant-compile] > compile
     if. > @
       if. >> opens
@@ -391,14 +375,8 @@
   [^regex multiline unix] >> end
     if. > [^node s at caps k] > run
       node.multiline.if
-        starts
-          s
-          at
-          node.unix
-        terminal
-          s
-          at
-          node.unix
+        starts s at node.unix
+        terminal s at node.unix
       k at caps
       nothing
   [inner rest] >> except
@@ -429,13 +407,9 @@
     lower
       upper c true
       true
-    lower
-      c
-      false
+    lower c false
   [^regex text unicode] >> folded
-    fold > norm!
-      text
-      unicode
+    fold text unicode > norm!
     [^node s at caps k] > run
       if. > @
         s.size.gt at
@@ -482,10 +456,7 @@
               nothing
               rep.k at caps
           rep.k at caps
-      | > @
-        0
-        at
-        caps
+      | 0 at caps > @
   items.has > [^regex items c] >> has-cased
     key
       fold c true
@@ -527,10 +498,7 @@
               rep.node.most.gt n
               rep.node.child.run rep.s at caps anew
               nothing
-      | > @
-        0
-        at
-        caps
+      | 0 at caps > @
   [^regex text] >> literal
     [^node s at caps k] > run
       if. > @
@@ -709,9 +677,7 @@
             index.plus 1
             mode.or bit
         mode
-    | > initial
-      0
-      00-
+    | 0 00- > initial
     [^pat txt] > match
       [^hunt position start offset hit] > matched
         hunt.pat.parsed.groups.plus 1 > count
@@ -784,11 +750,7 @@
         if. > @
           exists.
             sought offset >> hit
-          hunt.matched
-            position
-            start
-            offset
-            hit
+          hunt.matched position start offset hit
           hunt.missing position
       [^hunt position] > missing
         T "Matched block does not exist, can't get count" > count
@@ -803,10 +765,7 @@
         -1 > start
         T "Matched block does not exist, can't get text" > text
         T "Matched block does not exist, can't get 'to' position" > to
-      matched-from-index > next
-        1
-        0
-        0
+      matched-from-index 1 0 0 > next
       [^hunt start] > searched
         if. > @
           start.is-integer.not.or
@@ -853,10 +812,7 @@
             subj.size.gt at
             nothing
             found at caps
-    alternatives > outcome
-      0
-      0
-      initial
+    alternatives 0 0 initial > outcome
     if. > parsed
       initial.eq --
       [at reason] >> no
@@ -987,10 +943,7 @@
     if. > [^regex index] >> indexed
       0.gt index
       index
-      measured
-        0
-        0
-        index
+      measured 0 0 index
     [^regex at count index] >> measured
       if. > @
         and.
@@ -1223,20 +1176,11 @@
         index
     if. > [^regex greed least most node] >> repeat
       1.gt greed
-      greedy
-        node
-        least
-        most
+      greedy node least most
       if.
         2.gt greed
-        lazy
-          node
-          least
-          most
-        possessive
-          node
-          least
-          most
+        lazy node least most
+        possessive node least most
     if. > [^regex mode text] >> plain
       1.gt text.size
       empty
@@ -1446,13 +1390,7 @@
         none
         true
         true
-      members
-        index
-        opened
-        bits
-        none
-        false
-        true
+      members index opened bits none false true
     [^regex index opened bits items negated first] >> members
       if. > @
         eq.
@@ -1922,10 +1860,7 @@
               nothing
               rep.k at caps
           rep.k at caps
-      | > @
-        0
-        at
-        caps
+      | 0 at caps > @
   [c] >> raised
     if. > @
       3.gt c.size

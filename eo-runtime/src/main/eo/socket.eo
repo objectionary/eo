@@ -321,9 +321,7 @@
     1
 
   eq. ++> can-guard-a-scope-and-behave-as-it
-    socket.guarded
-      42
-      true
+    socket.guarded 42 true
     42
 
   ++> can-report-a-connection-nobody-accepts
@@ -378,29 +376,19 @@
     1
 
   checked-port. --> rejects-a-fractional-port
-    socket
-      "127.0.0.1"
-      1.5
+    socket "127.0.0.1" 1.5
 
   checked-port. --> rejects-a-nan-port
-    socket
-      "127.0.0.1"
-      nan
+    socket "127.0.0.1" nan
 
   checked-port. --> rejects-a-negatively-infinite-port
-    socket
-      "127.0.0.1"
-      ninf
+    socket "127.0.0.1" ninf
 
   checked-port. --> rejects-a-port-above-the-valid-range
-    socket
-      "127.0.0.1"
-      70000
+    socket "127.0.0.1" 70000
 
   checked-port. --> rejects-a-positively-infinite-port
-    socket
-      "127.0.0.1"
-      pinf
+    socket "127.0.0.1" pinf
 
   socket.guarded --> stops-on-a-terminated-guarded-scope
     2.as-i64.div 0.as-i64

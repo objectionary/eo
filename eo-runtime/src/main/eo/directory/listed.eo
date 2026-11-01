@@ -79,10 +79,7 @@
     rest.length.eq 0
     * item
     if.
-      ahead
-        item.as-bytes
-        rest.head.as-bytes
-        0
+      ahead item.as-bytes rest.head.as-bytes 0
       with.
         folder.inserted rest.tail item
         rest.head

@@ -19,9 +19,7 @@
   [] > access /Q.number
     ? > path /Q.string
     ? > mode /Q.number
-  os.is-macos.if > append
-    8
-    1024
+  os.is-macos.if 8 1024 > append
   [] > bind /Q.number
     ? > descriptor /Q.number
     ? > sockaddr /Q.posix.sockaddr-in
@@ -34,28 +32,20 @@
     ? > descriptor /Q.number
     ? > sockaddr /Q.posix.sockaddr-in
     ? > length /Q.number
-  os.is-macos.if > creat
-    512
-    64
+  os.is-macos.if 512 64 > creat
   [cde nme] > dir-return
-    posix.dir-return > called
-      code
-      name
+    posix.dir-return code name > called
     number cde! > code
     string nme! > name
   17 > eexist
   22 > einval
   2 > enoent
   [] > errno /Q.number
-  os.is-macos.if > exclusive
-    2048
-    128
+  os.is-macos.if 2048 128 > exclusive
   [] > getenv /Q.posix.getenv-return
     ? > name /Q.string
   [cde vle] > getenv-return
-    posix.getenv-return > called
-      code
-      value
+    posix.getenv-return code value > called
     FF-.eq cde! > code
     string vle! > value
   [] > getpid /Q.number
@@ -88,9 +78,7 @@
     ? > size /Q.number
   [cde dta] > read-return
     data > @
-    posix.read-return > called
-      code
-      data
+    posix.read-return code data > called
     number cde! > code
     bytes dta! > data
   [] > readdir /Q.posix.dir-return
@@ -123,19 +111,13 @@
   [] > stat /Q.posix.stat-return
     ? > path /Q.string
   [cde msg mde sze] > stat-return
-    posix.stat-return > called
-      code
-      message
-      mode
-      size
+    posix.stat-return code message mode size > called
     number cde! > code
     string msg! > message
     number mde! > mode
     number sze! > size
   [cde msg] > status-return
-    posix.status-return > called
-      code
-      message
+    posix.status-return code message > called
     number cde! > code
     string msg! > message
   2 > stderr
@@ -149,16 +131,11 @@
     ? > path /Q.string
   6 > tcp
   [cde scnds mcrs] > time-return
-    posix.time-return > called
-      code
-      seconds
-      micros
+    posix.time-return code seconds micros > called
     number cde! > code
     number mcrs! > micros
     number scnds! > seconds
-  os.is-macos.if > trunc
-    1024
-    512
+  os.is-macos.if 1024 512 > trunc
   [] > unlink /Q.posix.status-return
     ? > path /Q.string
   4294967295 > unresolved
@@ -246,10 +223,7 @@
             posix.close fd
             -1
     code. > fd
-      posix.open
-        "/dev/null"
-        0
-        0
+      posix.open "/dev/null" 0 0
 
   os.is-windows.or ++> can-report-an-address-it-cannot-convert-as-invalid
     seq *
@@ -283,9 +257,7 @@
       posix.unresolved
 
   eq. ++> can-stand-for-the-bytes-a-read-returned
-    posix.read-return
-      3
-      D0-B6-21
+    posix.read-return 3 D0-B6-21
     D0-B6-21
 
   ++> can-stat-the-size-of-dev-null
@@ -295,10 +267,7 @@
 
   ++> can-store-seconds-in-a-time-return
     tv.seconds.eq 5 > @
-    posix.time-return > tv
-      0
-      5
-      100
+    posix.time-return 0 5 100 > tv
 
   posix.send --> stops-on-send-size-exceeding-buffer-length
     0
@@ -310,28 +279,16 @@
     os.is-windows.if > @
       1.div 0
       seq *
-        posix.write
-          fd
-          "ab"
-          -1
+        posix.write fd "ab" -1
         true
     code. > fd
-      posix.open
-        "/dev/null"
-        posix.wronly
-        0
+      posix.open "/dev/null" posix.wronly 0
 
   --> stops-on-write-size-exceeding-buffer-length
     os.is-windows.if > @
       1.div 0
       seq *
-        posix.write
-          fd
-          "ab"
-          4096
+        posix.write fd "ab" 4096
         true
     code. > fd
-      posix.open
-        "/dev/null"
-        posix.wronly
-        0
+      posix.open "/dev/null" posix.wronly 0
