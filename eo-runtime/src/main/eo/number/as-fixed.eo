@@ -314,3 +314,33 @@
       0.as-fixed 6
 
   3.14159.as-fixed -2 --> stops-on-negative-places
+
+  eq. ++> can-round-a-value-below-half-down
+    "0"
+    string
+      0.49999999999999994.as-fixed 0
+
+  eq. ++> can-drop-the-sign-of-a-value-below-half
+    "0"
+    string
+      -0.49999999999999994.as-fixed 0
+
+  eq. ++> can-round-a-fraction-below-half-down
+    "0.12"
+    string
+      0.12499999999999999.as-fixed 2
+
+  eq. ++> can-round-a-fraction-at-half-up
+    "0.13"
+    string
+      0.125.as-fixed 2
+
+  eq. ++> can-round-a-negative-fraction-at-half-away-from-zero
+    "-0.13"
+    string
+      -0.125.as-fixed 2
+
+  eq. ++> can-round-a-scaled-decimal-half-up
+    "0.2"
+    string
+      0.15.as-fixed 1
