@@ -67,44 +67,42 @@
 [] > console
   os.is-windows.if > @
     [sys] >> impl
-      [^ size] > read
+      [^device size] > read
         @. > @
           read.
-            [^ buffer] >> input-block
+            [^source buffer] >> input-block
               buffer > @
-              [^ size] > read
+              [^block size] > read
                 seq * > @
                   if. >> chunk!
                     received.code.eq -1
-                    T
-                      "Failed to read from standard input"
+                    T "Failed to read from standard input"
                     data.
                       called. >> received
-                        ^.^.^.sys.input.read ^.^.^.sys.input.descriptor size
+                        block.source.device.sys.input.read block.source.device.sys.input.descriptor size
                   received
-                  ^.^.input-block chunk
+                  block.source.input-block chunk
             | --
             size
-      [^ buffer] > write
+      [^device buffer] > write
         @. > @
           write.
-            [^] >> output-block
+            [^sink] >> output-block
               true > @
-              [^ buffer] > write
+              [^block buffer] > write
                 seq * > @
                   if. >>!
                     code.eq -1
-                    T
-                      "Failed to write to standard output"
-                    ^.^.output-block
+                    T "Failed to write to standard output"
+                    block.sink.output-block
                   code
                   if.
                     lt.
-                      number (^.^.^.sys.output.write ^.^.^.sys.output.descriptor buffer buffer.size)! >> code
+                      number (block.sink.device.sys.output.write block.sink.device.sys.output.descriptor buffer buffer.size)! >> code
                       buffer.size
-                    ^.^.output-block.write
+                    block.sink.output-block.write
                       buffer.slice code (buffer.size.minus code)
-                    ^.^.output-block
+                    block.sink.output-block
             buffer
     |
       []
@@ -126,10 +124,8 @@
   ++> can-chain-writes-across-output-blocks
     seq * > @
       o1
-      o1.write
-        "part two.\n".as-bytes
-    console.write > o1
-      "part one, ".as-bytes
+      o1.write "part two.\n".as-bytes
+    console.write "part one, ".as-bytes > o1
 
   console.write ++> can-write-a-non-ascii-string-to-the-console
     "héllo, wörld! 日本語\n".as-bytes
@@ -138,7 +134,6 @@
 
   console.write 48-65-6C-6C-6F-0A ++> can-write-raw-bytes-to-the-console
 
-  console.write ++> can-write-to-the-console
-    "Hello, console-test!\n".as-bytes
+  console.write "Hello, console-test!\n".as-bytes ++> can-write-to-the-console
 
   console --> cannot-dataize-console-directly

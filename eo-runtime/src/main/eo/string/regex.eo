@@ -73,35 +73,10 @@
 # objectionary/lints#1301 counts a hop through the receiver as reaching
 # outward even when the head declares a void of the same name.
 #
-# @todo #9650:30min Remove `+unlint too-deep-object:687-688` from the
-#  metas below. It hides how deep `run` in `member` nests the lookup of the
-#  case-folded character, 14 levels where the lint allows 12. Move the folding
-#  into objects of its own, so that `run` nests no deeper.
-#
-# @todo #9650:30min Remove `+unlint too-deep-object:1252` from the
-#  metas below. It hides how deep `piece` in `pattern` nests the cut of a
-#  literal before its quantifier, 13 levels where the lint allows 12. Move the
-#  cut and its slices into objects of their own, so `piece` nests no deeper.
-#
-# @todo #9650:30min Remove `+unlint too-deep-object:1373-1398` from the
-#  metas below. It hides how deep `atom` in `pattern` nests its chain of `if.`
-#  over the next byte, up to 18 levels where the lint allows 12. Split the
-#  chain into objects of its own, so that `atom` nests no deeper.
-#
-# @todo #9650:30min Remove `+unlint too-deep-object:1571-1573` from the
-#  metas below. It hides how deep `entry` in `pattern` nests the check of a
-#  character range, 13 levels where the lint allows 12. Move that check into
-#  an object of its own, so that `entry` nests no deeper.
-#
-# @todo #9650:30min Remove `+unlint too-deep-object:1750-1761` from the
+# @todo #9650:30min Remove `+unlint too-deep-object:1713-1724` from the
 #  metas below. It hides how deep `refused` in `pattern` nests its chain of
 #  `if.` over the escaped byte, up to 15 levels where the lint allows 12. Split
 #  the chain into objects of its own, so that `refused` nests no deeper.
-#
-# @todo #9650:30min Remove `+unlint too-deep-object:1940-1944` from the
-#  metas below. It hides how deep `braces` in `pattern` nests the parsing of a
-#  counted closure, up to 14 levels where the lint allows 12. Split the parsing
-#  into objects of its own, so that `braces` nests no deeper.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -109,26 +84,21 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-attachment
-+unlint too-deep-object:1252
-+unlint too-deep-object:1373-1398
-+unlint too-deep-object:1571-1573
-+unlint too-deep-object:1750-1761
-+unlint too-deep-object:1940-1944
-+unlint too-deep-object:687-688
++unlint too-deep-object:1713-1724
 +version 0.0.0
 
 [^text] > regex
   compile > @
-  or. > [^ c] >> alnum
+  or. > [^regex c] >> alnum
     numeric c
     or.
       capital c
       small c
-  [^ dotall unix] >> any
-    [^ s at caps k] > run
+  [^regex dotall unix] >> any
+    [^node s at caps k] > run
       if. > @
         s.size.gt at
-        ^.dotall.if
+        node.dotall.if
           k
             number
               at.plus c.size >> till!
@@ -136,21 +106,21 @@
           if.
             breaks
               s.char at >> c!
-              ^.unix
+              node.unix
             nothing
             k
               number till
               caps
         nothing
-  [^ multiline unix] >> begin
-    if. > [^ s at caps k] > run
+  [^regex multiline unix] >> begin
+    if. > [^node s at caps k] > run
       1.gt at
       k at caps
-      ^.multiline.if
+      node.multiline.if
         if.
           and.
             s.size.gt at
-            broken s at ^.unix
+            broken s at node.unix
           k at caps
           nothing
         nothing
@@ -174,8 +144,8 @@
             b.eq 0D-
   [begin marks end] >> block
     true > exists
-  [^ negated] >> border
-    if. > [^ s at caps k] > run
+  [^regex negated] >> border
+    if. > [^node s at caps k] > run
       eq.
         eq.
           if.
@@ -190,7 +160,7 @@
             word
               s.text.slice at 1
             false
-        ^.negated
+        node.negated
       k at caps
       nothing
   unix.if > [c unix] >> breaks
@@ -244,20 +214,20 @@
           eq.
             c.and FC-
             5C-
-  [^ child index] >> captured
-    [^ s at caps k] > run
-      ^.child.run > @
+  [^regex child index] >> captured
+    [^node s at caps k] > run
+      node.child.run > @
         s
         at
         caps
-        ^.k > [^ at caps] >>
+        wrap.k > [^wrap at caps] >>
           at
           mark
-            ^.at
-            ^.^.index
+            wrap.at
+            wrap.node.index
             caps
             at
-  if. > [^ letter rest] >> chain
+  if. > [^regex letter rest] >> chain
     letter.eq 64-
     range
       26
@@ -283,33 +253,33 @@
             124
             range 432 136 rest
   [left right] >> choice
-    [^ s at caps k] > run
+    [^alt s at caps k] > run
       if. > @
         exists.
-          ^.left.run >> tried
+          alt.left.run >> tried
             s
             at
             caps
             k
         tried
-        ^.right.run
+        alt.right.run
           s
           at
           caps
           k
-  slice. > [^ value] >> cipher
+  slice. > [^regex value] >> cipher
     as-bytes.
       value.plus 16
     1
     1
-  negated.if > [^ letter negated rest] >> cluster
+  negated.if > [^regex letter negated rest] >> cluster
     except
       chain letter none
       rest
     chain
       letter
       rest
-  [^ cant-compile] > compile
+  [^regex cant-compile] > compile
     if. > @
       if. >> opens
         size.gt 0
@@ -318,17 +288,16 @@
         false
       if.
         1.gt closes
-        cant-compile
-          "regex is missing the closing slash"
+        cant-compile "regex is missing the closing slash"
         if.
-          if. > [^ index] >> legal
+          if. > [^regex index] >> legal
             size.gt index
             if.
               --.eq
                 flag
                   raw.slice index 1
               false
-              ^.legal
+              regex.legal
                 index.plus 1
             true
           |
@@ -338,9 +307,9 @@
                   size.plus -1
               1
           checked.
-            ^.pattern
+            regex.pattern
               slice.
-                ^.text.as-bytes >> raw
+                regex.text.as-bytes >> raw
                 1
                 closes.plus -1
               raw.slice >> flags
@@ -348,23 +317,22 @@
                 minus.
                   raw.size >> size
                   closes.plus 1
-            ^.cant-compile > [^ reason offset] >>
+            regex.cant-compile > [^regex reason offset] >>
               worded offset reason
           cant-compile
             string
               concat.
                 "regex flags '".as-bytes.concat flags
                 "' must be a sequence of 'd', 'i', 'm', 's', 'u' and 'x'".as-bytes
-      cant-compile
-        "regex is missing the opening slash"
-    if. > [^ index] >> slashed
+      cant-compile "regex is missing the opening slash"
+    if. > [^regex index] >> slashed
       1.gt index
       0
       if.
         2F-.eq
           raw.slice index 1
         index
-        ^.slashed
+        regex.slashed
           index.plus -1
   if. > [e] >> control
     e.eq 74-
@@ -385,13 +353,13 @@
               e.eq 65-
               1B-
               --
-  [^ acc value] >> decimal
+  [^regex acc value] >> decimal
     if. > @
       10.gt value
       concat.
         cipher value
         acc
-      ^.decimal
+      regex.decimal
         concat.
           cipher
             value.minus
@@ -402,10 +370,10 @@
           acc
         number tenfold
   [] >> empty
-    k > [^ s at caps k] > run
+    k > [^node s at caps k] > run
       at
       caps
-  if. > [^ value] >> encoded
+  if. > [^regex value] >> encoded
     128.gt value
     octet value
     concat.
@@ -420,23 +388,23 @@
               192.gt value
               -128
               -192
-  [^ multiline unix] >> end
-    if. > [^ s at caps k] > run
-      ^.multiline.if
+  [^regex multiline unix] >> end
+    if. > [^node s at caps k] > run
+      node.multiline.if
         starts
           s
           at
-          ^.unix
+          node.unix
         terminal
           s
           at
-          ^.unix
+          node.unix
       k at caps
       nothing
   [inner rest] >> except
-    if. > [^ code] > has
-      ^.inner.has code
-      ^.rest.has code
+    if. > [^set code] > has
+      set.inner.has code
+      set.rest.has code
       true
   if. > [b] >> flag
     b.eq 64-
@@ -457,26 +425,26 @@
               b.eq 78-
               20-
               --
-  unicode.if > [^ c unicode] >> fold
+  unicode.if > [^regex c unicode] >> fold
     lower
       upper c true
       true
     lower
       c
       false
-  [^ text unicode] >> folded
+  [^regex text unicode] >> folded
     fold > norm!
       text
       unicode
-    [^ s at caps k] > run
+    [^node s at caps k] > run
       if. > @
         s.size.gt at
         if.
           eq.
             fold
               s.char at >> c!
-              ^.unicode
-            ^.norm
+              node.unicode
+            node.norm
           k
             number
               at.plus c.size >> till!
@@ -485,39 +453,42 @@
         nothing
   [end marks] >> found
     true > exists
-  if. > [^ e] >> glyph
+  if. > [^regex e] >> glyph
     alnum e
     control e
     e
-  [^ child least most] >> greedy
-    [^ s at caps k] > run
-      [^ n at caps] >> step
+  [^regex child least most] >> greedy
+    [^node s at caps k] > run
+      [^rep n at caps] >> step
         if. > @
-          ^.^.most.gt n
+          rep.node.most.gt n
           if.
             exists.
-              ^.^.child.run >> tried
-                ^.s
+              rep.node.child.run >> tried
+                rep.s
                 at
                 caps
-                [^ at caps] >>
+                [^cont at caps] >>
                   if. > @
-                    at.gt ^.at
-                    ^.^.step
-                      number (^.n.plus 1)!
+                    at.gt cont.at
+                    cont.rep.step
+                      number (cont.n.plus 1)!
                       number at!
                       caps
-                    ^.^.k at caps
+                    cont.rep.k at caps
             tried
             if.
-              ^.^.least.gt n
+              rep.node.least.gt n
               nothing
-              ^.k at caps
-          ^.k at caps
+              rep.k at caps
+          rep.k at caps
       | > @
         0
         at
         caps
+  items.has > [^regex items c] >> has-cased
+    key
+      fold c true
   number > [c] >> key
     slice.
       concat.
@@ -525,59 +496,59 @@
         00-00-00-00-00-00
       0
       8
-  marks.some.if > [^ group marks] >> latest
+  marks.some.if > [^regex group marks] >> latest
     if.
       marks.group.as-bytes.eq group.as-bytes
       marks
-      ^.latest group marks.next
+      regex.latest group marks.next
     marks
-  [^ child least most] >> lazy
-    [^ s at caps k] > run
-      [^ n at caps] >> pace
+  [^regex child least most] >> lazy
+    [^node s at caps k] > run
+      [^rep n at caps] >> pace
         if. > @
-          ^.^.least.gt n
-          ^.^.child.run
-            ^.s
+          rep.node.least.gt n
+          rep.node.child.run
+            rep.s
             at
             caps
-            [^ at caps] >> anew
+            [^cont at caps] >> anew
               if. > @
-                at.gt ^.at
-                ^.^.pace
-                  number (^.n.plus 1)!
+                at.gt cont.at
+                cont.rep.pace
+                  number (cont.n.plus 1)!
                   number at!
                   caps
-                ^.^.k at caps
+                cont.rep.k at caps
           if.
             exists.
-              ^.k at caps >> tried
+              rep.k at caps >> tried
             tried
             if.
-              ^.^.most.gt n
-              ^.^.child.run ^.s at caps anew
+              rep.node.most.gt n
+              rep.node.child.run rep.s at caps anew
               nothing
       | > @
         0
         at
         caps
-  [^ text] >> literal
-    [^ s at caps k] > run
+  [^regex text] >> literal
+    [^node s at caps k] > run
       if. > @
         gt.
           number
-            at.plus ^.size >> till!
+            at.plus node.size >> till!
           s.size
         nothing
         if.
           eq.
-            s.text.slice at ^.size
-            ^.text
+            s.text.slice at node.size
+            node.text
           k
             number till
             caps
           nothing
     text.size > size
-  if. > [^ c unicode] >> lower
+  if. > [^regex c unicode] >> lower
     2.gt c.size
     if.
       capital c
@@ -656,39 +627,37 @@
       c
   [from group next to] >> mark
     true > some
-  [^ fold items negated unicode] >> member
-    [^ s at caps k] > run
+  [^regex fold items negated unicode] >> member
+    [^node s at caps k] > run
       if. > @
         s.size.gt at
         if.
           eq.
             if.
-              ^.items.has
+              node.items.has
                 number
                   key c >> code!
               true
-              ^.fold.if
+              node.fold.if
                 if.
-                  ^.items.has
+                  node.items.has
                     number
                       key >> up!
-                        upper c ^.unicode
+                        upper c node.unicode
                   true
                   if.
-                    ^.items.has
+                    node.items.has
                       number
                         key >> down!
-                          lower c ^.unicode
+                          lower c node.unicode
                     true
-                    ^.unicode.if
-                      ^.items.has
-                        key
-                          ^.^.fold
-                            s.char at >> c!
-                            true
+                    node.unicode.if
+                      has-cased
+                        node.items
+                        s.char at >> c!
                       false
                 false
-            ^.negated
+            node.negated
           nothing
           k
             number
@@ -716,41 +685,41 @@
       n.plus 4503599627370496
     7
     1
-  [^ body flags] > pattern
-    ^.parsed.ok.if > [^ cant-check] > checked
-      ^
+  [^regex body flags] > pattern
+    regex.parsed.ok.if > [^regex cant-check] > checked
+      regex
       cant-check
-        ^.parsed.reason
-        indexed ^.parsed.at
-    ^.checked > compiled
-      T > [^ reason offset] >>
+        regex.parsed.reason
+        indexed regex.parsed.at
+    regex.checked > compiled
+      T > [^regex reason offset] >>
         worded offset reason
     flags.as-bytes > fraw
     fraw.size > fsize
-    [^ index mode] >> modes
+    [^regex index mode] >> modes
       if. > @
-        ^.fsize.gt index
+        regex.fsize.gt index
         if.
           eq.
             flag >> bit
-              ^.fraw.slice index 1
+              regex.fraw.slice index 1
             --
           --
-          ^.modes
+          regex.modes
             index.plus 1
             mode.or bit
         mode
     | > initial
       0
       00-
-    [^ txt] > match
-      [^ position start offset hit] > matched
-        ^.^.parsed.groups.plus 1 > count
+    [^pat txt] > match
+      [^hunt position start offset hit] > matched
+        hunt.pat.parsed.groups.plus 1 > count
         from.plus > ending!
-          ^.subj.chars hit.begin hit.end
-        if. > [^ acc index] >> presence
-          ^.count.gt index
-          ^.presence
+          hunt.subj.chars hit.begin hit.end
+        if. > [^frame acc index] >> presence
+          frame.count.gt index
+          frame.presence
             acc.with
               present index
             index.plus 1
@@ -760,11 +729,11 @@
           0
         true > exists
         number origin > from
-        ^.groups.at index > [^ index] > group
-        ^.existing.at index > [^ index] > group-exists
-        if. > [^ acc index] >> texts
-          ^.count.gt index
-          ^.texts
+        frame.groups.at index > [^frame index] > group
+        frame.existing.at index > [^frame index] > group-exists
+        if. > [^frame acc index] >> texts
+          frame.count.gt index
+          frame.texts
             acc.with
               snippet index
             index.plus 1
@@ -775,121 +744,112 @@
         if. > next
           origin.eq ending
           if.
-            ^.subj.size.gt hit.end
-            ^.matched-from-index
+            hunt.subj.size.gt hit.end
+            hunt.matched-from-index
               position.plus 1
               to.plus 1
               hit.end.plus
                 width
-                  ^.subj.text.slice hit.end 1
-            ^.missing
+                  hunt.subj.text.slice hit.end 1
+            hunt.missing
               position.plus 1
-          ^.matched-from-index
+          hunt.matched-from-index
             position.plus 1
             to
             hit.end
         start.plus > origin!
-          ^.subj.chars offset hit.begin
+          hunt.subj.chars offset hit.begin
         group 0 > text
         number ending > to
-        if. > [^ index] >> present
+        if. > [^frame index] >> present
           1.gt index
           true
           some.
-            latest index ^.hit.marks
-        [^ index] >> snippet
+            latest index frame.hit.marks
+        [^frame index] >> snippet
           if. > @
             1.gt index
             string
-              ^.^.subj.text.slice
-                ^.hit.begin
-                ^.hit.end.minus ^.hit.begin
+              frame.hunt.subj.text.slice
+                frame.hit.begin
+                frame.hit.end.minus frame.hit.begin
             m.some.if
               string
-                ^.^.subj.text.slice
+                frame.hunt.subj.text.slice
                   from.
-                    latest index ^.hit.marks >> m
+                    latest index frame.hit.marks >> m
                   m.to.minus m.from
               ""
-      [^ position start offset] > matched-from-index
+      [^hunt position start offset] > matched-from-index
         if. > @
           exists.
             sought offset >> hit
-          ^.matched
+          hunt.matched
             position
             start
             offset
             hit
-          ^.missing position
-      [^ position] > missing
-        T > count
-          "Matched block does not exist, can't get count"
-        T > existing
-          "Matched block does not exist, can't get groups"
+          hunt.missing position
+      [^hunt position] > missing
+        T "Matched block does not exist, can't get count" > count
+        T "Matched block does not exist, can't get groups" > existing
         start.gte 0 > exists
-        T > from
-          "Matched block does not exist, can't get 'from' position"
-        T > [index] > group
-          "Matched block does not exist, can't get group"
+        T "Matched block does not exist, can't get 'from' position" > from
+        T "Matched block does not exist, can't get group" > [index] > group
         T > [index] > group-exists
           "Matched block does not exist, can't get group-exists"
-        T > groups
-          "Matched block does not exist, can't get groups"
-        T > next
-          "Matched block does not exist, can't get next"
+        T "Matched block does not exist, can't get groups" > groups
+        T "Matched block does not exist, can't get next" > next
         -1 > start
-        T > text
-          "Matched block does not exist, can't get text"
-        T > to
-          "Matched block does not exist, can't get 'to' position"
+        T "Matched block does not exist, can't get text" > text
+        T "Matched block does not exist, can't get 'to' position" > to
       matched-from-index > next
         1
         0
         0
-      [^ start] > searched
+      [^hunt start] > searched
         if. > @
           start.is-integer.not.or
             or.
               0.gt start
-              start.gt ^.total
-          T
-            "the 'start' attribute must be a non-negative integer no greater than the text length"
+              start.gt hunt.total
+          T "the 'start' attribute must be a non-negative integer no greater than the text length"
           result.exists.if
             *
               from.
-                ^.matched-from-index >> result
+                hunt.matched-from-index >> result
                   1
                   start
-                  ^.subj.offset start
+                  hunt.subj.offset start
               result.to
               result.groups
               result.existing
             *
-      [^ at] >> sought
+      [^hunt at] >> sought
         if. > @
           exists.
-            ^.^.tree.run >> hit
-              ^.subj
+            hunt.pat.tree.run >> hit
+              hunt.subj
               at
               unmarked
-              block ^.at caps at > [^ at caps] >>
+              block cont.at caps at > [^cont at caps] >>
           hit
           if.
-            ^.subj.size.gt at
-            ^.sought
+            hunt.subj.size.gt at
+            hunt.sought
               at.plus
                 width
-                  ^.subj.text.slice at 1
+                  hunt.subj.text.slice at 1
             nothing
       subject txt.as-bytes > subj
       txt.length > total
-    [^ txt] > matches
+    [^regex txt] > matches
       exists. > @
-        ^.tree.run
+        regex.tree.run
           subject txt.as-bytes >> subj
           0
           unmarked
-          if. > [^ at caps] >>
+          if. > [^cont at caps] >>
             subj.size.gt at
             nothing
             found at caps
@@ -905,9 +865,9 @@
       outcome.ok.if
         if.
           eq.
-            if. > [^ index] >> byte
-              ^.size.gt index
-              ^.raw.slice index 1
+            if. > [^regex index] >> byte
+              regex.size.gt index
+              regex.raw.slice index 1
               --
             | outcome.at
             --
@@ -923,8 +883,7 @@
       T
         string
           concat.
-            "cannot search with the regex pattern '".as-bytes.concat
-              raw
+            "cannot search with the regex pattern '".as-bytes.concat raw
             "'".as-bytes
     [at groups mode node text] >> yes
       true > ok
@@ -948,7 +907,7 @@
       or.
         b.eq 7C-
         b.eq 29-
-    [^ b] >> digit
+    [^regex b] >> digit
       if. > @
         b.eq --
         -1
@@ -960,7 +919,7 @@
             26.gt k
           k.plus -16
           -1
-    [^ b] >> nibble
+    [^regex b] >> nibble
       if. > @
         b.eq --
         -1
@@ -979,7 +938,7 @@
               8
             -1
           d
-    [^ index] >> hexed
+    [^regex index] >> hexed
       if. > @
         eq.
           byte index
@@ -989,9 +948,7 @@
           "Braced hexadecimal escapes are not supported"
         if.
           0.gt h
-          no
-            index
-            "Illegal hexadecimal escape sequence"
+          no index "Illegal hexadecimal escape sequence"
           if.
             0.gt
               nibble >> l
@@ -1008,7 +965,7 @@
                     nibble (byte index) >> h
                     16
                   l
-    [^ acc index] >> counted
+    [^regex acc index] >> counted
       if. > @
         0.gt
           digit >> d
@@ -1024,20 +981,20 @@
                 d
             2147483647
           numeral index -2
-          ^.counted
+          regex.counted
             next
             index.plus 1
-    if. > [^ index] >> indexed
+    if. > [^regex index] >> indexed
       0.gt index
       index
       measured
         0
         0
         index
-    [^ at count index] >> measured
+    [^regex at count index] >> measured
       if. > @
         and.
-          ^.size.gt at
+          regex.size.gt at
           not.
             gt.
               number
@@ -1045,32 +1002,32 @@
                   width
                     byte at
               index
-        ^.measured
+        regex.measured
           number following
           count.plus 1
           index
         count
-    if. > [^ index mode] >> skip
+    if. > [^regex index mode] >> skip
       flagged 20- mode
       commented index mode
       index
-    [^ index mode] >> commented
+    [^regex index mode] >> commented
       if. > @
         blank b
-        ^.commented
+        regex.commented
           index.plus 1
           mode
         if.
           eq.
             byte index >> b
             23-
-          ^.commented
+          regex.commented
             lined
               index.plus 1
               mode
             mode
           index
-    [^ index mode] >> lined
+    [^regex index mode] >> lined
       if. > @
         or.
           eq.
@@ -1083,10 +1040,10 @@
               not.
                 flagged 01- mode
         index
-        ^.lined
+        regex.lined
           index.plus 1
           mode
-    or. > [^ b mode] >> special
+    or. > [^regex b mode] >> special
       or.
         b.eq 5B-
         or.
@@ -1113,19 +1070,19 @@
           or.
             b.eq 23-
             blank b
-    [^ index opened bits] >> alternatives
+    [^regex index opened bits] >> alternatives
       if. > @
         ok.
           pieces index opened bits >> p
         alternate p
         p
-    [^ acc] >> alternate
+    [^regex acc] >> alternate
       if. > @
         eq.
           byte acc.at
           7C-
         n.ok.if
-          ^.alternate
+          regex.alternate
             yes
               at.
                 pieces >> n
@@ -1138,7 +1095,7 @@
               --
           n
         acc
-    [^ index opened bits] >> pieces
+    [^regex index opened bits] >> pieces
       if. > @
         halts
           byte
@@ -1158,7 +1115,7 @@
               bits
           more p
           p
-    [^ acc] >> more
+    [^regex acc] >> more
       if. > @
         halts
           byte
@@ -1171,7 +1128,7 @@
           acc.node
           --
         p.ok.if
-          ^.more
+          regex.more
             yes
               at.
                 piece >> p
@@ -1183,7 +1140,7 @@
               sequence acc.node p.node
               --
           p
-    [^ index opened bits] >> piece
+    [^regex index opened bits] >> piece
       a.ok.if > @
         if.
           or.
@@ -1235,9 +1192,10 @@
                     back (a.text.size.plus -1) a.text >> cut!
                   0
                 sequence
-                  plain
+                  clipped
                     a.mode
-                    a.text.slice 0 (number cut)
+                    a.text
+                    number cut
                   repeat
                     if. >> greed
                       g.eq 3F-
@@ -1245,17 +1203,13 @@
                       if. (g.eq 2B-) 2 0
                     b.least
                     b.most
-                    plain
-                      a.mode
-                      a.text.slice
-                        number cut
-                        a.text.size.minus (number cut)
+                    remnant a.mode a.text (number cut)
                 repeat greed b.least b.most a.node
               --
             b
           a
         a
-    if. > [^ index text] >> back
+    if. > [^regex index text] >> back
       1.gt index
       0
       if.
@@ -1263,11 +1217,11 @@
           and.
             text.slice index 1
             C0-
-        ^.back
+        regex.back
           index.plus -1
           text
         index
-    if. > [^ greed least most node] >> repeat
+    if. > [^regex greed least most node] >> repeat
       1.gt greed
       greedy
         node
@@ -1283,7 +1237,7 @@
           node
           least
           most
-    if. > [^ mode text] >> plain
+    if. > [^regex mode text] >> plain
       1.gt text.size
       empty
       if.
@@ -1292,7 +1246,15 @@
           text
           flagged 10- mode
         literal text
-    [^ text unicode] >> spelled
+    plain > [^regex mode text cut] >> clipped
+      mode
+      text.slice 0 cut
+    plain > [^regex mode text cut] >> remnant
+      mode
+      text.slice
+        cut
+        text.size.minus cut
+    [^regex text unicode] >> spelled
       if. > @
         text.size.gt
           width >> w
@@ -1301,13 +1263,13 @@
           folded
             text.slice 0 w
             unicode
-          ^.spelled
+          regex.spelled
             text.slice
               w
               text.size.minus w
             unicode
         folded text unicode
-    [^ index opened bits] >> atom
+    [^regex index opened bits] >> atom
       if. > @
         or.
           eq.
@@ -1320,8 +1282,7 @@
           index
           string
             concat.
-              "Dangling meta character '".as-bytes.concat
-                b
+              "Dangling meta character '".as-bytes.concat b
               "'".as-bytes
         if.
           b.eq 2E-
@@ -1368,36 +1329,42 @@
                   if.
                     b.eq 7B-
                     yes index opened bits empty --
-                    r.ok.if
-                      if.
-                        r.at.as-bytes.eq index.as-bytes
-                        escaped (index.plus 1) opened bits
-                        if.
-                          and.
-                            r.text.eq --
-                            or.
-                              eq.
-                                byte
-                                  at.
-                                    scanned index bits -- >> r
-                                2A-
-                              ((byte r.at).eq 2B-).or
-                                eq. (byte r.at) 3F-
-                          no
-                            index
-                            string
-                              concat.
-                                "Dangling meta character '".as-bytes.concat
-                                  byte r.at
-                                "'".as-bytes
-                          yes
-                            r.at
-                            opened
-                            bits
-                            plain bits r.text
-                            r.text
-                      r
-    [^ index mode acc] >> scanned
+                    braced index opened bits
+    [^regex index opened bits] >> braced
+      r.ok.if > @
+        if.
+          r.at.as-bytes.eq index.as-bytes
+          escaped
+            index.plus 1
+            opened
+            bits
+          if.
+            and.
+              r.text.eq --
+              or.
+                eq.
+                  byte
+                    at.
+                      scanned index bits -- >> r
+                  2A-
+                or.
+                  eq. (byte r.at) 2B-
+                  eq. (byte r.at) 3F-
+            no
+              index
+              string
+                concat.
+                  "Dangling meta character '".as-bytes.concat
+                    byte r.at
+                  "'".as-bytes
+            yes
+              r.at
+              opened
+              bits
+              plain bits r.text
+              r.text
+        r
+    [^regex index mode acc] >> scanned
       if. > @
         or.
           eq.
@@ -1424,7 +1391,7 @@
               if.
                 e.eq 78-
                 h.ok.if
-                  ^.scanned
+                  regex.scanned
                     at.
                       hexed (index.plus 2) >> h
                     mode
@@ -1435,17 +1402,17 @@
                     glyph e >> g
                     --
                   read index acc
-                  ^.scanned
+                  regex.scanned
                     index.plus 2
                     mode
                     acc.concat g
-          ^.scanned
+          regex.scanned
             index.plus
               width b >> w
             mode
             acc.concat
-              ^.raw.slice index w
-    [^ index mode acc] >> quoted
+              regex.raw.slice index w
+    [^regex index mode acc] >> quoted
       if. > @
         eq.
           byte index >> b
@@ -1462,13 +1429,13 @@
             index.plus 2
             mode
             acc
-          ^.quoted
+          regex.quoted
             index.plus
               width b >> w
             mode
             acc.concat
-              ^.raw.slice index w
-    if. > [^ index opened bits] >> bracket
+              regex.raw.slice index w
+    if. > [^regex index opened bits] >> bracket
       eq.
         byte index
         5E-
@@ -1486,13 +1453,13 @@
         none
         false
         true
-    [^ index opened bits items negated first] >> members
+    [^regex index opened bits items negated first] >> members
       if. > @
         eq.
           byte start >> b
           --
         no
-          ^.size.plus -1
+          regex.size.plus -1
           "Unclosed character class"
         if.
           and.
@@ -1513,9 +1480,7 @@
             --
           if.
             b.eq 5B-
-            no
-              start
-              "Nested character classes are not supported"
+            no start "Nested character classes are not supported"
             if.
               and.
                 b.eq 26-
@@ -1523,11 +1488,9 @@
                   byte
                     start.plus 1
                   26-
-              no
-                start
-                "Character class intersections are not supported"
+              no start "Character class intersections are not supported"
               e.ok.if
-                ^.members
+                regex.members
                   at.
                     entry start bits >> e
                   opened
@@ -1541,7 +1504,7 @@
                   negated
                   false
                 e
-    [^ index mode] >> entry
+    [^regex index mode] >> entry
       s.ok.if > @
         s.preset.if
           s
@@ -1564,22 +1527,24 @@
                 no
                   s.at.plus 1
                   "Illegal character range"
-                u.ok.if
-                  if.
-                    u.preset.or
-                      gt.
-                        key s.from
-                        key
-                          from.
-                            single (s.at.plus 1) mode >> u
-                    no
-                      u.at.plus -1
-                      "Illegal character range"
-                    span u.at s.from u.from
-                  u
+                ranged s mode
             s
         s
-    [^ index mode] >> single
+    [^regex low mode] >> ranged
+      u.ok.if > @
+        if.
+          u.preset.or
+            gt.
+              key low.from
+              key
+                from.
+                  single (low.at.plus 1) mode >> u
+          no
+            u.at.plus -1
+            "Illegal character range"
+          span u.at low.from u.from
+        u
+    [^regex index mode] >> single
       if. > @
         eq.
           byte index >> b
@@ -1590,16 +1555,14 @@
         span
           index.plus
             width b >> w
-          ^.raw.slice index w >> c
+          regex.raw.slice index w >> c
           c
-    [^ index mode] >> classed
+    [^regex index mode] >> classed
       if. > @
         eq.
           byte index >> e
           --
-        no
-          index
-          "Unescaped trailing backslash"
+        no index "Unescaped trailing backslash"
         if.
           e.eq 78-
           h.ok.if
@@ -1637,7 +1600,7 @@
                   index.plus 1
                   g
                   g
-    [^ index opened bits] >> escaped
+    [^regex index opened bits] >> escaped
       if. > @
         or.
           eq.
@@ -1692,8 +1655,8 @@
                   index.plus 1
                   opened
                   bits
-                  [^] >>
-                    if. > [^ s at caps k] > run
+                  [^zed] >>
+                    if. > [^node s at caps k] > run
                       s.size.gt at
                       nothing
                       k at caps
@@ -1709,7 +1672,7 @@
                       flagged 01- bits
                     --
                   refused index e
-    if. > [^ index e] >> refused
+    if. > [^regex index e] >> refused
       or.
         e.eq 70-
         e.eq 50-
@@ -1758,13 +1721,10 @@
                   index.plus -1
                   string
                     concat.
-                      "The escape sequence '\\".as-bytes.concat
-                        e
+                      "The escape sequence '\\".as-bytes.concat e
                       "' is not supported".as-bytes
-                no
-                  index
-                  "Illegal/unsupported escape sequence"
-    [^ index opened bits] >> group
+                no index "Illegal/unsupported escape sequence"
+    [^regex index opened bits] >> group
       if. > @
         eq.
           byte index
@@ -1816,7 +1776,7 @@
           bits
           bits
           opened.plus 1
-    [^ index opened bits] >> modified
+    [^regex index opened bits] >> modified
       m.ok.if > @
         if.
           eq.
@@ -1837,7 +1797,7 @@
             bits
             0
         m
-    [^ index bits on] >> modifiers
+    [^regex index bits on] >> modifiers
       if. > @
         or.
           eq.
@@ -1849,7 +1809,7 @@
           and.
             b.eq 2D-
             on
-          ^.modifiers
+          regex.modifiers
             index.plus 1
             bits
             false
@@ -1857,23 +1817,19 @@
             or.
               b.eq 55-
               b.eq 63-
-            no
-              index
-              "The inline modifiers 'U' and 'c' are not supported"
+            no index "The inline modifiers 'U' and 'c' are not supported"
             if.
               eq.
                 flag b >> bit
                 --
-              no
-                index
-                "Unknown inline modifier"
-              ^.modifiers
+              no index "Unknown inline modifier"
+              regex.modifiers
                 index.plus 1
                 on.if
                   bits.or bit
                   bits.and bit.not
                 on
-    [^ from opened bits outer index] >> closed
+    [^regex from opened bits outer index] >> closed
       r.ok.if > @
         if.
           eq.
@@ -1890,11 +1846,9 @@
               r.node
               captured r.node index
             --
-          no
-            ^.size
-            "Unclosed group"
+          no regex.size "Unclosed group"
         r
-    [^ index] >> braces
+    [^regex index] >> braces
       if. > @
         n.value.eq -2
         no
@@ -1903,9 +1857,7 @@
           "Illegal repetition range"
         if.
           0.gt n.value
-          no
-            index
-            "Illegal repetition"
+          no index "Illegal repetition"
           if.
             eq.
               byte n.at >> c
@@ -1916,56 +1868,60 @@
               n.value
             if.
               c.eq 2C-
+              capped
+                n.at.plus 1
+                n.value
+              no n.at "Unclosed counted closure"
+    [^regex start least] >> capped
+      if. > @
+        eq.
+          byte start
+          7D-
+        bounds
+          start.plus 1
+          least
+          number 7F-F0-00-00-00-00-00-00
+        if.
+          m.value.eq -2
+          no
+            at.
+              counted -1 start >> m
+            "Illegal repetition range"
+          if.
+            0.gt m.value
+            no start "Unclosed counted closure"
+            if.
+              eq.
+                byte m.at
+                7D-
               if.
-                eq.
-                  byte
-                    n.at.plus 1
-                  7D-
+                least.gt m.value
+                no m.at "Illegal repetition range"
                 bounds
-                  n.at.plus 2
-                  n.value
-                  number 7F-F0-00-00-00-00-00-00
-                if.
-                  m.value.eq -2
-                  no
-                    at.
-                      counted -1 (n.at.plus 1) >> m
-                    "Illegal repetition range"
-                  if.
-                    0.gt m.value
-                    no
-                      n.at.plus 1
-                      "Unclosed counted closure"
-                    if.
-                      eq. (byte m.at) 7D-
-                      if.
-                        n.value.gt m.value
-                        no m.at "Illegal repetition range"
-                        bounds (m.at.plus 1) n.value m.value
-                      no m.at "Unclosed counted closure"
-              no
-                n.at
-                "Unclosed counted closure"
-  [^ child least most] >> possessive
-    [^ s at caps k] > run
-      [^ n at caps] >> drain
+                  m.at.plus 1
+                  least
+                  m.value
+              no m.at "Unclosed counted closure"
+  [^regex child least most] >> possessive
+    [^node s at caps k] > run
+      [^rep n at caps] >> drain
         if. > @
-          ^.^.most.gt n
+          rep.node.most.gt n
           hit.exists.if
             if.
               hit.end.gt at
-              ^.drain
+              rep.drain
                 number (n.plus 1)!
                 number
                   hit.end >> here!
                 marks.
-                  ^.^.child.run ^.s at caps found >> hit
-              ^.k at hit.marks
+                  rep.node.child.run rep.s at caps found >> hit
+              rep.k at hit.marks
             if.
-              ^.^.least.gt n
+              rep.node.least.gt n
               nothing
-              ^.k at caps
-          ^.k at caps
+              rep.k at caps
+          rep.k at caps
       | > @
         0
         at
@@ -2041,24 +1997,24 @@
                     if. (c.eq C5-BF) 53- c
       c
   [high low rest] >> range
-    if. > [^ code] > has
-      ^.low.gt code
-      ^.rest.has code
+    if. > [^set code] > has
+      set.low.gt code
+      set.rest.has code
       if.
-        ^.high.gt code
+        set.high.gt code
         true
-        ^.rest.has code
+        set.rest.has code
   [left right] >> sequence
-    [^ s at caps k] > run
-      ^.left.run > @
+    [^seq s at caps k] > run
+      seq.left.run > @
         s
         at
         caps
-        ^.^.right.run > [^ at caps] >>
-          ^.s
+        cont.seq.right.run > [^cont at caps] >>
+          cont.s
           at
           caps
-          ^.k
+          cont.k
   and. > [c] >> small
     eq.
       c.and E0-
@@ -2071,7 +2027,7 @@
           eq.
             c.and FC-
             7C-
-  [^ s at unix] >> starts
+  [^regex s at unix] >> starts
     if. > @
       s.size.gt at
       if.
@@ -2089,44 +2045,43 @@
                   1
         breaks c unix
       true
-  [^ text] >> subject
-    ^.text.slice > [^ at] > char
+  [^regex text] >> subject
+    subj.text.slice > [^subj at] > char
       at
       width
-        ^.text.slice at 1
-    [^ from to] > chars
-      [^ at count] >> tallied
+        subj.text.slice at 1
+    [^subj from to] > chars
+      [^walk at count] >> tallied
         if. > @
-          ^.to.gt at
-          ^.tallied
+          walk.to.gt at
+          walk.tallied
             number
               at.plus >> stride!
                 width
-                  ^.^.text.slice at 1
+                  walk.subj.text.slice at 1
             number (count.plus 1)!
           count
       | from 0 > @
-    [^ n] > offset
-      [^ at count] >> advanced
+    [^subj n] > offset
+      [^walk at count] >> advanced
         if. > @
-          ^.n.gt count
+          walk.n.gt count
           if.
-            ^.^.size.gt at
-            ^.advanced
+            walk.subj.size.gt at
+            walk.advanced
               number
                 at.plus >> stride!
                   width
-                    ^.^.text.slice at 1
+                    walk.subj.text.slice at 1
               number (count.plus 1)!
-            T
-              "the 'start' attribute is beyond the text"
+            T "the 'start' attribute is beyond the text"
           at
       | 0 0 > @
     text.size > size
-  if. > [^ count value] >> tens
+  if. > [^regex count value] >> tens
     10.gt value
     count
-    ^.tens
+    regex.tens
       count.plus 1
       value.minus 10
   [s at unix] >> terminal
@@ -2164,7 +2119,7 @@
           false
   [] >> unmarked
     false > some
-  if. > [^ c unicode] >> upper
+  if. > [^regex c unicode] >> upper
     2.gt c.size
     if.
       small c
@@ -2186,10 +2141,10 @@
           b.and F0-
         3
         4
-  or. > [^ c] >> word
+  or. > [^regex c] >> word
     c.eq 5F-
     alnum c
-  [^ offset reason] >> worded
+  [^regex offset reason] >> worded
     string > @
       if.
         0.gt offset
@@ -2197,8 +2152,7 @@
         concat.
           concat.
             concat.
-              "regex syntax is invalid: ".as-bytes.concat >> prefix
-                reason.as-bytes
+              "regex syntax is invalid: ".as-bytes.concat reason.as-bytes >> prefix
               " at offset ".as-bytes
             decimal -- offset
           " of the pattern".as-bytes
@@ -2219,8 +2173,7 @@
       "a**".as-bytes
       --
     and. > [reason offset]
-      reason.eq
-        "Dangling meta character '*'"
+      reason.eq "Dangling meta character '*'"
       offset.eq 2
 
   matches. ++> can-bind-a-quantifier-across-an-empty-quote
@@ -2292,19 +2245,9 @@
       "/([a-z]+)([1-9]{1})/".regex.compiled.match "!hello1!world2"
     first.next > second
 
-  eq. ++> can-find-a-non-word-border
-    1
-    from.
-      next.
-        "/\\B/".regex.match
-          "ab cd"
+  1.eq ("/\\B/".regex.match "ab cd").next.from ++> can-find-a-non-word-border
 
-  eq. ++> can-find-a-word-border
-    3
-    from.
-      next.
-        "/\\bc/".regex.match
-          "ab cd"
+  3.eq ("/\\bc/".regex.match "ab cd").next.from ++> can-find-a-word-border
 
   exists. ++> can-find-the-end-anchor-before-a-final-line-terminator
     next.
