@@ -24,9 +24,9 @@ public final class EOwin32$EOwrite extends PhDefault implements Atom {
     public EOwin32$EOwrite() {
         super(
             new Attrs(
-                new Attr("descriptor", new AtVoid("descriptor")),
-                new Attr("buffer", new AtVoid("buffer")),
-                new Attr("size", new AtVoid("size"))
+                new Attr("v🌵descriptor", new AtVoid("v🌵descriptor")),
+                new Attr("v🌵buffer", new AtVoid("v🌵buffer")),
+                new Attr("v🌵size", new AtVoid("v🌵size"))
             )
         );
     }
@@ -36,7 +36,7 @@ public final class EOwin32$EOwrite extends PhDefault implements Atom {
         final byte[] chunk = new Portion(this).it();
         return new Data.ToPhi(
             Msvcrt.INSTANCE._write(
-                new Int(Expect.at(this, "descriptor")).it(), chunk, chunk.length
+                new Int(Expect.at(this, "v🌵descriptor")).it(), chunk, chunk.length
             )
         );
     }

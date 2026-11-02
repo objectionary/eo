@@ -13,6 +13,6 @@ sheets:
 asserts:
   - /object[not(errors)]
   - /object/class/java[contains(text(), 'this.add("ρ", new AtRho());')]
-  - /object/class/java[contains(text(), 'this.add("x", new AtVoid("x"));')]
+  - /object/class/java[contains(text(), 'this.add("v🌵x", new AtVoid("v🌵x"));')]
 input: |
   x > [^ x] > receiver

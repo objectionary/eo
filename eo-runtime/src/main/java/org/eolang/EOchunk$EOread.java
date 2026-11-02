@@ -21,7 +21,7 @@ public final class EOchunk$EOread extends PhDefault implements Atom {
     /**
      * Name of the error-branch void that holds the caller's read fallback.
      */
-    private static final String FALLBACK = "cant-read";
+    private static final String FALLBACK = "v🌵cant-read";
 
     /**
      * Ctor.
@@ -29,8 +29,8 @@ public final class EOchunk$EOread extends PhDefault implements Atom {
     public EOchunk$EOread() {
         super(new Attrs(
             new Attr(Phi.RHO, new AtRho()),
-            new Attr("offset", new AtVoid("offset")),
-            new Attr("length", new AtVoid("length")),
+            new Attr("v🌵offset", new AtVoid("v🌵offset")),
+            new Attr("v🌵length", new AtVoid("v🌵length")),
             new Attr(
                 EOchunk$EOread.FALLBACK,
                 new AtVoid(EOchunk$EOread.FALLBACK)
@@ -42,8 +42,8 @@ public final class EOchunk$EOread extends PhDefault implements Atom {
     public Phi lambda() {
         return this.bytes(
             new Natural(Expect.at(this.take(Phi.RHO), "id")).it(),
-            new Natural(Expect.at(this, "offset")).it(),
-            new Natural(Expect.at(this, "length")).it()
+            new Natural(Expect.at(this, "v🌵offset")).it(),
+            new Natural(Expect.at(this, "v🌵length")).it()
         );
     }
 

@@ -63,7 +63,7 @@ public final class Intake {
      * @return A copy of the {@code read-return}, filled
      */
     public Phi it() {
-        final int size = new Natural(Expect.at(this.atom, "size")).it();
+        final int size = new Natural(Expect.at(this.atom, "v🌵size")).it();
         final byte[] buffer = new Buffer("the 'size' attribute", size).it();
         final int count = this.call.applyAsInt(buffer, size);
         final Phi result = this.forma.copy();

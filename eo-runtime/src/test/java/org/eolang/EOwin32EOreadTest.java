@@ -24,8 +24,8 @@ final class EOwin32EOreadTest {
             "a read of a descriptor nobody opened must not report anything but -1",
             new Dataized(
                 new PhApplication(
-                    new PhApplication(new EOwin32$EOread(), "descriptor", new Data.ToPhi(-3)),
-                    "size",
+                    new PhApplication(new EOwin32$EOread(), "v🌵descriptor", new Data.ToPhi(-3)),
+                    "v🌵size",
                     new Data.ToPhi(27)
                 ).take("code")
             ).asNumber().intValue(),

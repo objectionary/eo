@@ -25,7 +25,7 @@ final class EOposixEOgetenvTest {
                 () -> new Dataized(
                     new PhApplication(
                         new EOposix$EOgetenv(),
-                        "name",
+                        "v🌵name",
                         new Data.ToPhi(String.join(String.valueOf((char) 0), "PATH", "nope"))
                     ).take("code")
                 ).take(),

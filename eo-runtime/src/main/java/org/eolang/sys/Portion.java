@@ -49,8 +49,8 @@ public final class Portion {
      * @return The bytes to hand over
      */
     public byte[] it() {
-        final byte[] buffer = new Dataized(this.phi.take("buffer")).take();
-        final int size = new Natural(Expect.at(this.phi, "size")).it();
+        final byte[] buffer = new Dataized(this.phi.take("v🌵buffer")).take();
+        final int size = new Natural(Expect.at(this.phi, "v🌵size")).it();
         if (size > buffer.length) {
             throw new ExFailure(
                 "Can't take %d bytes from a buffer of only %d bytes",

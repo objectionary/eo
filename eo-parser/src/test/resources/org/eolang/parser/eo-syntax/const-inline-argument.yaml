@@ -5,7 +5,7 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@base='.as-bytes' and @name='a🌵2-10']/o[@base='Φ.dataized']/o[@base='ξ.a']
+  - //o[@base='.as-bytes' and @name='a🌵2-10']/o[@base='Φ.dataized']/o[@base='ξ.v🌵a']
   - //o[@base='.plus']/o[@base='ξ.a🌵2-10']
 input: |
   [a] > foo

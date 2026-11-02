@@ -4,6 +4,7 @@
  */
 package org.eolang;
 
+import java.util.Collections;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -163,6 +164,30 @@ final class ExpectTest {
                 "fails with correct error message while transform Phi to Number"
             ).getMessage(),
             Matchers.equalTo("the 'ρ' attribute must be a number")
+        );
+    }
+
+    @Test
+    void namesAHiddenVoidWithoutItsMark() {
+        MatcherAssert.assertThat(
+            "the message must name a hidden void the way its source writes it, but it doesnt",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Numeric(
+                    Expect.at(
+                        new PhApplication(
+                            new PhDefault(
+                                Collections.singletonMap("v🌵left", new AtVoid("v🌵left"))
+                            ),
+                            "v🌵left",
+                            new Data.ToPhi(true)
+                        ),
+                        "v🌵left"
+                    )
+                ).it(),
+                "fails on a hidden void that holds no number"
+            ).getMessage(),
+            Matchers.equalTo("the 'left' attribute must be a number")
         );
     }
 

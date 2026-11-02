@@ -33,7 +33,7 @@ final class IntakeTest {
                 new Intake(
                     new PhApplication(
                         new EOposix$EOread(),
-                        "size",
+                        "v🌵size",
                         new Data.ToPhi(new SecureRandom().nextInt(512) + 64)
                     ),
                     Phi.Φ.take("posix").take("read-return"),
@@ -50,7 +50,7 @@ final class IntakeTest {
             "a failed call must not hand back a buffer it never filled",
             new Dataized(
                 new Intake(
-                    new PhApplication(new EOposix$EOread(), "size", new Data.ToPhi(41)),
+                    new PhApplication(new EOposix$EOread(), "v🌵size", new Data.ToPhi(41)),
                     Phi.Φ.take("posix").take("read-return"),
                     (buffer, wanted) -> -1
                 ).it().take("data")
@@ -65,7 +65,7 @@ final class IntakeTest {
         Assertions.assertThrows(
             ExAbstract.class,
             () -> new Intake(
-                new PhApplication(new EOposix$EOread(), "size", new Data.ToPhi(size)),
+                new PhApplication(new EOposix$EOread(), "v🌵size", new Data.ToPhi(size)),
                 Phi.Φ.take("posix").take("read-return"),
                 (buffer, wanted) -> 0
             ).it(),

@@ -33,12 +33,12 @@ public final class EOwin32$EOfind_first_file extends PhDefault implements Atom {
      * Ctor.
      */
     public EOwin32$EOfind_first_file() {
-        super(new Attrs(new Attr("pattern", new AtVoid("pattern"))));
+        super(new Attrs(new Attr("v🌵pattern", new AtVoid("v🌵pattern"))));
     }
 
     @Override
     public Phi lambda() {
-        final String pattern = new Cstring(Expect.at(this, "pattern")).it();
+        final String pattern = new Cstring(Expect.at(this, "v🌵pattern")).it();
         final Phi result = Phi.Φ.take("win32").take("search-return").copy();
         final WinFindData data = new WinFindData();
         final Pointer search = Kernel32.INSTANCE.FindFirstFileW(new WString(pattern), data);

@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A void can be filled by name from outside but never read from outside, so
+# "hide-voids" puts "v🌵" in front of its name (#9788). Its locator keeps the
+# name the source wrote, since locators are set before the rename.
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/mandatory-as.xsl
+  - /org/eolang/parser/parse/set-locators.xsl
+  - /org/eolang/parser/parse/hide-voids.xsl
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='foo']/o[1][@base='∅' and @name='v🌵left' and @loc='Φ.foo.left']
+  - /object/o[@name='foo']/o[2][@base='∅' and @name='v🌵right' and @loc='Φ.foo.right']
+  - /object/o[@name='foo']/o[@name='inner']/o[@base='∅' and @name='v🌵deep']
+  - /object[not(//o[@name='left' or @name='right' or @name='deep'])]
+input: |
+  [left right] > foo
+    [deep] > inner
+      deep > @
+    left > @

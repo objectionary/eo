@@ -20,13 +20,13 @@ public final class EObytes$EOconcat extends PhDefault implements Atom {
      * Ctor.
      */
     public EObytes$EOconcat() {
-        super(new Attrs(new Attr(Phi.RHO, new AtRho()), new Attr("b", new AtVoid("b"))));
+        super(new Attrs(new Attr(Phi.RHO, new AtRho()), new Attr("v🌵b", new AtVoid("v🌵b"))));
     }
 
     @Override
     public Phi lambda() {
         final byte[] current = new Dataized(this.take(Phi.RHO)).take();
-        final byte[] provided = new Dataized(this.take("b")).take();
+        final byte[] provided = new Dataized(this.take("v🌵b")).take();
         if ((long) current.length + provided.length > Integer.MAX_VALUE) {
             throw new ExFailure(
                 "Can't concatenate bytes of size %d with bytes of size %d: too big",

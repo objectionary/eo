@@ -29,16 +29,16 @@ public final class EOposix$EOmkdir extends PhDefault implements Atom {
     public EOposix$EOmkdir() {
         super(
             new Attrs(
-                new Attr("path", new AtVoid("path")),
-                new Attr("mode", new AtVoid("mode"))
+                new Attr("v🌵path", new AtVoid("v🌵path")),
+                new Attr("v🌵mode", new AtVoid("v🌵mode"))
             )
         );
     }
 
     @Override
     public Phi lambda() {
-        final String path = new Cstring(Expect.at(this, "path")).it();
-        final int mode = new Int(Expect.at(this, "mode")).it();
+        final String path = new Cstring(Expect.at(this, "v🌵path")).it();
+        final int mode = new Int(Expect.at(this, "v🌵mode")).it();
         final Phi result = Phi.Φ.take("posix").take("status-return").copy();
         final int code = CStdLib.INSTANCE.mkdir(path, mode);
         result.put(0, new Data.ToPhi(code));

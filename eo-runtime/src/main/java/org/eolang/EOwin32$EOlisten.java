@@ -24,8 +24,8 @@ public final class EOwin32$EOlisten extends PhDefault implements Atom {
     public EOwin32$EOlisten() {
         super(
             new Attrs(
-                new Attr("descriptor", new AtVoid("descriptor")),
-                new Attr("backlog", new AtVoid("backlog"))
+                new Attr("v🌵descriptor", new AtVoid("v🌵descriptor")),
+                new Attr("v🌵backlog", new AtVoid("v🌵backlog"))
             )
         );
     }
@@ -34,8 +34,8 @@ public final class EOwin32$EOlisten extends PhDefault implements Atom {
     public Phi lambda() {
         return new Data.ToPhi(
             Winsock.INSTANCE.listen(
-                new Pointer(new Dataized(this.take("descriptor")).asNumber().longValue()),
-                new Int(Expect.at(this, "backlog")).it()
+                new Pointer(new Dataized(this.take("v🌵descriptor")).asNumber().longValue()),
+                new Int(Expect.at(this, "v🌵backlog")).it()
             )
         );
     }

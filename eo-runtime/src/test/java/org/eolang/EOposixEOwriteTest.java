@@ -29,9 +29,9 @@ final class EOposixEOwriteTest {
                 () -> new Dataized(
                     new PhApplication(
                         new EOposix$EOwrite(),
-                        new Bind("descriptor", new Data.ToPhi(0L)),
-                        new Bind("buffer", new Data.ToPhi(new byte[]{1, 2})),
-                        new Bind("size", new Data.ToPhi(-0.5))
+                        new Bind("v🌵descriptor", new Data.ToPhi(0L)),
+                        new Bind("v🌵buffer", new Data.ToPhi(new byte[]{1, 2})),
+                        new Bind("v🌵size", new Data.ToPhi(-0.5))
                     )
                 ).take(),
                 "a negative fractional 'size' attribute was expected to fail"

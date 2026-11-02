@@ -5,7 +5,7 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - /object/o[@name='printf']/o[@name='φ' and @base='ξ.ρ.ρ.bar']/o[@as='α0' and @base='ξ.args']
+  - /object/o[@name='printf']/o[@name='φ' and @base='ξ.ρ.ρ.bar']/o[@as='α0' and @base='ξ.v🌵args']
 input: |
   [^s args] > printf
     s.^.bar args > @

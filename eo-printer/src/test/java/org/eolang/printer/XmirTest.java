@@ -158,6 +158,34 @@ final class XmirTest {
         );
     }
 
+    @Test
+    void printsAFilledHiddenVoidAsAVoidWithANamedFill() {
+        MatcherAssert.assertThat(
+            "a formation that holds a filled hidden void must print with the void and a named fill of it, but it doesnt",
+            new Xmir(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<object><metas/><o name='main'><o name='bar'>",
+                        "<o base='Φ.number' name='v🌵left'>5</o>",
+                        "<o base='ξ.v🌵left' name='value'/>",
+                        "</o></o></object>"
+                    )
+                )
+            ).toEO(),
+            Matchers.equalTo(
+                String.join(
+                    "\n",
+                    "[] > main",
+                    "  [left] > bar",
+                    "    5:left",
+                    "    left > value",
+                    ""
+                )
+            )
+        );
+    }
+
     @RepeatedTest(3)
     void printsSameEoInManyThreads() {
         final XML xml = new XMLDocument(

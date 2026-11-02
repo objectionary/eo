@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A void of an object is hidden behind "v🌵" (#9788), and so is every own read
+# of it. A member reads the void through its receiver, which is a "ρ" hop that
+# leaves the member's file while it stands apart, so the parser can't tell it
+# is an own read. Once the member is inside the object, the hop lands in the
+# object, and the read becomes an own read of the hidden void, the same one
+# "^.as-bytes" would be. A read of the member's own void stays as the parser
+# left it.
+eo:
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+  number/lt.eo: |
+    +package number
+
+    [^num x] > lt
+      num.as-bytes.lt x > @
+xmir:
+  number.eo:
+    - "/object/o[@name='number']/o[@base='∅' and @name='v🌵as-bytes']"
+    - "//o[@name='lt']/o[@name='φ' and @base='ξ.ρ.v🌵as-bytes.lt']"
+    - "//o[@name='lt']/o[@name='φ']/o[@as='α0' and @base='ξ.v🌵x']"

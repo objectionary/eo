@@ -34,7 +34,7 @@ final class EOposixEOreaddirTest {
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
-                    new PhApplication(new EOposix$EOreaddir(), "dirp", new Data.ToPhi(-42))
+                    new PhApplication(new EOposix$EOreaddir(), "v🌵dirp", new Data.ToPhi(-42))
                         .take("code")
                 ).take(),
                 "reading a stream that was never opened was expected to fail"
@@ -86,7 +86,7 @@ final class EOposixEOreaddirTest {
         final Phi handle = new Data.ToPhi(
             new Dataized(
                 new PhApplication(
-                    new EOposix$EOopendir(), "path", new Data.ToPhi(path.toString())
+                    new EOposix$EOopendir(), "v🌵path", new Data.ToPhi(path.toString())
                 ).take("code")
             ).asNumber().intValue()
         );
@@ -97,12 +97,12 @@ final class EOposixEOreaddirTest {
             entry = EOposixEOreaddirTest.entry(handle);
         }
         new Dataized(
-            new PhApplication(new EOposix$EOclosedir(), "dirp", handle).take("code")
+            new PhApplication(new EOposix$EOclosedir(), "v🌵dirp", handle).take("code")
         ).take();
         return names;
     }
 
     private static Phi entry(final Phi handle) {
-        return new PhApplication(new EOposix$EOreaddir(), "dirp", handle).take("called");
+        return new PhApplication(new EOposix$EOreaddir(), "v🌵dirp", handle).take("called");
     }
 }

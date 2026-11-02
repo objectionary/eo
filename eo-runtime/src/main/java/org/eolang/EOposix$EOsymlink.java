@@ -30,16 +30,16 @@ public final class EOposix$EOsymlink extends PhDefault implements Atom {
     public EOposix$EOsymlink() {
         super(
             new Attrs(
-                new Attr("target", new AtVoid("target")),
-                new Attr("path", new AtVoid("path"))
+                new Attr("v🌵target", new AtVoid("v🌵target")),
+                new Attr("v🌵path", new AtVoid("v🌵path"))
             )
         );
     }
 
     @Override
     public Phi lambda() {
-        final String target = new Cstring(Expect.at(this, "target")).it();
-        final String path = new Cstring(Expect.at(this, "path")).it();
+        final String target = new Cstring(Expect.at(this, "v🌵target")).it();
+        final String path = new Cstring(Expect.at(this, "v🌵path")).it();
         final Phi result = Phi.Φ.take("posix").take("status-return").copy();
         final int code = CStdLib.INSTANCE.symlink(target, path);
         result.put(0, new Data.ToPhi(code));

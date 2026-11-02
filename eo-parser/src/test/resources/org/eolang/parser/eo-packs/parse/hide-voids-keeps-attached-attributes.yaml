@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Only a void is hidden: an attached attribute keeps its name, and so does
+# every read of it, even one that sits beside a void of that very name in
+# another formation (#9788).
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/mandatory-as.xsl
+  - /org/eolang/parser/parse/set-locators.xsl
+  - /org/eolang/parser/parse/hide-voids.xsl
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='foo']/o[@name='x' and @base='Φ.number']
+  - //o[@name='own' and @base='ξ.x']
+  - //o[@name='outer' and @base='ξ.ρ.x']
+  - //o[@name='inner']/o[@name='v🌵x' and @base='∅']
+input: |
+  [] > foo
+    5 > x
+    x > own
+    [x] > inner
+      ^.x > outer

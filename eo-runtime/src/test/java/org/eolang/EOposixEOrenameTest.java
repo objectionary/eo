@@ -25,7 +25,7 @@ final class EOposixEOrenameTest {
                 () -> new Dataized(
                     new PhApplication(
                         new EOposix$EOrename(),
-                        "from",
+                        "v🌵from",
                         new Data.ToPhi(String.join(String.valueOf((char) 0), "плюшка", "щи"))
                     ).take("code")
                 ).take(),
@@ -48,10 +48,10 @@ final class EOposixEOrenameTest {
                     new PhApplication(
                         new PhApplication(
                             new EOposix$EOrename(),
-                            "from",
+                            "v🌵from",
                             new Data.ToPhi("плюшка")
                         ),
-                        "to",
+                        "v🌵to",
                         new Data.ToPhi(String.join(String.valueOf((char) 0), "плюшка", "щи"))
                     ).take("code")
                 ).take(),

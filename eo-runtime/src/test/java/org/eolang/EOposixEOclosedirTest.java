@@ -23,7 +23,7 @@ final class EOposixEOclosedirTest {
             Assertions.assertThrows(
                 ExAbstract.class,
                 () -> new Dataized(
-                    new PhApplication(new EOposix$EOclosedir(), "dirp", new Data.ToPhi(-1))
+                    new PhApplication(new EOposix$EOclosedir(), "v🌵dirp", new Data.ToPhi(-1))
                         .take("code")
                 ).take(),
                 "closing a stream that was never opened was expected to fail"

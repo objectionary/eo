@@ -56,9 +56,9 @@ final class TupleToArrayTest {
 
     private static Phi withLength(final double length) {
         final Phi tuple = new PhDefault(
-            new Attrs(new Attr("length", new AtVoid("length")))
+            new Attrs(new Attr("v🌵length", new AtVoid("v🌵length")))
         ).copy();
-        tuple.put("length", new Data.ToPhi(length));
+        tuple.put("v🌵length", new Data.ToPhi(length));
         return tuple;
     }
 }

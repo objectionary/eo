@@ -41,6 +41,10 @@ public class Expect<T> {
     /**
      * Starting point.
      *
+     * <p>A void is hidden behind the {@code v🌵} mark in front of its name
+     * (#9788), which the source never writes, so the message names the
+     * void without it.</p>
+     *
      * @param phi The object
      * @param attr Attribute name
      * @return Expect pipeline
@@ -48,7 +52,10 @@ public class Expect<T> {
     @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
     public static Expect<Phi> at(final Phi phi, final String attr) {
         return new Expect<>(
-            String.format("the '%s' attribute", attr),
+            String.format(
+                "the '%s' attribute",
+                attr.startsWith("v🌵") ? attr.substring("v🌵".length()) : attr
+            ),
             () -> phi.take(attr)
         );
     }

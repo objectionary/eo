@@ -19,7 +19,7 @@ public final class EOchunk$EOresized extends PhDefault implements Atom {
     /**
      * Name of the void that holds the size the block is resized to.
      */
-    private static final String CAPACITY = "capacity";
+    private static final String CAPACITY = "v🌵capacity";
 
     /**
      * Ctor.

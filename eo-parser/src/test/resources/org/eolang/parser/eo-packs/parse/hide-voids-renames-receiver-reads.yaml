@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A declared receiver "^me" is one ρ step, so "me.z" lands in the formation
+# that holds the head declaring it and reads its void "z" (#9788). The
+# receiver void itself keeps the name "ρ".
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/mandatory-as.xsl
+  - /org/eolang/parser/parse/set-locators.xsl
+  - /org/eolang/parser/parse/hide-voids.xsl
+asserts:
+  - /object[not(errors)]
+  - //o[@name='f' and @base='ξ.ρ.v🌵z']
+  - //o[@name='own' and @base='ξ.v🌵w']
+  - //o[@local='me' and @name='ρ' and @base='∅']
+input: |
+  [z] > foo
+    [^me w] >> deep
+      me.z > f
+      w > own

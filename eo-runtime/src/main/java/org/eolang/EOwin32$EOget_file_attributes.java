@@ -24,14 +24,14 @@ public final class EOwin32$EOget_file_attributes extends PhDefault implements At
      * Ctor.
      */
     public EOwin32$EOget_file_attributes() {
-        super(new Attrs(new Attr("path", new AtVoid("path"))));
+        super(new Attrs(new Attr("v🌵path", new AtVoid("v🌵path"))));
     }
 
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
             Kernel32.INSTANCE.GetFileAttributesW(
-                new WString(new Cstring(Expect.at(this, "path")).it())
+                new WString(new Cstring(Expect.at(this, "v🌵path")).it())
             )
         );
     }

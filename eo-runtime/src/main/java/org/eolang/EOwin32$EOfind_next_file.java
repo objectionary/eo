@@ -29,14 +29,14 @@ public final class EOwin32$EOfind_next_file extends PhDefault implements Atom {
      * Ctor.
      */
     public EOwin32$EOfind_next_file() {
-        super(new Attrs(new Attr("search", new AtVoid("search"))));
+        super(new Attrs(new Attr("v🌵search", new AtVoid("v🌵search"))));
     }
 
     @Override
     public Phi lambda() {
         final Pointer search = Handles.INSTANCE.get(
             "the 'search' attribute",
-            new Int(Expect.at(this, "search")).it()
+            new Int(Expect.at(this, "v🌵search")).it()
         );
         final WinFindData data = new WinFindData();
         final boolean found = Kernel32.INSTANCE.FindNextFileW(search, data);

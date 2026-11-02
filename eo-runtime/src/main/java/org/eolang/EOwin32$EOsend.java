@@ -26,10 +26,10 @@ public final class EOwin32$EOsend extends PhDefault implements Atom {
     public EOwin32$EOsend() {
         super(
             new Attrs(
-                new Attr("descriptor", new AtVoid("descriptor")),
-                new Attr("buffer", new AtVoid("buffer")),
-                new Attr("size", new AtVoid("size")),
-                new Attr("flags", new AtVoid("flags"))
+                new Attr("v🌵descriptor", new AtVoid("v🌵descriptor")),
+                new Attr("v🌵buffer", new AtVoid("v🌵buffer")),
+                new Attr("v🌵size", new AtVoid("v🌵size")),
+                new Attr("v🌵flags", new AtVoid("v🌵flags"))
             )
         );
     }
@@ -39,10 +39,10 @@ public final class EOwin32$EOsend extends PhDefault implements Atom {
         final byte[] chunk = new Portion(this).it();
         return new Data.ToPhi(
             Winsock.INSTANCE.send(
-                new Pointer(new Dataized(this.take("descriptor")).asNumber().longValue()),
+                new Pointer(new Dataized(this.take("v🌵descriptor")).asNumber().longValue()),
                 chunk,
                 chunk.length,
-                new Int(Expect.at(this, "flags")).it()
+                new Int(Expect.at(this, "v🌵flags")).it()
             )
         );
     }

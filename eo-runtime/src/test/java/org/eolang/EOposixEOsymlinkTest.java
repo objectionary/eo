@@ -25,7 +25,7 @@ final class EOposixEOsymlinkTest {
                 () -> new Dataized(
                     new PhApplication(
                         new EOposix$EOsymlink(),
-                        "target",
+                        "v🌵target",
                         new Data.ToPhi(String.join(String.valueOf((char) 0), "плюшка", "щи"))
                     ).take("code")
                 ).take(),
@@ -48,10 +48,10 @@ final class EOposixEOsymlinkTest {
                     new PhApplication(
                         new PhApplication(
                             new EOposix$EOsymlink(),
-                            "target",
+                            "v🌵target",
                             new Data.ToPhi("плюшка")
                         ),
-                        "path",
+                        "v🌵path",
                         new Data.ToPhi(String.join(String.valueOf((char) 0), "плюшка", "щи"))
                     ).take("code")
                 ).take(),

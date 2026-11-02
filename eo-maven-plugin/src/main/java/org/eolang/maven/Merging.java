@@ -8,6 +8,8 @@ import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.StClasspath;
+import com.yegor256.xsline.Xsline;
 import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,11 +32,11 @@ import org.w3c.dom.NodeList;
  * <p>The parsed XMIR of the object and of its members are all on disk by the
  * time this runs, and the splice is a matter of moving elements: the
  * top-level {@code <o>} of {@code number/lt.xmir} becomes a child of the
- * top-level {@code <o>} of {@code number.xmir}. No name inside the moved tree
- * is rewritten, because the parser leaves every name fully qualified and every
- * {@code loc} already reads as the locator the node will carry once it is an
- * attribute of {@code Φ.number}, so no reference can be captured by an
- * attribute of the object it lands in.</p>
+ * top-level {@code <o>} of {@code number.xmir}. No reference to another
+ * object inside the moved tree is rewritten, because the parser leaves every
+ * name fully qualified and every {@code loc} already reads as the locator the
+ * node will carry once it is an attribute of {@code Φ.number}, so no reference
+ * can be captured by an attribute of the object it lands in.</p>
  *
  * <p>Every package this build compiles an object for is merged, and no other:
  * a package whose name no object carries, as {@code examples} in a program
@@ -44,6 +46,14 @@ import org.w3c.dom.NodeList;
  * <p>A member arrives after the attributes the object already had, so the
  * places of the voids, and with them the meaning of applying the object to
  * arguments, stay as they were.</p>
+ *
+ * <p>The parser hides every void of the object behind {@code v🌵}, together
+ * with every own read of it (#9788), but a member reads the void through its
+ * receiver, a {@code ρ} hop that leaves the member's own file, so its parser
+ * could not tell the read was an own one. Once the member is inside the
+ * object, the hop lands in the object, so {@code hide-voids.xsl} runs again
+ * over the merged XMIR and hides that read as well. Any name hidden already
+ * stays as it is.</p>
  *
  * <p>Merging twice does nothing the second time: a member that has already
  * moved is marked as merged in the tojos and is not standalone any more, so
@@ -174,7 +184,9 @@ final class Merging implements Step {
             }
         }
         final Path dest = new Place(pkg).make(this.dir(), MjAssemble.XMIR);
-        final String merged = new XMLDocument(formation.getOwnerDocument()).toString();
+        final String merged = new Xsline(
+            new StClasspath("/org/eolang/parser/parse/hide-voids.xsl")
+        ).pass(new XMLDocument(formation.getOwnerDocument())).toString();
         if (!Files.exists(dest) || !new Diff(Files.readString(dest), merged).same()) {
             new Saved(merged, dest).value();
         }

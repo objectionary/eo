@@ -37,10 +37,10 @@ final class EOchunkEOwriteTest {
                                     new Data.ToPhi(id)
                                 )
                             ),
-                            "offset",
+                            "v🌵offset",
                             new Data.ToPhi(0)
                         ),
-                        "data",
+                        "v🌵data",
                         new Data.ToPhi("héllo")
                     )
                 ).take()
@@ -89,7 +89,7 @@ final class EOchunkEOwriteTest {
                                 new Data.ToPhi(0)
                             )
                         ),
-                        "offset",
+                        "v🌵offset",
                         new Data.ToPhi(1.5)
                     )
                 ).take(),

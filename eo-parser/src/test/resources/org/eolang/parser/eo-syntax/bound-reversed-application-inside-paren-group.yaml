@@ -5,8 +5,8 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@base='Φ.false.if' and o[@base='Φ.number' and @as='a']]
-  - //o[@base='Φ.false.if' and o[@base='Φ.number' and @as='b']]
+  - //o[@base='Φ.false.if' and o[@base='Φ.number' and @as='v🌵a']]
+  - //o[@base='Φ.false.if' and o[@base='Φ.number' and @as='v🌵b']]
 input: |
   [] > main
     q.f (if. false 1:a 2:b) > z

@@ -20,14 +20,14 @@ public final class EOnumber$EOtimes extends PhDefault implements Atom {
      * Ctor.
      */
     public EOnumber$EOtimes() {
-        super(new Attrs(new Attr(Phi.RHO, new AtRho()), new Attr("b", new AtVoid("b"))));
+        super(new Attrs(new Attr(Phi.RHO, new AtRho()), new Attr("v🌵b", new AtVoid("v🌵b"))));
     }
 
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
             new Numeric(Expect.at(this, Phi.RHO)).it()
-                * new Numeric(Expect.at(this, "b")).it()
+                * new Numeric(Expect.at(this, "v🌵b")).it()
         );
     }
 }

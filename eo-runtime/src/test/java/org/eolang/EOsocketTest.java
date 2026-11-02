@@ -64,9 +64,9 @@ final class EOsocketTest {
                     new PhApplication(
                         new PhApplication(
                             Phi.Φ.take("socket"),
-                            "address", new Data.ToPhi("127.0.0.1")
+                            "v🌵address", new Data.ToPhi("127.0.0.1")
                         ),
-                        "port", new Data.ToPhi(Double.NaN)
+                        "v🌵port", new Data.ToPhi(Double.NaN)
                     ).take("checked-port")
                 ).take(),
                 "a port of nan must not be accepted"

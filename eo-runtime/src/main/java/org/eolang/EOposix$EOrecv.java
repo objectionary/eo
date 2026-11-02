@@ -24,9 +24,9 @@ public final class EOposix$EOrecv extends PhDefault implements Atom {
     public EOposix$EOrecv() {
         super(
             new Attrs(
-                new Attr("descriptor", new AtVoid("descriptor")),
-                new Attr("size", new AtVoid("size")),
-                new Attr("flags", new AtVoid("flags"))
+                new Attr("v🌵descriptor", new AtVoid("v🌵descriptor")),
+                new Attr("v🌵size", new AtVoid("v🌵size")),
+                new Attr("v🌵flags", new AtVoid("v🌵flags"))
             )
         );
     }
@@ -37,10 +37,10 @@ public final class EOposix$EOrecv extends PhDefault implements Atom {
             this,
             Phi.Φ.take("posix").take("read-return"),
             (buffer, size) -> CStdLib.INSTANCE.recv(
-                new Int(Expect.at(this, "descriptor")).it(),
+                new Int(Expect.at(this, "v🌵descriptor")).it(),
                 buffer,
                 size,
-                new Int(Expect.at(this, "flags")).it()
+                new Int(Expect.at(this, "v🌵flags")).it()
             )
         ).it();
     }

@@ -28,12 +28,12 @@ public final class EOposix$EOinet_addr extends PhDefault implements Atom {
      * Ctor.
      */
     public EOposix$EOinet_addr() {
-        super(new Attrs(new Attr("address", new AtVoid("address"))));
+        super(new Attrs(new Attr("v🌵address", new AtVoid("v🌵address"))));
     }
 
     @Override
     public Phi lambda() {
-        final String address = new Cstring(Expect.at(this, "address")).it();
+        final String address = new Cstring(Expect.at(this, "v🌵address")).it();
         final Inaddr converted = new Inaddr(address, CStdLib.INSTANCE.inet_addr(address));
         if (converted.failed()) {
             Native.setLastError(22);

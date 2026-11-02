@@ -8,8 +8,8 @@ sheets: []
 asserts:
   - /object[not(errors)]
   - //o[@name='slots' and o[@as='α0'] and o[@as='α1']]
-  - //o[@name='names' and o[@as='a'] and o[@as='b']]
-  - //o[@name='vertical' and o[@as='a'] and o[@as='b']]
+  - //o[@name='names' and o[@as='v🌵a'] and o[@as='v🌵b']]
+  - //o[@name='vertical' and o[@as='v🌵a'] and o[@as='v🌵b']]
 input: |
   [] > main
     foo 1 2 > none

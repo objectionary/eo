@@ -35,12 +35,12 @@ public final class EOwin32$EOinet_addr extends PhDefault implements Atom {
      * Ctor.
      */
     public EOwin32$EOinet_addr() {
-        super(new Attrs(new Attr("address", new AtVoid("address"))));
+        super(new Attrs(new Attr("v🌵address", new AtVoid("v🌵address"))));
     }
 
     @Override
     public Phi lambda() {
-        final String address = new Cstring(Expect.at(this, "address")).it();
+        final String address = new Cstring(Expect.at(this, "v🌵address")).it();
         final Inaddr converted = new Inaddr(
             address,
             Winsock.INSTANCE.inet_addr(Native.toByteArray(address, StandardCharsets.UTF_8))
