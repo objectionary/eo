@@ -14,11 +14,11 @@ sheets:
   - /org/eolang/parser/parse/add-default-package.xsl
   - /org/eolang/parser/parse/roll-bases.xsl
   - /org/eolang/parser/parse/mandatory-as.xsl
-  - /org/eolang/parser/parse/set-locators.xsl
   - /org/eolang/parser/parse/hide-voids.xsl
+  - /org/eolang/parser/parse/set-locators.xsl
 asserts:
   - /object[not(errors)]
-  - //o[@name='g' and @base='Φ.bar']/o[@as='v🌵x']
+  - //o[@name='g' and @base='Φ.bar']/o[@as='v🌵x' and @loc='Φ.foo.g.v🌵x']
   - //o[@name='g' and @base='Φ.bar']/o[@as='v🌵y']
   - //o[@name='h' and @base='Φ.bar']/o[@as='α0']
   - /object[not(//o[@as='x' or @as='y'])]

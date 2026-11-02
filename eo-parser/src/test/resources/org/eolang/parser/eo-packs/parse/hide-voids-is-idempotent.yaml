@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# A second run changes nothing: a name that already carries "v🌵" is not
-# hidden once more, which lets the merge run the step again over an object
-# that has taken its members in (#9788).
+# A second run changes nothing, even after the locators are set: a name that
+# already carries "v🌵" is not hidden once more, which lets the merge run the
+# step again over an object that has taken its members in (#9788).
 sheets:
   - /org/eolang/parser/parse/wrap-applications.xsl
   - /org/eolang/parser/parse/resolve-local-names.xsl
@@ -15,12 +15,12 @@ sheets:
   - /org/eolang/parser/parse/add-default-package.xsl
   - /org/eolang/parser/parse/roll-bases.xsl
   - /org/eolang/parser/parse/mandatory-as.xsl
-  - /org/eolang/parser/parse/set-locators.xsl
   - /org/eolang/parser/parse/hide-voids.xsl
+  - /org/eolang/parser/parse/set-locators.xsl
   - /org/eolang/parser/parse/hide-voids.xsl
 asserts:
   - /object[not(errors)]
-  - /object/o[@name='foo']/o[@base='∅' and @name='v🌵x']
+  - /object/o[@name='foo']/o[@base='∅' and @name='v🌵x' and @loc='Φ.foo.v🌵x']
   - //o[@name='own' and @base='ξ.v🌵x']
   - //o[@base='Φ.foo']/o[@as='v🌵x']
   - /object[not(//o[contains(@name, 'v🌵v🌵') or contains(@base, 'v🌵v🌵') or contains(@as, 'v🌵v🌵')])]

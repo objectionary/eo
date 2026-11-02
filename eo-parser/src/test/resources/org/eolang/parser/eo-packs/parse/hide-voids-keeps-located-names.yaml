@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A locator is the φ path to an object, so a name it was built from stays as
+# it is (#9788): a void or a named binding that already has a locator is not
+# hidden, and neither is a read of such a void, since the read would then
+# miss it. The parser hides voids before it sets the locators, so this never
+# leaves a name its locator does not hold.
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/mandatory-as.xsl
+  - /org/eolang/parser/parse/set-locators.xsl
+  - /org/eolang/parser/parse/hide-voids.xsl
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='foo']/o[@base='∅' and @name='x' and @loc='Φ.foo.x']
+  - //o[@name='own' and @base='ξ.x']
+  - //o[@base='Φ.foo']/o[@as='x' and @loc='Φ.foo.copy.x']
+  - /object[not(//o[contains(@name, 'v🌵') or contains(@base, 'v🌵') or contains(@as, 'v🌵')])]
+input: |
+  [x] > foo
+    x > own
+    foo 1:x > copy

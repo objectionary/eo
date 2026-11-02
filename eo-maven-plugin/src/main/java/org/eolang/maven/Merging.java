@@ -52,8 +52,10 @@ import org.w3c.dom.NodeList;
  * receiver, a {@code ρ} hop that leaves the member's own file, so its parser
  * could not tell the read was an own one. Once the member is inside the
  * object, the hop lands in the object, so {@code hide-voids.xsl} runs again
- * over the merged XMIR and hides that read as well. Any name hidden already
- * stays as it is.</p>
+ * over the merged XMIR and hides that read as well. Every void and named
+ * binding is hidden already, with a locator built from its hidden name, so
+ * this run renames only reads, which have no locator, and every name still
+ * matches its locator.</p>
  *
  * <p>Merging twice does nothing the second time: a member that has already
  * moved is marked as merged in the tojos and is not standalone any more, so

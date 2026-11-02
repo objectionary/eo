@@ -26,15 +26,24 @@
   never renamed: reads go through "φ" on purpose, the receiver is looked up
   by its name, and a cactus name is out of reach already.
 
-  The locators are set before this step, so each object keeps the locator
-  the source gave it. A name that already carries "v🌵" is left as it is,
-  which makes a second run change nothing, and lets the merge run the step
-  again over an object that has just taken its members in, so that a read
-  of the object's void through a member's receiver becomes an own read.
+  The locators are set after this step: a locator is the φ path to an
+  object, and in φ the void is called "v🌵x". A name that already has a
+  locator is therefore left as it is, and so is every read of a void with
+  such a name, because the read would miss the void otherwise. A name that
+  already carries "v🌵" is left as it is too, so a second run changes
+  nothing. That lets the merge run the step again over an object that has
+  just taken its members in: a member reads a void of the object through
+  its receiver, a "ρ" hop that left the member's file before the merge, so
+  only now does the read land in the object.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
-  <xsl:key name="voids" match="o[@base=$eo:empty and @name and parent::o[not(@base)]]" use="concat(@name, '#', generate-id(..))"/>
+  <!--
+  Every void, by the name it has once this step is over, together with the
+  formation it belongs to: "v🌵x" for a void hidden already or about to be,
+  and the name as it stands for one this step leaves alone.
+  -->
+  <xsl:key name="voids" match="o[@base=$eo:empty and @name and parent::o[not(@base)]]" use="concat(if (eo:hideable(string(@name)) and empty(@loc)) then $eo:veiled else '', @name, '#', generate-id(..))"/>
   <!-- Whether the name may take the "v🌵" mark. -->
   <xsl:function name="eo:hideable" as="xs:boolean">
     <xsl:param name="name" as="xs:string"/>
@@ -60,10 +69,10 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
-  <xsl:template match="o[@base=$eo:empty and parent::o[not(@base)]]/@name[eo:hideable(string(.))]">
+  <xsl:template match="o[@base=$eo:empty and parent::o[not(@base)] and empty(@loc)]/@name[eo:hideable(string(.))]">
     <xsl:attribute name="name" select="concat($eo:veiled, .)"/>
   </xsl:template>
-  <xsl:template match="o/@as[eo:hideable(string(.))]">
+  <xsl:template match="o[empty(@loc)]/@as[eo:hideable(string(.))]">
     <xsl:attribute name="as" select="concat($eo:veiled, .)"/>
   </xsl:template>
   <xsl:template match="o/@base[starts-with(., concat($eo:xi, '.'))]">
@@ -72,7 +81,7 @@
     <xsl:variable name="name" select="if (exists($place)) then $segments[$place] else ''"/>
     <xsl:variable name="formation" select="if (exists($place)) then ../ancestor::o[eo:abstract(.)][$place - 1] else ()"/>
     <xsl:choose>
-      <xsl:when test="eo:hideable($name) and exists($formation) and exists(key('voids', (concat($name, '#', generate-id($formation)), concat($eo:veiled, $name, '#', generate-id($formation)))))">
+      <xsl:when test="eo:hideable($name) and exists($formation) and exists(key('voids', concat($eo:veiled, $name, '#', generate-id($formation))))">
         <xsl:attribute name="base" select="string-join(for $at in 1 to count($segments) return if ($at = $place) then concat($eo:veiled, $segments[$at]) else $segments[$at], '.')"/>
       </xsl:when>
       <xsl:otherwise>
@@ -84,7 +93,7 @@
     <xsl:variable name="name" select="substring(., 2)"/>
     <xsl:variable name="formation" select="eo:landing(../o[1])"/>
     <xsl:choose>
-      <xsl:when test="eo:hideable($name) and exists($formation) and exists(key('voids', (concat($name, '#', generate-id($formation)), concat($eo:veiled, $name, '#', generate-id($formation)))))">
+      <xsl:when test="eo:hideable($name) and exists($formation) and exists(key('voids', concat($eo:veiled, $name, '#', generate-id($formation))))">
         <xsl:attribute name="base" select="concat('.', $eo:veiled, $name)"/>
       </xsl:when>
       <xsl:otherwise>

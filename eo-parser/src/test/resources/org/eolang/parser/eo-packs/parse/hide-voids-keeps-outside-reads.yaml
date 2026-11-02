@@ -14,8 +14,8 @@ sheets:
   - /org/eolang/parser/parse/add-default-package.xsl
   - /org/eolang/parser/parse/roll-bases.xsl
   - /org/eolang/parser/parse/mandatory-as.xsl
-  - /org/eolang/parser/parse/set-locators.xsl
   - /org/eolang/parser/parse/hide-voids.xsl
+  - /org/eolang/parser/parse/set-locators.xsl
 asserts:
   - /object[not(errors)]
   - //o[@name='far' and @base='Φ.bar.x']
