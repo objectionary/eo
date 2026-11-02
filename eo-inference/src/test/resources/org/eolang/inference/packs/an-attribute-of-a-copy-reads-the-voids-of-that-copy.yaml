@@ -7,7 +7,7 @@
 sources:
   point.eo: |
     [x y] > point
-      [] > sum
+      [^] > sum
         ^.x.plus ^.y > @
   app.eo: |
     [] > app

@@ -6,7 +6,7 @@
 # it; the end step says it cannot be told.
 sources:
   loop.eo: |
-    [] > loop
+    [^] > loop
       ^.loop.value > value
       value > @
   bytes.eo: |

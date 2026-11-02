@@ -8,7 +8,7 @@
 # it cannot be told.
 sources:
   again.eo: |
-    [] > again
+    [^] > again
       ^.again > @
   box.eo: |
     [item] > box

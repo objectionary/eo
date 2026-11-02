@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# kiosk sits at the top and declares its ^, so the runtime puts the package
+# it was loaded from into it, and the ^ that is its @ is Φ.
+sources:
+  kiosk.eo: |
+    [^] > kiosk
+      ^ > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.kiosk.φ']/is[@loc='Φ']
+  - /answers[not(o[@loc='Φ.kiosk.φ']//terminator)]

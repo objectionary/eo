@@ -61,15 +61,19 @@ final class PlacesTest {
         final State state = new Settled(world).state();
         final int garden = PlacesTest.garden(world);
         MatcherAssert.assertThat(
-            "a formation at a place must answer its copy born there, but it didnt",
+            "a formation at a place must answer its copy born there, its ^ still empty, but it didnt",
             state.evaluate("Φ.garden.bed", garden),
-            Matchers.hasToString(new Ids(PlacesTest.bed(state, world, garden)).toString())
+            Matchers.hasToString(
+                new Ids(
+                    world.intern(new Value('O', "Φ.garden.bed", "Φ.garden.bed", 0L, "", -1, 0))
+                ).toString()
+            )
         );
     }
 
     private static int garden(final World world) {
         return world.intern(
-            new Value('O', "Φ.garden", "Φ.garden", Formation.RHO, "", -1, 0)
+            new Value('O', "Φ.garden", "Φ.garden", 0L, "", -1, 0)
         );
     }
 
@@ -85,7 +89,7 @@ final class PlacesTest {
 
     private static World world(final Path temp) throws IOException {
         return new Sources(temp)
-            .with("garden.eo", "[] > garden", "  5 > @", "  [] > bed", "    ^ > @")
+            .with("garden.eo", "[] > garden", "  5 > @", "  [^] > bed", "    ^ > @")
             .world();
     }
 }

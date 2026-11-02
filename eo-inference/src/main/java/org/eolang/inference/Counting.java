@@ -21,7 +21,9 @@ import java.util.concurrent.atomic.AtomicLong;
  * <li>A test counts as dataized.</li>
  * <li>A copy whose {@code ^} does not count does not count either: its
  * {@code ρ} row has values and every one is a copy that does not count,
- * followed up the chain, where a copy met again counts.</li>
+ * followed up the chain, where a copy met again counts. A copy whose
+ * formation declares no {@code ^} has no {@code ρ} row, so nothing around
+ * it stops it from counting (#9785).</li>
  * </ul>
  *
  * <p>What it worked out is kept until the count of changes, the tally,
@@ -29,6 +31,15 @@ import java.util.concurrent.atomic.AtomicLong;
  * study copy.</p>
  *
  * @since 0.76.0
+ * @todo #9785:60min Keep a copy from counting when the copy it was made in
+ *  does not count. A copy of a formation that declares no {@code ^} has no
+ *  {@code ρ} row, so {@code upheld()} counts it even when the copy it was
+ *  made in does not count. So {@code [] > next} inside the copy as written
+ *  of {@code y} in the test {@code can-build-an-empty-range-from-wrong-items}
+ *  of {@code range.eo} counts, though that {@code y} has an empty void and
+ *  does not. The walk has to keep its own link from a copy to the copy it
+ *  was made in, apart from {@code ρ}, and {@code upheld()} has to follow
+ *  that link.
  */
 final class Counting {
 

@@ -9,15 +9,19 @@ package org.eolang.inference;
  *
  * <ul>
  * <li>Off {@code Φ}, a formation of that name is a fresh copy at the place,
- * and a place of that name is its answer.</li>
+ * with {@code Φ} as its {@code ρ} if it declares {@code ^}, and a place of
+ * that name is its answer.</li>
  * <li>Off a datum, it fails; off T, it is T; an unknown stays itself.</li>
- * <li>Off a copy, {@code ρ} is its {@code ρ} row, or a fresh copy of the
- * declared {@code ^}. A bound void is its row, every value stamped onto
- * the copy, next to the declared type. A void the copy's name says is
- * unbound reads T, an open void in a copy a stop kept, its declared type,
- * or its pool if Java made the copy (4.1, 4.5). A nested formation is a
- * fresh copy with the copy as {@code ρ}, and any other attribute is its
- * answer in the copy, stamped onto it.</li>
+ * <li>Off a copy whose formation declares no {@code ^}, {@code ρ} is T, as
+ * the runtime terminates on it, and a copy Java made is no exception
+ * (#9785). Off any other copy it is its {@code ρ} row, or a fresh copy of
+ * the formation the declared {@code ^} sits in when nobody bound it or Java
+ * made the copy. A bound void is its row, every value stamped onto the
+ * copy, next to the declared type. A void the copy's name says is unbound
+ * reads T, an open void in a copy a stop kept, its declared type, or its
+ * pool if Java made the copy (4.1, 4.5). A nested formation is a fresh copy,
+ * with the copy as its {@code ρ} if it declares {@code ^}, and any other
+ * attribute is its answer in the copy, stamped onto it.</li>
  * <li>A name the copy lacks is read off what its {@code @} gives, or off
  * what its atom returns, or fails when the formation is complete.</li>
  * </ul>
@@ -133,9 +137,12 @@ final class Reads {
 
     private Ints rho(final int num, final Site site) {
         final Value value = this.world.value(num);
+        final Formation shape = this.world.form(value.form());
         final Ints out = new Ints();
-        if ((value.bound() & Formation.RHO) == 0 || Values.JBORN.equals(value.birth())) {
-            final String rho = this.world.form(value.form()).parent();
+        if (!shape.open("ρ")) {
+            out.add(Values.TERM);
+        } else if ((value.bound() & Formation.RHO) == 0 || Values.JBORN.equals(value.birth())) {
+            final String rho = shape.parent();
             if (rho.isEmpty()) {
                 throw new IllegalStateException(
                     String.format(

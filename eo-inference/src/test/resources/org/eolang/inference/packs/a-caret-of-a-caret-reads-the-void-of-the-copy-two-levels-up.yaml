@@ -8,8 +8,8 @@
 sources:
   outer.eo: |
     [n] > outer
-      [] > middle
-        [] > inner
+      [^] > middle
+        [^] > inner
           ^.^.n > @
   app.eo: |
     [] > app

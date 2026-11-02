@@ -9,7 +9,7 @@
 sources:
   tuple.eo: |
     [item rest] > tuple
-      [f] > each
+      [^ f] > each
         f ^.item > @
   show.eo: |
     [x] > show

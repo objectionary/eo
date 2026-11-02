@@ -40,7 +40,7 @@ final class ReductionTest {
         MatcherAssert.assertThat(
             "a decorator must reduce to what its @ gives, but it didnt",
             state.kind(
-                world.intern(new Value('O', "Φ.five", "Φ.five", Formation.RHO, "", -1, 0))
+                world.intern(new Value('O', "Φ.five", "Φ.five", 0L, "", -1, 0))
             ),
             Matchers.hasToString(new Ids(state.shared("Φ.number")).toString())
         );

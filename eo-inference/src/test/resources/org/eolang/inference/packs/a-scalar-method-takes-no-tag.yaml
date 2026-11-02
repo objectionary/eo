@@ -9,13 +9,13 @@
 sources:
   tuple.eo: |
     [item rest] > tuple
-      [x] > with
+      [^ x] > with
         tuple x ^ > @
-      [] > doubled
+      [^] > doubled
         ^.item.twice > @
   number.eo: |
     [@] > number
-      [] > twice
+      [^] > twice
         tuple ^ ^ > @
   app.eo: |
     [] > app

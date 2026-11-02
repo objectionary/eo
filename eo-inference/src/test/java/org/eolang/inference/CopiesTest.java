@@ -102,4 +102,30 @@ final class CopiesTest {
             )
         );
     }
+
+    @Test
+    void dropsRhoHandedToCopyOfFormationThatDeclaresNone(@Mktmp final Path temp)
+        throws IOException {
+        final World world = new Sources(temp).with("lamp.eo", "[] > lamp", "  42 > @").world();
+        final State state = new State(world);
+        state.seed();
+        MatcherAssert.assertThat(
+            "a copy of a formation that declares no ^ must keep no ρ handed to it, but it kept one",
+            world.full(state.fresh("Φ.lamp", new Site("Φ.desk.φ", ""), Values.ROOT)),
+            Matchers.equalTo("Φ.lamp@Φ.desk.φ{}")
+        );
+    }
+
+    @Test
+    void keepsRhoHandedToCopyOfFormationThatDeclaresIt(@Mktmp final Path temp)
+        throws IOException {
+        final World world = new Sources(temp).with("lamp.eo", "[^] > lamp", "  42 > @").world();
+        final State state = new State(world);
+        state.seed();
+        MatcherAssert.assertThat(
+            "a copy of a formation that declares ^ must keep the ρ handed to it, but it didnt",
+            state.row(state.fresh("Φ.lamp", new Site("Φ.desk.φ", ""), Values.ROOT), "ρ").frozen(),
+            Matchers.hasToString(new Ids(Values.ROOT).toString())
+        );
+    }
 }
