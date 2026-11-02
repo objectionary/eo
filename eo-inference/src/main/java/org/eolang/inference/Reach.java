@@ -77,6 +77,16 @@ final class Reach {
     }
 
     private int quoted(final int column) {
+        final int found;
+        if (this.line.startsWith("\"\"\"", column)) {
+            found = 3;
+        } else {
+            found = this.string(column);
+        }
+        return found;
+    }
+
+    private int string(final int column) {
         int cursor = column + 1;
         int found = this.line.length() - column;
         while (cursor < this.line.length()) {
