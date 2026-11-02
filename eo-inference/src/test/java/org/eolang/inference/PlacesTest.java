@@ -58,10 +58,9 @@ final class PlacesTest {
     @Test
     void makesCopyOfFormationWrittenAtPlace(@Mktmp final Path temp) throws IOException {
         final World world = PlacesTest.world(temp);
-        final State state = new Settled(world).state();
         MatcherAssert.assertThat(
             "a formation at a place must answer its copy born there, its ^ still empty, but it didnt",
-            state.evaluate("Φ.garden.bed", PlacesTest.garden(world)),
+            new Settled(world).state().evaluate("Φ.garden.bed", PlacesTest.garden(world)),
             Matchers.hasToString(
                 new Ids(
                     world.intern(new Value('O', "Φ.garden.bed", "Φ.garden.bed", 0L, "", -1, 0))
