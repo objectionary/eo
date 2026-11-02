@@ -4,10 +4,13 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
-  - //o[@base='Φ.two.a' and @name='one']
-  - //o[@base='Φ.three.b' and @name='two']
+  - //o[@base='ξ.two.a' and @name='one']
+  - //o[@base='ξ.three.b' and @name='two']
   - //o[@base='Φ.c' and @name='three']
 input: |
-  a. > one
+  [] > main
+    a. > one
+      two
     b. > two
-      c > three
+      three
+    c > three

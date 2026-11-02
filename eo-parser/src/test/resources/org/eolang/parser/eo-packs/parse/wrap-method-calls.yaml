@@ -20,7 +20,7 @@ input: |
     stdout > @
       sprintf
         "%dth Fibonacci number is %d"
-        (args.get.trim 1).foo.tohex > n!
+        (args.get.trim 1).foo.tohex >>! n
         fibo n
     a > xxx
     .f1

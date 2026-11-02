@@ -14,9 +14,9 @@ origin: |
     and > result
       [x] > bar
         x > @
-      | 5 > baz
+      | 5 >> baz
 printed: |
   [] > app
     and baz > result
     I > bar
-    | 5 > baz
+    | 5 >> baz

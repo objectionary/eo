@@ -4,10 +4,10 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@base='Φ.then.baz' and @as='x' and @name='z']
+  - //o[@base='Φ.then.baz' and @as='x' and @local='z']
 input: |
   [] > main
     if. > first
       cond
       then
-      .baz:x > z
+      .baz:x >> z
