@@ -9,7 +9,8 @@
 # answer matches the true remainder for any pair of finite numbers, however
 # far apart their magnitudes are, at the cost of two recursive steps per
 # bit of the quotient. When the dividend is `nan` or infinite, the result is
-# `nan`, regardless of the divisor.
+# `nan`, regardless of the divisor. Both the number and `b` have to be eight
+# bytes wide, as `plus` and `div` ask of theirs; anything else terminates.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -26,9 +27,17 @@
     cant-mod
       "cannot calculate mod by zero"
     dividend.is-finite.not.if
-      nan
+      if.
+        num.as-bytes.size.eq 8
+        nan
+        T
+          "the 'ρ' attribute must be a number"
       divisor.is-finite.not.if
-        divisor.is-nan.if nan num
+        if.
+          b.as-bytes.size.eq 8
+          divisor.is-nan.if nan num
+          T
+            "the 'b' attribute must be a number"
         if.
           num.as-bytes.eq 80-00-00-00-00-00-00-00
           num
@@ -63,6 +72,26 @@
     5.mod
       0
       "recovered" > [message]
+
+  eq. ++> can-refuse-a-boolean-divisor
+    recovered
+      5.mod true
+      42
+    42
+
+  eq. ++> can-refuse-a-text-divisor
+    recovered
+      5.mod "abc"
+      42
+    42
+
+  eq. ++> can-refuse-a-text-number
+    recovered
+      mod.
+        number "abc"
+        5
+      42
+    42
 
   is-nan. ++> can-return-nan-when-the-dividend-is-infinite
     pinf.mod 5

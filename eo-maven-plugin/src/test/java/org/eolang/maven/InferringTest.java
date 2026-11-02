@@ -16,6 +16,7 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,6 +106,31 @@ final class InferringTest {
     }
 
     @Test
+    void leavesOutAnXmirTheCallerDidNotName(@Mktmp final Path temp) throws IOException {
+        final Path parsed = Files.createDirectories(temp.resolve("parsed"));
+        Files.writeString(
+            parsed.resolve("app.xmir"),
+            new EoSyntax(String.join(System.lineSeparator(), "[] > app", "")).parsed().toString()
+        );
+        Files.writeString(
+            parsed.resolve("bee.xmir"),
+            new EoSyntax(String.join(System.lineSeparator(), "[] > bee", "")).parsed().toString()
+        );
+        new Inferring(
+            Collections.singletonList(parsed.resolve("app.xmir")),
+            parsed,
+            temp.resolve("pre"),
+            temp.resolve("tables")
+        ).exec();
+        MatcherAssert.assertThat(
+            "a file left behind by a deleted source must stay out of the tables, but it didnt",
+            new XMLDocument(temp.resolve("tables").resolve("provides.xml"))
+                .nodes("/provides/type[@id='Φ.bee']"),
+            Matchers.empty()
+        );
+    }
+
+    @Test
     void writesDeclaredFormasOfAtoms(@Mktmp final Path temp) throws IOException {
         final Path sources = Files.createDirectories(temp.resolve("stove"));
         Files.writeString(
@@ -121,6 +147,26 @@ final class InferringTest {
             "the forma an atom declares must be written next to the other tables, but it isnt",
             new XMLDocument(temp.resolve("rows").resolve("atoms.xml")),
             XhtmlMatchers.hasXPath("/atoms/atom[@loc='Φ.kettle.heat' and @forma='Φ.number']")
+        );
+    }
+
+    @Test
+    void leavesGenericFormasOutOfTheAtoms(@Mktmp final Path temp) throws IOException {
+        final Path sources = Files.createDirectories(temp.resolve("stove"));
+        Files.writeString(
+            sources.resolve("keep.xmir"),
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(),
+                    "[] > keep /A", "  ? > value", ""
+                )
+            ).parsed().toString()
+        );
+        new Inferring(sources, temp.resolve("pre"), temp.resolve("rows")).exec();
+        MatcherAssert.assertThat(
+            "a generic letter names no object, so it must not be written down as a forma, but it was",
+            new XMLDocument(temp.resolve("rows").resolve("atoms.xml")),
+            Matchers.not(XhtmlMatchers.hasXPath("/atoms/atom[@forma='A']"))
         );
     }
 

@@ -6,6 +6,7 @@ package org.eolang.maven;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -87,7 +88,7 @@ final class MjPlaceTest {
 
     @Test
     void placesWithoutBinaries(@Mktmp final Path temp) throws IOException {
-        Files.createDirectories(new Subdir(temp.resolve("target"), "resolve").path());
+        Files.createDirectories(new Seqdir(temp.resolve("target"), 2).dirs().once("resolve"));
         MatcherAssert.assertThat(
             String.format(
                 "PlaceMojo must not place binaries from %s",
@@ -252,7 +253,7 @@ final class MjPlaceTest {
     ) throws IOException {
         new Saved(
             content,
-            new Subdir(temp.resolve("target"), "resolve").path().resolve(
+            new Seqdir(temp.resolve("target"), 2).dirs().once("resolve").resolve(
                 Paths.get(String.format("%s/%s", "foo/hello/-/0.1", binary))
             )
         ).value();

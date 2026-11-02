@@ -79,6 +79,11 @@ public final class AtOnce implements Attribute {
     }
 
     @Override
+    public boolean voided() {
+        return false;
+    }
+
+    @Override
     public String φTerm() {
         return this.origin.φTerm();
     }

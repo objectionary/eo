@@ -105,9 +105,9 @@ one after another:
     that need to be done
     with the XML document in order to make it ready for compilation.
     Each transformation has its own `.xsl` file in the `eo-parser` directory.
-    The class `org.eolang.parser.Program` is responsible for making XSLT
-    transformations and the entire list of them is stored in the
-    `org.eolang.parser.Pack` class. Some of XLST files are sanity checks
+    The class `org.eolang.parser.Pipeline` is responsible for making XSLT
+    transformations and the list of them is stored in the
+    `org.eolang.parser.Canonical` class. Some of XLST files are sanity checks
     (or linters).
     The output of each transformation you can find in the `target/eo/optimize`
     directory.
@@ -136,12 +136,14 @@ required objects
 and only download (and cache) them in case they are not found locally.
 
 This behaviour can be changed to always download objects from remote by
-providing Maven option `-U`
-(see [Maven CLI docs](https://maven.apache.org/ref/3.1.0/maven-embedder/cli.html)):
+setting `eo.overWrite`:
 
 ```shell
-mvn -U clean install
+mvn clean install -Deo.overWrite=true
 ```
+
+Setting `eo.cacheEnabled=false` does the same, by taking the cache out of
+the picture altogether.
 
 If you want to build your project or run your tests, which use eo-maven-plugin,
 you can change stack size for your purposes by stack-size option:
@@ -166,16 +168,17 @@ It will build the plugin and install it in your local Maven repository.
 
 ### How to run Integration Tests only
 
-If you want to run a specific integration test without waiting until other unit
+The integration tests are the `*IT` classes of `eo-integration-tests`, run by
+failsafe. If you want to run one of them without waiting until the other unit
 or integration tests are executed, you might execute the following command
-under the `eo-maven-plugin` directory:
+in the root of the repository:
 
 ```shell
-mvn clean integration-test invoker:run -Dinvoker.test=fibonacci -DskipTests
+mvn verify -pl eo-integration-tests -am -Dit.test=JarIT -DskipTests
 ```
 
-Here `fibonacci` is the name of the desired integration test, `-DskipTests` is
-used in order to skip `eo-maven-plugin` unit tests.
+Here `JarIT` is the name of the desired integration test, `-DskipTests` is
+used in order to skip unit tests.
 
 ### How to disable Integration Tests
 

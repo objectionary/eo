@@ -230,11 +230,13 @@ final class Bound {
                 found.put(application, filled);
             }
         }
+        final Map<String, String> bearers = new Stamped(this.pairs, this.receivers, this.owned)
+            .bearers(this.sites);
         for (final Map.Entry<String, String> dispatch : this.receivers.entrySet()) {
             final String hollow = this.owned.receiver(this.hung(dispatch, landed));
             if (!hollow.isEmpty()) {
                 found.computeIfAbsent(dispatch.getKey(), key -> new LinkedHashMap<>(1))
-                    .put(hollow, dispatch.getValue());
+                    .put(hollow, bearers.getOrDefault(dispatch.getKey(), dispatch.getValue()));
             }
         }
         this.relayed(found, landed, relays);

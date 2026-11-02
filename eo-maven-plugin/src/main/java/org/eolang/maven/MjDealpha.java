@@ -4,8 +4,10 @@
  */
 package org.eolang.maven;
 
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -25,7 +27,7 @@ import org.apache.maven.plugins.annotations.Parameter;
  * and the number of those is written to the log. With {@link #rigid} set,
  * the build fails when there is one.</p>
  *
- * <p>The XMIR goes to a directory {@link Subdir} numbers "dealpha", and
+ * <p>The XMIR goes to a directory {@code Seqdir} numbers "dealpha", and
  * {@link MjTranspile} reads it from there.</p>
  *
  * @since 0.69.0
@@ -39,7 +41,7 @@ public final class MjDealpha extends MjSafe {
 
     /**
      * The directory with the tables that {@link MjInference} writes,
-     * falling back to a directory {@link Subdir} numbers "inference"
+     * falling back to a directory {@code Seqdir} numbers "inference"
      * when unset.
      */
     @Parameter(alias = "inferenceDir", property = "eo.inferenceDir")
@@ -65,14 +67,16 @@ public final class MjDealpha extends MjSafe {
 
     @Override
     void exec() throws IOException {
+        final Path inference;
+        if (this.tables == null) {
+            inference = new Seqdir(this.target.toPath(), 2).dirs().once("inference");
+        } else {
+            inference = this.tables.toPath();
+        }
         try (TjsForeign tojos = this.tojos()) {
             new Dealphaing(
                 tojos.standalone(),
-                new Landings(
-                    new Subdir(this.target, "inference")
-                        .orConfigured(this.tables)
-                        .resolve("links.xml")
-                ),
+                new Landings(inference.resolve("links.xml")),
                 this.target.toPath(),
                 this.rigid
             ).exec();

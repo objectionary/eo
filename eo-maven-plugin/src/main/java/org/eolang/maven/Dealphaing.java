@@ -6,6 +6,7 @@ package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,7 +28,7 @@ import org.w3c.dom.NodeList;
  * tojo points, and every {@code @as} of the {@code αN} form is replaced with
  * the name {@link Landings} knows for the {@code @loc} of the argument. The
  * {@code @loc} stays as it is, so the rows of the inference tables still
- * point at the argument. The result goes to a directory {@link Subdir}
+ * point at the argument. The result goes to a directory {@code Seqdir}
  * numbers "dealpha" and the tojo points there, which is where
  * {@link MjTranspile} reads it from.</p>
  *
@@ -95,7 +96,7 @@ final class Dealphaing implements Step {
         if (this.tojos.isEmpty()) {
             Logger.debug(this, "No XMIR to name the arguments in");
         } else {
-            final Path dir = new Subdir(this.target, "dealpha").path();
+            final Path dir = new Seqdir(this.target, 2).dirs().once("dealpha");
             final Map<String, String> names = this.landings.names();
             final Map<String, Collection<String>> verdicts = new HashMap<>(3);
             for (final TjForeign tojo : this.tojos) {

@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An argument may name the void it goes into instead of taking a place, and
+# the parser forbids mixing the two. Such an application answers the voids of
+# the object it copies exactly as a positional one does, so `x` holds `oak`
+# and the leaf read through `p` is the leaf of `oak`.
+eo:
+  app.eo: |
+    [] > app
+      pick oak:x > p
+      p.leaf > r
+  pick.eo: |
+    [x] > pick
+      x > @
+  oak.eo: |
+    [] > oak
+      [] > leaf
+links:
+  - "//bind[@void='Φ.pick.x']/ref[@loc='Φ.app.p.x']"

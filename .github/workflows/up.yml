@@ -24,7 +24,7 @@ jobs:
       - run: |-
           git fetch --tags --force && \
           latest=$(git tag --sort=creatordate | tail -1) && \
-          export latest && \
+          echo "version=${latest}" >> "$GITHUB_ENV" && \
           sed -E -i "s/<version>[^<]+/<version>${latest}/g" eo-maven-plugin/README.md
       - uses: peter-evans/create-pull-request@v8
         with:

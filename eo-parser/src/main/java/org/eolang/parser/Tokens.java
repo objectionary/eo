@@ -625,15 +625,34 @@ final class Tokens {
     }
 
     /**
+     * Whether the quote at this position opens a string literal, rather
+     * than standing inside a name. A {@code NAME} holds every character
+     * but the ones §2.3 lists, and {@code "} is not among them, so
+     * {@code a"b} is one name and a reader that takes its quote for the
+     * start of a literal walks past the rest of the line (#9378). A
+     * literal opens where a token opens: at the head of the text, or
+     * right after a glyph that ends the token before it.
+     *
+     * @param text Text being scanned
+     * @param idx Index of the quote
+     * @return Opening flag
+     */
+    static boolean opensString(final String text, final int idx) {
+        return idx == 0 || Tokens.terminates(text.charAt(idx - 1));
+    }
+
+    /**
      * Whether the glyph ends the token a reader is on. Shared with
      * {@link Bytes}, so a BYTES literal owns exactly the characters
-     * every other reader of this class would leave to it.
+     * every other reader of this class would leave to it. The slash is
+     * among them because §2.3 keeps it out of a {@code NAME}: it opens
+     * an atom signature, so a name ends where one starts (#9317).
      *
      * @param glyph The character to weigh
      * @return Terminator flag
      */
     static boolean terminates(final char glyph) {
-        return " \t,.|':;!?[]{}()".indexOf(glyph) >= 0;
+        return " \t,.|':;!?*/[]{}()".indexOf(glyph) >= 0;
     }
 
     private Value readDigits() {
@@ -721,7 +740,11 @@ final class Tokens {
     }
 
     private static boolean hexDigit(final char glyph) {
-        return Character.digit(glyph, 16) >= 0;
+        return Tokens.digit(glyph) || Tokens.hexLetter(glyph);
+    }
+
+    private static boolean hexLetter(final char glyph) {
+        return glyph >= 'a' && glyph <= 'f' || glyph >= 'A' && glyph <= 'F';
     }
 
     private static boolean letterAt(final String body, final int idx) {
@@ -788,6 +811,7 @@ final class Tokens {
 
     private void skipGroup(final int start) {
         int depth = 1;
+        int deepest = 1;
         this.cursor = this.cursor + 1;
         while (this.cursor < this.body.length() && depth > 0) {
             final char glyph = this.body.charAt(this.cursor);
@@ -801,6 +825,7 @@ final class Tokens {
                 }
             } else if (glyph == '(') {
                 depth = depth + 1;
+                deepest = Math.max(deepest, depth);
             } else if (glyph == ')') {
                 depth = depth - 1;
             }
@@ -810,6 +835,12 @@ final class Tokens {
             throw new ParseError(
                 this.span.line(), this.span.indent() + start,
                 "unterminated paren group"
+            );
+        }
+        if (deepest > Stack.DEEPEST) {
+            throw new ParseError(
+                this.span.line(), this.span.indent() + start,
+                String.format("object nested deeper than %d levels", Stack.DEEPEST)
             );
         }
     }

@@ -16,8 +16,9 @@ import org.eolang.ExFailure;
  * buffer they were given.</p>
  *
  * <p>Public because both families of adapters read into a buffer, and
- * a size the process cannot allocate has to be refused the same way on
- * either one.</p>
+ * {@code malloc.of} and {@code chunk.resized} ask for one too, while a
+ * size the process cannot allocate has to be refused the same way on
+ * every one of them.</p>
  *
  * @since 0.64.0
  */

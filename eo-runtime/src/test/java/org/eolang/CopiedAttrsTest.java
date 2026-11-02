@@ -202,6 +202,11 @@ final class CopiedAttrsTest {
         }
 
         @Override
+        public boolean voided() {
+            return false;
+        }
+
+        @Override
         public String φTerm() {
             return "counting";
         }

@@ -275,6 +275,19 @@
                 <xsl:apply-templates select="@as"/>
               </xsl:if>
               <!--
+              The folded handle applies the formation standing right above it
+              (`n0 42 &gt;&gt; n3` under `[b] &gt;&gt; n0`), and this reference
+              stands right below the handle, so once the handle is gone the
+              application lands directly under the formation. The formation is
+              kept there as the anonymous `[b] &gt;&gt;` (see `eo:piped`), so the
+              application must read it as a `| 42` pipe, the same way a
+              hand-written `n0 42 &gt; @` does; without the marker it is printed
+              against the cactus name, as a "vL_P" nothing declares (#9167).
+              -->
+              <xsl:if test="not(starts-with(@as, $eo:alpha)) and exists($value/o) and preceding-sibling::o[1] is $target and exists($target/preceding-sibling::o[1][eo:piped(., eo:resolved-name($value/@base))])">
+                <xsl:attribute name="pipe"/>
+              </xsl:if>
+              <!--
               The reference carries a binding name of its own and the target
               contributes none — a based `a &gt;&gt; b` handle is neither an
               abstract formation nor a dataized const, so `$keep-name` is false

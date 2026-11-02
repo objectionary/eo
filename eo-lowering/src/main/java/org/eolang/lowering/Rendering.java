@@ -9,18 +9,22 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import org.cactoos.Proc;
 import org.cactoos.Text;
+import org.cactoos.io.Directory;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.iterable.Sorted;
 import org.cactoos.list.ListOf;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
@@ -34,6 +38,12 @@ import org.cactoos.text.TextOf;
  * body is a few lines of Java: one line for every symbol that phino made
  * in the protocol. These lines are put into a Java class, which is an
  * atom. Later, {@link Patching} puts this atom into the EO object.</p>
+ *
+ * <p>The atoms of an earlier build are deleted before this one writes any,
+ * the way {@link Morphing} deletes the protocols of an earlier build. The
+ * Maven goal hands the directory to javac whole, so an atom whose entry is
+ * now a taint, or whose object was renamed or deleted, would otherwise be
+ * compiled again and again (#9267).</p>
  *
  * <p>The Java files are written into the directory of atoms, next to the
  * directory of protocols, so that a reader of the build can compare every
@@ -82,6 +92,22 @@ import org.cactoos.text.TextOf;
  * must be there before the stage starts, even though most entries never
  * ask them.</p>
  *
+ * <p>Every {@code T} of the copies is a copy of {@code throw} by now, see
+ * {@link Pruning}. phino stops at the λ of {@code throw}, since nothing
+ * answers it, and the protocol keeps the message that copy got. So when
+ * the root of an entry is such a copy, the atom only throws that message,
+ * through {@code ExFailure}, which is what {@code T} does in eo-runtime,
+ * and {@code recovered} catches it the same way.</p>
+ *
+ * <p>A fork whose branch is a {@code T} raises on that side, as
+ * {@code bytes.xor} does when its operands differ in length. phino joins
+ * such a fork into its other branch, and writes a {@code terminate} record
+ * that names the condition and the message. The atom checks that condition
+ * with an {@code if}, which throws the message through {@code ExFailure}
+ * right where the condition is computed. This check is a guard. An entry
+ * whose fork raises anywhere but around its whole body is a taint, and so
+ * is an entry that raises a message it would have to compute.</p>
+ *
  * @since 0.64.0
  * @todo #9248:45min Put the object around a root that comes out of an
  *  {@code if} or a dispatch. The protocol names the object around the root
@@ -93,10 +119,21 @@ import org.cactoos.text.TextOf;
  *  parts}, is a taint now for the same reason. Once phino names, in the
  *  formations of {@code L_root}, the object each root reduced to, read the
  *  object around the root there as well.
+ * @todo #9373:45min Write an atom for an entry that throws a message it
+ *  computes. When the message of a {@code T} is not a string literal, like
+ *  {@code T (string FF-FE)} or {@code T (x.as-string)}, phino writes it as
+ *  an object, and the entry is a taint now. But its atom could compute the
+ *  message first, and then throw it.
  * @todo #8548:30min Write an atom for an entry whose result is always the
  *  same. When the result of the body is known bytes, like an object that
  *  always returns {@code 42}, the entry is a taint now. But its atom could
  *  simply return those bytes.
+ * @todo #9448:45min Put a guard inside the branch or the operand where its
+ *  fork raises. A guard stands at the top of the atom now, so an entry is a
+ *  taint when the fork that raises sits inside a branch of another fork, or
+ *  inside an argument of an operation, or next to a fork that does not
+ *  raise. Once phino names, in every {@code terminate} record, the fork and
+ *  the branch the record sits inside, place every guard right there.
  */
 final class Rendering implements Proc<Path> {
 
@@ -143,6 +180,14 @@ final class Rendering implements Proc<Path> {
                 )
             );
         }
+        final Path protocols = new Seqdir(home, 1).dirs().find("protocols").orElseThrow(
+            () -> new IllegalStateException(
+                String.format(
+                    "There are no protocols in '%s', while rendering needs the protocols the morphing writes",
+                    home
+                )
+            )
+        );
         final Map<String, Path> tops = new HashMap<>(0);
         for (final Path copy : new Copies(home)) {
             tops.put(new XMLDocument(copy).xpath("/object/o[1]/@loc").get(0), copy);
@@ -153,6 +198,7 @@ final class Rendering implements Proc<Path> {
         ).with(new Hrefs())
             .with("voids", home.resolve("voids.tsv").toUri().toString())
             .with("inference", this.tables.toUri().toString());
+        this.clean();
         final Collection<String> rendered = new ArrayList<>(0);
         final Map<String, Collection<String>> claims = new HashMap<>(0);
         int tainted = 0;
@@ -161,8 +207,7 @@ final class Rendering implements Proc<Path> {
             new Mapped<>(Text::asString, new Split(new TextOf(entries), "\\R"))
         )) {
             final String[] cells = row.split("\t", -1);
-            final Path protocol = home.resolve("2-protocols")
-                .resolve(new Locator(cells[1]).protocol());
+            final Path protocol = protocols.resolve(new Locator(cells[1]).protocol());
             if (Files.exists(protocol)) {
                 final String top = Rendering.top(tops, cells[1]);
                 final XML out = sheet
@@ -218,6 +263,15 @@ final class Rendering implements Proc<Path> {
             "Rendered %d atoms into %[file]s, while %d entries were taints",
             rendered.size(), this.atoms, tainted
         );
+    }
+
+    private void clean() throws IOException {
+        if (Files.exists(this.atoms)) {
+            for (final Path stale
+                : new Sorted<>(Comparator.reverseOrder(), new Directory(this.atoms))) {
+                Files.delete(stale);
+            }
+        }
     }
 
     private int unshared(

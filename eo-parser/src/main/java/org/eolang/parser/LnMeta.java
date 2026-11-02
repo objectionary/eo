@@ -146,6 +146,12 @@ final class LnMeta implements Line {
                 "'+package' path must be made of object names, not a scope token"
             );
         }
+        if (path.unnamed()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "'+package' path must be made of object names"
+            );
+        }
     }
 
     private void checkAlias(final List<String> parts) {
@@ -172,6 +178,12 @@ final class LnMeta implements Line {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
                 "'+alias' target must be an object name, not a scope token"
+            );
+        }
+        if (target.unnamed()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "'+alias' target must be made of object names"
             );
         }
     }

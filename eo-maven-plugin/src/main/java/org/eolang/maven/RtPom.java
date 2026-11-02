@@ -63,6 +63,7 @@ final class RtPom implements Scalar<Dep> {
 
     private static boolean isRuntime(final Dependency dep) {
         return "org.eolang".equals(dep.getGroupId())
-            && "eo-runtime".equals(dep.getArtifactId());
+            && "eo-runtime".equals(dep.getArtifactId())
+            && (dep.getClassifier() == null || dep.getClassifier().isEmpty());
     }
 }

@@ -5,6 +5,7 @@
 package org.eolang.inference;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ import java.util.Map;
  * The object a name written after a dot hands its receiver to.
  *
  * <p>{@code a.b} takes {@code b} off {@code a}, and the runtime stamps the
- * {@code a} on whatever {@code b} is a copy of, as long as that copy has no
+ * owner on whatever {@code b} is a copy of, as long as that copy has no
  * receiver of its own yet. So the chain of copies is walked from {@code b},
  * and the walk stops at the first object that settles it. A formation that
  * declares {@code ^} settles it one way, since that is where the receiver
@@ -64,6 +65,30 @@ final class Stamped {
         this.pairs = links;
         this.receivers = taken;
         this.owned = provided;
+    }
+
+    /**
+     * Owners of dispatched attributes, retaining applied body bindings.
+     *
+     * @param sites The dispatches
+     * @return Attribute owners by the application locator
+     */
+    Map<String, String> bearers(final Collection<Site> sites) {
+        final Map<String, String> found = new HashMap<>(0);
+        final Map<String, String> names = new Ends(this.pairs).names();
+        for (final Site site : sites) {
+            String bearer = site.bearer();
+            final Collection<String> seen = new HashSet<>(0);
+            while (!bearer.isEmpty() && seen.add(bearer)) {
+                final String type = names.getOrDefault(bearer, bearer);
+                if (!this.owned.here(type, site.name()).isEmpty()) {
+                    found.put(site.made(), bearer);
+                    break;
+                }
+                bearer = this.owned.body(type);
+            }
+        }
+        return found;
     }
 
     /**

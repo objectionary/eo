@@ -1,5 +1,5 @@
 # Object `printf` allows you to format and output text depending
-# on the arguments passed to it and return it as `org.eolang.string`.
+# on the arguments passed to it and return it as `string`.
 #
 # A specifier reads as `%[N$][flags][width][.precision]conversion`, where
 # `N$` picks the `N`-th argument (1-based) instead of the next sequential

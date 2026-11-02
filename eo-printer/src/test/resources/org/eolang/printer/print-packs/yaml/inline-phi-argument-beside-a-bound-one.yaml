@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #9380: one argument bound by name ("5:x") makes the printer label every
+# other argument of the same application, and the label of a formation
+# argument used to be glued after the brackets of its collapsed inline-phi
+# form ("q > [m]:0"), where no binding may stand ("unexpected content after
+# name suffix" on reparse). The bracket head of a vertical formation does
+# carry a binding, so a labelled formation keeps that shape instead.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > foo
+    c > @
+      5:x
+      q > [m]
+
+printed: |
+  [] > foo
+    c > @
+      5:x
+      [m]:0
+        q > @

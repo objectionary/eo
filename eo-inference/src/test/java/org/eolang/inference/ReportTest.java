@@ -103,6 +103,19 @@ final class ReportTest {
     }
 
     @Test
+    void encodesAPageNameThatABrowserWouldReadAsAFragment(@Mktmp final Path temp)
+        throws IOException {
+        final Path xmirs = ReportTest.program(temp);
+        Files.move(xmirs.resolve("cup.xmir"), xmirs.resolve("a#b.xmir"));
+        new Report(xmirs, ReportTest.tables(temp)).written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "a hash in the name must be encoded in the link, or the browser reads it as a fragment",
+            Files.readString(temp.resolve("out").resolve("index.html")),
+            Matchers.containsString("a%23b.eo.html")
+        );
+    }
+
+    @Test
     void writesAnIndexForAnEmptyProgram(@Mktmp final Path temp) throws IOException {
         final Path xmirs = Files.createDirectories(temp.resolve("xmirs"));
         final Path tables = temp.resolve("tables");

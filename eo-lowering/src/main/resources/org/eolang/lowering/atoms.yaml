@@ -6,10 +6,20 @@
 # name of a λ function; a bare 𝜎 in an answer is a fresh symbol wrapped in
 # the carrier of the operation. A λ function no key matches is left where
 # it stands, and the formation that reached it is a taint.
-# A fork brings its two branches to one shape with the rules of its rewrite
-# block before it symbolizes and joins them: the true and false eo-runtime
+# A fork first unfolds a branch that is an ordinary object, firing what its
+# φ comes to, and a call the firing enters again, or a copy over a bare
+# symbol, becomes a symbol of its own. Then it brings the branches to one
+# shape with the rules of its rewrite block: the true and false eo-runtime
 # spells, a bool a firing answered and an object decorating one are one
-# value in three spellings, and the join pairs nothing but symbols.
+# value in three spellings, and a tuple shrinks to three symbols, one per
+# part. Its stay block drops the ρ hung on a dispatch, such as the one the
+# data of bytes.as-number carries, so a branch read through the ρ of a copy
+# meets one made of no object in the same shape. The upcast block casts a
+# bare symbol into the shape of the other branch, and the join pairs
+# nothing but symbols.
+# A branch that stops at the λ of "throw", which is what every T is by now,
+# raises: the fork is joined into its other branch, and the protocol keeps
+# the condition and the message, which rendering turns into a guard.
 - λ: L_number_(plus|times|div)
   dataize:
     𝛿1: $.ρ
@@ -48,16 +58,24 @@
   dataize:
     𝛿1: $.target
   𝑛: Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )
+- λ: L_os_name
+  𝑛: Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )
 - λ: L_fork
   dataize:
     𝛿1: $.φ
   morph:
     𝑛1: $.left
     𝑛2: $.right
+  evaluate:
+    𝑛3: 𝑛1
+    𝑛4: 𝑛2
+  unfold:
+    𝑛5: {of: 𝑛3, defer: true}
+    𝑛6: {of: 𝑛4, defer: true}
   rewrite:
-    𝑛3:
-      of: 𝑛1
-      rules: &bool
+    𝑛7:
+      of: 𝑛5
+      rules: &shape
         - name: false-literal
           pattern: >-
             ⟦ !B1, φ ↦ Φ.bool( if ↦ ⟦ ρ ↦ ∅, 𝜏1 ↦ ∅, 𝜏2 ↦ ∅,
@@ -86,21 +104,42 @@
           result: >-
             ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
             φ ↦ 𝑒1 ⟧ ) ⟧
-    𝑛4:
-      of: 𝑛2
-      rules: *bool
+        - name: small-tuple
+          pattern: ⟦ tail ↦ 𝑒1, head ↦ 𝑒2, length ↦ 𝑒3, !B ⟧
+          result: Φ.tuple( tail ↦ 𝑒4, head ↦ 𝑒5, length ↦ 𝑒6 )
+          where:
+            - meta: 𝑒4
+              function: remint
+              args: [𝑒1]
+            - meta: 𝑒5
+              function: remint
+              args: [𝑒2]
+            - meta: 𝑒6
+              function: remint
+              args: [𝑒3]
+    𝑛8:
+      of: 𝑛6
+      rules: *shape
+  stay:
+    𝑛9: 𝑛7
+    𝑛10: 𝑛8
   symbolize:
-    𝑛5: 𝑛3
-    𝑛6: 𝑛4
+    𝑛11: 𝑛9
+    𝑛12: 𝑛10
+  upcast:
+    𝑛13: 𝑛11
+    𝑛14: 𝑛12
   join:
-    𝑛7: [𝑛5, 𝑛6]
-  𝑛: 𝑛7
+    𝑛15: [𝑛13, 𝑛14]
+  lenient: []
+  terminators: [L_throw]
+  𝑛: 𝑛15
 - λ: L_entry
   dataize:
     𝛿1: $.n
   morph:
     𝑛1: $.v.φ
-  𝑛: Φ.l🌵.root( 𝑛1 )
+  𝑛: Φ.l/.root( 𝑛1 )
 - λ: L_root
   dataize:
     𝛿1: $.v

@@ -25,7 +25,7 @@ final XML xmir = new EoSyntax(new InputOf("[] > foo\n")).parsed();
 | --- | --- |
 | Line-by-line lex + classify + emit (direct EO → XMIR) | `Eo.java`, `Ln*` line shapes |
 | Post-parse XSL passes (alias resolution, FQN building, etc.) | `src/main/resources/org/eolang/parser/parse/*.xsl` |
-| Canonical printing (XMIR → EO round-trip) | `Xmir`, `src/main/resources/org/eolang/parser/print/*.xsl` |
+| Canonical printing (XMIR → EO round-trip) | not here: `Xmir` and `src/main/resources/org/eolang/printer/print/*.xsl` live in `eo-printer` |
 
 ## Design overview
 
@@ -49,7 +49,7 @@ Below the line layer, **`Tokens`** is the per-line lexer used by every `Ln*` (he
 - **One class per line shape.** Adding a new construct = adding one `Ln*` class and one classifier branch in `Eo`. No grammar regeneration.
 - **`Stack` owns cross-line semantics.** `Ln*` classes never look at sibling lines; they only consult/mutate the top of the stack via well-defined `push`/`replace`/`pop` hooks.
 - **Spec is the contract.** Every `Ln*` class header cites the §/R-rules it implements. Behaviour disagreements are bugs in one or the other — `PARSER_SPEC.md` and the code are kept in sync by deliberate audit (see the recent §3.6 / §3.10 / §9.7 reconciliations).
-- **Package-private surface.** Only `EoSyntax`, `Xmir`, `StrictXmir`, `TrFull`, `ObjectName`, `OnDefault`, `OnDetailed` are exported. Everything else is an implementation detail and free to change.
+- **Package-private surface.** Only `EoSyntax`, `Canonical`, `StrictXmir`, `StXnav`, `TrFull`, `ObjectName`, `OnDefault`, `OnDetailed` are exported. Everything else is an implementation detail and free to change.
 - **Fail-fast at line scope.** Errors surface as `ParseError` with a `[line:col]` position; `Eo.dispatch` catches and rolls back the line's emissions, then the parser keeps going so a single malformed line doesn't poison the rest of the file.
 
 ## How to Test
@@ -63,7 +63,7 @@ All parser tests live in `org.eolang.parser.EoSyntaxTest`. The class drives four
 | `checksTypoPacks` | `eo-typos/` | Intentionally invalid EO — the parser must emit an error at the expected `line:` with a message containing `message:`. |
 | `checksXsdMistakes` | `xsd-mistakes/` | XMIR that should fail XSD validation. |
 
-Additional suites cover round-trip printing (`XmirTest`, `print-packs/`) and strict XMIR validation (`StrictXmirTest`).
+Another suite here covers strict XMIR validation (`StrictXmirTest`). Round-trip printing is tested in `eo-printer`, by `XmirTest` over `print-packs/`.
 
 ## YAML pack format
 
@@ -108,9 +108,10 @@ The parser emits errors in the canonical `[L:P] error: '<message>'` form (`MsgLo
 
 ## XSL stylesheets
 
-The `sheets:` paths are classpath-relative. Two main directories:
+The `sheets:` paths are classpath-relative. This module ships one directory:
 
 - `/org/eolang/parser/parse/` — runs after the parser to enrich the XMIR (e.g. `expand-aliases.xsl`, `resolve-aliases.xsl`, `build-fqns.xsl`, `add-default-package.xsl`, `wrap-method-calls.xsl`).
-- `/org/eolang/parser/print/` — XMIR → EO round-trip passes used by `Xmir.toEO`.
+
+The XMIR → EO round-trip passes that `Xmir.toEO` runs are `/org/eolang/printer/print/` in `eo-printer`, not here.
 
 Inside `asserts:`, the rendered XMIR uses XMIR's R-9.3 token mapping: `Q` → `Φ`, `@` → `φ`, `^` → `ρ`, `$` → `ξ`. So a source `Q.foo` appears as `@base='Φ.foo'`, not `@base='Q.foo'`.

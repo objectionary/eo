@@ -12,7 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.stream.Stream;
-import org.cactoos.io.ResourceOf;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.Trimmed;
@@ -26,8 +25,9 @@ import org.cactoos.text.UncheckedText;
  * itself, and this class is the only place that runs phino. Every new
  * release of phino may read its input a little differently and may give
  * different results. So, this module trusts phino only when its version is
- * exactly the one written in the resource file
- * {@code phino-version.txt}.</p>
+ * exactly the one it was given, which is called the "pin". Every command
+ * this class runs also hands the pin to phino, so phino itself refuses to
+ * work when its version is another one.</p>
  *
  * <p>phino is started as a separate process through {@link Jaxec}. What it
  * prints is not shown in the log of the build. Its normal output is thrown
@@ -44,12 +44,19 @@ final class Phino {
     private final String binary;
 
     /**
+     * The only version of phino that this module accepts.
+     */
+    private final String version;
+
+    /**
      * Ctor.
      *
      * @param exe The name of the phino program, or the path to it
+     * @param pin The only version of phino that this module accepts
      */
-    Phino(final String exe) {
+    Phino(final String exe, final String pin) {
         this.binary = exe;
+        this.version = pin;
     }
 
     @Override
@@ -102,6 +109,7 @@ final class Phino {
         this.run(
             new Jaxec(
                 this.binary,
+                String.format("--pin=%s", this.version),
                 "merge",
                 "--input=xmir",
                 "--sweet",
@@ -116,9 +124,13 @@ final class Phino {
      * Ask phino to compute one entry of the world, with symbols as inputs.
      *
      * <p>This is called "morphing". The stage {@link Planting} put every
-     * entry into an object named {@code l🌵}, under the name {@code e} plus
+     * entry into an object named {@code l/}, under the name {@code e} plus
      * the number of the entry, and this method asks phino to work on
-     * exactly that one. When phino meets an atom whose work is listed in
+     * exactly that one. The name of that object holds nothing but ASCII,
+     * because Java writes the arguments of a child process in the encoding
+     * of the locale, and a locale outside UTF-8, which many containers run
+     * with, turns every other letter into a question mark that phino
+     * refuses. When phino meets an atom whose work is listed in
      * the table of operations, such as adding two numbers, it does not run
      * the atom, but writes down "here the two symbols were added". When
      * phino cannot go further, it leaves that part as it is. When phino
@@ -127,14 +139,19 @@ final class Phino {
      * nothing else. One entry that never ends must not stop the whole build,
      * so phino is told how many seconds it may work, and it stops by itself
      * when they are over. Then it closes the protocol with a {@code timeout}
-     * element and fails. This class never kills phino, because a killed phino
-     * leaves a protocol cut in the middle, which nobody can read.</p>
+     * element, or with a {@code timeout(…)} line when the protocol is
+     * indented text, and fails. This class never kills phino, because a
+     * killed phino leaves a protocol cut in the middle, which nobody can
+     * read.</p>
      *
      * @param world The world, which {@link Merging} wrote
      * @param atoms The table of operations phino may write down
      * @param entry The number of the entry to work on
-     * @param protocol The file for the steps, in XML because its name ends with .xml
+     * @param protocol The file for the steps, in XML when its name ends with
+     *  .xml and in indented text otherwise
      * @param steps The largest number of steps phino may take inside one another
+     * @param loops How many times phino may enter the same formation again
+     *  before it decides that the run loops and cuts it
      * @param budget The time phino may work, rounded up to whole seconds
      * @throws IOException If phino cannot be started, or a
      *  {@link KilledException} if phino stopped because its time was over
@@ -142,23 +159,24 @@ final class Phino {
      */
     void morph(
         final Path world, final Path atoms, final int entry, final Path protocol,
-        final int steps, final Duration budget
+        final int steps, final int loops, final Duration budget
     ) throws IOException {
         final String task = String.format("morphing the entry %d of '%s'", entry, world);
         try {
             this.run(
                 new Jaxec(
                     this.binary,
+                    String.format("--pin=%s", this.version),
                     "morph",
-                    "--deep",
                     "--acyclic=plausible",
+                    String.format("--max-loops=%d", loops),
                     "--partial",
                     "--quiet",
                     "--sweet",
                     "--hide-rho",
                     "--abridged",
                     String.format("--symbolic=%s", atoms),
-                    String.format("--locator=Q.l🌵.e%d", entry),
+                    String.format("--locator=Q.l/.e%d", entry),
                     String.format("--protocol=%s", protocol),
                     String.format("--max-steps=%d", steps),
                     String.format(
@@ -174,7 +192,9 @@ final class Phino {
                 throw ex;
             }
             try (Stream<String> lines = Files.lines(protocol)) {
-                if (lines.noneMatch(line -> line.contains("<timeout "))) {
+                if (lines.noneMatch(
+                    line -> line.contains("<timeout ") || line.trim().startsWith("timeout(")
+                )) {
                     throw ex;
                 }
             }
@@ -191,16 +211,10 @@ final class Phino {
     /**
      * The only version of phino that this module accepts.
      *
-     * @return The content of {@code phino-version.txt}, without spaces around it
+     * @return The version this object was given
      */
     String pin() {
-        return new UncheckedText(
-            new Trimmed(
-                new TextOf(
-                    new ResourceOf("org/eolang/lowering/phino-version.txt", this.getClass())
-                )
-            )
-        ).asString();
+        return this.version;
     }
 
     private void run(final Jaxec command, final String task) throws IOException {

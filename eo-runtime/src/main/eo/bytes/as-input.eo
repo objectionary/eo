@@ -81,25 +81,21 @@
   01-02-03.as-input.read 0.5 --> stops-on-a-fractional-byte-count-below-available
 
   read. --> stops-on-a-fractional-byte-count-in-a-chained-read
-    01-02-03-04-05-06.as-input
-    3.read
+    01-02-03-04-05-06.as-input.read 3
     1.5
 
   01-02-03.as-input.read nan --> stops-on-a-nan-byte-count
 
   read. --> stops-on-a-nan-byte-count-in-a-chained-read
-    01-02-03-04-05-06.as-input
-    3.read
+    01-02-03-04-05-06.as-input.read 3
     nan
 
   read. --> stops-on-a-negative-byte-count-in-a-chained-read
-    01-02-03-04-05-06.as-input
-    3.read
+    01-02-03-04-05-06.as-input.read 3
     -5
 
   01-02-03.as-input.read pinf --> stops-on-an-infinite-byte-count
 
   read. --> stops-on-an-infinite-byte-count-in-a-chained-read
-    01-02-03-04-05-06.as-input
-    3.read
+    01-02-03-04-05-06.as-input.read 3
     pinf

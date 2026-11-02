@@ -1,4 +1,4 @@
-# Raises the number to the power of `b` as `org.eolang.number`. A zero exponent
+# Raises the number to the power of `b` as `number`. A zero exponent
 # gives one, an integer exponent is expanded by exponentiation-by-squaring so
 # integer results stay exact, and a fractional exponent of a positive base is
 # taken as e raised to `b` times the natural logarithm of the base. Zeros,

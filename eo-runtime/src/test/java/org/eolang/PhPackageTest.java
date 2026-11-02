@@ -34,6 +34,21 @@ final class PhPackageTest {
     }
 
     @Test
+    void namesTheObjectItRefusesToPut() {
+        MatcherAssert.assertThat(
+            "the message must name the object by its forma, while it named a Java class",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new PhPackage("org.eolang").put(0, new Data.ToPhi(1.0)),
+                "putting into a package object must fail"
+            ).getMessage(),
+            Matchers.containsString(
+                "Can't #put(0, Φ.number) to package object \"org.eolang\""
+            )
+        );
+    }
+
+    @Test
     void printsGlobalScopeAsTerm() {
         MatcherAssert.assertThat(
             "Global package must render its name as φ-term, but it didnt",

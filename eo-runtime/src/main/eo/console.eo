@@ -31,9 +31,9 @@
 #
 # Here `"Hello, world!".as-bytes` bytes are printed to console.
 # The object `write` is an output block.
-# It dataizes the given argument, converts it to string,
-# prints it to the operating system console and returns the next output block
-# ready to `write` again.
+# It dataizes the given argument, prints its bytes to the operating system
+# console as they are, with no conversion to string, and returns the next
+# output block ready to `write` again.
 #
 # One implementation does the reading and the writing, and the platform
 # enters it as an adapter carrying, for each of the two streams, the call

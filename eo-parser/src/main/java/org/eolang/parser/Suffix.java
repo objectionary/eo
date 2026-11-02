@@ -649,7 +649,7 @@ final class Suffix {
 
     private static boolean endsName(final char glyph) {
         return Suffix.terminates(glyph)
-            || ",.|':;?[]{}()".indexOf(glyph) >= 0;
+            || ",.|':;?*[]{}()".indexOf(glyph) >= 0;
     }
 
     /**

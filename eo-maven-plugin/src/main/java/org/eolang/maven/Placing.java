@@ -24,7 +24,7 @@ import org.eolang.cache.FpIgnore;
  * Core placing logic: copies binary files from the resolved dependency directory
  * into the classes output directory.
  *
- * <p>Input directory is the resolved-deps folder (a directory {@link Subdir}
+ * <p>Input directory is the resolved-deps folder (a directory {@code Seqdir}
  * numbers "resolve"). Output directory is the classes directory.</p>
  *
  * @see <a href="https://news.eolang.org/2022-10-19-placed-catalog.html">Place catalog</a>
