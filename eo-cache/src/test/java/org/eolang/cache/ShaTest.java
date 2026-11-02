@@ -118,6 +118,18 @@ final class ShaTest {
     }
 
     @Test
+    void distinguishesAFileHoldingDirectoryEntriesFromThatDirectory(@Mktmp final Path temp)
+        throws IOException {
+        new Saved(String.format("dir\0a.txt\0hello\0%d\0", 5), temp.resolve("word.txt")).value();
+        new Saved("hello", temp.resolve("dir/a.txt")).value();
+        MatcherAssert.assertThat(
+            "a file holding a directory digest and that directory hash alike",
+            new Sha(temp.resolve("word.txt")).toString(),
+            Matchers.not(Matchers.equalTo(new Sha(temp.resolve("dir")).toString()))
+        );
+    }
+
+    @Test
     void framesALoneFileWithItsKindWord(@Mktmp final Path temp)
         throws IOException, NoSuchAlgorithmException {
         final long seed = System.nanoTime();
@@ -125,7 +137,7 @@ final class ShaTest {
         final Path file = temp.resolve("lone.txt");
         new Saved(text, file).value();
         MatcherAssert.assertThat(
-            String.format("hash of a lone file is the plain one of its bytes, seed=%d", seed),
+            String.format("hash of a lone file is the framed one of its bytes, seed=%d", seed),
             new Sha(file).toString(),
             Matchers.equalTo(
                 Base64.getEncoder().encodeToString(
