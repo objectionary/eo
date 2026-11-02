@@ -34,6 +34,21 @@ create a file `pom.xml` with this content (it's just a sample):
 ```xml
 <project>
   [...]
+  <properties>
+    <maven.compiler.release>17</maven.compiler.release>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>eo-runtime</artifactId>
+      <version>0.63.2</version>
+    </dependency>
+    <dependency>
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>jna</artifactId>
+      <version>5.19.1</version>
+    </dependency>
+  </dependencies>
   <build>
     <plugins>
       <plugin>
@@ -53,6 +68,7 @@ create a file `pom.xml` with this content (it's just a sample):
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
+        <version>3.6.4</version>
         <executions>
           <execution>
             <phase>test</phase>
