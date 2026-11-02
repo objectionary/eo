@@ -55,14 +55,15 @@ final class MjFormatTest {
         );
         MatcherAssert.assertThat(
             "a source that is not UTF-8 must fail with its file and line, not be reformatted",
-            new UncheckedText(
-                new TextOf(
+            String.join(
+                System.lineSeparator(),
+                new Causes(
                     Assertions.assertThrows(
                         IllegalStateException.class,
                         () -> maven.execute(MjFormat.class)
                     )
                 )
-            ).asString(),
+            ),
             Matchers.allOf(
                 Matchers.containsString("main.eo"),
                 Matchers.containsString(":2:"),

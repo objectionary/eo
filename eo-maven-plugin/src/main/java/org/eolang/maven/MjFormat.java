@@ -45,6 +45,10 @@ import org.eolang.printer.Xmir;
  * settling pass keeps the tree it parsed instead of parsing the same text
  * again to lay it out.</p>
  *
+ * <p>Every source is decoded strictly before {@link Raws} is asked for a tree,
+ * so a file that is not UTF-8 fails with its own name and line instead of being
+ * formatted from a tree the raw cache holds for an earlier text of the path.</p>
+ *
  * @since 0.57.0
  */
 @Mojo(

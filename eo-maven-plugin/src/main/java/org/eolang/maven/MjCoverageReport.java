@@ -17,8 +17,11 @@ import java.util.stream.Stream;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.io.InputOf;
+import org.cactoos.text.UncheckedText;
 import org.eolang.cache.Saved;
 import org.eolang.parser.EoSyntax;
+import org.eolang.parser.Utf8;
 
 /**
  * Turns the raw {@code loc:line:pos} coverage hits {@code PhCoverage}
@@ -144,7 +147,11 @@ public final class MjCoverageReport extends MjSafe {
                 final Map<Integer, Integer> lines = perfile.computeIfAbsent(
                     source, key -> new LinkedHashMap<>(0)
                 );
-                final XML xmir = new EoSyntax(Files.readString(tojo.source())).parsed();
+                final XML xmir = new EoSyntax(
+                    new UncheckedText(
+                        new Utf8(new InputOf(tojo.source()), source)
+                    ).asString()
+                ).parsed();
                 if (!xmir.nodes(
                     "/object/errors/error[@severity='error' or @severity='critical']"
                 ).isEmpty()) {
