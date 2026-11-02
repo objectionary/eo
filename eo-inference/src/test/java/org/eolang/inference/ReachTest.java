@@ -43,6 +43,24 @@ final class ReachTest {
     }
 
     @Test
+    void coversAllThreeQuotesOfATextBlockDelimiter() {
+        MatcherAssert.assertThat(
+            "all three closing quotes must be covered without the binding, but they werent",
+            new Reach("  \"\"\" > text").from(2),
+            Matchers.equalTo(3)
+        );
+    }
+
+    @Test
+    void keepsAnEmptyStringAtTwoQuotes() {
+        MatcherAssert.assertThat(
+            "an empty string must stop before its binding, but it didnt",
+            new Reach("  \"\" > text").from(2),
+            Matchers.equalTo(2)
+        );
+    }
+
+    @Test
     void carriesTheDecimalPointOfANumber() {
         MatcherAssert.assertThat(
             "3.14 is four characters of one number, but it was measured shorter",

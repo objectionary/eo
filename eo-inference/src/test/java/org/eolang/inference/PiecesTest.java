@@ -23,6 +23,21 @@ import org.w3c.dom.Element;
 final class PiecesTest {
 
     @Test
+    void marksAllClosingQuotesOfATextBlock() throws ParserConfigurationException {
+        MatcherAssert.assertThat(
+            "the text block mark must cover three quotes and leave the binding plain, but it didnt",
+            PiecesTest.drawn(
+                "  \"\"\" > text",
+                new Written("Φ.app.text", 2, "", "Φ.string")
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/line/bit[text='\"\"\"']/told[@loc='Φ.app.text']",
+                "/line/bit[.=' > text' and not(@band)]"
+            )
+        );
+    }
+
+    @Test
     void walksAChainOfReceiversLeftward() throws ParserConfigurationException {
         MatcherAssert.assertThat(
             "each link of the chain must get its own word, but they piled onto one",
