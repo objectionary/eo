@@ -11,6 +11,7 @@ import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -64,6 +65,36 @@ final class MjParseTest {
             String.format("ParseMojo should have parsed stdout object %s, but didn't", parsed),
             result,
             Matchers.hasKey(parsed)
+        );
+    }
+
+    @Test
+    void failsOnInvalidUnicodeWithFileAndLine(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram("[] > a");
+        Files.write(
+            temp.resolve("foo/x/main.eo"),
+            String.join(
+                System.lineSeparator(),
+                "[] > a",
+                String.format("  \"%c\" > x", 0xE9),
+                ""
+            ).getBytes(StandardCharsets.ISO_8859_1)
+        );
+        MatcherAssert.assertThat(
+            "a source that is not UTF-8 must fail with its file and line, not parse as U+FFFD",
+            new UncheckedText(
+                new TextOf(
+                    Assertions.assertThrows(
+                        IllegalStateException.class,
+                        () -> maven.execute(new PpParse())
+                    )
+                )
+            ).asString(),
+            Matchers.allOf(
+                Matchers.containsString("main.eo"),
+                Matchers.containsString(":2:"),
+                Matchers.containsString("not valid UTF-8")
+            )
         );
     }
 

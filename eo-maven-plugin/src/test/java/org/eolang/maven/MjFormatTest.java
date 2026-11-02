@@ -7,6 +7,8 @@ package org.eolang.maven;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,6 +38,36 @@ final class MjFormatTest {
                 .withProgram(MjFormatTest.canonical(new HelloWorld().asString()))
                 .execute(MjFormat.class),
             "canonical source must pass the format check without failing the build"
+        );
+    }
+
+    @Test
+    void failsOnInvalidUnicode(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram("[] > a");
+        Files.write(
+            temp.resolve("foo/x/main.eo"),
+            String.join(
+                System.lineSeparator(),
+                "[] > a",
+                String.format("  \"%c\" > x", 0xE9),
+                ""
+            ).getBytes(StandardCharsets.ISO_8859_1)
+        );
+        MatcherAssert.assertThat(
+            "a source that is not UTF-8 must fail with its file and line, not be reformatted",
+            new UncheckedText(
+                new TextOf(
+                    Assertions.assertThrows(
+                        IllegalStateException.class,
+                        () -> maven.execute(MjFormat.class)
+                    )
+                )
+            ).asString(),
+            Matchers.allOf(
+                Matchers.containsString("main.eo"),
+                Matchers.containsString(":2:"),
+                Matchers.containsString("not valid UTF-8")
+            )
         );
     }
 

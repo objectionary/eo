@@ -16,11 +16,12 @@ import java.util.Optional;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.text.TextOf;
+import org.cactoos.io.InputOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.cache.Saved;
 import org.eolang.parser.Canonical;
 import org.eolang.parser.EoSyntax;
+import org.eolang.parser.Utf8;
 import org.eolang.printer.Xmir;
 
 /**
@@ -91,7 +92,9 @@ public final class MjFormat extends MjPenalties {
 
     private int reformat(final TjForeign tojo, final Raws raws) throws IOException {
         final Path source = tojo.source();
-        final String actual = new UncheckedText(new TextOf(source)).asString();
+        final String actual = new UncheckedText(
+            new Utf8(new InputOf(source), source.toString())
+        ).asString();
         final String canonical = this.canonical(tojo, actual, raws);
         final Diff diff = new Diff(actual, canonical);
         final int diverged;
