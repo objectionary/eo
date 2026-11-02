@@ -166,7 +166,7 @@ final class PhTerminatorTest {
                 () -> new Dataized(
                     new PhApplication(
                         new Data.ToPhi("%d").take("printf").copy(),
-                        "args", new Data.ToPhi(new Phi[]{new Data.ToPhi(number)})
+                        "v🌵args", new Data.ToPhi(new Phi[]{new Data.ToPhi(number)})
                     )
                 ).take()
             ).toString(),
@@ -183,7 +183,7 @@ final class PhTerminatorTest {
                 () -> new Dataized(
                     new PhApplication(
                         new Data.ToPhi("%d").take("printf").copy(),
-                        "args", new Data.ToPhi(new Phi[]{new Data.ToPhi(1.0e19)})
+                        "v🌵args", new Data.ToPhi(new Phi[]{new Data.ToPhi(1.0e19)})
                     )
                 ).take()
             ).toString(),

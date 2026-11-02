@@ -366,7 +366,7 @@ final class ExpectTest {
                             Phi.RHO,
                             new Data.ToPhi(42)
                         ),
-                        "b",
+                        "v🌵b",
                         new Data.ToPhi(true)
                     )
                 ).take(),

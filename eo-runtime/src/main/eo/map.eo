@@ -104,7 +104,9 @@
               kbts.eq entry.kbts
       hash. >> hash!
         key.as-bytes >> kbts!
-  [key value] > entry
+  [label content] > entry
+    label > key
+    content > value
 
   ++> can-add-a-key-colliding-with-an-existing-one
     and. > @

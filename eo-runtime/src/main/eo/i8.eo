@@ -8,13 +8,14 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[as-bytes] > i8
+[bts] > i8
   if. > @
     as-bytes.size.eq 1
     as-bytes
     T
       "An i8 needs exactly 1 byte, got %d".printf
         * as-bytes.size
+  bts > as-bytes
   i16 > [^num] > as-i16
     concat.
       if.

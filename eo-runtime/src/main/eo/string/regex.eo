@@ -73,7 +73,7 @@
 # objectionary/lints#1301 counts a hop through the receiver as reaching
 # outward even when the head declares a void of the same name.
 #
-# @todo #9650:30min Remove `+unlint too-deep-object:1713-1724` from the
+# @todo #9650:30min Remove `+unlint too-deep-object:1747-1758` from the
 #  metas below. It hides how deep `refused` in `pattern` nests its chain of
 #  `if.` over the escaped byte, up to 15 levels where the lint allows 12. Split
 #  the chain into objects of its own, so that `refused` nests no deeper.
@@ -84,7 +84,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-attachment
-+unlint too-deep-object:1713-1724
++unlint too-deep-object:1747-1758
 +version 0.0.0
 
 [^text] > regex
@@ -142,8 +142,11 @@
           or.
             b.eq 0C-
             b.eq 0D-
-  [begin marks end] >> block
+  [start captures finish] >> block
+    start > begin
+    finish > end
     true > exists
+    captures > marks
   [^regex negated] >> border
     if. > [^node s at caps k] > run
       eq.
@@ -451,8 +454,10 @@
             caps
           nothing
         nothing
-  [end marks] >> found
+  [finish captures] >> found
+    finish > end
     true > exists
+    captures > marks
   if. > [^regex e] >> glyph
     alnum e
     control e
@@ -625,8 +630,12 @@
                 C3-BF
                 c
       c
-  [from group next to] >> mark
+  [since index rest till] >> mark
+    since > from
+    index > group
+    rest > next
     true > some
+    till > to
   [^regex fold items negated unicode] >> member
     [^node s at caps k] > run
       if. > @
@@ -713,7 +722,7 @@
       0
       00-
     [^pat txt] > match
-      [^hunt position start offset hit] > matched
+      [^hunt ordinal outset offset hit] > matched
         hunt.pat.parsed.groups.plus 1 > count
         from.plus > ending!
           hunt.subj.chars hit.begin hit.end
@@ -759,6 +768,8 @@
             hit.end
         start.plus > origin!
           hunt.subj.chars offset hit.begin
+        ordinal > position
+        outset > start
         group 0 > text
         number ending > to
         if. > [^frame index] >> present
@@ -790,7 +801,7 @@
             offset
             hit
           hunt.missing position
-      [^hunt position] > missing
+      [^hunt ordinal] > missing
         T "Matched block does not exist, can't get count" > count
         T "Matched block does not exist, can't get groups" > existing
         start.gte 0 > exists
@@ -800,6 +811,7 @@
           "Matched block does not exist, can't get group-exists"
         T "Matched block does not exist, can't get groups" > groups
         T "Matched block does not exist, can't get next" > next
+        ordinal > position
         -1 > start
         T "Matched block does not exist, can't get text" > text
         T "Matched block does not exist, can't get 'to' position" > to
@@ -859,8 +871,10 @@
       initial
     if. > parsed
       initial.eq --
-      [at reason] >> no
+      [position cause] >> no
+        position > at
         false > ok
+        cause > reason
       | -1 "The flags must be a sequence of 'd', 'i', 'm', 's', 'u' and 'x'"
       outcome.ok.if
         if.
@@ -885,20 +899,40 @@
           concat.
             "cannot search with the regex pattern '".as-bytes.concat raw
             "'".as-bytes
-    [at groups mode node text] >> yes
+    [position tally options root content] >> yes
+      position > at
+      tally > groups
+      options > mode
+      root > node
       true > ok
-    [at text] >> read
+      content > text
+    [position content] >> read
+      position > at
       true > ok
-    [at from to] >> span
+      content > text
+    [position since till] >> span
+      position > at
+      since > from
       true > ok
       false > preset
-    [at letter negated] >> named
+      till > to
+    [position symbol inverted] >> named
+      position > at
+      symbol > letter
+      inverted > negated
       true > ok
       true > preset
-    [at least most] >> bounds
+    [position minimum maximum] >> bounds
+      position > at
+      minimum > least
+      maximum > most
       true > ok
-    [at value] >> numeral
-    [at mode] >> switched
+    [position amount] >> numeral
+      position > at
+      amount > value
+    [position options] >> switched
+      position > at
+      options > mode
       true > ok
     bit.eq > [bit mode] >> flagged
       mode.and bit
@@ -2045,7 +2079,7 @@
                   1
         breaks c unix
       true
-  [^regex text] >> subject
+  [^regex content] >> subject
     subj.text.slice > [^subj at] > char
       at
       width
@@ -2078,6 +2112,7 @@
           at
       | 0 0 > @
     text.size > size
+    content > text
   if. > [^regex count value] >> tens
     10.gt value
     count

@@ -33,7 +33,7 @@ public final class TupleToArray implements Supplier<Phi[]> {
 
     @Override
     public Phi[] get() {
-        final double raw = new Dataized(this.tuple.take("v🌵length")).asNumber().doubleValue();
+        final double raw = new Dataized(this.tuple.take("length")).asNumber().doubleValue();
         if (!Double.isFinite(raw) || raw < 0.0 || Math.rint(raw) != raw
             || raw > Integer.MAX_VALUE) {
             throw new ExFailure(
@@ -45,8 +45,8 @@ public final class TupleToArray implements Supplier<Phi[]> {
         final Phi[] arguments = new Phi[length];
         Phi tup = this.tuple;
         for (int idx = length - 1; idx >= 0; --idx) {
-            arguments[idx] = tup.take("v🌵head");
-            tup = tup.take("v🌵tail");
+            arguments[idx] = tup.take("head");
+            tup = tup.take("tail");
         }
         return arguments;
     }

@@ -45,7 +45,7 @@ final class PhiTest {
                         0,
                         new Data.ToPhi("Hello, world")
                     ),
-                    "text"
+                    "v🌵text"
                 )
             ).asString(),
             Matchers.startsWith("Hello")
@@ -62,7 +62,7 @@ final class PhiTest {
                         Phi.Φ.take("stdout").copy(),
                         0, new Data.ToPhi("Hello, world")
                     ),
-                    "text"
+                    "v🌵text"
                 )
             ).asString(),
             Matchers.startsWith("Hello")
@@ -112,7 +112,7 @@ final class PhiTest {
                 () -> new Dataized(
                     new PhApplication(
                         Phi.Φ.take("number.integral").copy(),
-                        "n",
+                        "v🌵n",
                         new Data.ToPhi(1.5)
                     )
                 ).take()
@@ -130,7 +130,7 @@ final class PhiTest {
                 () -> new Dataized(
                     new PhApplication(
                         Phi.Φ.take("number.integral").copy(),
-                        "n",
+                        "v🌵n",
                         new Data.ToPhi(9_007_199_254_740_992d)
                     )
                 ).take()

@@ -41,7 +41,7 @@ final class EOscanfDiagnosticTest {
         final Phi scanf = new PhApplication(
             new Data.ToPhi("%d").take("scanf").copy(),
             "v🌵read", new Data.ToPhi("99999999999999999999")
-        ).take("v🌵head");
+        ).take("head");
         MatcherAssert.assertThat(
             "scanf must report the %d conversion with one percent sign",
             Assertions.assertThrows(
