@@ -3,6 +3,12 @@
 # and the magnitude is shifted into place, with the two's complement taken
 # when it is negative. When it does not fit into the bounds of an `i64`,
 # the caller-supplied `cant-convert` fallback is returned.
+#
+# The out-of-bounds message names a magnitude in `[2^63, 2^64)` with exact
+# decimal digits, peeled the way `i64/as-decimal.eo` peels them, and keeps
+# `as-scientific` for anything larger and for `nan`: `as-scientific` rounds
+# the mantissa to six fraction digits, so it could not tell
+# `9223372036854775808` from `9223372036854777856` (#9725).
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -26,19 +32,19 @@
         and.
           exp.eq 1086
           not.
-            and.
-              eq. >> negative
-                num.as-bytes.and 80-00-00-00-00-00-00-00
-                80-00-00-00-00-00-00-00
-              eq.
-                or. >> mantissa
-                  num.as-bytes.and 00-0F-FF-FF-FF-FF-FF-FF
-                  00-10-00-00-00-00-00-00
-                00-10-00-00-00-00-00-00
+            negative.and
+              mantissa.eq 00-10-00-00-00-00-00-00
     cant-convert
       "Can't convert number %s to i64 because it's out of i64 bounds".printf
         *
-          string num.as-scientific
+          string
+            if.
+              exp.eq 1086
+              negative.if
+                "-".as-bytes.concat
+                  digits high low -- >> written
+                written
+              num.as-scientific
     if.
       exp.lt 1023
       00-00-00-00-00-00-00-00.as-i64
@@ -54,6 +60,52 @@
                 exp.minus 1075
               mantissa.right
                 1075.minus exp
+  [^num upper lower acc] >> digits
+    if. > @
+      and.
+        upper.eq 0
+        lower.eq 0
+      acc
+      num.digits
+        number upperq
+        number lowerq
+        concat.
+          as-char.
+            plus.
+              minus.
+                number rem
+                times.
+                  number lowerq
+                  10
+              48
+          acc
+    floor. > lowerq!
+      div.
+        number rem
+        10
+    plus. > rem!
+      times.
+        upper.minus
+          times.
+            number upperq
+            10
+        4294967296
+      lower
+    floor. > upperq!
+      upper.div 10
+  floor. > high
+    mant.div 2097152
+  times. > low
+    mant.minus
+      high.times 2097152
+    2048
+  mantissa.as-i64.as-number > mant
+  or. > mantissa
+    num.as-bytes.and 00-0F-FF-FF-FF-FF-FF-FF
+    00-10-00-00-00-00-00-00
+  eq. > negative
+    num.as-bytes.and 80-00-00-00-00-00-00-00
+    80-00-00-00-00-00-00-00
 
   eq. ++> can-convert-a-fraction-below-one-to-zero
     0.5.as-i64.as-bytes
@@ -72,6 +124,26 @@
     80-00-00-00-00-00-00-00
 
   42.as-i64.as-bytes.eq 00-00-00-00-00-00-00-2A ++> can-convert-the-origin-number
+
+  eq. ++> can-format-the-error-message-of-a-negative-past-the-boundary
+    "Can't convert number -9223372036854777856 to i64 because it's out of i64 bounds"
+    -9.223372036854778e18.as-i64 I
+
+  eq. ++> can-format-the-error-message-of-a-number-past-the-boundary
+    "Can't convert number 9223372036854777856 to i64 because it's out of i64 bounds"
+    9.223372036854778e18.as-i64 I
+
+  eq. ++> can-format-the-error-message-of-the-long-maximum-boundary
+    "Can't convert number 9223372036854775808 to i64 because it's out of i64 bounds"
+    9.223372036854776e18.as-i64 I
+
+  eq. ++> can-keep-scientific-notation-at-two-to-the-64th
+    "Can't convert number 1.844674e19 to i64 because it's out of i64 bounds"
+    1.8446744073709552e19.as-i64 I
+
+  eq. ++> can-keep-scientific-notation-for-a-non-finite-number
+    "Can't convert number nan to i64 because it's out of i64 bounds"
+    nan.as-i64 I
 
   eq. ++> can-recover-from-an-out-of-range-number
     i64 00-00-00-00-00-00-00-2A
