@@ -95,6 +95,29 @@ final class ShaTest {
     }
 
     @Test
+    void distinguishesAFileSpellingTheDirWordFromAnEmptyDir(@Mktmp final Path temp) throws IOException {
+        new Saved("dir\0", temp.resolve("word.txt")).value();
+        Files.createDirectories(temp.resolve("empty"));
+        MatcherAssert.assertThat(
+            "a file holding the directory word and an empty directory hash alike",
+            new Sha(temp.resolve("word.txt")).toString(),
+            Matchers.not(Matchers.equalTo(new Sha(temp.resolve("empty")).toString()))
+        );
+    }
+
+    @Test
+    void distinguishesAFileSpellingTheDirWordWithoutNulFromAnEmptyDir(@Mktmp final Path temp)
+        throws IOException {
+        new Saved("dir", temp.resolve("word.txt")).value();
+        Files.createDirectories(temp.resolve("empty"));
+        MatcherAssert.assertThat(
+            "a file holding the directory word without the NUL and an empty directory hash alike",
+            new Sha(temp.resolve("word.txt")).toString(),
+            Matchers.not(Matchers.equalTo(new Sha(temp.resolve("empty")).toString()))
+        );
+    }
+
+    @Test
     void hashesLoneFileWithoutFraming(@Mktmp final Path temp)
         throws IOException, NoSuchAlgorithmException {
         final long seed = System.nanoTime();
