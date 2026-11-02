@@ -83,6 +83,7 @@ final class LnApplication implements Line {
             openness = Openness.OPEN;
         }
         this.transition(stack, suffix, kind, openness);
+        stack.hop(chain.size(), this.span.line(), this.span.indent());
         Bindings.observeChild(stack, outer, this.span);
         globals.clearBlanks();
         globals.markEmitted();

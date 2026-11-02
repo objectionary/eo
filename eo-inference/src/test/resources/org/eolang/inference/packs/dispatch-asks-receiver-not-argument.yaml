@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls sum, so x is an open void, and so is the plus read off it. The
+# answer comes from x alone: the 5 handed to plus is a number, and it lands in
+# no void.
+sources:
+  sum.eo: |
+    [x] > sum
+      x.plus 5 > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.sum.x']/open
+  - /answers/o[@loc='Φ.sum.φ']/open
+  - /answers[not(o[@loc='Φ.sum.φ']//is[@loc='Φ.number'])]
+  - /answers/o[@loc='Φ.sum.φ.α0']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.sum.φ.α0' and not(@lands)]

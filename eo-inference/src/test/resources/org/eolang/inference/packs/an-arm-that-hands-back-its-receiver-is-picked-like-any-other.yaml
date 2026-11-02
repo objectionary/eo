@@ -1,0 +1,57 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# choice has a not besides its pick, as bool does. held fills the flag and
+# full of made with yes, so full.pick picks ^, the cabinet that made is read
+# off, and flag.pick picks that: held is a cabinet. other fills both with no,
+# so flag.pick picks dial 03-, and other is a dial. made is a cabinet in one
+# copy and a dial in the other.
+sources:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+      [] > not
+        ^.pick no yes > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^ left right]
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^ left right]
+          right > @
+  dial.eo: |
+    [^ sys] > dial
+      [^ size] > listen
+        size > @
+  cabinet.eo: |
+    [] > cabinet
+      [^ flag full] > made
+        flag.pick > @
+          full.pick
+            ^
+            T
+              "the cabinet is full"
+          dial 03-
+  held.eo: |
+    [] > held
+      cabinet.made yes yes > @
+  other.eo: |
+    [] > other
+      cabinet.made no no > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.cabinet.made.φ.α0.α0' and @lands='left']/is[@loc='Φ.cabinet']
+  - /answers/o[@loc='Φ.cabinet.made.φ.α0']/set/is[@loc='Φ.cabinet']
+  - /answers/o[@loc='Φ.held.φ']/is[@loc='Φ.cabinet']
+  - /answers/o[@loc='Φ.cabinet.made.φ.α1' and @lands='right']/is[@loc='Φ.dial']
+  - /answers/o[@loc='Φ.other.φ']/is[@loc='Φ.dial']
+  - /answers/o[@loc='Φ.cabinet.made' and @copies='2']/reduced[set/is[@loc='Φ.cabinet'] and set/is[@loc='Φ.dial']]

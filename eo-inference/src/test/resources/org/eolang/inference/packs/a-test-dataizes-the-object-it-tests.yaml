@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The test dataizes what its @ gives, so the copy of half it builds counts,
+# though rest is still empty, and its whole is a number.
+sources:
+  half.eo: |
+    [whole rest] > half
+      whole > @
+      rest > other
+
+      half 8 ++> can-take-a-whole
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.half.p🌵can-take-a-whole.φ']/is[@loc='Φ.half']
+  - /answers/o[@loc='Φ.half.φ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.half.rest']/open
+  - /answers/o[@loc='Φ.half.whole']/is[@loc='Φ.number']

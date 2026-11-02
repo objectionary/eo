@@ -18,8 +18,10 @@ asserts:
   - //o[@base='Φ.x' and @const and @name='first']
   - //o[@base='Φ.dataized.as-bytes' and @name='second']
   - //o[@base='Φ.a' and @const and @name='third']/o[@base='Φ.b']
-  - //o[@name='fourth-1' and not(@base)]
-  - //o[@base='ξ.fourth-1' and @name='fourth' and @const]
+  # A const on a formation takes back the formation that "const-to-dataized"
+  # floated beside it, and the floated sibling goes away with it (#9382).
+  - //o[@name='fourth' and @const and not(@base) and not(o)]
+  - /object[count(//o[@name='fourth-1' or @base='ξ.fourth-1'])=0]
   - //o[@base='Φ.number' and @name='fifths' and @const]/o[@base='Φ.bytes']/o[text()!='']
   - //o[@base='Φ.bytes' and @name='sixth' and @const]/o[text()='2A-']
   - //o[@base='ξ.third' and @const and not(@as)]

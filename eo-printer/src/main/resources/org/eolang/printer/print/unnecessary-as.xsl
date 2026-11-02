@@ -8,14 +8,27 @@
   Performs the reverse operation of "/org/eolang/parser/mandatory-as.xsl"
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
+  <!--
+  Whether the arguments from "$elem" on carry the canonical run of labels
+  "α$index, α$index+1, …", so that the labels say nothing the order does not
+  already say and can go. Each step takes the next argument alone. Handing
+  the whole tail of siblings down instead asks the same question of a
+  sequence that shrinks by one node per step, and every step re-sorts the
+  union of the following siblings of all of them into document order, which
+  made an application of 400 arguments take half a minute in this one sheet
+  (#9377). The answer is the same either way: the last step can only say
+  yes when the last argument is "α$n-1", and from there each step back
+  pins its own argument, so an argument out of place is refused as before.
+  -->
   <xsl:function name="eo:all-alphas">
     <xsl:param name="index"/>
     <xsl:param name="elem"/>
     <xsl:choose>
       <xsl:when test="$elem/@as=concat('α', string($index))">
+        <xsl:variable name="next" select="$elem/following-sibling::o[1]"/>
         <xsl:choose>
-          <xsl:when test="$elem/following-sibling::o">
-            <xsl:sequence select="eo:all-alphas($index + 1, $elem/following-sibling::o)"/>
+          <xsl:when test="exists($next)">
+            <xsl:sequence select="eo:all-alphas($index + 1, $next)"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:sequence select="true()"/>

@@ -9,7 +9,6 @@ name: xs3p-tag
       - '*'
 permissions:
   contents: write
-  pull-requests: write
 concurrency:
   group: xs3p-tag-${{ github.ref }}
   cancel-in-progress: false
@@ -28,13 +27,8 @@ jobs:
             "eo-parser/src/main/xs3p/xs3p.xsl" \
             "eo-parser/src/main/resources/XMIR.xsd" \
             > "gh-pages/xsd/XMIR-${REF_NAME}.html"
-      - if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-        uses: peter-evans/create-pull-request@v8
+      - uses: JamesIves/github-pages-deploy-action@v4.9.0
         with:
-          sign-commits: true
-          branch: xsd-documentation
-          commit-message: 'new XMIR XSD documetation'
-          delete-branch: true
-          title: 'Update XMIR XSD documentation'
-          assignees: yegor256
-          base: gh-pages
+          branch: gh-pages
+          folder: gh-pages
+          clean: false

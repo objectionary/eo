@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# two hands its y to one, and one is what its x holds, so two u is a u, and
+# held.next is the next of u.
+sources:
+  one.eo: |
+    [x] > one
+      x > @
+  two.eo: |
+    [y] > two
+      one y > @
+  u.eo: |
+    [] > u
+      [] > next
+  app.eo: |
+    [] > app
+      two u > held
+      held.next > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.two.φ.α0' and @lands='x']/is[@loc='Φ.u']
+  - /answers/o[@loc='Φ.one']/reduced/is[@loc='Φ.u']
+  - /answers/o[@loc='Φ.app.held']/is[@loc='Φ.u']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.u.next']

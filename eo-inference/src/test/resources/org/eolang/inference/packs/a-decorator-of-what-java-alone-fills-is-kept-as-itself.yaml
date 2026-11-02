@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Java makes wrapper, and nothing in EO puts anything into its v, so a stop
+# decides Java alone fills it. The @ of wrapper then gives nothing typed, so
+# it waits for one more stop (rule e) and is kept as itself.
+sources:
+  os.eo: |
+    [] > os
+      [] > wrap /Q.os.wrapper
+      [v] > wrapper
+        v > @
+  box.eo: |
+    [item] > box
+      item > @
+  app.eo: |
+    [] > app
+      box (box os.wrap) > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.os.wrap.λ']/is[@loc='Φ.os.wrapper']
+  - /answers[not(o[@lands='v'])]
+  - /answers/o[@loc='Φ.os.wrapper.v']/open[@by='java']
+  - /answers/o[@loc='Φ.os.wrapper.φ']/open[@by='java']
+  - /answers/o[@loc='Φ.os.wrapper']/reduced/is[@loc='Φ.os.wrapper']

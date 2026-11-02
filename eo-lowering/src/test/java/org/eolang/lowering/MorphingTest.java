@@ -15,10 +15,11 @@ import java.nio.file.attribute.PosixFilePermissions;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.cactoos.list.ListOf;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.eolang.cache.GcShared;
 import org.eolang.cache.GlobalCache;
 import org.eolang.parser.EoSyntax;
@@ -82,6 +83,7 @@ final class MorphingTest {
         final Path home = Files.createDirectories(temp);
         Files.createDirectories(home.resolve("1-planting"));
         Files.write(home.resolve("world.phi"), "⟦ ⟧".getBytes(StandardCharsets.UTF_8));
+        Files.write(home.resolve("atoms.yaml"), "# none".getBytes(StandardCharsets.UTF_8));
         Files.write(
             home.resolve("entries.tsv"),
             String.format("4\tΦ.bytes.as-hex.a🌵16-3%n").getBytes(StandardCharsets.UTF_8)
@@ -109,7 +111,7 @@ final class MorphingTest {
                 String.join(
                     " ",
                     "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
-                    "echo '<protocol><morph><timeout limit=\"1\"/></morph><msec>1000</msec></protocol>' > \"$p\"; exit 1"
+                    "echo '<protocol><dataize><timeout limit=\"1\"/></dataize><msec>1000</msec></protocol>' > \"$p\"; exit 1"
                 )
             ),
             new GlobalCache.GcFresh(),
@@ -178,7 +180,7 @@ final class MorphingTest {
                 String.join(
                     " ",
                     "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
-                    "echo '<protocol><morph><timeout limit=\"1\"/></morph><msec>1000</msec></protocol>' > \"$p\"; exit 1"
+                    "echo '<protocol><dataize><timeout limit=\"1\"/></dataize><msec>1000</msec></protocol>' > \"$p\"; exit 1"
                 )
             ),
             new GcShared(temp.resolve("cache"), "0.5.6"),
@@ -297,7 +299,7 @@ final class MorphingTest {
                     " ",
                     "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
                     "case $p in *.xml) echo '<protocol><timeout limit=\"1\"/></protocol>' > \"$p\";;",
-                    "*) echo '  timeout(1)' > \"$p\";; esac; exit 1"
+                    "*) echo '  timeout 1' > \"$p\";; esac; exit 1"
                 )
             ),
             new GlobalCache.GcFresh(),
@@ -357,7 +359,7 @@ final class MorphingTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void aimsTheRunOfAnEntryAtItsMark(@Mktmp final Path temp) throws IOException {
+    void aimsTheRunAtItsEntry(@Mktmp final Path temp) throws IOException {
         MorphingTest.merged(temp, 1, 2);
         final Path protocols = temp.resolve("2-protocols");
         new Morphing(
@@ -365,15 +367,15 @@ final class MorphingTest {
             new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
         ).exec(temp);
         MatcherAssert.assertThat(
-            "the run of an entry must be aimed at the mark of that entry, but it isnt",
+            "the run of an entry must be aimed at that entry, but it isnt",
             MorphingTest.text(protocols.resolve("e2.xml")),
-            Matchers.containsString("--locator=Q.l/.e2")
+            Matchers.containsString("--locator=Q.l🌵.e2")
         );
     }
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void morphsEveryEntryOverTheWorldWithTheTable(@Mktmp final Path temp) throws IOException {
+    void dataizesEveryEntryOverTheWorldWithTheTable(@Mktmp final Path temp) throws IOException {
         final Path home = MorphingTest.merged(temp, 1);
         final Path protocols = temp.resolve("2-protocols");
         new Morphing(
@@ -381,10 +383,10 @@ final class MorphingTest {
             new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
         ).exec(temp);
         MatcherAssert.assertThat(
-            "the run must morph the entry of the world with the table, but it doesnt",
+            "the run must dataize the entry of the world with the table, but it doesnt",
             MorphingTest.text(protocols.resolve("e1.xml")),
             Matchers.stringContainsInOrder(
-                "morph",
+                "dataize",
                 String.format("--symbolic=%s", home.resolve("atoms.yaml")),
                 home.resolve("world.phi").toString()
             )
@@ -494,16 +496,22 @@ final class MorphingTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void writesTheTableOfOperationsBesideTheWorld(@Mktmp final Path temp) throws IOException {
-        final Path home = MorphingTest.merged(temp);
-        new Morphing(
-            MorphingTest.recording(temp), new GlobalCache.GcFresh(),
-            new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
-        ).exec(temp);
+    void failsNamingTheTableOfOperationsItCannotFind(@Mktmp final Path temp)
+        throws IOException {
+        final Path table = MorphingTest.merged(temp).resolve("atoms.yaml");
+        Files.delete(table);
+        final Phino phino = MorphingTest.recording(temp);
         MatcherAssert.assertThat(
-            "the table must name the mark the entries fire, but it doesnt",
-            MorphingTest.text(home.resolve("atoms.yaml")),
-            Matchers.containsString("L_entry")
+            "the failure must name the table of operations that is missing, but it doesnt",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> new Morphing(
+                    phino, new GlobalCache.GcFresh(),
+                    new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
+                ).exec(temp),
+                "a table of operations that is not there must fail the morphing"
+            ).getMessage(),
+            Matchers.containsString(table.toString())
         );
     }
 
@@ -547,6 +555,7 @@ final class MorphingTest {
     void failsNamingTheEntriesItCannotFind(@Mktmp final Path temp) throws IOException {
         final Path home = Files.createDirectories(temp);
         Files.write(home.resolve("world.phi"), "⟦ ⟧".getBytes(StandardCharsets.UTF_8));
+        Files.write(home.resolve("atoms.yaml"), "# none".getBytes(StandardCharsets.UTF_8));
         MatcherAssert.assertThat(
             "the failure must name the entries that are missing, but it doesnt",
             Assertions.assertThrows(
@@ -563,7 +572,7 @@ final class MorphingTest {
 
     @Test
     void morphsTheWorldThePinnedPhinoFolds(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.156");
+        final Phino phino = new Phino("phino", "0.0.160");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -576,13 +585,13 @@ final class MorphingTest {
         MatcherAssert.assertThat(
             "the protocol must record the firing of the atom the body reached, but it doesnt",
             MorphingTest.text(temp.resolve("2-protocols/gap.xml")),
-            Matchers.stringContainsInOrder("L_entry", "L_root", "L_number_plus")
+            Matchers.stringContainsInOrder("<dataize at=\"Φ.l🌵.e", "L_number_plus")
         );
     }
 
     @Test
     void writesTheTextThePinnedPhinoFolds(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.156");
+        final Phino phino = new Phino("phino", "0.0.160");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -595,14 +604,14 @@ final class MorphingTest {
         MatcherAssert.assertThat(
             "the text must record the firing of the atom the body reached, but it doesnt",
             MorphingTest.text(temp.resolve("texts/gap.txt")),
-            Matchers.stringContainsInOrder("𝔼(L_entry)", "𝔼(L_number_plus)")
+            Matchers.stringContainsInOrder("𝔻(Φ.l🌵.e", "𝔼(L_number_plus)")
         );
     }
 
     @Test
     void stopsAtTheThrowWithTheWholeMessageThePinnedPhinoKeeps(@Mktmp final Path temp)
         throws IOException {
-        final Phino phino = new Phino("phino", "0.0.156");
+        final Phino phino = new Phino("phino", "0.0.160");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -622,12 +631,16 @@ final class MorphingTest {
         MorphingTest.xmir(temp, "number", "<o name=\"φ\" base=\"∅\" loc=\"Φ.number.φ\"/>");
         MorphingTest.xmir(temp, "string", "<o name=\"φ\" base=\"∅\" loc=\"Φ.string.φ\"/>");
         MorphingTest.xmir(temp, "bytes", "<o name=\"φ\" base=\"∅\" loc=\"Φ.bytes.φ\"/>");
-        final Path tables = Files.createDirectories(temp.resolve("tables"));
-        Files.write(
-            tables.resolve("provides.xml"),
-            "<provides><type id=\"Φ.broken\"/></provides>".getBytes(StandardCharsets.UTF_8)
-        );
-        new Planting(tables).exec(temp);
+        new Planting(
+            new Inferred(
+                temp.resolve("engine"),
+                new MapOf<String, String>(
+                    new MapEntry<>(
+                        "broken.eo", String.format("[] > broken%n  T \"%s\" > @%n", message)
+                    )
+                )
+            ).value()
+        ).exec(temp);
         new Merging(phino).exec(temp);
         new Morphing(
             phino, new GlobalCache.GcFresh(), new Scope(".*", "(?!)"), 32, 2,
@@ -638,7 +651,7 @@ final class MorphingTest {
             MorphingTest.text(temp.resolve("2-protocols/broken.xml")),
             Matchers.stringContainsInOrder(
                 String.format(
-                    "<attr name=\"φ\">%s</attr>",
+                    "<datum attr=\"φ\">%s</datum>",
                     message.chars().mapToObj(code -> String.format("%02X", code))
                         .collect(Collectors.joining("-"))
                 ),
@@ -648,88 +661,8 @@ final class MorphingTest {
     }
 
     @Test
-    @DisabledOnOs(OS.WINDOWS)
-    void answersEveryAtomOfBytesInTheTable(@Mktmp final Path temp) throws IOException {
-        final Path home = MorphingTest.merged(temp);
-        new Morphing(
-            MorphingTest.recording(temp), new GlobalCache.GcFresh(),
-            new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
-        ).exec(temp);
-        MatcherAssert.assertThat(
-            "the table must answer every atom of bytes, but it leaves one standing",
-            Stream.of("and", "concat", "eq", "not", "or", "right", "size", "slice")
-                .map(atom -> String.format("L_bytes_%s", atom))
-                .collect(Collectors.toList()),
-            Matchers.everyItem(
-                Matchers.matchesPattern(
-                    Files.readAllLines(home.resolve("atoms.yaml")).stream()
-                        .filter(line -> line.startsWith("- λ: "))
-                        .map(line -> String.format("(?:%s)", line.substring(5)))
-                        .collect(Collectors.joining("|"))
-                )
-            )
-        );
-    }
-
-    @Test
-    @DisabledOnOs(OS.WINDOWS)
-    void bringsTheBranchesOfAForkToOneShapeBeforeTheJoin(@Mktmp final Path temp)
-        throws IOException {
-        final Path home = MorphingTest.merged(temp);
-        new Morphing(
-            MorphingTest.recording(temp), new GlobalCache.GcFresh(),
-            new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
-        ).exec(temp);
-        MatcherAssert.assertThat(
-            "the fork must rewrite its branches before it symbolizes and joins them, but it doesnt",
-            MorphingTest.text(home.resolve("atoms.yaml")),
-            Matchers.stringContainsInOrder(
-                "- λ: L_fork", "morph:", "rewrite:",
-                "false-literal", "true-literal", "bool-without-rho", "decorated-bool",
-                "symbolize:", "join:"
-            )
-        );
-    }
-
-    @Test
-    @DisabledOnOs(OS.WINDOWS)
-    void letsAForkRaiseThroughTheThrowInOneOfItsBranches(@Mktmp final Path temp)
-        throws IOException {
-        final Path home = MorphingTest.merged(temp);
-        new Morphing(
-            MorphingTest.recording(temp), new GlobalCache.GcFresh(),
-            new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
-        ).exec(temp);
-        MatcherAssert.assertThat(
-            "the fork must end at the throw of a branch, but it doesnt",
-            MorphingTest.text(home.resolve("atoms.yaml")),
-            Matchers.stringContainsInOrder("- λ: L_fork", "terminators: [L_throw]", "- λ: L_entry")
-        );
-    }
-
-    @Test
-    @DisabledOnOs(OS.WINDOWS)
-    void answersEveryBoolAsTheFormationWrappingIt(@Mktmp final Path temp) throws IOException {
-        final Path home = MorphingTest.merged(temp);
-        new Morphing(
-            MorphingTest.recording(temp), new GlobalCache.GcFresh(),
-            new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
-        ).exec(temp);
-        MatcherAssert.assertThat(
-            "every bool the table answers must be the formation wrapping it, but one is bare",
-            Files.readAllLines(home.resolve("atoms.yaml")).stream()
-                .filter(line -> line.startsWith("  𝑛: ") && line.contains("Φ.bool("))
-                .collect(Collectors.toList()),
-            Matchers.<List<String>>allOf(
-                Matchers.not(Matchers.empty()),
-                Matchers.everyItem(Matchers.startsWith("  𝑛: ⟦ φ ↦ Φ.bool("))
-            )
-        );
-    }
-
-    @Test
     void answersTheAtomOfBytesThePinnedPhinoReaches(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.156");
+        final Phino phino = new Phino("phino", "0.0.160");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -750,23 +683,15 @@ final class MorphingTest {
         MorphingTest.xmir(
             temp, "number", "<o name=\"φ\" base=\"∅\" loc=\"Φ.number.φ\"/>"
         );
-        final Path tables = Files.createDirectories(temp.resolve("tables"));
-        Files.write(
-            tables.resolve("provides.xml"),
-            String.join(
-                "",
-                "<provides><type id=\"Φ.len\">",
-                "<attr name=\"a\" type=\"Φ.len.a\" void=\"true\" settled=\"Φ.bytes\"/>",
-                "</type></provides>"
-            ).getBytes(StandardCharsets.UTF_8)
-        );
-        Files.write(
-            tables.resolve("links.xml"),
-            "<links><type id='Φ.len.φ'><ref loc='Φ.number'/></type></links>"
-                .getBytes(StandardCharsets.UTF_8)
-        );
-        Files.write(tables.resolve("atoms.xml"), "<atoms/>".getBytes(StandardCharsets.UTF_8));
-        new Planting(tables).exec(temp);
+        new Planting(
+            new Inferred(
+                temp.resolve("engine"),
+                new MapOf<String, String>(
+                    new MapEntry<>("len.eo", String.format("[a] > len%n  a.size > @%n")),
+                    new MapEntry<>("app.eo", String.format("[] > app%n  len 0A-1B > used%n"))
+                )
+            ).value()
+        ).exec(temp);
         new Merging(phino).exec(temp);
         new Morphing(
             phino, new GlobalCache.GcFresh(), new Scope(".*", "(?!)"), 32, 2,
@@ -776,6 +701,58 @@ final class MorphingTest {
             "the run must fire the atom of bytes the body reached, but it left it standing",
             MorphingTest.text(temp.resolve("2-protocols/len.xml")),
             Matchers.containsString("<evaluate λ=\"L_bytes_size\"")
+        );
+    }
+
+    @Test
+    void firesTheRowOfAFormationThePinnedPhinoReaches(@Mktmp final Path temp)
+        throws IOException {
+        final Phino phino = new Phino("phino", "0.0.160");
+        Assumptions.assumeTrue(
+            MorphingTest.pinned(phino),
+            "the pinned phino is not on this machine, so the world cannot be morphed here"
+        );
+        final Path sources = Files.createDirectories(temp.resolve("1-planting"));
+        Files.write(
+            sources.resolve("twice.xmir"),
+            new EoSyntax(String.format("+package number%n%n[^] > twice%n  ^.plus ^ > @%n"))
+                .parsed().toString().getBytes(StandardCharsets.UTF_8)
+        );
+        Files.write(
+            sources.resolve("both.xmir"),
+            new EoSyntax(
+                String.format("+package number%n%n[^ b] > both%n  ^.twice.plus b.twice > @%n")
+            ).parsed().toString().getBytes(StandardCharsets.UTF_8)
+        );
+        MorphingTest.library(temp);
+        new Planting(
+            new Inferred(
+                temp.resolve("engine"),
+                new MapOf<String, String>(
+                    new MapEntry<>(
+                        "twice.eo",
+                        String.format("+package number%n%n[^] > twice%n  ^.plus ^ > @%n")
+                    ),
+                    new MapEntry<>(
+                        "both.eo",
+                        String.format(
+                            "+package number%n%n[^ b] > both%n  ^.twice.plus b.twice > @%n"
+                        )
+                    ),
+                    new MapEntry<>("number.eo", MorphingTest.number()),
+                    new MapEntry<>("app.eo", String.format("[] > app%n  5.both 6 > used%n"))
+                )
+            ).value()
+        ).exec(temp);
+        new Merging(phino).exec(temp);
+        new Morphing(
+            phino, new GlobalCache.GcFresh(), new Scope(".*", "(?!)"), 32, 2,
+            Duration.ofMinutes(1L), false
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "the run must fire the row of the formation the body reached instead of folding its body, but it didnt",
+            MorphingTest.text(temp.resolve("2-protocols/number/both.xml")),
+            Matchers.containsString("<evaluate λ=\"L_number_twice\"")
         );
     }
 
@@ -797,6 +774,7 @@ final class MorphingTest {
         final Path home = Files.createDirectories(temp);
         Files.createDirectories(home.resolve("1-planting"));
         Files.write(home.resolve("world.phi"), "⟦ ⟧".getBytes(StandardCharsets.UTF_8));
+        Files.write(home.resolve("atoms.yaml"), "# none".getBytes(StandardCharsets.UTF_8));
         Files.write(
             home.resolve("entries.tsv"),
             Arrays.stream(entries)
@@ -820,6 +798,27 @@ final class MorphingTest {
             new EoSyntax(String.format("[a b] > gap%n  a.plus b > @%n")).parsed()
                 .toString().getBytes(StandardCharsets.UTF_8)
         );
+        MorphingTest.library(temp);
+        new Planting(
+            new Inferred(
+                temp.resolve("engine"),
+                new MapOf<String, String>(
+                    new MapEntry<>("gap.eo", String.format("[a b] > gap%n  a.plus b > @%n")),
+                    new MapEntry<>("number.eo", MorphingTest.number()),
+                    new MapEntry<>("app.eo", String.format("[] > app%n  gap 2 3 > used%n"))
+                )
+            ).value()
+        ).exec(temp);
+        new Merging(phino).exec(temp);
+    }
+
+    private static String number() {
+        return String.format(
+            "[@] > number%n  [] > plus /Q.number%n    ? > ^%n    ? > b /Q.number%n"
+        );
+    }
+
+    private static void library(final Path temp) throws IOException {
         MorphingTest.xmir(
             temp,
             "number",
@@ -829,28 +828,7 @@ final class MorphingTest {
             "<o name=\"λ\" loc=\"Φ.number.plus.λ\"/>",
             "</o>"
         );
-        MorphingTest.xmir(
-            temp, "bytes", "<o name=\"φ\" base=\"∅\" loc=\"Φ.bytes.φ\"/>"
-        );
-        final Path tables = Files.createDirectories(temp.resolve("tables"));
-        Files.write(
-            tables.resolve("provides.xml"),
-            String.join(
-                "",
-                "<provides><type id=\"Φ.gap\">",
-                "<attr name=\"a\" type=\"Φ.gap.a\" void=\"true\" settled=\"Φ.number\"/>",
-                "<attr name=\"b\" type=\"Φ.gap.b\" void=\"true\" settled=\"Φ.number\"/>",
-                "</type></provides>"
-            ).getBytes(StandardCharsets.UTF_8)
-        );
-        Files.write(
-            tables.resolve("links.xml"),
-            "<links><type id='Φ.gap.φ'><ref loc='Φ.number'/></type></links>"
-                .getBytes(StandardCharsets.UTF_8)
-        );
-        Files.write(tables.resolve("atoms.xml"), "<atoms/>".getBytes(StandardCharsets.UTF_8));
-        new Planting(tables).exec(temp);
-        new Merging(phino).exec(temp);
+        MorphingTest.xmir(temp, "bytes", "<o name=\"φ\" base=\"∅\" loc=\"Φ.bytes.φ\"/>");
     }
 
     private static Path xmir(final Path temp, final String name, final String... body)

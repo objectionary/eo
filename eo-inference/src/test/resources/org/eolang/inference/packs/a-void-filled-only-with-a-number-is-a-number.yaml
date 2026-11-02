@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The only call of inc fills x with 42, so x is a number, inc reduces to a
+# number, and so is the @ of app.
+sources:
+  app.eo: |
+    [] > app
+      inc 42 > @
+  inc.eo: |
+    [x] > inc
+      x > @
+  number.eo: |
+    [@] > number
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='x']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.inc.x']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.inc' and @copies='1']/reduced/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.number']

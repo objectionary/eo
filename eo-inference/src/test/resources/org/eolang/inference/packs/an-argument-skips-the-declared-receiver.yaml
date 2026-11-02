@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# inc declares ^ first, and the argument of inc oak skips it and lands in x,
+# so x holds the oak, and so does the @ of app.
+sources:
+  app.eo: |
+    [] > app
+      inc oak > @
+  inc.eo: |
+    [^ x] > inc
+      x > @
+  oak.eo: |
+    [] > oak
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='x']/is[@loc='Φ.oak']
+  - /answers[not(o[@loc='Φ.inc.ρ']/is[@loc='Φ.oak'])]
+  - /answers/o[@loc='Φ.inc.x']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.oak']

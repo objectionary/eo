@@ -34,9 +34,12 @@
     01-02-03-04-05
 
   eq. ++> can-handle-a-dead-input
-    copied.
-      input input.dead
-      Q.output.dead
+    malloc.of
+      1
+      copied. > [m]
+        input (input 01-02-03.as-input).dead
+        dead.
+          Q.output m.to-output
     0
 
   eq. ++> can-handle-an-empty-input

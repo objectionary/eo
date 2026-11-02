@@ -79,6 +79,15 @@ final class ReachTest {
     }
 
     @Test
+    void readsOnlyAsciiHexLettersIntoANumber() {
+        MatcherAssert.assertThat(
+            "a full-width letter is no hex digit, so the number must stop before it, but it didnt",
+            new Reach("x 1FＡ").from(2),
+            Matchers.equalTo(2)
+        );
+    }
+
+    @Test
     void measuresNothingPastTheEndOfTheLine() {
         MatcherAssert.assertThat(
             "a column beyond the line cannot reach anything, but it claimed to",

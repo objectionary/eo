@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The only value handed to box fails. Rule 3 holds the argument back until a
+# stop, and from then on it is one "can't tell", so item is unknown.
+sources:
+  box.eo: |
+    [item] > box
+      item > @
+  app.eo: |
+    [] > app
+      box 5.size > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='item' and @copies='1']/fails[@name='data.size']
+  - /answers/o[@loc='Φ.box.item']/unknown

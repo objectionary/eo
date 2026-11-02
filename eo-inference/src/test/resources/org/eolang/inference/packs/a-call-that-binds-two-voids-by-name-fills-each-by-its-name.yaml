@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# pair "one":b 2:a names both voids out of their order, so the string goes
+# into b and 2 into a. The @ of pair is b, so app is a string.
+sources:
+  pair.eo: |
+    [a b] > pair
+      b > @
+  app.eo: |
+    [] > app
+      pair "one":b 2:a > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.b' and @lands='b']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.φ.a' and @lands='a']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.pair.b']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.pair.a']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.string']

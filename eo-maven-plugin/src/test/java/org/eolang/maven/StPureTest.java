@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.cactoos.io.Directory;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
 import org.eolang.xax.XtSticky;
@@ -109,8 +110,12 @@ final class StPureTest {
                 )
             ).parsed().toString()
         );
+        Files.writeString(parsed.resolve("bytes.xmir"), StPureTest.xmir("[@] > bytes"));
         final Path tables = temp.resolve("tables");
-        new Inferring(parsed, temp.resolve("pre"), tables).exec();
+        new Inferring(
+            new Directory(parsed), parsed, temp.resolve("pre"), tables,
+            new RuntimeNames().get()
+        ).exec();
         MatcherAssert.assertThat(
             "an application whose parts are all data must be wrapped in PhSticky, but it wasnt",
             new Xsline(
@@ -149,8 +154,12 @@ final class StPureTest {
                 )
             ).parsed().toString()
         );
+        Files.writeString(parsed.resolve("bytes.xmir"), StPureTest.xmir("[@] > bytes"));
         final Path tables = temp.resolve("tables");
-        new Inferring(parsed, temp.resolve("pre"), tables).exec();
+        new Inferring(
+            new Directory(parsed), parsed, temp.resolve("pre"), tables,
+            new RuntimeNames().get()
+        ).exec();
         MatcherAssert.assertThat(
             "a dispatch over data that takes no arguments must be wrapped in PhSticky, but it wasnt",
             new Xsline(
@@ -180,10 +189,14 @@ final class StPureTest {
                 "[as-bytes] > number", "  as-bytes > @", "  [x] > plus", "    x > @"
             )
         );
+        Files.writeString(parsed.resolve("bytes.xmir"), StPureTest.xmir("[@] > bytes"));
         final Path tables = temp.resolve("tables");
-        new Inferring(parsed, temp.resolve("pre"), tables).exec();
+        new Inferring(
+            new Directory(parsed), parsed, temp.resolve("pre"), tables,
+            new RuntimeNames().get()
+        ).exec();
         StPureTest.stamped(tables, source);
-        Files.writeString(tables.resolve("links.xml"), "<links/>");
+        Files.writeString(tables.resolve("answers.xml"), "<answers/>");
         MatcherAssert.assertThat(
             "the second stamping must read the table that was rewritten under it, while it reads the one it parsed before",
             StPureTest.stamped(tables, source).nodes("//o[@base='.plus'][@pure]"),
@@ -207,7 +220,10 @@ final class StPureTest {
             );
         }
         final Path tables = this.dir.resolve("tables");
-        new Inferring(parsed, this.dir.resolve("pre"), tables).exec();
+        new Inferring(
+            new Directory(parsed), parsed, this.dir.resolve("pre"), tables,
+            new RuntimeNames().get()
+        ).exec();
         final Collection<XML> stamped = new ArrayList<>(0);
         for (final String name : sources.keySet()) {
             stamped.add(StPureTest.stamped(tables, parsed.resolve(name)));

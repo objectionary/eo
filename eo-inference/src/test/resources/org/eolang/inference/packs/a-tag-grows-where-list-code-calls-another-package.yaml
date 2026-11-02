@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# map is list code too, and its put calls with of tuple, which is in another
+# package, so the tag of the place in app grows by the place of that call.
+# The tuple copies made for two callers of put stay apart.
+sources:
+  tuple.eo: |
+    [item rest] > tuple
+      [x] > with
+        tuple x ^ > @
+  map.eo: |
+    [pairs] > map
+      [key] > put
+        ^.pairs.with key > @
+  app.eo: |
+    [] > app
+      (map (tuple 0 0)).put 1 > one
+      (map (tuple 0 0)).put "one" > word
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.map.put.φ.α0' and @lands='x']
+  - /answers/o[@loc='Φ.tuple.with' and @copies='2']
+  - /answers/o[@loc='Φ.tuple.with.x']/set[@copies='1']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.tuple.with.x']/set[@copies='1']/is[@loc='Φ.string']
+  - /answers[not(o[starts-with(@loc, 'Φ.tuple.')]/set[is[@loc='Φ.number'] and is[@loc='Φ.string']])]

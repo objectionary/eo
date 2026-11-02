@@ -7,34 +7,55 @@
   <!--
   Here we say what the body of an object returns, as the tables of
   "eo:inference" say it. The rendering asks this once, when the root of an
-  entry is data the atom would return bare, and the question is kept apart
-  from the rest of the rendering, since it is all about how the tables are
-  laid out. A stylesheet that includes this one opens the tables itself,
-  as the variables "eo:provides", "eo:links" and "eo:atoms".
+  entry is data the atom would return bare, and the planting asks it when it
+  decides on a row, and the question is kept apart from the rest of both,
+  since it is all about how the tables are laid out. A stylesheet that
+  includes this one opens the tables itself, as the variables "eo:facts",
+  for "facts.xml", and "eo:answers", for "answers.xml".
   -->
   <!--
-  The rows of the table, by the type each one is about. Without the index
-  every question about a formation walks the whole table, and the table of
-  eo-runtime holds tens of thousands of rows.
+  The rows of "answers.xml", by the place each one is about, and the
+  formations of "facts.xml", by locator. Without the index every question
+  about a place walks the whole table, and the table of eo-runtime holds
+  tens of thousands of rows.
   -->
-  <xsl:key name="eo:type" match="type" use="@id"/>
-  <!-- The atoms the tables know, by locator, for the type an atom gives. -->
-  <xsl:key name="eo:atom" match="atom" use="@loc"/>
+  <xsl:key name="eo:row" match="answers/o" use="@loc"/>
+  <xsl:key name="eo:type" match="objects/type" use="@id"/>
+  <!--
+  The labels the copies of a place say it is, from its row of
+  "answers.xml" or from the "reduced" of that row. A label stands right
+  under the row when every copy says the same, or inside one "set" per
+  group of copies otherwise, and all of them are taken. A "terminator", an
+  "open" void and a failing read, "fails", are left out: each is a gap
+  next to the names, and none of them says what the place is when it is
+  something.
+  -->
+  <xsl:function name="eo:labels" as="element()*">
+    <xsl:param name="row" as="element()*"/>
+    <xsl:sequence select="$row/(*[not(self::set or self::reduced)] | set/*)[not(self::terminator or self::open or self::fails)]"/>
+  </xsl:function>
   <!--
   The types the body of the object with this locator may be, as the tables
-  of "eo:inference" say, or none where they say nothing. An object that
-  binds nothing but its body behaves as that body, and "eo:inference"
-  writes what it behaves as into the "reduced" cell of its row in
-  "provides.xml", after chasing the body through all its copies, so that
-  cell answers first. A body that is a formation has no row in "links.xml"
-  but a row of its own in "provides.xml", so its "reduced" cell answers
-  next. Otherwise every link of the body arrives at one type. Whatever the
-  answer, an atom counts as the type "atoms.xml" says it gives, and a
-  formation counts as the type its "reduced" cell names, if it has one.
+  of "eo:inference" say, or none where they say nothing. They are the
+  objects the row of the "φ" of the object names, while a datum and a place
+  the engine cannot tell name no object. An atom among them counts as the
+  type it "returns" in "facts.xml", and a formation counts as what the
+  "reduced" of its own row names other than itself, when it names anything
+  else.
   -->
   <xsl:function name="eo:returns" as="xs:string*">
     <xsl:param name="loc" as="xs:string"/>
-    <xsl:variable name="reduced" as="xs:string?" select="(key('eo:type', $loc, $eo:provides)[1]/@reduced, key('eo:type', concat($loc, '.φ'), $eo:provides)[1]/@reduced)[1]"/>
-    <xsl:sequence select="for $t in (if (exists($reduced)) then $reduced else key('eo:type', concat($loc, '.φ'), $eo:links)/ref/@loc) return string((key('eo:atom', $t, $eo:atoms)/@forma, key('eo:type', $t, $eo:provides)[1]/@reduced, $t)[1])"/>
+    <xsl:sequence select="distinct-values(for $name in distinct-values(eo:labels(key('eo:row', concat($loc, '.φ'), $eo:answers))/self::is/@loc) return eo:behaves($name))"/>
+  </xsl:function>
+  <!--
+  What the object with this locator counts as when a body is it: the type
+  an atom returns, what a formation reduces to other than itself, or the
+  object itself.
+  -->
+  <xsl:function name="eo:behaves" as="xs:string+">
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:variable name="atom" as="attribute()?" select="key('eo:type', $name, $eo:facts)[1]/@returns"/>
+    <xsl:variable name="reduced" as="xs:string*" select="eo:labels(key('eo:row', $name, $eo:answers)/reduced)/self::is/@loc[. != $name] ! string(.)"/>
+    <xsl:sequence select="if (exists($atom)) then string($atom) else if (exists($reduced)) then $reduced else $name"/>
   </xsl:function>
 </xsl:stylesheet>

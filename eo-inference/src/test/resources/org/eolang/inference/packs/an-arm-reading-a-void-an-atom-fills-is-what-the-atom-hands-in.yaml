@@ -1,0 +1,56 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# grip calls hold back with an oak, so m is an oak, and so is ^.m, the second
+# arm of pick. choice has a not besides its pick, as bool does, so first, with
+# yes, picks dial 03-, and second, with no, picks ^.m: an oak.
+sources:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+      [] > not
+        ^.pick no yes > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  dial.eo: |
+    [^ sys] > dial
+  oak.eo: |
+    [] > oak
+  grip.eo: |
+    [] > grip /Q.bytes
+      ? > scope /{Q.oak}
+  app.eo: |
+    [] > app
+      grip hold > @
+      [m] > hold
+        [^ flag] > pick
+          flag.pick > @
+            dial 03-
+            ^.m
+        pick yes > first
+        pick no > second
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='scope']/is[@loc='Φ.app.hold']
+  - /answers/o[@loc='Φ.app.hold.m']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.hold.pick.φ.α1']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.hold.first' and not(is[@loc='Φ.oak'])]/is[@loc='Φ.dial']
+  - /answers/o[@loc='Φ.app.hold.second' and not(is[@loc='Φ.dial'])]/is[@loc='Φ.oak']

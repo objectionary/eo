@@ -66,8 +66,11 @@
   is read from outside), that has a "λ", that reads a "φ", that is referred
   to other than by an application "ξ(.ρ)*.F", whose "φ" holds a named
   binding, that calls itself from inside a nested formation or from inside
-  the arguments of another self-call, or whose application from outside is
-  the receiver of a dispatch while one of its attributes moves away.
+  the arguments of another self-call, that reaches a self-call from inside
+  an ".if" that may not belong to a "bool" (see "eo:choice"), since the
+  rewrite would force the call before that "if" chooses, or whose
+  application from outside is the receiver of a dispatch while one of its
+  attributes moves away.
   -->
   <xsl:import href="/org/eolang/maven/transpile/_recursion.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
@@ -183,7 +186,7 @@
     <xsl:param name="f" as="element()"/>
     <xsl:variable name="phi" select="$f/o[@name='φ' and @base]"/>
     <xsl:variable name="calls" select="$f//o[@base = concat('ξ.ρ.', $f/@name)]"/>
-    <xsl:sequence select="exists($f/parent::o) and exists($phi) and exists(eo:reach($phi, $f, $calls, ())[not(eo:tail(., $phi))]) and (every $a in eo:tainted($f, $calls) satisfies exists($a intersect eo:used($phi, $f, ()))) and empty($f/o[@name='λ']) and empty($f//o[contains(@base, 'φ')]) and empty($phi//o[@name][not(ancestor::o[not(@base)][. &gt;&gt; $phi])]) and (every $call in $calls satisfies (eo:formation($call) is $f and empty(eo:reach($call/o, $f, $calls, ())))) and (every $ref in eo:refs($f) satisfies (matches($ref/@base, '^ξ(\.ρ)*\.[^.]+$') and (empty($ref/ancestor::o[. is $f]) or exists($ref intersect $calls)) and (empty(eo:tainted($f, $calls)) or empty($ref[not(@as)]/parent::o[starts-with(@base, '.')]))))"/>
+    <xsl:sequence select="exists($f/parent::o) and exists($phi) and exists(eo:reach($phi, $f, $calls, ())[not(eo:tail(., $phi))]) and empty($phi/descendant-or-self::o[ends-with(@base, '.if') and not(eo:choice(.))][exists(eo:reach(., $f, $calls, ()))]) and (every $a in eo:tainted($f, $calls) satisfies exists($a intersect eo:used($phi, $f, ()))) and empty($f/o[@name='λ']) and empty($f//o[contains(@base, 'φ')]) and empty($phi//o[@name][not(ancestor::o[not(@base)][. &gt;&gt; $phi])]) and (every $call in $calls satisfies (eo:formation($call) is $f and empty(eo:reach($call/o, $f, $calls, ())))) and (every $ref in eo:refs($f) satisfies (matches($ref/@base, '^ξ(\.ρ)*\.[^.]+$') and (empty($ref/ancestor::o[. is $f]) or exists($ref intersect $calls)) and (empty(eo:tainted($f, $calls)) or empty($ref[not(@as)]/parent::o[starts-with(@base, '.')]))))"/>
   </xsl:function>
   <!--
   The rewritten formation that the reference $ref applies from outside of
@@ -263,8 +266,9 @@
   <!--
   An expression in a tail position of the φ of the formation $f, seen from
   $depth continuations deep, with the self-calls $done already turned into
-  continuations: walked down through the branches of an ".if" and the last
-  step of a "seq", and rewritten at its leaves.
+  continuations: walked down through the branches of an ".if" that may
+  belong to a "bool" and the last step of a "seq", and rewritten at its
+  leaves.
   -->
   <xsl:template match="o" mode="body">
     <xsl:param name="f" as="element()"/>
@@ -287,7 +291,7 @@
       </xsl:choose>
     </xsl:variable>
     <xsl:choose>
-      <xsl:when test="ends-with(@base, '.if') and o[eo:arg(.) = (0, 1)] and empty(eo:reach(o[not(eo:arg(.) = (0, 1))], $f, $calls, ()) intersect $left)">
+      <xsl:when test="eo:choice(.) and o[eo:arg(.) = (0, 1)] and empty(eo:reach(o[not(eo:arg(.) = (0, 1))], $f, $calls, ()) intersect $left)">
         <xsl:copy>
           <xsl:apply-templates select="@* except (@as, @name)"/>
           <xsl:copy-of select="$head"/>

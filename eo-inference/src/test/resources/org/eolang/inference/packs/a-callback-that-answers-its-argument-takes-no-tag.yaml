@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# show is nothing but its x, so a call of it answers what goes into x, and its
+# copy takes no tag. The two callers of each share one copy of show, whose x
+# is a number and a string at once, yet each call answers its own argument:
+# one is a number and word is a string.
+sources:
+  tuple.eo: |
+    [item rest] > tuple
+      [f] > each
+        f ^.item > @
+  show.eo: |
+    [x] > show
+      x > @
+  app.eo: |
+    [] > app
+      (tuple 1 0).each show > one
+      (tuple "a" 0).each show > word
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.tuple.each.φ']/set[not(is[@loc='Φ.string'])]/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.show' and @copies='1']
+  - /answers/o[@loc='Φ.tuple.each.f' and @copies='2']/is[@loc='Φ.show']
+  - /answers/o[@loc='Φ.show.x' and @copies='1'][is[@loc='Φ.number'] and is[@loc='Φ.string']]
+  - /answers/o[@loc='Φ.app.one' and not(is[@loc='Φ.string'])]/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.word' and not(is[@loc='Φ.number'])]/is[@loc='Φ.string']

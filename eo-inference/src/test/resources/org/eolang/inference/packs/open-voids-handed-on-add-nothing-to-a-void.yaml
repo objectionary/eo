@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# app hands inc an oak, while one and two, which nobody calls, hand it their own
+# empty voids. Those two calls make no copy of inc, so x holds an oak and
+# nothing else, and the @ of one and of two cannot be told.
+sources:
+  app.eo: |
+    [] > app
+      inc oak > @
+  one.eo: |
+    [y] > one
+      inc y > @
+  two.eo: |
+    [z] > two
+      inc z > @
+  inc.eo: |
+    [x] > inc
+      x > @
+  oak.eo: |
+    [] > oak
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='x']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.one.φ.α0' and @lands='x']/open
+  - /answers/o[@loc='Φ.two.φ.α0' and @lands='x']/open
+  - /answers/o[@loc='Φ.inc' and @copies='1']
+  - /answers/o[@loc='Φ.inc.x']/is[@loc='Φ.oak']
+  - /answers[not(o[@loc='Φ.inc.x']/*[not(self::is[@loc='Φ.oak'])])]
+  - /answers/o[@loc='Φ.one.φ']/unknown
+  - /answers/o[@loc='Φ.two.φ']/unknown

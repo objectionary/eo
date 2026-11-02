@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls outer or inner. outer gets a study copy inside the copy of app
+# that main makes, and inner, whose outer has no real copy, gets one inside
+# that study copy.
+sources:
+  app.eo: |
+    [] > app
+      [x] > outer
+        [y] > inner
+          y > @
+        x > @
+  main.eo: |
+    [] > main
+      app > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers[not(o[@lands='x' or @lands='y'])]
+  - /answers/o[@loc='Φ.main.φ']/is[@loc='Φ.app']
+  - /answers/o[@loc='Φ.app.outer' and @copies='1']
+  - /answers/o[@loc='Φ.app.outer.inner' and @copies='1']

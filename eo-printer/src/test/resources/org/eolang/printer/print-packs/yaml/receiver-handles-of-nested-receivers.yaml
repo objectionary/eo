@@ -3,8 +3,9 @@
 ---
 # yamllint disable rule:line-length
 # Two nested formations, each with a receiver handle: a reference to the
-# outer receiver prints as "^.s" and one to the inner receiver as "t"
-# (#8227).
+# inner receiver prints as "t", and one to the outer receiver as "t.s",
+# climbing through the handle of every formation it leaves rather than
+# through a bare "^" (#8227, #9245).
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -15,5 +16,5 @@ penalties:
 origin: |
   [^s] > a
     [^t] > b
-      ^.s.foo > x
+      t.s.foo > x
       t.foo > y

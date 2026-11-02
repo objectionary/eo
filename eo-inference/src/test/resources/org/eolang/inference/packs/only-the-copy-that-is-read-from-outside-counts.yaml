@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# stdout is written once, called as the head of a call and applied in app.
+# The copy as written and the head both have an empty text and do not count;
+# only the copy the call fills is walked, so text is a string alone.
+sources:
+  stdout.eo: |
+    [text] > stdout
+      text > @
+      text > shown
+  app.eo: |
+    [] > app
+      (stdout "hi").shown > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.ρ.α0' and @lands='text']/is[@loc='Φ.string']
+  - /answers[not(o[@loc='Φ.stdout.text']//open)]
+  - /answers/o[@loc='Φ.stdout.text' and @copies='1']
+  - /answers/o[@loc='Φ.stdout.text' and count(*)=1]/is[@loc='Φ.string']

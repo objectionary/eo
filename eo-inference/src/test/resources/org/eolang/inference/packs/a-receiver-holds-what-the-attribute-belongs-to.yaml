@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls grow or inc, so each is walked with x open. The ^ of grow holds
+# the tree it is an attribute of, and the ^ of inc, written at the top of its
+# file, holds Φ.
+sources:
+  tree.eo: |
+    [] > tree
+      [^ x] > grow
+        x > @
+  inc.eo: |
+    [^ x] > inc
+      x > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers[not(o[@lands='x'])]
+  - /answers/o[@loc='Φ.tree.grow.x']/open
+  - /answers/o[@loc='Φ.inc.x']/open
+  - /answers/o[@loc='Φ.tree.grow.ρ']/is[@loc='Φ.tree']
+  - /answers/o[@loc='Φ.inc.ρ']/is[@loc='Φ']

@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# loop reads its own value, which reads loop again, so nothing ever answers
+# it; the end step says it cannot be told.
+sources:
+  loop.eo: |
+    [] > loop
+      ^.loop.value > value
+      value > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.loop.φ.ρ']/is[@loc='Φ.loop']
+  - /answers/o[@loc='Φ.loop.value.ρ']/is[@loc='Φ.loop']
+  - /answers[not(o[@loc='Φ.loop.φ']//is)]
+  - /answers/o[@loc='Φ.loop.φ']/unknown
+  - /answers/o[@loc='Φ.loop.value']/unknown

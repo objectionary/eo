@@ -306,6 +306,21 @@
                 <xsl:apply-templates select="@name"/>
               </xsl:if>
               <!--
+              The reference carries a `&gt;&gt;` handle name of its own, marked
+              `@local` by "restore-local-names". A const handle over an alias
+              (`h &gt;&gt;! g` over `foo &gt;&gt; h`) puts that mark on the
+              argument inside `Φ.dataized`, which is this reference, so folding
+              `h` here dropped it with the rest of the reference's attributes
+              and "dataized-to-const" had no name left to print: the const came
+              out anonymous and its reader was stranded on a synthetic "v5_2"
+              nothing declares (#9296). The mark is carried over for the same
+              reason the name above is, and under the same guard: a target that
+              keeps a name of its own already brings its own `@local` along.
+              -->
+              <xsl:if test="@local and not($keep-name)">
+                <xsl:apply-templates select="@local"/>
+              </xsl:if>
+              <!--
               The folded value is rebased as a whole `o` and then unwrapped
               into the node being built, rather than as the loose sequence of
               its attributes and children. The `dropped` mode rewrites an
@@ -427,6 +442,20 @@
             <xsl:apply-templates select="@*[name() != 'base']"/>
             <xsl:attribute name="base" select="$alias/@base"/>
             <xsl:apply-templates select="$alias/node()"/>
+            <!--
+            This binding applies the alias to arguments of its own
+            (`h 5 &gt;&gt; g` over `foo &gt;&gt; h`), so landing the alias
+            value alone hands `g` the (empty) argument list of `h` and the
+            `5` is gone, printed as `foo &gt;&gt; g` (#9294) — the kept-handle
+            flavour of the loss #5952 fixed on the reference path above. The
+            binding's own `o` children follow the alias's so the arguments
+            survive as `foo 5 &gt;&gt; g`. Guarded the same way: an alias that
+            is already applied has no inline spelling as the head of another
+            application and is kept standing instead (see `eo:reapplied`).
+            -->
+            <xsl:if test="not($alias/o)">
+              <xsl:apply-templates select="o"/>
+            </xsl:if>
           </xsl:copy>
         </xsl:when>
         <xsl:otherwise>
@@ -583,12 +612,18 @@
   than folded (#5952). Restricted to based handles: an abstract formation
   becomes a `| args` pipe (see the two abstract branches above), and a bare or
   argument-less based handle (`a.plus &gt;&gt; b`) carries no children of its
-  own, so appending the reference's arguments applies it cleanly.
+  own, so appending the reference's arguments applies it cleanly. A
+  dataized-const handle (`foo &gt;&gt;! h`, R-3.10.12) counts here too: its
+  children are the `&#934;.dataized` wrapper rather than arguments, yet the fold
+  reads them the same way and appends nothing, so `h 5 &gt; g` printed as
+  `foo &gt; g!` and the `5` was gone (#9295). Such a const has no inline
+  spelling as the head of an application either — the fold would have to dataize
+  the value and apply the result in one breath — so it is left standing as well.
   -->
   <xsl:function name="eo:reapplied" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string"/>
-    <xsl:sequence select="not(eo:abstract($target)) and not(eo:dataized-const($target)) and exists($target/o) and exists(eo:references($target, $name)[eo:resolved-name(@base) = $name and o])"/>
+    <xsl:sequence select="not(eo:abstract($target)) and exists($target/o) and exists(eo:references($target, $name)[eo:resolved-name(@base) = $name and o])"/>
   </xsl:function>
   <!--
   Whether the auto-named binding `$target` survives the drop template

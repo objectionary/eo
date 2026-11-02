@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# errno says it gives a number and strerror a string, so strerror called with
+# errno is a string, and eq is read off string.
+sources:
+  posix.eo: |
+    [name args] > posix
+      [] > @ /Q.posix.return
+        ? > ^
+      [^ code output] > return
+        output > @
+      [] > errno /Q.number
+        ? > ^
+      [] > strerror /Q.string
+        ? > ^
+        ? > errno /Q.number
+  app.eo: |
+    [] > app
+      eq. > @
+        posix.strerror posix.errno
+        "No such file"
+  string.eo: |
+    [@] > string
+      [b] > eq
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+answers:
+  - /answers/o[@loc='Φ.posix.errno.λ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.posix.strerror.λ']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.φ.ρ.α0' and @lands='errno']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.string.eq']

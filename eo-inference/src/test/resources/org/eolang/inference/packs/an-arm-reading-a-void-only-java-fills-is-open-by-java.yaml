@@ -1,0 +1,59 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# knob is an atom that gives a reply, and no EO code fills its mode, so
+# ^.got.mode, the second arm of pick, is a void only Java fills. choice has a
+# not besides its pick, as bool does, so first, with yes, picks dial 03-.
+# second, with no, picks that open void, which cannot be told once it goes
+# into the arm, so the @ of its pick cannot be told, and second keeps that
+# pick as itself.
+sources:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+      [] > not
+        ^.pick no yes > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  dial.eo: |
+    [^ sys] > dial
+  reply.eo: |
+    [code mode] > reply
+  knob.eo: |
+    [] > knob /Q.reply
+  app.eo: |
+    [] > app
+      knob > got
+      [^ flag] > pick
+        flag.pick > @
+          dial 03-
+          ^.got.mode
+      pick yes > first
+      pick no > second
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.knob.λ']/is[@loc='Φ.reply']
+  - /answers[not(o[@lands='mode'])]
+  - /answers/o[@loc='Φ.reply.mode']/open[@by='java']
+  - /answers/o[@loc='Φ.app.pick.φ.α1' and @lands='a🌵5-6']/open[@by='java']
+  - /answers/o[@loc='Φ.app.first']/is[@loc='Φ.dial']
+  - /answers/o[@loc='Φ.app.pick.φ']/set/unknown
+  - /answers/o[@loc='Φ.app.second']/is[@loc='Φ.app.pick']

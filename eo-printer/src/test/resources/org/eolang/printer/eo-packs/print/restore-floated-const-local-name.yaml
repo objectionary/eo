@@ -1,0 +1,42 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A const file-local handle over an abstract formation ("[x] >>! h",
+# R-3.10.12). "const-to-dataized" wraps the value in a ".as-bytes" over
+# "Φ.dataized" shell, and the formation is lifted out of that shell to a
+# sibling of it, carrying the readable handle along, so the handle no longer
+# sits inside the shell the way "eo:const-handle" looks for it. Dropped here,
+# the marker left the const anonymous and stranded its reader on a synthetic
+# "vL_P" that nothing declares (#9297), so it is kept for the floated value as
+# well: "inline-cactoos" folds the formation back into the shell with its name,
+# and "to-eo-tree" prints the handle there.
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/resolve-before-stars.xsl
+  - /org/eolang/parser/parse/fragile-dispatch.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/validate-objects-count.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/printer/print/restore-local-names.xsl
+  - /org/eolang/printer/print/inline-cactoos.xsl
+asserts:
+  # The formation is folded back into the shell and keeps the readable handle.
+  - /object/o[@name='app']/o[@base='.as-bytes' and contains(@name, '🌵')]/o[@base='Φ.dataized']/o[@local='h' and contains(@name, '🌵') and not(@base)]
+  # The formation is no longer standing outside the shell.
+  - /object/o[@name='app'][count(o)=2]
+  # The reader still applies the const binding, keeping its argument.
+  - /object/o[@name='app']/o[@name='y' and contains(@base, '🌵') and count(o)=1]
+input: |
+  [] > app
+    [x] >>! h
+      x.plus 1 > @
+    h 5 > y

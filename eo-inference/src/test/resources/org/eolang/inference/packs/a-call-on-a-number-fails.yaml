@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# apply calls what goes into f with 1, and app hands it 5, the one shared
+# number. A call on that finished number fails (rule F), so the @ of apply is
+# T, and so is apply.
+sources:
+  apply.eo: |
+    [f] > apply
+      f 1 > @
+  app.eo: |
+    [] > app
+      apply 5 > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.apply.φ.α0']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='f']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.apply.f']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.apply.φ']/terminator
+  - /answers/o[@loc='Φ.apply']/reduced/terminator

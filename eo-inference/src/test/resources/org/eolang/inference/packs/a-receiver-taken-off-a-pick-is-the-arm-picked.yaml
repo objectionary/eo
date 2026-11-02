@@ -1,0 +1,102 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# choice has a not besides its pick, as bool does, so gauge, crate and chain
+# each pick one arm per caller. walker hands yes to gauge, so p is the record
+# 1, which is the ^ of p.ok, and the shine of that lamp gives 2, a number.
+# porter hands yes to crate, so c is the box around dial 05-, and c.ok is that
+# dial. user hands yes to chain, which picks the lamp and never reaches steps.
+# lamp is read off Φ in record and spare, so its ^ holds Φ, never a record.
+sources:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+      [] > not
+        ^.pick no yes > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  lamp.eo: |
+    [^] > lamp
+      [x] > shine
+        x > @
+  dial.eo: |
+    [^ sys] > dial
+      [^ size] > listen
+        size > @
+  record.eo: |
+    [at] > record
+      lamp > ok
+  gauge.eo: |
+    [^ flag cant-read] > gauge
+      flag.pick > @
+        record 1
+        cant-read
+          "the gauge cannot be read"
+  walker.eo: |
+    [] > walker
+      p.ok.shine 2 > @
+      gauge yes > p
+  other.eo: |
+    [] > other
+      gauge no spare > @
+  spare.eo: |
+    [msg] > spare
+      lamp > ok
+  box.eo: |
+    [ok] > box
+  crate.eo: |
+    [^ flag] > crate
+      flag.pick > @
+        box
+          dial 05-
+        record 3
+  porter.eo: |
+    [] > porter
+      c.ok > @
+      crate yes > c
+  idle.eo: |
+    [] > idle
+      crate no > @
+  chain.eo: |
+    [^ flag steps] > chain
+      flag.pick > @
+        lamp
+        steps.pick
+          lamp
+          dial 03-
+  user.eo: |
+    [] > user
+      chain yes no > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers[not(o[@loc='Φ.gauge.φ' or @loc='Φ.crate.φ' or @loc='Φ.chain.φ']/set[count(is) > 1])]
+  - /answers/o[@loc='Φ.walker.p']/is[@loc='Φ.record']
+  - /answers/o[@loc='Φ.walker.φ.ρ.ρ']/is[@loc='Φ.record']
+  - /answers/o[@loc='Φ.walker.φ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.porter.c']/is[@loc='Φ.box']
+  - /answers/o[@loc='Φ.box.ok']/is[@loc='Φ.dial']
+  - /answers/o[@loc='Φ.porter.φ']/is[@loc='Φ.dial']
+  - /answers/o[@loc='Φ.chain.φ']/is[@loc='Φ.lamp']
+  - /answers[not(o[@loc='Φ.chain.φ']//is[@loc='Φ.dial'])]
+  - /answers/o[@loc='Φ.record.ok.ρ']/is[@loc='Φ']
+  - /answers/o[@loc='Φ.spare.ok.ρ']/is[@loc='Φ']
+  - /answers/o[@loc='Φ.lamp.ρ']/is[@loc='Φ']
+  - /answers[not(o[@loc='Φ.lamp.ρ']//is[@loc='Φ.record'])]

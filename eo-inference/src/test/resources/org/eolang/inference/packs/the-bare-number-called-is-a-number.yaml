@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The bare name number is its blank copy, and a call on it builds a number
+# (rule R), the one shared copy, whatever the argument is.
+sources:
+  convert.eo: |
+    [b] > convert
+      number b > @
+  app.eo: |
+    [] > app
+      convert 3 > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.convert.φ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.number' and @copies='1']
+  - /answers/o[@loc='Φ.convert.φ.α0' and @lands='φ']/is[@loc='Φ.number']
+  - /answers[not(o[@loc='Φ.number.φ']/is[@loc='Φ.number'])]

@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# pour calls cup at one place, so the two calls of pour make two copies of
+# pour but one copy of cup, where the number and the string meet.
+sources:
+  cup.eo: |
+    [drink] > cup
+      drink > @
+      drink > sip
+  pour.eo: |
+    [what] > pour
+      (cup what).sip > @
+  app.eo: |
+    [] > app
+      pour 1 > one
+      pour "tea" > two
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.pour.φ.ρ']/is[@loc='Φ.cup']
+  - /answers/o[@loc='Φ.pour' and @copies='2']
+  - /answers/o[@loc='Φ.cup' and @copies='1']
+  - /answers/o[@loc='Φ.cup.drink' and @copies='1'][is[@loc='Φ.number'] and is[@loc='Φ.string']]

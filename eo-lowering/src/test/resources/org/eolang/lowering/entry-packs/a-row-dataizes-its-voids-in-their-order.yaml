@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A row dataizes every void of its formation, in the order they are
+# declared, so that the operands of the symbol it mints stand in that
+# order too, and the rendering binds each of them to the void it fills. A
+# formation with no `ρ` is reached by its path alone, and a body the
+# tables say is bytes answers bytes around the fresh symbol.
+# `app` hands `glued` a string and bytes, and the body is a call of the
+# atom `concat`, which returns bytes.
+eo:
+  glued.eo: |
+    [a b] > glued
+      a.as-bytes.concat b > @
+  bytes.eo: |
+    [@] > bytes
+      [] > concat /Q.bytes
+        ? > ^
+        ? > b /Q.bytes
+  string.eo: |
+    [@] > string
+      [] > as-bytes /Q.bytes
+        ? > ^
+  app.eo: |
+    [] > app
+      glued "x" 01- > used
+xmir:
+  - "//o[@name='e1']/o[@name='φ' and @base='.body🌵']/o[@base='Φ.glued']\
+    /o[@as='a' and @base='Φ.string']"
+rows:
+  - "L_glued\tΦ.glued\tΦ.glued\ta:string\tb:bytes"
+table:
+  - "- λ: L_glued"
+  - "    𝛿1: $.a"
+  - "    𝛿2: $.b"
+  - "  𝑛: Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )"

@@ -128,7 +128,9 @@ public final class MjCoverageReport extends MjSafe {
                     source, key -> new LinkedHashMap<>(0)
                 );
                 final XML xmir = new EoSyntax(Files.readString(tojo.source())).parsed();
-                if (!xmir.nodes("/object/errors/error").isEmpty()) {
+                if (!xmir.nodes(
+                    "/object/errors/error[@severity='error' or @severity='critical']"
+                ).isEmpty()) {
                     throw new IOException(
                         String.format(
                             "Can't build a coverage report, %s doesn't parse", source

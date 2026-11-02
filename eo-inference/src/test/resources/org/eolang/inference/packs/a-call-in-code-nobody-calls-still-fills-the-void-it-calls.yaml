@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls helper, so a stop keeps its copy as written, with x open. Its
+# call box 5 counts like any other call, so the copy of box it makes holds a
+# number in item. Nobody else calls box, so its copy as written is kept as
+# well, and item is open there.
+sources:
+  box.eo: |
+    [item] > box
+      item > @
+  helper.eo: |
+    [x] > helper
+      box 5 > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.helper.x' and @copies='1']/open
+  - /answers/o[@loc='Φ.helper.φ.α0' and @lands='item']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.box.item']/set/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.box' and @copies='2']/reduced/set/is[@loc='Φ.box']
+  - /answers/o[@loc='Φ.box.item']/set/open

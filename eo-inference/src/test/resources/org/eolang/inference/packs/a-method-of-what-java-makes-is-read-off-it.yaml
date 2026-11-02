@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Java makes status, and its method ok is written in EO, so ok read off what
+# check returns is a copy of ok inside the copy Java made, and its @ is the
+# number it gives.
+sources:
+  os.eo: |
+    [] > os
+      [] > check /Q.os.status
+      [code] > status
+        code > @
+        [] > ok
+          7 > @
+  app.eo: |
+    [] > app
+      os.check.ok > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.os.check.λ']/is[@loc='Φ.os.status']
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.os.status']
+  - /answers/o[@loc='Φ.os.status.code' and @copies='1']/open[@by='java']
+  - /answers/o[@loc='Φ.os.status.ok' and @copies='1']
+  - /answers/o[@loc='Φ.os.status.ok.φ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.number']

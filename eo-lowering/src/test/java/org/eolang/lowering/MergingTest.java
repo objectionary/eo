@@ -11,7 +11,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.util.Map;
 import org.cactoos.list.ListOf;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -112,41 +115,31 @@ final class MergingTest {
 
     @Test
     void mergesAWorldThePinnedPhinoReads(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.156");
+        final Phino phino = new Phino("phino", "0.0.160");
         Assumptions.assumeTrue(
             MergingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be merged here"
         );
-        Files.write(
-            Files.createDirectories(temp.resolve("1-planting")).resolve("gap.xmir"),
-            new EoSyntax(String.format("[a b] > gap%n  a.plus b > @%n")).parsed()
-                .toString().getBytes(StandardCharsets.UTF_8)
+        final Map<String, String> program = new MapOf<String, String>(
+            new MapEntry<>("gap.eo", String.format("[a b] > gap%n  a.plus b > @%n")),
+            new MapEntry<>("app.eo", String.format("[] > app%n  gap 7 1 > used%n"))
         );
-        final Path tables = Files.createDirectories(temp.resolve("tables"));
-        Files.write(
-            tables.resolve("provides.xml"),
-            String.join(
-                "",
-                "<provides><type id='Φ.gap'>",
-                "<attr name='a' void='true' holds='Φ.number'/>",
-                "<attr name='b' void='true' holds='Φ.number'/>",
-                "</type></provides>"
-            ).getBytes(StandardCharsets.UTF_8)
-        );
-        Files.write(
-            tables.resolve("links.xml"),
-            "<links><type id='Φ.gap.φ'><ref loc='Φ.number'/></type></links>"
-                .getBytes(StandardCharsets.UTF_8)
-        );
-        Files.write(tables.resolve("atoms.xml"), "<atoms/>".getBytes(StandardCharsets.UTF_8));
-        new Planting(tables).exec(temp);
+        for (final Map.Entry<String, String> source : program.entrySet()) {
+            Files.write(
+                Files.createDirectories(temp.resolve("1-planting"))
+                    .resolve(source.getKey().replace(".eo", ".xmir")),
+                new EoSyntax(source.getValue()).parsed().toString()
+                    .getBytes(StandardCharsets.UTF_8)
+            );
+        }
+        new Planting(new Inferred(temp.resolve("engine"), program).value()).exec(temp);
         new Merging(phino).exec(temp);
         MatcherAssert.assertThat(
-            "the world must hold the object and the marks of the entries, but it doesnt",
+            "the world must hold the object and its entry beside the throw, but it doesnt",
             new String(
                 Files.readAllBytes(temp.resolve("world.phi")), StandardCharsets.UTF_8
             ),
-            Matchers.stringContainsInOrder("gap", "l/", "L_entry")
+            Matchers.stringContainsInOrder("gap", "l🌵", "L_throw", "e1")
         );
     }
 

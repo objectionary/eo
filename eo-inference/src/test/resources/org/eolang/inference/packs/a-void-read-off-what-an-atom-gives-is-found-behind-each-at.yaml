@@ -1,0 +1,51 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# hold is an atom that gives back its value or its alternative, so held is a
+# step or a number. pick has same next to its @, so it is no bare wrapper, and
+# pick 7 in maker is a pick whose m is 7. A step has no m, so m is read off
+# its @, the pass of that maker, and gives the number in m. The alternative 0
+# is a number, and m read off it fails.
+sources:
+  pick.eo: |
+    [m] > pick
+      m > @
+      [] > same
+        ^.m > @
+  maker.eo: |
+    [] > maker
+      pick 7 > pass
+  hold.eo: |
+    [] > hold /A
+      ? > value /A?
+      ? > alternative /A
+  step.eo: |
+    [] > step
+      hold > inner
+        maker
+        0
+      inner.pass > @
+  app.eo: |
+    [] > app
+      hold > held
+        step
+        0
+      held.m > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.hold.λ' and is[@loc='Φ.hold.value']]/is[@loc='Φ.hold.alternative']
+  - /answers/o[@loc='Φ.app.held' and is[@loc='Φ.step']]/is[@loc='Φ.number']
+  - /answers[not(o[@loc='Φ.pick']/reduced/is[@loc='Φ.number'])]
+  - /answers/o[@loc='Φ.maker.pass']/is[@loc='Φ.pick']
+  - /answers/o[@loc='Φ.maker.pass.α0' and @lands='m']/is[@loc='Φ.number']
+  - /answers[not(o[@loc='Φ.step.m'])]
+  - /answers/o[@loc='Φ.step.φ']/is[@loc='Φ.pick']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.held.α1' and @lands='alternative']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ']/fails[@name='data.m']

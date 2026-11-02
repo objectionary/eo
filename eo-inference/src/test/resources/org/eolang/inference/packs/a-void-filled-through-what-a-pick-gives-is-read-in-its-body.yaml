@@ -1,0 +1,58 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# choice has a not besides its pick, as bool does, so num yes picks big ^ in
+# wide, and (num yes).wide is a big. div called on it puts num no into its b,
+# so b.wide, the @ of div, is the wide of that num, and so is the @ of app.
+# That wide leaves fail empty and nobody reads off it, so it stays itself.
+sources:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+      [] > not
+        ^.pick no yes > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  num.eo: |
+    [flag] > num
+      [^ fail] > wide
+        ^.flag.pick > @
+          big ^
+          fail
+  big.eo: |
+    [v] > big
+      [^ b] > div
+        b.wide > @
+  app.eo: |
+    [] > app
+      (num yes).wide.div (num no) > @
+  other.eo: |
+    [] > other
+      num no > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.num.wide.φ']/is[@loc='Φ.big']
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.big']
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='b']/is[@loc='Φ.num']
+  - /answers/o[@loc='Φ.big.div.φ']/is[@loc='Φ.num.wide']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.num.wide']
+  - /answers/o[@loc='Φ.num.wide.fail']/open
+  - /answers/o[@loc='Φ.num.wide']/reduced/set/is[@loc='Φ.num.wide']

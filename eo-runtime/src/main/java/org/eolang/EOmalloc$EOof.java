@@ -32,7 +32,7 @@ public final class EOmalloc$EOof extends PhDefault implements Atom {
             new Natural(Expect.at(this, "size")).it(),
             identifier -> {
                 final Phi chunk = Phi.Φ.take("chunk").copy();
-                chunk.put("id", new Data.ToPhi((long) identifier));
+                chunk.put(0, new Data.ToPhi((long) identifier));
                 final Phi scope = this.take("scope").copy();
                 scope.put(0, chunk);
                 return new Data.ToPhi(new Dataized(scope).take());

@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The formation handed to the atom run declares its ^ and nobody binds it, so
+# only Java fills that ^, and the answers say so.
+sources:
+  jobs.eo: |
+    [] > jobs
+      [] > run /Q.number
+        ? > job
+  app.eo: |
+    [] > app
+      jobs.run > @
+        [^]
+          42 > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='job']
+  - /answers/o[@loc='Φ.app.φ.α0.ρ']/set/fails[@name='ρ' and @by='java']

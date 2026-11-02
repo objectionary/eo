@@ -1,0 +1,34 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The atom use calls back what goes into its scope with a block Java makes, so
+# the formation handed in gets one more copy with that block in its void, as
+# Java does, and the size read off it is a number.
+sources:
+  memory.eo: |
+    [] > memory
+      [] > use /Q.number
+        ? > size /Q.number
+        ? > scope /{Q.block}
+  block.eo: |
+    [] > block
+      42 > size
+  app.eo: |
+    [] > app
+      memory.use > @
+        5
+        [b]
+          b.size > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.memory.use.scope']/is[@loc='Φ.app.φ.α1']
+  - /answers/o[@loc='Φ.app.φ.α1' and @lands='scope']/reduced[@copies='2']
+  - /answers/o[@loc='Φ.app.φ.α1.b']/is[@loc='Φ.block']
+  - /answers/o[@loc='Φ.app.φ.α1.φ.ρ']/is[@loc='Φ.block']
+  - /answers/o[@loc='Φ.app.φ.α1.φ']/is[@loc='Φ.number']

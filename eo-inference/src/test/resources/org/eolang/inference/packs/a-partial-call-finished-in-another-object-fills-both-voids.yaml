@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# pair "one" fills a and leaves b empty, and fin calls that copy with 2, which
+# goes into b. The @ of pair is b, so the call answers the 2: fin is a number,
+# while a holds the string.
+sources:
+  pair.eo: |
+    [a b] > pair
+      b > @
+  fin.eo: |
+    [f] > fin
+      f 2 > @
+  app.eo: |
+    [] > app
+      fin (pair "one") > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.α0.α0' and @lands='a']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.fin.φ.α0' and @lands='b']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.pair.b']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.fin.φ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.fin']/reduced/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.pair.a']/is[@loc='Φ.string']

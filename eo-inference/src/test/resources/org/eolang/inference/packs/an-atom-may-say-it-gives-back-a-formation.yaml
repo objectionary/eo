@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The atom grow says it gives back an oak, a formation of the program, so its
+# λ is an oak. Nobody calls grow, so x stays an open void.
+sources:
+  oak.eo: |
+    [] > oak
+      [] > leaf
+  grow.eo: |
+    [] > grow /Q.oak
+      ? > x
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts:
+  - /facts/objects/type[@id='Φ.grow' and @returns='Φ.oak']
+  - /facts[not(calls/call)]
+answers:
+  - /answers/o[@loc='Φ.grow.λ']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.grow.x']/open

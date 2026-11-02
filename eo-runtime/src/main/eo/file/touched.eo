@@ -17,58 +17,49 @@
 +version 0.0.0
 
 [^entry] > touched
-  reachable.if > @
+  if. > @
+    eq.
+      os.is-windows.if
+        win32.access entry.path 0
+        posix.access entry.path 0
+      0
     entry
     if.
       or.
-        descriptor.gte 0
+        gte.
+          opened.code >> descriptor
+          0
         and.
-          errno.eq eexist
-          linked.not
+          eq.
+            os.is-windows.if win32.errno posix.errno
+            os.is-windows.if win32.eexist posix.eexist
+          not.
+            entry.is-symlink false >> linked
       seq *
         if.
           descriptor.gte 0
           os.is-windows.if
-            win32.close descriptor
-            posix.close descriptor
+            win32.close
+              code.
+                called. >> opened
+                  os.is-windows.if
+                    win32.open
+                      entry.path
+                      plus. (win32.creat.plus win32.exclusive) win32.wronly
+                      win32.mode
+                    posix.open
+                      entry.path
+                      plus.
+                        posix.creat.plus
+                          linked.not.if posix.exclusive 0
+                        posix.wronly
+                      posix.mode
+            posix.close opened.code
           0
         entry
       T
         "Cant touch the file '%s': %s".printf
           * entry.path opened.message
-  os.is-windows.if > accessible
-    win32.access
-      entry.path
-      0
-    posix.access
-      entry.path
-      0
-  opened.code > descriptor
-  os.is-windows.if > eexist
-    win32.eexist
-    posix.eexist
-  os.is-windows.if > errno
-    win32.errno
-    posix.errno
-  linked.not.if > exclusive
-    posix.exclusive
-    0
-  entry.is-symlink false > linked
-  called. > opened
-    os.is-windows.if
-      win32.open
-        entry.path
-        plus.
-          win32.creat.plus win32.exclusive
-          win32.wronly
-        win32.mode
-      posix.open
-        entry.path
-        plus.
-          posix.creat.plus exclusive
-          posix.wronly
-        posix.mode
-  accessible.eq 0 > reachable
 
   ++> can-keep-the-symlink-path-after-touching-a-dangling-symlink
     os.is-windows.or > @

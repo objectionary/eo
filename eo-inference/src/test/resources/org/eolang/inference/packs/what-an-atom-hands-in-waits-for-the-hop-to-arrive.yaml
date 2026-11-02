@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# app fills the s of relay with hold, and relay hands s on to grip, so the scope
+# of grip is hold. grip calls it back with an oak, and the m of hold is an oak.
+sources:
+  oak.eo: |
+    [] > oak
+  hold.eo: |
+    [m] > hold
+  grip.eo: |
+    [] > grip /Q.bytes
+      ? > scope /{Q.oak}
+  relay.eo: |
+    [s] > relay
+      grip s > @
+  app.eo: |
+    [] > app
+      relay hold > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='s']/is[@loc='Φ.hold']
+  - /answers/o[@loc='Φ.relay.φ.α0' and @lands='scope']/is[@loc='Φ.hold']
+  - /answers/o[@loc='Φ.grip.scope']/is[@loc='Φ.hold']
+  - /answers/o[@loc='Φ.hold.m']/is[@loc='Φ.oak']

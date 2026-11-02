@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# kettle has two attributes, steam and whistle, and each is answered with its
+# own name.
+sources:
+  kettle.eo: |
+    [] > kettle
+      [] > steam
+      [] > whistle
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts:
+  - /facts/objects/type[@id='Φ.kettle' and count(attr)=2]
+  - /facts/objects/type[@id='Φ.kettle']/attr[@name='steam' and @type='Φ.kettle.steam']
+  - /facts/objects/type[@id='Φ.kettle']/attr[@name='whistle' and @type='Φ.kettle.whistle']
+answers:
+  - /answers/o[@loc='Φ.kettle.steam']/is[@loc='Φ.kettle.steam']
+  - /answers/o[@loc='Φ.kettle.whistle']/is[@loc='Φ.kettle.whistle']

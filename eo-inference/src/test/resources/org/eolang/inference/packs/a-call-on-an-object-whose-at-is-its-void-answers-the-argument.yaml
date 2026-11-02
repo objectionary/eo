@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The @ of same is its own void x, so a call of same answers what goes into x
+# (call then narrow): a number in one copy of app and a string in the other.
+sources:
+  same.eo: |
+    [x] > same
+      x > @
+  app.eo: |
+    [] > app
+      same 7 > seven
+      same "seven" > word
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.same.φ' and set/is[@loc='Φ.number'] and set/is[@loc='Φ.string']]
+  - /answers/o[@loc='Φ.app.seven.α0' and @lands='x']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.seven']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.word.α0' and @lands='x']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.word']/is[@loc='Φ.string']

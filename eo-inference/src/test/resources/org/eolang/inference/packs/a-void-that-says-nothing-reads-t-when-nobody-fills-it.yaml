@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# reader is an atom read bare, so its raw is empty. raw declares no type, so
+# reading it gives T, and the eq read off it is T too, while code, which
+# declares a number, says number.
+sources:
+  app.eo: |
+    [] > app
+      reader.raw.eq > @
+  reader.eo: |
+    [] > reader /Q.bytes
+      ? > code /Q.number
+      ? > raw
+  number.eo: |
+    [@] > number
+      [x] > eq
+        x > @
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.reader.raw']/open
+  - /answers/o[@loc='Φ.app.φ.ρ']/terminator
+  - /answers/o[@loc='Φ.app.φ']/terminator
+  - /answers/o[@loc='Φ.reader.code']/is[@loc='Φ.number']

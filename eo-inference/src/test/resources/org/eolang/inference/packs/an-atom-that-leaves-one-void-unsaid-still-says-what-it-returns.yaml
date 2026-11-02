@@ -1,0 +1,47 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The buffer of send declares no type, and the call hands it a string. The
+# atom still says it gives a number, so after the const marker and as-number,
+# eq is read off a number.
+sources:
+  posix.eo: |
+    [name args] > posix
+      [] > @ /Q.posix.return
+        ? > ^
+      [^ code output] > return
+        output > @
+      [] > send /Q.number
+        ? > descriptor /Q.number
+        ? > buffer
+        ? > size /Q.number
+        ? > flags /Q.number
+  app.eo: |
+    [] > app
+      [] > sys
+        posix.send > send
+      as-number. > sent
+        sys.send 3 "ab" 2 0 >>!
+      sent.eq -1 > @
+  dataized.eo: |
+    [x] > dataized
+      x > @
+  number.eo: |
+    [@] > number
+      [] > as-bytes /Q.bytes
+        ? > ^
+      [b] > eq
+  string.eo: |
+    [@] > string
+  bytes.eo: |
+    [@] > bytes
+      [] > as-number /Q.number
+facts:
+  - /facts/objects/type[@id='Φ.posix.send']/attr[@name='buffer' and not(@holds)]
+  - /facts/objects/type[@id='Φ.posix.send' and @returns='Φ.number']
+answers:
+  - /answers/o[@loc='Φ.app.a🌵5-4.ρ.α0.α1' and @lands='buffer']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.a🌵5-4.ρ.α0']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.number.eq']

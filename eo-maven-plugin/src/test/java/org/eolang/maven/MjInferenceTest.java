@@ -38,13 +38,36 @@ final class MjInferenceTest {
         );
         maven.execute(MjParse.class).execute(MjInference.class);
         MatcherAssert.assertThat(
-            "the table must say what the innermost formation provides, but it doesnt",
+            "the facts must say what the innermost formation has, but they dont",
             new XMLDocument(
                 maven.targetPath()
                     .resolve(maven.dirName("inference"))
-                    .resolve("provides.xml")
+                    .resolve("facts.xml")
             ),
-            XhtmlMatchers.hasXPath("/provides/type[@id='Φ.app.t']/attr[@name='next']")
+            XhtmlMatchers.hasXPath("/facts/objects/type[@id='Φ.app.t']/attr[@name='next']")
+        );
+    }
+
+    @Test
+    void writesAnswersBesideFacts(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > app",
+                "  [] > t",
+                "    [] > next",
+                ""
+            )
+        );
+        maven.execute(MjParse.class).execute(MjInference.class);
+        MatcherAssert.assertThat(
+            "the answers must name what each place is, but they dont",
+            new XMLDocument(
+                maven.targetPath()
+                    .resolve(maven.dirName("inference"))
+                    .resolve("answers.xml")
+            ),
+            XhtmlMatchers.hasXPath("/answers/o[@loc='Φ.app.t']/is[@loc='Φ.app.t']")
         );
     }
 
@@ -62,28 +85,28 @@ final class MjInferenceTest {
         );
         maven.execute(MjInference.class);
         MatcherAssert.assertThat(
-            "an XMIR that no tojo names must stay out of the tables, but it didnt",
+            "an XMIR that no tojo names must stay out of the facts, but it didnt",
             new XMLDocument(
                 maven.targetPath()
                     .resolve(maven.dirName("inference"))
-                    .resolve("provides.xml")
-            ).nodes("/provides/type[@id='Φ.bee']"),
+                    .resolve("facts.xml")
+            ).nodes("/facts/objects/type[@id='Φ.bee']"),
             Matchers.empty()
         );
     }
 
     @Test
-    void writesTablesForModuleWithoutSources(@Mktmp final Path temp) throws IOException {
+    void writesFactsForModuleWithoutSources(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         maven.execute(MjParse.class).execute(MjInference.class);
         MatcherAssert.assertThat(
-            "the tables must be written for a module with no sources, but they werent",
+            "the facts must be written for a module with no sources, but they werent",
             new XMLDocument(
                 maven.targetPath()
                     .resolve(maven.dirName("inference"))
-                    .resolve("provides.xml")
+                    .resolve("facts.xml")
             ),
-            XhtmlMatchers.hasXPath("/provides[not(*)]")
+            XhtmlMatchers.hasXPath("/facts/calls[not(*)]")
         );
     }
 
@@ -99,7 +122,7 @@ final class MjInferenceTest {
         );
         maven.execute(MjParse.class).execute(MjInference.class);
         MatcherAssert.assertThat(
-            "the prepared XMIR must have one object per dispatch step, but it doesnt",
+            "the prepared XMIR must have one object per name of a chain, but it doesnt",
             new XMLDocument(
                 maven.targetPath()
                     .resolve(maven.dirName("pre-inference"))
@@ -107,7 +130,7 @@ final class MjInferenceTest {
                     .resolve("x")
                     .resolve("main.xmir")
             ),
-            XhtmlMatchers.hasXPath("//o[@base='.hinge']/o[@base='.lid']/o[@base='ξ.x']")
+            XhtmlMatchers.hasXPath("//o[@base='.hinge']/o[@base='.lid']/o[@base='.x']/o[@base='ξ']")
         );
     }
 }
