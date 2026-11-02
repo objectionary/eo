@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# one and two put a cat and a bag into the pool of thing, so the thing read
+# one and two put a cat and a bag into the pool of stuff, so the thing read
 # off what check returns is a cat or a bag, and size read off it fails on the
 # cat and is the size of the bag. The argument of box holds both, and the
 # failing one is dropped where it goes into item (rule 3), so item is the size
@@ -11,8 +11,9 @@ sources:
   os.eo: |
     [] > os
       [] > check /Q.os.status
-      [thing] > status
-        thing > @
+      [stuff] > status
+        stuff > @
+        stuff > thing
   cat.eo: |
     [] > cat
   bag.eo: |
@@ -37,10 +38,10 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.one.φ.α0' and @lands='thing']/is[@loc='Φ.cat']
-  - /answers/o[@loc='Φ.two.φ.α0' and @lands='thing']/is[@loc='Φ.bag']
+  - /answers/o[@loc='Φ.one.φ.α0' and @lands='v🌵stuff']/is[@loc='Φ.cat']
+  - /answers/o[@loc='Φ.two.φ.α0' and @lands='v🌵stuff']/is[@loc='Φ.bag']
   - /answers/o[@loc='Φ.app.φ.α0.ρ' and is[@loc='Φ.cat'] and is[@loc='Φ.bag']]
   - /answers/o[@loc='Φ.app.φ.α0']/fails[@name='Φ.cat.size']
-  - /answers/o[@loc='Φ.app.φ.α0' and @lands='item']/is[@loc='Φ.bag.size']
-  - /answers[not(o[@loc='Φ.box.item']/fails)]
-  - /answers/o[@loc='Φ.box.item' and count(*)=1]/is[@loc='Φ.bag.size']
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵item']/is[@loc='Φ.bag.size']
+  - /answers[not(o[@loc='Φ.box.v🌵item']/fails)]
+  - /answers/o[@loc='Φ.box.v🌵item' and count(*)=1]/is[@loc='Φ.bag.size']

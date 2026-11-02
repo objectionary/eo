@@ -22,7 +22,7 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers[not(o[@lands='x' or @lands='y'])]
+  - /answers[not(o[@lands='v🌵x' or @lands='v🌵y'])]
   - /answers/o[@loc='Φ.main.φ']/is[@loc='Φ.app']
   - /answers/o[@loc='Φ.app.outer' and @copies='1']
   - /answers/o[@loc='Φ.app.outer.inner' and @copies='1']

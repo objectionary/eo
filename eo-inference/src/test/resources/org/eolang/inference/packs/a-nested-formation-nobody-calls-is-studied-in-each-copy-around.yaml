@@ -24,9 +24,9 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers[not(o[@lands='m'])]
+  - /answers[not(o[@lands='v🌵m'])]
   - /answers/o[@loc='Φ.outer' and @copies='2']
   - /answers/o[@loc='Φ.outer.inner' and @copies='2']
   - /answers/o[@loc='Φ.outer.inner.φ.ρ.ρ']/is[@loc='Φ.outer']
   - /answers/o[@loc='Φ.outer.inner.φ.ρ' and @copies='2']/is[@loc='Φ.number']
-  - /answers/o[@loc='Φ.outer.inner.m']/open
+  - /answers/o[@loc='Φ.outer.inner.v🌵m']/open

@@ -9,8 +9,9 @@
 # app reads off held gives the bytes 05-.
 sources:
   choice.eo: |
-    [pick] > choice
+    [fork] > choice
       pick > @
+      fork > pick
       [] > not
         ^.pick no yes > @
   yes.eo: |
@@ -57,8 +58,8 @@ sources:
 answers:
   - /answers/o[@loc='Φ.gauge' and @copies='1']
   - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.dial']
-  - /answers[not(o[@lands='cant-read'])]
-  - /answers/o[@loc='Φ.gauge.cant-read']/open
+  - /answers[not(o[@lands='v🌵cant-read'])]
+  - /answers/o[@loc='Φ.gauge.v🌵cant-read']/open
   - /answers/o[@loc='Φ.gauge.φ.α1' and @lands='a🌵5-6']/terminator
   - /answers/o[@loc='Φ.held.φ']/is[@loc='Φ.dial']
   - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.bytes']

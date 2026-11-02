@@ -19,16 +19,19 @@ eo:
         ? > ^
         ? > b /Q.number
   tuple.eo: |
-    [tail head length] > tuple
+    [prior last count] > tuple
+      last > head
+      count > length
+      prior > tail
   app.eo: |
     [] > app
       joined (tuple (tuple 0 0 0) 5 1) > used
 voids:
-  - "𝜎54\t54\titems.head\tobject"
+  - "𝜎54\t54\tv🌵items.head\tobject"
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e54">
-      <deferred symbol="𝜎134" by="morph" at="Φ.l🌵.e54.φ.ρ" of="Φ.joined.first"><with><symbol attr="x">𝜎54</symbol></with></deferred>
+      <deferred symbol="𝜎134" by="morph" at="Φ.l🌵.e54.φ.ρ" of="Φ.joined.first"><with><symbol attr="v🌵x">𝜎54</symbol></with></deferred>
       <evaluate λ="L_number_plus" by="morph" at="Φ.a🌵1">
         <dataize at="Φ.a🌵2">
           <manufactured meta="𝛿·2·1">𝜎134</manufactured>
@@ -74,7 +77,7 @@ java: |
       }
 
       private Phi 𝜎134() {
-          return new PhApplication(this.take("ρ").take("first"), new Bind("x", this.take("ρ").take("items").take("head")));
+          return new PhApplication(this.take("ρ").take("first"), new Bind("v🌵x", this.take("ρ").take("v🌵items").take("head")));
       }
 
       private byte[] 𝜎135() {

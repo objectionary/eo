@@ -8,8 +8,9 @@
 # bell, whose @ is the bytes 06-. The chime of clock is never read there.
 sources:
   choice.eo: |
-    [pick] > choice
+    [fork] > choice
       pick > @
+      fork > pick
       [] > not
         ^.pick no yes > @
   yes.eo: |

@@ -33,5 +33,5 @@ sources:
 answers:
   - /answers[not(o[@loc='Φ.choice.made' or starts-with(@loc, 'Φ.choice.made.')])]
   - /answers/o[@loc='Φ.choice.grip' and @copies='2']
-  - /answers/o[@loc='Φ.choice.grip.size']/open
+  - /answers/o[@loc='Φ.choice.grip.v🌵size']/open
   - /answers/o[@loc='Φ.choice.grip.φ']/open

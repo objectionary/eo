@@ -26,7 +26,7 @@ sources:
     [@] > string
 answers:
   - /answers/o[@loc='Φ.alias']/reduced/is[@loc='Φ.oak']
-  - /answers/o[@loc='Φ.app.first.α0' and @lands='x']/is[@loc='Φ.oak']
-  - /answers/o[@loc='Φ.inc.x']/is[@loc='Φ.oak']
-  - /answers[not(o[@loc='Φ.inc.x']/is[@loc='Φ.alias'])]
+  - /answers/o[@loc='Φ.app.first.α0' and @lands='v🌵x']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.inc.v🌵x']/is[@loc='Φ.oak']
+  - /answers[not(o[@loc='Φ.inc.v🌵x']/is[@loc='Φ.alias'])]
   - /answers/o[@loc='Φ.app.first']/is[@loc='Φ.oak.leaf']

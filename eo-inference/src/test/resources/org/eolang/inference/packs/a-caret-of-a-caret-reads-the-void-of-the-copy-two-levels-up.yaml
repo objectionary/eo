@@ -23,8 +23,8 @@ sources:
     [@] > string
 answers:
   - /answers/o[@loc='Φ.outer.middle.inner.φ.ρ']/is[@loc='Φ.outer']
-  - /answers/o[@loc='Φ.app.first.ρ.ρ.α0' and @lands='n']/is[@loc='Φ.number']
-  - /answers/o[@loc='Φ.app.second.ρ.ρ.α0' and @lands='n']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.first.ρ.ρ.α0' and @lands='v🌵n']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.second.ρ.ρ.α0' and @lands='v🌵n']/is[@loc='Φ.string']
   - /answers/o[@loc='Φ.outer.middle.inner.φ' and set/is[@loc='Φ.number'] and set/is[@loc='Φ.string']]
   - /answers/o[@loc='Φ.app.first']/is[@loc='Φ.number']
   - /answers/o[@loc='Φ.app.second']/is[@loc='Φ.string']

@@ -20,8 +20,8 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.app.φ.α0' and @lands='x']/is[@loc='Φ.app.t']
-  - /answers/o[@loc='Φ.app.inc.x']/is[@loc='Φ.app.t']
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵x']/is[@loc='Φ.app.t']
+  - /answers/o[@loc='Φ.app.inc.v🌵x']/is[@loc='Φ.app.t']
   - /answers/o[@loc='Φ.app.inc.φ.ρ']/is[@loc='Φ.app.t.next']
   - /answers[not(o[@loc='Φ.app.t.next.foo'])]
   - /answers/o[@loc='Φ.app.inc.φ']/fails[@name='Φ.app.t.next.foo']

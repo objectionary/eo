@@ -9,8 +9,9 @@
 # @ of div and the @ of app.
 sources:
   choice.eo: |
-    [pick] > choice
+    [fork] > choice
       pick > @
+      fork > pick
       [] > not
         ^.pick no yes > @
   yes.eo: |
@@ -54,11 +55,11 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.num.flag']/is[@loc='Φ.choice']
+  - /answers/o[@loc='Φ.num.v🌵flag']/is[@loc='Φ.choice']
   - /answers/o[@loc='Φ.yes.φ.α0.φ']/is[@loc='Φ.big']
   - /answers/o[@loc='Φ.no.φ.α0.φ']/is[@loc='Φ.small']
   - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.big']
-  - /answers/o[@loc='Φ.app.φ.α0' and @lands='b']/is[@loc='Φ.num']
-  - /answers/o[@loc='Φ.big.div.b']/is[@loc='Φ.num']
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵b']/is[@loc='Φ.num']
+  - /answers/o[@loc='Φ.big.div.v🌵b']/is[@loc='Φ.num']
   - /answers/o[@loc='Φ.big.div.φ']/is[@loc='Φ.num']
   - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.num']

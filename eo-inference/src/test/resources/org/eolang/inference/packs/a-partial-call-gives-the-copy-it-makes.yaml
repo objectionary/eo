@@ -21,11 +21,11 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.app.half.α0' and @lands='left']/is[@loc='Φ.number']
-  - /answers[not(o[@lands='right'])]
+  - /answers/o[@loc='Φ.app.half.α0' and @lands='v🌵left']/is[@loc='Φ.number']
+  - /answers[not(o[@lands='v🌵right'])]
   - /answers/o[@loc='Φ.app.half']/is[@loc='Φ.pair']
   - /answers[not(o[@loc='Φ.app.half']/is[@loc='Φ.number'])]
-  - /answers[not(o[@loc='Φ.pair.left']/is[@loc='Φ.number'])]
+  - /answers[not(o[@loc='Φ.pair.v🌵left']/is[@loc='Φ.number'])]
   - /answers/o[@loc='Φ.pair' and @copies='1']/reduced/is[@loc='Φ.pair']
-  - /answers/o[@loc='Φ.pair.left']/open
-  - /answers/o[@loc='Φ.pair.right']/open
+  - /answers/o[@loc='Φ.pair.v🌵left']/open
+  - /answers/o[@loc='Φ.pair.v🌵right']/open

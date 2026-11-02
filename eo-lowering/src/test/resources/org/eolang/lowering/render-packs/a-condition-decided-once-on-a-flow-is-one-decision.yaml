@@ -33,7 +33,7 @@ eo:
         ? > ^
 voids:
   - "𝜎7\t7\tρ\tbytes"
-  - "𝜎8\t7\tb\tbytes"
+  - "𝜎8\t7\tv🌵b\tbytes"
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e7">
@@ -146,7 +146,7 @@ java: |
       }
 
       private byte[] 𝜎8() {
-          return new Dataized(this.take("ρ").take("b")).take();
+          return new Dataized(this.take("ρ").take("v🌵b")).take();
       }
 
       private byte[] 𝜎135() {

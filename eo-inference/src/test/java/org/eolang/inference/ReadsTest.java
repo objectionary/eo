@@ -53,7 +53,7 @@ final class ReadsTest {
                 world.intern(
                     new Value('O', "Φ.vase", "Φ.app.φ.ρ", 1L | Formation.RHO, "", -1, 0)
                 ),
-                "water", new Site("Φ.app.φ", "")
+                "v🌵water", new Site("Φ.app.φ", "")
             ),
             Matchers.hasToString(new Ids(Values.TERM).toString())
         );

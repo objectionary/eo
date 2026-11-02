@@ -49,7 +49,7 @@ final class CallbacksTest {
                     world.intern(
                         new Value('O', "Φ.app.φ.α1", "Φ.app.φ", 1L | Formation.RHO, "", -1, 0)
                     ),
-                    "b"
+                    "v🌵b"
                 ).get(0)
             ),
             Matchers.equalTo("Φ.block@java{ρ}")

@@ -18,12 +18,12 @@ sources:
   string.eo: |
     [@] > string
 facts:
-  - /facts/reads/read[@id='Φ.clock.φ.ρ.ρ' and @name='x' and @of='Φ.clock.φ.ρ.ρ.ρ']
+  - /facts/reads/read[@id='Φ.clock.φ.ρ.ρ' and @name='v🌵x' and @of='Φ.clock.φ.ρ.ρ.ρ']
   - /facts/reads/read[@id='Φ.clock.φ.ρ' and @name='seconds' and @of='Φ.clock.φ.ρ.ρ']
   - /facts/reads/read[@id='Φ.clock.φ' and @name='times' and @of='Φ.clock.φ.ρ']
   - /facts/calls[not(*)]
 answers:
-  - /answers/o[@loc='Φ.clock.x']/open
+  - /answers/o[@loc='Φ.clock.v🌵x']/open
   - /answers/o[@loc='Φ.clock.φ.ρ.ρ']/open
   - /answers/o[@loc='Φ.clock.φ.ρ']/open
   - /answers/o[@loc='Φ.clock.φ']/open

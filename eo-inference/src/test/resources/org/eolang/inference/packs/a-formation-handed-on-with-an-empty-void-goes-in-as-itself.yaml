@@ -25,7 +25,7 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.box.item']/is[@loc='Φ.grafted']
-  - /answers[not(o[@loc='Φ.box.item']/is[@loc='Φ.oak'])]
+  - /answers/o[@loc='Φ.box.v🌵item']/is[@loc='Φ.grafted']
+  - /answers[not(o[@loc='Φ.box.v🌵item']/is[@loc='Φ.oak'])]
   - /answers/o[@loc='Φ.grafted' and @copies='1']
-  - /answers/o[@loc='Φ.grafted.x']/open
+  - /answers/o[@loc='Φ.grafted.v🌵x']/open

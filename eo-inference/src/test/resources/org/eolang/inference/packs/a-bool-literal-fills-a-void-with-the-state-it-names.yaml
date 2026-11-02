@@ -22,7 +22,7 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.app.φ.α0' and @lands='on']/is[@loc='Φ.true']
-  - /answers/o[@loc='Φ.app.φ.α1' and @lands='off']/is[@loc='Φ.false']
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵on']/is[@loc='Φ.true']
+  - /answers/o[@loc='Φ.app.φ.α1' and @lands='v🌵off']/is[@loc='Φ.false']
   - /answers/o[@loc='Φ.pick.φ']/is[@loc='Φ.true']
   - /answers/o[@loc='Φ.pick']/reduced/is[@loc='Φ.true']

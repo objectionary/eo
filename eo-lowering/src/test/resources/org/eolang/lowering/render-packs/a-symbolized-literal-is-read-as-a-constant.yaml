@@ -28,7 +28,7 @@ eo:
     [] > app
       pick 5 > used
 voids:
-  - "𝜎1\t1\tx\tnumber"
+  - "𝜎1\t1\tv🌵x\tnumber"
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e1">
@@ -96,7 +96,7 @@ java: |
       }
 
       private byte[] 𝜎1() {
-          return new Dataized(this.take("ρ").take("x")).take();
+          return new Dataized(this.take("ρ").take("v🌵x")).take();
       }
 
       private byte[] 𝜎2() {

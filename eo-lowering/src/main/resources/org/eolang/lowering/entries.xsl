@@ -72,7 +72,7 @@
   tables say the body returns. Only a formation whose body the tables say
   is a number, a string, a bool or bytes gets a row, since a row answers
   data and nothing else, and only one whose voids all hold such data, since
-  a tuple is three attributes no one dataization carries. The formation
+  a tuple is three voids no one dataization carries. The formation
   must stand right inside formations, so that the atom of a caller reaches
   it by its names at run time, and its λ must be spelled with letters,
   digits and underscores only, and by no other formation. The entry of a
@@ -228,12 +228,14 @@
   <!-- The answer of a row, as the library shapes the carrier it is wrapped in: a fresh symbol where the bytes of a literal would be. -->
   <xsl:function name="eo:shape" as="xs:string">
     <xsl:param name="carrier" as="xs:string"/>
-    <xsl:sequence select="map {'number': 'Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )', 'string': 'Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )', 'bytes': 'Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )', 'bool': '⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧'}($carrier)"/>
+    <xsl:sequence select="map {'number': 'Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )', 'string': 'Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )', 'bytes': 'Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )', 'bool': '⟦ φ ↦ Φ.bool( v🌵fork ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧'}($carrier)"/>
   </xsl:function>
   <!--
   The plan for one void: what is planted in it and which symbols that
   planting spends. A carrier is planted as the library shapes that datum,
-  and a tuple as its three attributes.
+  and a tuple as its three voids. The symbols of a tuple are reached
+  through "length", "head" and "tail", the attributes that give those voids
+  to a reader outside the tuple, such as an atom.
   -->
   <xsl:function name="eo:plant" as="element()">
     <xsl:param name="holds" as="xs:string"/>
@@ -419,12 +421,12 @@
     </o>
   </xsl:template>
   <!--
-  A bool carries its symbol inside the fork of its "if", because "bool.eo"
-  routes "and", "or", "not" and dataization through that attribute, and a
-  fork is what the run has to see when a branch is taken. The fork holds
-  the symbol and its two sides under the names phino gives the copies it
-  fabricates when a join fails, so that one entry of the table answers a
-  planted fork and a fabricated copy alike.
+  A bool carries its symbol inside its void "fork", hidden as "v🌵fork",
+  because "bool.eo" routes "and", "or", "not" and dataization through "if",
+  the attribute that gives that void, and a fork is what the run has to see
+  when a branch is taken. The fork holds the symbol and its two sides under
+  the names phino gives the copies it fabricates when a join fails, so that
+  one entry of the table answers a planted fork and a fabricated copy alike.
   -->
   <xsl:template match="plant[@carrier = 'bool']" mode="eo:xmir">
     <xsl:param name="as" as="xs:string" select="''"/>
@@ -432,7 +434,7 @@
       <xsl:if test="$as != ''">
         <xsl:attribute name="as" select="$as"/>
       </xsl:if>
-      <o as="if">
+      <o as="v🌵fork">
         <o name="λ">L_fork</o>
         <o base="∅" name="left"/>
         <o base="∅" name="right"/>
@@ -446,24 +448,24 @@
       </o>
     </o>
   </xsl:template>
-  <!-- A tuple spends one symbol on each of its three attributes. -->
+  <!-- A tuple spends one symbol on each of its three voids, hidden as "v🌵count", "v🌵last" and "v🌵prior". -->
   <xsl:template match="plant[@carrier = 'tuple']" mode="eo:xmir">
     <xsl:param name="as" as="xs:string" select="''"/>
     <o base="Φ.tuple">
       <xsl:if test="$as != ''">
         <xsl:attribute name="as" select="$as"/>
       </xsl:if>
-      <o as="length" base="Φ.number">
+      <o as="v🌵count" base="Φ.number">
         <o as="φ" base="Φ.bytes">
           <xsl:apply-templates select="sym[1]" mode="eo:xmir"/>
         </o>
       </o>
-      <o as="head">
+      <o as="v🌵last">
         <o name="λ">
           <xsl:value-of select="concat('𝜎', index-of($eo:symbols, generate-id(sym[2])))"/>
         </o>
       </o>
-      <o as="tail">
+      <o as="v🌵prior">
         <o name="λ">
           <xsl:value-of select="concat('𝜎', index-of($eo:symbols, generate-id(sym[3])))"/>
         </o>

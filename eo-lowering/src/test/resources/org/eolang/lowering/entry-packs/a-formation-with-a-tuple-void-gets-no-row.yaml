@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 ---
 # A formation with a tuple among its voids gets an entry but no row: a row
-# dataizes every void it takes, and a tuple is three attributes that no one
+# dataizes every void it takes, and a tuple is three voids that no one
 # dataization carries.
 # `app` hands `count` a tuple, so the engine says that `t` holds one and that
 # the body is a number.
@@ -11,7 +11,10 @@ eo:
     [t] > count
       t.length > @
   tuple.eo: |
-    [tail head length] > tuple
+    [prior last count] > tuple
+      last > head
+      count > length
+      prior > tail
   app.eo: |
     [] > app
       count (tuple (tuple 0 0 0) 1 1) > used
