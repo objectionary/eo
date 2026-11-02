@@ -119,8 +119,9 @@ final class CopiesTest {
     @Test
     void keepsRhoHandedToCopyOfFormationThatDeclaresIt(@Mktmp final Path temp)
         throws IOException {
-        final World world = new Sources(temp).with("lamp.eo", "[^] > lamp", "  42 > @").world();
-        final State state = new State(world);
+        final State state = new State(
+            new Sources(temp).with("lamp.eo", "[^] > lamp", "  42 > @").world()
+        );
         state.seed();
         MatcherAssert.assertThat(
             "a copy of a formation that declares ^ must keep the ρ handed to it, but it didnt",

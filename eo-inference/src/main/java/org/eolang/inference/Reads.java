@@ -139,9 +139,8 @@ final class Reads {
         final Value value = this.world.value(num);
         final Formation shape = this.world.form(value.form());
         final Ints out = new Ints();
-        if (!shape.open("ρ")) {
-            out.add(Values.TERM);
-        } else if ((value.bound() & Formation.RHO) == 0 || Values.JBORN.equals(value.birth())) {
+        if (shape.open("ρ")
+            && ((value.bound() & Formation.RHO) == 0 || Values.JBORN.equals(value.birth()))) {
             final String rho = shape.parent();
             if (rho.isEmpty()) {
                 throw new IllegalStateException(
@@ -157,10 +156,12 @@ final class Reads {
                     )
                 )
             );
-        } else {
+        } else if (shape.open("ρ")) {
             for (final int outer : this.state.cell(num, "ρ")) {
                 out.add(outer);
             }
+        } else {
+            out.add(Values.TERM);
         }
         return out;
     }
