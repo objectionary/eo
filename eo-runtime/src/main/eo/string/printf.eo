@@ -510,6 +510,11 @@
         "Jeff"
         "X"
 
+  eq. ++> can-print-a-number-as-a-string
+    "@E\u0000\u0000\u0000\u0000\u0000\u0000"
+    "%s".printf
+      * 42
+
   eq. ++> can-print-a-percent-sign
     "%Jeff"
     "%%%s".printf
@@ -524,6 +529,11 @@
     "42"
     "%d".printf
       * 42.as-i64.as-number
+
+  eq. ++> can-print-an-i64-as-a-string
+    "\u0000\u0000\u0000\u0000\u0000\u0000\u0000*"
+    "%s".printf
+      * 42.as-i64
 
   not. ++> can-print-an-i64-not-as-a-number
     eq.
@@ -628,10 +638,6 @@
     "%s"
     * 3.14
 
-  printf. --> stops-on-a-number-as-a-string
-    "%s"
-    * 42
-
   printf. --> stops-on-a-paren-flag-with-s
     "%(s"
     * "Jeff"
@@ -667,10 +673,6 @@
   printf. --> stops-on-a-zero-positional-index
     "%0$s"
     * "first"
-
-  printf. --> stops-on-an-i64-as-a-string
-    "%s"
-    * 42.as-i64
 
   printf. --> stops-on-an-oversized-positional-index
     "%99999999999999999999$s"
