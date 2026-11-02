@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# foo 1 fills x and leaves y empty, so f is a copy of foo: only the call that
+# fills the last empty void answers what goes into x. f 2 is that call: it
+# puts 2 into y and answers the 1 in x, so ff is a number. f.y reads y off f
+# itself, where y is still empty, so z is T.
+# Both copies count, so foo has two, and y holds a number in one and is
+# empty in the other. f is named Φ.number: f.y reads it, so its copy counts,
+# and a copy that counts is named by what its @ gives, the 1 in x.
+sources:
+  foo.eo: |
+    [x y] > foo
+      x > @
+  bar.eo: |
+    [] > bar
+      foo 1 > f
+      f 2 > ff
+      f.y > z
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.bar.f.α0' and @lands='x']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.bar.ff.α0' and @lands='y']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.bar.ff']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.bar.f']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.foo' and @copies='2']
+  - /answers/o[@loc='Φ.foo.y']/set/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.foo.y']/set/open
+  - /answers/o[@loc='Φ.bar.z']/terminator

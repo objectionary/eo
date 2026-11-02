@@ -55,7 +55,7 @@ final class MjDealphaTest {
                 System.lineSeparator(),
                 "[] > app",
                 "  [left right] > pair",
-                "    right > @",
+                "    left > @",
                 "  pair 1 > half",
                 "  half 2 > @"
             )
