@@ -4,11 +4,7 @@
 # when it is negative. When it does not fit into the bounds of an `i64`,
 # the caller-supplied `cant-convert` fallback is returned.
 #
-# The out-of-bounds message names a magnitude in `[2^63, 2^64)` with exact
-# decimal digits, peeled the way `i64/as-decimal.eo` peels them, and keeps
-# `as-scientific` for anything larger and for `nan`: `as-scientific` rounds
-# the mantissa to six fraction digits, so it could not tell
-# `9223372036854775808` from `9223372036854777856` (#9725).
+# The message names a magnitude in `[2^63, 2^64)` exactly, like `i64/as-decimal` (#9725).
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo

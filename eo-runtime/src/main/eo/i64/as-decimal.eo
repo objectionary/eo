@@ -1,17 +1,6 @@
-# Writes the `i64` as signed decimal digits.
-#
-# The digits are peeled off the magnitude, read as two unsigned
-# thirty-two-bit halves, by dividing it by ten: each half stays below
-# `2^32`, so the remainder of the high half times `2^32` plus the low half
-# stays below `2^36`, a number a double keeps whole. The magnitude is the
-# two's complement negated in the halves, the high one and a borrow into it
-# when the low one is not zero, so no `i64.neg` is needed: it costs a full
-# carry chain, and `i64.div` costs tens of megabytes (`i64/div.eo`), too
-# much for an error message.
-#
-# `as-number` cannot be the way here: the nearest double of
-# `9223372036854775807` is `2^63`, one past the `long` range, so the digits
-# of `as-number.as-decimal` would name another number (#9725).
+# Writes the `i64` as signed decimal digits, peeled off the magnitude split
+# into two unsigned 32-bit halves divided by ten, so every intermediate stays
+# below `2^36` (#9725).
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -25,10 +14,10 @@
     spelled.eq --
     "0".as-bytes
     spelled
-  if. > borrow
-    low.eq 0
-    0
-    1
+  floor. > borrow
+    div.
+      low.plus 4294967295
+      4294967296
   [^num upper lower acc] >> digits
     if. > @
       and.
@@ -78,10 +67,9 @@
             borrow
           high.as-number
         negative.if
-          if.
-            low.eq 0
-            0
+          mod.
             4294967296.minus low
+            4294967296
           low
         --
     written
@@ -89,12 +77,6 @@
   eq. ++> can-write-a-negative-past-i32-min
     "-2147483649"
     string -2147483649.as-i64.as-decimal
-
-  eq. ++> can-write-a-negative-with-a-non-zero-low-half
-    "-2147483649"
-    string
-      as-decimal.
-        i64 FF-FF-FF-FF-7F-FF-FF-FF
 
   eq. ++> can-write-a-number-past-i32-max
     "2147483648"

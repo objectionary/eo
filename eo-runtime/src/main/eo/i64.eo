@@ -6,9 +6,7 @@
 # `i64` to `number` conversion is lossy at the top of the 64-bit range: the
 # nearest double of `9223372036854775807` is `2^63`, which is one past the
 # `long` range that `printf`'s own `%d` guard accepts, so the message itself
-# used to terminate instead of being printed. `as-scientific` used to name
-# it, but it rounds the mantissa to six fraction digits, so the message
-# could not tell `2147483648` from `2147483647`, which fits (#9725).
+# used to terminate; `as-scientific` rounds the mantissa to six digits (#9725).
 #
 # Negation is two's complement, one `plus` over the flipped bits, and not
 # `times` by minus one. Every bit of minus one is set, so the shift-and-add
