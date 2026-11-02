@@ -2,9 +2,11 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# pair 1 fills left and leaves right empty. The @ of pair is left, so half is a
-# number. Nobody reads half, so that copy does not count, and pair is walked as
-# written, with left and right both open.
+# pair 1 fills left and leaves right empty, so half is the copy it makes, not
+# the number its @ gives: only the call that fills the last empty void
+# answers what goes into the void of @. Nobody reads half, so that copy does
+# not count and is named by its formation, and pair is walked as written,
+# with left and right both open.
 sources:
   app.eo: |
     [] > app
@@ -21,7 +23,8 @@ sources:
 answers:
   - /answers/o[@loc='Φ.app.half.α0' and @lands='left']/is[@loc='Φ.number']
   - /answers[not(o[@lands='right'])]
-  - /answers/o[@loc='Φ.app.half']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.half']/is[@loc='Φ.pair']
+  - /answers[not(o[@loc='Φ.app.half']/is[@loc='Φ.number'])]
   - /answers[not(o[@loc='Φ.pair.left']/is[@loc='Φ.number'])]
   - /answers/o[@loc='Φ.pair' and @copies='1']/reduced/is[@loc='Φ.pair']
   - /answers/o[@loc='Φ.pair.left']/open

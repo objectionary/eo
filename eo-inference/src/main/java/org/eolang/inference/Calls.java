@@ -24,7 +24,9 @@ import java.util.Set;
  * rules come in here: 3 for an argument whose every value fails, b for an
  * argument that is only an open void, A for a mark, F for a call on what
  * Java made or on a finished shared kind, and call then narrow (3.5) for
- * an object whose {@code @} is its void. Every argument of an atom is
+ * an object whose {@code @} is one of its voids, once the call fills the
+ * last of its empty voids; a call that leaves some empty makes a plain
+ * copy, and a later call fills the rest. Every argument of an atom is
  * dataized, a void its atom calls back gets its copies made, and a void of
  * what Java makes fills its pool.</p>
  *
@@ -32,6 +34,13 @@ import java.util.Set;
  * void of a copy made in EO code, or no void.</p>
  *
  * @since 0.76.0
+ * @todo #9661:60min Land the argument of a call on rule A's mark in the
+ *  void the mark stands for. A curried copy that counts goes into a void
+ *  both as itself and as its mark. So when {@code [f] > fin} also reads
+ *  {@code f.plus 0}, the call {@code f 2} on {@code foo 1} puts 2 into the
+ *  {@code y} of the copy, but off the mark it lands in no void, and the
+ *  argument loses its name. The mark has to keep the copy it came from, so
+ *  that {@code marked()} fills that copy the way {@code object()} does.
  */
 final class Calls {
 
@@ -227,31 +236,26 @@ final class Calls {
         if ((Values.JBORN.equals(value.birth()) || this.state.shared(head))
             && call.size() > 0 || voids.size() < call.size()) {
             out = new Ints(Values.TERM);
-        } else if (passed.isEmpty()) {
+        } else if (passed.isEmpty() || voids.size() < this.world.opened(value).size()) {
             out = this.made(head, value, call, voids, false);
         } else if ((value.bound() & this.world.form(value.form()).bit(passed)) == 0) {
-            out = this.narrowed(head, value, call, voids, voids.indexOf(passed));
+            out = this.narrowed(
+                head, value, call, voids, call.sets().get(voids.indexOf(passed))
+            );
         } else {
-            out = new Ints(this.state.cell(head, passed));
+            out = this.narrowed(head, value, call, voids, this.state.cell(head, passed));
         }
         return out;
     }
 
     private Ints narrowed(
         final int head, final Value value, final Call call, final List<String> voids,
-        final int pos
+        final int... answer
     ) {
         final int free = this.world.opened(value).size();
-        final Ints out = new Ints();
-        if (pos >= 0) {
-            for (final int val : call.sets().get(pos)) {
-                out.add(val);
-            }
-            if (!this.gapped(call.raw(), free) && !call.lacking(free)) {
-                out.addAll(this.made(head, value, call, voids, true));
-            }
-        } else {
-            out.addAll(this.made(head, value, call, voids, false));
+        final Ints out = new Ints(answer);
+        if (!this.gapped(call.raw(), free) && !call.lacking(free)) {
+            out.addAll(this.made(head, value, call, voids, true));
         }
         return out;
     }
