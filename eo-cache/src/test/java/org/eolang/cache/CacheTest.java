@@ -319,7 +319,7 @@ final class CacheTest {
     private static String hash(final String content) throws NoSuchAlgorithmException {
         return Base64.getEncoder().encodeToString(
             MessageDigest.getInstance("SHA-256")
-                .digest(("file\0" + content).getBytes(StandardCharsets.UTF_8))
+                .digest(String.format("file\0%s", content).getBytes(StandardCharsets.UTF_8))
         );
     }
 

@@ -95,7 +95,8 @@ final class ShaTest {
     }
 
     @Test
-    void distinguishesAFileSpellingTheDirWordFromAnEmptyDir(@Mktmp final Path temp) throws IOException {
+    void distinguishesAFileSpellingTheDirWordFromAnEmptyDir(@Mktmp final Path temp)
+        throws IOException {
         new Saved("dir\0", temp.resolve("word.txt")).value();
         Files.createDirectories(temp.resolve("empty"));
         MatcherAssert.assertThat(
