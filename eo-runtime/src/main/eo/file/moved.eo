@@ -17,11 +17,11 @@
         *
           entry.path
           target
-          renamed.message
-  called. > renamed
-    os.is-windows.if
-      win32.rename entry.path target
-      posix.rename entry.path target
+          message.
+            called. >> renamed
+              os.is-windows.if
+                win32.rename entry.path target
+                posix.rename entry.path target
 
   ++> can-move-a-directory
     and. > @
@@ -70,8 +70,7 @@
     seq * > @
       temp.open
         "w"
-        f.write > [f]
-          "Hello, world"
+        f.write "Hello, world" > [f]
       temp.moved dest
       "Hello, world".eq
         malloc.of

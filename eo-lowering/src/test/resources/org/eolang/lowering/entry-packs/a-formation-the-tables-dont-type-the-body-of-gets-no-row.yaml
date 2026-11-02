@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A formation whose body the tables say nothing about gets an entry but no
+# row, since a row has to say in which carrier its answer is wrapped, and
+# nothing here says it: `number` has no `plus`, so the engine cannot tell
+# what the body is. `app` hands `vague` a number, so the engine says that
+# `k` holds one.
+eo:
+  vague.eo: |
+    [k] > vague
+      k.plus 7 > @
+  app.eo: |
+    [] > app
+      vague 3 > used
+xmir:
+  - "//o[@name='e1' and @base='Φ.vague'][not(o[@name='φ'])]"
+copies:
+  - "//o[@loc='Φ.vague'][not(o[@name='λ'])]/o[@name='φ']"

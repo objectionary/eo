@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A call of an object of the root may reach outside the program, to a file or
+# the console, so the same data given to it twice need not get the same answer
+# twice. It is not cached by what it was given, even when all of it is data.
+# A method of a number called on data next to it is cached.
+eo:
+  app.eo: |
+    [] > app
+      Q.stdout "boom" > shout
+      2.power 63 > x
+      x > @
+  stdout.eo: |
+    [text] > stdout
+      text > @
+  number.eo: |
+    [@] > number
+      [x] > power
+        x > @
+  string.eo: |
+    [@] > string
+  bytes.eo: |
+    [@] > bytes
+pure:
+  - "//o[@name='shout' and not(@pure)]"
+  - "//o[@name='x' and @pure='true']"

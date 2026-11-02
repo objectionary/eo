@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody reads made, and its only void is ^, so no copy of it is walked and it
+# has no answers. grip has a size, so it is studied in each copy of choice,
+# where its size and its @ are open.
+sources:
+  choice.eo: |
+    [pick] > choice
+      [^ size] > grip
+        size > @
+      ^.pick > [^] > made
+        ^.grip 04-
+        T
+          "cannot make a grip"
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^ left right]
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^ left right]
+          right > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers[not(o[@loc='Φ.choice.made' or starts-with(@loc, 'Φ.choice.made.')])]
+  - /answers/o[@loc='Φ.choice.grip' and @copies='2']
+  - /answers/o[@loc='Φ.choice.grip.size']/open
+  - /answers/o[@loc='Φ.choice.grip.φ']/open

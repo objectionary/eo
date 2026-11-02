@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A λ is spelled with a capital letter first and lowercase letters, digits,
+# underscores and `φ` after it, so a formation whose path holds any other
+# letter, the cactus of a test for one, gets an entry but no row, though its
+# body is a call of the atom `eq`, which returns a bool.
+eo:
+  foo.eo: |
+    [] > foo
+      42 > @
+
+      ++> can-be-one
+        1.eq 1 > @
+  number.eo: |
+    [@] > number
+      [] > eq /Q.bool
+        ? > ^
+        ? > b
+xmir:
+  - "//o[@name='e2' and @base='Φ.foo.p🌵can-be-one'][not(o[@name='φ'])]"
+copies:
+  - "//o[@loc='Φ.foo.p🌵can-be-one'][not(o[@name='λ'])]/o[@name='φ']"

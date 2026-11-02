@@ -73,14 +73,10 @@
 
   42.as-i64.as-bytes.eq 00-00-00-00-00-00-00-2A ++> can-convert-the-origin-number
 
-  eq. ++> can-format-the-error-message-of-an-out-of-range-number
-    "Can't convert number 1.000000e30 to i64 because it's out of i64 bounds"
-    1.0e30.as-i64 I
-
   eq. ++> can-recover-from-an-out-of-range-number
-    "recovered"
+    i64 00-00-00-00-00-00-00-2A
     1.0e30.as-i64
-      "recovered" > [message]
+      i64 00-00-00-00-00-00-00-2A > [message]
 
   eq. ++> can-truncate-a-negative-toward-zero
     -3.7.as-i64.as-bytes

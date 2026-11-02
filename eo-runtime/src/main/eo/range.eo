@@ -29,9 +29,9 @@
 [start end] > range
   if. > @
     start.lt end
-    if. > [^ acc current] >> appended
-      current.lt ^.end
-      ^.appended
+    if. > [^range acc current] >> appended
+      current.lt range.end
+      range.appended
         acc.with current
         current.next
       acc

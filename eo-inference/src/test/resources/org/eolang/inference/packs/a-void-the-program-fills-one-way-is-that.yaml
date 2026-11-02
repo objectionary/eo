@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The only call of inc fills x with an oak, so x is an oak, and x.leaf, the @
+# of inc and the @ of app are the leaf of an oak.
+sources:
+  app.eo: |
+    [] > app
+      inc oak > @
+  inc.eo: |
+    [x] > inc
+      x.leaf > @
+  oak.eo: |
+    [] > oak
+      [] > leaf
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='x']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.inc.x' and @copies='1']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.inc.φ']/is[@loc='Φ.oak.leaf']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.oak.leaf']

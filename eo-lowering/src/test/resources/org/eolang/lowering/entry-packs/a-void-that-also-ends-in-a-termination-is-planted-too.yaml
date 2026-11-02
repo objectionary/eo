@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# One copy of `gap` gets a number in `a`, and the other gets a termination
+# there, so the engine says a termination next to `Φ.number` for `a`. A
+# termination is no object a void holds, it only ends the run, so the
+# planting leaves it out and plants `a` as the number the other copy holds.
+eo:
+  gap.eo: |
+    [a b] > gap
+      a.plus b > @
+  app.eo: |
+    [] > app
+      gap 1 2 > first
+      gap (T "no") 3 > second
+xmir:
+  - "//o[@name='e1']/o[@as='a' and @base='Φ.number']\
+    /o[@as='φ' and @base='Φ.bytes']/o[@as='φ']/o[@name='λ' and text()='𝜎1']"
+voids:
+  - "𝜎1\t1\ta\tnumber"

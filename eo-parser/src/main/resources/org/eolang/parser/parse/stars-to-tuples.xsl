@@ -44,36 +44,55 @@
   sheet "vars-float-up" can hoist its definition and drop the in-place node.
   Counting it would leave a spurious extra layer with a stray "Φ.number" once
   it is dropped (the parse-side mirror of #5858).
+
+  The layers are built from the innermost one outwards, each wrapping the one
+  before it, rather than by a template that calls itself once per element. The
+  recursive shape cost one Saxon frame per element and died with "too many
+  nested apply-templates calls" on a tuple of about 500, which no caller could
+  report, and it re-processed every element once per layer on the way down
+  (#9300).
   -->
   <xsl:template match="o[@star]">
+    <xsl:variable name="star" select="."/>
     <xsl:variable name="elems" select="o[not(@float-up)]"/>
     <xsl:choose>
       <xsl:when test="count($elems)&gt;0">
-        <xsl:variable name="nested">
-          <o>
-            <xsl:attribute name="star"/>
-            <xsl:apply-templates select="@line | @pos"/>
-            <xsl:apply-templates select="$elems[position()!=last()]"/>
-          </o>
+        <xsl:variable name="nested" as="element(o)">
+          <xsl:iterate select="$elems[position()!=last()]">
+            <xsl:param name="layer" as="element(o)">
+              <o>
+                <xsl:attribute name="base" select="'Φ.tuple.empty'"/>
+                <xsl:apply-templates select="$star/(@line | @pos)"/>
+              </o>
+            </xsl:param>
+            <xsl:param name="index" select="0"/>
+            <xsl:on-completion select="$layer"/>
+            <xsl:next-iteration>
+              <xsl:with-param name="layer" as="element(o)">
+                <o>
+                  <xsl:attribute name="base" select="'Φ.tuple'"/>
+                  <xsl:apply-templates select="$star/(@line | @pos)"/>
+                  <xsl:sequence select="$layer"/>
+                  <xsl:apply-templates select="."/>
+                  <xsl:call-template name="length">
+                    <xsl:with-param name="star" select="$star"/>
+                    <xsl:with-param name="value" select="$index + 1"/>
+                  </xsl:call-template>
+                </o>
+              </xsl:with-param>
+              <xsl:with-param name="index" select="$index + 1"/>
+            </xsl:next-iteration>
+          </xsl:iterate>
         </xsl:variable>
         <o>
           <xsl:attribute name="base" select="'Φ.tuple'"/>
           <xsl:apply-templates select="@* except (@star | @base)"/>
-          <xsl:apply-templates select="$nested"/>
+          <xsl:sequence select="$nested"/>
           <xsl:apply-templates select="$elems[last()]"/>
-          <o>
-            <xsl:attribute name="base" select="'Φ.number'"/>
-            <xsl:apply-templates select="@line | @pos"/>
-            <o>
-              <xsl:attribute name="base" select="'Φ.bytes'"/>
-              <xsl:apply-templates select="@line | @pos"/>
-              <o>
-                <xsl:attribute name="hex"/>
-                <xsl:apply-templates select="@line | @pos"/>
-                <xsl:value-of select="count($elems)"/>
-              </o>
-            </o>
-          </o>
+          <xsl:call-template name="length">
+            <xsl:with-param name="star" select="$star"/>
+            <xsl:with-param name="value" select="count($elems)"/>
+          </xsl:call-template>
           <xsl:apply-templates select="o[@float-up]"/>
         </o>
       </xsl:when>
@@ -85,6 +104,26 @@
         </o>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:template>
+  <!--
+  The length a "Φ.tuple" layer carries, as the number of elements under it.
+  -->
+  <xsl:template name="length">
+    <xsl:param name="star" as="element(o)"/>
+    <xsl:param name="value"/>
+    <o>
+      <xsl:attribute name="base" select="'Φ.number'"/>
+      <xsl:apply-templates select="$star/(@line | @pos)"/>
+      <o>
+        <xsl:attribute name="base" select="'Φ.bytes'"/>
+        <xsl:apply-templates select="$star/(@line | @pos)"/>
+        <o>
+          <xsl:attribute name="hex"/>
+          <xsl:apply-templates select="$star/(@line | @pos)"/>
+          <xsl:value-of select="$value"/>
+        </o>
+      </o>
+    </o>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

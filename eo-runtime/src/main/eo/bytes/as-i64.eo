@@ -24,9 +24,9 @@
     00-00-00-00-00-00-00-33
 
   eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-i64
-    "recovered"
+    i64 00-00-00-00-00-00-00-2A
     01-01-01-01.as-i64
-      "recovered" > [message]
+      i64 00-00-00-00-00-00-00-2A > [message]
 
   not. ++> can-tell-it-does-not-match-the-bytes-of-the-same-number
     00-00-00-00-00-00-00-2A.as-i64.as-bytes.eq 42.as-bytes

@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# plus is written in number.eo and read in sum.eo, and the @ of sum is
+# number.plus, read off the shared number.
+sources:
+  sum.eo: |
+    [] > sum
+      number.plus > @
+  number.eo: |
+    [@] > number
+      [] > plus
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.sum.φ']/is[@loc='Φ.number.plus']
+  - /answers/o[@loc='Φ.sum.φ.ρ']/is[@loc='Φ.number']

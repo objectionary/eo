@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# forever calls itself at one place, so every one of those calls is the same
+# copy of forever, whose n holds what each of them hands it. The walk needs no
+# depth limit: n is a number in the two copies there are.
+sources:
+  forever.eo: |
+    [n] > forever
+      forever (n.plus 1) > @
+  app.eo: |
+    [] > app
+      forever 0 > @
+  number.eo: |
+    [@] > number
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.forever.φ' and @copies='2']/is[@loc='Φ.forever']
+  - /answers/o[@loc='Φ.forever' and @copies='2']
+  - /answers/o[@loc='Φ.forever.φ.α0' and @lands='n']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.forever.n' and @copies='2']/is[@loc='Φ.number']

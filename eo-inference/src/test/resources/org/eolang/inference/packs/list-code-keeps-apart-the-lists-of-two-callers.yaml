@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# tuple is list code, so each place of user code that calls with starts a tag
+# of its own. The lists built for numbers and for words never meet in one copy
+# of tuple, and item is a number in some copies and a string in others, never
+# both.
+sources:
+  tuple.eo: |
+    [item rest] > tuple
+      [x] > with
+        tuple x ^ > @
+  numbers.eo: |
+    [] > numbers
+      (tuple 1 0).with 2 > @
+  words.eo: |
+    [] > words
+      (tuple "a" 0).with "b" > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.tuple.with.x' and @copies='2']/set[@copies='1']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.tuple.with.x' and @copies='2']/set[@copies='1']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.tuple.item']/set/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.tuple.item']/set/is[@loc='Φ.string']
+  - /answers[not(o[@loc='Φ.tuple.item']/set[is[@loc='Φ.number'] and is[@loc='Φ.string']])]

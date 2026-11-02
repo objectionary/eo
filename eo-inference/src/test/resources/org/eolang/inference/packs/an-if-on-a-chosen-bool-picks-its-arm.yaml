@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# yes hands bool an arm that gives its left, so if on yes picks "a" and the
+# @ of app is a string, not the number on the right.
+sources:
+  bool.eo: |
+    [if] > bool
+      if > @
+      if > self
+  yes.eo: |
+    [] > yes
+      bool > @
+        [left right]
+          left > @
+  app.eo: |
+    [] > app
+      yes.if "a" 8 > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.yes.φ.α0' and @lands='if']/is[@loc='Φ.yes.φ.α0']
+  - /answers/o[@loc='Φ.yes.φ.α0.φ']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.string']
+  - /answers[not(o[@loc='Φ.app.φ']//is[@loc='Φ.number'])]

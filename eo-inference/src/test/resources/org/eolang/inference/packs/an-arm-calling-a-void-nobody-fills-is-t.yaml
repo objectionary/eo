@@ -1,0 +1,64 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Only the gauge of held counts, since app reads off it: other leaves
+# cant-read empty and nobody reads off its gauge. There cant-read is an open
+# void, and the arm that calls it is T. choice has a not besides its pick, as
+# bool does, so the yes of held picks the other arm, dial 03-, and the listen
+# app reads off held gives the bytes 05-.
+sources:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+      [] > not
+        ^.pick no yes > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  dial.eo: |
+    [^ sys] > dial
+      [^ size] > listen
+        size > @
+  gauge.eo: |
+    [^ flag cant-read] > gauge
+      flag.pick > @
+        dial 03-
+        cant-read
+          "the gauge cannot be read"
+  held.eo: |
+    [] > held
+      gauge yes > @
+  other.eo: |
+    [] > other
+      gauge no > @
+  app.eo: |
+    [] > app
+      listen. > @
+        held
+        05-
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.gauge' and @copies='1']
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.dial']
+  - /answers[not(o[@lands='cant-read'])]
+  - /answers/o[@loc='Φ.gauge.cant-read']/open
+  - /answers/o[@loc='Φ.gauge.φ.α1' and @lands='a🌵5-6']/terminator
+  - /answers/o[@loc='Φ.held.φ']/is[@loc='Φ.dial']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.bytes']

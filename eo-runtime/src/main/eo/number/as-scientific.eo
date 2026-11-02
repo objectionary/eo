@@ -27,35 +27,40 @@
         "infinity".as-bytes
     if.
       or.
-        mantissa.eq "10.000000".as-bytes
-        carried
+        eq.
+          as-fixed. >> mantissa!
+            div.
+              if. >> scaled
+                as-bool.
+                  and. >> tiny!
+                    num.abs.lt (1.div boost)
+                    not. (num.eq 0)
+                num.times
+                  10.power 300 >> boost!
+                num
+              10.power
+                number raw
+            6
+          "10.000000".as-bytes
+        mantissa.eq "-10.000000".as-bytes >> carried!
       concat.
-        normalized.concat "e".as-bytes
+        concat.
+          carried.as-bool.if "-1.000000".as-bytes "1.000000".as-bytes >> normalized!
+          "e".as-bytes
         as-decimal.
           plus.
-            number exponent
+            number
+              minus. >> exponent!
+                number
+                  rec-exponent scaled.abs 0 >> raw!
+                number
+                  tiny.as-bool.if 300 0 >> shift!
             1
       concat.
         mantissa.concat "e".as-bytes
         as-decimal.
           number exponent
-  10.power 300 > boost!
-  mantissa.eq "-10.000000".as-bytes > carried!
-  minus. > exponent!
-    number raw
-    number shift
-  as-fixed. > mantissa!
-    scaled.div
-      10.power
-        number raw
-    6
-  carried.as-bool.if > normalized!
-    "-1.000000".as-bytes
-    "1.000000".as-bytes
-  rec-exponent > raw!
-    scaled.abs
-    0
-  if. > [^ m count] >> rec-exponent
+  if. > [^num m count] >> rec-exponent
     or.
       m.eq 0
       and.
@@ -64,25 +69,14 @@
     count
     if.
       m.lt 1
-      ^.rec-exponent
+      num.rec-exponent
         m.times 10
         as-number.
           count.minus 1
-      ^.rec-exponent
+      num.rec-exponent
         m.div 10
         as-number.
           count.plus 1
-  tiny.as-bool.if > scaled
-    num.times boost
-    num
-  tiny.as-bool.if > shift!
-    300
-    0
-  and. > tiny!
-    num.abs.lt
-      1.div boost
-    not.
-      num.eq 0
 
   eq. ++> can-carry-a-rounded-mantissa-into-the-next-power-of-ten
     "1.000000e1"

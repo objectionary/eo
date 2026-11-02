@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The argument of the call goes into first in one copy of pick and into other
+# in the other, so it lands in no one void.
+sources:
+  left.eo: |
+    [first] > left
+      first > @
+      1 > one
+  right.eo: |
+    [other] > right
+      other > @
+      2 > two
+  pick.eo: |
+    [f] > pick
+      f 7 > @
+  app.eo: |
+    [] > app
+      pick left > l
+      pick right > r
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.left.first']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.right.other']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.pick.φ.α0' and not(@lands)]

@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A name holding a quote at the head of a parenthesised application. The scan
+# that weighs whether a group holds a single token read the quote as the start
+# of a string literal and skipped the space behind it, so a group of two
+# tokens was taken for one (#9427).
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@base='Φ.f' and @name='x']/o[@base='Φ.a"b']/o[@base='Φ.c']
+input: |
+  +package foo
+
+  [] > foo
+    f (a"b c) > x
+    x > @

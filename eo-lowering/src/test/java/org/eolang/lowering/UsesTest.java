@@ -84,7 +84,7 @@ final class UsesTest {
         Files.write(
             temp.resolve("entries.xmir"),
             String.format(
-                "<object><o><o name='mark'/><o name='root'/>%s</o></object>",
+                "<object><o>%s</o></object>",
                 String.join("", rows)
             ).getBytes(StandardCharsets.UTF_8)
         );

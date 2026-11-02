@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Java makes status, and its code declares it holds a number, so a read of code
+# off what check returns is a number, though nothing is in its pool.
+sources:
+  os.eo: |
+    [] > os
+      [] > check /Q.os.status
+      [] > status /Q.number
+        ? > code /Q.number
+  app.eo: |
+    [] > app
+      os.check.code > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.os.check.λ']/is[@loc='Φ.os.status']
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.os.status']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.number']
+  - /answers[not(o[@lands='code'])]

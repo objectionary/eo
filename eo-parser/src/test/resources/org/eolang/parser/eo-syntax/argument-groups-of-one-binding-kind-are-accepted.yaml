@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #9682: R-6.6.2 accepts an argument group that binds nothing, one that binds
+# only slot numbers, and one that binds only names, each label at most once.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@name='slots' and o[@as='α0'] and o[@as='α1']]
+  - //o[@name='names' and o[@as='a'] and o[@as='b']]
+  - //o[@name='vertical' and o[@as='a'] and o[@as='b']]
+input: |
+  [] > main
+    foo 1 2 > none
+    foo 1:0 2:1 > slots
+    foo 1:a 2:b > names
+    foo > vertical
+      1:a
+      2:b

@@ -84,6 +84,17 @@ final class ShaTest {
     }
 
     @Test
+    void distinguishesAnEmptyFileFromAnEmptyDir(@Mktmp final Path temp) throws IOException {
+        new Saved("", temp.resolve("empty.txt")).value();
+        Files.createDirectories(temp.resolve("empty"));
+        MatcherAssert.assertThat(
+            "an empty file and an empty directory hash alike, so a cache cannot tell them apart",
+            new Sha(temp.resolve("empty.txt")).toString(),
+            Matchers.not(Matchers.equalTo(new Sha(temp.resolve("empty")).toString()))
+        );
+    }
+
+    @Test
     void hashesLoneFileWithoutFraming(@Mktmp final Path temp)
         throws IOException, NoSuchAlgorithmException {
         final long seed = System.nanoTime();

@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# f holds the wrapper Java made, and Java owns its empty voids, so the call of
+# f with 5 fails (rule F) and the @ of call is T.
+sources:
+  os.eo: |
+    [] > os
+      [] > wrap /Q.os.wrapper
+      [v] > wrapper
+        v > @
+  call.eo: |
+    [f] > call
+      f 5 > @
+  app.eo: |
+    [] > app
+      call os.wrap > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.call.f']/is[@loc='Φ.os.wrapper']
+  - /answers/o[@loc='Φ.os.wrapper.v']/open[@by='java']
+  - /answers/o[@loc='Φ.call.φ']/terminator
+  - /answers/o[@loc='Φ.call']/reduced/terminator

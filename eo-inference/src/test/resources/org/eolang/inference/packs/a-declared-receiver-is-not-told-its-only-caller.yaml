@@ -1,0 +1,40 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# knot is nothing but a @ that gives a rope, so knot.ends is the ends of rope:
+# its ^ holds the rope, never the knot, its tail holds 42, and it is the bool
+# number.eq returns.
+sources:
+  rope.eo: |
+    [] > rope
+  ends.eo: |
+    +package rope
+
+    [^ tail] > ends
+      tail.eq > @
+        ^ >> me
+  knot.eo: |
+    [] > knot
+      rope > @
+  app.eo: |
+    [] > app
+      knot.ends 42 > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+      [] > eq /Q.bool
+        ? > ^
+        ? > b
+  bool.eo: |
+    [@] > bool
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.knot.φ']/is[@loc='Φ.rope']
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.rope']
+  - /answers/o[@loc='Φ.rope.ends.ρ']/is[@loc='Φ.rope']
+  - /answers[not(o[@loc='Φ.rope.ends.ρ']//is[@loc='Φ.knot'])]
+  - /answers/o[@loc='Φ.rope.ends.tail']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.bool']

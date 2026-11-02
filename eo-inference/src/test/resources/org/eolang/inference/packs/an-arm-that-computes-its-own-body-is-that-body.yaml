@@ -1,0 +1,70 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# odd hands choice an arm whose @ is 42 whatever goes into left and right,
+# while yes and no hand arms that give back left or right. choice has a not
+# besides its pick, as bool does, so held, other and third hand sock a choice
+# each, and flag.pick there is the oak, the elm and a number, one per copy.
+# lone is called only with odd, so it reduces to a number, and so does single.
+sources:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+      [] > not
+        ^.pick no yes > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^ left right]
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^ left right]
+          right > @
+  odd.eo: |
+    [^] > odd
+      choice > @
+        [^ left right]
+          42 > @
+  number.eo: |
+    [@] > number
+  bytes.eo: |
+    [@] > bytes
+  oak.eo: |
+    [] > oak
+  elm.eo: |
+    [] > elm
+  sock.eo: |
+    [^ flag] > sock
+      flag.pick > @
+        oak
+        elm
+  held.eo: |
+    [] > held
+      sock yes > @
+  other.eo: |
+    [] > other
+      sock no > @
+  third.eo: |
+    [] > third
+      sock odd > @
+  lone.eo: |
+    [^ flag] > lone
+      flag.pick > @
+        oak
+        elm
+  single.eo: |
+    [] > single
+      lone odd > @
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.odd.φ.α0.φ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.yes.φ.α0.φ']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.no.φ.α0.φ']/is[@loc='Φ.elm']
+  - /answers/o[@loc='Φ.sock.flag' and @copies='3']/is[@loc='Φ.choice']
+  - /answers/o[@loc='Φ.sock.φ' and @copies='3' and set[@copies='1']/is[@loc='Φ.oak'] and set[@copies='1']/is[@loc='Φ.elm'] and set[@copies='1']/is[@loc='Φ.number']]
+  - /answers/o[@loc='Φ.lone' and @copies='1']/reduced/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.single.φ']/is[@loc='Φ.number']

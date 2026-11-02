@@ -10,7 +10,7 @@
 [^num b] > lte
   or. > @
     num.lt
-      b >> value!
+      number b! >> value
     num.eq value
 
   eq. ++> can-be-less-than-or-equal-to-a-float-when-negative-infinity

@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# oak.grow elm puts the elm into x and the oak into the ^ grow declares, so
+# grow is the elm it holds.
+sources:
+  app.eo: |
+    [] > app
+      oak.grow elm > @
+  oak.eo: |
+    [] > oak
+      [^ x] > grow
+        x > @
+  elm.eo: |
+    [] > elm
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='x']/is[@loc='Φ.elm']
+  - /answers/o[@loc='Φ.oak.grow.x']/is[@loc='Φ.elm']
+  - /answers/o[@loc='Φ.oak.grow.ρ']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.oak.grow']/reduced/is[@loc='Φ.elm']

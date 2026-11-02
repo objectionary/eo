@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# dec 1 answers the 1 that goes into y, so it hands inc a number, not a dec. x
+# holds a number, and so does got, while each argument lands in its own void.
+sources:
+  app.eo: |
+    [] > app
+      inc (dec 1) > got
+  inc.eo: |
+    [x] > inc
+      x > @
+  dec.eo: |
+    [y] > dec
+      y > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.got.α0.α0' and @lands='y']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.got.α0' and @lands='x']/is[@loc='Φ.number']
+  - /answers[not(o[@loc='Φ.app.got.α0']/is[@loc='Φ.dec'])]
+  - /answers/o[@loc='Φ.inc.x']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.got']/is[@loc='Φ.number']

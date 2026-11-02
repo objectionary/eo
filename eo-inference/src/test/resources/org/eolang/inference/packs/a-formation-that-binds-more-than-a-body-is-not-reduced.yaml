@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# trunk has a bark of its own next to the @ that gives an oak, so it is no
+# decorator: box trunk puts trunk into item as itself, and trunk reduces to
+# trunk.
+sources:
+  oak.eo: |
+    [] > oak
+      [] > leaf
+  trunk.eo: |
+    [] > trunk
+      oak > @
+      [] > bark
+  box.eo: |
+    [item] > box
+  app.eo: |
+    [] > app
+      box trunk > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.trunk.bark']/is[@loc='Φ.trunk.bark']
+  - /answers/o[@loc='Φ.trunk.φ']/is[@loc='Φ.oak']
+  - /answers[not(o[@loc='Φ.trunk']/reduced/is[@loc='Φ.oak'])]
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='item']/is[@loc='Φ.trunk']
+  - /answers/o[@loc='Φ.box.item']/is[@loc='Φ.trunk']
+  - /answers/o[@loc='Φ.trunk']/reduced/is[@loc='Φ.trunk']

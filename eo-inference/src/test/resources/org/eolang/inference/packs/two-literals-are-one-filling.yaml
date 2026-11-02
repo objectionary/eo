@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# inc is called with 42 and with 7, so it has two copies, and x is a number in
+# both, so the place says one thing. The bytes under each literal are data.
+sources:
+  app.eo: |
+    [] > app
+      inc 42 > first
+      inc 7 > second
+  inc.eo: |
+    [x] > inc
+      x > @
+  number.eo: |
+    [@] > number
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.first.α0' and @lands='x']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.second.α0' and @lands='x']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.inc' and @copies='2']
+  - /answers/o[@loc='Φ.inc.x' and @copies='2']/is[@loc='Φ.number']
+  - /answers[not(o[@loc='Φ.inc.x']/set)]
+  - /answers/o[@loc='Φ.app.first.α0.α0.α0' and @lands='φ']/data
+  - /answers/o[@loc='Φ.app.second.α0.α0.α0' and @lands='φ']/data

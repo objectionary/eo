@@ -1,0 +1,68 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# choice has a not besides its pick, as bool does, so yes and no go into the
+# flag of sock as a choice. flag.pick picks dial 03- for held and clock 04-
+# for other, so sock is a dial in one copy and a clock in the other. The
+# listen app reads off held is the listen of dial, which gives the bytes 05-.
+sources:
+  choice.eo: |
+    [pick] > choice
+      pick > @
+      [] > not
+        ^.pick no yes > @
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  dial.eo: |
+    [^ sys] > dial
+      [^ size] > listen
+        size > @
+  clock.eo: |
+    [^ tick] > clock
+      [^ size] > listen
+        size > @
+  sock.eo: |
+    [^ flag] > sock
+      flag.pick > @
+        dial 03-
+        clock 04-
+  held.eo: |
+    [] > held
+      sock yes > @
+  other.eo: |
+    [] > other
+      sock no > @
+  app.eo: |
+    [] > app
+      listen. > @
+        held
+        05-
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.held.φ.α0' and @lands='flag']/is[@loc='Φ.choice']
+  - /answers/o[@loc='Φ.other.φ.α0' and @lands='flag']/is[@loc='Φ.choice']
+  - /answers/o[@loc='Φ.held.φ']/is[@loc='Φ.dial']
+  - /answers/o[@loc='Φ.other.φ']/is[@loc='Φ.clock']
+  - /answers/o[@loc='Φ.sock']/reduced/set[@copies='1']/is[@loc='Φ.dial']
+  - /answers/o[@loc='Φ.sock']/reduced/set[@copies='1']/is[@loc='Φ.clock']
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.dial']
+  - /answers/o[@loc='Φ.dial.listen.size']/is[@loc='Φ.bytes']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.bytes']

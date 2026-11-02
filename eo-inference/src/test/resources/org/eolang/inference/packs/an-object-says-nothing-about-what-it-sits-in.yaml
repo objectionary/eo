@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# inc declares ^, so its ρ has a row: the Φ it is written in. oak declares
+# none, so nothing says what oak sits in. Nobody calls inc, so x and the @
+# that reads it stay open.
+sources:
+  inc.eo: |
+    [^ x] > inc
+      x > @
+  oak.eo: |
+    [] > oak
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.inc.ρ']/is[@loc='Φ']
+  - /answers[not(o[@loc='Φ.oak.ρ'])]
+  - /answers/o[@loc='Φ.inc.x']/open
+  - /answers/o[@loc='Φ.inc.φ']/open

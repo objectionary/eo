@@ -383,15 +383,30 @@ public class PhDefault implements Phi, Cloneable {
                 String.format("the object %s declares no receiver", this.forma())
             );
         } else if (this instanceof Atom) {
-            object = this.take(Phi.LAMBDA).take(name);
+            object = this.renamed(this.take(Phi.LAMBDA).take(name), name);
         } else if (this.loaded().containsKey(Phi.PHI)) {
-            object = this.take(Phi.PHI).take(name);
+            object = this.renamed(this.take(Phi.PHI).take(name), name);
         } else {
-            object = new PhTerminator(
-                String.format("the attribute \"%s\" is not found in %s", name, this.forma())
-            );
+            object = this.missing(name);
         }
         return object;
+    }
+
+    private Phi renamed(final Phi found, final String name) {
+        final Phi object;
+        if (found instanceof PhTerminator term && term.absence(name)) {
+            object = this.missing(name);
+        } else {
+            object = found;
+        }
+        return object;
+    }
+
+    private Phi missing(final String name) {
+        return new PhTerminator(
+            String.format("the attribute \"%s\" is not found in %s", name, this.forma()),
+            name
+        );
     }
 
     private String packaged(final String name) {
@@ -486,9 +501,31 @@ public class PhDefault implements Phi, Cloneable {
     }
 
     private boolean literal(final String name) {
-        return ("number".equals(name) || "string".equals(name))
-            && this.loaded().containsKey(Phi.PHI)
-            && !"?".equals(this.loaded().get(Phi.PHI).φTerm());
+        final boolean found;
+        if ("number".equals(name) || "string".equals(name)) {
+            found = this.loaded().containsKey(Phi.PHI)
+                && !"?".equals(this.loaded().get(Phi.PHI).φTerm())
+                && this.settled(this.loaded().get(Phi.PHI).get());
+        } else {
+            found = false;
+        }
+        return found;
+    }
+
+    private boolean settled(final Phi phi) {
+        final boolean found;
+        if (phi instanceof PhDefault holder) {
+            if (holder.data.present()) {
+                found = true;
+            } else if (holder.loaded().containsKey(Phi.PHI)) {
+                found = this.settled(holder.loaded().get(Phi.PHI).get());
+            } else {
+                found = false;
+            }
+        } else {
+            found = false;
+        }
+        return found;
     }
 
     private String structural() {

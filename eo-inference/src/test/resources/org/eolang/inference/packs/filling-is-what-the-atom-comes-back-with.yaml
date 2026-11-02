@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# half and twice are atoms that say they give a number, so each of the two
+# copies of inc gets a number in its x, and first and second are numbers. The
+# oak handed to each atom lands in its y.
+sources:
+  app.eo: |
+    [] > app
+      inc (half oak) > first
+      inc (twice oak) > second
+  inc.eo: |
+    [x] > inc
+      x > @
+  half.eo: |
+    [] > half /Q.number
+      ? > y
+  twice.eo: |
+    [] > twice /Q.number
+      ? > y
+  number.eo: |
+    [@] > number
+  oak.eo: |
+    [] > oak
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.inc.x' and @copies='2']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.first']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.second']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.first.α0.α0' and @lands='y']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.second.α0.α0' and @lands='y']/is[@loc='Φ.oak']

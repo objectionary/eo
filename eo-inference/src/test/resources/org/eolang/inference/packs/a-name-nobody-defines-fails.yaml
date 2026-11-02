@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# nowhere is not defined anywhere, so reading it fails, and the @ of jarref
+# names the missing nowhere.
+sources:
+  jarref.eo: |
+    [] > jarref
+      nowhere > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers[not(o[@loc='Φ.nowhere'])]
+  - /answers/o[@loc='Φ.jarref.φ']/fails
+  - /answers/o[@loc='Φ.jarref.φ']/fails[@name='Φ.nowhere']

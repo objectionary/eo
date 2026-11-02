@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The formation app hands to box goes into item, so its ^ is that copy of box:
+# up is a box, and so is the up that box reads off item.
+sources:
+  box.eo: |
+    [item] > box
+      item.up > @
+  app.eo: |
+    [] > app
+      box > @
+        []
+          ^ > up
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='item']/is[@loc='Φ.app.φ.α0']
+  - /answers/o[@loc='Φ.app.φ.α0.up']/is[@loc='Φ.box']
+  - /answers/o[@loc='Φ.box.φ']/is[@loc='Φ.box']

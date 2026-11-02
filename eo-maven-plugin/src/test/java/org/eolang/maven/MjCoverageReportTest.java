@@ -124,6 +124,24 @@ final class MjCoverageReportTest {
     }
 
     @Test
+    void reportsASourceThatOnlyWarns(@Mktmp final Path temp) throws Exception {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(System.lineSeparator(), "[] > main", "  x?.y.a > @")
+        ).execute(MjParse.class);
+        final Path hits = temp.resolve("coverage.txt");
+        Files.writeString(hits, "");
+        final Path lcov = temp.resolve("coverage.info");
+        maven.with("hits", hits.toFile())
+            .with("lcov", lcov.toFile())
+            .execute(MjCoverageReport.class);
+        MatcherAssert.assertThat(
+            "a source whose only defect is a warning must still be reported, but it wasnt",
+            Files.readString(lcov),
+            Matchers.containsString("SF:")
+        );
+    }
+
+    @Test
     void reportsAFileThatHasNothingToInstrument(@Mktmp final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             String.join(

@@ -4,9 +4,7 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
-  - /object[not(errors)]
-  - /object/o[@name='user']/o[@name='φ']/o[@as='ρ' and @base='Φ.y']
-  - /object/o[@name='user']/o[@name='φ']/o[@as='m' and @base='Φ.z']
+  - /object/errors/error[contains(text(),'binding label "^" must be a name or a slot number')]
 input: |
   [] > user
     lt x:0 y:^ z:m > @

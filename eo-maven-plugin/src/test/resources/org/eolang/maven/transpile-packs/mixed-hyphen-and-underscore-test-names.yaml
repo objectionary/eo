@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #9346: both `-` and `_` of a test name became `_`, so `can-split-a-b` and
+# `can-split-a_b` were two JUnit methods of the same name in one class.
+sheets:
+  - /org/eolang/parser/parse/set-locators.xsl
+  - /org/eolang/maven/transpile/set-original-names.xsl
+  - /org/eolang/maven/transpile/classes.xsl
+  - /org/eolang/maven/transpile/tests.xsl
+  - /org/eolang/maven/transpile/attrs.xsl
+  - /org/eolang/maven/transpile/data.xsl
+  - /org/eolang/maven/transpile/to-java.xsl
+asserts:
+  - /object[not(errors)]
+  - //tests[contains(text(), 'void can_split_a_b()')]
+  - //tests[contains(text(), 'void can_split_a$u00005Fb()')]
+input: |
+  [] > app
+    true > @
+
+    true ++> can-split-a-b
+
+    true ++> can-split-a_b

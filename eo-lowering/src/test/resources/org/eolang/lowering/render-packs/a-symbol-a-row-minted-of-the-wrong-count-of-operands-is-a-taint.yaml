@@ -1,0 +1,44 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A row dataizes one operand per void it lists, so a symbol its λ minted
+# of any other number of operands has nothing to bind them to.
+locator: Φ.twolen
+number: 5
+taint: has 2 operands, while L_len takes 1
+eo:
+  twolen.eo: |
+    [t] > twolen
+      (len t).plus 1 > @
+  len.eo: |
+    [s] > len
+      s.length > @
+  string.eo: |
+    [@] > string
+      [] > length /Q.number
+        ? > ^
+  number.eo: |
+    [@] > number
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+  app.eo: |
+    [] > app
+      twolen "ab" > used
+voids:
+  - "𝜎4\t5\tt\tstring"
+rows:
+  - "L_len\tΦ.len\tΦ.len\ts:string"
+protocol: |
+  <protocol>
+    <dataize at="Φ.l🌵.e5">
+      <evaluate λ="L_len" by="morph" at="Φ.a🌵1">
+        <minted symbol="𝜎5">𝜎4 𝜎4</minted>
+      </evaluate>
+      <manufactured meta="𝛿·3·1">𝜎5</manufactured>
+    </dataize>
+    <msec>1</msec>
+    <firings>1</firings>
+    <fps>1000</fps>
+  </protocol>

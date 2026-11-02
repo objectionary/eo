@@ -44,7 +44,9 @@ import java.util.Map;
  * spaces among them (name bindings such as {@code >} do not count) pay
  * an extra super-linear surcharge: r such spaces cost r squared, rather
  * than r, times the weight, so longer applications grow super-linearly
- * more expensive while name bindings are left alone.</li>
+ * more expensive while name bindings are left alone. A string literal is
+ * one token however many spaces it holds, the way a {@code [...]} head
+ * already is, since the words of a literal apply nothing.</li>
  * </ul>
  *
  * <p>All of these weights, together with the indentation
@@ -75,6 +77,12 @@ import java.util.Map;
  * <pre> 42.gt (bar.hello 88) &gt; [] &gt; foo</pre>
  *
  * @since 0.57.0
+ * @todo #8949:30min Hold a string literal opaque in the other counters too.
+ *  {@code brackets()}, {@code phis()} and {@code ifs()} read every
+ *  character of a line, so a {@code (}, an {@code @} or a {@code .if}
+ *  written inside a {@code "..."} is charged as if it were code. Only
+ *  {@code tokens()} knows about quotes today, and the same guard belongs
+ *  in the other three.
  */
 final class Penalty {
 
@@ -181,22 +189,47 @@ final class Penalty {
         final List<String> out = new ArrayList<>(0);
         final StringBuilder token = new StringBuilder(0);
         int square = 0;
-        for (int idx = 0; idx < text.length(); ++idx) {
+        int idx = 0;
+        while (idx < text.length()) {
             final char chr = text.charAt(idx);
-            if (chr == '[') {
-                ++square;
-            } else if (chr == ']') {
-                --square;
-            }
-            if (chr == ' ' && square == 0) {
-                out.add(token.toString());
-                token.setLength(0);
+            if (chr == '"') {
+                final int closed = Penalty.closing(text, idx);
+                token.append(text, idx, closed);
+                idx = closed;
             } else {
-                token.append(chr);
+                if (chr == '[') {
+                    ++square;
+                } else if (chr == ']') {
+                    --square;
+                }
+                if (chr == ' ' && square == 0) {
+                    out.add(token.toString());
+                    token.setLength(0);
+                } else {
+                    token.append(chr);
+                }
+                ++idx;
             }
         }
         out.add(token.toString());
         return out.toArray(new String[0]);
+    }
+
+    private static int closing(final String text, final int start) {
+        int idx = start + 1;
+        boolean open = true;
+        while (open && idx < text.length()) {
+            final char chr = text.charAt(idx);
+            if (chr == '\\') {
+                idx += 2;
+            } else {
+                if (chr == '"') {
+                    open = false;
+                }
+                ++idx;
+            }
+        }
+        return Math.min(idx, text.length());
     }
 
     private static boolean binding(final String token) {

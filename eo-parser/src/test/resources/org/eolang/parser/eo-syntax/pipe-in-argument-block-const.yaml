@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+# A const formation (`[x] >>!`) piped with `|` inside an argument block. The
+# slot of the enclosing application holds the `.as-bytes` wrapper that
+# `const-to-dataized` puts around the formation, so that wrapper is the one
+# `wrap-applications` marks to float up. Marking the formation inside it
+# instead left `Φ.dataized` with no argument and gave `plus` a second
+# argument nothing applied (#9299).
+asserts:
+  - /object[not(errors)]
+  - //o[@base='ξ.y.plus' and count(o)=1]
+  - //o[@base='ξ.y.plus']/o[@base='ξ.a🌵3-4' and @pipe='' and o[@base='Φ.number']]
+  - //o[@name='app']/o[@name='a🌵3-4' and @base='.as-bytes']/o[@base='Φ.dataized']/o[@base='ξ.a🌵3-4-1']
+  - //o[@name='app']/o[@name='a🌵3-4-1' and not(@base) and o[@base='∅' and @name='x']]
+input: |
+  [y] > app
+    y.plus > @
+      [x] >>!
+        x.plus 1 > @
+      | 5

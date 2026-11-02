@@ -13,18 +13,19 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 /**
- * Draw a page per source file from the tables {@link MjInference} wrote.
+ * Draw a page per source file from what {@link MjInference} wrote.
  *
- * <p>The three numbers the tables come with say how much of a program we
- * understand without saying which part. A page says both, with the author's
- * own source on it and a mark on every object: green where the formation can
- * be named, amber where the name is rooted in a void the callers of the
- * program fill several ways, violet where it is rooted in a void only an atom
- * fills, slate where it is rooted in a void nobody fills, and red where there
- * is nothing.</p>
+ * <p>A page shows the author's own source with a mark on every object,
+ * coloured by one of ten bands of what the engine answers there in
+ * {@code answers.xml}: green where it answers one name and nothing else,
+ * other colours where it answers several names, names with gaps, only gaps,
+ * or a read that fails. An index lists the pages with a bar per file, and
+ * the goal logs how many objects fall in each band and writes the same
+ * numbers down in {@code ladder.txt}, beside the directory of the tables.</p>
  *
  * <p>A goal of its own rather than a flag on {@link MjInference}: a build
- * that wants the pages asks for this goal, one that does not never runs it.</p>
+ * that wants the pages asks for this goal, one that does not never runs
+ * it.</p>
  *
  * @since 0.71.0
  */
@@ -47,7 +48,7 @@ public final class MjInferenceReport extends MjSafe {
     private File pages;
 
     /**
-     * The directory where the XMIR prepared for the rules was saved, falling
+     * The directory where the XMIR prepared for the engine was saved, falling
      * back to the "pre-inference" directory {@code Seqdir} already found
      * when unset.
      */
@@ -55,7 +56,7 @@ public final class MjInferenceReport extends MjSafe {
     private File prepared;
 
     /**
-     * The directory where the tables were saved, falling back to the
+     * The directory where {@code answers.xml} was saved, falling back to the
      * "inference" directory {@code Seqdir} already found when unset.
      */
     @Parameter(alias = "inferenceDir", property = "eo.inferenceDir")
@@ -84,10 +85,6 @@ public final class MjInferenceReport extends MjSafe {
         } else {
             inference = this.tables.toPath();
         }
-        new Reporting(
-            prepped,
-            inference,
-            this.pages.toPath()
-        ).exec();
+        new Reporting(prepped, inference, this.pages.toPath()).exec();
     }
 }

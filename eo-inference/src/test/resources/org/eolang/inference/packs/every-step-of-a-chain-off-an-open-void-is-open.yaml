@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls clock, so x is an open void, and each step of the chain read off
+# it, seconds and then times, gets a place of its own and is an open void too.
+sources:
+  clock.eo: |
+    [x] > clock
+      x.seconds.times > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.clock.x']/open
+  - /answers/o[@loc='Φ.clock.φ.ρ']/open
+  - /answers/o[@loc='Φ.clock.φ']/open

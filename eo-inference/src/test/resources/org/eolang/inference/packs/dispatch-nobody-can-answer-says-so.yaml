@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# nowhere is not defined anywhere, so its read fails, and nothing can say what
+# the foo read off it is: the @ of jarref cannot be told.
+sources:
+  jarref.eo: |
+    [] > jarref
+      nowhere.foo > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.jarref.φ.ρ']/fails[@name='Φ.nowhere']
+  - /answers/o[@loc='Φ.jarref.φ']/unknown
+  - /answers[not(o[@loc='Φ.jarref.φ']//is)]

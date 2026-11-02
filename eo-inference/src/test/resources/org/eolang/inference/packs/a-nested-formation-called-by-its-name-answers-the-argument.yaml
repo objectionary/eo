@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The @ of lamp calls bulb, its own attribute, with 1. The @ of bulb is its
+# void n, so the call answers what goes into n, and the @ of lamp is a number.
+sources:
+  lamp.eo: |
+    [] > lamp
+      bulb 1 > @
+      [n] > bulb
+        n > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.lamp.φ.ρ']/is[@loc='Φ.lamp']
+  - /answers/o[@loc='Φ.lamp.φ.α0' and @lands='n']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.lamp.bulb.φ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.lamp.bulb']/reduced/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.lamp.φ']/is[@loc='Φ.number']

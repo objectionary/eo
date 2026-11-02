@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# twice is a method of number, a package that gives back new data, so it takes
+# no tag even when list code calls it: the two lists of app call it at one
+# place and share one copy of it, the only one next to its copy as written,
+# and the tuple it builds starts a tag of its own.
+sources:
+  tuple.eo: |
+    [item rest] > tuple
+      [x] > with
+        tuple x ^ > @
+      [] > doubled
+        ^.item.twice > @
+  number.eo: |
+    [@] > number
+      [] > twice
+        tuple ^ ^ > @
+  app.eo: |
+    [] > app
+      (tuple 1 0).doubled > a
+      (tuple 2 0).doubled > b
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.tuple.doubled.φ' and @copies='2']
+  - /answers/o[@loc='Φ.number.twice' and @copies='2']
+  - /answers/o[@loc='Φ.tuple' and @copies='3']

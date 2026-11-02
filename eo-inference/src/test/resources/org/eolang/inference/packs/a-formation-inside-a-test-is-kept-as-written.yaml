@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls helper, and the test it sits in is no real copy, so a stop keeps
+# its copy as written, where y is an open void.
+sources:
+  app.eo: |
+    [] > app
+      42 > @
+
+      ++> can-hold-a-helper
+        app > @
+        [y] > helper
+          y > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.p🌵can-hold-a-helper.helper' and @copies='1']/reduced/is[@loc='Φ.app.p🌵can-hold-a-helper.helper']
+  - /answers/o[@loc='Φ.app.p🌵can-hold-a-helper.helper.y']/open

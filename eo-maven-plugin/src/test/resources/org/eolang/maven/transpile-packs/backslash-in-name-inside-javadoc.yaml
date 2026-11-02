@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #9347: the XMIR went into the Javadoc of the class as it was, and Java
+# reads a `\u` escape in a comment too, so a name holding one made javac
+# refuse the generated class with "illegal unicode escape".
+sheets:
+  - /org/eolang/parser/parse/set-locators.xsl
+  - /org/eolang/maven/transpile/set-original-names.xsl
+  - /org/eolang/maven/transpile/classes.xsl
+  - /org/eolang/maven/transpile/attrs.xsl
+  - /org/eolang/maven/transpile/data.xsl
+  - /org/eolang/maven/transpile/to-java.xsl
+asserts:
+  - /object[not(errors)]
+  - /object/class/java[contains(text(), 'name="x\\u"')]
+input: |
+  [] > app
+    "a" > x\u
+    x\u > @

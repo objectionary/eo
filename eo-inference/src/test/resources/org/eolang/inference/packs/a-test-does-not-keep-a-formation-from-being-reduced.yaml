@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# checked has a test next to the @ that gives an oak, and a test is not among
+# the attributes that keep a formation from being reduced. So box checked puts
+# an oak into item, and checked reduces to oak. The test itself is answered
+# like any attribute: its @ is an oak.
+sources:
+  oak.eo: |
+    [] > oak
+      [] > leaf
+  checked.eo: |
+    [] > checked
+      oak > @
+
+      oak ++> can-be-an-oak
+  box.eo: |
+    [item] > box
+  app.eo: |
+    [] > app
+      box checked > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.checked.φ']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='item']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.checked']/reduced/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.checked.p🌵can-be-an-oak.φ']/is[@loc='Φ.oak']
