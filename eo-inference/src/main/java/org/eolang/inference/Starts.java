@@ -34,8 +34,8 @@ import org.xembly.Directives;
  *
  * <p>Every row here is stated by the text, so the rows are facts and go into
  * the {@code heads} section of {@code facts.xml}, in the order they are
- * found. {@code Resolved} copies them into {@code links.xml}, because the
- * compiler reads them there.</p>
+ * found. {@link Walk} reads these heads along with the objects, reads and
+ * calls to work out the answers of each place.</p>
  *
  * @since 0.68.0
  */

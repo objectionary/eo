@@ -21,8 +21,9 @@ import org.xembly.Directives;
  * {@code oak}, and one that goes through a decorator arrives no differently,
  * since the lookup is handed down and the decoratee is the {@code oak}. So the
  * void a formation declares for its receiver holds the object the formation is
- * an attribute of, which is what {@code Held} reads back and {@code Provided}
- * walks through.</p>
+ * an attribute of. This is recorded as {@code rho} on the receiver's
+ * {@code attr} row in the {@code objects} section of {@code facts.xml},
+ * for the engine to read along with the declared attributes.</p>
  *
  * <p>This is not the old rule of reading a receiver off a locator, which was
  * taken out again in #6657 and should stay out. That one gave every object a

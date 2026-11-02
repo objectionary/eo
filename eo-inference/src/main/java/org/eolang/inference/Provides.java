@@ -22,146 +22,38 @@ import java.util.stream.Collectors;
 import org.xembly.Directives;
 
 /**
- * What every object certainly has.
+ * The formations and their declared attributes, as the program writes them.
  *
- * <p>This is the first and the simplest rule of the checker: a formation
- * shows its attributes right in the code, so we can write them down
- * without thinking. This formation</p>
+ * <p>The rows go into the {@code objects} section of {@code facts.xml}.
+ * A formation has a {@code type} row identified by its locator, and every
+ * named child has an {@code attr} row with its name and locator, in source
+ * order. This keeps the order in which positional arguments fill voids.
+ * Applications, references and voids have no formation row of their own.</p>
  *
- * <pre> [] &gt; t
- *   [] &gt; next</pre>
+ * <p>The {@code complete} flag says that the formation has neither an atom
+ * nor a bound {@code φ}. An atom's Java body is not visible here, and a
+ * decorator may answer a missing name through its {@code φ}; the engine
+ * works out those answers rather than this section guessing them.</p>
  *
- * <p>fills the table with three rows. One says that {@code Φ.t} is
- * complete, another that {@code Φ.t} has an attribute {@code next} whose
- * type is {@code Φ.t.next}, and the third that {@code Φ.t.next} is
- * complete as well, and has nothing.</p>
+ * <p>An atom's declared return object is kept as {@code returns}. A return
+ * annotation that names a type variable instead keeps the locators of the
+ * voids carrying that variable in {@code return} elements, with the first
+ * also stored as {@code returns}. A termination annotation contributes no
+ * return locator.</p>
  *
- * <p>So a row is either about a type or about one of its attributes, and
- * which one it is can be seen from its cells: an attribute row carries
- * an {@code owner}. A type is identified by its locator, an attribute by
- * the locator of its owner and its own name, because those two are what
- * make it unique — its own locator would not do, since an attribute is
- * also a type in its own right, and the two rows would collide.</p>
+ * <p>A void is marked {@code void="true"}. Its annotation is kept as
+ * {@code holds} when it names an object, and its callback argument list as
+ * {@code args}, when present. These describe what Java puts into the void
+ * or passes to a callback. {@link Received} adds the {@code rho} locator
+ * for a declared receiver, separately from the source's {@code holds}.</p>
  *
- * <p>"Complete" means that we have seen the whole formation, so there is
- * nothing in it besides the attributes listed. It is the flag that keeps
- * the checker honest later: a missing attribute is a mistake only when
- * the object that misses it is complete. An atom is not complete, since
- * its {@code λ} attribute stands for a body written in Java, which this
- * module cannot read. Neither is a formation that binds {@code φ}: what
- * it delegates to answers for every name it does not bind itself, and
- * that object is the business of the links table, not of this one.</p>
- *
- * <p>Two kinds of objects are deliberately absent from this table.
- * Applications and references (anything with a {@code @base}) provide
- * nothing on their own — what they have is what the object they copy
- * has, which is the business of the links table. And a void attribute
- * provides nothing either, until something is put into it.</p>
- *
- * <p>What an atom comes back with is written down, though its body is not.
- * {@code [] > div /Q.number} says that a {@code div} is a {@code Φ.number}
- * once it has run, and the parser carries that annotation into the XMIR, so
- * the row keeps it and whoever reads the table can ask a {@code number} what
- * the atom itself cannot answer.</p>
- *
- * <p>An annotation may name a variable rather than an object, and then it
- * names the voids that carry the same letter. {@code [] > recovered /A} over
- * {@code ? > value /A?} and {@code ? > alternative /A} says that what comes
- * back is what was put in, so the row keeps the {@code value}, and a caller
- * who put a {@code number} there is answered with a {@code number} rather
- * than with nothing (#8348). The letter stands on both voids, so what comes
- * back is the {@code value} or the {@code alternative}, and the facts name
- * every void that carries it, a {@code return} element each under the row of
- * the atom. The {@code returns} cell keeps the first alone, since the passes
- * read it as one name and {@code Objects} leaves the elements out of the table
- * they write into. A mark of termination is dropped as {@code Held} drops it,
- * since a termination answers to every name.</p>
- *
- * <p>What a void says it will hold is written down for the same reason as an
- * atom's annotation, and only when it names an object. {@code ? > code
- * /Q.number} is how a formation that only Java ever copies says what goes into
- * its voids, since it has no caller in the program to say it for it, while a
- * letter says nothing about what goes in and is read only by the atom above
- * it. {@code Provided} walks through a void that says what it holds the way it
- * walks behind a delegation, so a name asked of it is answered once and for
- * all rather than left to a caller.</p>
- *
- * <p>A void may also say what will be handed to whatever goes into it.
- * {@code ? > scope /{Q.chunk}} in {@code malloc.of} says that the atom calls
- * its {@code scope} with a chunk, which is what {@code EOmalloc$EOof} then
- * does, and the row keeps that list as it stands. Nobody else in the program
- * says it: the formation {@code malloc.for} hands in is copied by Java alone,
- * so without the annotation its void is filled by nobody and looks empty to
- * every reader (#8380). {@code Handed} is where the list is spent.</p>
- *
- * <p>Not every attribute is written inside the formation it belongs to:
- * {@code minus} in the package {@code number} is {@code Φ.number.minus} and
- * belongs to {@code Φ.number} without ever appearing among its children,
- * which {@link Packages} finds. It goes into this table after the attributes
- * a formation binds itself, since the order of those is what binds the
- * arguments of an application and this is not one of them.</p>
- *
- * <p>A type is "bare" when it has nothing public of its own besides its
- * {@code @}: then every name it answers to it answers through what stands
- * behind that {@code @}, and {@code Behaved} names it after that. Public
- * means readable from outside the object, which is why the exclusions are not
- * a matter of taste: a {@code 🌵} name is kept out of the {@code NAME} token
- * by R-9.2.2 of the parser spec and no source file can write one down, which
- * covers an auto-name and a test attribute alike, the latter under its
- * {@code p🌵} or {@code n🌵} marker. One more public attribute, though, is
- * one more thing a reader loses by being told something else, so an
- * {@code english} that hands back its receiver and binds {@code lower} and
- * {@code upper} besides is not bare.</p>
- *
- * <p>A void is ignored as well, and that clause has an expiry on it. A void is
- * public today, so the rule as it is meant to read — nothing public but
- * {@code @} — would leave almost nothing bare; voids are on their way to being
- * named by the parser and unreadable from outside, like a moniker and a test,
- * and the day they get there this clause is deleted and the rule reads as it
- * was written. What it costs meanwhile was measured: of the 1,680 reads that
- * land on a type {@code Behaved} reduces, 104 ask for a void the new name has
- * no answer for. Eighty-eight of those are inside a test and eight more ask for
- * {@code ρ}, which leaves eight on the library proper — {@code printf} wanting
- * its {@code args}, {@code with} its {@code key} and its {@code value}, and
- * three besides.</p>
- *
- * <p>The flag is decided last, once {@link Packages} has written what the
- * packages hand to their objects, since a member is as public as an attribute
- * written inside the formation: {@code [@] > number} binds nothing but a body
- * in its own file, and is not bare for all that, because {@code abs} and
- * {@code plus} sit in its package. Only the text of the program is read here;
- * what stands behind the {@code @} is the business of the links table, which is
- * why the walk itself stays with {@code Behaved}.</p>
- *
- * <p>A package is an object as well, though no file forms it: the runtime
- * hands out a package object for a folder that has no object of its own.
- * {@link Packages} gives every such package a row, complete, with the next
- * level under it as its attributes, and the global object {@code Φ} is the
- * package at the top, the one every chain of names off a bare {@code Φ} is
- * read from. None of them is bare, having names of their own.</p>
- *
- * <p>Nothing is written down about what an object sits in. It was once read
- * off the locator, on the grounds that {@code ρ} is written nowhere and
- * everything has one, and since #6657 neither half holds: a formation says
- * outright what it is dispatched on, and one that says nothing has no
- * {@code ρ} at all for anybody to name.</p>
- *
- * <p>What goes into the {@code ρ} a formation does declare is written down,
- * which is a different claim and {@link Received}'s: an attribute of an
- * {@code oak} is reached by taking it off an {@code oak}, so the void holds
- * one. Only a formation that asked for a receiver is told what it gets, and
- * the row was already there for the asking. It goes in as the {@code rho}
- * of the void, the formation a declared {@code ^} sits in, rather than as
- * what it {@code holds}, since nobody wrote it down, and {@code Objects}
- * writes it back as {@code holds} for the passes that read the two
- * alike.</p>
- *
- * <p>Every row here is stated by the text, so the rows are facts and go into
- * the {@code objects} section of {@code facts.xml}, in exactly the shape and
- * order they once had in a table of their own. This section writes no table:
- * {@code provides.xml} is written first by {@code Resolved}, as a copy of these
- * rows, and the passes after it add their answers to that copy, so the facts
- * stay as the text stated them.</p>
+ * <p>{@link Packages} adds members declared in separate files and synthetic
+ * package objects, including the global object {@code Φ}. Only after those
+ * attributes are present is each type marked {@code bare}: it has no
+ * non-void attribute other than {@code φ} whose name lacks a cactus.
+ * Thus package members count, while voids and compiler-generated names do
+ * not. This flag describes the declarations; it does not reduce the object
+ * to what its {@code φ} returns.</p>
  *
  * @since 0.67.0
  */

@@ -29,18 +29,10 @@ import org.xembly.Xembler;
  *   &lt;calls&gt;…&lt;/calls&gt;
  * &lt;/facts&gt;</pre>
  *
- * <p>The document is written once and never written over. Nothing that runs
- * later adds to it, since a fact does not change as the answers do, and a
- * new kind of fact is a new section here rather than another file beside
- * it. The rows {@link Starts} reads off the heads were such a file once, the
- * first version of {@code links.xml}, which the passes then wrote over with
- * their answers; they are the {@code heads} section now, and
- * {@code links.xml} is written by the middle alone, first by
- * {@code Resolved}, from those rows and what it works out of them. So was
- * {@code provides.xml}, with the rows {@link Provides} reads off the
- * formations, which the passes then wrote their answers into; those rows
- * are the {@code objects} section now, and {@code provides.xml} starts in
- * {@code Resolved} as a copy of them.</p>
+ * <p>Each run writes the four sections into {@code facts.xml}. The
+ * {@link Walk} engine reads that document to work out answers for each
+ * place; those answers are written separately into {@code answers.xml}.
+ * The engine does not add its answers to the facts.</p>
  *
  * <p>Every section reads the program as text, writing a row for an object
  * because it is <em>there</em>, not because something reaches it. The
@@ -49,9 +41,9 @@ import org.xembly.Xembler;
  * where the types are concrete, but it cannot be used here: eo-runtime is
  * a library with no entry point, so a checker that waits to be reached
  * has nothing to pull on and reports a clean bill of health for code it
- * never opened. Reading the text costs precision, which the passes buy
- * back later by resolving each site in its own context; reading only
- * what runs costs coverage, which nothing buys back.</p>
+ * never opened. The engine studies formations with open voids as well as
+ * the copies made by calls, resolving each place in the context of its
+ * enclosing copy.</p>
  *
  * <p>No section decides anything, which is why nothing here says whether
  * a program is wrong. Judging used to live beside these rules and was

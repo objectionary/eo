@@ -7,24 +7,19 @@ package org.eolang.inference;
 import org.xembly.Directives;
 
 /**
- * What an object of a program turns out to be.
+ * What a head of the program states before inference runs.
  *
- * <p>There are several kinds of answer and there will be more: an object is
- * a copy of another one, or a datum, or a termination, or a choice between
- * several objects. They have nothing in common except where they are written
- * — inside the row of the object they are about — so that is all this says,
- * and a new kind is a new class rather than another column of a table nobody
- * can keep straight.</p>
+ * <p>A head is a reference to another object, a datum, or a termination.
+ * Each kind writes its own element inside the row that {@link Starts}
+ * puts into the {@code heads} section of {@code facts.xml}. These are
+ * facts of the source, not the per-copy answers the engine works out.</p>
  *
  * <p>What comes back leaves the cursor where it found it, since a row holds
  * one type and the row that follows starts beside it.</p>
  *
- * <p>A type is also asked which object of the program it names, and most of
- * them name none: a datum names the ground every literal stands on, a
- * variable names a void nobody has looked into, a choice names several at
- * once. Only a copy has a locator a reader can go and look at, so only a copy
- * gives one back, and asking is how a reader learns whether there is anything
- * to go and look at without having to know which kind of type it is holding.</p>
+ * <p>A reference names its target by locator; a datum and a termination
+ * name no object. The locator is the one the source establishes, before
+ * any calls or reads are resolved by the engine.</p>
  *
  * @since 0.69.0
  */
