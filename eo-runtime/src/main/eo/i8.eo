@@ -82,8 +82,8 @@
   C8-.as-i8.lt 0A-.as-i8 ++> can-be-less-when-negative-than-positive
 
   eq. ++> can-divide-by-one
-    C8-.as-i8.div 01-.as-i8
-    C8-.as-i8
+    80-.as-i8.div 01-.as-i8
+    80-.as-i8
 
   eq. ++> can-divide-with-a-remainder
     0D-.as-i8.div FB-.as-i8
@@ -117,6 +117,13 @@
       00-.as-i8
       i8 2A- > [message]
 
+  eq. ++> can-recover-from-min-divided-by-minus-one
+    i8 2A-
+    div.
+      i8 80-
+      i8 FF-
+      i8 2A- > [message]
+
   eq. ++> can-subtract-one-from-one
     01-.as-i8.minus 01-.as-i8
     00-.as-i8
@@ -142,3 +149,7 @@
   i8 01-02-03 --> stops-on-bytes-of-the-wrong-width
 
   02-.as-i8.div 00-.as-i8 --> stops-on-division-by-zero
+
+  div. --> stops-on-min-divided-by-minus-one
+    i8 80-
+    i8 FF-

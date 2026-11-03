@@ -94,7 +94,7 @@
     eq. > @
       dividend.div 1.as-i64.as-i32.as-i16
       dividend
-    -235.as-i64.as-i32.as-i16 > dividend
+    -32768.as-i64.as-i32.as-i16 > dividend
 
   lt. ++> can-divide-into-less-than-one
     1.as-i64.as-i32.as-i16.div 5.as-i64.as-i32.as-i16
@@ -103,10 +103,6 @@
   eq. ++> can-divide-with-a-remainder
     13.as-i64.as-i32.as-i16.div -5.as-i64.as-i32.as-i16
     -2.as-i64.as-i32.as-i16
-
-  eq. ++> can-divide-with-overflow
-    -32768.as-i64.as-i32.as-i16.div -1.as-i64.as-i32.as-i16
-    -32768.as-i64.as-i32.as-i16
 
   123.as-i64.as-i32.as-i16.eq 123.as-i64.as-i32.as-i16 ++> can-equal-the-same-i16
 
@@ -130,6 +126,13 @@
     i16 00-2A
     2.as-i64.as-i32.as-i16.div
       0.as-i64.as-i32.as-i16
+      i16 00-2A > [message]
+
+  eq. ++> can-recover-from-min-divided-by-minus-one
+    i16 00-2A
+    div.
+      i16 80-00
+      i16 FF-FF
       i16 00-2A > [message]
 
   eq. ++> can-subtract-one-from-one
@@ -180,3 +183,7 @@
   i16 01-02-03 --> stops-on-bytes-of-the-wrong-width
 
   2.as-i64.as-i32.as-i16.div 0.as-i64.as-i32.as-i16 --> stops-on-division-by-zero
+
+  div. --> stops-on-min-divided-by-minus-one
+    i16 80-00
+    i16 FF-FF
