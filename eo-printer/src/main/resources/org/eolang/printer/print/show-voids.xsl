@@ -30,7 +30,7 @@
   <xsl:function name="eo:own" as="xs:boolean">
     <xsl:param name="o" as="element(o)?"/>
     <xsl:variable name="base" select="string($o/@base)"/>
-    <xsl:sequence select="matches($base, concat('^', $eo:xi, '(\.', $eo:rho, ')*$')) or ($base = concat('.', $eo:rho) and eo:own($o/o[1]))"/>
+    <xsl:sequence select="matches($base, '^' || $eo:xi || '(\.' || $eo:rho || ')*$') or ($base = '.' || $eo:rho and eo:own($o/o[1]))"/>
   </xsl:function>
   <!-- The name without its "v🌵" mark. -->
   <xsl:function name="eo:shown" as="xs:string">
