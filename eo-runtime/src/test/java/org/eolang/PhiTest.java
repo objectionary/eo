@@ -18,6 +18,13 @@ import org.junit.jupiter.params.provider.MethodSource;
  * Test case for {@link Phi}.
  *
  * @since 0.22
+ * @todo #9788:30min Delete or rewrite the two stdout tests in this class.
+ *  {@code takesPackage} and {@code takesStandardPackage} apply
+ *  {@code stdout} to "Hello, world" and only check that it prints the
+ *  string and returns true. They print during the build and no longer
+ *  check what their names promise, that an object is found in a package.
+ *  Either delete them as useless, or rewrite them on another object, not
+ *  {@code stdout}, that checks this without printing anything.
  */
 final class PhiTest {
 
