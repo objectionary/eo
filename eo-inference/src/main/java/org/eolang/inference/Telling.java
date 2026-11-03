@@ -32,9 +32,12 @@ import java.util.TreeSet;
  * for a caller who is not there; {@code ?unknown-java}, a void only Java
  * fills; and {@code ?unknown-loop}, a read nothing ever answers. A
  * {@code ^} no object went into, of a formation with no name of its own
- * whose call made no copy, is told as a void nobody fills. A bound void, or
- * a {@code ρ} that holds values, that gives no label at all once the walk
- * is over is a defect of the walk, and so is an unknown of no kind, and
+ * whose call made no copy, is told as a void nobody fills. A {@code ^} is
+ * the one exception to the naming of a decorator copy: its row names the
+ * formation of each copy in it, and a {@code reduced} next to the names
+ * says what those copies reduce to, when that is something other than the
+ * names (#9655). A bound void that gives no label at all once the walk is
+ * over is a defect of the walk, and so is an unknown of no kind, and
  * telling stops on either.</p>
  *
  * @since 0.76.0
@@ -100,13 +103,16 @@ final class Telling {
             );
         }
         final Map<String, Map<String, Integer>> groups = new LinkedHashMap<>(0);
+        final Map<String, Map<String, Integer>> carets = new HashMap<>(0);
         for (final int copy : copies) {
-            this.group(copy, groups);
+            this.group(copy, groups, carets);
         }
         for (final Map.Entry<String, Map<String, Integer>> entry : groups.entrySet()) {
             sets.putIfAbsent(entry.getKey(), entry.getValue());
         }
-        return new Told(sets, this.reduction(), this.state.lands());
+        final Map<String, Map<String, Integer>> reduction = this.reduction();
+        reduction.putAll(carets);
+        return new Told(sets, reduction, this.state.lands());
     }
 
     private boolean counted(final int ctx) {
@@ -154,7 +160,10 @@ final class Telling {
         return reduction;
     }
 
-    private void group(final int copy, final Map<String, Map<String, Integer>> groups) {
+    private void group(
+        final int copy, final Map<String, Map<String, Integer>> groups,
+        final Map<String, Map<String, Integer>> carets
+    ) {
         final String form = this.world.value(copy).form();
         final Formation shape = this.world.form(form);
         Telling.count(groups, form, form);
@@ -164,7 +173,13 @@ final class Telling {
             );
         }
         if (shape.open("ρ")) {
-            Telling.count(groups, String.join(".", form, "ρ"), String.join("\t", this.rho(copy)));
+            final String place = String.join(".", form, "ρ");
+            final Set<String> names = this.rho(copy);
+            Telling.count(groups, place, String.join("\t", names));
+            final Set<String> reduced = this.lowered(copy);
+            if (!reduced.isEmpty() && !reduced.equals(names)) {
+                Telling.count(carets, place, String.join(" ", reduced));
+            }
         }
         if (!shape.returns().isEmpty()) {
             final Set<String> gives = new TreeSet<>(new CodeOrder());
@@ -204,26 +219,35 @@ final class Telling {
     }
 
     private Set<String> rho(final int copy) {
-        final Value value = this.world.value(copy);
         final Set<String> said = new TreeSet<>(new CodeOrder());
-        final Ints row = this.state.untidy(copy, "ρ");
-        if (Values.JBORN.equals(value.birth()) || (value.bound() & Formation.RHO) == 0
-            || row.isEmpty()) {
+        final Ints row = this.caret(copy);
+        if (row.isEmpty()) {
             said.add(this.vacant(copy, ""));
         } else {
             for (final int val : row.array()) {
-                said.addAll(this.last(val));
-            }
-            if (said.isEmpty()) {
-                throw new IllegalStateException(
-                    String.format(
-                        "The ρ of %s is bound, but nothing in it gives a label",
-                        this.world.full(copy)
-                    )
-                );
+                said.add(this.word(val));
             }
         }
         return said;
+    }
+
+    private Set<String> lowered(final int copy) {
+        final Set<String> said = new TreeSet<>(new CodeOrder());
+        for (final int val : this.caret(copy).array()) {
+            said.addAll(this.last(val));
+        }
+        return said;
+    }
+
+    private Ints caret(final int copy) {
+        final Value value = this.world.value(copy);
+        final Ints row;
+        if (Values.JBORN.equals(value.birth()) || (value.bound() & Formation.RHO) == 0) {
+            row = new Ints();
+        } else {
+            row = this.state.untidy(copy, "ρ");
+        }
+        return row;
     }
 
     private Set<String> last(final int num) {

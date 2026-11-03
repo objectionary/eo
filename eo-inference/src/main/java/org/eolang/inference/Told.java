@@ -11,11 +11,13 @@ import java.util.Map;
  *
  * <p>For each place, every set of labels one copy says there, joined by a
  * tab, with the number of copies that say it; for each formation, what its
- * copies reduce to, the labels joined by a space, with the number of copies;
- * and for each argument, the one void it lands in.</p>
+ * copies reduce to, the labels joined by a space, with the number of copies,
+ * and for each {@code ^} that holds a copy that reduces to something else,
+ * what the copies in it reduce to; and for each argument, the one void it
+ * lands in.</p>
  *
  * @param sets The sets of labels, by place
- * @param reduction What the copies reduce to, by formation
+ * @param reduction What the copies reduce to, by formation or by {@code ^}
  * @param lands The void each argument lands in, by place
  * @since 0.76.0
  */

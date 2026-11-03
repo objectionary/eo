@@ -54,6 +54,20 @@ lands in:
 </o>
 ```
 
+A copy is named by its formation, but a copy of a decorator is named by what
+its `@` gives. The row of a `^` is the exception: it names the formation of
+each copy in it, and when those copies reduce to something else, a
+`<reduced>` next to the names says what:
+
+```xml
+<o loc="Φ.app.φ.α0.ρ" copies="1">
+  <is loc="Φ.foo"/>
+  <reduced copies="1">
+    <is loc="Φ.number"/>
+  </reduced>
+</o>
+```
+
 The engine knows three lists of names of the program, which are parameters of
 the goal with no defaults, and the `pom.xml` of eo-runtime sets them:
 `inferenceCanon` (the kinds that are one shared copy each, `Φ.bytes`,

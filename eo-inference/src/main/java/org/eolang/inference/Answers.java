@@ -24,10 +24,11 @@ import java.util.TreeSet;
  * <p>One {@code <o>} per place, sorted by its locator code point by code
  * point, with the number of copies that say something there, the sets of
  * labels they say, the most copies first, what the copies of a formation
- * reduce to, and the void an argument lands in. With one set its labels sit
- * right under {@code <o>}. The text is written by hand, one element per line
- * and two spaces per level, so that it is the same bytes the Python engine
- * wrote.</p>
+ * reduce to, what the copies a {@code ^} holds reduce to when that is not
+ * what it names, and the void an argument lands in. With one set its labels
+ * sit right under {@code <o>}. The text is written by hand, one element
+ * per line and two spaces per level, so that it is the same bytes the
+ * Python engine wrote.</p>
  *
  * @since 0.76.0
  */

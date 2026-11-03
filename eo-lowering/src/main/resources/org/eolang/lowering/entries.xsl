@@ -35,10 +35,12 @@
   Otherwise the row of the place of the void in "answers.xml" says what the
   copies of the formation hold there, and it answers when, with the
   terminations and the unknowns left out, it names one
-  object and nothing else. A declared "ρ" is not read off that row, since a
-  decorator in it is named by what its "φ" gives: it holds the formation it
-  is written in, the "rho" of the void in "facts.xml", which comes from the
-  locators alone. Nothing else is read: chasing anything from here would be
+  object and nothing else. A declared "ρ" holds the formation it is written
+  in, the "rho" of the void in "facts.xml", which comes from the locators
+  alone and is there even where no copy of the formation counts; its row
+  names the same formation. The "ρ" of a formation written as an argument,
+  the object it goes into, is never planted (see "eo:voids"). Nothing else
+  is read: chasing anything from here would be
   a second, worse copy of a job another module does. A formation gets an
   entry only when every void of it holds a number, a string, a bool, bytes
   or a tuple. A void that holds any other object, or one that module says
