@@ -33,12 +33,17 @@
       cant-divide
         "Can't divide %d by i8 zero".printf
           * num.as-number
-      i8
-        slice.
-          as-bytes.
-            num.as-i16.div other.as-i16
-          1
-          1
+      if.
+        and.
+          num.as-bytes.eq 80-
+          other.as-bytes.eq FF-
+        cant-divide "the smallest i8 divided by minus one is past the largest i8"
+        i8
+          slice.
+            as-bytes.
+              num.as-i16.div other.as-i16
+            1
+            1
   num.as-i16.gt b.as-i8.as-i16 > [^num b] > gt
   num.as-i16.gte b.as-i8.as-i16 > [^num b] > gte
   num.as-i16.lt b.as-i8.as-i16 > [^num b] > lt

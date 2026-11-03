@@ -33,12 +33,17 @@
       cant-divide
         "Can't divide %d by i16 zero".printf
           * num.as-i32.as-i64.as-number
-      i16
-        slice.
-          as-bytes.
-            num.as-i32.div other.as-i32
-          2
-          2
+      if.
+        and.
+          num.as-bytes.eq 80-00
+          other.as-bytes.eq FF-FF
+        cant-divide "the smallest i16 divided by minus one is past the largest i16"
+        i16
+          slice.
+            as-bytes.
+              num.as-i32.div other.as-i32
+            2
+            2
   num.as-i32.gt b.as-i16.as-i32 > [^num b] > gt
   num.as-i32.gte b.as-i16.as-i32 > [^num b] > gte
   num.as-i32.lt b.as-i16.as-i32 > [^num b] > lt
