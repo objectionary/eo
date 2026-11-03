@@ -21,6 +21,13 @@ import java.util.Map;
  * into a {@code ρ}. An object an atom returns is one copy per formation,
  * born {@code java}.</p>
  *
+ * <p>A copy has a {@code ρ} only when its formation declares {@code ^}, as
+ * in the runtime since #6985: a {@code ρ} handed to a copy of a formation
+ * that declares none is dropped, and neither its name nor its rows keep it
+ * (#9785). The shared and the blank copies of a kind of the canon that
+ * declares no {@code ^} have no {@code ρ} either, and the bare name is
+ * still told from the shared copy by the {@code Φ} it is handed.</p>
+ *
  * @since 0.76.0
  */
 final class Copies {
@@ -112,13 +119,14 @@ final class Copies {
                 made = this.canon.get(form);
             }
         } else {
+            final long mask = this.mask(form);
             made = this.world.intern(
-                new Value(
-                    'O', form, name.birth(), name.bound() & this.mask(form), name.tag(), -1, 0
-                )
+                new Value('O', form, name.birth(), name.bound() & mask, name.tag(), -1, 0)
             );
             for (final Map.Entry<String, int[]> row : rows.entrySet()) {
-                this.state.gather(made, row.getKey(), row.getValue());
+                if (!"ρ".equals(row.getKey()) || (mask & Formation.RHO) != 0) {
+                    this.state.gather(made, row.getKey(), row.getValue());
+                }
             }
         }
         return made;
@@ -126,7 +134,8 @@ final class Copies {
 
     /**
      * A copy with nothing in its voids, and its {@code ρ} only if given:
-     * none, Java's own, or a value.
+     * none, Java's own, or a value, which it keeps only when its formation
+     * declares {@code ^}.
      *
      * @param form The formation
      * @param born Where it is born, with its tag
@@ -204,13 +213,19 @@ final class Copies {
     }
 
     /**
-     * The bits of every void of a formation, {@code ρ} too.
+     * The bits of every void of a formation, {@code ρ} too when it declares
+     * {@code ^}.
      *
      * @param form The formation
      * @return The bits
      */
     long mask(final String form) {
-        return (1L << this.world.form(form).order().size()) - 1L | Formation.RHO;
+        final Formation shape = this.world.form(form);
+        long mask = (1L << shape.order().size()) - 1L;
+        if (shape.open("ρ")) {
+            mask |= Formation.RHO;
+        }
+        return mask;
     }
 
     /**
@@ -238,9 +253,7 @@ final class Copies {
             }
             this.canon.put(
                 kind,
-                this.world.intern(
-                    new Value('O', kind, "canon", 1L | Formation.RHO, "", -1, 0)
-                )
+                this.world.intern(new Value('O', kind, "canon", this.mask(kind), "", -1, 0))
             );
         }
         final int datum = this.canon.get(kinds.get(0));
@@ -251,14 +264,18 @@ final class Copies {
             } else {
                 this.state.seed(shared, "φ", datum);
             }
-            this.state.seed(shared, "ρ", Values.ROOT);
+            if (this.world.form(kind).open("ρ")) {
+                this.state.seed(shared, "ρ", Values.ROOT);
+            }
         }
         for (final String kind : kinds) {
             final int empty = this.world.intern(
-                new Value('O', kind, "blank", Formation.RHO, "", -1, 0)
+                new Value('O', kind, "blank", this.mask(kind) & Formation.RHO, "", -1, 0)
             );
             this.blank.put(kind, empty);
-            this.state.seed(empty, "ρ", Values.ROOT);
+            if (this.world.form(kind).open("ρ")) {
+                this.state.seed(empty, "ρ", Values.ROOT);
+            }
         }
         for (final String kind : kinds) {
             this.joins.add(this.blank.get(kind));

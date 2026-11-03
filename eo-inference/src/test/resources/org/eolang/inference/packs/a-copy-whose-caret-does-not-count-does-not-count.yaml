@@ -9,7 +9,7 @@
 sources:
   outer.eo: |
     [size] > outer
-      [] > inner
+      [^] > inner
         ^.size > @
   app.eo: |
     [] > app

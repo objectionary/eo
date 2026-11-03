@@ -47,12 +47,12 @@ final class CallbacksTest {
             world.full(
                 new Settled(world).state().row(
                     world.intern(
-                        new Value('O', "Φ.app.φ.α1", "Φ.app.φ", 1L | Formation.RHO, "", -1, 0)
+                        new Value('O', "Φ.app.φ.α1", "Φ.app.φ", 1L, "", -1, 0)
                     ),
                     "v🌵b"
                 ).get(0)
             ),
-            Matchers.equalTo("Φ.block@java{ρ}")
+            Matchers.equalTo("Φ.block@java{}")
         );
     }
 

@@ -2,13 +2,13 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# gauge declares no ^ and sits at the top, so ^.seconds is read off Φ and
-# fails. times read off that cannot be told, and neither can the @ of gauge.
+# The program has no nope, so nope read off Φ fails. times read off that
+# cannot be told, and neither can the @ of app. Whether a method of a
+# failing read should be T instead is still open (#9654).
 sources:
-  gauge.eo: |
-    [] > gauge
-      times. > @
-        ^.seconds
+  app.eo: |
+    [] > app
+      nope.times > @
   bytes.eo: |
     [@] > bytes
   number.eo: |
@@ -16,8 +16,7 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers[not(o[@loc='Φ.gauge.ρ'])]
-  - /answers/o[@loc='Φ.gauge.φ.ρ.ρ']/is[@loc='Φ']
-  - /answers/o[@loc='Φ.gauge.φ.ρ']/fails[@name='Φ.seconds']
-  - /answers/o[@loc='Φ.gauge.φ']/unknown
-  - /answers[not(o[@loc='Φ.gauge.φ']/is)]
+  - /answers/o[@loc='Φ.app.φ.ρ.ρ']/is[@loc='Φ']
+  - /answers/o[@loc='Φ.app.φ.ρ']/fails[@name='Φ.nope']
+  - /answers/o[@loc='Φ.app.φ']/unknown
+  - /answers[not(o[@loc='Φ.app.φ']/is)]

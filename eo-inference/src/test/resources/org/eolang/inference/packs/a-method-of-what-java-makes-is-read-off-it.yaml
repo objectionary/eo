@@ -11,7 +11,7 @@ sources:
       [] > check /Q.os.status
       [code] > status
         code > @
-        [] > ok
+        [^] > ok
           7 > @
   app.eo: |
     [] > app

@@ -8,11 +8,11 @@
 sources:
   tuple.eo: |
     [item rest] > tuple
-      [x] > with
+      [^ x] > with
         tuple x ^ > @
   map.eo: |
     [pairs] > map
-      [key] > put
+      [^ key] > put
         ^.pairs.with key > @
   app.eo: |
     [] > app
