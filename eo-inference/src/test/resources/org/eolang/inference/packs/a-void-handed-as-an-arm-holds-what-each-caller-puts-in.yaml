@@ -10,8 +10,9 @@
 # the bytes 05-.
 sources:
   choice.eo: |
-    [pick] > choice
+    [fork] > choice
       pick > @
+      fork > pick
       [] > not
         ^.pick no mid yes > @
   yes.eo: |
@@ -70,10 +71,10 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.held.φ.α1' and @lands='spare']/is[@loc='Φ.dial']
-  - /answers/o[@loc='Φ.other.φ.α1' and @lands='spare']/is[@loc='Φ.clock']
-  - /answers/o[@loc='Φ.sock.spare' and @copies='2']/set[@copies='1']/is[@loc='Φ.dial']
-  - /answers/o[@loc='Φ.sock.spare' and @copies='2']/set[@copies='1']/is[@loc='Φ.clock']
+  - /answers/o[@loc='Φ.held.φ.α1' and @lands='v🌵spare']/is[@loc='Φ.dial']
+  - /answers/o[@loc='Φ.other.φ.α1' and @lands='v🌵spare']/is[@loc='Φ.clock']
+  - /answers/o[@loc='Φ.sock.v🌵spare' and @copies='2']/set[@copies='1']/is[@loc='Φ.dial']
+  - /answers/o[@loc='Φ.sock.v🌵spare' and @copies='2']/set[@copies='1']/is[@loc='Φ.clock']
   - /answers/o[@loc='Φ.held.φ']/is[@loc='Φ.dial']
   - /answers/o[@loc='Φ.other.φ']/is[@loc='Φ.clock']
   - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.dial']

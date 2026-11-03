@@ -45,6 +45,14 @@ import org.w3c.dom.NodeList;
  * places of the voids, and with them the meaning of applying the object to
  * arguments, stay as they were.</p>
  *
+ * <p>A void can be read only in the file that declares it (#9788). The
+ * parser hides every void of the object behind {@code v🌵}, together with
+ * every read of it in the object's own file, and nothing renames a name
+ * after the parser. A member is a file of its own, outside its object, so
+ * it reads what the object holds through getters. A member that reads a
+ * void {@code x} of the object finds no attribute {@code x} there and fails
+ * at runtime, like any read from outside.</p>
+ *
  * <p>Merging twice does nothing the second time: a member that has already
  * moved is marked as merged in the tojos and is not standalone any more, so
  * the package it came from is no longer a package with members and nothing

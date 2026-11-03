@@ -16,7 +16,7 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.sum.x']/open
+  - /answers/o[@loc='Φ.sum.v🌵x']/open
   - /answers/o[@loc='Φ.sum.φ']/open
   - /answers[not(o[@loc='Φ.sum.φ']//is[@loc='Φ.number'])]
   - /answers/o[@loc='Φ.sum.φ.α0']/is[@loc='Φ.number']

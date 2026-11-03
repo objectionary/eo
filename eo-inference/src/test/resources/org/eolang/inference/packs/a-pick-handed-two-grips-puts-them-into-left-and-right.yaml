@@ -31,13 +31,13 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers[not(o[@lands='x'])]
-  - /answers/o[@loc='Φ.choice.both.x' and @copies='2']/open
-  - /answers/o[@loc='Φ.choice.both.φ.α0' and @lands='left']/unknown
-  - /answers/o[@loc='Φ.choice.both.φ.α1' and @lands='right']/is[@loc='Φ.bytes']
-  - /answers/o[@loc='Φ.choice.both.φ.α0.α0' and @lands='size']/open
-  - /answers/o[@loc='Φ.choice.both.φ.α1.α0' and @lands='size']/is[@loc='Φ.bytes']
-  - /answers[not(o[@lands='size' and @loc!='Φ.choice.both.φ.α0.α0' and @loc!='Φ.choice.both.φ.α1.α0'])]
+  - /answers[not(o[@lands='v🌵x'])]
+  - /answers/o[@loc='Φ.choice.both.v🌵x' and @copies='2']/open
+  - /answers/o[@loc='Φ.choice.both.φ.α0' and @lands='v🌵left']/unknown
+  - /answers/o[@loc='Φ.choice.both.φ.α1' and @lands='v🌵right']/is[@loc='Φ.bytes']
+  - /answers/o[@loc='Φ.choice.both.φ.α0.α0' and @lands='v🌵size']/open
+  - /answers/o[@loc='Φ.choice.both.φ.α1.α0' and @lands='v🌵size']/is[@loc='Φ.bytes']
+  - /answers[not(o[@lands='v🌵size' and @loc!='Φ.choice.both.φ.α0.α0' and @loc!='Φ.choice.both.φ.α1.α0'])]
   - /answers/o[@loc='Φ.yes.φ.α0.φ']/set/unknown
   - /answers/o[@loc='Φ.choice.both.φ']/set/unknown
   - /answers/o[@loc='Φ.no.φ.α0.φ']/set/is[@loc='Φ.bytes']

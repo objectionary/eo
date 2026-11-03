@@ -50,7 +50,7 @@ final class PhApplicationTest {
                     )
                 )
             ).φTerm(),
-            Matchers.startsWith("Φ.number(wrong->")
+            Matchers.startsWith(String.format("Φ.number(%s->", Attr.veiled("wrong")))
         );
     }
 
@@ -78,11 +78,11 @@ final class PhApplicationTest {
             new Dataized(
                 new PhApplication(
                     new PhDefault(
-                        new Attrs(new Attr("a", new AtVoid("a")), new Attr("b", new AtVoid("b")))
+                        new Attrs(new Attr("a"), new Attr("b"))
                     ),
                     new Bind("a", new Data.ToPhi(1L)),
                     new Bind("b", new Data.ToPhi(2L))
-                ).take("b")
+                ).take(Attr.veiled("b"))
             ).asNumber(),
             Matchers.equalTo(2.0)
         );
@@ -97,14 +97,14 @@ final class PhApplicationTest {
                     new PhApplication(
                         new PhDefault(
                             new Attrs(
-                                new Attr("a", new AtVoid("a")),
-                                new Attr("b", new AtVoid("b"))
+                                new Attr("a"),
+                                new Attr("b")
                             )
                         ),
                         0, new Data.ToPhi(1L)
                     ),
                     0, new Data.ToPhi(2L)
-                ).take("b")
+                ).take(Attr.veiled("b"))
             ).asNumber(),
             Matchers.equalTo(2.0)
         );
@@ -295,7 +295,7 @@ final class PhApplicationTest {
             new PhApplication(
                 new PhDefault(), "x", new PhDefault(new byte[] {(byte) 0x2A})
             ).φTerm(),
-            Matchers.equalTo("[](x->[D> 2A-])")
+            Matchers.equalTo(String.format("[](%s->[D> 2A-])", Attr.veiled("x")))
         );
     }
 
@@ -349,7 +349,7 @@ final class PhApplicationTest {
                 thread -> {
                     MatcherAssert.assertThat(
                         "Attribute 'foo' must return the passed string, but it didn't",
-                        new Dataized(ref.take(attr)).asString(),
+                        new Dataized(ref.take(Attr.veiled(attr))).asString(),
                         Matchers.is(data)
                     );
                     return true;
@@ -384,7 +384,7 @@ final class PhApplicationTest {
          * @param attr Free attribute name
          */
         DummyWithAtFree(final String attr) {
-            super(new Attrs(new Attr(attr, new AtVoid(attr))));
+            super(new Attrs(new Attr(attr)));
         }
     }
 

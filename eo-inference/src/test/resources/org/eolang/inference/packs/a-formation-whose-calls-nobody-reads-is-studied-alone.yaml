@@ -47,12 +47,12 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.app.hold.other']/open
+  - /answers/o[@loc='Φ.app.hold.v🌵other']/open
   - /answers/o[@loc='Φ.app.hold.first']/is[@loc='Φ.app.hold.pick']
   - /answers/o[@loc='Φ.app.hold.second']/is[@loc='Φ.app.hold.pick']
-  - /answers[not(o[@lands='m'])]
+  - /answers[not(o[@lands='v🌵m'])]
   - /answers/o[@loc='Φ.app.hold.pick.φ' and @copies='1']
-  - /answers/o[@loc='Φ.app.hold.pick.flag']/open
-  - /answers/o[@loc='Φ.app.hold.pick.m']/open
+  - /answers/o[@loc='Φ.app.hold.pick.v🌵flag']/open
+  - /answers/o[@loc='Φ.app.hold.pick.v🌵m']/open
   - /answers/o[@loc='Φ.app.hold.pick.φ']/open
   - /answers/o[@loc='Φ.app.hold.third']/open

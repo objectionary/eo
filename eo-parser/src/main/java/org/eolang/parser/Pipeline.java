@@ -35,6 +35,15 @@ final class Pipeline implements Scalar<UnaryOperator<XML>> {
     );
 
     /**
+     * The position in {@link Canonical#XSLS} of {@code set-locators.xsl},
+     * right in front of which {@link StHex} writes every number literal
+     * in hexadecimal.
+     */
+    private static final int LOCATED = Canonical.XSLS.indexOf(
+        "/org/eolang/parser/parse/set-locators.xsl"
+    );
+
+    /**
      * Space separated qualified names of the local package objects.
      */
     private final String objects;
@@ -60,13 +69,9 @@ final class Pipeline implements Scalar<UnaryOperator<XML>> {
                             String.format("objects %s", this.objects)
                         )
                     ),
-                    Pipeline.classpath(
-                        Pipeline.PACKAGED + 1, Canonical.XSLS.size() - 1
-                    ),
+                    Pipeline.classpath(Pipeline.PACKAGED + 1, Pipeline.LOCATED),
                     new TrDefault<>(new StHex()),
-                    Pipeline.classpath(
-                        Canonical.XSLS.size() - 1, Canonical.XSLS.size()
-                    )
+                    Pipeline.classpath(Pipeline.LOCATED, Canonical.XSLS.size())
                 )
             )
         )::pass;

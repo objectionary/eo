@@ -41,8 +41,8 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.pick.choose']/set/is[@loc='Φ.yes.φ.α0']
-  - /answers/o[@loc='Φ.pick.choose']/set/is[@loc='Φ.no.φ.α0']
+  - /answers/o[@loc='Φ.pick.v🌵choose']/set/is[@loc='Φ.yes.φ.α0']
+  - /answers/o[@loc='Φ.pick.v🌵choose']/set/is[@loc='Φ.no.φ.α0']
   - /answers/o[@loc='Φ.pick.taken']/is[@loc='Φ.oak']
-  - /answers/o[@loc='Φ.app.φ.α0' and @lands='tall']/is[@loc='Φ.bytes']
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵tall']/is[@loc='Φ.bytes']
   - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.bytes']

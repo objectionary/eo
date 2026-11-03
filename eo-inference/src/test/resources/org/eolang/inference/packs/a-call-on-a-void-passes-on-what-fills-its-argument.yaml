@@ -27,10 +27,10 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.grip.φ.α0' and @lands='m']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.grip.φ.α0' and @lands='v🌵m']/is[@loc='Φ.oak']
   - /answers/o[@loc='Φ.grip.arm.φ.α0']/is[@loc='Φ.oak']
-  - /answers/o[@loc='Φ.app.hold.k']/is[@loc='Φ.oak']
-  - /answers/o[@loc='Φ.app.pick.j']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.hold.v🌵k']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.pick.v🌵j']/is[@loc='Φ.oak']
   - /answers/o[@loc='Φ.grip' and @copies='2']
   - /answers/o[@loc='Φ.grip.arm' and @copies='1']
   - /answers/o[@loc='Φ.grip.arm.φ' and is[@loc='Φ.app.hold'] and is[@loc='Φ.app.pick']]

@@ -109,12 +109,15 @@
     ? > buffer
     ? > size /Q.number
     ? > flags /Q.number
-  [family port address] > sockaddr-in
+  [domain service host] > sockaddr-in
+    host > address
+    domain > family
     00-00-00-00-00-00-00-00 > padding
+    service > port
     plus. > size
       plus.
-        family.size.plus port.size
-        address.size
+        domain.size.plus service.size
+        host.size
       padding.size
   [] > socket /Q.number
     ? > domain /Q.number

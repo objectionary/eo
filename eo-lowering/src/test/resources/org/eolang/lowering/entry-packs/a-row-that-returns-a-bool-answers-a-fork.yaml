@@ -27,4 +27,4 @@ rows:
 table:
   - "- λ: L_number_is_finite"
   - "    𝛿1: $.ρ"
-  - "  𝑛: ⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧"
+  - "  𝑛: ⟦ φ ↦ Φ.bool( v🌵fork ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧"

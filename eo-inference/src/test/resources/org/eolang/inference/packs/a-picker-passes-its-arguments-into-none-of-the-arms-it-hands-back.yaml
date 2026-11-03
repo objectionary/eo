@@ -9,8 +9,9 @@
 # which stay open.
 sources:
   choice.eo: |
-    [pick] > choice
+    [fork] > choice
       pick > @
+      fork > pick
       [] > not
         ^.pick no yes > @
   yes.eo: |
@@ -52,6 +53,6 @@ answers:
   - /answers/o[@loc='Φ.box.both']/reduced/is[@loc='Φ.box.hold']
   - /answers/o[@loc='Φ.no.φ.α0.a🌵4-6']/is[@loc='Φ.box.grip']
   - /answers/o[@loc='Φ.no.φ.α0.a🌵5-6']/is[@loc='Φ.box.hold']
-  - /answers[not(o[@lands='size' or @lands='weight'])]
-  - /answers/o[@loc='Φ.box.grip.size']/open
-  - /answers/o[@loc='Φ.box.hold.weight']/open
+  - /answers[not(o[@lands='v🌵size' or @lands='v🌵weight'])]
+  - /answers/o[@loc='Φ.box.grip.v🌵size']/open
+  - /answers/o[@loc='Φ.box.hold.v🌵weight']/open

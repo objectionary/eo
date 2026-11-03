@@ -27,9 +27,9 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.app.φ.α0' and @lands='fail']/is[@loc='Φ.app.loud']
-  - /answers/o[@loc='Φ.guard.φ.α0' and @lands='message']/is[@loc='Φ.string']
-  - /answers/o[@loc='Φ.app.loud.message']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵fail']/is[@loc='Φ.app.loud']
+  - /answers/o[@loc='Φ.guard.φ.α0' and @lands='v🌵message']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.loud.v🌵message']/is[@loc='Φ.string']
   - /answers/o[@loc='Φ.app.loud.φ']/is[@loc='Φ.bytes']
   - /answers/o[@loc='Φ.guard']/reduced/is[@loc='Φ.bytes']
   - /answers/o[@loc='Φ.box']/reduced/is[@loc='Φ.number']

@@ -35,7 +35,7 @@ final class TellingTest {
     void countsCopiesThatSayEachSet(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "each set must be counted by the copies that say it, but it wasnt",
-            TellingTest.told(temp).sets().get("Φ.box.item"),
+            TellingTest.told(temp).sets().get("Φ.box.v🌵item"),
             Matchers.equalTo(Map.of("Φ.number", 1, "Φ.string", 1))
         );
     }
@@ -44,7 +44,7 @@ final class TellingTest {
     void tellsVoidNobodyFillsAsOpen(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "a void no call fills must be told as an open void, but it wasnt",
-            TellingTest.told(temp).sets().get("Φ.box.spare"),
+            TellingTest.told(temp).sets().get("Φ.box.v🌵spare"),
             Matchers.equalTo(Map.of("?open-void", 2))
         );
     }

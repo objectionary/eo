@@ -824,7 +824,7 @@ final class MorphingTest {
             "number",
             "<o name=\"φ\" base=\"∅\" loc=\"Φ.number.φ\"/>",
             "<o name=\"plus\" loc=\"Φ.number.plus\">",
-            "<o name=\"b\" base=\"∅\" loc=\"Φ.number.plus.b\"/>",
+            "<o name=\"v🌵b\" base=\"∅\" loc=\"Φ.number.plus.v🌵b\"/>",
             "<o name=\"λ\" loc=\"Φ.number.plus.λ\"/>",
             "</o>"
         );

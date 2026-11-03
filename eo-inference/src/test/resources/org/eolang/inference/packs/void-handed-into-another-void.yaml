@@ -20,8 +20,8 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.shelf.stuff']/open
+  - /answers/o[@loc='Φ.shelf.v🌵stuff']/open
   - /answers/o[@loc='Φ.shelf.w']/open
-  - /answers/o[@loc='Φ.shelf.φ.α0' and @lands='pages']/open
-  - /answers/o[@loc='Φ.book.pages']/open
+  - /answers/o[@loc='Φ.shelf.φ.α0' and @lands='v🌵pages']/open
+  - /answers/o[@loc='Φ.book.v🌵pages']/open
   - /answers/o[@loc='Φ.shelf.φ']/is[@loc='Φ.book']

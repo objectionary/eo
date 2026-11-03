@@ -17,7 +17,7 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.as-ascii.cant-read' and @copies='1']/open
+  - /answers/o[@loc='Φ.as-ascii.v🌵cant-read' and @copies='1']/open
   - /answers/o[@loc='Φ.as-ascii.φ']/open
   - /answers/o[@loc='Φ.as-ascii.φ.α0']/is[@loc='Φ.oak']
   - /answers[not(o[@loc='Φ.as-ascii.φ.α0' and @lands])]

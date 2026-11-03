@@ -32,8 +32,8 @@ eo:
     [] > app
       pick 5 0F- > used
 voids:
-  - "𝜎1\t1\tx\tnumber"
-  - "𝜎2\t1\tb\tbytes"
+  - "𝜎1\t1\tv🌵x\tnumber"
+  - "𝜎2\t1\tv🌵b\tbytes"
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e1">
@@ -88,11 +88,11 @@ java: |
       }
 
       private byte[] 𝜎1() {
-          return new Dataized(this.take("ρ").take("x")).take();
+          return new Dataized(this.take("ρ").take("v🌵x")).take();
       }
 
       private byte[] 𝜎2() {
-          return new Dataized(this.take("ρ").take("b")).take();
+          return new Dataized(this.take("ρ").take("v🌵b")).take();
       }
 
       private byte[] 𝜎3() {

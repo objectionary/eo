@@ -48,7 +48,7 @@ final class CallsTest {
         MatcherAssert.assertThat(
             "an argument must land in the void it fills, but it didnt",
             new Settled(CallsTest.world(temp)).state().lands(),
-            Matchers.hasEntry("Φ.app.φ.α1", "lid")
+            Matchers.hasEntry("Φ.app.φ.α1", "v🌵lid")
         );
     }
 

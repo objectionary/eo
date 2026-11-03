@@ -44,7 +44,7 @@ final class ValuesTest {
                     new Value('O', "Φ.pair", "Φ.app.φ", 2L | Formation.RHO, "Φ.app", -1, 0)
                 )
             ),
-            Matchers.equalTo("Φ.pair@Φ.app.φ#Φ.app{right,ρ}")
+            Matchers.equalTo("Φ.pair@Φ.app.φ#Φ.app{v🌵right,ρ}")
         );
     }
 
@@ -66,7 +66,7 @@ final class ValuesTest {
             new Values(
                 new Sources(temp).with("pair.eo", "[left right] > pair", "  left > @").program()
             ).opened(new Value('O', "Φ.pair", "Φ.pair", 1L | Formation.RHO, "", -1, 0)),
-            Matchers.contains("right")
+            Matchers.contains("v🌵right")
         );
     }
 }

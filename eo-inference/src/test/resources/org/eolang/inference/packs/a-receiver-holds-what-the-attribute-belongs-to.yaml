@@ -20,8 +20,8 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers[not(o[@lands='x'])]
-  - /answers/o[@loc='Φ.tree.grow.x']/open
-  - /answers/o[@loc='Φ.inc.x']/open
+  - /answers[not(o[@lands='v🌵x'])]
+  - /answers/o[@loc='Φ.tree.grow.v🌵x']/open
+  - /answers/o[@loc='Φ.inc.v🌵x']/open
   - /answers/o[@loc='Φ.tree.grow.ρ']/is[@loc='Φ.tree']
   - /answers/o[@loc='Φ.inc.ρ']/is[@loc='Φ']

@@ -464,7 +464,10 @@
   template's "implements Pure" and the "Anonymous abstract object" template
   below. A formation that recursion-to-loop.xsl marked with @loop is
   returned wrapped in PhLoop, so that at run time its tail self-calls run
-  as a loop (see #5783).
+  as a loop (see #5783). The formation gets its locator as its forma,
+  unless the locator holds a name the compiler made, such as "a🌵4-2".
+  The "v🌵" of a hidden void (#9788) marks a name the source wrote, so a
+  formation under it keeps its locator.
   -->
   <xsl:template match="abstract">
     <xsl:param name="parent"/>
@@ -486,7 +489,7 @@
     <xsl:text>Phi </xsl:text>
     <xsl:value-of select="$ctx"/>
     <xsl:value-of select="concat(' = new ', $phiDefaultClass, '(')"/>
-    <xsl:if test="@loc and not(contains(@loc, '🌵'))">
+    <xsl:if test="@loc and not(contains(replace(@loc, concat('(^|\.)', $eo:veiled), '$1'), $eo:cactoos))">
       <xsl:text>"</xsl:text>
       <xsl:value-of select="eo:literal(@loc)"/>
       <xsl:text>"</xsl:text>
@@ -772,7 +775,7 @@
         <xsl:text>, new Bind(</xsl:text>
         <xsl:choose>
           <xsl:when test="@as">
-            <xsl:value-of select="eo:attr-name(@as, true())"/>
+            <xsl:value-of select="eo:attr-name(replace(@as, concat('^', $eo:veiled), ''), true())"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="position() - 1"/>

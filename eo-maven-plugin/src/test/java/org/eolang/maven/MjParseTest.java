@@ -288,7 +288,7 @@ final class MjParseTest {
         MatcherAssert.assertThat(
             "the XMIR stayed as it was, while the source it came from had changed",
             new XMLDocument(parsed),
-            XhtmlMatchers.hasXPaths("//o[@name='greeting']")
+            XhtmlMatchers.hasXPaths("//o[@name='v🌵greeting']")
         );
     }
 

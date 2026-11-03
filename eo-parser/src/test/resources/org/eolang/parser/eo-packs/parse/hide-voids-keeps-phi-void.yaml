@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The "@" void stays visible, because "number", "string" and "bytes" rely
+# on reads going through it (#9788).
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/mandatory-as.xsl
+  - /org/eolang/parser/parse/hide-voids.xsl
+  - /org/eolang/parser/parse/set-locators.xsl
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='num']/o[@base='∅' and @name='φ']
+  - //o[@name='decoratee' and @base='ξ.φ']
+  - /object[not(//o[contains(@name, 'v🌵')])]
+input: |
+  [@] > num
+    @ > decoratee

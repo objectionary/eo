@@ -25,21 +25,21 @@ final class PoolTest {
     @Test
     void waitsWhileNothingIsInPool(@Mktmp final Path temp) throws IOException {
         final State state = PoolTest.state(temp);
-        state.read(PoolTest.java(state), "code", new Site("Φ.app.φ", ""));
+        state.read(PoolTest.java(state), "v🌵code", new Site("Φ.app.φ", ""));
         MatcherAssert.assertThat(
             "a void read with nothing in its pool must wait for change a, but it didnt",
             state.waiting(),
-            Matchers.contains(List.of("Φ.os.status", "code"))
+            Matchers.contains(List.of("Φ.os.status", "v🌵code"))
         );
     }
 
     @Test
     void readsWhatCodePutIntoPool(@Mktmp final Path temp) throws IOException {
         final State state = PoolTest.state(temp);
-        state.fill("Φ.os.status", "code", new int[] {Values.DATA});
+        state.fill("Φ.os.status", "v🌵code", new int[] {Values.DATA});
         MatcherAssert.assertThat(
             "a void must read what EO code put into its pool, but it didnt",
-            state.read(PoolTest.java(state), "code", new Site("Φ.app.φ", "")).array(),
+            state.read(PoolTest.java(state), "v🌵code", new Site("Φ.app.φ", "")).array(),
             Matchers.equalTo(new int[] {Values.DATA})
         );
     }
@@ -47,10 +47,10 @@ final class PoolTest {
     @Test
     void readsOpenVoidOnceDecidedJavaAloneFillsIt(@Mktmp final Path temp) throws IOException {
         final State state = PoolTest.state(temp);
-        state.decide(List.of(List.of("Φ.os.status", "code")));
+        state.decide(List.of(List.of("Φ.os.status", "v🌵code")));
         MatcherAssert.assertThat(
             "a void Java alone fills must read the decided open void, but it didnt",
-            state.read(PoolTest.java(state), "code", new Site("Φ.app.φ", "")).array(),
+            state.read(PoolTest.java(state), "v🌵code", new Site("Φ.app.φ", "")).array(),
             Matchers.equalTo(new int[] {Values.JGAP})
         );
     }

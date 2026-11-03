@@ -18,6 +18,13 @@ import org.junit.jupiter.params.provider.MethodSource;
  * Test case for {@link Phi}.
  *
  * @since 0.22
+ * @todo #9788:30min Delete or rewrite the two stdout tests in this class.
+ *  {@code takesPackage} and {@code takesStandardPackage} apply
+ *  {@code stdout} to "Hello, world" and only check that it prints the
+ *  string and returns true. They print during the build and no longer
+ *  check what their names promise, that an object is found in a package.
+ *  Either delete them as useless, or rewrite them on another object, not
+ *  {@code stdout}, that checks this without printing anything.
  */
 final class PhiTest {
 
@@ -39,16 +46,13 @@ final class PhiTest {
         MatcherAssert.assertThat(
             "Phi should resolve and invoke method from root stdout object, but it didn't",
             new Dataized(
-                new PhDispatch(
-                    new PhApplication(
-                        Phi.Φ.take("stdout"),
-                        0,
-                        new Data.ToPhi("Hello, world")
-                    ),
-                    "text"
+                new PhApplication(
+                    Phi.Φ.take("stdout"),
+                    0,
+                    new Data.ToPhi("Hello, world")
                 )
-            ).asString(),
-            Matchers.startsWith("Hello")
+            ).asBool(),
+            Matchers.equalTo(true)
         );
     }
 
@@ -57,15 +61,12 @@ final class PhiTest {
         MatcherAssert.assertThat(
             "Phi should resolve and invoke method from org.eolang.stdout object, but it didn't",
             new Dataized(
-                new PhDispatch(
-                    new PhApplication(
-                        Phi.Φ.take("stdout").copy(),
-                        0, new Data.ToPhi("Hello, world")
-                    ),
-                    "text"
+                new PhApplication(
+                    Phi.Φ.take("stdout").copy(),
+                    0, new Data.ToPhi("Hello, world")
                 )
-            ).asString(),
-            Matchers.startsWith("Hello")
+            ).asBool(),
+            Matchers.equalTo(true)
         );
     }
 

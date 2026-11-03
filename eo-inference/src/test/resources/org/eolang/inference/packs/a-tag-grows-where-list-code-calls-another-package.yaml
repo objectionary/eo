@@ -25,8 +25,8 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.map.put.φ.α0' and @lands='x']
+  - /answers/o[@loc='Φ.map.put.φ.α0' and @lands='v🌵x']
   - /answers/o[@loc='Φ.tuple.with' and @copies='2']
-  - /answers/o[@loc='Φ.tuple.with.x']/set[@copies='1']/is[@loc='Φ.number']
-  - /answers/o[@loc='Φ.tuple.with.x']/set[@copies='1']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.tuple.with.v🌵x']/set[@copies='1']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.tuple.with.v🌵x']/set[@copies='1']/is[@loc='Φ.string']
   - /answers[not(o[starts-with(@loc, 'Φ.tuple.')]/set[is[@loc='Φ.number'] and is[@loc='Φ.string']])]

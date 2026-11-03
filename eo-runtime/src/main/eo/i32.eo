@@ -7,13 +7,14 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[as-bytes] > i32
+[bts] > i32
   if. > @
     as-bytes.size.eq 4
     as-bytes
     T
       "An i32 needs exactly 4 bytes, got %d".printf
         * as-bytes.size
+  bts > as-bytes
   [^num cant-convert] > as-i16
     if. > @
       num.eq

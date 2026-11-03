@@ -9,8 +9,9 @@
 # is a number, and m read off it fails.
 sources:
   pick.eo: |
-    [m] > pick
-      m > @
+    [val] > pick
+      val > @
+      val > m
       [] > same
         ^.m > @
   maker.eo: |
@@ -39,13 +40,13 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.hold.λ' and is[@loc='Φ.hold.value']]/is[@loc='Φ.hold.alternative']
+  - /answers/o[@loc='Φ.hold.λ' and is[@loc='Φ.hold.v🌵value']]/is[@loc='Φ.hold.v🌵alternative']
   - /answers/o[@loc='Φ.app.held' and is[@loc='Φ.step']]/is[@loc='Φ.number']
   - /answers[not(o[@loc='Φ.pick']/reduced/is[@loc='Φ.number'])]
   - /answers/o[@loc='Φ.maker.pass']/is[@loc='Φ.pick']
-  - /answers/o[@loc='Φ.maker.pass.α0' and @lands='m']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.maker.pass.α0' and @lands='v🌵val']/is[@loc='Φ.number']
   - /answers[not(o[@loc='Φ.step.m'])]
   - /answers/o[@loc='Φ.step.φ']/is[@loc='Φ.pick']
   - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.number']
-  - /answers/o[@loc='Φ.app.held.α1' and @lands='alternative']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.held.α1' and @lands='v🌵alternative']/is[@loc='Φ.number']
   - /answers/o[@loc='Φ.app.φ']/fails[@name='data.m']

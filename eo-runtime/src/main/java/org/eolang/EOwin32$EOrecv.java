@@ -26,9 +26,9 @@ public final class EOwin32$EOrecv extends PhDefault implements Atom {
     public EOwin32$EOrecv() {
         super(
             new Attrs(
-                new Attr("descriptor", new AtVoid("descriptor")),
-                new Attr("size", new AtVoid("size")),
-                new Attr("flags", new AtVoid("flags"))
+                new Attr("descriptor"),
+                new Attr("size"),
+                new Attr("flags")
             )
         );
     }
@@ -36,13 +36,13 @@ public final class EOwin32$EOrecv extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         return new Intake(
-            this,
+            this.expected("size"),
             Phi.Φ.take("win32").take("read-return"),
             (buffer, size) -> Winsock.INSTANCE.recv(
-                new Pointer(new Dataized(this.take("descriptor")).asNumber().longValue()),
+                new Pointer(new Dataized(this.free("descriptor")).asNumber().longValue()),
                 buffer,
                 size,
-                new Int(Expect.at(this, "flags")).it()
+                new Int(this.expected("flags")).it()
             )
         ).it();
     }

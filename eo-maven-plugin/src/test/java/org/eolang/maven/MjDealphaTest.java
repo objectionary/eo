@@ -44,7 +44,7 @@ final class MjDealphaTest {
                     String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha"))
                 )
             ),
-            XhtmlMatchers.hasXPath("/object/o/o[@name='φ']/o[@as='bar']")
+            XhtmlMatchers.hasXPath("/object/o/o[@name='φ']/o[@as='v🌵bar']")
         );
     }
 
@@ -68,7 +68,7 @@ final class MjDealphaTest {
                     String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha"))
                 )
             ),
-            XhtmlMatchers.hasXPath("/object/o/o[@name='φ']/o[@as='right']")
+            XhtmlMatchers.hasXPath("/object/o/o[@name='φ']/o[@as='v🌵right']")
         );
     }
 
@@ -170,7 +170,7 @@ final class MjDealphaTest {
                     String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha"))
                 )
             ),
-            XhtmlMatchers.hasXPath("/object/o/o[@name='leaf']/o[@name='φ']/o[@as='kit']")
+            XhtmlMatchers.hasXPath("/object/o/o[@name='leaf']/o[@name='φ']/o[@as='v🌵kit']")
         );
     }
 

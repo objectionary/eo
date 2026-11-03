@@ -25,14 +25,14 @@ public final class EOwin32$EOclosesocket extends PhDefault implements Atom {
      * Ctor.
      */
     public EOwin32$EOclosesocket() {
-        super(new Attrs(new Attr("descriptor", new AtVoid("descriptor"))));
+        super(new Attrs(new Attr("descriptor")));
     }
 
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
             Winsock.INSTANCE.closesocket(
-                new Pointer(new Dataized(this.take("descriptor")).asNumber().longValue())
+                new Pointer(new Dataized(this.free("descriptor")).asNumber().longValue())
             )
         );
     }

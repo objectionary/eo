@@ -25,7 +25,7 @@ eo:
       5.both 6 > used
 voids:
   - "𝜎2\t2\tρ\tnumber"
-  - "𝜎3\t2\tb\tnumber"
+  - "𝜎3\t2\tv🌵b\tnumber"
 rows:
   - "L_number_twice\tΦ.number.twice\tΦ.number.twice\tρ:number"
 protocol: |
@@ -37,8 +37,8 @@ protocol: |
         <formed meta="𝑛·0·2" of="Φ.number"><meta attr="φ">𝑒·0·1</meta></formed>
         <applied meta="𝑒·0·2" of="Φ.bytes"><symbol attr="φ">𝜎3</symbol></applied>
         <applied meta="𝑒·0·3" of="Φ.number"><meta attr="φ">𝑒·0·2</meta></applied>
-        <applied meta="𝑛·0·3" by="morph" at="Φ.l🌵.e2" of="𝑛·0·1.both"><meta attr="b">𝑒·0·3</meta></applied>
-        <formed meta="𝑛·0·4" of="𝑛·0·1.both"><meta attr="b">𝑒·0·3</meta></formed>
+        <applied meta="𝑛·0·3" by="morph" at="Φ.l🌵.e2" of="𝑛·0·1.both"><meta attr="v🌵b">𝑒·0·3</meta></applied>
+        <formed meta="𝑛·0·4" of="𝑛·0·1.both"><meta attr="v🌵b">𝑒·0·3</meta></formed>
         <morphed meta="𝑛·0·5">𝑛·0·4</morphed>
       </morph>
       <boxed meta="𝑛·0·6">𝑛·0·5.φ</boxed>
@@ -73,10 +73,10 @@ protocol: |
           </morph>
           <answered meta="𝑛·1·13">𝑛·1·12</answered>
         </evaluate>
-        <formed meta="𝑒·0·4"><meta attr="ρ">𝑛·1·1</meta><meta attr="b">𝑒·0·3</meta></formed>
+        <formed meta="𝑒·0·4"><meta attr="ρ">𝑛·1·1</meta><meta attr="v🌵b">𝑒·0·3</meta></formed>
         <applied meta="𝑒·0·5" of="𝑒·0·3"><meta attr="ρ">𝑒·0·4</meta></applied>
-        <applied meta="𝑛·0·9" by="morph" at="𝑛·0·6" of="𝑛·1·10.plus"><ref attr="b">𝑒·0·5.twice</ref></applied>
-        <formed meta="𝑛·0·10" of="𝑛·1·10.plus"><ref attr="b">𝑒·0·5.twice</ref></formed>
+        <applied meta="𝑛·0·9" by="morph" at="𝑛·0·6" of="𝑛·1·10.plus"><ref attr="v🌵b">𝑒·0·5.twice</ref></applied>
+        <formed meta="𝑛·0·10" of="𝑛·1·10.plus"><ref attr="v🌵b">𝑒·0·5.twice</ref></formed>
         <morphed meta="𝑛·0·11">𝑛·0·10</morphed>
       </morph>
       <evaluate λ="L_number_plus" by="dataize" at="𝑛·0·6">
@@ -96,13 +96,13 @@ protocol: |
           <manufactured meta="𝛿·2·1">𝜎5</manufactured>
         </dataize>
         <bound meta="𝛿1·2">𝛿·2·1</bound>
-        <dataize at="ξ.b">
-          <morph at="ξ.b">
-            <applied meta="𝑛·2·9" by="morph" at="ξ.b" of="Φ.number"><meta attr="φ">𝑒·0·2</meta></applied>
+        <dataize at="ξ.v🌵b">
+          <morph at="ξ.v🌵b">
+            <applied meta="𝑛·2·9" by="morph" at="ξ.v🌵b" of="Φ.number"><meta attr="φ">𝑒·0·2</meta></applied>
             <formed meta="𝑛·2·10" of="Φ.number"><meta attr="φ">𝑒·0·2</meta></formed>
             <morphed meta="𝑛·2·11">𝑛·2·9.twice</morphed>
           </morph>
-          <evaluate λ="L_number_twice" by="dataize" at="ξ.b">
+          <evaluate λ="L_number_twice" by="dataize" at="ξ.v🌵b">
             <dataize at="ξ.ρ">
               <morph at="ξ.ρ">
                 <applied meta="𝑛·3·1" by="morph" at="ξ.ρ" of="Φ.number"><meta attr="φ">𝑒·0·2</meta></applied>
@@ -196,7 +196,7 @@ java: |
       }
 
       private byte[] 𝜎3() {
-          return new Dataized(this.take("ρ").take("b")).take();
+          return new Dataized(this.take("ρ").take("v🌵b")).take();
       }
 
       private byte[] 𝜎5() {

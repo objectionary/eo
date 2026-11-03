@@ -587,7 +587,7 @@ world
 
 ### 3.12 Inline binding — `:label` or `:N`
 
-R-3.12.1. After an object body in an argument position, `:label` may appear, setting the attribute the argument attaches to.
+R-3.12.1. After an object body in an argument position, `:label` may appear, setting the attribute the argument attaches to. Only a void can be filled this way, and since a void is hidden behind `v🌵` in canonical XMIR, so is the label (R-9.2.5).
 R-3.12.2. `:N` (digit) maps to `α0`, `α1`, … positional slot names.
 R-3.12.2a. `:^` is forbidden: dispatch fills the receiver the callee declares (R-3.4.11), so it cannot be filled by an argument binding. Use `y.lt x` to dispatch `lt` from `y` and bind `x` to its first non-receiver void.
 R-3.12.3. Binding is forbidden inside formation context — plain children carry their name via the name suffix, not the binding (§6.2).
@@ -1256,9 +1256,9 @@ Emits:
 
 ### 9.1.5 Graph locator (`@loc`)
 
-R-9.1.5. Every `<o>` in canonical parser output carries a `@loc` **graph locator** — the object's address in the global object graph, anchored at the program root `Φ`. Unlike `@line`/`@pos`, which move whenever the source is reformatted, the locator is stable across edits that preserve graph shape, so external tooling (type-inference sidecars, coverage, IDE indexes) can key on it by identity (#5742). It is produced by the `set-locators` canonical pass, the final step of the parse pipeline, which walks each object up to the root.
+R-9.1.5. Every `<o>` in canonical parser output carries a `@loc` **graph locator** — the object's address in the global object graph, anchored at the program root `Φ`. Unlike `@line`/`@pos`, which move whenever the source is reformatted, the locator is stable across edits that preserve graph shape, so external tooling (type-inference sidecars, coverage, IDE indexes) can key on it by identity (#5742). It is produced by the `set-locators` canonical pass, the final step of the parse pipeline, which walks each object up to the root. It runs after `hide-voids` (R-9.2.5), so a hidden void and a named binding carry the `v🌵` name in their locators (`Φ.foo.v🌵x`), the same as the φ path to them.
 
-R-9.1.6. The locator is `Φ`, then the `+package` tail if present, then one dot-separated segment per graph level, chosen as: a named attribute contributes its `@name`; the `@` decoratee contributes `φ`; the receiver of a reversed dispatch (parent `@base` starting with `.`, and no preceding sibling) contributes `ρ`; any other anonymous child contributes `αN`, where `N` is its argument index among its siblings. The grammar is the `locator` simple type of `XMIR.xsd` (`Φ(\.(ρ|φ|α[0-9]+|[a-z]\S*))*`). Name uniqueness within a scope guarantees locator uniqueness; only the positional `αN` segments shift under structural edits.
+R-9.1.6. The locator is `Φ`, then the `+package` tail if present, then one dot-separated segment per graph level, chosen as: a named attribute contributes its `@name`, which for a hidden void is its `v🌵` name (R-9.2.5); the `@` decoratee contributes `φ`; the receiver of a reversed dispatch (parent `@base` starting with `.`, and no preceding sibling) contributes `ρ`; any other anonymous child contributes `αN`, where `N` is its argument index among its siblings. The grammar is the `locator` simple type of `XMIR.xsd` (`Φ(\.(ρ|φ|α[0-9]+|[a-z]\S*))*`). Name uniqueness within a scope guarantees locator uniqueness; only the positional `αN` segments shift under structural edits.
 
 Example: for `[] > foo` with body `42 > @`, `foo` emits `@loc="Φ.foo"`, its `@` decoratee `@loc="Φ.foo.φ"`, and the number's argument `@loc="Φ.foo.φ.α0"`.
 
@@ -1280,6 +1280,22 @@ R-9.2.3. **File-local handles (R-3.10.12).** A `>> name` suffix emits the object
 
 R-9.2.4. **Scope resolution adds no hops.** The `build-fqns` reshape that follows resolves a bare `<o base='name'>` against the formation it sits in: a name that formation owns becomes `ξ.name`, a name the file's own package owns becomes `Φ.<package>.name`, and a name nothing in scope owns is left for `add-default-package` to home into `Φ`. A name owned by an *enclosing* formation is none of those — it is reported (`The "name" object is declared in an enclosing scope, write it as "^.name"`), because the `^.` hops that reach it are the author's to write. The one name this does not apply to is a cactus one, which no author writes: it is what a `>>` handle resolves to (R-9.2.3), and the handle is spelled bare wherever the file reads it, so the hops that reach it are still inserted here.
 
+R-9.2.5. **Hidden voids (`v🌵`).** A void can be filled by name from outside its formation but never read from outside (#9788). The `hide-voids` canonical pass, which runs right before `set-locators` (R-9.1.5), puts the `v🌵` prefix in front of three kinds of names, so the locators are built from the hidden names:
+
+| What | Before | After |
+| --- | --- | --- |
+| A void of a formation | `<o name='x' base='∅'/>` | `<o name='v🌵x' base='∅'/>` |
+| An own read of that void | `@base='ξ.x'`, `'ξ.ρ.x'`, `'ξ.ρ.ρ.x.plus'`, or `'.x'` on a receiver made of `ξ` and `.ρ` hops | `@base='ξ.v🌵x'`, `'ξ.ρ.v🌵x'`, `'ξ.ρ.ρ.v🌵x.plus'`, or `'.v🌵x'` |
+| A named binding | `@as='x'` | `@as='v🌵x'` |
+
+An own read is a path that starts at `ξ` and goes only through `ρ` hops, so `x`, `$.x`, `^.x` and `^.^.x` are all own reads, and so is `me.x` under a receiver written `^me` (R-3.4.13), since `resolve-local-names` has already turned `me` into a `ρ` hop (R-9.2.3). Each `ρ` hop climbs to the nearest enclosing formation, and the path's first name is renamed only when it is a void of the formation the path lands in; a path that climbs above the top of the file is left alone. Only that first name is renamed: in `ξ.v🌵x.plus` the `plus` is read from the value of `x`. A named binding only ever fills a void, so its label is renamed without looking up the void it fills, while a positional `αN` label stays as it is.
+
+An outside read (`bar.x`, `y.x`, `(foo 5).x`) is not renamed. It finds no attribute `x` and fails at run time the way a typo does, and since the cactus is excluded from `NAME` (R-9.2.2), no source can spell `bar.v🌵x` either. Three names are never renamed: the `φ` void (`[@] > number`), because reads go through it on purpose; the `ρ` receiver (R-3.4.11), which a dispatch looks up by name; and any name that already holds a cactus, such as the `a🌵` name of a `? >> h` void (R-3.4.7), which is out of reach already. The prefix goes in front of the name because passes spot compiler-made names by their first two characters (`a🌵`, `p🌵`, `n🌵`), and a void `p` marked at its end would pass for a test.
+
+What the pass writes is final: nothing renames a name after the parser, so every name stays the last segment of its locator. A void can be read only in the file that declares it. A member of a package, like `range/naturals.eo` of `range`, is a file of its own, so it reads its object from outside, through getters: `range` declares the voids `origin` and `limit` and gives them out as `start` and `end`, and `naturals` reads them as `span.start` and `span.end`. When a member reads through its receiver, the read climbs above the top of the member's file, so the pass leaves it as written. The build later puts the members inside their object (the `merge` step) and renames nothing there, so a member that reads a void `x` of its object finds no attribute `x` and fails at run time, like any read from outside. The printer takes the prefix off again before anything else (R-9.2.6).
+
+R-9.2.6. **Printing hidden voids.** The printer's `show-voids` pass strips `v🌵` from void names, from own reads and from named bindings, so a parsed program prints back the way it was written. A formation that holds a filled hidden void, like the simplified `⟦ v🌵x ↦ 5, value ↦ ξ.v🌵x ⟧`, prints as a formation with the void `x` and the named fill `5:x`. Any other read of a `v🌵` name reads a void from outside, which EO cannot express, so the printer stops with an error that names the reference and its locator.
+
 ### 9.3 Source-token to XMIR-character mapping
 
 | Source token | XMIR character | Used as |
@@ -1293,13 +1309,13 @@ R-9.2.4. **Scope resolution adds no hops.** The `build-fqns` reshape that follow
 | atom signature head `Q` | `Φ` | `@atom='Φ....'` |
 | generic type variable `A`–`F` | (verbatim) | `@atom`, `@type`, `@args` member — never `Φ`-promoted or alias-expanded (§3.10.11) |
 
-R-9.3.1. **Name suffix.** The table above also governs the `> name` suffix (§3.10): the name reaches `@name` verbatim, with `@` as the single exception — it reaches it as `φ`. So `42 > @` binds the decoratee of the formation it sits in, not an attribute spelled `@`. The `^` receiver has no suffix form at all, since only a void may declare it (R-3.4.11), and the `>>` cactus auto-name (§9.2) together with the `p🌵` and `n🌵` test prefixes (§9.4) are generated rather than mapped.
+R-9.3.1. **Name suffix.** The table above also governs the `> name` suffix (§3.10): the name reaches `@name` verbatim, with `@` as the single exception — it reaches it as `φ`. So `42 > @` binds the decoratee of the formation it sits in, not an attribute spelled `@`. The `^` receiver has no suffix form at all, since only a void may declare it (R-3.4.11), and the `>>` cactus auto-name (§9.2), the `v🌵` prefix of a hidden void (R-9.2.5) and the `p🌵` and `n🌵` test prefixes (§9.4) are generated rather than mapped.
 
 ### 9.4 Per-construct attribute emission
 
 | Source construct | XMIR effect |
 | --- | --- |
-| Void parameter `[a b c]` | Each param emits `<o name='<param>' base='∅'/>` as a void child |
+| Void parameter `[a b c]` | Each param emits `<o name='<param>' base='∅'/>` as a void child; the canonical `hide-voids` pass renames it to `v🌵<param>` (R-9.2.5) |
 | Const-marker `> name!` | `@const` attribute (empty value: `@const=""`) |
 | Truthy test attribute `[] +> name` | `@name='p🌵<name>'` (the `p🌵` prefix marks it as a truthy test; transpiles to `Assertions.assertTrue`) |
 | Throwing test attribute `[] -> name` | `@name='n🌵<name>'` (the `n🌵` prefix marks it as a throwing test; transpiles to `Assertions.assertThrows`) |
@@ -1307,7 +1323,7 @@ R-9.3.1. **Name suffix.** The table above also governs the `> name` suffix (§3.
 | Void own-type `? > name /type` | `@type='<type>'` on the void's `<o>`: a `Φ`-promoted concrete forma or a verbatim variable A–F, with any trailing `?` preserved (R-3.4.8) |
 | Void callback types `? > name /{type …}` | `@args='<type> …'` on the void's `<o>`: space-separated members, each promoted forma or verbatim variable; no `?` (R-3.4.8) |
 | Compact tuple `*N` | A synthetic wrapper `<o base='Φ.tuple' star=''>` is emitted as the *last* child of the head, containing the tupled portion of the children. The first `N` children stay as direct positional args; the remaining children go inside this wrapper. The `@star` attribute lives on the wrapper, never on the head. See R-3.9.2 for the partition. |
-| Inline binding `:label` | `@as='label'` on the argument `<o>` |
+| Inline binding `:label` | `@as='label'` on the argument `<o>`; the canonical `hide-voids` pass renames it to `v🌵label` (R-9.2.5) |
 | Inline binding `:N` | `@as='αN'` |
 | `.method` line | `@method` attribute (empty); `@base` is prefixed with `.`; `@pos` records the dot column (R-9.1.3) |
 | `?.` fragile dispatch (R-3.5.3a) | `@fragile` attribute (empty) added to the dispatch link's `<o>`, alongside its usual emission: a method link keeps `@method=''` and gains `@fragile=''`; a reversed dispatch carries `@fragile=''` without `@method`. `@base` is unchanged (still `.<name>`, not `?.<name>`), so passes matching `starts-with(@base, '.')` are unaffected. `@pos` records the dot column, not the `?` (R-9.1.3, #5359). |
