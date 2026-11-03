@@ -30,10 +30,10 @@ final class EObytesEOsliceTest {
                             .take("as-bytes")
                             .take("slice")
                             .copy(),
-                        "v🌵start",
+                        0,
                         new Data.ToPhi(2)
                     ),
-                    "v🌵len",
+                    1,
                     new Data.ToPhi(5)
                 )
             ).asString(),
@@ -56,10 +56,10 @@ final class EObytesEOsliceTest {
                                         .take("as-bytes")
                                         .take("slice")
                                         .copy(),
-                                    "v🌵start",
+                                    0,
                                     new Data.ToPhi(3)
                                 ),
-                                "v🌵len",
+                                1,
                                 new Data.ToPhi(10)
                             )
                         ).asString(),
@@ -86,10 +86,10 @@ final class EObytesEOsliceTest {
                                         .take("as-bytes")
                                         .take("slice")
                                         .copy(),
-                                    "v🌵start",
+                                    0,
                                     new Data.ToPhi(2)
                                 ),
-                                "v🌵len",
+                                1,
                                 new Data.ToPhi(-5)
                             )
                         ).asString(),
@@ -116,10 +116,10 @@ final class EObytesEOsliceTest {
                                         .take("as-bytes")
                                         .take("slice")
                                         .copy(),
-                                    "v🌵start",
+                                    0,
                                     new Data.ToPhi(3.0e9)
                                 ),
-                                "v🌵len",
+                                1,
                                 new Data.ToPhi(1)
                             )
                         ).asString(),
