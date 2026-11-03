@@ -314,6 +314,23 @@ final class Population {
     }
 
     /**
+     * Whether a study copy does not count once the walk is over.
+     *
+     * @param num The copy
+     * @return TRUE if it does not
+     */
+    boolean retired(final int num) {
+        return this.study.retired(num);
+    }
+
+    /**
+     * Decide, once the walk is over, which study copies still count.
+     */
+    void conclude() {
+        this.study.conclude();
+    }
+
+    /**
      * Stop w: pick, for this round, the formations no copy calls whose
      * copy as written does not count.
      *

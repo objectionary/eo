@@ -36,10 +36,14 @@ import java.util.Set;
  * its {@code ^} only the object it goes into, which a study copy stands
  * for but does not have, so its {@code ^} stays empty (#9655). Its own
  * voids stay empty. If the formation around has no real copy, the study
- * copies go inside its study copies; if
- * it has neither, or nothing is around, the copy as written is kept. Every
+ * copies go inside its study copies; if it has neither, or nothing is
+ * around, the copy as written is kept. Every
  * later stop gives a study copy to each real copy that has appeared since,
- * and a kept copy stays kept, and counts.</p>
+ * and a kept copy stays kept, and counts while the walk goes on. Once the
+ * walk is over, a study copy counts only if its formation never got a real
+ * copy and the copy it was made inside counts, while a real copy counts
+ * wherever the call or the read that made it was, even inside a study copy
+ * (#9655).</p>
  *
  * @since 0.76.0
  */
@@ -71,9 +75,14 @@ final class Study {
     private final BitSet stays;
 
     /**
-     * The study copies.
+     * The study copies, each with the real copy it was made inside.
      */
-    private final BitSet samples;
+    private final Map<Integer, Integer> samples;
+
+    /**
+     * The study copies that do not count once the walk is over.
+     */
+    private final BitSet retired;
 
     /**
      * The study copies of each formation.
@@ -92,7 +101,8 @@ final class Study {
         this.written = new LinkedHashMap<>(0);
         this.studied = new LinkedHashMap<>(0);
         this.stays = new BitSet();
-        this.samples = new BitSet();
+        this.samples = new HashMap<>(0);
+        this.retired = new BitSet();
         this.grouped = new HashMap<>(0);
     }
 
@@ -114,6 +124,44 @@ final class Study {
      */
     boolean kept(final int num) {
         return this.stays.get(num);
+    }
+
+    /**
+     * Whether a study copy does not count once the walk is over.
+     *
+     * @param num The copy
+     * @return TRUE if it does not
+     */
+    boolean retired(final int num) {
+        return this.retired.get(num);
+    }
+
+    /**
+     * Decide, once the walk is over, which study copies still count: one
+     * counts only if its formation never got a real copy and the copy it
+     * was made inside counts. A real copy counts wherever the call or the
+     * read that made it was, even inside a study copy, so what it counts
+     * as stays.
+     */
+    void conclude() {
+        final Map<String, Ints> real = this.reals();
+        final List<Integer> order = new ArrayList<>(this.samples.keySet());
+        order.sort(
+            Comparator.comparingInt(
+                copy -> {
+                    final String form = this.world.value(copy).form();
+                    return form.length() - form.replace(".", "").length();
+                }
+            )
+        );
+        for (final int copy : order) {
+            final int host = this.samples.get(copy);
+            if (real.containsKey(this.world.value(copy).form()) || this.retired.get(host)
+                || !this.state.counts(host)) {
+                this.retired.set(copy);
+            }
+        }
+        this.state.grow();
     }
 
     /**
@@ -295,7 +343,7 @@ final class Study {
         );
         if (this.world.value(copy).kind() == 'O' && !this.stays.get(copy)) {
             this.stays.set(copy);
-            this.samples.set(copy);
+            this.samples.put(copy, host);
             this.grouped.computeIfAbsent(form, key -> new ArrayList<>(1)).add(copy);
             out.push(copy);
         }
@@ -308,7 +356,7 @@ final class Study {
             final int ctx = all.get(idx);
             final Value value = this.world.value(ctx);
             if (value.kind() == 'O' && Study.real(value)
-                && !this.samples.get(ctx) && this.state.counts(ctx)) {
+                && !this.samples.containsKey(ctx) && this.state.counts(ctx)) {
                 found.computeIfAbsent(value.form(), key -> new Ints())
                     .add(this.state.joined(ctx));
             }

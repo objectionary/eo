@@ -24,6 +24,9 @@ import java.util.concurrent.atomic.AtomicLong;
  * followed up the chain, where a copy met again counts. A copy whose
  * formation declares no {@code ^} has no {@code ρ} row, so nothing around
  * it stops it from counting (#9785).</li>
+ * <li>Once the walk is over, a study copy whose formation got a real copy,
+ * or whose real copy around does not count, does not count either; nothing
+ * else changes (#9655).</li>
  * </ul>
  *
  * <p>What it worked out is kept until the count of changes, the tally,
@@ -242,8 +245,8 @@ final class Counting {
     }
 
     private boolean fresh(final int num) {
-        return this.world.value(num).kind() != 'O'
-            || this.alone(num) && (this.kept(num) || this.upheld(num, new Ints(num)));
+        return this.world.value(num).kind() != 'O' || !this.state.retired(num)
+            && this.alone(num) && (this.kept(num) || this.upheld(num, new Ints(num)));
     }
 
     private boolean kept(final int num) {

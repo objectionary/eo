@@ -13,7 +13,11 @@ EO has no types. It has objects, and every object is a copy of some other one,
 which is a copy of another, and so on until the chain arrives at a formation
 written in the source. The engine follows those chains copy by copy: a copy is
 one use of a formation, with its own values in its voids, and every place is
-answered once per copy of the formation around it.
+answered once per copy of the formation around it. Code that nobody calls is
+answered in a study copy, whose voids stay empty. In the end a study copy
+counts only if its formation never got a copy from a call or a read and the
+copy around it counts, while a copy from a call or a read counts wherever the
+call or the read was.
 
 ## What it writes
 
@@ -91,9 +95,10 @@ on every object, coloured by one of nine bands of what the engine answers
 there: green for one name and nothing else, then names with gaps, two names,
 mixed names, an unknown of each of four kinds, and only an error. The four
 kinds are a read nothing ever answers, a void only Java fills, a void of an
-object nobody calls, and a void nobody fills, and `answers.xml` writes them as `<unknown kind="loop"/>`, `kind="java"`,
-`kind="study"` and `kind="empty"`. A place with no name and unknowns of several
-kinds takes the first of them in that order. The goal logs how many objects
+object nobody calls, and a void nobody fills, and `answers.xml` writes them
+as `<unknown kind="loop"/>`, `kind="java"`, `kind="study"` and
+`kind="empty"`. A place with no name and unknowns of several kinds takes the
+first of them in that order. The goal logs how many objects
 fall in each band. An object that `answers.xml` says nothing of stops the
 report with an error that names its locator.
 

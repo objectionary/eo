@@ -327,6 +327,23 @@ final class State {
     }
 
     /**
+     * Whether a study copy does not count once the walk is over.
+     *
+     * @param num The copy
+     * @return TRUE if it does not
+     */
+    boolean retired(final int num) {
+        return this.population.retired(num);
+    }
+
+    /**
+     * Decide, once the walk is over, which study copies still count.
+     */
+    void conclude() {
+        this.population.conclude();
+    }
+
+    /**
      * Give each formation stop w picked its study copies, or keep its copy
      * as written.
      *
@@ -601,8 +618,9 @@ final class State {
     }
 
     /**
-     * Mark the reads with no answer, keep aside what holds a decided
-     * unknown, and make it a plain one everywhere else.
+     * Tell which study copies no longer count, mark the reads with no
+     * answer, keep aside what holds a decided unknown, and make it a plain
+     * one everywhere else.
      */
     void step() {
         this.course.step();

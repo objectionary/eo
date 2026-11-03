@@ -12,8 +12,10 @@ import java.util.function.IntUnaryOperator;
  * The end step (design doc 4.6): what is decided once after the passes,
  * with nothing fed back.
  *
- * <p>A read with no answer in a copy that counts is marked
- * {@code ?end-can't-tell}, told as {@code ?unknown-loop}, or
+ * <p>First it tells which study copies no longer count (3.4): a study
+ * copy counts only if its formation never got a real copy and the copy it
+ * was made inside counts. Then a read with no answer in a copy that counts
+ * is marked {@code ?end-can't-tell}, told as {@code ?unknown-loop}, or
  * {@code ?end-nobody-fills-it}, told as {@code ?unknown-java}, when it reads
  * a void of a Java object nobody fills. Then the answers and rows that hold
  * the unknown of a void a stop decided Java alone fills are kept aside as
@@ -74,10 +76,12 @@ final class EndStep {
     }
 
     /**
-     * Mark the reads with no answer, keep aside what holds a decided
-     * unknown, and make it a plain one everywhere else.
+     * Tell which study copies no longer count, mark the reads with no
+     * answer, keep aside what holds a decided unknown, and make it a plain
+     * one everywhere else.
      */
     void step() {
+        this.state.conclude();
         this.marked();
         this.keep();
         this.tidied();
