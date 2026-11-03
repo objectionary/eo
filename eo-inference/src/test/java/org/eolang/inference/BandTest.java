@@ -92,7 +92,7 @@ final class BandTest {
     @Test
     void marksAReadNothingEverAnswers() {
         MatcherAssert.assertThat(
-            "a read nothing ever answers must be amber, but it wasnt",
+            "a read nothing ever answers must be pink, but it wasnt",
             new Band(Collections.singletonList("?unknown-loop")).name(),
             Matchers.equalTo("loop")
         );
@@ -110,7 +110,7 @@ final class BandTest {
     @Test
     void marksAVoidNobodyFillsNextToAnError() {
         MatcherAssert.assertThat(
-            "a void nobody fills next to an error must be pink, but it wasnt",
+            "a void nobody fills next to an error must be amber, but it wasnt",
             new Band(Arrays.asList("T", "?unknown-empty")).name(),
             Matchers.equalTo("empty")
         );
@@ -119,7 +119,7 @@ final class BandTest {
     @Test
     void putsALoopAheadOfAVoidAnAtomFills() {
         MatcherAssert.assertThat(
-            "a loop next to a void an atom fills must be amber, but it wasnt",
+            "a loop next to a void an atom fills must be pink, but it wasnt",
             new Band(Arrays.asList("?unknown-java", "?unknown-loop")).name(),
             Matchers.equalTo("loop")
         );
@@ -144,11 +144,11 @@ final class BandTest {
     }
 
     @Test
-    void marksTheCaretOnlyJavaFillsWhateverElseIsAnswered() {
+    void marksTheCaretOnlyJavaFillsAsForbiddenWhateverElseIsAnswered() {
         MatcherAssert.assertThat(
-            "a caret only Java fills in one copy must be red next to a name, but it wasnt",
+            "a caret only Java fills in one copy must be a red forbidden construction next to a name, but it wasnt",
             new Band(Arrays.asList("Φ.kettle", "!only-java-fills-ρ")).name(),
-            Matchers.equalTo("fails")
+            Matchers.equalTo("forbidden")
         );
     }
 }

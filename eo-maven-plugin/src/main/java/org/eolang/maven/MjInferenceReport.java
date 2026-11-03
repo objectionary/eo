@@ -19,8 +19,8 @@ import org.apache.maven.plugins.annotations.Parameter;
  * coloured by one of ten bands of what the engine answers there in
  * {@code answers.xml}: green where it answers one name and nothing else,
  * other colours where it answers several names, names with gaps, an
- * unknown of one of four kinds, only errors, or a {@code ^} only Java
- * fills. An index lists the pages with a bar per file, and
+ * unknown of one of four kinds, only errors, or a forbidden construction,
+ * which today is only a {@code ^} that only Java fills. An index lists the pages with a bar per file, and
  * the goal logs how many objects fall in each band and writes the same
  * numbers down in {@code ladder.txt}, beside the directory of the tables.</p>
  *

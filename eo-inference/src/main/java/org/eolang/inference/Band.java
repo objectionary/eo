@@ -20,12 +20,12 @@ import java.util.stream.Collectors;
  * exactly two names and nothing else, and blue when it answers two or more
  * names any other way. A gap is an error ({@code T}) or an unknown. With no
  * name at all, a place is brown when it answers only errors, and otherwise
- * takes the colour of the kind of unknown it answers: amber for a read
+ * takes the colour of the kind of unknown it answers: pink for a read
  * nothing ever answers, purple for a void only Java fills, slate for a void
- * of an object nobody calls, and pink for a void nobody fills. A place that
- * answers several kinds takes the first of them in that order. A {@code ^}
- * that only Java fills, in any copy, makes it red whatever else it
- * answers.</p>
+ * of an object nobody calls, and amber for a void nobody fills. A place that
+ * answers several kinds takes the first of them in that order. A forbidden
+ * construction in any copy makes it red whatever else it answers; today the
+ * only one is a {@code ^} that only Java fills.</p>
  *
  * <p>The labels are the ones the place answers, with the formations of one
  * shape folded into one name first, so two copies of one lambda count as one
@@ -40,7 +40,7 @@ final class Band {
      * The bands, in the order a tally lists them.
      */
     static final List<String> ORDER = Arrays.asList(
-        "named", "gaps", "pair", "mixed", "loop", "atom", "study", "empty", "error", "fails"
+        "named", "gaps", "pair", "mixed", "loop", "atom", "study", "empty", "error", "forbidden"
     );
 
     /**
@@ -87,7 +87,7 @@ final class Band {
             .collect(Collectors.toSet());
         final String found;
         if (all.stream().anyMatch(label -> label.startsWith("!"))) {
-            found = "fails";
+            found = "forbidden";
         } else if (all.equals(names)) {
             found = Band.named(names.size());
         } else if (names.isEmpty()) {

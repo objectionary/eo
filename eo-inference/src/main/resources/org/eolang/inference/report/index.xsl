@@ -59,9 +59,9 @@ mean.
             <xsl:value-of select="@error"/>
             <xsl:text> only an error</xsl:text>
           </span>
-          <span class="fails" data-band="fails">
-            <xsl:value-of select="@fails"/>
-            <xsl:text> only Java fills a ^</xsl:text>
+          <span class="forbidden" data-band="forbidden">
+            <xsl:value-of select="@forbidden"/>
+            <xsl:text> forbidden constructions</xsl:text>
           </span>
         </p>
         <dl class="terms">
@@ -84,7 +84,7 @@ mean.
     </html>
   </xsl:template>
   <xsl:template match="dir">
-    <details data-named="{@named}" data-gaps="{@gaps}" data-pair="{@pair}" data-mixed="{@mixed}" data-loop="{@loop}" data-atom="{@atom}" data-study="{@study}" data-empty="{@empty}" data-error="{@error}" data-fails="{@fails}">
+    <details data-named="{@named}" data-gaps="{@gaps}" data-pair="{@pair}" data-mixed="{@mixed}" data-loop="{@loop}" data-atom="{@atom}" data-study="{@study}" data-empty="{@empty}" data-error="{@error}" data-forbidden="{@forbidden}">
       <summary>
         <xsl:value-of select="@name"/>
         <xsl:call-template name="bar"/>
@@ -95,7 +95,7 @@ mean.
     </details>
   </xsl:template>
   <xsl:template match="file">
-    <div class="row" data-named="{@named}" data-gaps="{@gaps}" data-pair="{@pair}" data-mixed="{@mixed}" data-loop="{@loop}" data-atom="{@atom}" data-study="{@study}" data-empty="{@empty}" data-error="{@error}" data-fails="{@fails}">
+    <div class="row" data-named="{@named}" data-gaps="{@gaps}" data-pair="{@pair}" data-mixed="{@mixed}" data-loop="{@loop}" data-atom="{@atom}" data-study="{@study}" data-empty="{@empty}" data-error="{@error}" data-forbidden="{@forbidden}">
       <a href="{@href}">
         <xsl:value-of select="@name"/>
       </a>
@@ -103,7 +103,7 @@ mean.
     </div>
   </xsl:template>
   <xsl:template name="bar">
-    <span class="bar" title="{@named} named, {@gaps} one name with gaps, {@pair} two names, {@mixed} two or more names maybe with gaps, {@loop} unknown nothing ever answers, {@atom} unknown filled by an atom, {@study} unknown nobody calls this object, {@empty} unknown filled by nobody, {@error} only an error, {@fails} only Java fills a ^">
+    <span class="bar" title="{@named} named, {@gaps} one name with gaps, {@pair} two names, {@mixed} two or more names maybe with gaps, {@loop} unknown nothing ever answers, {@atom} unknown filled by an atom, {@study} unknown nobody calls this object, {@empty} unknown filled by nobody, {@error} only an error, {@forbidden} forbidden constructions">
       <span class="named" style="flex: {@named}"/>
       <span class="gaps" style="flex: {@gaps}"/>
       <span class="pair" style="flex: {@pair}"/>
@@ -113,7 +113,7 @@ mean.
       <span class="study" style="flex: {@study}"/>
       <span class="empty" style="flex: {@empty}"/>
       <span class="error" style="flex: {@error}"/>
-      <span class="fails" style="flex: {@fails}"/>
+      <span class="forbidden" style="flex: {@forbidden}"/>
     </span>
   </xsl:template>
   <xsl:template name="style">
@@ -127,12 +127,12 @@ mean.
       .tally .gaps { background: #eef3c2; }
       .tally .pair { background: #d3eff2; }
       .tally .mixed { background: #d9e5fb; }
-      .tally .loop { background: #fbeecc; }
+      .tally .loop { background: #fadce9; }
       .tally .atom { background: #e6dcf5; }
       .tally .study { background: #dfe6e9; }
-      .tally .empty { background: #fadce9; }
+      .tally .empty { background: #fbeecc; }
       .tally .error { background: #efe2dc; }
-      .tally .fails { background: #f7d4d4; }
+      .tally .forbidden { background: #f7d4d4; }
       .terms { display: grid; grid-template-columns: max-content 1fr; gap: .3em 1.2em; margin: 0 0 1.6em; color: #555; font-family: system-ui, sans-serif; }
       .terms dt { color: #1a1a1a; font-weight: 600; }
       .terms dd { margin: 0; }
@@ -149,12 +149,12 @@ mean.
       .bar .gaps { background: #c3cf3e; }
       .bar .pair { background: #3fb3c2; }
       .bar .mixed { background: #5b8def; }
-      .bar .loop { background: #e8b64c; }
+      .bar .loop { background: #e88bb4; }
       .bar .atom { background: #9b7fd4; }
       .bar .study { background: #90a4ae; }
-      .bar .empty { background: #e88bb4; }
+      .bar .empty { background: #e8b64c; }
       .bar .error { background: #a1887f; }
-      .bar .fails { background: #d76b6b; }
+      .bar .forbidden { background: #d76b6b; }
     </style>
   </xsl:template>
   <xsl:template name="filter">

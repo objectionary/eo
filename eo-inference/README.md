@@ -71,8 +71,8 @@ The `inference-report` goal reads the prepared files and the `answers.xml` in
 `target/site/inference`, with an index. A page shows the source with a mark
 on every object, coloured by one of ten bands of what the engine answers
 there: green for one name and nothing else, then names with gaps, two names,
-mixed names, an unknown of each of four kinds, only an error, and red where
-only Java fills a `^`. The four kinds are a read nothing ever answers, a void
+mixed names, an unknown of each of four kinds, only an error, and red for a
+forbidden construction, which today is only a `^` that only Java fills. The four kinds are a read nothing ever answers, a void
 only Java fills, a void of an object nobody calls, and a void nobody fills,
 and `answers.xml` writes them as `<unknown kind="loop"/>`, `kind="java"`,
 `kind="study"` and `kind="empty"`. A place with no name and unknowns of several
