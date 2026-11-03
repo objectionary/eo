@@ -106,7 +106,7 @@ final class PhiTest {
                 () -> new Dataized(
                     new PhApplication(
                         Phi.Φ.take("number.integral").copy(),
-                        3,
+                        "n",
                         new Data.ToPhi(1.5)
                     )
                 ).take()
@@ -124,7 +124,7 @@ final class PhiTest {
                 () -> new Dataized(
                     new PhApplication(
                         Phi.Φ.take("number.integral").copy(),
-                        3,
+                        "n",
                         new Data.ToPhi(9_007_199_254_740_992d)
                     )
                 ).take()

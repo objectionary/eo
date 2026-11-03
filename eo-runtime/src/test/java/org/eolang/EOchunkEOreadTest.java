@@ -29,8 +29,8 @@ final class EOchunkEOreadTest {
                         new EOchunk$EOread(),
                         Phi.RHO,
                         new PhApplication(
-                            new PhDefault(new Attrs(new Attr("id", new AtVoid("id")))),
-                            "id",
+                            Phi.Φ.take("chunk"),
+                            "identifier",
                             new Data.ToPhi(true)
                         )
                     )
@@ -82,15 +82,15 @@ final class EOchunkEOreadTest {
                     new EOchunk$EOread(),
                     Phi.RHO,
                     new PhApplication(
-                        new PhDefault(new Attrs(new Attr("id", new AtVoid("id")))),
-                        "id",
+                        Phi.Φ.take("chunk"),
+                        "identifier",
                         new Data.ToPhi(0)
                     )
                 ),
-                0,
+                "offset",
                 offset
             ),
-            1,
+            "length",
             length
         );
     }

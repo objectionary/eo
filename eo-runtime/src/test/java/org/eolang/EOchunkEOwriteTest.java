@@ -32,15 +32,15 @@ final class EOchunkEOwriteTest {
                                 new EOchunk$EOwrite(),
                                 Phi.RHO,
                                 new PhApplication(
-                                    new PhDefault(new Attrs(new Attr("id", new AtVoid("id")))),
-                                    "id",
+                                    Phi.Φ.take("chunk"),
+                                    "identifier",
                                     new Data.ToPhi(id)
                                 )
                             ),
-                            0,
+                            "offset",
                             new Data.ToPhi(0)
                         ),
-                        1,
+                        "data",
                         new Data.ToPhi("héllo")
                     )
                 ).take()
@@ -60,8 +60,8 @@ final class EOchunkEOwriteTest {
                         new EOchunk$EOwrite(),
                         Phi.RHO,
                         new PhApplication(
-                            new PhDefault(new Attrs(new Attr("id", new AtVoid("id")))),
-                            "id",
+                            Phi.Φ.take("chunk"),
+                            "identifier",
                             new Data.ToPhi(true)
                         )
                     )
@@ -84,12 +84,12 @@ final class EOchunkEOwriteTest {
                             new EOchunk$EOwrite(),
                             Phi.RHO,
                             new PhApplication(
-                                new PhDefault(new Attrs(new Attr("id", new AtVoid("id")))),
-                                "id",
+                                Phi.Φ.take("chunk"),
+                                "identifier",
                                 new Data.ToPhi(0)
                             )
                         ),
-                        0,
+                        "offset",
                         new Data.ToPhi(1.5)
                     )
                 ).take(),

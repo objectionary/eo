@@ -951,6 +951,14 @@
     <xsl:sequence select="string(eo:firing(key('eo:minted', $symbol, $eo:doc)[1])/@λ)"/>
   </xsl:function>
   <!--
+  The name of a void the way a Bind takes it. The runtime puts the void mark
+  in front of the name itself, so the mark the parser gave the name comes off.
+  -->
+  <xsl:function name="eo:unveiled" as="xs:string">
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:sequence select="replace($name, '^v🌵', '')"/>
+  </xsl:function>
+  <!--
   The Java of the object a symbol the λ of a row minted stands for the
   dataization of: the formation of the row, reached from the root of the
   universe, or taken off its "ρ" when the row dataized one, with every
@@ -970,7 +978,7 @@
     </xsl:if>
     <xsl:variable name="held" select="starts-with($takes[1], 'ρ:')"/>
     <xsl:variable name="object" select="if ($held) then concat(eo:wrapped($operands[1], substring-after($takes[1], ':')), '.take(&quot;', eo:literal(tokenize($row[1], '\.')[last()]), '&quot;)') else eo:global($row[1])"/>
-    <xsl:variable name="binds" select="for $i in (if ($held) then 2 else 1) to count($takes) return concat('new Bind(&quot;', eo:literal(substring-before($takes[$i], ':')), '&quot;, ', eo:wrapped($operands[$i], substring-after($takes[$i], ':')), ')')"/>
+    <xsl:variable name="binds" select="for $i in (if ($held) then 2 else 1) to count($takes) return concat('new Bind(&quot;', eo:literal(eo:unveiled(substring-before($takes[$i], ':'))), '&quot;, ', eo:wrapped($operands[$i], substring-after($takes[$i], ':')), ')')"/>
     <xsl:sequence select="if (empty($binds)) then $object else concat('new PhApplication(', string-join(($object, $binds), ', '), ')')"/>
   </xsl:function>
   <!-- The Java of a token as the object of a carrier, the way "Data.ToPhi" and the library make one of data. -->
@@ -1171,7 +1179,7 @@
         </xsl:when>
         <xsl:when test="exists(key('eo:deferred', $symbol, $eo:doc))">
           <xsl:variable name="deferred" select="key('eo:deferred', $symbol, $eo:doc)[1]"/>
-          <xsl:sequence select="concat('        return new PhApplication(', string-join((eo:copied($deferred), eo:arguments($deferred) ! ('new Bind(&quot;' || eo:literal(substring-before(., ':')) || '&quot;, ' || eo:argument(substring-after(., ':')) || ')')), ', '), ');&#10;')"/>
+          <xsl:sequence select="concat('        return new PhApplication(', string-join((eo:copied($deferred), eo:arguments($deferred) ! ('new Bind(&quot;' || eo:literal(eo:unveiled(substring-before(., ':'))) || '&quot;, ' || eo:argument(substring-after(., ':')) || ')')), ', '), ');&#10;')"/>
         </xsl:when>
         <xsl:when test="map:contains($eo:rows, eo:lambda($symbol))">
           <xsl:sequence select="concat('        return new Dataized(', eo:rowed($symbol), ').take();&#10;')"/>

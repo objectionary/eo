@@ -77,7 +77,7 @@ java: |
       }
 
       private Phi 𝜎134() {
-          return new PhApplication(this.take("ρ").take("first"), new Bind("v🌵x", this.take("ρ").take("v🌵items").take("head")));
+          return new PhApplication(this.take("ρ").take("first"), new Bind("x", this.take("ρ").take("v🌵items").take("head")));
       }
 
       private byte[] 𝜎135() {

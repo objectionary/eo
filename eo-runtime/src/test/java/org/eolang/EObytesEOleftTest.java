@@ -32,7 +32,7 @@ final class EObytesEOleftTest {
                             Phi.RHO,
                             new Data.ToPhi(new byte[]{0x01, 0x02})
                         ),
-                        0,
+                        "b",
                         new Data.ToPhi(true)
                     )
                 ).take(),
@@ -55,7 +55,7 @@ final class EObytesEOleftTest {
                             Phi.RHO,
                             new Data.ToPhi(new byte[]{0x01, 0x02})
                         ),
-                        0,
+                        "b",
                         new Data.ToPhi(1.5)
                     )
                 ).take(),
@@ -78,7 +78,7 @@ final class EObytesEOleftTest {
                             Phi.RHO,
                             new Data.ToPhi(new byte[]{0x01, 0x02})
                         ),
-                        0,
+                        "b",
                         new Data.ToPhi(2_147_483_648.0)
                     )
                 ).take(),

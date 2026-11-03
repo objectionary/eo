@@ -30,10 +30,10 @@ final class EObytesEOsliceTest {
                             .take("as-bytes")
                             .take("slice")
                             .copy(),
-                        0,
+                        "start",
                         new Data.ToPhi(2)
                     ),
-                    1,
+                    "len",
                     new Data.ToPhi(5)
                 )
             ).asString(),
@@ -56,10 +56,10 @@ final class EObytesEOsliceTest {
                                         .take("as-bytes")
                                         .take("slice")
                                         .copy(),
-                                    0,
+                                    "start",
                                     new Data.ToPhi(3)
                                 ),
-                                1,
+                                "len",
                                 new Data.ToPhi(10)
                             )
                         ).asString(),
@@ -86,10 +86,10 @@ final class EObytesEOsliceTest {
                                         .take("as-bytes")
                                         .take("slice")
                                         .copy(),
-                                    0,
+                                    "start",
                                     new Data.ToPhi(2)
                                 ),
-                                1,
+                                "len",
                                 new Data.ToPhi(-5)
                             )
                         ).asString(),
@@ -116,10 +116,10 @@ final class EObytesEOsliceTest {
                                         .take("as-bytes")
                                         .take("slice")
                                         .copy(),
-                                    0,
+                                    "start",
                                     new Data.ToPhi(3.0e9)
                                 ),
-                                1,
+                                "len",
                                 new Data.ToPhi(1)
                             )
                         ).asString(),

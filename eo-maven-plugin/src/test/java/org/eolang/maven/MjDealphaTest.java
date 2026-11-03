@@ -230,7 +230,7 @@ final class MjDealphaTest {
                     .result()
                     .get("target/generated/org/eolang/EO_examples/EOapp.java")
             ).asString(),
-            Matchers.containsString("new Bind(\"v🌵bar\"")
+            Matchers.containsString("new Bind(\"bar\"")
         );
     }
 

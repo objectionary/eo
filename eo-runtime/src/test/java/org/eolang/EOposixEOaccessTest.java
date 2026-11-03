@@ -29,9 +29,9 @@ final class EOposixEOaccessTest {
                 () -> new Dataized(
                     new PhApplication(
                         new EOposix$EOaccess(),
-                        new Bind(1, new Data.ToPhi(0L)),
+                        new Bind("mode", new Data.ToPhi(0L)),
                         new Bind(
-                            0,
+                            "path",
                             new Data.ToPhi(String.join(String.valueOf((char) 0), "one", "two"))
                         )
                     )
@@ -55,8 +55,8 @@ final class EOposixEOaccessTest {
                 () -> new Dataized(
                     new PhApplication(
                         new EOposix$EOaccess(),
-                        new Bind(1, new Data.ToPhi(3.9)),
-                        new Bind(0, new Data.ToPhi("one"))
+                        new Bind("mode", new Data.ToPhi(3.9)),
+                        new Bind("path", new Data.ToPhi("one"))
                     )
                 ).take(),
                 "a fractional 'mode' attribute was expected to fail"

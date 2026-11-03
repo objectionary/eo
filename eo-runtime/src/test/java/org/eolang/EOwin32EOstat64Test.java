@@ -39,7 +39,7 @@ final class EOwin32EOstat64Test {
             new Dataized(
                 new PhApplication(
                     new EOwin32$EOstat64(),
-                    new Bind(0, new Data.ToPhi(file.toString()))
+                    new Bind("path", new Data.ToPhi(file.toString()))
                 ).take("size")
             ).asNumber().longValue(),
             Matchers.equalTo((long) content.length)
@@ -56,7 +56,7 @@ final class EOwin32EOstat64Test {
                     new PhApplication(
                         new EOwin32$EOstat64(),
                         new Bind(
-                            0,
+                            "path",
                             new Data.ToPhi(String.join(String.valueOf((char) 0), "one", "two"))
                         )
                     ).take("size")

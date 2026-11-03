@@ -71,8 +71,11 @@ public final class PhApplication extends PhOnce {
     /**
      * Ctor.
      *
+     * <p>It fills the void by its name, through a {@link Bind}, which puts
+     * the mark in front of the name.</p>
+     *
      * @param phi The object
-     * @param name The name of attr
+     * @param name The name of the void, as the EO source spells it
      * @param attr The value
      */
     public PhApplication(final Phi phi, final String name, final Phi attr) {

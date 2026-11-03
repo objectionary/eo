@@ -25,7 +25,7 @@ final class EOposixEOunlinkTest {
                 () -> new Dataized(
                     new PhApplication(
                         new EOposix$EOunlink(),
-                        0,
+                        "path",
                         new Data.ToPhi(String.join(String.valueOf((char) 0), "плюшка", "щи"))
                     ).take("code")
                 ).take(),

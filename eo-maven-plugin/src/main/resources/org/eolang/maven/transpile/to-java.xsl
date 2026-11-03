@@ -775,7 +775,7 @@
         <xsl:text>, new Bind(</xsl:text>
         <xsl:choose>
           <xsl:when test="@as">
-            <xsl:value-of select="eo:attr-name(@as, true())"/>
+            <xsl:value-of select="eo:attr-name(replace(@as, concat('^', $eo:veiled), ''), true())"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="position() - 1"/>

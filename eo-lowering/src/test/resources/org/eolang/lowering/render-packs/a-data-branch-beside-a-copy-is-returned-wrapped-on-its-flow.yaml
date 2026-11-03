@@ -128,6 +128,6 @@ java: |
       }
 
       private Phi 𝜎135() {
-          return new PhApplication(this.take("ρ").take("with-delimiter"), new Bind("v🌵acc", this.take("ρ").take("v🌵items").take("head")), new Bind("v🌵tup", this.take("ρ").take("v🌵items").take("tail")));
+          return new PhApplication(this.take("ρ").take("with-delimiter"), new Bind("acc", this.take("ρ").take("v🌵items").take("head")), new Bind("tup", this.take("ρ").take("v🌵items").take("tail")));
       }
   }

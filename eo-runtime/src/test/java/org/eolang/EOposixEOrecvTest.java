@@ -26,12 +26,12 @@ final class EOposixEOrecvTest {
                 new PhApplication(
                     new PhApplication(
                         new PhApplication(
-                            new EOposix$EOrecv(), 0, new Data.ToPhi(-1)
+                            new EOposix$EOrecv(), "descriptor", new Data.ToPhi(-1)
                         ),
-                        1,
+                        "size",
                         new Data.ToPhi(16)
                     ),
-                    2,
+                    "flags",
                     new Data.ToPhi(0)
                 ).take("code")
             ).asNumber().intValue(),

@@ -29,7 +29,7 @@ final class EOposixEOstrerrorTest {
                 () -> new Dataized(
                     new PhApplication(
                         new EOposix$EOstrerror(),
-                        new Bind(0, new Data.ToPhi(2.5))
+                        new Bind("errno", new Data.ToPhi(2.5))
                     )
                 ).take(),
                 "a fractional 'errno' attribute was expected to fail"
@@ -51,7 +51,7 @@ final class EOposixEOstrerrorTest {
                 () -> new Dataized(
                     new PhApplication(
                         new EOposix$EOstrerror(),
-                        new Bind(0, new Data.ToPhi(3.0e9))
+                        new Bind("errno", new Data.ToPhi(3.0e9))
                     )
                 ).take(),
                 "an 'errno' attribute past the int range was expected to fail"

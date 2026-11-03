@@ -376,7 +376,7 @@ public class PhDefault implements Phi, Cloneable {
      * @return The object the void holds
      */
     protected final Phi free(final String name) {
-        final String hidden = new Hidden(name).toString();
+        final String hidden = Attr.veiled(name);
         if (!this.loaded().containsKey(hidden)) {
             throw new ExFailure("There is no void \"%s\" in %s", name, this.forma());
         }

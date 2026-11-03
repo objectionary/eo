@@ -25,7 +25,7 @@ final class EOwin32EOmkdirTest {
                 () -> new Dataized(
                     new PhApplication(
                         new EOwin32$EOmkdir(),
-                        0,
+                        "path",
                         new Data.ToPhi(String.join(String.valueOf((char) 0), "плюшка", "щи"))
                     ).take("code")
                 ).take(),
