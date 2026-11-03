@@ -10,8 +10,8 @@ package org.eolang.inference;
  * <ul>
  * <li>Off {@code Φ}, a formation of that name is a fresh copy at the place,
  * with {@code Φ} as its {@code ρ} if it declares {@code ^}, and a place of
- * that name is its answer.</li>
- * <li>Off a datum, it fails; off T, it is T; an unknown stays itself.</li>
+ * that name is its answer, and any other name is T.</li>
+ * <li>Off a datum or off T, it is T; an unknown stays itself.</li>
  * <li>Off a copy whose formation declares no {@code ^}, {@code ρ} is T, as
  * the runtime terminates on it, and a copy Java made is no exception
  * (#9785). Off any other copy it is its {@code ρ} row, or a fresh copy of
@@ -23,7 +23,7 @@ package org.eolang.inference;
  * with the copy as its {@code ρ} if it declares {@code ^}, and any other
  * attribute is its answer in the copy, stamped onto it.</li>
  * <li>A name the copy lacks is read off what its {@code @} gives, or off
- * what its atom returns, or fails when the formation is complete.</li>
+ * what its atom returns, or is T when the formation is complete.</li>
  * </ul>
  *
  * @since 0.76.0
@@ -75,15 +75,13 @@ final class Reads {
             out.addAll(this.attr(value.base(), name, site));
         } else if (kind == 'Φ') {
             out.addAll(this.root(name, site));
-        } else if (kind == 'D') {
-            out.add(this.world.conflict(String.join(".", "data", name)));
-        } else if (kind == 'T') {
+        } else if (kind == 'D' || kind == 'T') {
             out.add(Values.TERM);
         } else if (kind == 'U') {
             out.add(num);
         } else if (kind == 'O') {
             out.addAll(this.copy(num, name, site));
-        } else if (kind != 'X') {
+        } else {
             throw new IllegalStateException(
                 String.format(
                     "%s has nothing to read %s off at %s",
@@ -108,7 +106,7 @@ final class Reads {
         } else if (this.world.place(target)) {
             out.addAll(this.state.evaluate(target, Values.ROOT));
         } else {
-            out.add(this.world.conflict(target));
+            out.add(Values.TERM);
         }
         return out;
     }
@@ -236,7 +234,7 @@ final class Reads {
                 String.format("atom %s says nothing of %s at %s", form, name, site.place())
             );
         }
-        return new Ints(this.world.conflict(String.join(".", form, name)));
+        return new Ints(Values.TERM);
     }
 
     private Ints returned(final int num, final String name, final Site site) {

@@ -20,15 +20,15 @@ import java.util.Set;
  * <p>Each argument is worked out in the copy around and reduced (4.2). A
  * call makes one copy per head and place, and each void it fills gets the
  * whole set of its argument, so calls never mix (rule 3). It makes no copy
- * while an argument it binds has nothing yet, the absence rule (4.1). The
- * rules come in here: 3 for an argument whose every value fails, b for an
- * argument that is only an open void, A for a mark, F for a call on what
- * Java made or on a finished shared kind, and call then narrow (3.5) for
- * an object whose {@code @} is one of its voids, once the call fills the
- * last of its empty voids; a call that leaves some empty makes a plain
- * copy, and a later call fills the rest. Every argument of an atom is
- * dataized, a void its atom calls back gets its copies made, and a void of
- * what Java makes fills its pool.</p>
+ * while an argument it binds has nothing yet, the absence rule (4.1). A
+ * call on a datum is T, and an argument that holds T goes into its void as
+ * T. The rules come in here: b for an argument that is only an open void,
+ * A for a mark, F for a call on what Java made or on a finished shared
+ * kind, and call then narrow (3.5) for an object whose {@code @} is one of
+ * its voids, once the call fills the last of its empty voids; a call that
+ * leaves some empty makes a plain copy, and a later call fills the rest.
+ * Every argument of an atom is dataized, a void its atom calls back gets
+ * its copies made, and a void of what Java makes fills its pool.</p>
  *
  * <p>For each head the call also notes where each argument lands: the
  * void of a copy made in EO code, or no void.</p>
@@ -88,8 +88,8 @@ final class Calls {
     Ints apply(final Ints heads, final int ctx, final String place) {
         final List<String> args = this.world.args(place);
         final List<int[]> raw = new ArrayList<>(args.size());
-        for (int arg = 0; arg < args.size(); ++arg) {
-            raw.add(this.argument(args.get(arg), arg, ctx, place));
+        for (final String arg : args) {
+            raw.add(this.argument(arg, ctx));
         }
         final List<int[]> argsets = new ArrayList<>(args.size());
         for (final int[] set : raw) {
@@ -138,21 +138,10 @@ final class Calls {
         return found;
     }
 
-    private int[] argument(final String arg, final int pos, final int ctx, final String place) {
-        final Ids got = this.state.evaluate(arg, ctx);
-        final Ints kept = new Ints();
-        for (int idx = 0; idx < got.size(); ++idx) {
-            if (this.world.value(got.get(idx)).kind() != 'X') {
-                kept.add(got.get(idx));
-            }
-        }
-        final Wish wish = new Wish('3', place, ctx, pos);
-        if (!got.isEmpty() && this.state.taken(wish)) {
-            kept.add(this.world.unknown("can't tell"));
-        } else if (!got.isEmpty() && kept.isEmpty()) {
-            this.state.wish(wish);
-        }
-        return kept.array();
+    private int[] argument(final String arg, final int ctx) {
+        final Ints got = new Ints();
+        got.addAll(this.state.evaluate(arg, ctx));
+        return got.array();
     }
 
     private Ints head(final int num, final Call call, final Set<Landing> landed) {
@@ -171,8 +160,8 @@ final class Calls {
         } else if (kind == 'O') {
             out.addAll(this.object(head, value, call, voids));
         } else if (kind == 'D') {
-            out.add(this.world.conflict("data()"));
-        } else if (kind != 'X') {
+            out.add(Values.TERM);
+        } else {
             out.add(head);
         }
         return out;
@@ -197,7 +186,7 @@ final class Calls {
             for (int arg = 0; arg < args; ++arg) {
                 landed.add(new Landing(arg, voids.get(arg)));
             }
-        } else if (kind != 'O' && kind != 'T' && kind != 'D' && kind != 'X') {
+        } else if (kind != 'O' && kind != 'T' && kind != 'D') {
             for (int arg = 0; arg < args; ++arg) {
                 landed.add(new Landing(arg, ""));
             }

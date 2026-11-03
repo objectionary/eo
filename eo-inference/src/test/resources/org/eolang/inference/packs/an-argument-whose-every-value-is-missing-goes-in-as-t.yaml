@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# The only value handed to box fails. Rule 3 holds the argument back until a
-# stop, and from then on it is one "can't tell", so item is unknown.
+# A number has no size, so the only value handed to box is T. The argument
+# goes into item as T, so item is T.
 sources:
   box.eo: |
     [item] > box
@@ -18,5 +18,5 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵item' and @copies='1']/fails[@name='data.size']
-  - /answers/o[@loc='Φ.box.v🌵item']/unknown
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵item' and @copies='1' and count(*)=1]/terminator
+  - /answers/o[@loc='Φ.box.v🌵item' and count(*)=1]/terminator

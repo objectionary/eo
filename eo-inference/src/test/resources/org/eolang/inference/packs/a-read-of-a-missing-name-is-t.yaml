@@ -2,8 +2,7 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# cat is complete and has no bark, so the read of bark off it fails and says
-# what is missing.
+# cat is complete and has no bark, so the read of bark off it is T.
 sources:
   cat.eo: |
     [] > cat
@@ -22,4 +21,4 @@ facts:
   - /facts[not(objects/type[@id='Φ.cat']/attr[@name='bark'])]
 answers:
   - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.cat']
-  - /answers/o[@loc='Φ.app.φ']/fails[@name='Φ.cat.bark']
+  - /answers/o[@loc='Φ.app.φ' and count(*)=1]/terminator

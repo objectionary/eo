@@ -153,7 +153,8 @@ public final class Answers {
     }
 
     private static String element(final String label) {
-        if (label.charAt(0) == '?' && !Answers.FIXED.containsKey(label)) {
+        if ((label.charAt(0) == '?' || label.charAt(0) == '!')
+            && !Answers.FIXED.containsKey(label)) {
             throw new IllegalStateException(
                 String.format("%s is a mark answers.xml has no element for", label)
             );
@@ -161,8 +162,6 @@ public final class Answers {
         final String elem;
         if (Answers.FIXED.containsKey(label)) {
             elem = Answers.FIXED.get(label);
-        } else if (label.charAt(0) == '!') {
-            elem = String.format("<fails name=\"%s\"/>", Answers.quoted(label.substring(1)));
         } else {
             elem = String.format("<is loc=\"%s\"/>", Answers.quoted(label));
         }

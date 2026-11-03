@@ -319,16 +319,6 @@ final class World {
     }
 
     /**
-     * A failing read.
-     *
-     * @param label What fails
-     * @return Its number
-     */
-    int conflict(final String label) {
-        return this.values.conflict(label);
-    }
-
-    /**
      * Whether a value is an open void, decided or not.
      *
      * @param num The number
