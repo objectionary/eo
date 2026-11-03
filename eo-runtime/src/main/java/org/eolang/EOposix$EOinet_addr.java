@@ -28,7 +28,7 @@ public final class EOposix$EOinet_addr extends PhDefault implements Atom {
      * Ctor.
      */
     public EOposix$EOinet_addr() {
-        super(new Attrs(new Attr("v🌵address", new AtVoid("v🌵address"))));
+        super(new Attrs(new Attr("v🌵address")));
     }
 
     @Override

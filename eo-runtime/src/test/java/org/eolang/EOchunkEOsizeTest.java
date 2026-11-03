@@ -29,7 +29,7 @@ final class EOchunkEOsizeTest {
                         new EOchunk$EOsize(),
                         Phi.RHO,
                         new PhApplication(
-                            new PhDefault(new Attrs(new Attr("id", new AtVoid("id")))),
+                            new PhDefault(new Attrs(new Attr("id"))),
                             "id",
                             new Data.ToPhi(-42)
                         )

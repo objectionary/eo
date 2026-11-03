@@ -17,7 +17,7 @@ public final class EOdataized extends PhDefault implements Atom {
      * Ctor.
      */
     public EOdataized() {
-        super(new Attrs(new Attr("v🌵target", new AtVoid("v🌵target"))));
+        super(new Attrs(new Attr("v🌵target")));
     }
 
     @Override

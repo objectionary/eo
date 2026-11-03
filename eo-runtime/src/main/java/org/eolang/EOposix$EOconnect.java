@@ -24,9 +24,9 @@ public final class EOposix$EOconnect extends PhDefault implements Atom {
     public EOposix$EOconnect() {
         super(
             new Attrs(
-                new Attr("v🌵descriptor", new AtVoid("v🌵descriptor")),
-                new Attr("v🌵sockaddr", new AtVoid("v🌵sockaddr")),
-                new Attr("v🌵length", new AtVoid("v🌵length"))
+                new Attr("v🌵descriptor"),
+                new Attr("v🌵sockaddr"),
+                new Attr("v🌵length")
             )
         );
     }

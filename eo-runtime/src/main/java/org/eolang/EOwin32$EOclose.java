@@ -21,7 +21,7 @@ public final class EOwin32$EOclose extends PhDefault implements Atom {
      * Ctor.
      */
     public EOwin32$EOclose() {
-        super(new Attrs(new Attr("v🌵descriptor", new AtVoid("v🌵descriptor"))));
+        super(new Attrs(new Attr("v🌵descriptor")));
     }
 
     @Override

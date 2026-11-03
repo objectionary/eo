@@ -21,8 +21,8 @@ final class AttrsTest {
         MatcherAssert.assertThat(
             "the attributes must come out in the order they were given, but they didnt",
             new Attrs(
-                new Attr("x", new AtVoid("x")),
-                new Attr("y", new AtVoid("y"))
+                new Attr("x"),
+                new Attr("y")
             ).keySet(),
             Matchers.contains("x", "y")
         );
@@ -30,9 +30,9 @@ final class AttrsTest {
 
     @Test
     void ignoresLaterChangesToTheArrayItWasGiven() {
-        final Attr[] given = {new Attr("x", new AtVoid("x"))};
+        final Attr[] given = {new Attr("x")};
         final Attrs attrs = new Attrs(given);
-        given[0] = new Attr("y", new AtVoid("y"));
+        given[0] = new Attr("y");
         MatcherAssert.assertThat(
             "a change to the array must not reach the attributes, but it did",
             attrs.keySet(),
@@ -62,8 +62,8 @@ final class AttrsTest {
         MatcherAssert.assertThat(
             "the size must count every entry given, but it didnt",
             new Attrs(
-                new Attr("x", new AtVoid("x")),
-                new Attr("y", new AtVoid("y"))
+                new Attr("x"),
+                new Attr("y")
             ).size(),
             Matchers.equalTo(2)
         );

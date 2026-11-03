@@ -30,8 +30,8 @@ public final class EOposix$EOsymlink extends PhDefault implements Atom {
     public EOposix$EOsymlink() {
         super(
             new Attrs(
-                new Attr("v🌵target", new AtVoid("v🌵target")),
-                new Attr("v🌵path", new AtVoid("v🌵path"))
+                new Attr("v🌵target"),
+                new Attr("v🌵path")
             )
         );
     }

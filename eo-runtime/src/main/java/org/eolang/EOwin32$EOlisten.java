@@ -24,8 +24,8 @@ public final class EOwin32$EOlisten extends PhDefault implements Atom {
     public EOwin32$EOlisten() {
         super(
             new Attrs(
-                new Attr("v🌵descriptor", new AtVoid("v🌵descriptor")),
-                new Attr("v🌵backlog", new AtVoid("v🌵backlog"))
+                new Attr("v🌵descriptor"),
+                new Attr("v🌵backlog")
             )
         );
     }

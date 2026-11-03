@@ -26,7 +26,7 @@ public final class EOwin32$EOgetenv extends PhDefault implements Atom {
      * Ctor.
      */
     public EOwin32$EOgetenv() {
-        super(new Attrs(new Attr("v🌵name", new AtVoid("v🌵name"))));
+        super(new Attrs(new Attr("v🌵name")));
     }
 
     @Override

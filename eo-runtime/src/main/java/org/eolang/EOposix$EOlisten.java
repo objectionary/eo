@@ -23,8 +23,8 @@ public final class EOposix$EOlisten extends PhDefault implements Atom {
     public EOposix$EOlisten() {
         super(
             new Attrs(
-                new Attr("v🌵descriptor", new AtVoid("v🌵descriptor")),
-                new Attr("v🌵backlog", new AtVoid("v🌵backlog"))
+                new Attr("v🌵descriptor"),
+                new Attr("v🌵backlog")
             )
         );
     }

@@ -21,8 +21,8 @@ public final class EOmalloc$EOof extends PhDefault implements Atom {
      */
     public EOmalloc$EOof() {
         super(new Attrs(
-            new Attr("v🌵size", new AtVoid("v🌵size")),
-            new Attr("v🌵scope", new AtVoid("v🌵scope"))
+            new Attr("v🌵size"),
+            new Attr("v🌵scope")
         ));
     }
 

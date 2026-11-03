@@ -29,12 +29,9 @@ public final class EOchunk$EOread extends PhDefault implements Atom {
     public EOchunk$EOread() {
         super(new Attrs(
             new Attr(Phi.RHO, new AtRho()),
-            new Attr("v🌵offset", new AtVoid("v🌵offset")),
-            new Attr("v🌵length", new AtVoid("v🌵length")),
-            new Attr(
-                EOchunk$EOread.FALLBACK,
-                new AtVoid(EOchunk$EOread.FALLBACK)
-            )
+            new Attr("v🌵offset"),
+            new Attr("v🌵length"),
+            new Attr(EOchunk$EOread.FALLBACK)
         ));
     }
 

@@ -29,7 +29,7 @@ public final class EOwin32$EOstat64 extends PhDefault implements Atom {
      * Ctor.
      */
     public EOwin32$EOstat64() {
-        super(new Attrs(new Attr("v🌵path", new AtVoid("v🌵path"))));
+        super(new Attrs(new Attr("v🌵path")));
     }
 
     @Override

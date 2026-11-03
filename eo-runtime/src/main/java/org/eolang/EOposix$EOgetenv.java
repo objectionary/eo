@@ -26,7 +26,7 @@ public final class EOposix$EOgetenv extends PhDefault implements Atom {
      * Ctor.
      */
     public EOposix$EOgetenv() {
-        super(new Attrs(new Attr("v🌵name", new AtVoid("v🌵name"))));
+        super(new Attrs(new Attr("v🌵name")));
     }
 
     @Override

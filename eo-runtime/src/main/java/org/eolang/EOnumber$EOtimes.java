@@ -20,7 +20,7 @@ public final class EOnumber$EOtimes extends PhDefault implements Atom {
      * Ctor.
      */
     public EOnumber$EOtimes() {
-        super(new Attrs(new Attr(Phi.RHO, new AtRho()), new Attr("v🌵b", new AtVoid("v🌵b"))));
+        super(new Attrs(new Attr(Phi.RHO, new AtRho()), new Attr("v🌵b")));
     }
 
     @Override

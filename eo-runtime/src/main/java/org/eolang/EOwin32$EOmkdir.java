@@ -28,7 +28,7 @@ public final class EOwin32$EOmkdir extends PhDefault implements Atom {
      * Ctor.
      */
     public EOwin32$EOmkdir() {
-        super(new Attrs(new Attr("v🌵path", new AtVoid("v🌵path"))));
+        super(new Attrs(new Attr("v🌵path")));
     }
 
     @Override

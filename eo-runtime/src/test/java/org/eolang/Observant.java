@@ -25,7 +25,7 @@ final class Observant extends PhDefault {
      * Ctor.
      */
     Observant() {
-        super(new Attrs(new Attr("x", new AtVoid("x"))));
+        super(new Attrs(new Attr("x")));
         this.names = new ArrayList<>(0);
     }
 

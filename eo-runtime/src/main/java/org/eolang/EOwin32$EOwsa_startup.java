@@ -26,7 +26,7 @@ public final class EOwin32$EOwsa_startup extends PhDefault implements Atom {
      * Ctor.
      */
     public EOwin32$EOwsa_startup() {
-        super(new Attrs(new Attr("v🌵version", new AtVoid("v🌵version"))));
+        super(new Attrs(new Attr("v🌵version")));
     }
 
     @Override

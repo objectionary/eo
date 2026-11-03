@@ -33,9 +33,9 @@ public final class EOwin32$EOopen extends PhDefault implements Atom {
     public EOwin32$EOopen() {
         super(
             new Attrs(
-                new Attr("v🌵path", new AtVoid("v🌵path")),
-                new Attr("v🌵flags", new AtVoid("v🌵flags")),
-                new Attr("v🌵mode", new AtVoid("v🌵mode"))
+                new Attr("v🌵path"),
+                new Attr("v🌵flags"),
+                new Attr("v🌵mode")
             )
         );
     }

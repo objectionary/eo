@@ -29,8 +29,8 @@ public final class EOposix$EOmkdir extends PhDefault implements Atom {
     public EOposix$EOmkdir() {
         super(
             new Attrs(
-                new Attr("v🌵path", new AtVoid("v🌵path")),
-                new Attr("v🌵mode", new AtVoid("v🌵mode"))
+                new Attr("v🌵path"),
+                new Attr("v🌵mode")
             )
         );
     }

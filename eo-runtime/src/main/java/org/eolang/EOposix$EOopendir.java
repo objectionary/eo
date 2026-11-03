@@ -31,7 +31,7 @@ public final class EOposix$EOopendir extends PhDefault implements Atom {
      * Ctor.
      */
     public EOposix$EOopendir() {
-        super(new Attrs(new Attr("v🌵path", new AtVoid("v🌵path"))));
+        super(new Attrs(new Attr("v🌵path")));
     }
 
     @Override

@@ -33,7 +33,7 @@ public final class EOwin32$EOfind_first_file extends PhDefault implements Atom {
      * Ctor.
      */
     public EOwin32$EOfind_first_file() {
-        super(new Attrs(new Attr("v🌵pattern", new AtVoid("v🌵pattern"))));
+        super(new Attrs(new Attr("v🌵pattern")));
     }
 
     @Override

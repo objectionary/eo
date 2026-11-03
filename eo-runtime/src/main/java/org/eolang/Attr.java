@@ -12,10 +12,10 @@ import java.util.AbstractMap;
  * <p>This is just a typed alias for
  * {@link AbstractMap.SimpleImmutableEntry SimpleImmutableEntry&lt;String,
  * Attr&gt;}, kept short so that subclasses of {@link PhDefault} can write
- * {@code super(new Attrs(new Attr("x", new AtVoid("x"))))} without
- * any method calls in the constructor body. The entry is immutable, so an
- * {@link Attrs} it was handed to keeps what it was given, no matter what the
- * caller does with its own copy of the entry afterwards.</p>
+ * {@code super(new Attrs(new Attr("x")))} without any method calls in the
+ * constructor body. The entry is immutable, so an {@link Attrs} it was
+ * handed to keeps what it was given, no matter what the caller does with
+ * its own copy of the entry afterwards.</p>
  *
  * @since 0.59
  */
@@ -25,6 +25,15 @@ public final class Attr extends AbstractMap.SimpleImmutableEntry<String, Attribu
      * Serialization identifier.
      */
     private static final long serialVersionUID = -1L;
+
+    /**
+     * Ctor that declares a void attribute.
+     *
+     * @param name Name of the void attribute
+     */
+    public Attr(final String name) {
+        this(name, new AtVoid(name));
+    }
 
     /**
      * Ctor.

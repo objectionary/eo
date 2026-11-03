@@ -24,7 +24,7 @@ final class CopiedAttrsTest {
 
     @Test
     void keepsCopyEmptyAfterLatePutOnOrigin() {
-        final Phi origin = new PhDefault(new Attrs(new Attr("v", new AtVoid("v"))));
+        final Phi origin = new PhDefault(new Attrs(new Attr("v")));
         final Phi copy = origin.copy();
         origin.put("v", new Data.ToPhi(7L));
         Assertions.assertThrows(
@@ -36,7 +36,7 @@ final class CopiedAttrsTest {
 
     @Test
     void readsTheSameCopyWhicheverWayItIsOrdered() {
-        final Phi origin = new PhDefault(new Attrs(new Attr("v", new AtVoid("v"))));
+        final Phi origin = new PhDefault(new Attrs(new Attr("v")));
         final Phi copy = origin.copy();
         Assertions.assertThrows(
             ExAbstract.class,

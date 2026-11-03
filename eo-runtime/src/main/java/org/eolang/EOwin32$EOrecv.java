@@ -26,9 +26,9 @@ public final class EOwin32$EOrecv extends PhDefault implements Atom {
     public EOwin32$EOrecv() {
         super(
             new Attrs(
-                new Attr("v🌵descriptor", new AtVoid("v🌵descriptor")),
-                new Attr("v🌵size", new AtVoid("v🌵size")),
-                new Attr("v🌵flags", new AtVoid("v🌵flags"))
+                new Attr("v🌵descriptor"),
+                new Attr("v🌵size"),
+                new Attr("v🌵flags")
             )
         );
     }

@@ -32,9 +32,9 @@ public final class EOposix$EOopen extends PhDefault implements Atom {
     public EOposix$EOopen() {
         super(
             new Attrs(
-                new Attr("v🌵path", new AtVoid("v🌵path")),
-                new Attr("v🌵flags", new AtVoid("v🌵flags")),
-                new Attr("v🌵mode", new AtVoid("v🌵mode"))
+                new Attr("v🌵path"),
+                new Attr("v🌵flags"),
+                new Attr("v🌵mode")
             )
         );
     }

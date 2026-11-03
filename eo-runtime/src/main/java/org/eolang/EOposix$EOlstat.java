@@ -24,7 +24,7 @@ public final class EOposix$EOlstat extends PhDefault implements Atom {
      * Ctor.
      */
     public EOposix$EOlstat() {
-        super(new Attrs(new Attr("v🌵path", new AtVoid("v🌵path"))));
+        super(new Attrs(new Attr("v🌵path")));
     }
 
     @Override

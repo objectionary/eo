@@ -27,7 +27,7 @@ public final class EOwin32$EOfind_close extends PhDefault implements Atom {
      * Ctor.
      */
     public EOwin32$EOfind_close() {
-        super(new Attrs(new Attr("v🌵search", new AtVoid("v🌵search"))));
+        super(new Attrs(new Attr("v🌵search")));
     }
 
     @Override

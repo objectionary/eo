@@ -29,8 +29,8 @@ public final class EOposix$EOrename extends PhDefault implements Atom {
     public EOposix$EOrename() {
         super(
             new Attrs(
-                new Attr("v🌵from", new AtVoid("v🌵from")),
-                new Attr("v🌵to", new AtVoid("v🌵to"))
+                new Attr("v🌵from"),
+                new Attr("v🌵to")
             )
         );
     }

@@ -22,7 +22,7 @@ public final class EOposix$EOstrerror extends PhDefault implements Atom {
      * Ctor.
      */
     public EOposix$EOstrerror() {
-        super(new Attrs(new Attr("v🌵errno", new AtVoid("v🌵errno"))));
+        super(new Attrs(new Attr("v🌵errno")));
     }
 
     @Override

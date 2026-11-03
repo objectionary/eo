@@ -28,7 +28,7 @@ public final class EOwin32$EOunlink extends PhDefault implements Atom {
      * Ctor.
      */
     public EOwin32$EOunlink() {
-        super(new Attrs(new Attr("v🌵path", new AtVoid("v🌵path"))));
+        super(new Attrs(new Attr("v🌵path")));
     }
 
     @Override

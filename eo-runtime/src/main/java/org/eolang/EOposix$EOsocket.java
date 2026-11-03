@@ -23,9 +23,9 @@ public final class EOposix$EOsocket extends PhDefault implements Atom {
     public EOposix$EOsocket() {
         super(
             new Attrs(
-                new Attr("v🌵domain", new AtVoid("v🌵domain")),
-                new Attr("v🌵type", new AtVoid("v🌵type")),
-                new Attr("v🌵protocol", new AtVoid("v🌵protocol"))
+                new Attr("v🌵domain"),
+                new Attr("v🌵type"),
+                new Attr("v🌵protocol")
             )
         );
     }

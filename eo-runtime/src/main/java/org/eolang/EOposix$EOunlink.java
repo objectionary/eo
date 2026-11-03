@@ -28,7 +28,7 @@ public final class EOposix$EOunlink extends PhDefault implements Atom {
      * Ctor.
      */
     public EOposix$EOunlink() {
-        super(new Attrs(new Attr("v🌵path", new AtVoid("v🌵path"))));
+        super(new Attrs(new Attr("v🌵path")));
     }
 
     @Override

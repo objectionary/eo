@@ -32,7 +32,7 @@ public final class EOposix$EOclosedir extends PhDefault implements Atom {
      * Ctor.
      */
     public EOposix$EOclosedir() {
-        super(new Attrs(new Attr("v🌵dirp", new AtVoid("v🌵dirp"))));
+        super(new Attrs(new Attr("v🌵dirp")));
     }
 
     @Override

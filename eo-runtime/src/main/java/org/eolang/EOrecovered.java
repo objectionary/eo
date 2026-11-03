@@ -36,8 +36,8 @@ public final class EOrecovered extends PhDefault implements Atom {
      */
     public EOrecovered() {
         super(new Attrs(
-            new Attr("v🌵value", new AtVoid("v🌵value")),
-            new Attr("v🌵alternative", new AtVoid("v🌵alternative"))
+            new Attr("v🌵value"),
+            new Attr("v🌵alternative")
         ));
     }
 

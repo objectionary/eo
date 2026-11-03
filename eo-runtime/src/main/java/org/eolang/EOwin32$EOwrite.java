@@ -24,9 +24,9 @@ public final class EOwin32$EOwrite extends PhDefault implements Atom {
     public EOwin32$EOwrite() {
         super(
             new Attrs(
-                new Attr("v🌵descriptor", new AtVoid("v🌵descriptor")),
-                new Attr("v🌵buffer", new AtVoid("v🌵buffer")),
-                new Attr("v🌵size", new AtVoid("v🌵size"))
+                new Attr("v🌵descriptor"),
+                new Attr("v🌵buffer"),
+                new Attr("v🌵size")
             )
         );
     }

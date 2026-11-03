@@ -4,7 +4,6 @@
  */
 package org.eolang.sys;
 
-import org.eolang.AtVoid;
 import org.eolang.Attr;
 import org.eolang.Attrs;
 import org.eolang.Data;
@@ -56,7 +55,7 @@ final class TupleToArrayTest {
 
     private static Phi withLength(final double length) {
         final Phi tuple = new PhDefault(
-            new Attrs(new Attr("length", new AtVoid("length")))
+            new Attrs(new Attr("length"))
         ).copy();
         tuple.put("length", new Data.ToPhi(length));
         return tuple;

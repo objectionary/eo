@@ -52,7 +52,7 @@ final class PhDefaultTest {
     void printsVoidAttributeAsTerm() {
         MatcherAssert.assertThat(
             "Object with unset void attribute must render it as question mark, but it didnt",
-            new PhDefault(new Attrs(new Attr("x", new AtVoid("x")))).φTerm(),
+            new PhDefault(new Attrs(new Attr("x"))).φTerm(),
             Matchers.equalTo("[x->?]")
         );
     }
@@ -154,7 +154,7 @@ final class PhDefaultTest {
     void needsRhoWhenItIsDeclaredAsVoid() {
         MatcherAssert.assertThat(
             String.format("Object with %s declared as void must await a receiver", Phi.RHO),
-            new PhDefault(new Attrs(new Attr(Phi.RHO, new AtVoid(Phi.RHO)))).needsRho(),
+            new PhDefault(new Attrs(new Attr(Phi.RHO))).needsRho(),
             Matchers.is(true)
         );
     }
@@ -653,8 +653,8 @@ final class PhDefaultTest {
     void countsVoidAttributesWhenRefusingToPut() {
         final Phi phi = new PhDefault(
             new Attrs(
-                new Attr("alpha", new AtVoid("alpha")),
-                new Attr("beta", new AtVoid("beta"))
+                new Attr("alpha"),
+                new Attr("beta")
             )
         );
         phi.put(0, new Data.ToPhi(1L));

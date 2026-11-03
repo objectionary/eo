@@ -24,7 +24,7 @@ public final class EOwin32$EOget_file_attributes extends PhDefault implements At
      * Ctor.
      */
     public EOwin32$EOget_file_attributes() {
-        super(new Attrs(new Attr("v🌵path", new AtVoid("v🌵path"))));
+        super(new Attrs(new Attr("v🌵path")));
     }
 
     @Override

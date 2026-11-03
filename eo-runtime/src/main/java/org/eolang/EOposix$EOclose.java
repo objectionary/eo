@@ -21,7 +21,7 @@ public final class EOposix$EOclose extends PhDefault implements Atom {
      * Ctor.
      */
     public EOposix$EOclose() {
-        super(new Attrs(new Attr("v🌵descriptor", new AtVoid("v🌵descriptor"))));
+        super(new Attrs(new Attr("v🌵descriptor")));
     }
 
     @Override

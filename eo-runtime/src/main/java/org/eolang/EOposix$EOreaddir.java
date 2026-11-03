@@ -56,7 +56,7 @@ public final class EOposix$EOreaddir extends PhDefault implements Atom {
      * Ctor.
      */
     public EOposix$EOreaddir() {
-        super(new Attrs(new Attr("v🌵dirp", new AtVoid("v🌵dirp"))));
+        super(new Attrs(new Attr("v🌵dirp")));
     }
 
     @Override

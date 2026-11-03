@@ -30,8 +30,8 @@ public final class EOwin32$EOrename extends PhDefault implements Atom {
     public EOwin32$EOrename() {
         super(
             new Attrs(
-                new Attr("v🌵from", new AtVoid("v🌵from")),
-                new Attr("v🌵to", new AtVoid("v🌵to"))
+                new Attr("v🌵from"),
+                new Attr("v🌵to")
             )
         );
     }

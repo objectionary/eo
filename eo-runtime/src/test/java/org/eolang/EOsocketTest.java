@@ -858,7 +858,7 @@ final class EOsocketTest {
          * Ctor.
          */
         Simple() {
-            super(new Attrs(new Attr("s", new AtVoid("s"))));
+            super(new Attrs(new Attr("s")));
         }
 
         @Override
@@ -889,7 +889,7 @@ final class EOsocketTest {
          * @param received Reseived message size
          */
         Server(final int received) {
-            super(new Attrs(new Attr("s", new AtVoid("s"))));
+            super(new Attrs(new Attr("s")));
             this.received = received;
         }
 
@@ -920,7 +920,7 @@ final class EOsocketTest {
          * @param received Reseived message size
          */
         Receiver(final int received) {
-            super(new Attrs(new Attr("s", new AtVoid("s"))));
+            super(new Attrs(new Attr("s")));
             this.received = received;
         }
 
@@ -951,7 +951,7 @@ final class EOsocketTest {
          * @param msg Message to send
          */
         Client(final String msg) {
-            super(new Attrs(new Attr("s", new AtVoid("s"))));
+            super(new Attrs(new Attr("s")));
             this.message = msg;
         }
 

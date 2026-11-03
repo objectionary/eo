@@ -29,7 +29,7 @@ public final class EOwin32$EOfind_next_file extends PhDefault implements Atom {
      * Ctor.
      */
     public EOwin32$EOfind_next_file() {
-        super(new Attrs(new Attr("v🌵search", new AtVoid("v🌵search"))));
+        super(new Attrs(new Attr("v🌵search")));
     }
 
     @Override

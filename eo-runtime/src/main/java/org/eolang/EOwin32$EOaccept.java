@@ -29,9 +29,9 @@ public final class EOwin32$EOaccept extends PhDefault implements Atom {
     public EOwin32$EOaccept() {
         super(
             new Attrs(
-                new Attr("v🌵descriptor", new AtVoid("v🌵descriptor")),
-                new Attr("v🌵sockaddr", new AtVoid("v🌵sockaddr")),
-                new Attr("v🌵length", new AtVoid("v🌵length"))
+                new Attr("v🌵descriptor"),
+                new Attr("v🌵sockaddr"),
+                new Attr("v🌵length")
             )
         );
     }

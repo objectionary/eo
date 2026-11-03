@@ -26,10 +26,10 @@ public final class EOwin32$EOsend extends PhDefault implements Atom {
     public EOwin32$EOsend() {
         super(
             new Attrs(
-                new Attr("v🌵descriptor", new AtVoid("v🌵descriptor")),
-                new Attr("v🌵buffer", new AtVoid("v🌵buffer")),
-                new Attr("v🌵size", new AtVoid("v🌵size")),
-                new Attr("v🌵flags", new AtVoid("v🌵flags"))
+                new Attr("v🌵descriptor"),
+                new Attr("v🌵buffer"),
+                new Attr("v🌵size"),
+                new Attr("v🌵flags")
             )
         );
     }

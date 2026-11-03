@@ -25,7 +25,7 @@ public final class EOwin32$EOclosesocket extends PhDefault implements Atom {
      * Ctor.
      */
     public EOwin32$EOclosesocket() {
-        super(new Attrs(new Attr("v🌵descriptor", new AtVoid("v🌵descriptor"))));
+        super(new Attrs(new Attr("v🌵descriptor")));
     }
 
     @Override
