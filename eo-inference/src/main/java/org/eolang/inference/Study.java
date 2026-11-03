@@ -32,8 +32,11 @@ import java.util.Set;
  * the copy as written nor a study copy. The study copy is born
  * {@code in:H}, with {@code H} the real copy, which is its {@code ^} and
  * only one when it declares {@code ^}; one that declares none has no
- * {@code ^} at all (#9785). Its own voids stay empty. If the formation
- * around has no real copy, the study copies go inside its study copies; if
+ * {@code ^} at all (#9785). A formation with no name of its own takes as
+ * its {@code ^} only the object it goes into, which a study copy stands
+ * for but does not have, so its {@code ^} stays empty (#9655). Its own
+ * voids stay empty. If the formation around has no real copy, the study
+ * copies go inside its study copies; if
  * it has neither, or nothing is around, the copy as written is kept. Every
  * later stop gives a study copy to each real copy that has appeared since,
  * and a kept copy stays kept, and counts.</p>
@@ -273,6 +276,12 @@ final class Study {
     }
 
     private void sample(final String form, final int host, final Pile out) {
+        final Map<String, int[]> rows;
+        if (this.world.form(form).applied()) {
+            rows = Map.of();
+        } else {
+            rows = Map.of("ρ", new int[] {host});
+        }
         final int copy = this.state.copy(
             new Value(
                 form,
@@ -282,7 +291,7 @@ final class Study {
                 ),
                 Formation.RHO
             ),
-            Map.of("ρ", new int[] {host})
+            rows
         );
         if (this.world.value(copy).kind() == 'O' && !this.stays.get(copy)) {
             this.stays.set(copy);

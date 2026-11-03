@@ -34,11 +34,9 @@ import org.w3c.dom.Node;
  * {@code D}, {@code <terminator/>} into {@code T},
  * {@code <unknown kind="study"/>} into {@code ?unknown-study}, the same for
  * each of the four kinds, {@code empty}, {@code study}, {@code java} and
- * {@code loop}, and
- * {@code <fails name="ρ" by="java"/>} into {@code !only-java-fills-ρ}. A
- * missing attribute is T, so a {@code ^} that only Java fills is the one
- * failure the engine writes, and any other {@code <fails>} stops the
- * report.</p>
+ * {@code loop}. A missing attribute is T, and the {@code ^} of a formation
+ * handed to an atom is that atom, so the engine writes no failure, and a
+ * {@code <fails>} stops the report.</p>
  *
  * @since 0.76.0
  */
@@ -160,8 +158,6 @@ final class Table {
         final String found;
         if ("is".equals(tag)) {
             found = noted.says("loc");
-        } else if ("fails".equals(tag)) {
-            found = Table.failed(noted);
         } else if ("unknown".equals(tag)) {
             found = Table.unknown(noted);
         } else if ("data".equals(tag)) {
@@ -174,18 +170,6 @@ final class Table {
             );
         }
         return found;
-    }
-
-    private static String failed(final Noted noted) {
-        if (!"java".equals(noted.says("by"))) {
-            throw new IllegalArgumentException(
-                String.format(
-                    "answers.xml says the read of %s fails, though only a ^ Java fills can fail",
-                    noted.says("name")
-                )
-            );
-        }
-        return "!only-java-fills-ρ";
     }
 
     private static String unknown(final Noted noted) {

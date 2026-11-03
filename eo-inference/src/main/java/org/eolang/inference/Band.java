@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Which of ten bands a place falls in, by what it answers over all its copies.
+ * Which of nine bands a place falls in, by what it answers over all its copies.
  *
  * <p>A place is green when it answers one name and nothing else in any copy,
  * lime when that name comes with a gap in other copies, teal when it answers
@@ -23,9 +23,7 @@ import java.util.stream.Collectors;
  * takes the colour of the kind of unknown it answers: pink for a read
  * nothing ever answers, purple for a void only Java fills, slate for a void
  * of an object nobody calls, and amber for a void nobody fills. A place that
- * answers several kinds takes the first of them in that order. A forbidden
- * construction in any copy makes it red whatever else it answers; today the
- * only one is a {@code ^} that only Java fills.</p>
+ * answers several kinds takes the first of them in that order.</p>
  *
  * <p>The labels are the ones the place answers, with the formations of one
  * shape folded into one name first, so two copies of one lambda count as one
@@ -40,7 +38,7 @@ final class Band {
      * The bands, in the order a tally lists them.
      */
     static final List<String> ORDER = Arrays.asList(
-        "named", "gaps", "pair", "mixed", "loop", "atom", "study", "empty", "error", "forbidden"
+        "named", "gaps", "pair", "mixed", "loop", "atom", "study", "empty", "error"
     );
 
     /**
@@ -83,12 +81,10 @@ final class Band {
     String name() {
         final Set<String> all = new HashSet<>(this.labels);
         final Set<String> names = all.stream()
-            .filter(label -> !label.startsWith("?") && !label.startsWith("!") && !"T".equals(label))
+            .filter(label -> !label.startsWith("?") && !"T".equals(label))
             .collect(Collectors.toSet());
         final String found;
-        if (all.stream().anyMatch(label -> label.startsWith("!"))) {
-            found = "forbidden";
-        } else if (all.equals(names)) {
+        if (all.equals(names)) {
             found = Band.named(names.size());
         } else if (names.isEmpty()) {
             found = this.unnamed();

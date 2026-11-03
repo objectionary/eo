@@ -52,15 +52,6 @@ final class LabelTest {
     }
 
     @Test
-    void drawsTheCaretOnlyJavaFillsInWords() {
-        MatcherAssert.assertThat(
-            "a caret only Java fills has words of its own, but it was drawn some other way",
-            new Label("!only-java-fills-ρ").kind(),
-            Matchers.equalTo("words")
-        );
-    }
-
-    @Test
     void spellsAnUnknownMarkWithSpaces() {
         MatcherAssert.assertThat(
             "a mark with no words of its own must be spelled with spaces, but it wasnt",

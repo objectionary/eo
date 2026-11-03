@@ -34,7 +34,7 @@
   the source, true of every caller there will ever be, and it answers first.
   Otherwise the row of the place of the void in "answers.xml" says what the
   copies of the formation hold there, and it answers when, with the
-  terminations, the unknowns and a "ρ" only Java fills left out, it names one
+  terminations and the unknowns left out, it names one
   object and nothing else. A declared "ρ" is not read off that row, since a
   decorator in it is named by what its "φ" gives: it holds the formation it
   is written in, the "rho" of the void in "facts.xml", which comes from the

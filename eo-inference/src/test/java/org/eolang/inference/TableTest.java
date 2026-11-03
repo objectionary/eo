@@ -115,34 +115,20 @@ final class TableTest {
     }
 
     @Test
-    void readsACaretOnlyJavaFillsAsItsOwnFailure() {
+    void refusesAnyFailure() {
         MatcherAssert.assertThat(
-            "a caret only Java fills must be read as that failure, but it wasnt",
-            new Table(
-                new Xnav(
-                    "<answers><o loc='Φ.kiln.ρ' copies='1'>",
-                    "<fails name='ρ' by='java'/></o></answers>"
-                )
-            ).said("Φ.kiln.ρ").keySet(),
-            Matchers.contains("!only-java-fills-ρ")
-        );
-    }
-
-    @Test
-    void refusesAFailureOtherThanTheCaretOnlyJavaFills() {
-        MatcherAssert.assertThat(
-            "a failure Java does not stand behind must stop the report and be named, but it wasnt",
+            "a failure must stop the report and be named, but it wasnt",
             Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> new Table(
                     new Xnav(
-                        "<answers><o loc='Φ.kiln.w' copies='6'>",
-                        "<fails name='Φ.posix.name'/><is loc='Φ.string'/></o></answers>"
+                        "<answers><o loc='Φ.kiln.ρ' copies='6'>",
+                        "<fails name='ρ' by='java'/><is loc='Φ.string'/></o></answers>"
                     )
-                ).said("Φ.kiln.w"),
-                "a failure Java does not stand behind must stop the report"
+                ).said("Φ.kiln.ρ"),
+                "a failure must stop the report"
             ).getMessage(),
-            Matchers.containsString("Φ.posix.name")
+            Matchers.containsString("<fails>")
         );
     }
 

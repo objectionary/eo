@@ -28,7 +28,10 @@ import java.util.Set;
  * voids, once the call fills the last of its empty voids; a call that
  * leaves some empty makes a plain copy, and a later call fills the rest.
  * Every argument of an atom is dataized, a void its atom calls back gets
- * its copies made, and a void of what Java makes fills its pool.</p>
+ * its copies made, and a void of what Java makes fills its pool. A
+ * formation with no name of its own, written as an argument, gets the copy
+ * the call makes as its {@code ^}, an atom's copy too: that is the object
+ * it goes into, and nothing else is.</p>
  *
  * <p>For each head the call also notes where each argument lands: the
  * void of a copy made in EO code, or no void.</p>
@@ -264,7 +267,6 @@ final class Calls {
                 this.state.wish(wish);
             }
         } else if (!call.lacking(free.size())) {
-            this.bind(value, voids, call);
             final int copy = this.state.copy(
                 new Value(
                     value.form(), this.world.born(call.site(), value.form()),
@@ -272,12 +274,29 @@ final class Calls {
                 ),
                 this.rows(head, value, voids, call.sets())
             );
+            this.applied(copy, call);
+            this.bind(value, voids, call);
             this.state.remember(copy);
             if (!narrowed) {
                 out.add(copy);
             }
         }
         return out;
+    }
+
+    private void applied(final int copy, final Call call) {
+        final List<String> args = this.world.args(call.site().place());
+        for (int arg = 0; arg < call.raw().size(); ++arg) {
+            for (final int val : call.raw().get(arg)) {
+                final int inside = this.world.bare(val);
+                final Value value = this.world.value(inside);
+                if (value.kind() == 'O' && value.form().equals(args.get(arg))
+                    && (value.bound() & Formation.RHO) != 0
+                    && this.world.form(value.form()).applied()) {
+                    this.state.gather(inside, "ρ", copy);
+                }
+            }
+        }
     }
 
     private void bind(final Value value, final List<String> voids, final Call call) {
@@ -304,16 +323,12 @@ final class Calls {
 
     private void back(final String name, final int arg, final Formation shape, final Call call) {
         for (final int val : call.raw().get(arg)) {
-            this.state.handed(val);
             this.state.called(val, shape.args(name), call.site());
         }
     }
 
     private void dataized(final String name, final int arg, final Call call) {
         final Usage usage = new Usage(name, call.site(), Counting.DATAIZED);
-        for (final int val : call.raw().get(arg)) {
-            this.state.handed(val);
-        }
         for (final int val : call.raw().get(arg)) {
             this.state.use(val, usage, new Ints());
         }

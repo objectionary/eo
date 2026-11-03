@@ -5,7 +5,7 @@
 -->
 <!--
 The index of the inference report: a bar per file with its objects in the
-colours of ten bands; a folder's bar adds up its files. A click on
+colours of nine bands; a folder's bar adds up its files. A click on
 a colour in the tally keeps only the files and folders with objects of the
 chosen colours; the file pages share the choice and keep only the lines with
 such marks. Under the tally, a glossary says what the words of the report
@@ -59,10 +59,6 @@ mean.
             <xsl:value-of select="@error"/>
             <xsl:text> only an error</xsl:text>
           </span>
-          <span class="forbidden" data-band="forbidden">
-            <xsl:value-of select="@forbidden"/>
-            <xsl:text> forbidden constructions</xsl:text>
-          </span>
         </p>
         <dl class="terms">
           <dt>copy</dt>
@@ -84,7 +80,7 @@ mean.
     </html>
   </xsl:template>
   <xsl:template match="dir">
-    <details data-named="{@named}" data-gaps="{@gaps}" data-pair="{@pair}" data-mixed="{@mixed}" data-loop="{@loop}" data-atom="{@atom}" data-study="{@study}" data-empty="{@empty}" data-error="{@error}" data-forbidden="{@forbidden}">
+    <details data-named="{@named}" data-gaps="{@gaps}" data-pair="{@pair}" data-mixed="{@mixed}" data-loop="{@loop}" data-atom="{@atom}" data-study="{@study}" data-empty="{@empty}" data-error="{@error}">
       <summary>
         <xsl:value-of select="@name"/>
         <xsl:call-template name="bar"/>
@@ -95,7 +91,7 @@ mean.
     </details>
   </xsl:template>
   <xsl:template match="file">
-    <div class="row" data-named="{@named}" data-gaps="{@gaps}" data-pair="{@pair}" data-mixed="{@mixed}" data-loop="{@loop}" data-atom="{@atom}" data-study="{@study}" data-empty="{@empty}" data-error="{@error}" data-forbidden="{@forbidden}">
+    <div class="row" data-named="{@named}" data-gaps="{@gaps}" data-pair="{@pair}" data-mixed="{@mixed}" data-loop="{@loop}" data-atom="{@atom}" data-study="{@study}" data-empty="{@empty}" data-error="{@error}">
       <a href="{@href}">
         <xsl:value-of select="@name"/>
       </a>
@@ -103,7 +99,7 @@ mean.
     </div>
   </xsl:template>
   <xsl:template name="bar">
-    <span class="bar" title="{@named} named, {@gaps} one name with gaps, {@pair} two names, {@mixed} two or more names maybe with gaps, {@loop} unknown nothing ever answers, {@atom} unknown filled by an atom, {@study} unknown nobody calls this object, {@empty} unknown filled by nobody, {@error} only an error, {@forbidden} forbidden constructions">
+    <span class="bar" title="{@named} named, {@gaps} one name with gaps, {@pair} two names, {@mixed} two or more names maybe with gaps, {@loop} unknown nothing ever answers, {@atom} unknown filled by an atom, {@study} unknown nobody calls this object, {@empty} unknown filled by nobody, {@error} only an error">
       <span class="named" style="flex: {@named}"/>
       <span class="gaps" style="flex: {@gaps}"/>
       <span class="pair" style="flex: {@pair}"/>
@@ -113,7 +109,6 @@ mean.
       <span class="study" style="flex: {@study}"/>
       <span class="empty" style="flex: {@empty}"/>
       <span class="error" style="flex: {@error}"/>
-      <span class="forbidden" style="flex: {@forbidden}"/>
     </span>
   </xsl:template>
   <xsl:template name="style">
@@ -132,7 +127,6 @@ mean.
       .tally .study { background: #dfe6e9; }
       .tally .empty { background: #fbeecc; }
       .tally .error { background: #efe2dc; }
-      .tally .forbidden { background: #f7d4d4; }
       .terms { display: grid; grid-template-columns: max-content 1fr; gap: .3em 1.2em; margin: 0 0 1.6em; color: #555; font-family: system-ui, sans-serif; }
       .terms dt { color: #1a1a1a; font-weight: 600; }
       .terms dd { margin: 0; }
@@ -154,7 +148,6 @@ mean.
       .bar .study { background: #90a4ae; }
       .bar .empty { background: #e8b64c; }
       .bar .error { background: #a1887f; }
-      .bar .forbidden { background: #d76b6b; }
     </style>
   </xsl:template>
   <xsl:template name="filter">

@@ -47,8 +47,7 @@ public final class Answers {
         "?unknown-empty", "<unknown kind=\"empty\"/>",
         "?unknown-study", "<unknown kind=\"study\"/>",
         "?unknown-java", "<unknown kind=\"java\"/>",
-        "?unknown-loop", "<unknown kind=\"loop\"/>",
-        Telling.ONLY_JAVA, "<fails name=\"ρ\" by=\"java\"/>"
+        "?unknown-loop", "<unknown kind=\"loop\"/>"
     );
 
     /**

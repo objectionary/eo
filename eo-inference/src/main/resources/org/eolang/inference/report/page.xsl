@@ -5,7 +5,7 @@
 -->
 <!--
 A page of the inference report: the source of one file, with a mark on every
-object in the colour of one of ten bands, and a list under the mark of what
+object in the colour of one of nine bands, and a list under the mark of what
 the object answers in how many copies, one answer per bullet when there are
 several. A click on a colour in the tally keeps only the lines with
 marks of the chosen colours, and only those marks on them; a dashed rule shows
@@ -73,10 +73,6 @@ stays lit until the next scroll, click or key press.
           <span class="error" data-band="error">
             <xsl:value-of select="@error"/>
             <xsl:text> only an error</xsl:text>
-          </span>
-          <span class="forbidden" data-band="forbidden">
-            <xsl:value-of select="@forbidden"/>
-            <xsl:text> forbidden constructions</xsl:text>
           </span>
         </p>
         <table class="src">
@@ -214,7 +210,6 @@ stays lit until the next scroll, click or key press.
       .tally .study { background: #dfe6e9; }
       .tally .empty { background: #fbeecc; }
       .tally .error { background: #efe2dc; }
-      .tally .forbidden { background: #f7d4d4; }
       .tally span[data-band] { cursor: pointer; user-select: none; }
       .tally span.on { box-shadow: 0 0 0 2px #1a1a1a; }
       table.src { border-collapse: collapse; }
@@ -234,7 +229,6 @@ stays lit until the next scroll, click or key press.
       .mark.study { color: #546e7a; }
       .mark.empty { color: #b26a00; }
       .mark.error { color: #795548; }
-      .mark.forbidden { color: #c62828; }
       .pop { display: none; position: absolute; left: 0; top: 100%; margin-top: .3em; z-index: 9; white-space: normal; width: 26em; padding: .6em .8em; background: #fffdf5; color: #1a1a1a; border: 1px solid #ccc; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
       .pop::before { content: ""; position: absolute; left: -1px; right: -1px; bottom: 100%; height: calc(.3em + 1px); }
       .mark:hover .pop, .mark.held .pop { display: block; }

@@ -11,8 +11,7 @@ import java.util.Map;
  *
  * <p>The engine labels what a copy gives: a locator such as
  * {@code Φ.number}, {@code D} for a datum, {@code T} for an error, a mark
- * that starts with {@code ?} when it cannot name anything, and
- * {@code !only-java-fills-ρ} for a {@code ^} only Java fills. A page lists
+ * that starts with {@code ?} when it cannot name anything. A page lists
  * them under a mark, and the reader is given words in place of the marks,
  * so each label comes with a kind, which says how a page draws it, and the
  * words it is drawn with.</p>
@@ -30,9 +29,7 @@ final class Label {
         "?unknown-empty", "unknown, filled by nobody",
         "?unknown-study", "unknown, nobody calls this object",
         "?unknown-java", "unknown, filled by an atom",
-        "?unknown-loop", "unknown, nothing ever answers",
-        "!only-java-fills-ρ",
-        "an error: this ^ is empty, and only Java fills it once an atom reads the object"
+        "?unknown-loop", "unknown, nothing ever answers"
     );
 
     /**

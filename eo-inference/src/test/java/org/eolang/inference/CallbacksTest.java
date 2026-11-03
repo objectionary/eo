@@ -55,21 +55,4 @@ final class CallbacksTest {
             Matchers.equalTo("Φ.block@java{}")
         );
     }
-
-    @Test
-    void notesCopyWhoseRhoOnlyJavaFills(@Mktmp final Path temp) throws IOException {
-        final World world = new Sources(temp)
-            .with("jobs.eo", "[] > jobs", "  [] > run /Q.number", "    ? > job")
-            .with("app.eo", "[] > app", "  jobs.run > @", "    [^]", "      42 > @")
-            .world();
-        MatcherAssert.assertThat(
-            "a copy handed to an atom with a declared ^ nobody binds must be noted, but it wasnt",
-            new Settled(world).state().handedToJava(
-                world.intern(
-                    new Value('O', "Φ.app.φ.α0", "Φ.app.φ.α0", 0L, "", -1, 0)
-                )
-            ),
-            Matchers.is(true)
-        );
-    }
 }

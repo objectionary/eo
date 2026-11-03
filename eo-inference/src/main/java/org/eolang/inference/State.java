@@ -348,25 +348,6 @@ final class State {
     }
 
     /**
-     * Note a value handed to an atom.
-     *
-     * @param num The value
-     */
-    void handed(final int num) {
-        this.population.handed(num);
-    }
-
-    /**
-     * Whether only Java fills the {@code ρ} of a copy handed to an atom.
-     *
-     * @param num The copy
-     * @return TRUE if only Java does
-     */
-    boolean handedToJava(final int num) {
-        return this.population.handedToJava(num);
-    }
-
-    /**
      * Remember a value, so the passes walk it.
      *
      * @param num The value

@@ -30,19 +30,16 @@ import java.util.TreeSet;
  * in a copy a call made, said only on that void's own row, since a read of
  * it is T; {@code ?unknown-study}, a void nobody fills in a copy that stands
  * for a caller who is not there; {@code ?unknown-java}, a void only Java
- * fills; and {@code ?unknown-loop}, a read nothing ever answers. A bound void
- * or {@code ρ} that gives no label at all once the walk is over is a defect
- * of the walk, and so is an unknown of no kind, and telling stops on
- * either.</p>
+ * fills; and {@code ?unknown-loop}, a read nothing ever answers. A
+ * {@code ^} no object went into, of a formation with no name of its own
+ * whose call made no copy, is told as a void nobody fills. A bound void, or
+ * a {@code ρ} that holds values, that gives no label at all once the walk
+ * is over is a defect of the walk, and so is an unknown of no kind, and
+ * telling stops on either.</p>
  *
  * @since 0.76.0
  */
 final class Telling {
-
-    /**
-     * The mark of what only Java puts into a {@code ρ}.
-     */
-    static final String ONLY_JAVA = "!only-java-fills-ρ";
 
     /**
      * The state of the walk.
@@ -209,12 +206,12 @@ final class Telling {
     private Set<String> rho(final int copy) {
         final Value value = this.world.value(copy);
         final Set<String> said = new TreeSet<>(new CodeOrder());
-        if (this.state.handedToJava(copy)) {
-            said.add(Telling.ONLY_JAVA);
-        } else if (Values.JBORN.equals(value.birth()) || (value.bound() & Formation.RHO) == 0) {
+        final Ints row = this.state.untidy(copy, "ρ");
+        if (Values.JBORN.equals(value.birth()) || (value.bound() & Formation.RHO) == 0
+            || row.isEmpty()) {
             said.add(this.vacant(copy, ""));
         } else {
-            for (final int val : this.state.untidy(copy, "ρ").array()) {
+            for (final int val : row.array()) {
                 said.addAll(this.last(val));
             }
             if (said.isEmpty()) {
@@ -342,7 +339,7 @@ final class Telling {
     }
 
     private static boolean told(final String label) {
-        return label.charAt(0) != '?' && label.charAt(0) != '!' && Telling.plain(label);
+        return label.charAt(0) != '?' && Telling.plain(label);
     }
 
     private static boolean plain(final String label) {

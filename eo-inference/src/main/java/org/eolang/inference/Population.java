@@ -342,23 +342,4 @@ final class Population {
     void called(final int num, final List<String> types, final Site site) {
         this.callbacks.called(num, types, site);
     }
-
-    /**
-     * Note a value handed to an atom.
-     *
-     * @param num The value
-     */
-    void handed(final int num) {
-        this.callbacks.handed(num);
-    }
-
-    /**
-     * Whether only Java fills the {@code ρ} of a copy handed to an atom.
-     *
-     * @param num The copy
-     * @return TRUE if only Java does
-     */
-    boolean handedToJava(final int num) {
-        return this.callbacks.handedToJava(num);
-    }
 }

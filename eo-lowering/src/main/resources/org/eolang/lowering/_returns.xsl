@@ -25,14 +25,13 @@
   The labels the copies of a place say it is, from its row of
   "answers.xml" or from the "reduced" of that row. A label stands right
   under the row when every copy says the same, or inside one "set" per
-  group of copies otherwise, and all of them are taken. A "terminator", an
-  "unknown" and "fails", a "ρ" only Java fills, are left out: each is a gap next
-  to the names, and none of them says what the place is when it is
-  something.
+  group of copies otherwise, and all of them are taken. A "terminator" and an
+  "unknown" are left out: each is a gap next to the names, and neither says
+  what the place is when it is something.
   -->
   <xsl:function name="eo:labels" as="element()*">
     <xsl:param name="row" as="element()*"/>
-    <xsl:sequence select="$row/(*[not(self::set or self::reduced)] | set/*)[not(self::terminator or self::unknown or self::fails)]"/>
+    <xsl:sequence select="$row/(*[not(self::set or self::reduced)] | set/*)[not(self::terminator or self::unknown)]"/>
   </xsl:function>
   <!--
   The types the body of the object with this locator may be, as the tables

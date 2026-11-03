@@ -16,13 +16,13 @@ import org.apache.maven.plugins.annotations.Parameter;
  * Draw a page per source file from what {@link MjInference} wrote.
  *
  * <p>A page shows the author's own source with a mark on every object,
- * coloured by one of ten bands of what the engine answers there in
+ * coloured by one of nine bands of what the engine answers there in
  * {@code answers.xml}: green where it answers one name and nothing else,
  * other colours where it answers several names, names with gaps, an
- * unknown of one of four kinds, only errors, or a forbidden construction,
- * which today is only a {@code ^} that only Java fills. An index lists the pages with a bar per file, and
- * the goal logs how many objects fall in each band and writes the same
- * numbers down in {@code ladder.txt}, beside the directory of the tables.</p>
+ * unknown of one of four kinds, or only errors. An index lists the pages
+ * with a bar per file, and the goal logs how many objects fall in each band
+ * and writes the same numbers down in {@code ladder.txt}, beside the
+ * directory of the tables.</p>
  *
  * <p>A goal of its own rather than a flag on {@link MjInference}: a build
  * that wants the pages asks for this goal, one that does not never runs

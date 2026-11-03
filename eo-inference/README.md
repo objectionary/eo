@@ -32,6 +32,10 @@ number. The first, `facts.xml`, has four parts:
 
 Every object is named by its locator, a path from `Φ` down: `φ` is the `@`,
 `ρ` is `^`, and `α0`, `α1` are the first and the second argument of a call.
+The `^` of a named formation is the formation around it, or `Φ` at the top.
+A formation with no name, written as an argument, takes as its `^` the object
+it goes into, an atom too, and one that goes into no object has a `^` nobody
+fills.
 
 The second, `answers.xml`, is what the engine (`Walk`) works out from
 `facts.xml` alone. For every place it has the sets of objects the copies of
@@ -69,12 +73,11 @@ into them.
 The `inference-report` goal reads the prepared files and the `answers.xml` in
 `target/eo/NN-inference`, and writes a page per source file into
 `target/site/inference`, with an index. A page shows the source with a mark
-on every object, coloured by one of ten bands of what the engine answers
+on every object, coloured by one of nine bands of what the engine answers
 there: green for one name and nothing else, then names with gaps, two names,
-mixed names, an unknown of each of four kinds, only an error, and red for a
-forbidden construction, which today is only a `^` that only Java fills. The four kinds are a read nothing ever answers, a void
-only Java fills, a void of an object nobody calls, and a void nobody fills,
-and `answers.xml` writes them as `<unknown kind="loop"/>`, `kind="java"`,
+mixed names, an unknown of each of four kinds, and only an error. The four
+kinds are a read nothing ever answers, a void only Java fills, a void of an
+object nobody calls, and a void nobody fills, and `answers.xml` writes them as `<unknown kind="loop"/>`, `kind="java"`,
 `kind="study"` and `kind="empty"`. A place with no name and unknowns of several
 kinds takes the first of them in that order. The goal logs how many objects
 fall in each band. An object that `answers.xml` says nothing of stops the

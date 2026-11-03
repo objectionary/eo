@@ -143,10 +143,10 @@ final class ReportTest {
     @Test
     void talliesTheObjectsOfTheProgramByBand(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
-            "the tally must count both objects as named and none as forbidden, but it didnt",
+            "the tally must count both objects of the program as named, but it didnt",
             new Report(ReportTest.program(temp), ReportTest.answers(temp))
                 .written(temp.resolve("out")),
-            Matchers.allOf(Matchers.hasEntry("named", 2), Matchers.hasEntry("forbidden", 0))
+            Matchers.hasEntry("named", 2)
         );
     }
 

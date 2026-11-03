@@ -142,13 +142,4 @@ final class BandTest {
             Matchers.equalTo("study")
         );
     }
-
-    @Test
-    void marksTheCaretOnlyJavaFillsAsForbiddenWhateverElseIsAnswered() {
-        MatcherAssert.assertThat(
-            "a caret only Java fills in one copy must be a red forbidden construction next to a name, but it wasnt",
-            new Band(Arrays.asList("Φ.kettle", "!only-java-fills-ρ")).name(),
-            Matchers.equalTo("forbidden")
-        );
-    }
 }
