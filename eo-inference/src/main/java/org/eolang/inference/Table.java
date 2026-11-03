@@ -106,6 +106,19 @@ final class Table {
             .sum();
     }
 
+    /**
+     * Whether every copy of the place that says the label says nothing else.
+     *
+     * @param place The locator of the place
+     * @param label The label
+     * @return TRUE when the label stands alone in every set that holds it
+     */
+    boolean alone(final String place, final String label) {
+        return this.sets(place).keySet().stream()
+            .filter(set -> set.contains(label))
+            .allMatch(set -> set.size() == 1);
+    }
+
     private Map<Set<String>, Integer> sets(final String place) {
         if (this.read.isEmpty()) {
             this.read.add(this.rows());

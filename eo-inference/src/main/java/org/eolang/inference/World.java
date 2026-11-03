@@ -329,16 +329,6 @@ final class World {
     }
 
     /**
-     * Whether a value is the unknown of a void nobody fills, decided or not.
-     *
-     * @param num The number
-     * @return TRUE if it is
-     */
-    boolean gap(final int num) {
-        return this.values.vacant(num);
-    }
-
-    /**
      * The value with the rule b and rule A wrappers taken off.
      *
      * @param num The number

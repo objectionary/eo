@@ -1,0 +1,45 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nothing calls status at first, so a stop decides Java alone fills its note,
+# and a later stop keeps late as written, whose call of status puts "late"
+# into the pool. So the text read off what check returns is an unknown and a
+# string, and d puts both into the a of a copy of first, with b empty. app
+# reads off d, so that copy counts and reduces to what its @ gives: the string
+# goes into the k of keep, and the unknown next to it is left out (rule e).
+# Before the string comes, the call waits on the unknown alone (rule b) and
+# then answers first as it is, whose a is empty, so d and k hold T as well.
+sources:
+  os.eo: |
+    [] > os
+      [] > check /Q.os.status
+      [code note] > status
+        code > @
+        note > text
+  late.eo: |
+    [x] > late
+      os.status 0 "late" > @
+  first.eo: |
+    [a b] > first
+      a > @
+  keep.eo: |
+    [k] > keep
+      k > @
+      42 > size
+  app.eo: |
+    [] > app
+      first os.check.text > d
+      d.length > n
+      keep d > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.d.α0' and @lands='v🌵a' and unknown[@by='java']]/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.d' and terminator]/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.keep.v🌵k' and terminator]/is[@loc='Φ.string']
+  - /answers[not(o[@loc='Φ.keep.v🌵k']/unknown)]

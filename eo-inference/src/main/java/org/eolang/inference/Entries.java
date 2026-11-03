@@ -18,8 +18,10 @@ import org.w3c.dom.Element;
  *
  * <p>A mark colours the word by its {@link Band} and lists what the object
  * answers, with how many of its copies answer it, the most copies first. A
- * name is listed as it is and a mark of the engine in words, which say of an
- * unknown void that nobody fills it. Formations with no name of their own
+ * name is listed as it is and a mark of the engine in words. An unknown at
+ * a void, a place whose locator ends in a {@code v🌵} name, is said to be
+ * filled by nobody when no copy says anything next to it. Formations with
+ * no name of their own
  * are listed by their {@link Shapes}, one entry for all the formations of
  * one shape, counted in the copies that answer any of them, with a link to
  * every line where one of them is written: {@code line 4} or
@@ -82,10 +84,12 @@ final class Entries {
                     this.shapes.shown(answer.getKey(), false), shape -> new ArrayList<>(1)
                 ).add(answer.getKey());
             } else {
-                final Label label = new Label(answer.getKey(), loc);
+                final Label label = new Label(answer.getKey());
                 entries.put(
                     answer.getKey(),
-                    Entries.entry(page, label.kind(), answer.getValue(), label.words())
+                    Entries.entry(
+                        page, label.kind(), answer.getValue(), this.words(loc, answer.getKey())
+                    )
                 );
                 copies.put(answer.getKey(), answer.getValue());
             }
@@ -107,6 +111,18 @@ final class Entries {
         for (final String key : order) {
             told.appendChild(entries.get(key));
         }
+    }
+
+    private String words(final String loc, final String said) {
+        final String found;
+        if ("?unknown".equals(said)
+            && loc.substring(loc.lastIndexOf('.') + 1).startsWith("v🌵")
+            && this.table.alone(loc, said)) {
+            found = "unknown, filled by nobody";
+        } else {
+            found = new Label(said).words();
+        }
+        return found;
     }
 
     private static Element entry(

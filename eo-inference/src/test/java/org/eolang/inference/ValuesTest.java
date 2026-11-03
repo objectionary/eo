@@ -49,17 +49,6 @@ final class ValuesTest {
     }
 
     @Test
-    void takesDecidedOpenVoidAsGap(@Mktmp final Path temp) throws IOException {
-        final Values values = new Values(new Sources(temp).program());
-        values.unknown("open void");
-        MatcherAssert.assertThat(
-            "an open void a stop decided must still be a gap, but it wasnt",
-            values.vacant(Values.JGAP),
-            Matchers.is(true)
-        );
-    }
-
-    @Test
     void opensVoidsCopyLeavesUnbound(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "the voids a copy leaves unbound must be open, but they werent",

@@ -143,6 +143,36 @@ final class TableTest {
     }
 
     @Test
+    void findsALabelAloneInEverySetThatHoldsIt() {
+        MatcherAssert.assertThat(
+            "a label no copy says anything next to must be alone, but it wasnt",
+            new Table(
+                new Xnav(
+                    "<answers><o loc='Φ.kiln.s' copies='8'>",
+                    "<set copies='6'><unknown/></set>",
+                    "<set copies='2'><is loc='Φ.bytes'/></set></o></answers>"
+                )
+            ).alone("Φ.kiln.s", "?unknown"),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void findsNoLabelAloneWhenOneSetHoldsMore() {
+        MatcherAssert.assertThat(
+            "a label some copy says next to a name must not be alone, but it was",
+            new Table(
+                new Xnav(
+                    "<answers><o loc='Φ.kiln.r' copies='11'>",
+                    "<set copies='7'><unknown/></set>",
+                    "<set copies='4'><unknown/><is loc='Φ.bytes'/></set></o></answers>"
+                )
+            ).alone("Φ.kiln.r", "?unknown"),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void countsNoCopiesOfAPlaceWithNoRow() {
         MatcherAssert.assertThat(
             "a place the table has no row for must have no copies, but it had some",

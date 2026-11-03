@@ -19,17 +19,8 @@ final class LabelTest {
     void saysAnUnknownInWords() {
         MatcherAssert.assertThat(
             "an unknown must be said in words, but its mark came through",
-            new Label("?unknown", "Φ.kettle.φ.ρ").words(),
+            new Label("?unknown").words(),
             Matchers.equalTo("unknown")
-        );
-    }
-
-    @Test
-    void saysAnUnknownVoidIsFilledByNobody() {
-        MatcherAssert.assertThat(
-            "an unknown void must be said to be filled by nobody, but it wasnt",
-            new Label("?unknown", "Φ.kettle.spout.v🌵lid").words(),
-            Matchers.equalTo("unknown, filled by nobody")
         );
     }
 
@@ -37,7 +28,7 @@ final class LabelTest {
     void saysAnUnknownAtomFillsInWords() {
         MatcherAssert.assertThat(
             "an unknown an atom fills must be said in words, but its mark came through",
-            new Label("?unknown-by-java", "Φ.os.reply.v🌵kind").words(),
+            new Label("?unknown-by-java").words(),
             Matchers.equalTo("unknown, filled by an atom")
         );
     }

@@ -17,7 +17,9 @@ package org.eolang.inference;
  * <li>What an object with empty voids reduces to carries a mark, the
  * number of its empty voids (rule A); a call uses the mark up.</li>
  * <li>An object whose {@code @} gives nothing typed is nothing until a
- * stop decides it, and is kept as itself from then on (rule e).</li>
+ * stop decides it, and is kept as itself from then on (rule e). T, rule
+ * b's head and every unknown are not typed, and are left out of what an
+ * object with empty voids reduces to.</li>
  * <li>Rule b's head goes into a void as what it reduces to, in one
  * step.</li>
  * <li>Every unknown going into a void is one and the same unknown.</li>
@@ -199,7 +201,7 @@ final class Reduction {
             out.remove(num);
             result = new Ints(num);
             final Ints got = this.typed(out);
-            if (!this.unknowns(got)) {
+            if (!got.isEmpty()) {
                 result.addAll(this.marked(got, holes));
             }
         } else {
@@ -224,9 +226,9 @@ final class Reduction {
         final Ints got = this.typed(out);
         final Wish wish = new Wish('e', "", -1, num);
         final Ints result = new Ints();
-        if (this.unknowns(got) && (out.isEmpty() || this.state.taken(wish))) {
+        if (got.isEmpty() && (out.isEmpty() || this.state.taken(wish))) {
             result.add(num);
-        } else if (this.unknowns(got)) {
+        } else if (got.isEmpty()) {
             this.state.wish(wish);
         } else {
             result.addAll(this.marked(got, holes));
@@ -277,33 +279,17 @@ final class Reduction {
         for (int idx = 0; idx < out.size(); ++idx) {
             final int val = out.get(idx);
             final char kind = this.world.value(val).kind();
-            if (kind != 'T' && kind != 'B' && !this.world.gap(val)) {
+            if (kind != 'T' && kind != 'B' && kind != 'U') {
                 got.add(val);
             }
         }
         return got;
     }
 
-    private boolean unknowns(final Ints got) {
-        boolean all = true;
-        for (int idx = 0; idx < got.size(); ++idx) {
-            if (this.world.value(got.get(idx)).kind() != 'U') {
-                all = false;
-                break;
-            }
-        }
-        return all;
-    }
-
     private Ints marked(final Ints got, final int holes) {
         final Ints out = new Ints();
         for (int idx = 0; idx < got.size(); ++idx) {
-            final int val = got.get(idx);
-            if (this.world.value(val).kind() == 'U') {
-                out.add(val);
-            } else {
-                out.add(this.mark(val, holes));
-            }
+            out.add(this.mark(got.get(idx), holes));
         }
         return out;
     }

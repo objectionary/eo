@@ -156,17 +156,6 @@ final class Values {
     }
 
     /**
-     * Whether a value is the unknown of a void nobody fills, decided or not.
-     *
-     * @param num The number
-     * @return TRUE if it is
-     */
-    boolean vacant(final int num) {
-        final Value value = this.get(num);
-        return value.kind() == 'U' && "open void".equals(value.form());
-    }
-
-    /**
      * The value with the rule b and rule A wrappers taken off.
      *
      * @param num The number

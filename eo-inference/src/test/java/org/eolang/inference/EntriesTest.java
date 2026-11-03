@@ -104,6 +104,25 @@ final class EntriesTest {
     }
 
     @Test
+    void saysNothingOfFillingWhenAnUnknownVoidHoldsANameToo()
+        throws ParserConfigurationException {
+        MatcherAssert.assertThat(
+            "an unknown next to a name in a void must not be said to be filled by nobody, but it was",
+            EntriesTest.told(
+                String.join(
+                    "",
+                    "<answers><o loc='Φ.kiln.v🌵coal' copies='9'>",
+                    "<set copies='5'><unknown/><is loc='Φ.number'/></set>",
+                    "<set copies='4'><is loc='Φ.number'/></set></o></answers>"
+                ),
+                "kiln.eo",
+                "Φ.kiln.v🌵coal"
+            ),
+            XhtmlMatchers.hasXPath("/bit/told/said[@kind='words' and .='unknown']")
+        );
+    }
+
+    @Test
     void saysAnUnknownThatIsNoVoidWithNoNote() throws ParserConfigurationException {
         MatcherAssert.assertThat(
             "an unknown that is no void must be said as unknown alone, but it wasnt",
