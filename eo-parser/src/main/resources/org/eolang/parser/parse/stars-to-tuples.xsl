@@ -36,6 +36,23 @@
   </o>
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
+  <!-- R-6.6.6: tuple elements have positions, not argument bindings. -->
+  <xsl:template match="/object">
+    <xsl:variable name="bound" select=".//o[@star]/o[@as and not(@float-up)]"/>
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node() except errors"/>
+      <xsl:if test="errors or exists($bound)">
+        <errors>
+          <xsl:apply-templates select="errors/error"/>
+          <xsl:for-each select="$bound">
+            <error check="stars-to-tuples" severity="error" line="{@line}" pos="{@pos}">
+              <xsl:text>star tuple elements cannot carry argument bindings</xsl:text>
+            </error>
+          </xsl:for-each>
+        </errors>
+      </xsl:if>
+    </xsl:copy>
+  </xsl:template>
   <!--
   A pipe predecessor floated up out of a star tuple (@float-up, set by
   "wrap-applications" for #5848) is not one of the tuple's own elements — the
