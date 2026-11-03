@@ -172,17 +172,8 @@ final class XmirTest {
                         "</o></o></object>"
                     )
                 )
-            ).toEO(),
-            Matchers.equalTo(
-                String.join(
-                    "\n",
-                    "[] > main",
-                    "  [left] > bar",
-                    "    5:left",
-                    "    left > value",
-                    ""
-                )
-            )
+            ).toEO().lines().toList(),
+            Matchers.contains("[] > main", "  [left] > bar", "    5:left", "    left > value")
         );
     }
 

@@ -52,10 +52,7 @@ public class Expect<T> {
     @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
     public static Expect<Phi> at(final Phi phi, final String attr) {
         return new Expect<>(
-            String.format(
-                "the '%s' attribute",
-                attr.startsWith("v🌵") ? attr.substring("v🌵".length()) : attr
-            ),
+            String.format("the '%s' attribute", attr.replaceFirst("^v🌵", "")),
             () -> phi.take(attr)
         );
     }
