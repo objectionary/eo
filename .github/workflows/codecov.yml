@@ -30,7 +30,7 @@ jobs:
             maven-
       # The `lower` goal needs the exact phino version pinned in the plugin,
       # and this job is the one that always builds with lowering on.
-      - uses: objectionary/phino@768aaec459b06c2e514af32accf218545ed20c2f  # master
+      - uses: objectionary/phino@75b40d0a4ba07f04c1bba4a5e7568a35c9a0816f  # master
         with:
           version: 0.0.160
       - run: mvn install '-Deo.coverageTracking=true' '-Deo.lowering=true'
