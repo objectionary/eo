@@ -33,7 +33,7 @@
   &lt;/o&gt;
   A row says its place is decided by bytes when its labels, every set of
   them taken together, with a termination ("terminator"), an unknown
-  ("unknown") and a failing read ("fails") left out, are at least one, and
+  ("unknown") and a "ρ" only Java fills ("fails") left out, are at least one, and
   each of them is a datum ("data") or a copy of "Φ.number", "Φ.string" or
   "Φ.bytes". The three left out are gaps: a copy that stops or waits there
   gives no bytes at all, so it never hands a cache a wrong answer. Anything

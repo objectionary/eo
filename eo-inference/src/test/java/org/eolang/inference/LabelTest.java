@@ -34,27 +34,9 @@ final class LabelTest {
     }
 
     @Test
-    void drawsAFailingReadAsAFailure() {
-        MatcherAssert.assertThat(
-            "a read that fails must be drawn as a failure, but it wasnt",
-            new Label("!Φ.posix.status-return.name").kind(),
-            Matchers.equalTo("fails")
-        );
-    }
-
-    @Test
-    void namesTheReadThatFails() {
-        MatcherAssert.assertThat(
-            "a failing read must be said by the name it fails on, but it wasnt",
-            new Label("!Φ.posix.status-return.name").words(),
-            Matchers.equalTo("Φ.posix.status-return.name")
-        );
-    }
-
-    @Test
     void drawsTheCaretOnlyJavaFillsInWords() {
         MatcherAssert.assertThat(
-            "a caret only Java fills has words of its own, but it was drawn as a failing read",
+            "a caret only Java fills has words of its own, but it was drawn some other way",
             new Label("!only-java-fills-ρ").kind(),
             Matchers.equalTo("words")
         );

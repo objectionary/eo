@@ -53,7 +53,7 @@ mean.
           </span>
           <span class="fails" data-band="fails">
             <xsl:value-of select="@fails"/>
-            <xsl:text> a read fails</xsl:text>
+            <xsl:text> only Java fills a ^</xsl:text>
           </span>
         </p>
         <dl class="terms">
@@ -95,7 +95,7 @@ mean.
     </div>
   </xsl:template>
   <xsl:template name="bar">
-    <span class="bar" title="{@named} named, {@gaps} one name with gaps, {@pair} two names, {@mixed} two or more names maybe with gaps, {@unknown} unknown, {@atom} unknown filled by an atom, {@error} only an error, {@fails} a read fails">
+    <span class="bar" title="{@named} named, {@gaps} one name with gaps, {@pair} two names, {@mixed} two or more names maybe with gaps, {@unknown} unknown, {@atom} unknown filled by an atom, {@error} only an error, {@fails} only Java fills a ^">
       <span class="named" style="flex: {@named}"/>
       <span class="gaps" style="flex: {@gaps}"/>
       <span class="pair" style="flex: {@pair}"/>

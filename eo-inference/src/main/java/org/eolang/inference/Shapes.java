@@ -260,8 +260,6 @@ final class Shapes {
         final String found;
         if ("name".equals(said.kind()) && this.nameless(label)) {
             found = this.head(label);
-        } else if ("fails".equals(said.kind())) {
-            found = "a read that fails";
         } else {
             found = said.words();
         }

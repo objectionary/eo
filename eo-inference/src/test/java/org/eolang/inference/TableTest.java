@@ -8,6 +8,7 @@ import com.github.lombrozo.xnav.Xnav;
 import java.util.Arrays;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -113,16 +114,20 @@ final class TableTest {
     }
 
     @Test
-    void readsAFailingReadByItsName() {
+    void refusesAFailureOtherThanTheCaretOnlyJavaFills() {
         MatcherAssert.assertThat(
-            "a failing read must be read with the name it fails on, but it wasnt",
-            new Table(
-                new Xnav(
-                    "<answers><o loc='Φ.kiln.w' copies='6'>",
-                    "<fails name='Φ.posix.name'/><is loc='Φ.string'/></o></answers>"
-                )
-            ).said("Φ.kiln.w").keySet(),
-            Matchers.contains("!Φ.posix.name", "Φ.string")
+            "a failure Java does not stand behind must stop the report and be named, but it wasnt",
+            Assertions.assertThrows(
+                IllegalArgumentException.class,
+                () -> new Table(
+                    new Xnav(
+                        "<answers><o loc='Φ.kiln.w' copies='6'>",
+                        "<fails name='Φ.posix.name'/><is loc='Φ.string'/></o></answers>"
+                    )
+                ).said("Φ.kiln.w"),
+                "a failure Java does not stand behind must stop the report"
+            ).getMessage(),
+            Matchers.containsString("Φ.posix.name")
         );
     }
 

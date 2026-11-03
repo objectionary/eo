@@ -33,8 +33,10 @@ import org.w3c.dom.Node;
  * {@code <is loc="Φ.number"/>} into {@code Φ.number}, {@code <data/>} into
  * {@code D}, {@code <terminator/>} into {@code T}, {@code <unknown/>} into
  * {@code ?unknown} or, when Java fills it, {@code ?unknown-by-java}, and
- * {@code <fails name="x"/>} into {@code !x}, or {@code !only-java-fills-ρ}
- * when only Java fills the {@code ^}.</p>
+ * {@code <fails name="ρ" by="java"/>} into {@code !only-java-fills-ρ}. A
+ * missing attribute is T, so a {@code ^} that only Java fills is the one
+ * failure the engine writes, and any other {@code <fails>} stops the
+ * report.</p>
  *
  * @since 0.76.0
  */
@@ -181,13 +183,15 @@ final class Table {
     }
 
     private static String failed(final Noted noted) {
-        final String found;
-        if ("java".equals(noted.says("by"))) {
-            found = "!only-java-fills-ρ";
-        } else {
-            found = String.format("!%s", noted.says("name"));
+        if (!"java".equals(noted.says("by"))) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "answers.xml says the read of %s fails, though only a ^ Java fills can fail",
+                    noted.says("name")
+                )
+            );
         }
-        return found;
+        return "!only-java-fills-ρ";
     }
 
     private static String unknown(final Noted noted) {

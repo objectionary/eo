@@ -68,7 +68,7 @@ stays lit until the next scroll, click or key press.
           </span>
           <span class="fails" data-band="fails">
             <xsl:value-of select="@fails"/>
-            <xsl:text> a read fails</xsl:text>
+            <xsl:text> only Java fills a ^</xsl:text>
           </span>
         </p>
         <table class="src">
@@ -170,12 +170,6 @@ stays lit until the next scroll, click or key press.
           <xsl:value-of select="count(at) - $sites"/>
           <xsl:text> more</xsl:text>
         </xsl:if>
-      </xsl:when>
-      <xsl:when test="@kind = 'fails'">
-        <xsl:text>a read that fails, </xsl:text>
-        <code>
-          <xsl:value-of select="."/>
-        </code>
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="."/>

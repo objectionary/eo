@@ -30,8 +30,8 @@ import org.cactoos.scalar.Unchecked;
  * body names in {@code answers.xml}, each counted as the type an atom
  * returns in {@code facts.xml}, as what a formation reduces to other than
  * itself, or as itself, in that order. A row says a termination, an
- * unknown or a failing read next to the objects, and those are left
- * out.</p>
+ * unknown or a {@code ^} only Java fills next to the objects, and those
+ * are left out.</p>
  *
  * <p>This is used only to tell the reader of the log what the atoms take
  * and give: the name of the object, the types of its voids in brackets,
