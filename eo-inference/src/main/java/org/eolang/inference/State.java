@@ -317,8 +317,8 @@ final class State {
     }
 
     /**
-     * Stop w: pick the formations no copy calls with a void no copy fills,
-     * each with those voids.
+     * Stop w: pick, for this round, the formations no copy calls whose
+     * copy as written does not count.
      *
      * @return TRUE if it picked any
      */

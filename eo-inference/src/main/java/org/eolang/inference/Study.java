@@ -8,16 +8,26 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Study copies (design doc 3.4): the copies stop w gives the formations
  * nobody calls.
  *
- * <p>Stop w picks the formations that no copy calls and that have a void
- * no copy fills. Such a formation gets one study copy inside every real
+ * <p>Stop w picks the formations that no copy calls and whose copy as
+ * written does not count, for one of two reasons: a void of its own that no
+ * copy fills, or a {@code ^} that does not count. It picks them in rounds.
+ * One of them waits while the formation right around it is one of them too,
+ * or while a place in another one of them reads it as an attribute: the
+ * others are picked and walked first, and the next stop looks again, where
+ * one that has got a real copy since is no longer picked. If every one of
+ * them waits, all are picked at once.</p>
+ *
+ * <p>A formation stop w picks gets one study copy inside every real
  * copy of the formation right around it: one that counts and is neither
  * the copy as written nor a study copy. The study copy is born
  * {@code in:H}, with {@code H} the real copy, which is its {@code ^} and
@@ -104,13 +114,18 @@ final class Study {
     }
 
     /**
-     * Stop w: pick the formations no copy calls with a void no copy fills,
-     * each with those voids.
+     * Stop w: pick, for this round, the formations no copy calls whose copy
+     * as written does not count, each with the voids no copy fills.
      *
      * @return TRUE if it picked any
      */
     boolean pick() {
-        final Map<String, List<String>> picked = this.stays();
+        final Map<String, List<String>> found = this.stays();
+        final Map<String, List<String>> picked = new LinkedHashMap<>(found);
+        picked.keySet().removeAll(this.waiting(found.keySet()));
+        if (picked.isEmpty()) {
+            picked.putAll(found);
+        }
         this.studied.putAll(picked);
         return !picked.isEmpty();
     }
@@ -162,7 +177,7 @@ final class Study {
                         never.add(name);
                     }
                 }
-                if (!never.isEmpty()) {
+                if (!never.isEmpty() || this.state.alone(entry.getValue())) {
                     out.put(form, never);
                 }
             }
@@ -190,7 +205,50 @@ final class Study {
 
     private boolean lonely(final String form, final int copy, final Map<String, Ints> real) {
         return !this.studied.containsKey(form) && !real.containsKey(form)
-            && this.state.bare(copy) && !this.state.alone(copy);
+            && !this.state.counts(copy);
+    }
+
+    private Set<String> waiting(final Set<String> forms) {
+        final Set<String> found = new HashSet<>(0);
+        for (final String form : forms) {
+            if (forms.contains(this.world.nearest(form))) {
+                found.add(form);
+            }
+            for (final String place : this.world.body(form)) {
+                final String read = this.copied(place);
+                if (!read.equals(form) && forms.contains(read)) {
+                    found.add(read);
+                }
+            }
+        }
+        return found;
+    }
+
+    private String copied(final String place) {
+        String found = "";
+        if (!this.world.starts(place) && this.world.reads(place)
+            && !"ρ".equals(this.world.read(place).name())) {
+            found = this.held(place);
+        }
+        return found;
+    }
+
+    private String held(final String place) {
+        final List<Head> heads = this.world.heads(place);
+        String found = "";
+        if (heads.size() == 1 && "ref".equals(heads.get(0).tag())) {
+            found = heads.get(0).loc();
+        } else if (!this.world.starts(place) && this.world.reads(place)) {
+            final Read read = this.world.read(place);
+            final String outer = this.held(read.of());
+            final String inner = String.join(".", outer, read.name());
+            if ("ρ".equals(read.name()) && this.world.formation(outer)) {
+                found = this.world.form(outer).parent();
+            } else if (!outer.isEmpty() && this.world.formation(inner)) {
+                found = inner;
+            }
+        }
+        return found;
     }
 
     private List<Integer> hosts(final String form, final Map<String, Ints> real) {
