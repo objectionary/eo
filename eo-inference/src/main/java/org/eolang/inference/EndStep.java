@@ -15,9 +15,9 @@ import java.util.function.IntUnaryOperator;
  * <p>A read with no answer in a copy that counts is marked
  * {@code ?end-can't-tell}, or {@code ?end-nobody-fills-it} when it reads a
  * void of a Java object nobody fills. Then the answers and rows that hold
- * an open void a stop decided are kept aside as they are, and everywhere
- * else that open void becomes a plain one: the answers name a void only
- * Java fills from what was kept aside.</p>
+ * the unknown of a void a stop decided Java alone fills are kept aside as
+ * they are, and everywhere else that unknown becomes a plain one: the
+ * answers name a void only Java fills from what was kept aside.</p>
  *
  * @since 0.76.0
  */
@@ -49,12 +49,12 @@ final class EndStep {
     private final Map<Slot, String> marks;
 
     /**
-     * The answers kept aside with a decided open void, by question.
+     * The answers kept aside with a decided unknown, by question.
      */
     private final Map<Key, Ints> answers;
 
     /**
-     * The rows kept aside with a decided open void, by copy and void.
+     * The rows kept aside with a decided unknown, by copy and void.
      */
     private final Map<Slot, Ints> rows;
 
@@ -73,8 +73,8 @@ final class EndStep {
     }
 
     /**
-     * Mark the reads with no answer, keep aside what holds a decided open
-     * void, and make it a plain one everywhere else.
+     * Mark the reads with no answer, keep aside what holds a decided
+     * unknown, and make it a plain one everywhere else.
      */
     void step() {
         this.marked();

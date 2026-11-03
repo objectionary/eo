@@ -69,11 +69,10 @@ into them.
 The `inference-report` goal reads the prepared files and the `answers.xml` in
 `target/eo/NN-inference`, and writes a page per source file into
 `target/site/inference`, with an index. A page shows the source with a mark
-on every object, coloured by one of ten bands of what the engine answers
+on every object, coloured by one of nine bands of what the engine answers
 there: green for one name and nothing else, then names with gaps, two names,
-mixed names, lost track, voids an atom fills, voids nobody fills, only an
-error, not reached, and red where a read fails. The goal logs how many
-objects fall in each band.
+mixed names, unknown, unknown filled by an atom, only an error, not reached,
+and red where a read fails. The goal logs how many objects fall in each band.
 
 `Report` draws the same bytes as `report.py`, the Python report it is ported
 from, with the same `page.xsl` and `index.xsl`. `ReportTest` compares the two

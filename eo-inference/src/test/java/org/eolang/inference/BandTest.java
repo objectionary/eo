@@ -57,7 +57,7 @@ final class BandTest {
     void mixesTwoNamesWithAGap() {
         MatcherAssert.assertThat(
             "two names with a gap must be blue, but they werent",
-            new Band(Arrays.asList("Φ.kettle", "?can't-tell", "Φ.mug")).name(),
+            new Band(Arrays.asList("Φ.kettle", "?unknown", "Φ.mug")).name(),
             Matchers.equalTo("mixed")
         );
     }
@@ -84,26 +84,26 @@ final class BandTest {
     void marksAVoidOnlyAnAtomFills() {
         MatcherAssert.assertThat(
             "only voids an atom fills must be violet, but they werent",
-            new Band(Collections.singletonList("?open-void-atom")).name(),
+            new Band(Collections.singletonList("?unknown-by-java")).name(),
             Matchers.equalTo("atom")
         );
     }
 
     @Test
-    void marksAVoidNobodyFills() {
+    void marksAnUnknownNextToAVoidOnlyAnAtomFillsAsUnknown() {
         MatcherAssert.assertThat(
-            "a void nobody fills next to one an atom fills must be slate, but it wasnt",
-            new Band(Arrays.asList("?open-void-atom", "?open-void")).name(),
-            Matchers.equalTo("unfilled")
+            "an unknown next to a void an atom fills must be amber, but it wasnt",
+            new Band(Arrays.asList("?unknown-by-java", "?unknown")).name(),
+            Matchers.equalTo("unknown")
         );
     }
 
     @Test
-    void losesTrackOfAPlaceItCannotTell() {
+    void marksAnUnknownNextToAnErrorAsUnknown() {
         MatcherAssert.assertThat(
-            "can't tell next to an open void must be amber, but it wasnt",
-            new Band(Arrays.asList("?open-void", "?can't-tell", "T")).name(),
-            Matchers.equalTo("lost")
+            "an unknown next to an error must be amber, but it wasnt",
+            new Band(Arrays.asList("?unknown", "T")).name(),
+            Matchers.equalTo("unknown")
         );
     }
 

@@ -15,7 +15,8 @@ package org.eolang.inference;
  *   <li>{@code Φ}, the root; {@code D}, a datum; {@code T}, a termination;
  *   {@code J}, what only Java puts into a {@code ρ};</li>
  *   <li>{@code U}, an unknown, with its reason in {@code form}, and
- *   "decided" in {@code birth} for an open void a stop decided (4.4);</li>
+ *   "decided" in {@code birth} for the unknown of a void a stop decided
+ *   Java alone fills (4.4);</li>
  *   <li>{@code X}, a failing read, with its label in {@code form};</li>
  *   <li>{@code B}, rule b's head as is (4.3), the value in {@code base};</li>
  *   <li>{@code A}, rule A's mark (4.2), the value in {@code base} and its

@@ -15,8 +15,8 @@ import java.util.Map;
  * <p>A value is made of what it is (3.1): two copies of the same formation,
  * born at the same place, with the same tag and the same voids bound, are
  * one copy, and are one number. The first six numbers are the root, a datum,
- * a termination, Java's mark, an open void, and an open void a stop
- * decided.</p>
+ * a termination, Java's mark, the unknown of a void nobody fills, and the
+ * unknown of a void a stop decided Java alone fills.</p>
  *
  * @since 0.76.0
  */
@@ -43,12 +43,12 @@ final class Values {
     static final int JAVA = 3;
 
     /**
-     * An open void.
+     * The unknown of a void nobody fills.
      */
     static final int GAP = 4;
 
     /**
-     * An open void a stop decided Java alone fills (4.4).
+     * The unknown of a void a stop decided Java alone fills (4.4).
      */
     static final int JGAP = 5;
 
@@ -156,7 +156,7 @@ final class Values {
     }
 
     /**
-     * Whether a value is an open void, decided or not.
+     * Whether a value is the unknown of a void nobody fills, decided or not.
      *
      * @param num The number
      * @return TRUE if it is

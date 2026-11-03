@@ -32,13 +32,12 @@
   &lt;/set&gt;
   &lt;/o&gt;
   A row says its place is decided by bytes when its labels, every set of
-  them taken together, with a termination ("terminator"), an open void
-  ("open") and a failing read ("fails") left out, are at least one, and
+  them taken together, with a termination ("terminator"), an unknown
+  ("unknown") and a failing read ("fails") left out, are at least one, and
   each of them is a datum ("data") or a copy of "Φ.number", "Φ.string" or
   "Φ.bytes". The three left out are gaps: a copy that stops or waits there
   gives no bytes at all, so it never hands a cache a wrong answer. Anything
-  else - another formation, a label the engine could not tell ("unknown") -
-  keeps the label off.
+  else, such as another formation, keeps the label off.
   A formation earns the label when three things are true of it:
   1. Every void it declares is filled with a number, a string or bytes:
   the row of the place of the void, "Φ.socket.htons.port" above, is
@@ -222,7 +221,7 @@
   <xsl:function name="eo:bytes" as="xs:boolean">
     <xsl:param name="row" as="element()?"/>
     <xsl:param name="datum" as="xs:boolean"/>
-    <xsl:variable name="labels" as="element()*" select="$row/(* | set/*)[not(self::set or self::reduced or self::terminator or self::open or self::fails)]"/>
+    <xsl:variable name="labels" as="element()*" select="$row/(* | set/*)[not(self::set or self::reduced or self::terminator or self::unknown or self::fails)]"/>
     <xsl:sequence select="exists($labels) and (every $l in $labels satisfies (exists($l/self::is[@loc = $eo:data]) or ($datum and exists($l/self::data))))"/>
   </xsl:function>
   <!--

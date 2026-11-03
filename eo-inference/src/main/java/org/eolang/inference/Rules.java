@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * The rules that wait for a stop (design doc 4.3): b, e and 3.
  *
- * <p>A call whose argument is only an open void, an object whose {@code @}
+ * <p>A call whose argument holds only unknowns, an object whose {@code @}
  * gives nothing typed, and an argument whose every value fails give nothing
  * until a stop decides them; a decision is never taken back. What waits
  * belongs to the answer that found it waiting, and leaves when that answer

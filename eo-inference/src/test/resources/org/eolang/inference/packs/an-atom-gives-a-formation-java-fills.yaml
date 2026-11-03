@@ -3,7 +3,7 @@
 ---
 # yamllint disable rule:line-length
 # The atom stat says it gives os.stat-return, and Java fills its voids, so
-# code and amount are open voids filled by an atom, and info.size reads the
+# code and amount are unknown, filled by an atom, and info.size reads the
 # amount.
 sources:
   os.eo: |
@@ -25,6 +25,6 @@ sources:
     [@] > string
 answers:
   - /answers/o[@loc='Φ.os.stat.λ']/is[@loc='Φ.os.stat-return']
-  - /answers/o[@loc='Φ.os.stat-return.v🌵code']/open[@by='java']
-  - /answers/o[@loc='Φ.os.stat-return.v🌵amount']/open[@by='java']
-  - /answers/o[@loc='Φ.app.φ']/open[@by='java']
+  - /answers/o[@loc='Φ.os.stat-return.v🌵code']/unknown[@by='java']
+  - /answers/o[@loc='Φ.os.stat-return.v🌵amount']/unknown[@by='java']
+  - /answers/o[@loc='Φ.app.φ']/unknown[@by='java']

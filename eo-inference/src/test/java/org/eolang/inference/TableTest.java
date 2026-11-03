@@ -40,7 +40,7 @@ final class TableTest {
             new Table(
                 new Xnav(
                     "<answers><o loc='Φ.kiln.y' copies='9'>",
-                    "<set copies='5'><data/></set><set copies='4'><open/></set></o></answers>"
+                    "<set copies='5'><data/></set><set copies='4'><unknown/></set></o></answers>"
                 )
             ).copies("Φ.kiln.y"),
             Matchers.equalTo(9)
@@ -77,13 +77,24 @@ final class TableTest {
     }
 
     @Test
+    void readsAnUnknownAsOneMark() {
+        MatcherAssert.assertThat(
+            "an unknown must be read as the one mark of what the engine cannot name, but it wasnt",
+            new Table(
+                new Xnav("<answers><o loc='Φ.kiln.t' copies='3'><unknown/></o></answers>")
+            ).said("Φ.kiln.t").keySet(),
+            Matchers.contains("?unknown")
+        );
+    }
+
+    @Test
     void readsAVoidJavaFillsAsTheAtomsVoid() {
         MatcherAssert.assertThat(
             "a void Java fills must be read as a void an atom fills, but it wasnt",
             new Table(
-                new Xnav("<answers><o loc='Φ.kiln.z' copies='2'><open by='java'/></o></answers>")
+                new Xnav("<answers><o loc='Φ.kiln.z' copies='2'><unknown by='java'/></o></answers>")
             ).said("Φ.kiln.z").keySet(),
-            Matchers.contains("?open-void-atom")
+            Matchers.contains("?unknown-by-java")
         );
     }
 

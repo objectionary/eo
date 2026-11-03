@@ -29,8 +29,9 @@ import org.cactoos.scalar.Unchecked;
  * {@code eo:returns} in {@code _returns.xsl}: the objects the row of the
  * body names in {@code answers.xml}, each counted as the type an atom
  * returns in {@code facts.xml}, as what a formation reduces to other than
- * itself, or as itself, in that order. A row says a termination, an open
- * void or a failing read next to the objects, and those are left out.</p>
+ * itself, or as itself, in that order. A row says a termination, an
+ * unknown or a failing read next to the objects, and those are left
+ * out.</p>
  *
  * <p>This is used only to tell the reader of the log what the atoms take
  * and give: the name of the object, the types of its voids in brackets,
@@ -122,7 +123,7 @@ final class Signatures {
             String.format(
                 "%1$s/*[not(self::is or self::set or self::reduced or %2$s)] | %1$s/set/*[not(self::is or %2$s)]",
                 String.format("/answers/o[@loc='%s']", place),
-                "self::terminator or self::open or self::fails"
+                "self::terminator or self::unknown or self::fails"
             )
         ).isEmpty()) {
             found.clear();

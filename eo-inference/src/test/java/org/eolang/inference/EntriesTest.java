@@ -89,6 +89,34 @@ final class EntriesTest {
     }
 
     @Test
+    void saysAnUnknownVoidIsFilledByNobody() throws ParserConfigurationException {
+        MatcherAssert.assertThat(
+            "an unknown void must be said to be filled by nobody, but it wasnt",
+            EntriesTest.told(
+                "<answers><o loc='Φ.kiln.v🌵fuel' copies='4'><unknown/></o></answers>",
+                "kiln.eo",
+                "Φ.kiln.v🌵fuel"
+            ),
+            XhtmlMatchers.hasXPath(
+                "/bit/told/said[@kind='words' and .='unknown, filled by nobody']"
+            )
+        );
+    }
+
+    @Test
+    void saysAnUnknownThatIsNoVoidWithNoNote() throws ParserConfigurationException {
+        MatcherAssert.assertThat(
+            "an unknown that is no void must be said as unknown alone, but it wasnt",
+            EntriesTest.told(
+                "<answers><o loc='Φ.kiln.smoke' copies='7'><unknown/></o></answers>",
+                "kiln.eo",
+                "Φ.kiln.smoke"
+            ),
+            XhtmlMatchers.hasXPath("/bit/told/said[@kind='words' and .='unknown']")
+        );
+    }
+
+    @Test
     void joinsFormationsOfOneShapeIntoOneEntry() throws ParserConfigurationException {
         MatcherAssert.assertThat(
             "two formations of one shape must be one entry, but they were two",

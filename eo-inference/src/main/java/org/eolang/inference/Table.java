@@ -32,10 +32,9 @@ import org.w3c.dom.Node;
  * <p>Each element is read back into the engine's own label:
  * {@code <is loc="Φ.number"/>} into {@code Φ.number}, {@code <data/>} into
  * {@code D}, {@code <terminator/>} into {@code T}, {@code <unknown/>} into
- * {@code ?can't-tell}, {@code <open/>} into {@code ?open-void} or, when Java
- * fills it, {@code ?open-void-atom}, and {@code <fails name="x"/>} into
- * {@code !x}, or {@code !only-java-fills-ρ} when only Java fills the
- * {@code ^}.</p>
+ * {@code ?unknown} or, when Java fills it, {@code ?unknown-by-java}, and
+ * {@code <fails name="x"/>} into {@code !x}, or {@code !only-java-fills-ρ}
+ * when only Java fills the {@code ^}.</p>
  *
  * @since 0.76.0
  */
@@ -154,8 +153,6 @@ final class Table {
             found = noted.says("loc");
         } else if ("fails".equals(tag)) {
             found = Table.failed(noted);
-        } else if ("open".equals(tag)) {
-            found = Table.opened(noted);
         } else if ("unknown".equals(tag)) {
             found = Table.unknown(noted);
         } else if ("data".equals(tag)) {
@@ -180,20 +177,12 @@ final class Table {
         return found;
     }
 
-    private static String opened(final Noted noted) {
-        final String found;
-        if ("java".equals(noted.says("by"))) {
-            found = "?open-void-atom";
-        } else {
-            found = "?open-void";
-        }
-        return found;
-    }
-
     private static String unknown(final Noted noted) {
         final String found;
-        if (noted.says("why").isEmpty()) {
-            found = "?can't-tell";
+        if ("java".equals(noted.says("by"))) {
+            found = "?unknown-by-java";
+        } else if (noted.says("why").isEmpty()) {
+            found = "?unknown";
         } else {
             found = String.format("?%s", noted.says("why"));
         }

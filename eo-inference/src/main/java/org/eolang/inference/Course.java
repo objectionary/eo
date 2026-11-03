@@ -316,8 +316,8 @@ final class Course {
     }
 
     /**
-     * Mark the reads with no answer, keep aside what holds a decided open
-     * void, and make it a plain one everywhere else.
+     * Mark the reads with no answer, keep aside what holds a decided
+     * unknown, and make it a plain one everywhere else.
      */
     void step() {
         this.end.step();

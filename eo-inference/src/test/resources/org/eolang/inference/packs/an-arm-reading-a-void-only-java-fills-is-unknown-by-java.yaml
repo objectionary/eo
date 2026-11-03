@@ -5,9 +5,9 @@
 # knob is an atom that gives a reply, and no EO code fills the kind behind its
 # mode, so ^.got.mode, the second arm of pick, is a void only Java fills.
 # choice has a not besides its pick, as bool does, so first, with yes, picks
-# dial 03-. second, with no, picks that open void, which cannot be told once
-# it goes into the arm, so the @ of its pick cannot be told, and second keeps
-# that pick as itself.
+# dial 03-. second, with no, picks that void, which is a plain unknown once
+# it goes into the arm, so the @ of its pick is unknown, and second keeps that
+# pick as itself.
 sources:
   choice.eo: |
     [fork] > choice
@@ -54,8 +54,8 @@ sources:
 answers:
   - /answers/o[@loc='Φ.knob.λ']/is[@loc='Φ.reply']
   - /answers[not(o[@lands='v🌵kind'])]
-  - /answers/o[@loc='Φ.reply.v🌵kind']/open[@by='java']
-  - /answers/o[@loc='Φ.app.pick.φ.α1' and @lands='a🌵5-6']/open[@by='java']
+  - /answers/o[@loc='Φ.reply.v🌵kind']/unknown[@by='java']
+  - /answers/o[@loc='Φ.app.pick.φ.α1' and @lands='a🌵5-6']/unknown[@by='java']
   - /answers/o[@loc='Φ.app.first']/is[@loc='Φ.dial']
   - /answers/o[@loc='Φ.app.pick.φ']/set/unknown
   - /answers/o[@loc='Φ.app.second']/is[@loc='Φ.app.pick']

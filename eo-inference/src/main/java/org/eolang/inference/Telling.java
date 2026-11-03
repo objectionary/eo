@@ -21,11 +21,13 @@ import java.util.TreeSet;
  * that count, and each copy says a set of labels there. A copy is named by
  * its formation; a copy that counts, of a decorator or of an atom that
  * returns its own voids, is named by every name its {@code @} gives, next
- * to the "can't tell" and T it says. A copy keeps its own name when its
- * {@code @} gives no name, or gives a failing read, D or a hidden name, and
- * a copy whose {@code @} gives only T is named T. A formation and its voids
- * are told too, from the copies of it that count: what each void holds,
- * and what Java gives.</p>
+ * to the T it says, and every unknown it gives is left out. A copy keeps
+ * its own name when its {@code @} gives no name, or gives a failing read, D
+ * or a hidden name, and a copy whose {@code @} gives only T is named T. A
+ * formation and its voids are told too, from the copies of it that count:
+ * what each void holds, and what Java gives. Whatever the engine cannot
+ * name is one unknown, {@code ?unknown}, or {@code ?unknown-by-java} when
+ * only Java fills it.</p>
  *
  * @since 0.76.0
  */
@@ -129,9 +131,9 @@ final class Telling {
     private String missing(final Key key) {
         final String label;
         if (EndStep.NOBODY.equals(this.state.token(key.place(), key.value()))) {
-            label = "?open-void-atom";
+            label = "?unknown-by-java";
         } else {
-            label = "?can't-tell";
+            label = "?unknown";
         }
         return label;
     }
@@ -187,7 +189,7 @@ final class Telling {
                 said.add(holds);
             }
             if (said.isEmpty()) {
-                said.add("?can't-tell");
+                said.add("?unknown");
             }
         }
         return said;
@@ -205,7 +207,7 @@ final class Telling {
                 said.addAll(this.last(val));
             }
             if (said.isEmpty()) {
-                said.add("?can't-tell");
+                said.add("?unknown");
             }
         }
         return said;
@@ -283,7 +285,7 @@ final class Telling {
         } finally {
             this.walking.clear(num);
         }
-        said.removeIf(label -> label.startsWith("?open-void"));
+        said.removeIf(label -> label.startsWith("?unknown"));
         final Set<String> result = new HashSet<>(1);
         if (said.equals(Set.of("T"))
             || said.stream().anyMatch(Telling::told) && said.stream().allMatch(Telling::known)) {
@@ -299,7 +301,7 @@ final class Telling {
         final Value value = this.world.value(inside);
         final String label;
         if (inside == Values.JGAP) {
-            label = "?open-void-atom";
+            label = "?unknown-by-java";
         } else if (value.kind() == 'O') {
             label = value.form();
         } else if (value.kind() == 'D' || value.kind() == 'T' || value.kind() == 'Φ') {
@@ -307,7 +309,7 @@ final class Telling {
         } else if (value.kind() == 'X') {
             label = String.format("!%s", value.form());
         } else if (value.kind() == 'U') {
-            label = String.format("?%s", value.form().replace(' ', '-'));
+            label = "?unknown";
         } else {
             label = String.format("?%s", value.kind());
         }
@@ -329,9 +331,9 @@ final class Telling {
     private static String vacant(final Value value, final String holds) {
         final String label;
         if (holds.isEmpty() && Values.JBORN.equals(value.birth())) {
-            label = "?open-void-atom";
+            label = "?unknown-by-java";
         } else if (holds.isEmpty()) {
-            label = "?open-void";
+            label = "?unknown";
         } else {
             label = holds;
         }

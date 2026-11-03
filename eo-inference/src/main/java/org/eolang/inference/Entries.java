@@ -18,10 +18,11 @@ import org.w3c.dom.Element;
  *
  * <p>A mark colours the word by its {@link Band} and lists what the object
  * answers, with how many of its copies answer it, the most copies first. A
- * name is listed as it is and a mark of the engine in words. Formations with
- * no name of their own are listed by their {@link Shapes}, one entry for all
- * the formations of one shape, counted in the copies that answer any of them,
- * with a link to every line where one of them is written: {@code line 4} or
+ * name is listed as it is and a mark of the engine in words, which say of an
+ * unknown void that nobody fills it. Formations with no name of their own
+ * are listed by their {@link Shapes}, one entry for all the formations of
+ * one shape, counted in the copies that answer any of them, with a link to
+ * every line where one of them is written: {@code line 4} or
  * {@code lines 4, 9} in the same file, {@code bytes.eo:12} in another, and
  * the locator as the link's hover text.</p>
  *
@@ -81,7 +82,7 @@ final class Entries {
                     this.shapes.shown(answer.getKey(), false), shape -> new ArrayList<>(1)
                 ).add(answer.getKey());
             } else {
-                final Label label = new Label(answer.getKey());
+                final Label label = new Label(answer.getKey(), loc);
                 entries.put(
                     answer.getKey(),
                     Entries.entry(page, label.kind(), answer.getValue(), label.words())

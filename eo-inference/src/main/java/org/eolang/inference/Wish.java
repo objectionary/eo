@@ -9,7 +9,7 @@ package org.eolang.inference;
  *
  * <ul>
  *   <li>{@code b}: a call at a place in a copy, on a head, whose argument
- *   is only an open void;</li>
+ *   holds only unknowns;</li>
  *   <li>{@code e}: an object, in {@code value}, whose {@code @} gives
  *   nothing typed;</li>
  *   <li>{@code 3}: an argument, by its position in {@code value}, of a call

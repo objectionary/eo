@@ -54,7 +54,7 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.bool.v🌵fork']/set/open[@by='java']
+  - /answers/o[@loc='Φ.bool.v🌵fork']/set/unknown[@by='java']
   - /answers/o[@loc='Φ.dir.temp.φ' and terminator]/is[@loc='Φ.leaf']
   - /answers/o[@loc='Φ.dir.temp']/reduced[terminator]/is[@loc='Φ.leaf']
   - /answers/o[@loc='Φ.app.outer.α0' and @lands='v🌵file' and terminator]/is[@loc='Φ.leaf']

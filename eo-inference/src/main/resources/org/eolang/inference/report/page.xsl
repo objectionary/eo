@@ -5,7 +5,7 @@
 -->
 <!--
 A page of the inference report: the source of one file, with a mark on every
-object in the colour of one of ten bands, and a list under the mark of what
+object in the colour of one of nine bands, and a list under the mark of what
 the object answers in how many copies, one answer per bullet when there are
 several. A click on a colour in the tally keeps only the lines with
 marks of the chosen colours, and only those marks on them; a dashed rule shows
@@ -54,17 +54,13 @@ stays lit until the next scroll, click or key press.
             <xsl:value-of select="@mixed"/>
             <xsl:text> two or more names, maybe with gaps</xsl:text>
           </span>
-          <span class="lost" data-band="lost">
-            <xsl:value-of select="@lost"/>
-            <xsl:text> lost track</xsl:text>
+          <span class="unknown" data-band="unknown">
+            <xsl:value-of select="@unknown"/>
+            <xsl:text> unknown</xsl:text>
           </span>
           <span class="atom" data-band="atom">
             <xsl:value-of select="@atom"/>
-            <xsl:text> open void, filled by an atom</xsl:text>
-          </span>
-          <span class="unfilled" data-band="unfilled">
-            <xsl:value-of select="@unfilled"/>
-            <xsl:text> open void, filled by nobody</xsl:text>
+            <xsl:text> unknown, filled by an atom</xsl:text>
           </span>
           <span class="error" data-band="error">
             <xsl:value-of select="@error"/>
@@ -218,9 +214,8 @@ stays lit until the next scroll, click or key press.
       .tally .gaps { background: #eef3c2; }
       .tally .pair { background: #d3eff2; }
       .tally .mixed { background: #d9e5fb; }
-      .tally .lost { background: #fbeecc; }
+      .tally .unknown { background: #fbeecc; }
       .tally .atom { background: #e6dcf5; }
-      .tally .unfilled { background: #dfe6e9; }
       .tally .error { background: #efe2dc; }
       .tally .unreached { background: #eeeeee; }
       .tally .fails { background: #f7d4d4; }
@@ -238,9 +233,8 @@ stays lit until the next scroll, click or key press.
       .mark.gaps { color: #7c8c00; }
       .mark.pair { color: #00838f; }
       .mark.mixed { color: #1e5bc6; }
-      .mark.lost { color: #b26a00; }
+      .mark.unknown { color: #b26a00; }
       .mark.atom { color: #6a3fb5; }
-      .mark.unfilled { color: #546e7a; }
       .mark.error { color: #795548; }
       .mark.unreached { color: #9e9e9e; }
       .mark.fails { color: #c62828; }

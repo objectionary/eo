@@ -453,7 +453,7 @@ final class State {
     }
 
     /**
-     * The values of an argument, reduced: unknowns as one "can't tell".
+     * The values of an argument, reduced: unknowns as one unknown.
      *
      * @param set The values, as worked out
      * @return The values reduced, in the order of their numbers
@@ -570,7 +570,7 @@ final class State {
      * @param copy The copy
      * @param name The void
      * @param site The site of the read, under the tag of the reader
-     * @return What it holds, the decided open void too, nothing while it
+     * @return What it holds, the decided unknown too, nothing while it
      *  waits
      */
     Ints read(final int copy, final String name, final Site site) {
@@ -620,8 +620,8 @@ final class State {
     }
 
     /**
-     * Mark the reads with no answer, keep aside what holds a decided open
-     * void, and make it a plain one everywhere else.
+     * Mark the reads with no answer, keep aside what holds a decided
+     * unknown, and make it a plain one everywhere else.
      */
     void step() {
         this.course.step();

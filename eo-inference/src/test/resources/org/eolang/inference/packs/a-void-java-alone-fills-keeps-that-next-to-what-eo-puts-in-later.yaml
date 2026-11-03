@@ -3,11 +3,11 @@
 ---
 # yamllint disable rule:line-length
 # At first nothing calls status, so a stop decides Java alone fills its note.
-# The text read off what check returns gives that note, so it is an open void
-# that Java fills.
+# The text read off what check returns gives that note, so it is unknown,
+# filled by Java.
 # Nobody calls late, so a later stop keeps its copy as written, and its call
 # of status puts "late" into the pool: the text is a string as well, next to
-# that open void.
+# that unknown.
 sources:
   os.eo: |
     [] > os
@@ -28,8 +28,8 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.os.status.v🌵note']/set[not(is)]/open[@by='java']
+  - /answers/o[@loc='Φ.os.status.v🌵note']/set[not(is)]/unknown[@by='java']
   - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.os.status']
-  - /answers/o[@loc='Φ.app.φ']/open[@by='java']
+  - /answers/o[@loc='Φ.app.φ']/unknown[@by='java']
   - /answers/o[@loc='Φ.late.φ.α1' and @lands='v🌵note']/is[@loc='Φ.string']
-  - /answers/o[@loc='Φ.app.φ' and open[@by='java']]/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.φ' and unknown[@by='java']]/is[@loc='Φ.string']

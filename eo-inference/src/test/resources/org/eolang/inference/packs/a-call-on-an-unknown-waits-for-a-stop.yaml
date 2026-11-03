@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# Nobody calls helper, so a stop keeps its copy as written, where x is an open
-# void. The call of box on it waits for a stop (rule b), and from then on it
+# Nobody calls helper, so a stop keeps its copy as written, where x is
+# unknown. The call of box on it waits for a stop (rule b), and from then on it
 # answers box as it is, so the @ of helper is box.
 sources:
   box.eo: |
@@ -20,6 +20,6 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.helper.v🌵x' and @copies='1']/open
-  - /answers/o[@loc='Φ.helper.φ.α0' and @lands='v🌵item']/open
+  - /answers/o[@loc='Φ.helper.v🌵x' and @copies='1']/unknown
+  - /answers/o[@loc='Φ.helper.φ.α0' and @lands='v🌵item']/unknown
   - /answers/o[@loc='Φ.helper.φ']/is[@loc='Φ.box']

@@ -329,7 +329,7 @@ final class World {
     }
 
     /**
-     * Whether a value is an open void, decided or not.
+     * Whether a value is the unknown of a void nobody fills, decided or not.
      *
      * @param num The number
      * @return TRUE if it is

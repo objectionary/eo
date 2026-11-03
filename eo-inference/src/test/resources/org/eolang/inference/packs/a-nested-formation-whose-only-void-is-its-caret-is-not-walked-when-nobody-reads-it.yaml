@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 # Nobody reads made, and its only void is ^, so no copy of it is walked and it
 # has no answers. grip has a size, so it is studied in each copy of choice,
-# where its size and its @ are open.
+# where its size and its @ are unknown.
 sources:
   choice.eo: |
     [pick] > choice
@@ -33,5 +33,5 @@ sources:
 answers:
   - /answers[not(o[@loc='Φ.choice.made' or starts-with(@loc, 'Φ.choice.made.')])]
   - /answers/o[@loc='Φ.choice.grip' and @copies='2']
-  - /answers/o[@loc='Φ.choice.grip.v🌵size']/open
-  - /answers/o[@loc='Φ.choice.grip.φ']/open
+  - /answers/o[@loc='Φ.choice.grip.v🌵size']/unknown
+  - /answers/o[@loc='Φ.choice.grip.φ']/unknown

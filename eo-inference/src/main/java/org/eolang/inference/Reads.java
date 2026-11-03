@@ -18,7 +18,7 @@ package org.eolang.inference;
  * the formation the declared {@code ^} sits in when nobody bound it or Java
  * made the copy. A bound void is its row, every value stamped onto the
  * copy, next to the declared type. A void the copy's name says is unbound
- * reads T, an open void in a copy a stop kept, its declared type, or its
+ * reads T, an unknown in a copy a stop kept, its declared type, or its
  * pool if Java made the copy (4.1, 4.5). A nested formation is a fresh copy,
  * with the copy as its {@code ρ} if it declares {@code ^}, and any other
  * attribute is its answer in the copy, stamped onto it.</li>

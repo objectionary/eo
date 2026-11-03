@@ -5,7 +5,7 @@
 -->
 <!--
 The index of the inference report: a bar per file with its objects in the
-colours of ten bands; a folder's bar adds up its files. A click on
+colours of nine bands; a folder's bar adds up its files. A click on
 a colour in the tally keeps only the files and folders with objects of the
 chosen colours; the file pages share the choice and keep only the lines with
 such marks. Under the tally, a glossary says what the words of the report
@@ -39,17 +39,13 @@ mean.
             <xsl:value-of select="@mixed"/>
             <xsl:text> two or more names, maybe with gaps</xsl:text>
           </span>
-          <span class="lost" data-band="lost">
-            <xsl:value-of select="@lost"/>
-            <xsl:text> lost track</xsl:text>
+          <span class="unknown" data-band="unknown">
+            <xsl:value-of select="@unknown"/>
+            <xsl:text> unknown</xsl:text>
           </span>
           <span class="atom" data-band="atom">
             <xsl:value-of select="@atom"/>
-            <xsl:text> open void, filled by an atom</xsl:text>
-          </span>
-          <span class="unfilled" data-band="unfilled">
-            <xsl:value-of select="@unfilled"/>
-            <xsl:text> open void, filled by nobody</xsl:text>
+            <xsl:text> unknown, filled by an atom</xsl:text>
           </span>
           <span class="error" data-band="error">
             <xsl:value-of select="@error"/>
@@ -73,12 +69,10 @@ mean.
           <dd>In a shape, → is what an @ gives, and ↺ is the object the shape is of: [^] → Φ.bytes with a line [^ ∅] &gt; read ↺ is an object of bytes whose read gives the object back.</dd>
           <dt>error</dt>
           <dd>The copy gives T.</dd>
-          <dt>lost track</dt>
-          <dd>The engine can't tell what the copy gives.</dd>
-          <dt>open void</dt>
-          <dd>A void that no copy fills. An atom fills it when the object it sits on was returned by an atom, since Java fills that object.</dd>
+          <dt>unknown</dt>
+          <dd>The engine can't name what the copy gives: a void that no copy fills, what is read off it or handed on from it, or a loop where nothing ever answers. An atom fills a void when the object it sits on was returned by an atom, since Java fills that object.</dd>
           <dt>gap</dt>
-          <dd>An error, lost track, or an open void.</dd>
+          <dd>An error or an unknown.</dd>
         </dl>
         <xsl:apply-templates select="dir|file"/>
         <xsl:call-template name="filter"/>
@@ -86,7 +80,7 @@ mean.
     </html>
   </xsl:template>
   <xsl:template match="dir">
-    <details data-named="{@named}" data-gaps="{@gaps}" data-pair="{@pair}" data-mixed="{@mixed}" data-lost="{@lost}" data-atom="{@atom}" data-unfilled="{@unfilled}" data-error="{@error}" data-unreached="{@unreached}" data-fails="{@fails}">
+    <details data-named="{@named}" data-gaps="{@gaps}" data-pair="{@pair}" data-mixed="{@mixed}" data-unknown="{@unknown}" data-atom="{@atom}" data-error="{@error}" data-unreached="{@unreached}" data-fails="{@fails}">
       <summary>
         <xsl:value-of select="@name"/>
         <xsl:call-template name="bar"/>
@@ -97,7 +91,7 @@ mean.
     </details>
   </xsl:template>
   <xsl:template match="file">
-    <div class="row" data-named="{@named}" data-gaps="{@gaps}" data-pair="{@pair}" data-mixed="{@mixed}" data-lost="{@lost}" data-atom="{@atom}" data-unfilled="{@unfilled}" data-error="{@error}" data-unreached="{@unreached}" data-fails="{@fails}">
+    <div class="row" data-named="{@named}" data-gaps="{@gaps}" data-pair="{@pair}" data-mixed="{@mixed}" data-unknown="{@unknown}" data-atom="{@atom}" data-error="{@error}" data-unreached="{@unreached}" data-fails="{@fails}">
       <a href="{@href}">
         <xsl:value-of select="@name"/>
       </a>
@@ -105,14 +99,13 @@ mean.
     </div>
   </xsl:template>
   <xsl:template name="bar">
-    <span class="bar" title="{@named} named, {@gaps} one name with gaps, {@pair} two names, {@mixed} two or more names maybe with gaps, {@lost} lost track, {@atom} filled by an atom, {@unfilled} filled by nobody, {@error} only an error, {@unreached} not reached, {@fails} a read fails">
+    <span class="bar" title="{@named} named, {@gaps} one name with gaps, {@pair} two names, {@mixed} two or more names maybe with gaps, {@unknown} unknown, {@atom} unknown filled by an atom, {@error} only an error, {@unreached} not reached, {@fails} a read fails">
       <span class="named" style="flex: {@named}"/>
       <span class="gaps" style="flex: {@gaps}"/>
       <span class="pair" style="flex: {@pair}"/>
       <span class="mixed" style="flex: {@mixed}"/>
-      <span class="lost" style="flex: {@lost}"/>
+      <span class="unknown" style="flex: {@unknown}"/>
       <span class="atom" style="flex: {@atom}"/>
-      <span class="unfilled" style="flex: {@unfilled}"/>
       <span class="error" style="flex: {@error}"/>
       <span class="unreached" style="flex: {@unreached}"/>
       <span class="fails" style="flex: {@fails}"/>
@@ -129,9 +122,8 @@ mean.
       .tally .gaps { background: #eef3c2; }
       .tally .pair { background: #d3eff2; }
       .tally .mixed { background: #d9e5fb; }
-      .tally .lost { background: #fbeecc; }
+      .tally .unknown { background: #fbeecc; }
       .tally .atom { background: #e6dcf5; }
-      .tally .unfilled { background: #dfe6e9; }
       .tally .error { background: #efe2dc; }
       .tally .unreached { background: #eeeeee; }
       .tally .fails { background: #f7d4d4; }
@@ -151,9 +143,8 @@ mean.
       .bar .gaps { background: #c3cf3e; }
       .bar .pair { background: #3fb3c2; }
       .bar .mixed { background: #5b8def; }
-      .bar .lost { background: #e8b64c; }
+      .bar .unknown { background: #e8b64c; }
       .bar .atom { background: #9b7fd4; }
-      .bar .unfilled { background: #90a4ae; }
       .bar .error { background: #a1887f; }
       .bar .unreached { background: #cfcfcf; }
       .bar .fails { background: #d76b6b; }

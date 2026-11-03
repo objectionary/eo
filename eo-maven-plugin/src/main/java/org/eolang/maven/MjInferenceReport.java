@@ -16,7 +16,7 @@ import org.apache.maven.plugins.annotations.Parameter;
  * Draw a page per source file from what {@link MjInference} wrote.
  *
  * <p>A page shows the author's own source with a mark on every object,
- * coloured by one of ten bands of what the engine answers there in
+ * coloured by one of nine bands of what the engine answers there in
  * {@code answers.xml}: green where it answers one name and nothing else,
  * other colours where it answers several names, names with gaps, only gaps,
  * or a read that fails. An index lists the pages with a bar per file, and

@@ -12,17 +12,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Which of ten bands a place falls in, by what it answers over all its copies.
+ * Which of nine bands a place falls in, by what it answers over all its copies.
  *
  * <p>A place is green when it answers one name and nothing else in any copy,
  * lime when that name comes with a gap in other copies, teal when it answers
  * exactly two names and nothing else, and blue when it answers two or more
- * names any other way. A gap is an error ({@code T}), "can't tell", or an
- * open void. With no name at all, a place is brown when it answers only
- * errors, violet when it answers only voids an atom fills, slate when some of
- * its voids nobody fills, and amber when it cannot tell. A read that fails in
- * any copy, or a {@code ^} that only Java fills, makes it red whatever else it
- * answers, and a place no copy reached is grey.</p>
+ * names any other way. A gap is an error ({@code T}) or an unknown. With no
+ * name at all, a place is brown when it answers only errors, violet when it
+ * answers only unknowns an atom fills, and amber when it answers any other
+ * unknown. A read that fails in any copy, or a {@code ^} that only Java
+ * fills, makes it red whatever else it answers, and a place no copy reached
+ * is grey.</p>
  *
  * <p>The labels are the ones the place answers, with the formations of one
  * shape folded into one name first, so two copies of one lambda count as one
@@ -37,7 +37,7 @@ final class Band {
      * The bands, in the order a tally lists them.
      */
     static final List<String> ORDER = Arrays.asList(
-        "named", "gaps", "pair", "mixed", "lost", "atom", "unfilled", "error", "unreached", "fails"
+        "named", "gaps", "pair", "mixed", "unknown", "atom", "error", "unreached", "fails"
     );
 
     /**
@@ -100,12 +100,10 @@ final class Band {
         final String found;
         if (unknown.isEmpty()) {
             found = "error";
-        } else if (unknown.equals(Set.of("?open-void-atom"))) {
+        } else if (unknown.equals(Set.of("?unknown-by-java"))) {
             found = "atom";
-        } else if (Set.of("?open-void", "?open-void-atom").containsAll(unknown)) {
-            found = "unfilled";
         } else {
-            found = "lost";
+            found = "unknown";
         }
         return found;
     }

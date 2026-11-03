@@ -21,14 +21,15 @@ import java.util.Set;
  * call makes one copy per head and place, and each void it fills gets the
  * whole set of its argument, so calls never mix (rule 3). It makes no copy
  * while an argument it binds has nothing yet, the absence rule (4.1). The
- * rules come in here: 3 for an argument whose every value fails, b for an
- * argument that is only an open void, A for a mark, F for a call on what
- * Java made or on a finished shared kind, and call then narrow (3.5) for
- * an object whose {@code @} is one of its voids, once the call fills the
- * last of its empty voids; a call that leaves some empty makes a plain
- * copy, and a later call fills the rest. Every argument of an atom is
- * dataized, a void its atom calls back gets its copies made, and a void of
- * what Java makes fills its pool.</p>
+ * rules come in here: 3 for an argument whose every value fails, which
+ * goes into its void as T once a stop decides it, b for an argument that
+ * holds only unknowns, A for a mark, F for a call on what Java made or on
+ * a finished shared kind, and call then narrow (3.5) for an object whose
+ * {@code @} is one of its voids, once the call fills the last of its empty
+ * voids; a call that leaves some empty makes a plain copy, and a later
+ * call fills the rest. Every argument of an atom is dataized, a void its
+ * atom calls back gets its copies made, and a void of what Java makes
+ * fills its pool.</p>
  *
  * <p>For each head the call also notes where each argument lands: the
  * void of a copy made in EO code, or no void.</p>
@@ -148,7 +149,7 @@ final class Calls {
         }
         final Wish wish = new Wish('3', place, ctx, pos);
         if (!got.isEmpty() && this.state.taken(wish)) {
-            kept.add(this.world.unknown("can't tell"));
+            kept.add(Values.TERM);
         } else if (!got.isEmpty() && kept.isEmpty()) {
             this.state.wish(wish);
         }
@@ -357,7 +358,7 @@ final class Calls {
     private boolean gaps(final int... set) {
         boolean all = set.length > 0;
         for (final int val : set) {
-            if (!this.world.gap(val)) {
+            if (this.world.value(val).kind() != 'U') {
                 all = false;
                 break;
             }

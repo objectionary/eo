@@ -5,7 +5,7 @@
 # box grafted hands grafted on uncalled, so its x is still empty. A copy with
 # an empty void that nobody reads from outside does not count, so it is not
 # reduced: item holds grafted itself, not the oak its @ gives. Nobody calls
-# grafted, so its copy as written is kept, where x is an open void.
+# grafted, so its copy as written is kept, where x is unknown.
 sources:
   oak.eo: |
     [] > oak
@@ -28,4 +28,4 @@ answers:
   - /answers/o[@loc='Φ.box.v🌵item']/is[@loc='Φ.grafted']
   - /answers[not(o[@loc='Φ.box.v🌵item']/is[@loc='Φ.oak'])]
   - /answers/o[@loc='Φ.grafted' and @copies='1']
-  - /answers/o[@loc='Φ.grafted.v🌵x']/open
+  - /answers/o[@loc='Φ.grafted.v🌵x']/unknown

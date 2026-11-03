@@ -44,9 +44,8 @@ public final class Answers {
     private static final Map<String, String> FIXED = Map.of(
         "D", "<data/>",
         "T", "<terminator/>",
-        "?can't-tell", "<unknown/>",
-        "?open-void", "<open/>",
-        "?open-void-atom", "<open by=\"java\"/>",
+        "?unknown", "<unknown/>",
+        "?unknown-by-java", "<unknown by=\"java\"/>",
         Telling.ONLY_JAVA, "<fails name=\"ρ\" by=\"java\"/>"
     );
 

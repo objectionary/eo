@@ -20,7 +20,7 @@ package org.eolang.inference;
  * stop decides it, and is kept as itself from then on (rule e).</li>
  * <li>Rule b's head goes into a void as what it reduces to, in one
  * step.</li>
- * <li>Every unknown going into a void is one "can't tell".</li>
+ * <li>Every unknown going into a void is one and the same unknown.</li>
  * </ul>
  *
  * @since 0.76.0
@@ -59,7 +59,7 @@ final class Reduction {
     }
 
     /**
-     * The values of an argument, reduced: unknowns as one "can't tell".
+     * The values of an argument, reduced: unknowns as one unknown.
      *
      * @param set The values, as worked out
      * @return The values reduced, in the order of their numbers

@@ -2,8 +2,9 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# Nobody calls one, so its y is an open void, and the call inc y makes no copy
-# of inc. The x of inc stays an open void, and the @ of one cannot be told.
+# Nobody calls one, so its y is a void nobody fills, and it is unknown. The call
+# inc y makes no copy of inc, so the x of inc is unknown too, and so are what
+# the call hands to inc and the @ of one.
 sources:
   one.eo: |
     [y] > one
@@ -18,7 +19,9 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.one.v🌵y']/open
+  - /answers/o[@loc='Φ.one.v🌵y']/unknown
   - /answers/o[@loc='Φ.inc' and @copies='1']
-  - /answers/o[@loc='Φ.inc.v🌵x']/open
+  - /answers/o[@loc='Φ.inc.v🌵x']/unknown
+  - /answers/o[@loc='Φ.inc.φ']/unknown
+  - /answers/o[@loc='Φ.one.φ.α0' and @lands='v🌵x']/unknown
   - /answers/o[@loc='Φ.one.φ']/unknown

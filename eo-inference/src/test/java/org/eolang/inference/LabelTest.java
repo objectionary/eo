@@ -16,11 +16,29 @@ import org.junit.jupiter.api.Test;
 final class LabelTest {
 
     @Test
-    void saysAVoidNobodyFillsInWords() {
+    void saysAnUnknownInWords() {
         MatcherAssert.assertThat(
-            "an open void must be said in words, but its mark came through",
-            new Label("?open-void").words(),
-            Matchers.equalTo("an open void, filled by nobody")
+            "an unknown must be said in words, but its mark came through",
+            new Label("?unknown", "Φ.kettle.φ.ρ").words(),
+            Matchers.equalTo("unknown")
+        );
+    }
+
+    @Test
+    void saysAnUnknownVoidIsFilledByNobody() {
+        MatcherAssert.assertThat(
+            "an unknown void must be said to be filled by nobody, but it wasnt",
+            new Label("?unknown", "Φ.kettle.spout.v🌵lid").words(),
+            Matchers.equalTo("unknown, filled by nobody")
+        );
+    }
+
+    @Test
+    void saysAnUnknownAtomFillsInWords() {
+        MatcherAssert.assertThat(
+            "an unknown an atom fills must be said in words, but its mark came through",
+            new Label("?unknown-by-java", "Φ.os.reply.v🌵kind").words(),
+            Matchers.equalTo("unknown, filled by an atom")
         );
     }
 

@@ -15,7 +15,9 @@ import java.util.Map;
  * starts with {@code !} when a read fails. A page lists them under a mark,
  * and the reader is given words in place of the marks and the bare name in
  * place of a read that fails, so each label comes with a kind, which says
- * how a page draws it, and the words it is drawn with.</p>
+ * how a page draws it, and the words it is drawn with. An unknown at a void,
+ * a place whose locator ends in a {@code v🌵} name, is a void nobody fills,
+ * and its words say so.</p>
  *
  * @since 0.76.0
  */
@@ -27,9 +29,8 @@ final class Label {
     private static final Map<String, String> WORDS = Map.of(
         "D", "a datum",
         "T", "an error (T)",
-        "?open-void", "an open void, filled by nobody",
-        "?open-void-atom", "an open void, filled by an atom",
-        "?can't-tell", "can't tell",
+        "?unknown", "unknown",
+        "?unknown-by-java", "unknown, filled by an atom",
         "?cut", "cut",
         "!only-java-fills-ρ",
         "an error: this ^ is empty, and only Java fills it once an atom reads the object"
@@ -41,12 +42,29 @@ final class Label {
     private final String text;
 
     /**
+     * The locator of the place that answers the label, empty when no place
+     * matters.
+     */
+    private final String place;
+
+    /**
      * Ctor.
      *
      * @param label The label, as the engine wrote it
      */
     Label(final String label) {
+        this(label, "");
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param label The label, as the engine wrote it
+     * @param loc The locator of the place that answers it
+     */
+    Label(final String label, final String loc) {
         this.text = label;
+        this.place = loc;
     }
 
     /**
@@ -78,7 +96,9 @@ final class Label {
      */
     String words() {
         final String found;
-        if (Label.WORDS.containsKey(this.text)) {
+        if (this.unfilled()) {
+            found = "unknown, filled by nobody";
+        } else if (Label.WORDS.containsKey(this.text)) {
             found = Label.WORDS.get(this.text);
         } else if (this.text.startsWith("!")) {
             found = this.text.substring(1);
@@ -90,5 +110,10 @@ final class Label {
             found = this.text;
         }
         return found;
+    }
+
+    private boolean unfilled() {
+        return "?unknown".equals(this.text)
+            && this.place.substring(this.place.lastIndexOf('.') + 1).startsWith("v🌵");
     }
 }
