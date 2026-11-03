@@ -8,20 +8,24 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Which of eight bands a place falls in, by what it answers over all its copies.
+ * Which of ten bands a place falls in, by what it answers over all its copies.
  *
  * <p>A place is green when it answers one name and nothing else in any copy,
  * lime when that name comes with a gap in other copies, teal when it answers
  * exactly two names and nothing else, and blue when it answers two or more
  * names any other way. A gap is an error ({@code T}) or an unknown. With no
- * name at all, a place is brown when it answers only errors, violet when it
- * answers only unknowns an atom fills, and amber when it answers any other
- * unknown. A {@code ^} that only Java fills, in any copy, makes it red
- * whatever else it answers.</p>
+ * name at all, a place is brown when it answers only errors, and otherwise
+ * takes the colour of the kind of unknown it answers: amber for a read
+ * nothing ever answers, purple for a void only Java fills, slate for a void
+ * of an object nobody calls, and pink for a void nobody fills. A place that
+ * answers several kinds takes the first of them in that order. A {@code ^}
+ * that only Java fills, in any copy, makes it red whatever else it
+ * answers.</p>
  *
  * <p>The labels are the ones the place answers, with the formations of one
  * shape folded into one name first, so two copies of one lambda count as one
@@ -36,7 +40,25 @@ final class Band {
      * The bands, in the order a tally lists them.
      */
     static final List<String> ORDER = Arrays.asList(
-        "named", "gaps", "pair", "mixed", "unknown", "atom", "error", "fails"
+        "named", "gaps", "pair", "mixed", "loop", "atom", "study", "empty", "error", "fails"
+    );
+
+    /**
+     * The kinds of an unknown, the one a place is coloured by first.
+     */
+    private static final List<String> KINDS = Arrays.asList(
+        "?unknown-loop", "?unknown-java", "?unknown-study", "?unknown-empty"
+    );
+
+    /**
+     * The band of a place whose only gaps are unknowns, by the kind it is
+     * coloured by.
+     */
+    private static final Map<String, String> UNKNOWNS = Map.of(
+        "?unknown-loop", "loop",
+        "?unknown-java", "atom",
+        "?unknown-study", "study",
+        "?unknown-empty", "empty"
     );
 
     /**
@@ -97,10 +119,17 @@ final class Band {
         final String found;
         if (unknown.isEmpty()) {
             found = "error";
-        } else if (unknown.equals(Set.of("?unknown-by-java"))) {
-            found = "atom";
         } else {
-            found = "unknown";
+            found = Band.UNKNOWNS.get(
+                Band.KINDS.stream().filter(unknown::contains).findFirst().orElseThrow(
+                    () -> new IllegalStateException(
+                        String.format(
+                            "The place answers %s, and no unknown of a kind the report colours",
+                            unknown
+                        )
+                    )
+                )
+            );
         }
         return found;
     }

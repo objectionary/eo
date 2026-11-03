@@ -30,7 +30,7 @@ sources:
     [@] > string
 answers:
   - /answers/o[@loc='Φ.os.check.λ']/is[@loc='Φ.os.status']
-  - /answers/o[@loc='Φ.os.status.v🌵note']/set/unknown[@by='java']
+  - /answers/o[@loc='Φ.os.status.v🌵note']/set/unknown[@kind='java']
   - /answers/o[@loc='Φ.report.φ.α1' and @lands='v🌵note']/is[@loc='Φ.string']
   - /answers/o[@loc='Φ.alarm.φ.α1' and @lands='v🌵note']/is[@loc='Φ.number']
   - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.string']

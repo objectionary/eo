@@ -57,7 +57,7 @@ final class BandTest {
     void mixesTwoNamesWithAGap() {
         MatcherAssert.assertThat(
             "two names with a gap must be blue, but they werent",
-            new Band(Arrays.asList("Φ.kettle", "?unknown", "Φ.mug")).name(),
+            new Band(Arrays.asList("Φ.kettle", "?unknown-loop", "Φ.mug")).name(),
             Matchers.equalTo("mixed")
         );
     }
@@ -83,27 +83,63 @@ final class BandTest {
     @Test
     void marksAVoidOnlyAnAtomFills() {
         MatcherAssert.assertThat(
-            "only voids an atom fills must be violet, but they werent",
-            new Band(Collections.singletonList("?unknown-by-java")).name(),
+            "only voids an atom fills must be purple, but they werent",
+            new Band(Collections.singletonList("?unknown-java")).name(),
             Matchers.equalTo("atom")
         );
     }
 
     @Test
-    void marksAnUnknownNextToAVoidOnlyAnAtomFillsAsUnknown() {
+    void marksAReadNothingEverAnswers() {
         MatcherAssert.assertThat(
-            "an unknown next to a void an atom fills must be amber, but it wasnt",
-            new Band(Arrays.asList("?unknown-by-java", "?unknown")).name(),
-            Matchers.equalTo("unknown")
+            "a read nothing ever answers must be amber, but it wasnt",
+            new Band(Collections.singletonList("?unknown-loop")).name(),
+            Matchers.equalTo("loop")
         );
     }
 
     @Test
-    void marksAnUnknownNextToAnErrorAsUnknown() {
+    void marksAVoidOfAnObjectNobodyCalls() {
         MatcherAssert.assertThat(
-            "an unknown next to an error must be amber, but it wasnt",
-            new Band(Arrays.asList("?unknown", "T")).name(),
-            Matchers.equalTo("unknown")
+            "a void of an object nobody calls must be slate, but it wasnt",
+            new Band(Collections.singletonList("?unknown-study")).name(),
+            Matchers.equalTo("study")
+        );
+    }
+
+    @Test
+    void marksAVoidNobodyFillsNextToAnError() {
+        MatcherAssert.assertThat(
+            "a void nobody fills next to an error must be pink, but it wasnt",
+            new Band(Arrays.asList("T", "?unknown-empty")).name(),
+            Matchers.equalTo("empty")
+        );
+    }
+
+    @Test
+    void putsALoopAheadOfAVoidAnAtomFills() {
+        MatcherAssert.assertThat(
+            "a loop next to a void an atom fills must be amber, but it wasnt",
+            new Band(Arrays.asList("?unknown-java", "?unknown-loop")).name(),
+            Matchers.equalTo("loop")
+        );
+    }
+
+    @Test
+    void putsAVoidAnAtomFillsAheadOfAnObjectNobodyCalls() {
+        MatcherAssert.assertThat(
+            "a void an atom fills next to one nobody calls must be purple, but it wasnt",
+            new Band(Arrays.asList("?unknown-study", "?unknown-java")).name(),
+            Matchers.equalTo("atom")
+        );
+    }
+
+    @Test
+    void putsAnObjectNobodyCallsAheadOfAVoidNobodyFills() {
+        MatcherAssert.assertThat(
+            "a void of an object nobody calls next to one nobody fills must be slate, but it wasnt",
+            new Band(Arrays.asList("?unknown-empty", "?unknown-study")).name(),
+            Matchers.equalTo("study")
         );
     }
 

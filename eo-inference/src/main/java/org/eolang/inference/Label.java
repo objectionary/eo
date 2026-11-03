@@ -27,8 +27,10 @@ final class Label {
     private static final Map<String, String> WORDS = Map.of(
         "D", "a datum",
         "T", "an error (T)",
-        "?unknown", "unknown",
-        "?unknown-by-java", "unknown, filled by an atom",
+        "?unknown-empty", "unknown, filled by nobody",
+        "?unknown-study", "unknown, nobody calls this object",
+        "?unknown-java", "unknown, filled by an atom",
+        "?unknown-loop", "unknown, nothing ever answers",
         "!only-java-fills-ρ",
         "an error: this ^ is empty, and only Java fills it once an atom reads the object"
     );

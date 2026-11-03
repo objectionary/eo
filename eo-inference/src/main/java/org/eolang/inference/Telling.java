@@ -25,10 +25,15 @@ import java.util.TreeSet;
  * its own name when its {@code @} gives no name, or gives D or a hidden
  * name, and a copy whose {@code @} gives only T is named T. A formation
  * and its voids are told too, from the copies of it that count: what each
- * void holds, and what Java gives. Whatever the engine cannot name is one
- * unknown, {@code ?unknown}, or {@code ?unknown-by-java} when only Java
- * fills it. A bound void or {@code ρ} that gives no label at all once the
- * walk is over is a defect of the walk, and telling stops on it.</p>
+ * void holds, and what Java gives. Whatever the engine cannot name is an
+ * unknown of one of four kinds: {@code ?unknown-empty}, a void nobody fills
+ * in a copy a call made, said only on that void's own row, since a read of
+ * it is T; {@code ?unknown-study}, a void nobody fills in a copy that stands
+ * for a caller who is not there; {@code ?unknown-java}, a void only Java
+ * fills; and {@code ?unknown-loop}, a read nothing ever answers. A bound void
+ * or {@code ρ} that gives no label at all once the walk is over is a defect
+ * of the walk, and so is an unknown of no kind, and telling stops on
+ * either.</p>
  *
  * @since 0.76.0
  */
@@ -132,9 +137,9 @@ final class Telling {
     private String missing(final Key key) {
         final String label;
         if (EndStep.NOBODY.equals(this.state.token(key.place(), key.value()))) {
-            label = "?unknown-by-java";
+            label = "?unknown-java";
         } else {
-            label = "?unknown";
+            label = "?unknown-loop";
         }
         return label;
     }
@@ -181,7 +186,7 @@ final class Telling {
         final String holds = shape.holds(name);
         final Set<String> said = new TreeSet<>(new CodeOrder());
         if (Values.JBORN.equals(value.birth()) || (value.bound() & shape.bit(name)) == 0) {
-            said.add(Telling.vacant(value, holds));
+            said.add(this.vacant(copy, holds));
         } else {
             for (final int val : this.state.untidy(copy, name).array()) {
                 said.addAll(this.last(val));
@@ -207,7 +212,7 @@ final class Telling {
         if (this.state.handedToJava(copy)) {
             said.add(Telling.ONLY_JAVA);
         } else if (Values.JBORN.equals(value.birth()) || (value.bound() & Formation.RHO) == 0) {
-            said.add(Telling.vacant(value, ""));
+            said.add(this.vacant(copy, ""));
         } else {
             for (final int val : this.state.untidy(copy, "ρ").array()) {
                 said.addAll(this.last(val));
@@ -312,13 +317,20 @@ final class Telling {
         final Value value = this.world.value(inside);
         final String label;
         if (inside == Values.JGAP) {
-            label = "?unknown-by-java";
+            label = "?unknown-java";
+        } else if (inside == Values.GAP) {
+            label = "?unknown-study";
         } else if (value.kind() == 'O') {
             label = value.form();
         } else if (value.kind() == 'D' || value.kind() == 'T' || value.kind() == 'Φ') {
             label = String.valueOf(value.kind());
         } else if (value.kind() == 'U') {
-            label = "?unknown";
+            throw new IllegalStateException(
+                String.format(
+                    "%s is an unknown of none of the four kinds the engine tells",
+                    this.world.full(inside)
+                )
+            );
         } else {
             label = String.format("?%s", value.kind());
         }
@@ -337,14 +349,16 @@ final class Telling {
         return !"T".equals(label) && !"D".equals(label) && !label.contains("🌵");
     }
 
-    private static String vacant(final Value value, final String holds) {
+    private String vacant(final int copy, final String holds) {
         final String label;
-        if (holds.isEmpty() && Values.JBORN.equals(value.birth())) {
-            label = "?unknown-by-java";
-        } else if (holds.isEmpty()) {
-            label = "?unknown";
-        } else {
+        if (!holds.isEmpty()) {
             label = holds;
+        } else if (Values.JBORN.equals(this.world.value(copy).birth())) {
+            label = "?unknown-java";
+        } else if (this.state.kept(copy)) {
+            label = "?unknown-study";
+        } else {
+            label = "?unknown-empty";
         }
         return label;
     }

@@ -309,16 +309,6 @@ final class World {
     }
 
     /**
-     * An unknown, for a reason.
-     *
-     * @param why The reason
-     * @return Its number
-     */
-    int unknown(final String why) {
-        return this.values.unknown(why);
-    }
-
-    /**
      * The value with the rule b and rule A wrappers taken off.
      *
      * @param num The number

@@ -31,8 +31,10 @@ import org.w3c.dom.Node;
  *
  * <p>Each element is read back into the engine's own label:
  * {@code <is loc="Φ.number"/>} into {@code Φ.number}, {@code <data/>} into
- * {@code D}, {@code <terminator/>} into {@code T}, {@code <unknown/>} into
- * {@code ?unknown} or, when Java fills it, {@code ?unknown-by-java}, and
+ * {@code D}, {@code <terminator/>} into {@code T},
+ * {@code <unknown kind="study"/>} into {@code ?unknown-study}, the same for
+ * each of the four kinds, {@code empty}, {@code study}, {@code java} and
+ * {@code loop}, and
  * {@code <fails name="ρ" by="java"/>} into {@code !only-java-fills-ρ}. A
  * missing attribute is T, so a {@code ^} that only Java fills is the one
  * failure the engine writes, and any other {@code <fails>} stops the
@@ -41,6 +43,11 @@ import org.w3c.dom.Node;
  * @since 0.76.0
  */
 final class Table {
+
+    /**
+     * The kinds of an unknown.
+     */
+    private static final Set<String> KINDS = Set.of("empty", "study", "java", "loop");
 
     /**
      * The document {@code answers.xml}.
@@ -106,19 +113,6 @@ final class Table {
             .filter(set -> !Collections.disjoint(set.getKey(), labels))
             .mapToInt(Map.Entry::getValue)
             .sum();
-    }
-
-    /**
-     * Whether every copy of the place that says the label says nothing else.
-     *
-     * @param place The locator of the place
-     * @param label The label
-     * @return TRUE when the label stands alone in every set that holds it
-     */
-    boolean alone(final String place, final String label) {
-        return this.sets(place).keySet().stream()
-            .filter(set -> set.contains(label))
-            .allMatch(set -> set.size() == 1);
     }
 
     private Map<Set<String>, Integer> sets(final String place) {
@@ -195,12 +189,15 @@ final class Table {
     }
 
     private static String unknown(final Noted noted) {
-        final String found;
-        if ("java".equals(noted.says("by"))) {
-            found = "?unknown-by-java";
-        } else {
-            found = "?unknown";
+        final String kind = noted.says("kind");
+        if (!Table.KINDS.contains(kind)) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "answers.xml has an unknown of kind '%s', which the report does not know",
+                    kind
+                )
+            );
         }
-        return found;
+        return String.format("?unknown-%s", kind);
     }
 }

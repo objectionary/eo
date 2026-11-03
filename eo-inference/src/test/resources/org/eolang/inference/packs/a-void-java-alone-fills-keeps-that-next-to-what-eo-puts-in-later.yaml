@@ -28,8 +28,8 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.os.status.v🌵note']/set[not(is)]/unknown[@by='java']
+  - /answers/o[@loc='Φ.os.status.v🌵note']/set[not(is)]/unknown[@kind='java']
   - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.os.status']
-  - /answers/o[@loc='Φ.app.φ']/unknown[@by='java']
+  - /answers/o[@loc='Φ.app.φ']/unknown[@kind='java']
   - /answers/o[@loc='Φ.late.φ.α1' and @lands='v🌵note']/is[@loc='Φ.string']
-  - /answers/o[@loc='Φ.app.φ' and unknown[@by='java']]/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.φ' and unknown[@kind='java']]/is[@loc='Φ.string']

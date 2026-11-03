@@ -22,7 +22,8 @@ package org.eolang.inference;
  * object with empty voids reduces to.</li>
  * <li>Rule b's head goes into a void as what it reduces to, in one
  * step.</li>
- * <li>Every unknown going into a void is one and the same unknown.</li>
+ * <li>An unknown goes into a void as it is, so it keeps its kind: the
+ * void of an object nobody calls, or a void only Java fills.</li>
  * </ul>
  *
  * @since 0.76.0
@@ -61,13 +62,12 @@ final class Reduction {
     }
 
     /**
-     * The values of an argument, reduced: unknowns as one unknown.
+     * The values of an argument, reduced, each unknown kept as it is.
      *
      * @param set The values, as worked out
      * @return The values reduced, in the order of their numbers
      */
     int[] reduced(final int... set) {
-        final int cant = this.world.unknown("can't tell");
         final Ints all = new Ints();
         for (final int num : set) {
             final Ids kinds = this.kind(num);
@@ -75,15 +75,7 @@ final class Reduction {
                 all.addAll(this.unwrapped(kinds.get(idx)));
             }
         }
-        final Ints out = new Ints();
-        for (int idx = 0; idx < all.size(); ++idx) {
-            if (this.world.value(all.get(idx)).kind() == 'U') {
-                out.add(cant);
-            } else {
-                out.add(all.get(idx));
-            }
-        }
-        final Ids sorted = out.frozen();
+        final Ids sorted = all.frozen();
         final int[] result = new int[sorted.size()];
         for (int idx = 0; idx < result.length; ++idx) {
             result[idx] = sorted.get(idx);

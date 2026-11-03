@@ -453,7 +453,7 @@ final class State {
     }
 
     /**
-     * The values of an argument, reduced: unknowns as one unknown.
+     * The values of an argument, reduced, each unknown kept as it is.
      *
      * @param set The values, as worked out
      * @return The values reduced, in the order of their numbers

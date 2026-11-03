@@ -25,7 +25,7 @@ sources:
 answers:
   - /answers/o[@loc='Φ.os.check.λ']/is[@loc='Φ.os.status']
   - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.os.status']
-  - /answers/o[@loc='Φ.os.status.v🌵code' and @copies='1']/unknown[@by='java']
+  - /answers/o[@loc='Φ.os.status.v🌵code' and @copies='1']/unknown[@kind='java']
   - /answers/o[@loc='Φ.os.status.ok' and @copies='1']
   - /answers/o[@loc='Φ.os.status.ok.φ']/is[@loc='Φ.number']
   - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.number']

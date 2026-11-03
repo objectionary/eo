@@ -27,7 +27,7 @@ final class TableTest {
                     "<answers><o loc='Φ.kiln.x' copies='232'>",
                     "<set copies='119'><terminator/><is loc='Φ.bool'/></set>",
                     "<set copies='112'><is loc='Φ.bool'/></set>",
-                    "<set copies='1'><unknown/></set></o></answers>"
+                    "<set copies='1'><unknown kind='loop'/></set></o></answers>"
                 )
             ).said("Φ.kiln.x").get("Φ.bool"),
             Matchers.equalTo(231)
@@ -41,7 +41,7 @@ final class TableTest {
             new Table(
                 new Xnav(
                     "<answers><o loc='Φ.kiln.y' copies='9'>",
-                    "<set copies='5'><data/></set><set copies='4'><unknown/></set></o></answers>"
+                    "<set copies='5'><data/></set><set copies='4'><unknown kind='study'/></set></o></answers>"
                 )
             ).copies("Φ.kiln.y"),
             Matchers.equalTo(9)
@@ -78,13 +78,13 @@ final class TableTest {
     }
 
     @Test
-    void readsAnUnknownAsOneMark() {
+    void readsAnUnknownByItsKind() {
         MatcherAssert.assertThat(
-            "an unknown must be read as the one mark of what the engine cannot name, but it wasnt",
+            "an unknown must be read as the mark of its kind, but it wasnt",
             new Table(
-                new Xnav("<answers><o loc='Φ.kiln.t' copies='3'><unknown/></o></answers>")
+                new Xnav("<answers><o loc='Φ.kiln.t' copies='3'><unknown kind='study'/></o></answers>")
             ).said("Φ.kiln.t").keySet(),
-            Matchers.contains("?unknown")
+            Matchers.contains("?unknown-study")
         );
     }
 
@@ -93,9 +93,24 @@ final class TableTest {
         MatcherAssert.assertThat(
             "a void Java fills must be read as a void an atom fills, but it wasnt",
             new Table(
-                new Xnav("<answers><o loc='Φ.kiln.z' copies='2'><unknown by='java'/></o></answers>")
+                new Xnav("<answers><o loc='Φ.kiln.z' copies='2'><unknown kind='java'/></o></answers>")
             ).said("Φ.kiln.z").keySet(),
-            Matchers.contains("?unknown-by-java")
+            Matchers.contains("?unknown-java")
+        );
+    }
+
+    @Test
+    void refusesAnUnknownOfAKindItDoesNotKnow() {
+        MatcherAssert.assertThat(
+            "an unknown of a kind the report does not know must stop it and be named, but it wasnt",
+            Assertions.assertThrows(
+                IllegalArgumentException.class,
+                () -> new Table(
+                    new Xnav("<answers><o loc='Φ.kiln.q' copies='5'><unknown kind='lost'/></o></answers>")
+                ).said("Φ.kiln.q"),
+                "an unknown of a kind the report does not know must stop it"
+            ).getMessage(),
+            Matchers.containsString("lost")
         );
     }
 
@@ -144,36 +159,6 @@ final class TableTest {
                 )
             ).joined("Φ.kiln.v", Arrays.asList("Φ.a🌵1-1", "Φ.a🌵2-1")),
             Matchers.equalTo(14)
-        );
-    }
-
-    @Test
-    void findsALabelAloneInEverySetThatHoldsIt() {
-        MatcherAssert.assertThat(
-            "a label no copy says anything next to must be alone, but it wasnt",
-            new Table(
-                new Xnav(
-                    "<answers><o loc='Φ.kiln.s' copies='8'>",
-                    "<set copies='6'><unknown/></set>",
-                    "<set copies='2'><is loc='Φ.bytes'/></set></o></answers>"
-                )
-            ).alone("Φ.kiln.s", "?unknown"),
-            Matchers.is(true)
-        );
-    }
-
-    @Test
-    void findsNoLabelAloneWhenOneSetHoldsMore() {
-        MatcherAssert.assertThat(
-            "a label some copy says next to a name must not be alone, but it was",
-            new Table(
-                new Xnav(
-                    "<answers><o loc='Φ.kiln.r' copies='11'>",
-                    "<set copies='7'><unknown/></set>",
-                    "<set copies='4'><unknown/><is loc='Φ.bytes'/></set></o></answers>"
-                )
-            ).alone("Φ.kiln.r", "?unknown"),
-            Matchers.is(false)
         );
     }
 

@@ -5,7 +5,7 @@
 -->
 <!--
 A page of the inference report: the source of one file, with a mark on every
-object in the colour of one of eight bands, and a list under the mark of what
+object in the colour of one of ten bands, and a list under the mark of what
 the object answers in how many copies, one answer per bullet when there are
 several. A click on a colour in the tally keeps only the lines with
 marks of the chosen colours, and only those marks on them; a dashed rule shows
@@ -54,13 +54,21 @@ stays lit until the next scroll, click or key press.
             <xsl:value-of select="@mixed"/>
             <xsl:text> two or more names, maybe with gaps</xsl:text>
           </span>
-          <span class="unknown" data-band="unknown">
-            <xsl:value-of select="@unknown"/>
-            <xsl:text> unknown</xsl:text>
+          <span class="loop" data-band="loop">
+            <xsl:value-of select="@loop"/>
+            <xsl:text> unknown, nothing ever answers</xsl:text>
           </span>
           <span class="atom" data-band="atom">
             <xsl:value-of select="@atom"/>
             <xsl:text> unknown, filled by an atom</xsl:text>
+          </span>
+          <span class="study" data-band="study">
+            <xsl:value-of select="@study"/>
+            <xsl:text> unknown, nobody calls this object</xsl:text>
+          </span>
+          <span class="empty" data-band="empty">
+            <xsl:value-of select="@empty"/>
+            <xsl:text> unknown, filled by nobody</xsl:text>
           </span>
           <span class="error" data-band="error">
             <xsl:value-of select="@error"/>
@@ -201,8 +209,10 @@ stays lit until the next scroll, click or key press.
       .tally .gaps { background: #eef3c2; }
       .tally .pair { background: #d3eff2; }
       .tally .mixed { background: #d9e5fb; }
-      .tally .unknown { background: #fbeecc; }
+      .tally .loop { background: #fbeecc; }
       .tally .atom { background: #e6dcf5; }
+      .tally .study { background: #dfe6e9; }
+      .tally .empty { background: #fadce9; }
       .tally .error { background: #efe2dc; }
       .tally .fails { background: #f7d4d4; }
       .tally span[data-band] { cursor: pointer; user-select: none; }
@@ -219,8 +229,10 @@ stays lit until the next scroll, click or key press.
       .mark.gaps { color: #7c8c00; }
       .mark.pair { color: #00838f; }
       .mark.mixed { color: #1e5bc6; }
-      .mark.unknown { color: #b26a00; }
+      .mark.loop { color: #b26a00; }
       .mark.atom { color: #6a3fb5; }
+      .mark.study { color: #546e7a; }
+      .mark.empty { color: #c2185b; }
       .mark.error { color: #795548; }
       .mark.fails { color: #c62828; }
       .pop { display: none; position: absolute; left: 0; top: 100%; margin-top: .3em; z-index: 9; white-space: normal; width: 26em; padding: .6em .8em; background: #fffdf5; color: #1a1a1a; border: 1px solid #ccc; box-shadow: 0 2px 6px rgba(0,0,0,.15); }

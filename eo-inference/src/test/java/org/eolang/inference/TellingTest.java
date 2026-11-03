@@ -43,9 +43,9 @@ final class TellingTest {
     @Test
     void tellsVoidNobodyFillsAsUnknown(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
-            "a void no call fills must be told as an unknown, but it wasnt",
+            "a void no call fills must be told as a void nobody fills, but it wasnt",
             TellingTest.told(temp).sets().get("Φ.box.v🌵spare"),
-            Matchers.equalTo(Map.of("?unknown", 2))
+            Matchers.equalTo(Map.of("?unknown-empty", 2))
         );
     }
 

@@ -23,12 +23,14 @@ final class ValuesTest {
 
     @Test
     void givesSameNumberToSameValue(@Mktmp final Path temp) throws IOException {
-        final Values values = new Values(new Sources(temp).program());
-        values.unknown("can't tell");
+        final Values values = new Values(
+            new Sources(temp).with("mug.eo", "[tea] > mug", "  tea > @").program()
+        );
+        values.intern(new Value('O', "Φ.mug", "Φ.app.φ", 1L, "", -1, 0));
         MatcherAssert.assertThat(
             "the same value must get the same number again, but it didnt",
-            values.unknown("can't tell"),
-            Matchers.equalTo(values.unknown("can't tell"))
+            values.intern(new Value('O', "Φ.mug", "Φ.app.φ", 1L, "", -1, 0)),
+            Matchers.equalTo(values.intern(new Value('O', "Φ.mug", "Φ.app.φ", 1L, "", -1, 0)))
         );
     }
 

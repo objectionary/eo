@@ -43,7 +43,9 @@ final class Values {
     static final int JAVA = 3;
 
     /**
-     * The unknown of a void nobody fills.
+     * The unknown of a void nobody fills in a copy that stands for a caller
+     * who is not there, a study copy or one kept as written: what a read
+     * of that void gives.
      */
     static final int GAP = 4;
 
@@ -133,16 +135,6 @@ final class Values {
      */
     int size() {
         return this.all.size();
-    }
-
-    /**
-     * An unknown, for a reason.
-     *
-     * @param why The reason
-     * @return Its number
-     */
-    int unknown(final String why) {
-        return this.intern(new Value('U', why, "", 0L, "", -1, 0));
     }
 
     /**

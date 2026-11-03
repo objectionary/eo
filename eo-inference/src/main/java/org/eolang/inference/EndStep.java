@@ -13,8 +13,9 @@ import java.util.function.IntUnaryOperator;
  * with nothing fed back.
  *
  * <p>A read with no answer in a copy that counts is marked
- * {@code ?end-can't-tell}, or {@code ?end-nobody-fills-it} when it reads a
- * void of a Java object nobody fills. Then the answers and rows that hold
+ * {@code ?end-can't-tell}, told as {@code ?unknown-loop}, or
+ * {@code ?end-nobody-fills-it}, told as {@code ?unknown-java}, when it reads
+ * a void of a Java object nobody fills. Then the answers and rows that hold
  * the unknown of a void a stop decided Java alone fills are kept aside as
  * they are, and everywhere else that unknown becomes a plain one: the
  * answers name a void only Java fills from what was kept aside.</p>

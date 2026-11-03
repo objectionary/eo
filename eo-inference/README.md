@@ -69,12 +69,16 @@ into them.
 The `inference-report` goal reads the prepared files and the `answers.xml` in
 `target/eo/NN-inference`, and writes a page per source file into
 `target/site/inference`, with an index. A page shows the source with a mark
-on every object, coloured by one of eight bands of what the engine answers
+on every object, coloured by one of ten bands of what the engine answers
 there: green for one name and nothing else, then names with gaps, two names,
-mixed names, unknown, unknown filled by an atom, only an error, and red where
-only Java fills a `^`. The goal logs how many objects fall in each band. An
-object that `answers.xml` says nothing of stops the report with an error that
-names its locator.
+mixed names, an unknown of each of four kinds, only an error, and red where
+only Java fills a `^`. The four kinds are a read nothing ever answers, a void
+only Java fills, a void of an object nobody calls, and a void nobody fills,
+and `answers.xml` writes them as `<unknown kind="loop"/>`, `kind="java"`,
+`kind="study"` and `kind="empty"`. A place with no name and unknowns of several
+kinds takes the first of them in that order. The goal logs how many objects
+fall in each band. An object that `answers.xml` says nothing of stops the
+report with an error that names its locator.
 
 `Report` draws the same bytes as `report.py`, the Python report it is ported
 from, with the same `page.xsl` and `index.xsl`. `ReportTest` compares the two

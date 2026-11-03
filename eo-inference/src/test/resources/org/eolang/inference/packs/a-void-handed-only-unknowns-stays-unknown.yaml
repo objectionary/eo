@@ -2,9 +2,10 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# Nobody calls one, so its y is a void nobody fills, and it is unknown. The call
-# inc y makes no copy of inc, so the x of inc is unknown too, and so are what
-# the call hands to inc and the @ of one.
+# Nobody calls one, so its y is the void of an object nobody calls. The call
+# inc y makes no copy of inc, so inc is studied too and its x is of that kind
+# as well, and the unknown y stays of its kind in what the call hands to inc and
+# in the @ of one.
 sources:
   one.eo: |
     [y] > one
@@ -19,9 +20,9 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.one.v🌵y']/unknown
+  - /answers/o[@loc='Φ.one.v🌵y']/unknown[@kind='study']
   - /answers/o[@loc='Φ.inc' and @copies='1']
-  - /answers/o[@loc='Φ.inc.v🌵x']/unknown
-  - /answers/o[@loc='Φ.inc.φ']/unknown
-  - /answers/o[@loc='Φ.one.φ.α0' and @lands='v🌵x']/unknown
-  - /answers/o[@loc='Φ.one.φ']/unknown
+  - /answers/o[@loc='Φ.inc.v🌵x']/unknown[@kind='study']
+  - /answers/o[@loc='Φ.inc.φ']/unknown[@kind='study']
+  - /answers/o[@loc='Φ.one.φ.α0' and @lands='v🌵x']/unknown[@kind='study']
+  - /answers/o[@loc='Φ.one.φ' and count(*)=1]/unknown[@kind='study']

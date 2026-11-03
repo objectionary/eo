@@ -39,7 +39,7 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.app.d.α0' and @lands='v🌵a' and unknown[@by='java']]/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.d.α0' and @lands='v🌵a' and unknown[@kind='java']]/is[@loc='Φ.string']
   - /answers/o[@loc='Φ.app.d' and terminator]/is[@loc='Φ.string']
   - /answers/o[@loc='Φ.keep.v🌵k' and terminator]/is[@loc='Φ.string']
   - /answers[not(o[@loc='Φ.keep.v🌵k']/unknown)]

@@ -89,11 +89,11 @@ final class EntriesTest {
     }
 
     @Test
-    void saysAnUnknownVoidIsFilledByNobody() throws ParserConfigurationException {
+    void saysAVoidNobodyFillsIsFilledByNobody() throws ParserConfigurationException {
         MatcherAssert.assertThat(
-            "an unknown void must be said to be filled by nobody, but it wasnt",
+            "a void nobody fills must be said to be filled by nobody, but it wasnt",
             EntriesTest.told(
-                "<answers><o loc='Φ.kiln.v🌵fuel' copies='4'><unknown/></o></answers>",
+                "<answers><o loc='Φ.kiln.v🌵fuel' copies='4'><unknown kind='empty'/></o></answers>",
                 "kiln.eo",
                 "Φ.kiln.v🌵fuel"
             ),
@@ -104,34 +104,37 @@ final class EntriesTest {
     }
 
     @Test
-    void saysNothingOfFillingWhenAnUnknownVoidHoldsANameToo()
-        throws ParserConfigurationException {
+    void saysTheKindOfAnUnknownNextToAName() throws ParserConfigurationException {
         MatcherAssert.assertThat(
-            "an unknown next to a name in a void must not be said to be filled by nobody, but it was",
+            "an unknown next to a name must be said by its kind, but it wasnt",
             EntriesTest.told(
                 String.join(
                     "",
                     "<answers><o loc='Φ.kiln.v🌵coal' copies='9'>",
-                    "<set copies='5'><unknown/><is loc='Φ.number'/></set>",
+                    "<set copies='5'><unknown kind='study'/><is loc='Φ.number'/></set>",
                     "<set copies='4'><is loc='Φ.number'/></set></o></answers>"
                 ),
                 "kiln.eo",
                 "Φ.kiln.v🌵coal"
             ),
-            XhtmlMatchers.hasXPath("/bit/told/said[@kind='words' and .='unknown']")
+            XhtmlMatchers.hasXPath(
+                "/bit/told/said[@kind='words' and .='unknown, nobody calls this object']"
+            )
         );
     }
 
     @Test
-    void saysAnUnknownThatIsNoVoidWithNoNote() throws ParserConfigurationException {
+    void saysAReadNothingAnswersByItsKind() throws ParserConfigurationException {
         MatcherAssert.assertThat(
-            "an unknown that is no void must be said as unknown alone, but it wasnt",
+            "a read nothing ever answers must be said by its kind, but it wasnt",
             EntriesTest.told(
-                "<answers><o loc='Φ.kiln.smoke' copies='7'><unknown/></o></answers>",
+                "<answers><o loc='Φ.kiln.smoke' copies='7'><unknown kind='loop'/></o></answers>",
                 "kiln.eo",
                 "Φ.kiln.smoke"
             ),
-            XhtmlMatchers.hasXPath("/bit/told/said[@kind='words' and .='unknown']")
+            XhtmlMatchers.hasXPath(
+                "/bit/told/said[@kind='words' and .='unknown, nothing ever answers']"
+            )
         );
     }
 
