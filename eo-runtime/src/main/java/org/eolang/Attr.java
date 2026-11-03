@@ -29,10 +29,14 @@ public final class Attr extends AbstractMap.SimpleImmutableEntry<String, Attribu
     /**
      * Ctor that declares a void attribute.
      *
-     * @param name Name of the void attribute
+     * <p>The void is kept under the name the parser would give it, with
+     * the mark in front. Other objects can fill it, and only its own object
+     * can read it, through {@link PhDefault#free(String)}.</p>
+     *
+     * @param name Name of the void attribute, as the EO source spells it
      */
     public Attr(final String name) {
-        this(name, new AtVoid(name));
+        this(new Hidden(name).toString(), new AtVoid(name));
     }
 
     /**

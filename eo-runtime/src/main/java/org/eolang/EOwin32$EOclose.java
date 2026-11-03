@@ -21,13 +21,13 @@ public final class EOwin32$EOclose extends PhDefault implements Atom {
      * Ctor.
      */
     public EOwin32$EOclose() {
-        super(new Attrs(new Attr("v🌵descriptor")));
+        super(new Attrs(new Attr("descriptor")));
     }
 
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
-            Msvcrt.INSTANCE._close(new Int(Expect.at(this, "v🌵descriptor")).it())
+            Msvcrt.INSTANCE._close(new Int(this.expected("descriptor")).it())
         );
     }
 }

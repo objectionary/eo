@@ -27,7 +27,7 @@ final class EObytesEOconcatTest {
                     0,
                     new PhApplication(
                         new Data.ToPhi("привет ").take("as-bytes").take("concat").copy(),
-                        "v🌵b",
+                        0,
                         new Data.ToPhi("mr. ㄤㄠ!").take("as-bytes")
                     )
                 )
@@ -45,7 +45,7 @@ final class EObytesEOconcatTest {
                 () -> new Dataized(
                     new PhApplication(
                         new Data.ToPhi(new byte[1_073_741_824]).take("concat").copy(),
-                        "v🌵b",
+                        0,
                         new Data.ToPhi(new byte[1_073_741_824])
                     )
                 ).take()

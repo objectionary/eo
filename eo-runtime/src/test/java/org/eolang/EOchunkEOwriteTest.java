@@ -32,15 +32,15 @@ final class EOchunkEOwriteTest {
                                 new EOchunk$EOwrite(),
                                 Phi.RHO,
                                 new PhApplication(
-                                    new PhDefault(new Attrs(new Attr("id"))),
+                                    new PhDefault(new Attrs(new Attr("id", new AtVoid("id")))),
                                     "id",
                                     new Data.ToPhi(id)
                                 )
                             ),
-                            "v🌵offset",
+                            0,
                             new Data.ToPhi(0)
                         ),
-                        "v🌵data",
+                        1,
                         new Data.ToPhi("héllo")
                     )
                 ).take()
@@ -60,7 +60,7 @@ final class EOchunkEOwriteTest {
                         new EOchunk$EOwrite(),
                         Phi.RHO,
                         new PhApplication(
-                            new PhDefault(new Attrs(new Attr("id"))),
+                            new PhDefault(new Attrs(new Attr("id", new AtVoid("id")))),
                             "id",
                             new Data.ToPhi(true)
                         )
@@ -84,12 +84,12 @@ final class EOchunkEOwriteTest {
                             new EOchunk$EOwrite(),
                             Phi.RHO,
                             new PhApplication(
-                                new PhDefault(new Attrs(new Attr("id"))),
+                                new PhDefault(new Attrs(new Attr("id", new AtVoid("id")))),
                                 "id",
                                 new Data.ToPhi(0)
                             )
                         ),
-                        "v🌵offset",
+                        0,
                         new Data.ToPhi(1.5)
                     )
                 ).take(),

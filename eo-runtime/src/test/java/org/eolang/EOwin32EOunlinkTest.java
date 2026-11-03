@@ -25,7 +25,7 @@ final class EOwin32EOunlinkTest {
                 () -> new Dataized(
                     new PhApplication(
                         new EOwin32$EOunlink(),
-                        "v🌵path",
+                        0,
                         new Data.ToPhi(String.join(String.valueOf((char) 0), "плюшка", "щи"))
                     ).take("code")
                 ).take(),

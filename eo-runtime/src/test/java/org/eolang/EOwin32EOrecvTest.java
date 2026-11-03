@@ -26,12 +26,12 @@ final class EOwin32EOrecvTest {
                 new PhApplication(
                     new PhApplication(
                         new PhApplication(
-                            new EOwin32$EOrecv(), "v🌵descriptor", new Data.ToPhi(-1)
+                            new EOwin32$EOrecv(), 0, new Data.ToPhi(-1)
                         ),
-                        "v🌵size",
+                        1,
                         new Data.ToPhi(16)
                     ),
-                    "v🌵flags",
+                    2,
                     new Data.ToPhi(0)
                 ).take("code")
             ).asNumber().intValue(),

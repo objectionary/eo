@@ -167,28 +167,6 @@ final class ExpectTest {
     }
 
     @Test
-    void namesAHiddenVoidWithoutItsMark() {
-        MatcherAssert.assertThat(
-            "the message must name a hidden void the way its source writes it, but it doesnt",
-            Assertions.assertThrows(
-                ExFailure.class,
-                new Numeric(
-                    Expect.at(
-                        new PhApplication(
-                            new PhDefault(new Attrs(new Attr("v🌵left"))),
-                            0,
-                            new Data.ToPhi(true)
-                        ),
-                        "v🌵left"
-                    )
-                )::it,
-                "fails on a hidden void that holds no number"
-            ).getMessage(),
-            Matchers.equalTo("the 'left' attribute must be a number")
-        );
-    }
-
-    @Test
     void failsInTransformingToIntegerForNotNumber() {
         MatcherAssert.assertThat(
             "inner class Integer throws error for not a number",
@@ -363,7 +341,7 @@ final class ExpectTest {
                             Phi.RHO,
                             new Data.ToPhi(42)
                         ),
-                        "v🌵b",
+                        0,
                         new Data.ToPhi(true)
                     )
                 ).take(),

@@ -23,8 +23,8 @@ public final class EOposix$EOlisten extends PhDefault implements Atom {
     public EOposix$EOlisten() {
         super(
             new Attrs(
-                new Attr("v🌵descriptor"),
-                new Attr("v🌵backlog")
+                new Attr("descriptor"),
+                new Attr("backlog")
             )
         );
     }
@@ -33,8 +33,8 @@ public final class EOposix$EOlisten extends PhDefault implements Atom {
     public Phi lambda() {
         return new Data.ToPhi(
             CStdLib.INSTANCE.listen(
-                new Int(Expect.at(this, "v🌵descriptor")).it(),
-                new Int(Expect.at(this, "v🌵backlog")).it()
+                new Int(this.expected("descriptor")).it(),
+                new Int(this.expected("backlog")).it()
             )
         );
     }

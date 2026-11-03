@@ -26,12 +26,12 @@ public final class EOwin32$EOgetenv extends PhDefault implements Atom {
      * Ctor.
      */
     public EOwin32$EOgetenv() {
-        super(new Attrs(new Attr("v🌵name")));
+        super(new Attrs(new Attr("name")));
     }
 
     @Override
     public Phi lambda() {
-        final String name = new Cstring(Expect.at(this, "v🌵name")).it();
+        final String name = new Cstring(this.expected("name")).it();
         final Phi result = Phi.Φ.take("win32").take("getenv-return").copy();
         final String env = Msvcrt.INSTANCE.getenv(name);
         result.put(0, new Data.ToPhi(env != null));

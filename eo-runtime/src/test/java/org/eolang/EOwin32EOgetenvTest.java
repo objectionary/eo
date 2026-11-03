@@ -25,7 +25,7 @@ final class EOwin32EOgetenvTest {
                 () -> new Dataized(
                     new PhApplication(
                         new EOwin32$EOgetenv(),
-                        "v🌵name",
+                        0,
                         new Data.ToPhi(String.join(String.valueOf((char) 0), "PATH", "nope"))
                     ).take("code")
                 ).take(),

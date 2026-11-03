@@ -33,18 +33,18 @@ public final class EOwin32$EOopen extends PhDefault implements Atom {
     public EOwin32$EOopen() {
         super(
             new Attrs(
-                new Attr("v🌵path"),
-                new Attr("v🌵flags"),
-                new Attr("v🌵mode")
+                new Attr("path"),
+                new Attr("flags"),
+                new Attr("mode")
             )
         );
     }
 
     @Override
     public Phi lambda() {
-        final String path = new Cstring(Expect.at(this, "v🌵path")).it();
-        final int flags = new Int(Expect.at(this, "v🌵flags")).it();
-        final int mode = new Int(Expect.at(this, "v🌵mode")).it();
+        final String path = new Cstring(this.expected("path")).it();
+        final int flags = new Int(this.expected("flags")).it();
+        final int mode = new Int(this.expected("mode")).it();
         final Phi result = Phi.Φ.take("win32").take("status-return").copy();
         final int code = Msvcrt.INSTANCE._wopen(new WString(path), flags, mode);
         result.put(0, new Data.ToPhi(code));

@@ -64,9 +64,9 @@ final class EOsocketTest {
                     new PhApplication(
                         new PhApplication(
                             Phi.Φ.take("socket"),
-                            "v🌵address", new Data.ToPhi("127.0.0.1")
+                            0, new Data.ToPhi("127.0.0.1")
                         ),
-                        "v🌵port", new Data.ToPhi(Double.NaN)
+                        1, new Data.ToPhi(Double.NaN)
                     ).take("checked-port")
                 ).take(),
                 "a port of nan must not be accepted"
@@ -895,7 +895,7 @@ final class EOsocketTest {
 
         @Override
         public Phi lambda() {
-            final Phi accept = this.take("s").take("accept").copy();
+            final Phi accept = this.free("s").take("accept").copy();
             accept.put(0, new EOsocketTest.Receiver(this.received));
             return accept;
         }
@@ -926,7 +926,7 @@ final class EOsocketTest {
 
         @Override
         public Phi lambda() {
-            final Phi recv = this.take("s").take("recv");
+            final Phi recv = this.free("s").take("recv");
             recv.put(0, new Data.ToPhi(this.received));
             return recv;
         }
@@ -957,7 +957,7 @@ final class EOsocketTest {
 
         @Override
         public Phi lambda() {
-            final Phi sent = this.take("s").take("send").copy();
+            final Phi sent = this.free("s").take("send").copy();
             sent.put(0, new Data.ToPhi(this.message));
             return sent;
         }

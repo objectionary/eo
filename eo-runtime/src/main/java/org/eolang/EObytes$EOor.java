@@ -20,14 +20,14 @@ public final class EObytes$EOor extends PhDefault implements Atom {
      * Ctor.
      */
     public EObytes$EOor() {
-        super(new Attrs(new Attr(Phi.RHO, new AtRho()), new Attr("v🌵b")));
+        super(new Attrs(new Attr(Phi.RHO, new AtRho()), new Attr("b")));
     }
 
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
             new Dataized(this.take(Phi.RHO)).asBytes().or(
-                new Dataized(this.take("v🌵b")).asBytes()
+                new Dataized(this.free("b")).asBytes()
             ).take()
         );
     }

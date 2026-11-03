@@ -28,12 +28,12 @@ public final class EOposix$EOunlink extends PhDefault implements Atom {
      * Ctor.
      */
     public EOposix$EOunlink() {
-        super(new Attrs(new Attr("v🌵path")));
+        super(new Attrs(new Attr("path")));
     }
 
     @Override
     public Phi lambda() {
-        final String path = new Cstring(Expect.at(this, "v🌵path")).it();
+        final String path = new Cstring(this.expected("path")).it();
         final Phi result = Phi.Φ.take("posix").take("status-return").copy();
         final int code = CStdLib.INSTANCE.unlink(path);
         result.put(0, new Data.ToPhi(code));

@@ -25,7 +25,7 @@ final class EOposixEOmkdirTest {
                 () -> new Dataized(
                     new PhApplication(
                         new EOposix$EOmkdir(),
-                        "v🌵path",
+                        0,
                         new Data.ToPhi(String.join(String.valueOf((char) 0), "плюшка", "щи"))
                     ).take("code")
                 ).take(),

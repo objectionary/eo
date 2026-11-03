@@ -30,16 +30,16 @@ public final class EOwin32$EOrename extends PhDefault implements Atom {
     public EOwin32$EOrename() {
         super(
             new Attrs(
-                new Attr("v🌵from"),
-                new Attr("v🌵to")
+                new Attr("from"),
+                new Attr("to")
             )
         );
     }
 
     @Override
     public Phi lambda() {
-        final String from = new Cstring(Expect.at(this, "v🌵from")).it();
-        final String target = new Cstring(Expect.at(this, "v🌵to")).it();
+        final String from = new Cstring(this.expected("from")).it();
+        final String target = new Cstring(this.expected("to")).it();
         final Phi result = Phi.Φ.take("win32").take("status-return").copy();
         final int code = Msvcrt.INSTANCE._wrename(new WString(from), new WString(target));
         result.put(0, new Data.ToPhi(code));

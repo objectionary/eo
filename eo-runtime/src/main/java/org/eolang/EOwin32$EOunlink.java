@@ -28,12 +28,12 @@ public final class EOwin32$EOunlink extends PhDefault implements Atom {
      * Ctor.
      */
     public EOwin32$EOunlink() {
-        super(new Attrs(new Attr("v🌵path")));
+        super(new Attrs(new Attr("path")));
     }
 
     @Override
     public Phi lambda() {
-        final String path = new Cstring(Expect.at(this, "v🌵path")).it();
+        final String path = new Cstring(this.expected("path")).it();
         final Phi result = Phi.Φ.take("win32").take("status-return").copy();
         final int code = Msvcrt.INSTANCE._wunlink(new WString(path));
         result.put(0, new Data.ToPhi(code));

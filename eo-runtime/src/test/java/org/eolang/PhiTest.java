@@ -39,16 +39,13 @@ final class PhiTest {
         MatcherAssert.assertThat(
             "Phi should resolve and invoke method from root stdout object, but it didn't",
             new Dataized(
-                new PhDispatch(
-                    new PhApplication(
-                        Phi.Φ.take("stdout"),
-                        0,
-                        new Data.ToPhi("Hello, world")
-                    ),
-                    "v🌵text"
+                new PhApplication(
+                    Phi.Φ.take("stdout"),
+                    0,
+                    new Data.ToPhi("Hello, world")
                 )
-            ).asString(),
-            Matchers.startsWith("Hello")
+            ).asBool(),
+            Matchers.equalTo(true)
         );
     }
 
@@ -57,15 +54,12 @@ final class PhiTest {
         MatcherAssert.assertThat(
             "Phi should resolve and invoke method from org.eolang.stdout object, but it didn't",
             new Dataized(
-                new PhDispatch(
-                    new PhApplication(
-                        Phi.Φ.take("stdout").copy(),
-                        0, new Data.ToPhi("Hello, world")
-                    ),
-                    "v🌵text"
+                new PhApplication(
+                    Phi.Φ.take("stdout").copy(),
+                    0, new Data.ToPhi("Hello, world")
                 )
-            ).asString(),
-            Matchers.startsWith("Hello")
+            ).asBool(),
+            Matchers.equalTo(true)
         );
     }
 
@@ -112,7 +106,7 @@ final class PhiTest {
                 () -> new Dataized(
                     new PhApplication(
                         Phi.Φ.take("number.integral").copy(),
-                        "v🌵n",
+                        3,
                         new Data.ToPhi(1.5)
                     )
                 ).take()
@@ -130,7 +124,7 @@ final class PhiTest {
                 () -> new Dataized(
                     new PhApplication(
                         Phi.Φ.take("number.integral").copy(),
-                        "v🌵n",
+                        3,
                         new Data.ToPhi(9_007_199_254_740_992d)
                     )
                 ).take()

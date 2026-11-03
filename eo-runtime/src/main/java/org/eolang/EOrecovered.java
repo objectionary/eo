@@ -36,8 +36,8 @@ public final class EOrecovered extends PhDefault implements Atom {
      */
     public EOrecovered() {
         super(new Attrs(
-            new Attr("v🌵value"),
-            new Attr("v🌵alternative")
+            new Attr("value"),
+            new Attr("alternative")
         ));
     }
 
@@ -45,7 +45,7 @@ public final class EOrecovered extends PhDefault implements Atom {
     public Phi lambda() {
         Phi picked;
         try {
-            picked = this.take("v🌵value").normalized();
+            picked = this.free("value").normalized();
         } catch (final ExInterrupted | ExAgain ex) {
             throw ex;
         } catch (final ExAbstract ex) {
@@ -53,7 +53,7 @@ public final class EOrecovered extends PhDefault implements Atom {
         }
         final Phi result;
         if (picked instanceof PhTerminator) {
-            result = this.take("v🌵alternative").normalized();
+            result = this.free("alternative").normalized();
         } else {
             result = picked;
         }

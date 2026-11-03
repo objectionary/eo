@@ -30,8 +30,8 @@ final class EOwin32EOaccessTest {
             new Dataized(
                 new PhApplication(
                     new EOwin32$EOaccess(),
-                    new Bind("v🌵path", new Data.ToPhi(file.toString())),
-                    new Bind("v🌵mode", new Data.ToPhi(0L))
+                    new Bind(0, new Data.ToPhi(file.toString())),
+                    new Bind(1, new Data.ToPhi(0L))
                 )
             ).asNumber().intValue(),
             Matchers.equalTo(0)

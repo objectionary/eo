@@ -41,9 +41,9 @@ public final class Sockaddr {
      * @return The structure, in the layout of the platform
      */
     public Structure it() {
-        final short family = new Dataized(this.origin.take("v🌵family")).take(Short.class);
-        final short port = new Dataized(this.origin.take("v🌵port")).take(Short.class);
-        final int addr = new Dataized(this.origin.take("v🌵address")).take(Integer.class);
+        final short family = new Dataized(this.origin.take("family")).take(Short.class);
+        final short port = new Dataized(this.origin.take("port")).take(Short.class);
+        final int addr = new Dataized(this.origin.take("address")).take(Integer.class);
         final byte[] zero = new Dataized(this.origin.take("padding")).take();
         final Structure found;
         if (Platform.isMac()) {

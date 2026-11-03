@@ -19,7 +19,7 @@ public final class EOchunk$EOresized extends PhDefault implements Atom {
     /**
      * Name of the void that holds the size the block is resized to.
      */
-    private static final String CAPACITY = "v🌵capacity";
+    private static final String CAPACITY = "capacity";
 
     /**
      * Ctor.
@@ -38,7 +38,7 @@ public final class EOchunk$EOresized extends PhDefault implements Atom {
         final Phi rho = this.take(Phi.RHO);
         Heaps.INSTANCE.resize(
             new Natural(Expect.at(rho, "id")).it(),
-            new Natural(Expect.at(this, EOchunk$EOresized.CAPACITY)).it()
+            new Natural(this.expected(EOchunk$EOresized.CAPACITY)).it()
         );
         return rho;
     }

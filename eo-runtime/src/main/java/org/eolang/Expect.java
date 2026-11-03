@@ -41,9 +41,9 @@ public class Expect<T> {
     /**
      * Starting point.
      *
-     * <p>A void is hidden behind the {@code v🌵} mark in front of its name
-     * (#9788), which the source never writes, so the message names the
-     * void without it.</p>
+     * <p>It reads an attribute the object shows to everyone. An atom
+     * checks its own voids with {@link PhDefault#expected(String)}
+     * instead.</p>
      *
      * @param phi The object
      * @param attr Attribute name
@@ -52,7 +52,7 @@ public class Expect<T> {
     @SuppressWarnings("PMD.ProhibitPublicStaticMethods")
     public static Expect<Phi> at(final Phi phi, final String attr) {
         return new Expect<>(
-            String.format("the '%s' attribute", attr.replace("v🌵", "")),
+            String.format("the '%s' attribute", attr),
             () -> phi.take(attr)
         );
     }

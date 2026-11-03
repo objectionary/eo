@@ -7,9 +7,8 @@ package org.eolang.sys;
 import java.security.SecureRandom;
 import org.eolang.Data;
 import org.eolang.Dataized;
-import org.eolang.EOposix$EOread;
 import org.eolang.ExAbstract;
-import org.eolang.PhApplication;
+import org.eolang.Expect;
 import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -31,10 +30,9 @@ final class IntakeTest {
             "the data must not carry the part of the buffer the call left untouched",
             new Dataized(
                 new Intake(
-                    new PhApplication(
-                        new EOposix$EOread(),
-                        1,
-                        new Data.ToPhi(new SecureRandom().nextInt(512) + 64)
+                    new Expect<>(
+                        "the size",
+                        () -> new Data.ToPhi(new SecureRandom().nextInt(512) + 64)
                     ),
                     Phi.Φ.take("posix").take("read-return"),
                     (buffer, wanted) -> 13
@@ -50,7 +48,7 @@ final class IntakeTest {
             "a failed call must not hand back a buffer it never filled",
             new Dataized(
                 new Intake(
-                    new PhApplication(new EOposix$EOread(), 1, new Data.ToPhi(41)),
+                    new Expect<>("the size", () -> new Data.ToPhi(41)),
                     Phi.Φ.take("posix").take("read-return"),
                     (buffer, wanted) -> -1
                 ).it().take("data")
@@ -65,7 +63,7 @@ final class IntakeTest {
         Assertions.assertThrows(
             ExAbstract.class,
             () -> new Intake(
-                new PhApplication(new EOposix$EOread(), 1, new Data.ToPhi(size)),
+                new Expect<>("the size", () -> new Data.ToPhi(size)),
                 Phi.Φ.take("posix").take("read-return"),
                 (buffer, wanted) -> 0
             ).it(),

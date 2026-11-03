@@ -78,7 +78,7 @@ final class PhApplicationTest {
             new Dataized(
                 new PhApplication(
                     new PhDefault(
-                        new Attrs(new Attr("a"), new Attr("b"))
+                        new Attrs(new Attr("a", new AtVoid("a")), new Attr("b", new AtVoid("b")))
                     ),
                     new Bind("a", new Data.ToPhi(1L)),
                     new Bind("b", new Data.ToPhi(2L))
@@ -97,8 +97,8 @@ final class PhApplicationTest {
                     new PhApplication(
                         new PhDefault(
                             new Attrs(
-                                new Attr("a"),
-                                new Attr("b")
+                                new Attr("a", new AtVoid("a")),
+                                new Attr("b", new AtVoid("b"))
                             )
                         ),
                         0, new Data.ToPhi(1L)
@@ -384,7 +384,7 @@ final class PhApplicationTest {
          * @param attr Free attribute name
          */
         DummyWithAtFree(final String attr) {
-            super(new Attrs(new Attr(attr)));
+            super(new Attrs(new Attr(attr, new AtVoid(attr))));
         }
     }
 

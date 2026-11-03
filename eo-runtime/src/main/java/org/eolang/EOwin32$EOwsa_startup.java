@@ -26,14 +26,14 @@ public final class EOwin32$EOwsa_startup extends PhDefault implements Atom {
      * Ctor.
      */
     public EOwin32$EOwsa_startup() {
-        super(new Attrs(new Attr("v🌵version")));
+        super(new Attrs(new Attr("version")));
     }
 
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
             Winsock.INSTANCE.WSAStartup(
-                new Dataized(this.take("v🌵version")).take(Short.class),
+                new Dataized(this.free("version")).take(Short.class),
                 new WSAData()
             )
         );

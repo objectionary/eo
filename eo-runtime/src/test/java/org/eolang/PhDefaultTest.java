@@ -52,7 +52,7 @@ final class PhDefaultTest {
     void printsVoidAttributeAsTerm() {
         MatcherAssert.assertThat(
             "Object with unset void attribute must render it as question mark, but it didnt",
-            new PhDefault(new Attrs(new Attr("x"))).φTerm(),
+            new PhDefault(new Attrs(new Attr("x", new AtVoid("x")))).φTerm(),
             Matchers.equalTo("[x->?]")
         );
     }
@@ -154,7 +154,7 @@ final class PhDefaultTest {
     void needsRhoWhenItIsDeclaredAsVoid() {
         MatcherAssert.assertThat(
             String.format("Object with %s declared as void must await a receiver", Phi.RHO),
-            new PhDefault(new Attrs(new Attr(Phi.RHO))).needsRho(),
+            new PhDefault(new Attrs(new Attr(Phi.RHO, new AtVoid(Phi.RHO)))).needsRho(),
             Matchers.is(true)
         );
     }
@@ -689,6 +689,45 @@ final class PhDefaultTest {
                 "context-returnsTerminatorForAbsentAttribute"
             ).take("non-existent-attribute"),
             Matchers.instanceOf(PhTerminator.class)
+        );
+    }
+
+    @Test
+    void freesItsOwnVoidByTheNameItsSourceGivesIt() {
+        final PhDefault phi = new PhDefault(new Attrs(new Attr("left")));
+        phi.put(0, new Data.ToPhi(-7.25));
+        MatcherAssert.assertThat(
+            "an object must read its own void by the plain name, but it didnt",
+            new Dataized(phi.free("left")).asNumber(),
+            Matchers.equalTo(-7.25)
+        );
+    }
+
+    @Test
+    void refusesToFreeAVoidItDoesNotHave() {
+        MatcherAssert.assertThat(
+            "the message must name the missing void without its mark, but it didnt",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new PhDefault(new Attrs(new Attr("left"))).free("right"),
+                "freeing a void the object lacks must fail at once"
+            ).getMessage(),
+            Matchers.equalTo("There is no void \"right\" in []")
+        );
+    }
+
+    @Test
+    void namesAnExpectedVoidTheWayItsSourceSpellsIt() {
+        final PhDefault phi = new PhDefault(new Attrs(new Attr("left")));
+        phi.put(0, new Data.ToPhi(true));
+        MatcherAssert.assertThat(
+            "the message must name the void without its mark, but it didnt",
+            Assertions.assertThrows(
+                ExFailure.class,
+                new Numeric(phi.expected("left"))::it,
+                "a void that holds no number must fail the expectation"
+            ).getMessage(),
+            Matchers.equalTo("the 'left' attribute must be a number")
         );
     }
 

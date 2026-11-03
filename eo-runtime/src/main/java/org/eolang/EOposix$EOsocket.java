@@ -23,9 +23,9 @@ public final class EOposix$EOsocket extends PhDefault implements Atom {
     public EOposix$EOsocket() {
         super(
             new Attrs(
-                new Attr("v🌵domain"),
-                new Attr("v🌵type"),
-                new Attr("v🌵protocol")
+                new Attr("domain"),
+                new Attr("type"),
+                new Attr("protocol")
             )
         );
     }
@@ -34,9 +34,9 @@ public final class EOposix$EOsocket extends PhDefault implements Atom {
     public Phi lambda() {
         return new Data.ToPhi(
             CStdLib.INSTANCE.socket(
-                new Int(Expect.at(this, "v🌵domain")).it(),
-                new Int(Expect.at(this, "v🌵type")).it(),
-                new Int(Expect.at(this, "v🌵protocol")).it()
+                new Int(this.expected("domain")).it(),
+                new Int(this.expected("type")).it(),
+                new Int(this.expected("protocol")).it()
             )
         );
     }

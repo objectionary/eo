@@ -30,7 +30,7 @@ final class EOposixEOstatTest {
                 new PhApplication(
                     new EOposix$EOstat(),
                     new Bind(
-                        "v🌵path",
+                        0,
                         new Data.ToPhi(
                             Files.createSymbolicLink(
                                 temp.resolve("ссылка"),

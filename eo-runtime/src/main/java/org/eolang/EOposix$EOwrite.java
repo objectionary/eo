@@ -24,19 +24,19 @@ public final class EOposix$EOwrite extends PhDefault implements Atom {
     public EOposix$EOwrite() {
         super(
             new Attrs(
-                new Attr("v🌵descriptor"),
-                new Attr("v🌵buffer"),
-                new Attr("v🌵size")
+                new Attr("descriptor"),
+                new Attr("buffer"),
+                new Attr("size")
             )
         );
     }
 
     @Override
     public Phi lambda() {
-        final byte[] chunk = new Portion(this).it();
+        final byte[] chunk = new Portion(this.free("buffer"), this.expected("size")).it();
         return new Data.ToPhi(
             CStdLib.INSTANCE.write(
-                new Int(Expect.at(this, "v🌵descriptor")).it(), chunk, chunk.length
+                new Int(this.expected("descriptor")).it(), chunk, chunk.length
             )
         );
     }

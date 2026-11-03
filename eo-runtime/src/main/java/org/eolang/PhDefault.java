@@ -365,6 +365,40 @@ public class PhDefault implements Phi, Cloneable {
         return result;
     }
 
+    /**
+     * The object a void of this one holds.
+     *
+     * <p>A void is kept under a hidden name (#9788), so
+     * {@link #take(String)} never finds it by the name the EO source
+     * gives it. An atom reads its own voids here, by those names.</p>
+     *
+     * @param name The name of the void, as the EO source spells it
+     * @return The object the void holds
+     */
+    protected final Phi free(final String name) {
+        final String hidden = new Hidden(name).toString();
+        if (!this.loaded().containsKey(hidden)) {
+            throw new ExFailure("There is no void \"%s\" in %s", name, this.forma());
+        }
+        return this.take(hidden);
+    }
+
+    /**
+     * A void of this object, ready to be checked by {@link Expect}.
+     *
+     * <p>The failure message names the void the way the EO source spells
+     * it. The void is read right away, so an atom that asks for a void it
+     * does not have fails at once, with a message that names the missing
+     * void.</p>
+     *
+     * @param name The name of the void, as the EO source spells it
+     * @return Expect pipeline over the object the void holds
+     */
+    protected final Expect<Phi> expected(final String name) {
+        final Phi phi = this.free(name);
+        return new Expect<>(String.format("the '%s' attribute", name), () -> phi);
+    }
+
     private String derived() {
         final String form;
         final String name = this.oname();

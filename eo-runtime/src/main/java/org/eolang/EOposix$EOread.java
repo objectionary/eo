@@ -24,8 +24,8 @@ public final class EOposix$EOread extends PhDefault implements Atom {
     public EOposix$EOread() {
         super(
             new Attrs(
-                new Attr("v🌵descriptor"),
-                new Attr("v🌵size")
+                new Attr("descriptor"),
+                new Attr("size")
             )
         );
     }
@@ -33,10 +33,10 @@ public final class EOposix$EOread extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         return new Intake(
-            this,
+            this.expected("size"),
             Phi.Φ.take("posix").take("read-return"),
             (buffer, size) -> CStdLib.INSTANCE.read(
-                new Int(Expect.at(this, "v🌵descriptor")).it(), buffer, size
+                new Int(this.expected("descriptor")).it(), buffer, size
             )
         ).it();
     }
