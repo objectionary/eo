@@ -50,7 +50,7 @@
     <xsl:variable name="name" select="eo:own-name(..)"/>
     <xsl:choose>
       <xsl:when test="eo:hideable($name) and exists(eo:own-formation(..)/o[@base=$eo:empty and @name=$name])">
-        <xsl:attribute name="base" select="replace(., concat('^((', $eo:xi, '(\.', $eo:rho, ')*)?\.)'), concat('$1', $eo:veiled))"/>
+        <xsl:attribute name="base" select="replace(., '^((' || $eo:xi || '(\.' || $eo:rho || ')*)?\.)', '$1' || $eo:veiled)"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:copy/>
