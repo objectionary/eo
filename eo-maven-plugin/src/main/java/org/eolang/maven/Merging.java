@@ -7,10 +7,7 @@ package org.eolang.maven;
 import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
-import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.yegor256.xsline.StClasspath;
-import com.yegor256.xsline.Xsline;
 import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,11 +30,11 @@ import org.w3c.dom.NodeList;
  * <p>The parsed XMIR of the object and of its members are all on disk by the
  * time this runs, and the splice is a matter of moving elements: the
  * top-level {@code <o>} of {@code number/lt.xmir} becomes a child of the
- * top-level {@code <o>} of {@code number.xmir}. No reference to another
- * object inside the moved tree is rewritten, because the parser leaves every
- * name fully qualified and every {@code loc} already reads as the locator the
- * node will carry once it is an attribute of {@code Φ.number}, so no reference
- * can be captured by an attribute of the object it lands in.</p>
+ * top-level {@code <o>} of {@code number.xmir}. No name inside the moved tree
+ * is rewritten, because the parser leaves every name fully qualified and every
+ * {@code loc} already reads as the locator the node will carry once it is an
+ * attribute of {@code Φ.number}, so no reference can be captured by an
+ * attribute of the object it lands in.</p>
  *
  * <p>Every package this build compiles an object for is merged, and no other:
  * a package whose name no object carries, as {@code examples} in a program
@@ -51,12 +48,10 @@ import org.w3c.dom.NodeList;
  * <p>A void can be read only in the file that declares it (#9788). The
  * parser hides every void of the object behind {@code v🌵}, together with
  * every read of it in the object's own file, and nothing renames a name
- * after the parser. A member is a file of its own, so it reads what the
- * object holds through a getter, like any other object does. A member that
- * reads a void of the object through its receiver stops the build. Inside
- * the object, such a read lands in a formation that has the void
- * {@code v🌵x} and no attribute {@code x}, and {@code void-reads.xsl} finds
- * it there.</p>
+ * after the parser. A member is a file of its own, outside its object, so
+ * it reads what the object holds through getters. A member that reads a
+ * void {@code x} of the object finds no attribute {@code x} there and fails
+ * at runtime, like any read from outside.</p>
  *
  * <p>Merging twice does nothing the second time: a member that has already
  * moved is marked as merged in the tojos and is not standalone any more, so
@@ -187,9 +182,7 @@ final class Merging implements Step {
             }
         }
         final Path dest = new Place(pkg).make(this.dir(), MjAssemble.XMIR);
-        final String merged = Merging.vetted(
-            new XMLDocument(formation.getOwnerDocument())
-        ).toString();
+        final String merged = new XMLDocument(formation.getOwnerDocument()).toString();
         if (!Files.exists(dest) || !new Diff(Files.readString(dest), merged).same()) {
             new Saved(merged, dest).value();
         }
@@ -202,26 +195,6 @@ final class Merging implements Step {
             members.size(), pkg, dest
         );
         return members.size();
-    }
-
-    private static XML vetted(final XML merged) {
-        new Xnav(
-            new Xsline(new StClasspath("/org/eolang/maven/merge/void-reads.xsl"))
-                .pass(merged)
-                .inner()
-        ).path("/reads/read").findFirst().ifPresent(
-            read -> {
-                throw new IllegalStateException(
-                    String.format(
-                        "The member '%s' reads the void '%s' of '%s', while a void can be read only in the file that declares it, so the object has to give it out through a getter",
-                        read.attribute("member").text().orElseThrow(),
-                        read.attribute("void").text().orElseThrow(),
-                        read.attribute("object").text().orElseThrow()
-                    )
-                );
-            }
-        );
-        return merged;
     }
 
     private static void claimed(

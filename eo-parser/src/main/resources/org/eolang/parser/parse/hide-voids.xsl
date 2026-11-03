@@ -30,8 +30,8 @@
   locator is the φ path to an object, and in φ the void is called "v🌵x".
   Nothing renames a name after this step. A path that climbs above the top
   of the file stays as written. A member of a package is a file of its own,
-  so it reads its object from outside, through getters, and the merge stops
-  the build when a member reads a void of its object.
+  so it reads its object from outside, through getters, and its read of a
+  void of the object fails at runtime, like any read from outside.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
