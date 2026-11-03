@@ -7,3 +7,5 @@ asserts:
 input: |
   [] > main
     foo (* (bar 1:a)):items > x
+    * 1 > plain
+    *.with 1:a > method

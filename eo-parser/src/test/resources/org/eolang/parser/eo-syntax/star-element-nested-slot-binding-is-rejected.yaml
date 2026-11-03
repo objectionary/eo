@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 sheets: []
 asserts:
-  - /object/errors/error[@line=2 and @pos=9 and @severity='error' and contains(text(), 'star tuple elements cannot carry argument bindings')]
+  - /object/errors/error[@line=2 and @pos=9 and @severity='error' and @lossy and contains(text(), 'star tuple elements cannot carry argument bindings')]
 input: |
   [] > main
     foo (* 1:0) > x
