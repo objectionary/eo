@@ -21,11 +21,12 @@ import java.util.Map;
  * copy of the formation right around it: one that counts and is neither
  * the copy as written nor a study copy. The study copy is born
  * {@code in:H}, with {@code H} the real copy, which is its {@code ^} and
- * only one; its own voids stay empty. If the formation around has no real
- * copy, the study copies go inside its study copies; if it has neither,
- * or nothing is around, the copy as written is kept. Every later stop
- * gives a study copy to each real copy that has appeared since, and a kept
- * copy stays kept, and counts.</p>
+ * only one when it declares {@code ^}; one that declares none has no
+ * {@code ^} at all (#9785). Its own voids stay empty. If the formation
+ * around has no real copy, the study copies go inside its study copies; if
+ * it has neither, or nothing is around, the copy as written is kept. Every
+ * later stop gives a study copy to each real copy that has appeared since,
+ * and a kept copy stays kept, and counts.</p>
  *
  * @since 0.76.0
  */

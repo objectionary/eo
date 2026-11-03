@@ -23,7 +23,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * <p>Every formation is walked first as written: born at its own place,
  * with its voids empty, inside the copies as written of the formations
- * around it.</p>
+ * around it. The one right around it, or {@code Φ} at the top, is its
+ * {@code ρ} only when it declares {@code ^} (#9785).</p>
  *
  * @since 0.76.0
  */

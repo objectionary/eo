@@ -7,7 +7,7 @@
 sources:
   counter.eo: |
     [start] > counter
-      [] > next
+      [^] > next
         ^.start.plus 1 > @
   app.eo: |
     [] > app

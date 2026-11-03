@@ -51,7 +51,7 @@ final class ReadsTest {
             "a void the copy leaves unbound must read T, but it didnt",
             new Settled(world).state().attr(
                 world.intern(
-                    new Value('O', "Φ.vase", "Φ.app.φ.ρ", 1L | Formation.RHO, "", -1, 0)
+                    new Value('O', "Φ.vase", "Φ.app.φ.ρ", 1L, "", -1, 0)
                 ),
                 "water", new Site("Φ.app.φ", "")
             ),
@@ -67,12 +67,26 @@ final class ReadsTest {
             world.full(
                 new Settled(world).state().attr(
                     world.intern(
-                        new Value('O', "Φ.cat", "Φ.cat", Formation.RHO, "", -1, 0)
+                        new Value('O', "Φ.cat", "Φ.cat", 0L, "", -1, 0)
                     ),
                     "bark", new Site("Φ.app.x", "")
                 ).get(0)
             ),
             Matchers.equalTo("X:Φ.cat.bark")
+        );
+    }
+
+    @Test
+    void readsCaretOfCopyWhoseFormationDeclaresNoneAsTermination(@Mktmp final Path temp)
+        throws IOException {
+        final World world = ReadsTest.world(temp);
+        MatcherAssert.assertThat(
+            "the ρ of a copy whose formation declares no ^ must read T, but it didnt",
+            new Settled(world).state().attr(
+                world.intern(new Value('O', "Φ.cat", "Φ.cat", 0L, "", -1, 0)),
+                "ρ", new Site("Φ.app.x", "")
+            ),
+            Matchers.hasToString(new Ids(Values.TERM).toString())
         );
     }
 
