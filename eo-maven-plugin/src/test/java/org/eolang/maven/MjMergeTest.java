@@ -143,6 +143,30 @@ final class MjMergeTest {
         );
     }
 
+    @Test
+    void refusesToMergeAMemberThatReadsAVoidOfItsObject(@Mktmp final Path temp) throws Exception {
+        MatcherAssert.assertThat(
+            "a member reading a void of its object did not stop the build with the member, the void and the object named",
+            MjMergeTest.root(
+                Assertions.assertThrows(
+                    IllegalStateException.class,
+                    () -> new FakeMaven(temp).withProgram(
+                        MjMergeTest.program("[weight] > crate", "  weight > @"),
+                        "crate",
+                        "crate.eo"
+                    ).withProgram(
+                        MjMergeTest.program(
+                            "+package crate", "", "[^box] > heavy", "  box.weight.gt 17 > @"
+                        ),
+                        "crate.heavy",
+                        "crate/heavy.eo"
+                    ).execute(new PpMerge())
+                )
+            ),
+            Matchers.stringContainsInOrder("'crate.heavy'", "'weight'", "'crate'")
+        );
+    }
+
     private static FakeMaven spliced(final Xtory pack, final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
         for (final Map.Entry<?, ?> source : MjMergeTest.sources(pack).entrySet()) {

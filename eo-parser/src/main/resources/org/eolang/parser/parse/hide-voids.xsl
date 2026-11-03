@@ -26,75 +26,31 @@
   never renamed: reads go through "φ" on purpose, the receiver is looked up
   by its name, and a cactus name is out of reach already.
 
-  The locators are set after this step: a locator is the φ path to an
-  object, and in φ the void is called "v🌵x". A name that already has a
-  locator is therefore left as it is, and so is every read of a void with
-  such a name, because the read would miss the void otherwise. A name that
-  already carries "v🌵" is left as it is too, so a second run changes
-  nothing. That lets the merge run the step again over an object that has
-  just taken its members in: a member reads a void of the object through
-  its receiver, a "ρ" hop that left the member's file before the merge, so
-  only now does the read land in the object.
+  The locators are set after this step, so they hold the hidden names: a
+  locator is the φ path to an object, and in φ the void is called "v🌵x".
+  Nothing renames a name after this step. A path that climbs above the top
+  of the file stays as written. A member of a package is a file of its own,
+  so it reads its object from outside, through getters, and the merge stops
+  the build when a member reads a void of its object.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
-  <!--
-  Every void, by the name it has once this step is over, together with the
-  formation it belongs to: "v🌵x" for a void hidden already or about to be,
-  and the name as it stands for one this step leaves alone.
-  -->
-  <xsl:key name="voids" match="o[@base=$eo:empty and @name and parent::o[not(@base)]]" use="concat(if (eo:hideable(string(@name)) and empty(@loc)) then $eo:veiled else '', @name, '#', generate-id(..))"/>
   <!-- Whether the name may take the "v🌵" mark. -->
   <xsl:function name="eo:hideable" as="xs:boolean">
     <xsl:param name="name" as="xs:string"/>
     <xsl:sequence select="$name != $eo:phi and $name != $eo:rho and not(contains($name, $eo:cactoos)) and not(matches($name, concat('^', $eo:alpha, '[0-9]+$')))"/>
   </xsl:function>
-  <!--
-  The formation that an object made of nothing but "ξ" and "ρ" hops lands
-  in, rolled as "ξ.ρ.ρ" or not as ".ρ" on top of "ξ", or nothing when the
-  object is anything else or climbs above the top of the file.
-  -->
-  <xsl:function name="eo:landing" as="element(o)?">
-    <xsl:param name="o" as="element(o)?"/>
-    <xsl:variable name="base" select="string($o/@base)"/>
-    <xsl:choose>
-      <xsl:when test="matches($base, concat('^', $eo:xi, '(\.', $eo:rho, ')*$'))">
-        <xsl:sequence select="$o/ancestor::o[eo:abstract(.)][count(tokenize($base, '\.'))]"/>
-      </xsl:when>
-      <xsl:when test="$base = concat('.', $eo:rho)">
-        <xsl:sequence select="eo:landing($o/o[1])/ancestor::o[eo:abstract(.)][1]"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:sequence select="()"/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:function>
-  <xsl:template match="o[@base=$eo:empty and parent::o[not(@base)] and empty(@loc)]/@name[eo:hideable(string(.))]">
+  <xsl:template match="o[@base=$eo:empty and parent::o[not(@base)]]/@name[eo:hideable(string(.))]">
     <xsl:attribute name="name" select="concat($eo:veiled, .)"/>
   </xsl:template>
-  <xsl:template match="o[empty(@loc)]/@as[eo:hideable(string(.))]">
+  <xsl:template match="o/@as[eo:hideable(string(.))]">
     <xsl:attribute name="as" select="concat($eo:veiled, .)"/>
   </xsl:template>
-  <xsl:template match="o/@base[starts-with(., concat($eo:xi, '.'))]">
-    <xsl:variable name="segments" select="tokenize(., '\.')"/>
-    <xsl:variable name="place" select="(index-of(for $segment in $segments return $segment = $eo:rho, false())[. &gt; 1])[1]"/>
-    <xsl:variable name="name" select="if (exists($place)) then $segments[$place] else ''"/>
-    <xsl:variable name="formation" select="if (exists($place)) then ../ancestor::o[eo:abstract(.)][$place - 1] else ()"/>
+  <xsl:template match="o/@base[starts-with(., concat($eo:xi, '.')) or starts-with(., '.')]">
+    <xsl:variable name="name" select="eo:own-name(..)"/>
     <xsl:choose>
-      <xsl:when test="eo:hideable($name) and exists($formation) and exists(key('voids', concat($eo:veiled, $name, '#', generate-id($formation))))">
-        <xsl:attribute name="base" select="string-join(for $at in 1 to count($segments) return if ($at = $place) then concat($eo:veiled, $segments[$at]) else $segments[$at], '.')"/>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:copy/>
-      </xsl:otherwise>
-    </xsl:choose>
-  </xsl:template>
-  <xsl:template match="o/@base[starts-with(., '.')]">
-    <xsl:variable name="name" select="substring(., 2)"/>
-    <xsl:variable name="formation" select="eo:landing(../o[1])"/>
-    <xsl:choose>
-      <xsl:when test="eo:hideable($name) and exists($formation) and exists(key('voids', concat($eo:veiled, $name, '#', generate-id($formation))))">
-        <xsl:attribute name="base" select="concat('.', $eo:veiled, $name)"/>
+      <xsl:when test="eo:hideable($name) and exists(eo:own-formation(..)/o[@base=$eo:empty and @name=$name])">
+        <xsl:attribute name="base" select="replace(., concat('^((', $eo:xi, '(\.', $eo:rho, ')*)?\.)'), concat('$1', $eo:veiled))"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:copy/>

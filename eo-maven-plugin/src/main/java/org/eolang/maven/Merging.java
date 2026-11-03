@@ -7,6 +7,7 @@ package org.eolang.maven;
 import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.Xsline;
@@ -47,15 +48,15 @@ import org.w3c.dom.NodeList;
  * places of the voids, and with them the meaning of applying the object to
  * arguments, stay as they were.</p>
  *
- * <p>The parser hides every void of the object behind {@code v🌵}, together
- * with every own read of it (#9788), but a member reads the void through its
- * receiver, a {@code ρ} hop that leaves the member's own file, so its parser
- * could not tell the read was an own one. Once the member is inside the
- * object, the hop lands in the object, so {@code hide-voids.xsl} runs again
- * over the merged XMIR and hides that read as well. Every void and named
- * binding is hidden already, with a locator built from its hidden name, so
- * this run renames only reads, which have no locator, and every name still
- * matches its locator.</p>
+ * <p>A void can be read only in the file that declares it (#9788). The
+ * parser hides every void of the object behind {@code v🌵}, together with
+ * every read of it in the object's own file, and nothing renames a name
+ * after the parser. A member is a file of its own, so it reads what the
+ * object holds through a getter, like any other object does. A member that
+ * reads a void of the object through its receiver stops the build. Inside
+ * the object, such a read lands in a formation that has the void
+ * {@code v🌵x} and no attribute {@code x}, and {@code void-reads.xsl} finds
+ * it there.</p>
  *
  * <p>Merging twice does nothing the second time: a member that has already
  * moved is marked as merged in the tojos and is not standalone any more, so
@@ -186,9 +187,9 @@ final class Merging implements Step {
             }
         }
         final Path dest = new Place(pkg).make(this.dir(), MjAssemble.XMIR);
-        final String merged = new Xsline(
-            new StClasspath("/org/eolang/parser/parse/hide-voids.xsl")
-        ).pass(new XMLDocument(formation.getOwnerDocument())).toString();
+        final String merged = Merging.vetted(
+            new XMLDocument(formation.getOwnerDocument())
+        ).toString();
         if (!Files.exists(dest) || !new Diff(Files.readString(dest), merged).same()) {
             new Saved(merged, dest).value();
         }
@@ -201,6 +202,26 @@ final class Merging implements Step {
             members.size(), pkg, dest
         );
         return members.size();
+    }
+
+    private static XML vetted(final XML merged) {
+        new Xnav(
+            new Xsline(new StClasspath("/org/eolang/maven/merge/void-reads.xsl"))
+                .pass(merged)
+                .inner()
+        ).path("/reads/read").findFirst().ifPresent(
+            read -> {
+                throw new IllegalStateException(
+                    String.format(
+                        "The member '%s' reads the void '%s' of '%s', while a void can be read only in the file that declares it, so the object has to give it out through a getter",
+                        read.attribute("member").text().orElseThrow(),
+                        read.attribute("void").text().orElseThrow(),
+                        read.attribute("object").text().orElseThrow()
+                    )
+                );
+            }
+        );
+        return merged;
     }
 
     private static void claimed(
