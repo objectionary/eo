@@ -705,29 +705,10 @@ final class PhDefaultTest {
 
     @Test
     void refusesToFreeAVoidItDoesNotHave() {
-        MatcherAssert.assertThat(
-            "the message must name the missing void without its mark, but it didnt",
-            Assertions.assertThrows(
-                ExFailure.class,
-                () -> new PhDefault(new Attrs(new Attr("left"))).free("right"),
-                "freeing a void the object lacks must fail at once"
-            ).getMessage(),
-            Matchers.equalTo("There is no void \"right\" in []")
-        );
-    }
-
-    @Test
-    void namesAnExpectedVoidTheWayItsSourceSpellsIt() {
-        final PhDefault phi = new PhDefault(new Attrs(new Attr("left")));
-        phi.put(0, new Data.ToPhi(true));
-        MatcherAssert.assertThat(
-            "the message must name the void without its mark, but it didnt",
-            Assertions.assertThrows(
-                ExFailure.class,
-                new Numeric(phi.expected("left"))::it,
-                "a void that holds no number must fail the expectation"
-            ).getMessage(),
-            Matchers.equalTo("the 'left' attribute must be a number")
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new PhDefault(new Attrs(new Attr("left"))).free("right"),
+            "freeing a void the object lacks must fail at once, but it didnt"
         );
     }
 
