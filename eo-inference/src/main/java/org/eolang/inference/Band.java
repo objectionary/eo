@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
  * names any other way. A gap is an error ({@code T}) or an unknown. With no
  * name at all, a place is brown when it answers only errors, violet when it
  * answers only unknowns an atom fills, and amber when it answers any other
- * unknown. A read that fails in any copy, or a {@code ^} that only Java
- * fills, makes it red whatever else it answers.</p>
+ * unknown. A {@code ^} that only Java fills, in any copy, makes it red
+ * whatever else it answers.</p>
  *
  * <p>The labels are the ones the place answers, with the formations of one
  * shape folded into one name first, so two copies of one lambda count as one

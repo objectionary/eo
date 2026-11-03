@@ -72,9 +72,9 @@ The `inference-report` goal reads the prepared files and the `answers.xml` in
 on every object, coloured by one of eight bands of what the engine answers
 there: green for one name and nothing else, then names with gaps, two names,
 mixed names, unknown, unknown filled by an atom, only an error, and red where
-a read fails. The goal logs how many objects fall in each band. An object
-that `answers.xml` says nothing of stops the report with an error that names
-its locator.
+only Java fills a `^`. The goal logs how many objects fall in each band. An
+object that `answers.xml` says nothing of stops the report with an error that
+names its locator.
 
 `Report` draws the same bytes as `report.py`, the Python report it is ported
 from, with the same `page.xsl` and `index.xsl`. `ReportTest` compares the two

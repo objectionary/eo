@@ -319,16 +319,6 @@ final class World {
     }
 
     /**
-     * A failing read.
-     *
-     * @param label What fails
-     * @return Its number
-     */
-    int conflict(final String label) {
-        return this.values.conflict(label);
-    }
-
-    /**
      * The value with the rule b and rule A wrappers taken off.
      *
      * @param num The number

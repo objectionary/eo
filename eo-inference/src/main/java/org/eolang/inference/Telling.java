@@ -22,14 +22,13 @@ import java.util.TreeSet;
  * its formation; a copy that counts, of a decorator or of an atom that
  * returns its own voids, is named by every name its {@code @} gives, next
  * to the T it says, and every unknown it gives is left out. A copy keeps
- * its own name when its {@code @} gives no name, or gives a failing read, D
- * or a hidden name, and a copy whose {@code @} gives only T is named T. A
- * formation and its voids are told too, from the copies of it that count:
- * what each void holds, and what Java gives. Whatever the engine cannot
- * name is one unknown, {@code ?unknown}, or {@code ?unknown-by-java} when
- * only Java fills it. A bound void or {@code ρ} that gives no label at all
- * once the walk is over is a defect of the walk, and telling stops on
- * it.</p>
+ * its own name when its {@code @} gives no name, or gives D or a hidden
+ * name, and a copy whose {@code @} gives only T is named T. A formation
+ * and its voids are told too, from the copies of it that count: what each
+ * void holds, and what Java gives. Whatever the engine cannot name is one
+ * unknown, {@code ?unknown}, or {@code ?unknown-by-java} when only Java
+ * fills it. A bound void or {@code ρ} that gives no label at all once the
+ * walk is over is a defect of the walk, and telling stops on it.</p>
  *
  * @since 0.76.0
  */
@@ -318,8 +317,6 @@ final class Telling {
             label = value.form();
         } else if (value.kind() == 'D' || value.kind() == 'T' || value.kind() == 'Φ') {
             label = String.valueOf(value.kind());
-        } else if (value.kind() == 'X') {
-            label = String.format("!%s", value.form());
         } else if (value.kind() == 'U') {
             label = "?unknown";
         } else {

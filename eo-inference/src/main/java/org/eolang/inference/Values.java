@@ -146,16 +146,6 @@ final class Values {
     }
 
     /**
-     * A failing read.
-     *
-     * @param label What fails
-     * @return Its number
-     */
-    int conflict(final String label) {
-        return this.intern(new Value('X', label, "", 0L, "", -1, 0));
-    }
-
-    /**
      * The value with the rule b and rule A wrappers taken off.
      *
      * @param num The number
@@ -258,7 +248,7 @@ final class Values {
             name = String.format("%s~", this.full(value.base()));
         } else if (value.kind() == 'A') {
             name = String.format("%s/%d", this.full(value.base()), value.count());
-        } else if (value.kind() == 'U' || value.kind() == 'X') {
+        } else if (value.kind() == 'U') {
             final StringBuilder text = new StringBuilder().append(value.kind())
                 .append(':').append(value.form());
             if (!value.birth().isEmpty()) {

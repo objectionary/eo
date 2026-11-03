@@ -108,10 +108,10 @@ final class BandTest {
     }
 
     @Test
-    void marksAFailingReadWhateverElseIsAnswered() {
+    void marksTheCaretOnlyJavaFillsWhateverElseIsAnswered() {
         MatcherAssert.assertThat(
-            "a read that fails in one copy must be red next to a name, but it wasnt",
-            new Band(Arrays.asList("Φ.kettle", "!Φ.kettle.spout")).name(),
+            "a caret only Java fills in one copy must be red next to a name, but it wasnt",
+            new Band(Arrays.asList("Φ.kettle", "!only-java-fills-ρ")).name(),
             Matchers.equalTo("fails")
         );
     }
