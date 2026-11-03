@@ -29,7 +29,6 @@ final class Label {
         "T", "an error (T)",
         "?unknown", "unknown",
         "?unknown-by-java", "unknown, filled by an atom",
-        "?cut", "cut",
         "!only-java-fills-ρ",
         "an error: this ^ is empty, and only Java fills it once an atom reads the object"
     );
@@ -51,8 +50,7 @@ final class Label {
     /**
      * How a page draws it.
      *
-     * @return One of {@code words}, {@code fails}, {@code skipped} and
-     *  {@code name}
+     * @return One of {@code words}, {@code fails} and {@code name}
      */
     String kind() {
         final String found;
@@ -60,8 +58,6 @@ final class Label {
             found = "words";
         } else if (this.text.startsWith("!")) {
             found = "fails";
-        } else if (this.text.startsWith("?skipped")) {
-            found = "skipped";
         } else if (this.text.startsWith("?")) {
             found = "words";
         } else {
@@ -81,8 +77,6 @@ final class Label {
             found = Label.WORDS.get(this.text);
         } else if (this.text.startsWith("!")) {
             found = this.text.substring(1);
-        } else if (this.text.startsWith("?skipped")) {
-            found = "skipped";
         } else if (this.text.startsWith("?")) {
             found = this.text.substring(1).replace('-', ' ');
         } else {

@@ -8,6 +8,7 @@ import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.matchers.XhtmlMatchers;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.hamcrest.MatcherAssert;
@@ -179,7 +180,17 @@ final class PiecesTest {
             .newDocument();
         final Element row = page.createElement("line");
         page.appendChild(row);
-        final Table table = new Table(new Xnav("<answers/>"));
+        final Table table = new Table(
+            new Xnav(
+                Arrays.stream(objects)
+                    .map(
+                        object -> String.format(
+                            "<o loc='%s' copies='2'><is loc='Φ.number'/></o>", object.loc()
+                        )
+                    )
+                    .collect(Collectors.joining("", "<answers>", "</answers>"))
+            )
+        );
         new Pieces(line, Arrays.asList(objects)).drawn(
             row,
             new Entries(table, new Shapes(new HashMap<>(0), new HashMap<>(0), table), "app.eo")

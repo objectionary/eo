@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Which of nine bands a place falls in, by what it answers over all its copies.
+ * Which of eight bands a place falls in, by what it answers over all its copies.
  *
  * <p>A place is green when it answers one name and nothing else in any copy,
  * lime when that name comes with a gap in other copies, teal when it answers
@@ -21,8 +21,7 @@ import java.util.stream.Collectors;
  * name at all, a place is brown when it answers only errors, violet when it
  * answers only unknowns an atom fills, and amber when it answers any other
  * unknown. A read that fails in any copy, or a {@code ^} that only Java
- * fills, makes it red whatever else it answers, and a place no copy reached
- * is grey.</p>
+ * fills, makes it red whatever else it answers.</p>
  *
  * <p>The labels are the ones the place answers, with the formations of one
  * shape folded into one name first, so two copies of one lambda count as one
@@ -37,7 +36,7 @@ final class Band {
      * The bands, in the order a tally lists them.
      */
     static final List<String> ORDER = Arrays.asList(
-        "named", "gaps", "pair", "mixed", "unknown", "atom", "error", "unreached", "fails"
+        "named", "gaps", "pair", "mixed", "unknown", "atom", "error", "fails"
     );
 
     /**
@@ -67,8 +66,6 @@ final class Band {
         final String found;
         if (all.stream().anyMatch(label -> label.startsWith("!"))) {
             found = "fails";
-        } else if (all.stream().allMatch(label -> label.startsWith("?skipped"))) {
-            found = "unreached";
         } else if (all.equals(names)) {
             found = Band.named(names.size());
         } else if (names.isEmpty()) {

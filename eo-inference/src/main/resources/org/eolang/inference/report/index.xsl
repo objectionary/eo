@@ -5,7 +5,7 @@
 -->
 <!--
 The index of the inference report: a bar per file with its objects in the
-colours of nine bands; a folder's bar adds up its files. A click on
+colours of eight bands; a folder's bar adds up its files. A click on
 a colour in the tally keeps only the files and folders with objects of the
 chosen colours; the file pages share the choice and keep only the lines with
 such marks. Under the tally, a glossary says what the words of the report
@@ -51,10 +51,6 @@ mean.
             <xsl:value-of select="@error"/>
             <xsl:text> only an error</xsl:text>
           </span>
-          <span class="unreached" data-band="unreached">
-            <xsl:value-of select="@unreached"/>
-            <xsl:text> not reached</xsl:text>
-          </span>
           <span class="fails" data-band="fails">
             <xsl:value-of select="@fails"/>
             <xsl:text> a read fails</xsl:text>
@@ -80,7 +76,7 @@ mean.
     </html>
   </xsl:template>
   <xsl:template match="dir">
-    <details data-named="{@named}" data-gaps="{@gaps}" data-pair="{@pair}" data-mixed="{@mixed}" data-unknown="{@unknown}" data-atom="{@atom}" data-error="{@error}" data-unreached="{@unreached}" data-fails="{@fails}">
+    <details data-named="{@named}" data-gaps="{@gaps}" data-pair="{@pair}" data-mixed="{@mixed}" data-unknown="{@unknown}" data-atom="{@atom}" data-error="{@error}" data-fails="{@fails}">
       <summary>
         <xsl:value-of select="@name"/>
         <xsl:call-template name="bar"/>
@@ -91,7 +87,7 @@ mean.
     </details>
   </xsl:template>
   <xsl:template match="file">
-    <div class="row" data-named="{@named}" data-gaps="{@gaps}" data-pair="{@pair}" data-mixed="{@mixed}" data-unknown="{@unknown}" data-atom="{@atom}" data-error="{@error}" data-unreached="{@unreached}" data-fails="{@fails}">
+    <div class="row" data-named="{@named}" data-gaps="{@gaps}" data-pair="{@pair}" data-mixed="{@mixed}" data-unknown="{@unknown}" data-atom="{@atom}" data-error="{@error}" data-fails="{@fails}">
       <a href="{@href}">
         <xsl:value-of select="@name"/>
       </a>
@@ -99,7 +95,7 @@ mean.
     </div>
   </xsl:template>
   <xsl:template name="bar">
-    <span class="bar" title="{@named} named, {@gaps} one name with gaps, {@pair} two names, {@mixed} two or more names maybe with gaps, {@unknown} unknown, {@atom} unknown filled by an atom, {@error} only an error, {@unreached} not reached, {@fails} a read fails">
+    <span class="bar" title="{@named} named, {@gaps} one name with gaps, {@pair} two names, {@mixed} two or more names maybe with gaps, {@unknown} unknown, {@atom} unknown filled by an atom, {@error} only an error, {@fails} a read fails">
       <span class="named" style="flex: {@named}"/>
       <span class="gaps" style="flex: {@gaps}"/>
       <span class="pair" style="flex: {@pair}"/>
@@ -107,7 +103,6 @@ mean.
       <span class="unknown" style="flex: {@unknown}"/>
       <span class="atom" style="flex: {@atom}"/>
       <span class="error" style="flex: {@error}"/>
-      <span class="unreached" style="flex: {@unreached}"/>
       <span class="fails" style="flex: {@fails}"/>
     </span>
   </xsl:template>
@@ -125,7 +120,6 @@ mean.
       .tally .unknown { background: #fbeecc; }
       .tally .atom { background: #e6dcf5; }
       .tally .error { background: #efe2dc; }
-      .tally .unreached { background: #eeeeee; }
       .tally .fails { background: #f7d4d4; }
       .terms { display: grid; grid-template-columns: max-content 1fr; gap: .3em 1.2em; margin: 0 0 1.6em; color: #555; font-family: system-ui, sans-serif; }
       .terms dt { color: #1a1a1a; font-weight: 600; }
@@ -146,7 +140,6 @@ mean.
       .bar .unknown { background: #e8b64c; }
       .bar .atom { background: #9b7fd4; }
       .bar .error { background: #a1887f; }
-      .bar .unreached { background: #cfcfcf; }
       .bar .fails { background: #d76b6b; }
     </style>
   </xsl:template>

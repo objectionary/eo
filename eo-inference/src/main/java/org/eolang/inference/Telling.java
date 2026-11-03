@@ -27,7 +27,9 @@ import java.util.TreeSet;
  * formation and its voids are told too, from the copies of it that count:
  * what each void holds, and what Java gives. Whatever the engine cannot
  * name is one unknown, {@code ?unknown}, or {@code ?unknown-by-java} when
- * only Java fills it.</p>
+ * only Java fills it. A bound void or {@code ρ} that gives no label at all
+ * once the walk is over is a defect of the walk, and telling stops on
+ * it.</p>
  *
  * @since 0.76.0
  */
@@ -189,7 +191,12 @@ final class Telling {
                 said.add(holds);
             }
             if (said.isEmpty()) {
-                said.add("?unknown");
+                throw new IllegalStateException(
+                    String.format(
+                        "The void %s of %s is bound, but nothing in it gives a label",
+                        name, this.world.full(copy)
+                    )
+                );
             }
         }
         return said;
@@ -207,7 +214,12 @@ final class Telling {
                 said.addAll(this.last(val));
             }
             if (said.isEmpty()) {
-                said.add("?unknown");
+                throw new IllegalStateException(
+                    String.format(
+                        "The ρ of %s is bound, but nothing in it gives a label",
+                        this.world.full(copy)
+                    )
+                );
             }
         }
         return said;

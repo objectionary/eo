@@ -70,15 +70,6 @@ final class LabelTest {
     }
 
     @Test
-    void drawsASkippedPlaceAsSkipped() {
-        MatcherAssert.assertThat(
-            "a place the engine skipped must be drawn as skipped, but it wasnt",
-            new Label("?skipped-regex").kind(),
-            Matchers.equalTo("skipped")
-        );
-    }
-
-    @Test
     void drawsALocatorAsAName() {
         MatcherAssert.assertThat(
             "a locator must be drawn as a name, but it wasnt",

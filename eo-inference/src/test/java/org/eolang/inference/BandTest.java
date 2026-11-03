@@ -108,24 +108,6 @@ final class BandTest {
     }
 
     @Test
-    void marksAPlaceNoCopyReached() {
-        MatcherAssert.assertThat(
-            "a place with no answer must be grey, but it wasnt",
-            new Band(Collections.emptyList()).name(),
-            Matchers.equalTo("unreached")
-        );
-    }
-
-    @Test
-    void marksASkippedPlaceAsUnreached() {
-        MatcherAssert.assertThat(
-            "a place the engine skipped must be grey, but it wasnt",
-            new Band(Collections.singletonList("?skipped-regex")).name(),
-            Matchers.equalTo("unreached")
-        );
-    }
-
-    @Test
     void marksAFailingReadWhateverElseIsAnswered() {
         MatcherAssert.assertThat(
             "a read that fails in one copy must be red next to a name, but it wasnt",

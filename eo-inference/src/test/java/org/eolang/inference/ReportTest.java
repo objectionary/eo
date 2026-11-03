@@ -146,7 +146,7 @@ final class ReportTest {
             "the tally must count both objects of the program as named, but it didnt",
             new Report(ReportTest.program(temp), ReportTest.answers(temp))
                 .written(temp.resolve("out")),
-            Matchers.allOf(Matchers.hasEntry("named", 2), Matchers.hasEntry("unreached", 0))
+            Matchers.hasEntry("named", 2)
         );
     }
 

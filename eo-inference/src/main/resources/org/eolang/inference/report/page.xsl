@@ -5,7 +5,7 @@
 -->
 <!--
 A page of the inference report: the source of one file, with a mark on every
-object in the colour of one of nine bands, and a list under the mark of what
+object in the colour of one of eight bands, and a list under the mark of what
 the object answers in how many copies, one answer per bullet when there are
 several. A click on a colour in the tally keeps only the lines with
 marks of the chosen colours, and only those marks on them; a dashed rule shows
@@ -66,10 +66,6 @@ stays lit until the next scroll, click or key press.
             <xsl:value-of select="@error"/>
             <xsl:text> only an error</xsl:text>
           </span>
-          <span class="unreached" data-band="unreached">
-            <xsl:value-of select="@unreached"/>
-            <xsl:text> not reached</xsl:text>
-          </span>
           <span class="fails" data-band="fails">
             <xsl:value-of select="@fails"/>
             <xsl:text> a read fails</xsl:text>
@@ -112,9 +108,6 @@ stays lit until the next scroll, click or key press.
   <xsl:template match="told">
     <span class="said">
       <xsl:choose>
-        <xsl:when test="@copies = 0">
-          <xsl:text>not reached by any copy</xsl:text>
-        </xsl:when>
         <xsl:when test="count(said) = 1">
           <xsl:apply-templates select="said"/>
         </xsl:when>
@@ -217,7 +210,6 @@ stays lit until the next scroll, click or key press.
       .tally .unknown { background: #fbeecc; }
       .tally .atom { background: #e6dcf5; }
       .tally .error { background: #efe2dc; }
-      .tally .unreached { background: #eeeeee; }
       .tally .fails { background: #f7d4d4; }
       .tally span[data-band] { cursor: pointer; user-select: none; }
       .tally span.on { box-shadow: 0 0 0 2px #1a1a1a; }
@@ -236,7 +228,6 @@ stays lit until the next scroll, click or key press.
       .mark.unknown { color: #b26a00; }
       .mark.atom { color: #6a3fb5; }
       .mark.error { color: #795548; }
-      .mark.unreached { color: #9e9e9e; }
       .mark.fails { color: #c62828; }
       .pop { display: none; position: absolute; left: 0; top: 100%; margin-top: .3em; z-index: 9; white-space: normal; width: 26em; padding: .6em .8em; background: #fffdf5; color: #1a1a1a; border: 1px solid #ccc; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
       .pop::before { content: ""; position: absolute; left: -1px; right: -1px; bottom: 100%; height: calc(.3em + 1px); }

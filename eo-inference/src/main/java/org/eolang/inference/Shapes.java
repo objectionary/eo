@@ -147,12 +147,24 @@ final class Shapes {
      * What a place answers, each formation with no name of its own folded
      * into its shape.
      *
+     * <p>The walk tells every place of the program, so a place the table
+     * says nothing of is a defect of the walk, and the report stops on it
+     * rather than paint it in a band of its own.</p>
+     *
      * @param place The locator of the place
      * @return The labels, formations of one shape being one label
      */
     Set<String> folded(final String place) {
+        final Set<String> said = this.table.said(place).keySet();
+        if (said.isEmpty()) {
+            throw new IllegalStateException(
+                String.format(
+                    "answers.xml says nothing of %s, though the walk tells every place", place
+                )
+            );
+        }
         final Set<String> found = new LinkedHashSet<>(1);
-        for (final String label : this.table.said(place).keySet()) {
+        for (final String label : said) {
             if (this.hidden(label, place)) {
                 found.add(this.shown(label, false));
             } else {

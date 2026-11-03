@@ -194,10 +194,8 @@ final class Table {
         final String found;
         if ("java".equals(noted.says("by"))) {
             found = "?unknown-by-java";
-        } else if (noted.says("why").isEmpty()) {
-            found = "?unknown";
         } else {
-            found = String.format("?%s", noted.says("why"));
+            found = "?unknown";
         }
         return found;
     }
