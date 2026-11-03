@@ -36,7 +36,11 @@
   </o>
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <!-- R-6.6.6: tuple elements have positions, not argument bindings. -->
+  <!--
+  R-6.6.6: tuple elements have positions, not argument bindings. Such a
+  binding cannot round-trip through the tuple encoding, so "lossy" keeps
+  the formatter from rewriting the source from this erroneous tree.
+  -->
   <xsl:template match="/object">
     <xsl:variable name="bound" select=".//o[@star]/o[@as and not(@float-up)]"/>
     <xsl:copy>
@@ -45,7 +49,7 @@
         <errors>
           <xsl:apply-templates select="errors/error"/>
           <xsl:for-each select="$bound">
-            <error check="stars-to-tuples" severity="error" line="{@line}" pos="{@pos}">
+            <error check="stars-to-tuples" severity="error" line="{@line}" pos="{@pos}" lossy="">
               <xsl:text>star tuple elements cannot carry argument bindings</xsl:text>
             </error>
           </xsl:for-each>
