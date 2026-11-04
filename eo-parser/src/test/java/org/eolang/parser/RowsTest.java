@@ -10,6 +10,8 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link Rows}.
@@ -117,15 +119,17 @@ final class RowsTest {
         );
     }
 
-    @Test
-    void rejectsNullSpanAtValidNumber() {
-        final List<Span> source = new ArrayList<>(2);
-        source.add(new Span("альфа", 1));
-        source.add(null);
+    @ParameterizedTest
+    @ValueSource(ints = {0, 1, 2})
+    void rejectsNullSpanAtConstruction(final int position) {
+        final List<Span> source = new ArrayList<>(
+            List.of(new Span("альфа", 1), new Span("бета", 2), new Span("гамма", 3))
+        );
+        source.set(position, null);
         Assertions.assertThrows(
             NullPointerException.class,
-            () -> new Rows(source).underlined(2, 0, "дыра"),
-            "a null span at a valid number is not refused with an exception"
+            () -> new Rows(source),
+            "a null span is not refused when the source rows are copied"
         );
     }
 }
