@@ -229,7 +229,7 @@ stays lit until the next scroll, click or key press.
       .mark.study { color: #546e7a; }
       .mark.empty { color: #b26a00; }
       .mark.error { color: #795548; }
-      .pop { display: none; position: absolute; left: 0; top: 100%; margin-top: .3em; z-index: 9; white-space: normal; width: 26em; padding: .6em .8em; background: #fffdf5; color: #1a1a1a; border: 1px solid #ccc; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
+      .pop { display: none; position: absolute; left: 0; top: 100%; margin-top: .3em; z-index: 9; white-space: normal; width: 52em; padding: .6em .8em; background: #fffdf5; color: #1a1a1a; border: 1px solid #ccc; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
       .pop::before { content: ""; position: absolute; left: -1px; right: -1px; bottom: 100%; height: calc(.3em + 1px); }
       .mark:hover .pop, .mark.held .pop { display: block; }
       .mark.off { color: inherit; box-shadow: none; cursor: auto; }
