@@ -7,9 +7,9 @@
 A page of the inference report: the source of one file, with a mark on every
 object in the colour of one of nine bands, and a list under the mark of what
 the object answers in how many copies, one answer per bullet when there are
-several. A click on a colour in the tally keeps only the lines with
-marks of the chosen colours, and only those marks on them; a dashed rule shows
-where lines are left out. The choice is shared with the index and the other
+several. A click on a colour in the tally keeps the lines with marks of the
+chosen colours, plus five lines before and after each, and leaves every other
+mark plain; a dashed rule shows where lines are left out. The choice is shared with the index and the other
 pages. A mark's list stays open while the pointer moves onto it, and a list
 with selected text stays open until a click elsewhere or Escape, so the text
 can be copied. An answer with no name of its own is shown by its shape, with
@@ -37,7 +37,7 @@ stays lit until the next scroll, click or key press.
           <xsl:text> / </xsl:text>
           <xsl:value-of select="@file"/>
         </h1>
-        <p class="tally" title="Click colours to show only their objects; click a chosen colour again to drop it">
+        <p class="tally" title="Click colours to show only their objects, with five lines around each; click a chosen colour again to drop it">
           <span class="named" data-band="named">
             <xsl:value-of select="@named"/>
             <xsl:text> named</xsl:text>
@@ -246,14 +246,16 @@ stays lit until the next scroll, click or key press.
         var chips = Array.from(document.querySelectorAll('.tally span[data-band]'));
         var marks = Array.from(document.querySelectorAll('.mark'));
         var lines = Array.from(document.querySelectorAll('table.src tr'));
+        var around = 5;
         function shown() {
           var picked = chips.filter(function (chip) { return chip.classList.contains('on'); }).map(function (chip) { return chip.dataset.band; });
           marks.forEach(function (mark) {
             mark.classList.toggle('off', picked.length &gt; 0 ? picked.indexOf(mark.dataset.band) === -1 : false);
           });
+          var marked = lines.map(function (line) { return line.querySelector('.mark:not(.off)') !== null; });
           var previous = -1;
           lines.forEach(function (line, at) {
-            var kept = picked.length === 0 || line.querySelector('.mark:not(.off)') !== null;
+            var kept = picked.length === 0 || marked.slice(Math.max(0, at - around), at + around + 1).indexOf(true) !== -1;
             line.classList.toggle('hidden', !kept);
             line.classList.toggle('cut', kept &amp;&amp; previous &gt;= 0 &amp;&amp; at &gt; previous + 1);
             if (kept) { previous = at; }

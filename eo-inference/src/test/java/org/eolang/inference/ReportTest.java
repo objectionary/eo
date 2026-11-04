@@ -80,6 +80,16 @@ final class ReportTest {
     }
 
     @Test
+    void keepsFiveLinesAroundEveryMarkOfAPickedColour(@Mktmp final Path temp) throws IOException {
+        new Report(ReportTest.program(temp), ReportTest.answers(temp)).written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "a page must keep five lines around every mark of a picked colour, but it didnt",
+            Files.readString(temp.resolve("out/cup.eo.html")),
+            Matchers.containsString("var around = 5;")
+        );
+    }
+
+    @Test
     void listsEveryPageOnTheIndex(@Mktmp final Path temp) throws IOException {
         new Report(ReportTest.program(temp), ReportTest.answers(temp)).written(temp.resolve("out"));
         MatcherAssert.assertThat(

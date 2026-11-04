@@ -8,7 +8,7 @@ The index of the inference report: a bar per file with its objects in the
 colours of nine bands; a folder's bar adds up its files. A click on
 a colour in the tally keeps only the files and folders with objects of the
 chosen colours; the file pages share the choice and keep only the lines with
-such marks. Under the tally, a glossary says what the words of the report
+such marks, plus five lines around each. Under the tally, a glossary says what the words of the report
 mean.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="index" version="3.0">
