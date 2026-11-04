@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Reading off f makes the partial copy count. Its reduced mark must still
+# fill y when f is called, so the argument lands in y for every head.
+sources:
+  foo.eo: |
+    [x y] > foo
+      x > @
+  fin.eo: |
+    [f] > fin
+      f 2 > @
+      f.plus 0 > read
+  app.eo: |
+    [] > app
+      fin > @
+        foo 1
+  number.eo: |
+    [@] > number
+      [^ item] > plus
+        ^ > @
+answers:
+  - /answers/o[@loc='Φ.fin.φ.α0' and @lands='v🌵y']
+  - /answers/o[@loc='Φ.fin.φ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.foo.v🌵y']//is[@loc='Φ.number']
