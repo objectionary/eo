@@ -105,6 +105,34 @@ final class PiecesTest {
     }
 
     @Test
+    void marksTheNameOfAFormationWrittenAfterItsAt() throws ParserConfigurationException {
+        MatcherAssert.assertThat(
+            "a formation written after its @ must be marked on its name, but it wasnt",
+            PiecesTest.drawn(
+                "      if. > [^sock descriptor] > closed-socket",
+                new Written("Φ.s.closed-socket", 6, "closed-socket", ""),
+                new Written("Φ.s.closed-socket.ρ", 13, "ρ", "∅"),
+                new Written("Φ.s.closed-socket.v🌵descriptor", 19, "v🌵descriptor", "∅"),
+                new Written("Φ.s.closed-socket.φ", 6, "φ", ".if")
+            ),
+            XhtmlMatchers.hasXPath("/line/bit[text='closed-socket']/told[@loc='Φ.s.closed-socket']")
+        );
+    }
+
+    @Test
+    void keepsTheAtOfAFormationWrittenAfterItsAt() throws ParserConfigurationException {
+        MatcherAssert.assertThat(
+            "the @ written in front of a formation must keep its mark, but it lost it",
+            PiecesTest.drawn(
+                "      if. > [^sock descriptor] > closed-socket",
+                new Written("Φ.s.closed-socket", 6, "closed-socket", ""),
+                new Written("Φ.s.closed-socket.φ", 6, "φ", ".if")
+            ),
+            XhtmlMatchers.hasXPath("/line/bit[text='if']/told[@loc='Φ.s.closed-socket.φ']")
+        );
+    }
+
+    @Test
     void keepsTheBracketOfAFormationBoundToNoName() throws ParserConfigurationException {
         MatcherAssert.assertThat(
             "a formation with no name must stay marked on its bracket, but it vanished",
