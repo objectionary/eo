@@ -32,11 +32,15 @@ import java.util.TreeSet;
  * for a caller who is not there; {@code ?unknown-java}, a void only Java
  * fills; and {@code ?unknown-loop}, a read nothing ever answers. A
  * {@code ^} no object went into, of a formation with no name of its own
- * whose call made no copy, is told as a void nobody fills. A {@code ^} is
- * the one exception to the naming of a decorator copy: its row names the
- * formation of each copy in it, and a {@code reduced} next to the names
- * says what those copies reduce to, when that is something other than the
- * names (#9655). A bound void that gives no label at all once the walk is
+ * whose call made no copy, is told as a void nobody fills. Two rows are
+ * exceptions to the naming of a decorator copy: the row of a {@code ^},
+ * and the row of the object a name is read off, for each copy the name is
+ * an attribute of, a void or a bound attribute of its formation. Such a
+ * row names the formation of the copy, and a {@code reduced} next to the
+ * names says what those copies reduce to, when that is something other
+ * than the names (#9655). A name a copy lacks is read off what its
+ * {@code @} gives, so the row names what that {@code @} gives, as anywhere
+ * else. A bound void that gives no label at all once the walk is
  * over is a defect of the walk, and so is an unknown of no kind, and
  * telling stops on either.</p>
  *
@@ -96,22 +100,22 @@ final class Telling {
             }
         }
         final Map<String, Map<String, Integer>> sets = new HashMap<>(0);
+        final Map<String, Map<String, Integer>> holders = new HashMap<>(0);
         for (final Map.Entry<Key, Ids> entry : answers.entrySet()) {
             Telling.count(
                 sets, entry.getKey().place(),
-                String.join("\t", this.labels(entry.getKey(), entry.getValue()))
+                String.join("\t", this.labels(entry.getKey(), entry.getValue(), holders))
             );
         }
         final Map<String, Map<String, Integer>> groups = new LinkedHashMap<>(0);
-        final Map<String, Map<String, Integer>> carets = new HashMap<>(0);
         for (final int copy : copies) {
-            this.group(copy, groups, carets);
+            this.group(copy, groups, holders);
         }
         for (final Map.Entry<String, Map<String, Integer>> entry : groups.entrySet()) {
             sets.putIfAbsent(entry.getKey(), entry.getValue());
         }
         final Map<String, Map<String, Integer>> reduction = this.reduction();
-        reduction.putAll(carets);
+        reduction.putAll(holders);
         return new Told(sets, reduction, this.state.lands());
     }
 
@@ -120,7 +124,9 @@ final class Telling {
             && this.state.counts(ctx);
     }
 
-    private Set<String> labels(final Key key, final Ids answer) {
+    private Set<String> labels(
+        final Key key, final Ids answer, final Map<String, Map<String, Integer>> holders
+    ) {
         final Ints got = this.state.untidy(key, answer);
         final Set<String> labels = new TreeSet<>(new CodeOrder());
         if (got.isEmpty()) {
@@ -130,11 +136,38 @@ final class Telling {
                 labels.add(this.word(got.get(pos)));
             }
         } else {
+            final String name = this.off(key.place());
+            final Set<String> reduced = new TreeSet<>(new CodeOrder());
             for (int pos = 0; pos < got.size(); ++pos) {
-                labels.addAll(this.last(got.get(pos)));
+                final Set<String> gives = this.last(got.get(pos));
+                reduced.addAll(gives);
+                if (this.owns(got.get(pos), name)) {
+                    labels.add(this.word(got.get(pos)));
+                } else {
+                    labels.addAll(gives);
+                }
+            }
+            if (!reduced.equals(labels)) {
+                Telling.count(holders, key.place(), String.join(" ", reduced));
             }
         }
         return labels;
+    }
+
+    private String off(final String place) {
+        final String site = place.substring(0, Math.max(place.lastIndexOf('.'), 0));
+        final String name;
+        if (this.world.reads(site) && this.world.read(site).of().equals(place)) {
+            name = this.world.read(site).name();
+        } else {
+            name = "";
+        }
+        return name;
+    }
+
+    private boolean owns(final int num, final String name) {
+        final Value value = this.world.value(this.world.bare(num));
+        return !name.isEmpty() && value.kind() == 'O' && this.world.form(value.form()).has(name);
     }
 
     private String missing(final Key key) {
@@ -162,7 +195,7 @@ final class Telling {
 
     private void group(
         final int copy, final Map<String, Map<String, Integer>> groups,
-        final Map<String, Map<String, Integer>> carets
+        final Map<String, Map<String, Integer>> holders
     ) {
         final String form = this.world.value(copy).form();
         final Formation shape = this.world.form(form);
@@ -178,7 +211,7 @@ final class Telling {
             Telling.count(groups, place, String.join("\t", names));
             final Set<String> reduced = this.lowered(copy);
             if (!reduced.isEmpty() && !reduced.equals(names)) {
-                Telling.count(carets, place, String.join(" ", reduced));
+                Telling.count(holders, place, String.join(" ", reduced));
             }
         }
         if (!shape.returns().isEmpty()) {

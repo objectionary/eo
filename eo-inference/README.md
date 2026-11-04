@@ -63,9 +63,14 @@ lands in:
 ```
 
 A copy is named by its formation, but a copy of a decorator is named by what
-its `@` gives. The row of a `^` is the exception: it names the formation of
-each copy in it, and when those copies reduce to something else, a
-`<reduced>` next to the names says what:
+its `@` gives. Two rows are the exception and name the formation of each
+copy in them. One is the row of a `^`. The other is the row of the object a
+name is read off, for each copy that has that name itself, as a void or a
+bound attribute of its formation: `accept` in `socket.eo` reads `scope` and
+`cant-accept` off itself, so the `$` in front of each names `accept`. A copy
+that lacks the name hands the read on to its `@`, and there the row names
+what that `@` gives, as anywhere else. When the copies a row names reduce to
+something else, a `<reduced>` next to the names says what:
 
 ```xml
 <o loc="Φ.app.φ.α0.ρ" copies="1">
