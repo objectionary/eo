@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Neither inner nor leaf declares a caret. Their copies inside the unused
+# copy of outer as written must not count. The call fills outer's size, so
+# its inner and leaf count, with no receiver added to either formation.
+sources:
+  outer.eo: |
+    [size] > outer
+      [] > inner
+        [] > leaf
+          7 > @
+  app.eo: |
+    [] > app
+      (outer 3).inner.leaf > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.outer' and @copies='1']
+  - /answers/o[@loc='Φ.outer.inner' and @copies='1']
+  - /answers/o[@loc='Φ.outer.inner.leaf' and @copies='1']
+  - /answers[not(o[@loc='Φ.outer.inner.ρ' or @loc='Φ.outer.inner.leaf.ρ'])]
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.number']
