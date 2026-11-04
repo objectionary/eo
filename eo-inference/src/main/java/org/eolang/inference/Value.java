@@ -19,7 +19,8 @@ package org.eolang.inference;
  *   Java alone fills (4.4);</li>
  *   <li>{@code B}, rule b's head as is (4.3), the value in {@code base};</li>
  *   <li>{@code A}, rule A's mark (4.2), the value in {@code base} and its
- *   number of empty voids in {@code count}.</li>
+ *   number of empty voids in {@code count}, with its source copy in
+ *   {@code origin} when it has one.</li>
  * </ul>
  *
  * @param kind The letter of the kind
@@ -29,11 +30,30 @@ package org.eolang.inference;
  * @param tag The tag of a copy, empty when none
  * @param base The value a {@code B} or an {@code A} wraps, or -1
  * @param count The empty voids of an {@code A}
+ * @param origin The source copy of an {@code A}, or -1
  * @since 0.76.0
  */
 record Value(
-    char kind, String form, String birth, long bound, String tag, int base, int count
+    char kind, String form, String birth, long bound, String tag, int base, int count, int origin
 ) {
+
+    /**
+     * Ctor of a value without a source copy.
+     *
+     * @param kind The kind
+     * @param form The formation, reason or label
+     * @param birth The birthplace
+     * @param bound The bound voids
+     * @param tag The tag
+     * @param base The wrapped value
+     * @param count The empty voids
+     */
+    Value(
+        final char kind, final String form, final String birth, final long bound,
+        final String tag, final int base, final int count
+    ) {
+        this(kind, form, birth, bound, tag, base, count, -1);
+    }
 
     /**
      * Ctor of a copy.
