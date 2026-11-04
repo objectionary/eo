@@ -266,37 +266,10 @@ final class Study {
                 found.add(form);
             }
             for (final String place : this.world.body(form)) {
-                final String read = this.copied(place);
+                final String read = this.world.copied(place);
                 if (!read.equals(form) && forms.contains(read)) {
                     found.add(read);
                 }
-            }
-        }
-        return found;
-    }
-
-    private String copied(final String place) {
-        String found = "";
-        if (!this.world.starts(place) && this.world.reads(place)
-            && !"ρ".equals(this.world.read(place).name())) {
-            found = this.held(place);
-        }
-        return found;
-    }
-
-    private String held(final String place) {
-        final List<Head> heads = this.world.heads(place);
-        String found = "";
-        if (heads.size() == 1 && "ref".equals(heads.get(0).tag())) {
-            found = heads.get(0).loc();
-        } else if (!this.world.starts(place) && this.world.reads(place)) {
-            final Read read = this.world.read(place);
-            final String outer = this.held(read.of());
-            final String inner = String.join(".", outer, read.name());
-            if ("ρ".equals(read.name()) && this.world.formation(outer)) {
-                found = this.world.form(outer).parent();
-            } else if (!outer.isEmpty() && this.world.formation(inner)) {
-                found = inner;
             }
         }
         return found;

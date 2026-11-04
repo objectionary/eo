@@ -246,7 +246,7 @@ final class Counting {
 
     private boolean fresh(final int num) {
         return this.world.value(num).kind() != 'O' || !this.state.retired(num)
-            && this.alone(num) && (this.kept(num) || this.upheld(num, new Ints(num)));
+            && this.holds(num, new Ints());
     }
 
     private boolean kept(final int num) {

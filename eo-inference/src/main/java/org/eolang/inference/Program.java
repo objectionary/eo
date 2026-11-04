@@ -234,6 +234,25 @@ final class Program {
     }
 
     /**
+     * The formation a place reads as an attribute. The place reads a name
+     * other than {@code ρ} off a reference to a formation, or off another
+     * such read, and that name is a formation inside it. A {@code ρ} read on
+     * the way stands for the formation declared as the {@code ^} of the
+     * formation it is read off.
+     *
+     * @param place The place
+     * @return The formation, empty when it reads none
+     */
+    String copied(final String place) {
+        String found = "";
+        if (!this.starts(place) && this.reads(place)
+            && !"ρ".equals(this.read(place).name())) {
+            found = this.held(place);
+        }
+        return found;
+    }
+
+    /**
      * The places answered in each copy of a formation, those of top-level
      * code under the empty name, in the order of the facts.
      *
@@ -255,5 +274,23 @@ final class Program {
             this.bodies.putIfAbsent("", new ArrayList<>(0));
         }
         return this.bodies.getOrDefault(form, Collections.emptyList());
+    }
+
+    private String held(final String place) {
+        final List<Head> heads = this.heads(place);
+        String found = "";
+        if (heads.size() == 1 && "ref".equals(heads.get(0).tag())) {
+            found = heads.get(0).loc();
+        } else if (!this.starts(place) && this.reads(place)) {
+            final Read read = this.read(place);
+            final String outer = this.held(read.of());
+            final String inner = String.join(".", outer, read.name());
+            if ("ρ".equals(read.name()) && this.formation(outer)) {
+                found = this.form(outer).parent();
+            } else if (!outer.isEmpty() && this.formation(inner)) {
+                found = inner;
+            }
+        }
+        return found;
     }
 }

@@ -182,13 +182,11 @@ final class PiecesTest {
         page.appendChild(row);
         final Table table = new Table(
             new Xnav(
-                Arrays.stream(objects)
-                    .map(
-                        object -> String.format(
-                            "<o loc='%s' copies='2'><is loc='Φ.number'/></o>", object.loc()
-                        )
+                Arrays.stream(objects).map(
+                    object -> String.format(
+                        "<o loc='%s' copies='2'><is loc='Φ.number'/></o>", object.loc()
                     )
-                    .collect(Collectors.joining("", "<answers>", "</answers>"))
+                ).collect(Collectors.joining("", "<answers>", "</answers>"))
             )
         );
         new Pieces(line, Arrays.asList(objects)).drawn(

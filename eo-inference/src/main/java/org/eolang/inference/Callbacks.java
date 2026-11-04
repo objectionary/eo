@@ -16,7 +16,7 @@ import java.util.Map;
  * void gets one more copy at the call, its first n empty voids filled with
  * Java's own T1 … Tn, and that copy is walked: {@code malloc.of 5 [m]}
  * gives {@code m} a {@code Φ.chunk}, as Java does.</p>
- * *
+ *
  * @since 0.76.0
  */
 final class Callbacks {
@@ -63,14 +63,15 @@ final class Callbacks {
                 this.state.remember(made);
                 rows.put(holes.get(idx), new int[] {made});
             }
-            final int copy = this.state.copy(
-                new Value(
-                    value.form(), this.world.born(site, value.form()),
-                    value.bound() | this.state.bits(value.form(), holes.subList(0, count))
-                ),
-                rows
+            this.state.remember(
+                this.state.copy(
+                    new Value(
+                        value.form(), this.world.born(site, value.form()),
+                        value.bound() | this.state.bits(value.form(), holes.subList(0, count))
+                    ),
+                    rows
+                )
             );
-            this.state.remember(copy);
         }
     }
 }

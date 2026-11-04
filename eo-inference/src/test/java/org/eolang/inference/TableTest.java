@@ -82,7 +82,10 @@ final class TableTest {
         MatcherAssert.assertThat(
             "an unknown must be read as the mark of its kind, but it wasnt",
             new Table(
-                new Xnav("<answers><o loc='Φ.kiln.t' copies='3'><unknown kind='study'/></o></answers>")
+                new Xnav(
+                    "<answers><o loc='Φ.kiln.t' copies='3'>",
+                    "<unknown kind='study'/></o></answers>"
+                )
             ).said("Φ.kiln.t").keySet(),
             Matchers.contains("?unknown-study")
         );
@@ -93,7 +96,10 @@ final class TableTest {
         MatcherAssert.assertThat(
             "a void Java fills must be read as a void an atom fills, but it wasnt",
             new Table(
-                new Xnav("<answers><o loc='Φ.kiln.z' copies='2'><unknown kind='java'/></o></answers>")
+                new Xnav(
+                    "<answers><o loc='Φ.kiln.z' copies='2'>",
+                    "<unknown kind='java'/></o></answers>"
+                )
             ).said("Φ.kiln.z").keySet(),
             Matchers.contains("?unknown-java")
         );
@@ -106,7 +112,10 @@ final class TableTest {
             Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> new Table(
-                    new Xnav("<answers><o loc='Φ.kiln.q' copies='5'><unknown kind='lost'/></o></answers>")
+                    new Xnav(
+                        "<answers><o loc='Φ.kiln.q' copies='5'>",
+                        "<unknown kind='lost'/></o></answers>"
+                    )
                 ).said("Φ.kiln.q"),
                 "an unknown of a kind the report does not know must stop it"
             ).getMessage(),

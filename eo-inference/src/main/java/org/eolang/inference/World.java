@@ -159,6 +159,16 @@ final class World {
     }
 
     /**
+     * The formation a place reads as an attribute.
+     *
+     * @param place The place
+     * @return The formation, empty when it reads none
+     */
+    String copied(final String place) {
+        return this.program.copied(place);
+    }
+
+    /**
      * The places answered in each copy of a formation, in the order of the
      * facts.
      *

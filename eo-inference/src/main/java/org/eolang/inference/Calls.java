@@ -286,13 +286,17 @@ final class Calls {
             for (final int val : call.raw().get(arg)) {
                 final int inside = this.world.bare(val);
                 final Value value = this.world.value(inside);
-                if (value.kind() == 'O' && value.form().equals(args.get(arg))
-                    && (value.bound() & Formation.RHO) != 0
+                if (Calls.handed(value, args.get(arg))
                     && this.world.form(value.form()).applied()) {
                     this.state.gather(inside, "ρ", copy);
                 }
             }
         }
+    }
+
+    private static boolean handed(final Value value, final String arg) {
+        return value.kind() == 'O' && value.form().equals(arg)
+            && (value.bound() & Formation.RHO) != 0;
     }
 
     private void bind(final Value value, final List<String> voids, final Call call) {

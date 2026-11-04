@@ -141,20 +141,28 @@ final class Telling {
                 labels.add(this.word(got.get(pos)));
             }
         } else {
-            final String name = this.off(key.place());
-            final Set<String> reduced = new TreeSet<>(new CodeOrder());
-            for (int pos = 0; pos < got.size(); ++pos) {
-                final Set<String> gives = this.last(got.get(pos));
-                reduced.addAll(gives);
-                if (this.owns(got.get(pos), name)) {
-                    labels.add(this.word(got.get(pos)));
-                } else {
-                    labels.addAll(gives);
-                }
+            labels.addAll(this.given(key.place(), got, holders));
+        }
+        return labels;
+    }
+
+    private Set<String> given(
+        final String place, final Ints got, final Map<String, Map<String, Integer>> holders
+    ) {
+        final String name = this.off(place);
+        final Set<String> labels = new TreeSet<>(new CodeOrder());
+        final Set<String> reduced = new TreeSet<>(new CodeOrder());
+        for (int pos = 0; pos < got.size(); ++pos) {
+            final Set<String> gives = this.last(got.get(pos));
+            reduced.addAll(gives);
+            if (this.owns(got.get(pos), name)) {
+                labels.add(this.word(got.get(pos)));
+            } else {
+                labels.addAll(gives);
             }
-            if (!reduced.equals(labels)) {
-                Telling.count(holders, key.place(), String.join(" ", reduced));
-            }
+        }
+        if (!reduced.equals(labels)) {
+            Telling.count(holders, place, String.join(" ", reduced));
         }
         return labels;
     }
@@ -383,17 +391,23 @@ final class Telling {
             label = value.form();
         } else if (value.kind() == 'D' || value.kind() == 'T' || value.kind() == 'Φ') {
             label = String.valueOf(value.kind());
-        } else if (value.kind() == 'U') {
+        } else {
+            label = this.mark(inside);
+        }
+        return label;
+    }
+
+    private String mark(final int inside) {
+        final Value value = this.world.value(inside);
+        if (value.kind() == 'U') {
             throw new IllegalStateException(
                 String.format(
                     "%s is an unknown of none of the four kinds the engine tells",
                     this.world.full(inside)
                 )
             );
-        } else {
-            label = String.format("?%s", value.kind());
         }
-        return label;
+        return String.format("?%s", value.kind());
     }
 
     private static boolean known(final String label) {
@@ -410,9 +424,17 @@ final class Telling {
 
     private String vacant(final int copy, final String holds) {
         final String label;
-        if (!holds.isEmpty()) {
+        if (holds.isEmpty()) {
+            label = this.gap(copy);
+        } else {
             label = holds;
-        } else if (Values.JBORN.equals(this.world.value(copy).birth())) {
+        }
+        return label;
+    }
+
+    private String gap(final int copy) {
+        final String label;
+        if (Values.JBORN.equals(this.world.value(copy).birth())) {
             label = "?unknown-java";
         } else if (this.state.kept(copy)) {
             label = "?unknown-study";

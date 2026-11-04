@@ -44,6 +44,25 @@ final class ProgramTest {
         );
     }
 
+    @Test
+    void findsTheFormationAPlaceReadsAsAnAttribute() {
+        MatcherAssert.assertThat(
+            "a name read off a reference must be the formation of that name, but it wasnt",
+            new Program(
+                Map.of(
+                    "Φ.kettle",
+                    new Formation(Map.of(), List.of(), Map.of(), Map.of(), List.of()),
+                    "Φ.kettle.spout",
+                    new Formation(Map.of(), List.of(), Map.of(), Map.of(), List.of())
+                ),
+                Map.of("Φ.cup.φ", new Read("spout", "Φ.cup.φ.ρ")),
+                Map.of("Φ.cup.φ.ρ", List.of(new Head("ref", "Φ.kettle"))),
+                Map.of()
+            ).copied("Φ.cup.φ"),
+            Matchers.equalTo("Φ.kettle.spout")
+        );
+    }
+
     private static Program program() {
         final Formation empty = new Formation(Map.of(), List.of(), Map.of(), Map.of(), List.of());
         return new Program(
