@@ -149,6 +149,31 @@ final class TableTest {
     }
 
     @Test
+    void readsHowManyCopiesOfAFormationAreStudyCopies() {
+        MatcherAssert.assertThat(
+            "the study copies of a formation must be read off its row, but they werent",
+            new Table(
+                new Xnav(
+                    "<answers><o loc='Φ.kiln.oven' copies='6' study='4'>",
+                    "<is loc='Φ.kiln.oven'/></o></answers>"
+                )
+            ).study("Φ.kiln.oven"),
+            Matchers.equalTo(4)
+        );
+    }
+
+    @Test
+    void countsNoStudyCopiesOfARowThatSaysNone() {
+        MatcherAssert.assertThat(
+            "a row that says no study copies must have none, but it had some",
+            new Table(
+                new Xnav("<answers><o loc='Φ.kiln.w' copies='8'><data/></o></answers>")
+            ).study("Φ.kiln.w"),
+            Matchers.equalTo(0)
+        );
+    }
+
+    @Test
     void countsNoCopiesOfAPlaceWithNoRow() {
         MatcherAssert.assertThat(
             "a place the table has no row for must have no copies, but it had some",

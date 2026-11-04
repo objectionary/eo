@@ -16,7 +16,9 @@ can be copied. An answer with no name of its own is shown by its shape, with
 a line per attribute under its voids when it binds any, and
 answers of the same shape are one answer, with a link to each line where one
 is written and its locator as hover text on the link; the line a link leads to
-stays lit until the next scroll, click or key press.
+stays lit until the next scroll, click or key press. The list under the name
+of a formation with study copies ends with a line that says nobody calls it,
+and how many of its copies are study copies when not all of them are.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="page" version="3.0">
   <xsl:output method="html" version="5.0" encoding="UTF-8" indent="no" omit-xml-declaration="yes" include-content-type="no"/>
@@ -130,6 +132,19 @@ stays lit until the next scroll, click or key press.
           </xsl:if>
         </xsl:otherwise>
       </xsl:choose>
+    </span>
+    <xsl:apply-templates select="studied"/>
+  </xsl:template>
+  <xsl:template match="studied">
+    <span class="said">
+      <xsl:text>studied: nobody calls this object</xsl:text>
+      <xsl:if test="@n != ../@copies">
+        <xsl:text> (</xsl:text>
+        <xsl:value-of select="@n"/>
+        <xsl:text> of </xsl:text>
+        <xsl:value-of select="../@copies"/>
+        <xsl:text> copies)</xsl:text>
+      </xsl:if>
     </span>
   </xsl:template>
   <xsl:template match="said">

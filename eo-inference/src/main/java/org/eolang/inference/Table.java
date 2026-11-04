@@ -36,7 +36,9 @@ import org.w3c.dom.Node;
  * each of the four kinds, {@code empty}, {@code study}, {@code java} and
  * {@code loop}. A missing attribute is T, and the {@code ^} of a formation
  * handed to an atom is that atom, so the engine writes no failure, and a
- * {@code <fails>} stops the report.</p>
+ * {@code <fails>} stops the report. The {@code study} of the row of a
+ * formation says how many of its copies are study copies, and a row with
+ * none has no {@code study}.</p>
  *
  * @since 0.76.0
  */
@@ -64,6 +66,12 @@ final class Table {
     private final List<Map<String, Map<Set<String>, Integer>>> read;
 
     /**
+     * The study copies of each formation that has any, read on the first
+     * question and kept for the rest.
+     */
+    private final List<Map<String, Integer>> studies;
+
+    /**
      * Ctor.
      *
      * @param answers The document {@code answers.xml}
@@ -71,6 +79,7 @@ final class Table {
     Table(final Xnav answers) {
         this.answers = answers;
         this.read = new ArrayList<>(1);
+        this.studies = new ArrayList<>(1);
     }
 
     /**
@@ -111,6 +120,27 @@ final class Table {
             .filter(set -> !Collections.disjoint(set.getKey(), labels))
             .mapToInt(Map.Entry::getValue)
             .sum();
+    }
+
+    /**
+     * How many copies of the formation are study copies.
+     *
+     * @param place The locator of the formation
+     * @return The study copies, none when its row names none
+     */
+    int study(final String place) {
+        if (this.studies.isEmpty()) {
+            this.studies.add(
+                this.answers.element("answers").elements(Filter.withName("o"))
+                    .map(Noted::new)
+                    .filter(row -> !row.says("study").isEmpty()).collect(
+                        Collectors.toMap(
+                            row -> row.says("loc"), row -> Integer.parseInt(row.says("study"))
+                        )
+                    )
+            );
+        }
+        return this.studies.get(0).getOrDefault(place, 0);
     }
 
     private Map<Set<String>, Integer> sets(final String place) {

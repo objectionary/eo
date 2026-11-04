@@ -13,18 +13,22 @@ import java.util.Map;
  * tab, with the number of copies that say it; for each formation, what its
  * copies reduce to, the labels joined by a space, with the number of copies,
  * and for each {@code ^}, or object a name is read off, that names a copy
- * that reduces to something else, what the copies in it reduce to; and for
- * each argument, the one void it lands in.</p>
+ * that reduces to something else, what the copies in it reduce to; for
+ * each argument, the one void it lands in; and for each formation with
+ * study copies among the copies of it that count, how many of them are
+ * study copies.</p>
  *
  * @param sets The sets of labels, by place
  * @param reduction What the copies reduce to, by formation, by {@code ^},
  *  or by object a name is read off
  * @param lands The void each argument lands in, by place
+ * @param study The study copies that count, by formation
  * @since 0.76.0
  */
 record Told(
     Map<String, Map<String, Integer>> sets,
     Map<String, Map<String, Integer>> reduction,
-    Map<String, String> lands
+    Map<String, String> lands,
+    Map<String, Integer> study
 ) {
 }

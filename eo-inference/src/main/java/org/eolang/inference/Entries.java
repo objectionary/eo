@@ -24,7 +24,8 @@ import org.w3c.dom.Element;
  * one shape, counted in the copies that answer any of them, with a link to
  * every line where one of them is written: {@code line 4} or
  * {@code lines 4, 9} in the same file, {@code bytes.eo:12} in another, and
- * the locator as the link's hover text.</p>
+ * the locator as the link's hover text. The mark of a formation with study
+ * copies also says how many of its copies are study copies.</p>
  *
  * @since 0.76.0
  */
@@ -108,6 +109,12 @@ final class Entries {
         );
         for (final String key : order) {
             told.appendChild(entries.get(key));
+        }
+        final int study = this.table.study(loc);
+        if (study > 0) {
+            final Element note = page.createElement("studied");
+            note.setAttribute("n", Integer.toString(study));
+            told.appendChild(note);
         }
     }
 

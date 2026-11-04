@@ -81,6 +81,20 @@ something else, a `<reduced>` next to the names says what:
 </o>
 ```
 
+The row of a formation has a `study` attribute: how many of its copies that
+count are study copies or copies as written that a stop kept. A formation
+with none has no `study`. Nobody calls `read` in `socket.eo`, so its one
+copy is a study copy:
+
+```xml
+<o loc="Φ.socket.as-input.read" copies="1" study="1">
+  <is loc="Φ.socket.as-input.read"/>
+  <reduced copies="1">
+    <is loc="Φ.socket.as-input.read"/>
+  </reduced>
+</o>
+```
+
 The engine knows three lists of names of the program, which are parameters of
 the goal with no defaults, and the `pom.xml` of eo-runtime sets them:
 `inferenceCanon` (the kinds that are one shared copy each, `Φ.bytes`,
@@ -107,7 +121,11 @@ kinds are a read nothing ever answers, a void only Java fills, a void of an
 object nobody calls, and a void nobody fills, and `answers.xml` writes them
 as `<unknown kind="loop"/>`, `kind="java"`, `kind="study"` and
 `kind="empty"`. A place with no name and unknowns of several kinds takes the
-first of them in that order. The goal logs how many objects
+first of them in that order. The pop-up of the mark on the name of a
+formation with a `study` ends with the line
+`studied: nobody calls this object`, followed by `(1 of 3 copies)` when only
+some of its copies are study copies. The marks of its attributes get no
+such line, and the bands and the tally ignore it. The goal logs how many objects
 fall in each band. An object that `answers.xml` says nothing of stops the
 report with an error that names its locator.
 

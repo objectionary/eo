@@ -22,7 +22,8 @@ import java.util.TreeSet;
  * (design doc 5.1, {@code eo-inference-answers.md}).
  *
  * <p>One {@code <o>} per place, sorted by its locator code point by code
- * point, with the number of copies that say something there, the sets of
+ * point, with the number of copies that say something there, how many of
+ * the copies of a formation are study copies when any are, the sets of
  * labels they say, the most copies first, what the copies of a formation
  * reduce to, what the copies a {@code ^} or the object a name is read off
  * holds reduce to when that is not what it names, and the void an argument
@@ -95,6 +96,9 @@ public final class Answers {
         final StringBuilder line = new StringBuilder(128)
             .append("  <o loc=\"").append(Answers.quoted(place))
             .append("\" copies=\"").append(Answers.sum(sets)).append('"');
+        if (told.study().containsKey(place)) {
+            line.append(" study=\"").append(told.study().get(place)).append('"');
+        }
         if (told.lands().containsKey(place)) {
             line.append(" lands=\"").append(Answers.quoted(told.lands().get(place)))
                 .append('"');

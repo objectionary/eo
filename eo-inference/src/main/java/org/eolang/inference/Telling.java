@@ -25,7 +25,8 @@ import java.util.TreeSet;
  * its own name when its {@code @} gives no name, or gives D or a hidden
  * name, and a copy whose {@code @} gives only T is named T. A formation
  * and its voids are told too, from the copies of it that count: what each
- * void holds, and what Java gives. Whatever the engine cannot name is an
+ * void holds, what Java gives, and how many of those copies are copies a
+ * stop keeps. Whatever the engine cannot name is an
  * unknown of one of four kinds: {@code ?unknown-empty}, a void nobody fills
  * in a copy a call made, said only on that void's own row, since a read of
  * it is T; {@code ?unknown-study}, a void nobody fills in a copy that stands
@@ -108,15 +109,19 @@ final class Telling {
             );
         }
         final Map<String, Map<String, Integer>> groups = new LinkedHashMap<>(0);
+        final Map<String, Integer> study = new HashMap<>(0);
         for (final int copy : copies) {
             this.group(copy, groups, holders);
+            if (this.state.kept(copy)) {
+                study.merge(this.world.value(copy).form(), 1, Integer::sum);
+            }
         }
         for (final Map.Entry<String, Map<String, Integer>> entry : groups.entrySet()) {
             sets.putIfAbsent(entry.getKey(), entry.getValue());
         }
         final Map<String, Map<String, Integer>> reduction = this.reduction();
         reduction.putAll(holders);
-        return new Told(sets, reduction, this.state.lands());
+        return new Told(sets, reduction, this.state.lands(), study);
     }
 
     private boolean counted(final int ctx) {
