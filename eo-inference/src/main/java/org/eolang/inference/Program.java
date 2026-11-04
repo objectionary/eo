@@ -277,10 +277,10 @@ final class Program {
     }
 
     private String held(final String place) {
-        final List<Head> heads = this.heads(place);
+        final List<Head> chain = this.heads(place);
         String found = "";
-        if (heads.size() == 1 && "ref".equals(heads.get(0).tag())) {
-            found = heads.get(0).loc();
+        if (chain.size() == 1 && "ref".equals(chain.get(0).tag())) {
+            found = chain.get(0).loc();
         } else if (!this.starts(place) && this.reads(place)) {
             final Read read = this.read(place);
             final String outer = this.held(read.of());
