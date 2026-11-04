@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A const pipe predecessor must stay above its pipe when the star is lowered.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > main
+    [] > bar1
+      * > c2!
+        [x] >>!
+        | -2 > p4
+
+printed: |
+  [] > main
+    [] > bar1
+      * p4 > c2!
+      [x] >>!
+      | -2 > p4
