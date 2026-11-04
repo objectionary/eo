@@ -10,8 +10,6 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link Rows}.
@@ -119,17 +117,36 @@ final class RowsTest {
         );
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2})
-    void rejectsNullSpanAtConstruction(final int position) {
-        final List<Span> source = new ArrayList<>(
-            List.of(new Span("альфа", 1), new Span("бета", 2), new Span("гамма", 3))
+    @Test
+    void keepsMessageBareWhenSourceIsEmpty() {
+        MatcherAssert.assertThat(
+            "an empty source must leave the message without a source line",
+            new Rows(List.of()).underlined(1, 0, "пусто"),
+            Matchers.equalTo("[1:0] error: 'пусто'")
         );
-        source.set(position, null);
+    }
+
+    @Test
+    void rejectsSingleNullSpanAtConstruction() {
+        final List<Span> source = new ArrayList<>(1);
+        source.add(null);
         Assertions.assertThrows(
             NullPointerException.class,
             () -> new Rows(source),
-            "a null span is not refused when the source rows are copied"
+            "a source containing only a null span must be refused at construction"
+        );
+    }
+
+    @Test
+    void rejectsNullBetweenValidSpansAtConstruction() {
+        final List<Span> source = new ArrayList<>(3);
+        source.add(new Span("альфа", 1));
+        source.add(null);
+        source.add(new Span("гамма", 3));
+        Assertions.assertThrows(
+            NullPointerException.class,
+            () -> new Rows(source),
+            "a null span between valid spans must be refused at construction"
         );
     }
 }
