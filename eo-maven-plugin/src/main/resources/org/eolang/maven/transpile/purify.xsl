@@ -45,14 +45,17 @@
   a void is an object, and "PhSticky" takes an object as a key only when
   it is a number, a string or bytes. A void nobody fills has nothing but
   gaps in its row and does not qualify.
-  The "ρ" a formation declares as "[^ x]" is one of those voids, though its
-  row is not read: the engine names the copy in "^" by what its "@" gives,
-  so the row may say "Φ.number" where "^" holds a decorator of one. A
-  declared "^" holds the formation it is written in, which the locator of
-  the formation tells, and it qualifies when that is "Φ.number",
-  "Φ.string" or "Φ.bytes". That also settles what a body climbing further
-  out reads - "ξ.ρ.ρ" is an attribute of whatever came in as "ρ", and once
-  that is data everything taken from it is decided by those same bytes.
+  The "ρ" a formation declares as "[^ x]" is one of those voids, but its
+  row is not read. That row names the formation of each copy in "^" and
+  keeps what those copies reduce to in a "reduced" beside it. The "^" of
+  a named formation holds the formation it is written in, which the
+  locator of the formation tells, and it qualifies when that is
+  "Φ.number", "Φ.string" or "Φ.bytes". That also settles what a body
+  climbing further out reads - "ξ.ρ.ρ" is an attribute of whatever came
+  in as "ρ", and once that is data everything taken from it is decided by
+  those same bytes. A formation with no name takes the object it goes
+  into as its "^", and its locator points into the call it is written in,
+  so it never qualifies this way.
   2. No object in its body copies anything from the root of the program,
   since such an object is shared by the whole program and its bytes are not
   part of what a caller passes in. The data literals are the exception: the
