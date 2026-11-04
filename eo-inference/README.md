@@ -17,7 +17,11 @@ answered once per copy of the formation around it. Code that nobody calls is
 answered in a study copy, whose voids stay empty. In the end a study copy
 counts only if its formation never got a copy from a call or a read and the
 copy around it counts, while a copy from a call or a read counts wherever the
-call or the read was.
+call or the read was. A call handed only unknowns waits until nothing else
+grows, so that a real value can still come first, and then makes its copy
+with those unknowns in its voids, each of its own kind. So a void of code
+nobody calls stays that unknown down every call it goes through, and a read
+of it never gives T.
 
 ## What it writes
 

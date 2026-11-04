@@ -4,8 +4,9 @@
 # yamllint disable rule:line-length
 # Nobody calls helper, so a stop keeps its copy as written, where x is unknown.
 # The @ of wrap is its void, so wrap x answers that unknown, and the call of box
-# on it waits for a stop (rule b) and then answers box as it is. So the only
-# copy of box is the one app makes, and its item holds a number alone.
+# on it waits for a stop (rule b) and then makes a copy of box with that unknown
+# in item. So box has two copies: the one app makes, whose item holds a number,
+# and the one helper makes, whose item holds the unknown.
 sources:
   helper.eo: |
     [x] > helper
@@ -30,5 +31,6 @@ answers:
   - /answers/o[@loc='Φ.helper.v🌵x']/unknown
   - /answers/o[@loc='Φ.helper.φ.α0' and @lands='v🌵item']/unknown
   - /answers/o[@loc='Φ.helper.φ']/is[@loc='Φ.box']
-  - /answers/o[@loc='Φ.box' and @copies='1']
-  - /answers/o[@loc='Φ.box.v🌵item' and @copies='1']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.box' and @copies='2']
+  - /answers/o[@loc='Φ.box.v🌵item']/set[@copies='1' and count(*)=1]/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.box.v🌵item']/set[@copies='1' and count(*)=1]/unknown[@kind='study']

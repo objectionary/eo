@@ -9,7 +9,7 @@
 # reads off d, so that copy counts and reduces to what its @ gives: the string
 # goes into the k of keep, and the unknown next to it is left out (rule e).
 # Before the string comes, the call waits on the unknown alone (rule b) and
-# then answers first as it is, whose a is empty, so d and k hold T as well.
+# then makes that copy with the unknown in a, so d and k hold the string alone.
 sources:
   os.eo: |
     [] > os
@@ -40,6 +40,6 @@ sources:
     [@] > string
 answers:
   - /answers/o[@loc='Φ.app.d.α0' and @lands='v🌵a' and unknown[@kind='java']]/is[@loc='Φ.string']
-  - /answers/o[@loc='Φ.app.d' and terminator]/is[@loc='Φ.string']
-  - /answers/o[@loc='Φ.keep.v🌵k' and terminator]/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.d' and count(*)=1]/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.keep.v🌵k' and count(*)=1]/is[@loc='Φ.string']
   - /answers[not(o[@loc='Φ.keep.v🌵k']/unknown)]

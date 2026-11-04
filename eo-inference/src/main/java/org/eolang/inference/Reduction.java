@@ -27,6 +27,12 @@ package org.eolang.inference;
  * </ul>
  *
  * @since 0.76.0
+ * @todo #9655:30min Remove rule b's head kept as is, the value of kind
+ *  {@code 'B'} that {@code await()} makes. A call that waited on unknowns
+ *  now makes its copy with them in its voids, so only {@code Rows.stamp()}
+ *  calls {@code await()}, and only on a value of that kind, which nothing
+ *  makes any more. The kind and every check for it, here and in
+ *  {@code Calls}, {@code Reads}, {@code Rows} and {@code Values}, are dead.
  */
 final class Reduction {
 

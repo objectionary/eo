@@ -3,8 +3,8 @@
 ---
 # yamllint disable rule:line-length
 # Nobody calls helper, so a stop keeps its copy as written, where x is
-# unknown. The call of box on it waits for a stop (rule b), and from then on it
-# answers box as it is, so the @ of helper is box.
+# unknown. The call of box on it waits for a stop (rule b), and then makes the
+# copy of box with that unknown in item, so the @ of helper is box.
 sources:
   box.eo: |
     [item] > box
@@ -23,3 +23,4 @@ answers:
   - /answers/o[@loc='Φ.helper.v🌵x' and @copies='1']/unknown
   - /answers/o[@loc='Φ.helper.φ.α0' and @lands='v🌵item']/unknown
   - /answers/o[@loc='Φ.helper.φ']/is[@loc='Φ.box']
+  - /answers/o[@loc='Φ.box.v🌵item' and count(*)=1]/unknown[@kind='study']

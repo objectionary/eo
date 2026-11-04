@@ -3,8 +3,8 @@
 ---
 # yamllint disable rule:line-length
 # Nobody calls shelf, so stuff is unknown, and shelf hands it on to book and to
-# scale. Each call answers its head, book and scale, and pages and weight are
-# unknown.
+# scale. Each call waits for a stop (rule b) and then makes its copy, of book
+# and of scale, with that unknown in pages and in weight.
 sources:
   book.eo: |
     [pages] > book

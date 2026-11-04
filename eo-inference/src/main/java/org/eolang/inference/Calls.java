@@ -22,7 +22,8 @@ import java.util.Set;
  * whole set of its argument, so calls never mix (rule 3). It makes no copy
  * while an argument it binds has nothing yet, the absence rule (4.1). A
  * call on a datum is T, and an argument that holds T goes into its void as
- * T. The rules come in here: b for an argument that holds only unknowns, A
+ * T. The rules come in here: b for an argument that holds only unknowns,
+ * whose copy waits for a stop and then gets those unknowns in its voids, A
  * for a mark, F for a call on what Java made or on a finished shared kind,
  * and call then narrow (3.5) for an object whose {@code @} is one of its
  * voids, once the call fills the last of its empty voids; a call that
@@ -259,13 +260,8 @@ final class Calls {
         final List<String> free = this.world.opened(value);
         final Wish wish = new Wish('b', call.site().place(), call.ctx(), head);
         final Ints out = new Ints();
-        if (this.state.taken(wish)) {
-            out.add(this.state.await(head));
-        }
-        if (this.gapped(call.raw(), free.size())) {
-            if (!this.state.taken(wish)) {
-                this.state.wish(wish);
-            }
+        if (this.gapped(call.raw(), free.size()) && !this.state.taken(wish)) {
+            this.state.wish(wish);
         } else if (!call.lacking(free.size())) {
             final int copy = this.state.copy(
                 new Value(
