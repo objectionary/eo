@@ -37,6 +37,43 @@
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <!--
+  A tuple of N elements is a chain N levels deep, and every sheet after this
+  one walks it once per level, so a long one overflows the stack with no line
+  to report (#9549). It gets the limit R-5.2.7a puts on nesting: the elements
+  of a tuple over the limit are left out, so that the sheets after this one
+  survive to let the error out.
+  -->
+  <xsl:template match="/object">
+    <xsl:variable name="errors" as="element()*">
+      <xsl:for-each select=".//o[@star and count(o[not(@float-up)]) &gt; 256]">
+        <error>
+          <xsl:attribute name="check" select="'stars-to-tuples'"/>
+          <xsl:attribute name="line" select="if (@line) then @line else 0"/>
+          <xsl:attribute name="severity" select="'critical'"/>
+          <xsl:if test="@pos">
+            <xsl:attribute name="pos" select="@pos"/>
+          </xsl:if>
+          <xsl:text>object nested deeper than 256 levels</xsl:text>
+        </error>
+      </xsl:for-each>
+    </xsl:variable>
+    <xsl:copy>
+      <xsl:apply-templates select="(node() except errors)|@*"/>
+      <xsl:if test="exists($errors) or exists(errors)">
+        <errors>
+          <xsl:apply-templates select="errors/error"/>
+          <xsl:copy-of select="$errors"/>
+        </errors>
+      </xsl:if>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="o[@star and count(o[not(@float-up)]) &gt; 256]" priority="1">
+    <o>
+      <xsl:attribute name="base" select="'Φ.tuple.empty'"/>
+      <xsl:apply-templates select="@* except (@star | @base)"/>
+    </o>
+  </xsl:template>
+  <!--
   A pipe predecessor floated up out of a star tuple (@float-up, set by
   "wrap-applications" for #5848) is not one of the tuple's own elements — the
   "| args" pipe that follows it is. It is excluded from the "Φ.tuple" layers
