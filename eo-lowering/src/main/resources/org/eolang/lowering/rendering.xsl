@@ -213,7 +213,7 @@
     </xsl:if>
     <xsl:variable name="argument" select="$formation/ancestor-or-self::o[not(@name)][1]"/>
     <xsl:variable name="named" select="$formation/ancestor-or-self::o[empty($argument) or ancestor::o[. is $argument]]"/>
-    <xsl:sequence select="(tokenize($top, '\.')[last()][exists($argument)], $named/@name ! string(.), 'φ')"/>
+    <xsl:sequence select="(tokenize($top, '\.')[last()][exists($argument)], $named/@name ! eo:spelled(string(.)), 'φ')"/>
   </xsl:function>
   <!-- The simple name of the class of the atom. -->
   <xsl:function name="eo:class" as="xs:string">
