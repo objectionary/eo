@@ -81,12 +81,19 @@
                   index
                   4
                   b2cont.and
-                    b3cont.and b1range
+                    fourth.and quartet
                   accum
                 T
                   "Unknown byte format (%x), can't recognize character".printf
                     * lead
-      if. > b1range
+      eq. > fourth
+        and.
+          text.text.as-bytes.slice
+            index.plus 3
+            1
+          C0-
+        80-
+      if. > quartet
         lead.eq F0-
         or.
           eq.
@@ -108,13 +115,6 @@
                 lead.eq F3-
             b1cont
             false
-      eq. > b3cont
-        and.
-          text.text.as-bytes.slice
-            index.plus 3
-            1
-          C0-
-        80-
     | 0 0
   if. > [^text idx csize valid accum] >> step
     gt.
