@@ -2,10 +2,10 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# Nobody calls both, so it is studied in each copy of choice, with x open.
+# Nobody calls both, so it is studied in each copy of choice, with x unknown.
 # ^.grip x lands in the left of the arm yes or no puts into pick, T lands in
-# its right, and only x lands in the size of grip. With yes, both cannot be
-# told, since x is open; with no, it is T.
+# its right, and only x lands in the size of grip. With yes, both is unknown,
+# since x is; with no, it is T.
 sources:
   choice.eo: |
     [pick] > choice
@@ -33,10 +33,10 @@ sources:
     [@] > string
 answers:
   - /answers/o[@loc='Φ.choice.both' and @copies='2']/is[@loc='Φ.choice.both']
-  - /answers/o[@loc='Φ.choice.both.v🌵x']/open
+  - /answers/o[@loc='Φ.choice.both.v🌵x']/unknown
   - /answers/o[@loc='Φ.choice.both.φ.α0' and @lands='v🌵left']
   - /answers/o[@loc='Φ.choice.both.φ.α1' and @lands='v🌵right']/terminator
-  - /answers/o[@loc='Φ.choice.both.φ.α0.α0' and @lands='v🌵size']/open
+  - /answers/o[@loc='Φ.choice.both.φ.α0.α0' and @lands='v🌵size']/unknown
   - /answers[not(o[@lands='v🌵size' and @loc!='Φ.choice.both.φ.α0.α0'])]
   - /answers/o[@loc='Φ.choice.both.φ']/set[@copies='1']/unknown
   - /answers/o[@loc='Φ.choice.both.φ']/set[@copies='1']/terminator

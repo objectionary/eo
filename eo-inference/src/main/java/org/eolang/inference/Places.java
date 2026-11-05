@@ -11,8 +11,9 @@ import java.util.BitSet;
  *
  * <p>A formation written at the place is a fresh copy born there, with no
  * {@code ρ}: the {@code ^} it declares stays empty until it is read off a
- * holder or Java fills it, and one that declares no {@code ^} has none, so
- * the copy around never becomes its {@code ρ} (#9785). A chain starts
+ * holder, a call puts it into a void, or Java fills it, and one that
+ * declares no {@code ^} has none, so the copy around never becomes its
+ * {@code ρ} (#9785, #9655). A chain starts
  * from a datum, T, {@code Φ}, or the copy of the formation it names, found
  * by walking up the {@code ρ} rows from the copy around. A read reads its
  * name off every value of what it reads it off, and uses each of them, as

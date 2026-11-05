@@ -8,7 +8,7 @@
 # its ^. With yes, the @ of made is the grip that ^.grip 04- makes, whose @ is
 # its size, bytes. With no, it is T. made calls grip, so grip gets no study
 # copy: its one copy is the one ^.grip 04- makes, and its size and its @ are
-# bytes, with nothing open.
+# bytes, with nothing unknown.
 sources:
   choice.eo: |
     [pick] > choice
@@ -42,4 +42,4 @@ answers:
   - /answers/o[@loc='Φ.choice.grip' and @copies='1']
   - /answers/o[@loc='Φ.choice.grip.v🌵size']/is[@loc='Φ.bytes']
   - /answers/o[@loc='Φ.choice.grip.φ']/is[@loc='Φ.bytes']
-  - /answers[not(o[starts-with(@loc, 'Φ.choice.grip')]//open)]
+  - /answers[not(o[starts-with(@loc, 'Φ.choice.grip')]//unknown)]

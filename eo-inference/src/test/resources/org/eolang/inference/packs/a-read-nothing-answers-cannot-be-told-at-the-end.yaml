@@ -19,5 +19,5 @@ answers:
   - /answers/o[@loc='Φ.loop.φ.ρ']/is[@loc='Φ.loop']
   - /answers/o[@loc='Φ.loop.value.ρ']/is[@loc='Φ.loop']
   - /answers[not(o[@loc='Φ.loop.φ']//is)]
-  - /answers/o[@loc='Φ.loop.φ']/unknown
-  - /answers/o[@loc='Φ.loop.value']/unknown
+  - /answers/o[@loc='Φ.loop.φ']/unknown[@kind='loop']
+  - /answers/o[@loc='Φ.loop.value']/unknown[@kind='loop']

@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 # close is an atom that says it gives a number, so posix.close 3 is a number
 # and eq is read off number. Nobody calls the return that posix declares, so
-# its voids stay open.
+# its voids are unknown.
 sources:
   posix.eo: |
     [name args] > posix
@@ -29,5 +29,5 @@ answers:
   - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.number']
   - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.number.eq']
   - /answers/o[@loc='Φ.posix.return' and @copies='1']
-  - /answers/o[@loc='Φ.posix.return.v🌵code']/open
-  - /answers/o[@loc='Φ.posix.return.v🌵output']/open
+  - /answers/o[@loc='Φ.posix.return.v🌵code']/unknown
+  - /answers/o[@loc='Φ.posix.return.v🌵output']/unknown

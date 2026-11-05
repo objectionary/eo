@@ -6,8 +6,8 @@
 # calls helper with 7, so helper waits for user, and deep, inside helper, waits
 # for helper. A stop studies user inside the one copy of box, and its walk makes
 # the copy of helper whose b is 7. The next stop studies deep inside that copy.
-# So helper and deep have one copy each, b is a number with nothing open, and
-# only c of deep is open.
+# So helper and deep have one copy each, b is a number with nothing unknown,
+# and only c of deep is unknown.
 sources:
   box.eo: |
     [k] > box
@@ -29,7 +29,7 @@ sources:
 answers:
   - /answers/o[@loc='Φ.box.helper' and @copies='1']
   - /answers/o[@loc='Φ.box.helper.v🌵b']/is[@loc='Φ.number']
-  - /answers[not(o[@loc='Φ.box.helper.v🌵b' or @loc='Φ.box.helper.φ']//open)]
+  - /answers[not(o[@loc='Φ.box.helper.v🌵b' or @loc='Φ.box.helper.φ']//unknown)]
   - /answers/o[@loc='Φ.box.helper.deep' and @copies='1']
   - /answers/o[@loc='Φ.box.helper.deep.ρ']/is[@loc='Φ.box.helper']
-  - /answers/o[@loc='Φ.box.helper.deep.v🌵c' and @copies='1']/open
+  - /answers/o[@loc='Φ.box.helper.deep.v🌵c' and @copies='1']/unknown

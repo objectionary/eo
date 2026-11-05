@@ -31,15 +31,23 @@ import org.w3c.dom.Node;
  *
  * <p>Each element is read back into the engine's own label:
  * {@code <is loc="Φ.number"/>} into {@code Φ.number}, {@code <data/>} into
- * {@code D}, {@code <terminator/>} into {@code T}, {@code <unknown/>} into
- * {@code ?can't-tell}, {@code <open/>} into {@code ?open-void} or, when Java
- * fills it, {@code ?open-void-atom}, and {@code <fails name="x"/>} into
- * {@code !x}, or {@code !only-java-fills-ρ} when only Java fills the
- * {@code ^}.</p>
+ * {@code D}, {@code <terminator/>} into {@code T},
+ * {@code <unknown kind="study"/>} into {@code ?unknown-study}, the same for
+ * each of the four kinds, {@code empty}, {@code study}, {@code java} and
+ * {@code loop}. A missing attribute is T, and the {@code ^} of a formation
+ * handed to an atom is that atom, so the engine writes no failure, and a
+ * {@code <fails>} stops the report. The {@code study} of the row of a
+ * formation says how many of its copies are study copies, and a row with
+ * none has no {@code study}.</p>
  *
  * @since 0.76.0
  */
 final class Table {
+
+    /**
+     * The kinds of an unknown.
+     */
+    private static final Set<String> KINDS = Set.of("empty", "study", "java", "loop");
 
     /**
      * The document {@code answers.xml}.
@@ -58,6 +66,12 @@ final class Table {
     private final List<Map<String, Map<Set<String>, Integer>>> read;
 
     /**
+     * The study copies of each formation that has any, read on the first
+     * question and kept for the rest.
+     */
+    private final List<Map<String, Integer>> studies;
+
+    /**
      * Ctor.
      *
      * @param answers The document {@code answers.xml}
@@ -65,6 +79,7 @@ final class Table {
     Table(final Xnav answers) {
         this.answers = answers;
         this.read = new ArrayList<>(1);
+        this.studies = new ArrayList<>(1);
     }
 
     /**
@@ -105,6 +120,27 @@ final class Table {
             .filter(set -> !Collections.disjoint(set.getKey(), labels))
             .mapToInt(Map.Entry::getValue)
             .sum();
+    }
+
+    /**
+     * How many copies of the formation are study copies.
+     *
+     * @param place The locator of the formation
+     * @return The study copies, none when its row names none
+     */
+    int study(final String place) {
+        if (this.studies.isEmpty()) {
+            this.studies.add(
+                this.answers.element("answers").elements(Filter.withName("o"))
+                    .map(Noted::new)
+                    .filter(row -> !row.says("study").isEmpty()).collect(
+                        Collectors.toMap(
+                            row -> row.says("loc"), row -> Integer.parseInt(row.says("study"))
+                        )
+                    )
+            );
+        }
+        return this.studies.get(0).getOrDefault(place, 0);
     }
 
     private Map<Set<String>, Integer> sets(final String place) {
@@ -152,10 +188,6 @@ final class Table {
         final String found;
         if ("is".equals(tag)) {
             found = noted.says("loc");
-        } else if ("fails".equals(tag)) {
-            found = Table.failed(noted);
-        } else if ("open".equals(tag)) {
-            found = Table.opened(noted);
         } else if ("unknown".equals(tag)) {
             found = Table.unknown(noted);
         } else if ("data".equals(tag)) {
@@ -170,33 +202,16 @@ final class Table {
         return found;
     }
 
-    private static String failed(final Noted noted) {
-        final String found;
-        if ("java".equals(noted.says("by"))) {
-            found = "!only-java-fills-ρ";
-        } else {
-            found = String.format("!%s", noted.says("name"));
-        }
-        return found;
-    }
-
-    private static String opened(final Noted noted) {
-        final String found;
-        if ("java".equals(noted.says("by"))) {
-            found = "?open-void-atom";
-        } else {
-            found = "?open-void";
-        }
-        return found;
-    }
-
     private static String unknown(final Noted noted) {
-        final String found;
-        if (noted.says("why").isEmpty()) {
-            found = "?can't-tell";
-        } else {
-            found = String.format("?%s", noted.says("why"));
+        final String kind = noted.says("kind");
+        if (!Table.KINDS.contains(kind)) {
+            throw new IllegalArgumentException(
+                String.format(
+                    "answers.xml has an unknown of kind '%s', which the report does not know",
+                    kind
+                )
+            );
         }
-        return found;
+        return String.format("?unknown-%s", kind);
     }
 }

@@ -3,8 +3,8 @@
 ---
 # yamllint disable rule:line-length
 # Nothing in EO calls status, so the pool of its code stays empty and a stop
-# decides Java alone fills it: the code read off what check returns is an
-# open void that Java fills.
+# decides Java alone fills it: the code read off what check returns is
+# unknown, filled by Java, and no place answers open.
 sources:
   os.eo: |
     [] > os
@@ -21,6 +21,7 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.os.status.v🌵code']/open[@by='java']
+  - /answers/o[@loc='Φ.os.status.v🌵code']/unknown[@kind='java']
   - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.os.status']
-  - /answers/o[@loc='Φ.app.φ']/open[@by='java']
+  - /answers/o[@loc='Φ.app.φ']/unknown[@kind='java']
+  - /answers[not(//open)]

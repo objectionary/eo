@@ -22,12 +22,14 @@ import java.util.TreeSet;
  * (design doc 5.1, {@code eo-inference-answers.md}).
  *
  * <p>One {@code <o>} per place, sorted by its locator code point by code
- * point, with the number of copies that say something there, the sets of
+ * point, with the number of copies that say something there, how many of
+ * the copies of a formation are study copies when any are, the sets of
  * labels they say, the most copies first, what the copies of a formation
- * reduce to, and the void an argument lands in. With one set its labels sit
- * right under {@code <o>}. The text is written by hand, one element per line
- * and two spaces per level, so that it is the same bytes the Python engine
- * wrote.</p>
+ * reduce to, what the copies a {@code ^} or the object a name is read off
+ * holds reduce to when that is not what it names, and the void an argument
+ * lands in. With one set its labels sit right under {@code <o>}. The text
+ * is written by hand, one element per line and two spaces per level, so
+ * that it is the same bytes the Python engine wrote.</p>
  *
  * @since 0.76.0
  */
@@ -44,10 +46,10 @@ public final class Answers {
     private static final Map<String, String> FIXED = Map.of(
         "D", "<data/>",
         "T", "<terminator/>",
-        "?can't-tell", "<unknown/>",
-        "?open-void", "<open/>",
-        "?open-void-atom", "<open by=\"java\"/>",
-        Telling.ONLY_JAVA, "<fails name=\"ρ\" by=\"java\"/>"
+        "?unknown-empty", "<unknown kind=\"empty\"/>",
+        "?unknown-study", "<unknown kind=\"study\"/>",
+        "?unknown-java", "<unknown kind=\"java\"/>",
+        "?unknown-loop", "<unknown kind=\"loop\"/>"
     );
 
     /**
@@ -94,6 +96,9 @@ public final class Answers {
         final StringBuilder line = new StringBuilder(128)
             .append("  <o loc=\"").append(Answers.quoted(place))
             .append("\" copies=\"").append(Answers.sum(sets)).append('"');
+        if (told.study().containsKey(place)) {
+            line.append(" study=\"").append(told.study().get(place)).append('"');
+        }
         if (told.lands().containsKey(place)) {
             line.append(" lands=\"").append(Answers.quoted(told.lands().get(place)))
                 .append('"');
@@ -153,7 +158,8 @@ public final class Answers {
     }
 
     private static String element(final String label) {
-        if (label.charAt(0) == '?' && !Answers.FIXED.containsKey(label)) {
+        if ((label.charAt(0) == '?' || label.charAt(0) == '!')
+            && !Answers.FIXED.containsKey(label)) {
             throw new IllegalStateException(
                 String.format("%s is a mark answers.xml has no element for", label)
             );
@@ -161,8 +167,6 @@ public final class Answers {
         final String elem;
         if (Answers.FIXED.containsKey(label)) {
             elem = Answers.FIXED.get(label);
-        } else if (label.charAt(0) == '!') {
-            elem = String.format("<fails name=\"%s\"/>", Answers.quoted(label.substring(1)));
         } else {
             elem = String.format("<is loc=\"%s\"/>", Answers.quoted(label));
         }

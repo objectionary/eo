@@ -60,12 +60,12 @@ final class ReductionTest {
     }
 
     @Test
-    void reducesUnknownArgumentToOneCantTell(@Mktmp final Path temp) throws IOException {
-        final World world = ReductionTest.world(temp);
+    void keepsTheKindOfEveryUnknownGoingIntoAVoid(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
-            "every unknown going into a void must be one can't tell, but it wasnt",
-            new Settled(world).state().reduced(new int[] {Values.GAP, world.unknown("odd")}),
-            Matchers.equalTo(new int[] {world.unknown("can't tell")})
+            "every unknown going into a void must keep its kind, but it didnt",
+            new Settled(ReductionTest.world(temp)).state()
+                .reduced(new int[] {Values.JGAP, Values.GAP}),
+            Matchers.equalTo(new int[] {Values.GAP, Values.JGAP})
         );
     }
 

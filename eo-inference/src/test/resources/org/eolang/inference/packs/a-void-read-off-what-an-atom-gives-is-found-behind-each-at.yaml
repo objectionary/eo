@@ -6,7 +6,7 @@
 # step or a number. pick has same next to its @, so it is no bare wrapper, and
 # pick 7 in maker is a pick whose m is 7. A step has no m, so m is read off
 # its @, the pass of that maker, and gives the number in m. The alternative 0
-# is a number, and m read off it fails.
+# is a number, and m read off it is T.
 sources:
   pick.eo: |
     [val] > pick
@@ -49,4 +49,5 @@ answers:
   - /answers/o[@loc='Φ.step.φ']/is[@loc='Φ.pick']
   - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.number']
   - /answers/o[@loc='Φ.app.held.α1' and @lands='v🌵alternative']/is[@loc='Φ.number']
-  - /answers/o[@loc='Φ.app.φ']/fails[@name='data.m']
+  - /answers/o[@loc='Φ.app.φ']/terminator
+  - /answers[not(o[@loc='Φ.app.φ']/fails)]

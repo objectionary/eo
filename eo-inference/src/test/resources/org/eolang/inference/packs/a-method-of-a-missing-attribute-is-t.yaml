@@ -2,9 +2,8 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# The program has no nope, so nope read off Φ fails. times read off that
-# cannot be told, and neither can the @ of app. Whether a method of a
-# failing read should be T instead is still open (#9654).
+# The program has no nope, so nope read off Φ is T. times read off T is T
+# too, and so is the @ of app (#9654).
 sources:
   app.eo: |
     [] > app
@@ -17,6 +16,5 @@ sources:
     [@] > string
 answers:
   - /answers/o[@loc='Φ.app.φ.ρ.ρ']/is[@loc='Φ']
-  - /answers/o[@loc='Φ.app.φ.ρ']/fails[@name='Φ.nope']
-  - /answers/o[@loc='Φ.app.φ']/unknown
-  - /answers[not(o[@loc='Φ.app.φ']/is)]
+  - /answers/o[@loc='Φ.app.φ.ρ' and count(*)=1]/terminator
+  - /answers/o[@loc='Φ.app.φ' and count(*)=1]/terminator

@@ -5,7 +5,7 @@
 # This choice has nothing but pick and a @ that gives it, unlike the bool of
 # eo-runtime, which has and, not and or next to its if. So choice is a
 # decorator: yes and no reduce through it to the arm each hands in. The @ of
-# that arm reads a void nobody fills, so the void and the @ are both open.
+# that arm reads a void nobody fills, so the void and the @ are both unknown.
 sources:
   choice.eo: |
     [pick] > choice
@@ -33,9 +33,9 @@ sources:
 answers:
   - /answers/o[@loc='Φ.yes.φ']/is[@loc='Φ.yes.φ.α0']
   - /answers/o[@loc='Φ.no.φ']/is[@loc='Φ.no.φ.α0']
-  - /answers/o[@loc='Φ.yes.φ.α0.a🌵4-6']/open
-  - /answers/o[@loc='Φ.no.φ.α0.a🌵5-6']/open
-  - /answers/o[@loc='Φ.yes']/reduced/is[@loc='Φ.yes.φ.α0']
-  - /answers/o[@loc='Φ.no']/reduced/is[@loc='Φ.no.φ.α0']
-  - /answers/o[@loc='Φ.yes.φ.α0.φ']/open
-  - /answers/o[@loc='Φ.no.φ.α0.φ']/open
+  - /answers/o[@loc='Φ.yes.φ.α0.a🌵4-6']/unknown
+  - /answers/o[@loc='Φ.no.φ.α0.a🌵5-6']/unknown
+  - /answers/o[@loc='Φ.choice']/reduced/set/is[@loc='Φ.yes.φ.α0']
+  - /answers/o[@loc='Φ.choice']/reduced/set/is[@loc='Φ.no.φ.α0']
+  - /answers/o[@loc='Φ.yes.φ.α0.φ']/unknown
+  - /answers/o[@loc='Φ.no.φ.α0.φ']/unknown

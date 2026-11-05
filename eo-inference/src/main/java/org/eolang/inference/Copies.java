@@ -135,7 +135,11 @@ final class Copies {
     /**
      * A copy with nothing in its voids, and its {@code ρ} only if given:
      * none, Java's own, or a value, which it keeps only when its formation
-     * declares {@code ^}.
+     * declares {@code ^}. A formation with no name of its own that declares
+     * {@code ^} takes as its {@code ^} the object it goes into and nothing
+     * else, so unless Java makes it, its copy has that {@code ^} bound and
+     * empty whatever is given, and the call that puts it into a void fills
+     * it (#9655).
      *
      * @param form The formation
      * @param born Where it is born, with its tag
@@ -144,10 +148,12 @@ final class Copies {
      */
     int fresh(final String form, final Site born, final int rho) {
         final int made;
-        if (rho == Copies.NO_RHO) {
-            made = this.copy(new Value(form, born, 0L), Map.of());
-        } else if (rho == Values.JAVA) {
+        if (rho == Values.JAVA) {
             made = this.java(form);
+        } else if (this.world.form(form).applied()) {
+            made = this.copy(new Value(form, born, Formation.RHO), Map.of());
+        } else if (rho == Copies.NO_RHO) {
+            made = this.copy(new Value(form, born, 0L), Map.of());
         } else {
             made = this.copy(new Value(form, born, Formation.RHO), Map.of("ρ", new int[] {rho}));
         }

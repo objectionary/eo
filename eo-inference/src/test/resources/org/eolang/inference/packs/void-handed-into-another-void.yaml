@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# Nobody calls shelf, so stuff is an open void, and so is the weight read off
-# it. shelf hands stuff on to book, whose pages stays open as well, and the call
+# Nobody calls shelf, so stuff is unknown, and so is the weight read off it.
+# shelf hands stuff on to book, whose pages is unknown as well, and the call
 # answers book.
 sources:
   book.eo: |
@@ -20,8 +20,8 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.shelf.v🌵stuff']/open
-  - /answers/o[@loc='Φ.shelf.w']/open
-  - /answers/o[@loc='Φ.shelf.φ.α0' and @lands='v🌵pages']/open
-  - /answers/o[@loc='Φ.book.v🌵pages']/open
+  - /answers/o[@loc='Φ.shelf.v🌵stuff']/unknown
+  - /answers/o[@loc='Φ.shelf.w']/unknown
+  - /answers/o[@loc='Φ.shelf.φ.α0' and @lands='v🌵pages']/unknown
+  - /answers/o[@loc='Φ.book.v🌵pages']/unknown
   - /answers/o[@loc='Φ.shelf.φ']/is[@loc='Φ.book']

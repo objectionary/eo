@@ -6,7 +6,7 @@
 # the number its @ gives: only the call that fills the last empty void
 # answers what goes into the void of @. Nobody reads half, so that copy does
 # not count and is named by its formation, and pair is walked as written,
-# with left and right both open.
+# with left and right both unknown.
 sources:
   app.eo: |
     [] > app
@@ -27,5 +27,5 @@ answers:
   - /answers[not(o[@loc='Φ.app.half']/is[@loc='Φ.number'])]
   - /answers[not(o[@loc='Φ.pair.v🌵left']/is[@loc='Φ.number'])]
   - /answers/o[@loc='Φ.pair' and @copies='1']/reduced/is[@loc='Φ.pair']
-  - /answers/o[@loc='Φ.pair.v🌵left']/open
-  - /answers/o[@loc='Φ.pair.v🌵right']/open
+  - /answers/o[@loc='Φ.pair.v🌵left']/unknown
+  - /answers/o[@loc='Φ.pair.v🌵right']/unknown

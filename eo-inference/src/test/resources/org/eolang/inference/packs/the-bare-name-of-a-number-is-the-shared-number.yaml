@@ -19,5 +19,5 @@ sources:
     [@] > string
 answers:
   - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.number']
-  - /answers[not(o[@loc='Φ.number.φ']//open)]
+  - /answers[not(o[@loc='Φ.number.φ']//unknown)]
   - /answers/o[@loc='Φ.number.plus.ρ']/is[@loc='Φ.number']

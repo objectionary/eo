@@ -1,0 +1,34 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nothing in EO fills the code of the status that check returns, so a stop
+# decides Java alone fills it. app hands that code to box, whose call waits
+# for a stop (rule b) and then makes the copy of box with the unknown in item.
+# So item holds the unknown only Java fills, and reading it gives that unknown,
+# not T.
+sources:
+  os.eo: |
+    [] > os
+      [] > check /Q.os.status
+      [code] > status
+        code > @
+  box.eo: |
+    [item] > box
+      item > held
+      42 > @
+  app.eo: |
+    [] > app
+      box os.check.code > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.os.status.v🌵code']/unknown[@kind='java']
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵item' and count(*)=1]/unknown[@kind='java']
+  - /answers/o[@loc='Φ.box.v🌵item' and count(*)=1]/unknown[@kind='java']
+  - /answers/o[@loc='Φ.box.held' and count(*)=1]/unknown[@kind='java']
+  - /answers[not(o[starts-with(@loc, 'Φ.box')]//terminator)]

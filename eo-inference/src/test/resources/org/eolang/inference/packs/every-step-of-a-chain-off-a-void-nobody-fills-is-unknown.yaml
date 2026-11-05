@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# Nobody calls clock, so x is an open void, and each step of the chain read off
-# it, seconds and then times, gets a place of its own and is an open void too.
+# Nobody calls clock, so x is unknown, and each step of the chain read off it,
+# seconds and then times, gets a place of its own and is unknown too.
 sources:
   clock.eo: |
     [x] > clock
@@ -15,6 +15,6 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.clock.v🌵x']/open
-  - /answers/o[@loc='Φ.clock.φ.ρ']/open
-  - /answers/o[@loc='Φ.clock.φ']/open
+  - /answers/o[@loc='Φ.clock.v🌵x']/unknown
+  - /answers/o[@loc='Φ.clock.φ.ρ']/unknown
+  - /answers/o[@loc='Φ.clock.φ']/unknown

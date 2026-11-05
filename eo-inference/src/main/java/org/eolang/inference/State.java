@@ -327,6 +327,23 @@ final class State {
     }
 
     /**
+     * Whether a study copy does not count once the walk is over.
+     *
+     * @param num The copy
+     * @return TRUE if it does not
+     */
+    boolean retired(final int num) {
+        return this.population.retired(num);
+    }
+
+    /**
+     * Decide, once the walk is over, which study copies still count.
+     */
+    void conclude() {
+        this.population.conclude();
+    }
+
+    /**
      * Give each formation stop w picked its study copies, or keep its copy
      * as written.
      *
@@ -345,25 +362,6 @@ final class State {
      */
     void called(final int num, final List<String> types, final Site site) {
         this.population.called(num, types, site);
-    }
-
-    /**
-     * Note a value handed to an atom.
-     *
-     * @param num The value
-     */
-    void handed(final int num) {
-        this.population.handed(num);
-    }
-
-    /**
-     * Whether only Java fills the {@code ρ} of a copy handed to an atom.
-     *
-     * @param num The copy
-     * @return TRUE if only Java does
-     */
-    boolean handedToJava(final int num) {
-        return this.population.handedToJava(num);
     }
 
     /**
@@ -453,7 +451,7 @@ final class State {
     }
 
     /**
-     * The values of an argument, reduced: unknowns as one "can't tell".
+     * The values of an argument, reduced, each unknown kept as it is.
      *
      * @param set The values, as worked out
      * @return The values reduced, in the order of their numbers
@@ -570,7 +568,7 @@ final class State {
      * @param copy The copy
      * @param name The void
      * @param site The site of the read, under the tag of the reader
-     * @return What it holds, the decided open void too, nothing while it
+     * @return What it holds, the decided unknown too, nothing while it
      *  waits
      */
     Ints read(final int copy, final String name, final Site site) {
@@ -620,8 +618,9 @@ final class State {
     }
 
     /**
-     * Mark the reads with no answer, keep aside what holds a decided open
-     * void, and make it a plain one everywhere else.
+     * Tell which study copies no longer count, mark the reads with no
+     * answer, keep aside what holds a decided unknown, and make it a plain
+     * one everywhere else.
      */
     void step() {
         this.course.step();

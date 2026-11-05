@@ -22,14 +22,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class ReadsTest {
 
     @Test
-    void failsReadOffDatum(@Mktmp final Path temp) throws IOException {
-        final World world = ReadsTest.world(temp);
+    void readsTerminationOffDatum(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
-            "a read off a datum must fail and say what it reads, but it didnt",
-            world.full(
-                new Settled(world).state().attr(Values.DATA, "size", new Site("Φ.app.φ", "")).get(0)
+            "a read off a datum must be T, but it wasnt",
+            new Settled(ReadsTest.world(temp)).state().attr(
+                Values.DATA, "size", new Site("Φ.app.φ", "")
             ),
-            Matchers.equalTo("X:data.size")
+            Matchers.hasToString(new Ids(Values.TERM).toString())
         );
     }
 
@@ -60,19 +59,16 @@ final class ReadsTest {
     }
 
     @Test
-    void failsReadOfNameCompleteFormationLacks(@Mktmp final Path temp) throws IOException {
+    void readsNameCompleteFormationLacksAsTermination(@Mktmp final Path temp)
+        throws IOException {
         final World world = ReadsTest.world(temp);
         MatcherAssert.assertThat(
-            "a read of a name a complete formation lacks must fail, but it didnt",
-            world.full(
-                new Settled(world).state().attr(
-                    world.intern(
-                        new Value('O', "Φ.cat", "Φ.cat", 0L, "", -1, 0)
-                    ),
-                    "bark", new Site("Φ.app.x", "")
-                ).get(0)
+            "a read of a name a complete formation lacks must be T, but it wasnt",
+            new Settled(world).state().attr(
+                world.intern(new Value('O', "Φ.cat", "Φ.cat", 0L, "", -1, 0)),
+                "bark", new Site("Φ.app.x", "")
             ),
-            Matchers.equalTo("X:Φ.cat.bark")
+            Matchers.hasToString(new Ids(Values.TERM).toString())
         );
     }
 

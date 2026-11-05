@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The formation app writes as the argument of foo has no name, so its ^ is
+# the object it goes into, the copy of foo the call makes, and nothing else:
+# not app, where it is written. The copy written there is that one copy, with
+# foo as its ^, so foo reading it as $.x makes no copy of its own, and the y
+# read off it is 5.
+sources:
+  app.eo: |
+    [] > app
+      foo > @
+        [^]
+          5 > y
+  foo.eo: |
+    [x] > foo
+      $.x.y > z
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵x']
+  - /answers/o[@loc='Φ.app.φ.α0.ρ' and @copies='1' and count(*)=1]/is[@loc='Φ.foo']
+  - /answers/o[@loc='Φ.foo.z.ρ']/is[@loc='Φ.app.φ.α0']
+  - /answers/o[@loc='Φ.foo.z']/is[@loc='Φ.number']

@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 # Nobody calls inner, and its m is filled by no copy, so a stop gives it one
 # study copy inside each of the two copies of outer. Each reads its own n off
-# ^, a number, while m stays open.
+# ^, a number, while m is unknown.
 sources:
   outer.eo: |
     [n] > outer
@@ -29,4 +29,4 @@ answers:
   - /answers/o[@loc='Φ.outer.inner' and @copies='2']
   - /answers/o[@loc='Φ.outer.inner.φ.ρ.ρ']/is[@loc='Φ.outer']
   - /answers/o[@loc='Φ.outer.inner.φ.ρ' and @copies='2']/is[@loc='Φ.number']
-  - /answers/o[@loc='Φ.outer.inner.v🌵m']/open
+  - /answers/o[@loc='Φ.outer.inner.v🌵m']/unknown
