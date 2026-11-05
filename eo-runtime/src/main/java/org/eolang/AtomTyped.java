@@ -8,11 +8,12 @@ package org.eolang;
  * Atom that verifies the type of the object it computes.
  *
  * <p>It dispatches the wrapped atom's lambda safely (through {@link AtomSafe})
- * and then checks that the {@code forma} of the computed object equals the type
- * declared for the atom in EO (the {@code /Q.foo} return-type suffix). A
- * mismatch means the atom broke its declared contract, so an {@link ExFailure}
- * is raised. An empty or generic (type variable {@code A}–{@code F}) declared
- * type leaves the computed object unchecked.</p>
+ * and then checks that the {@code forma} of the computed object fits the type
+ * declared for the atom in EO (the {@code /Q.foo} return-type suffix), as
+ * {@link AtomType} decides: either side of a union fits, and a tree fits by
+ * the forma before its brackets. A mismatch means the atom broke its declared
+ * contract, so an {@link ExFailure} is raised. An empty type or a type
+ * variable, {@code A} to {@code F}, leaves the computed object unchecked.</p>
  *
  * <p>The check is <em>opt-in</em>, controlled by the {@code eo.typing} system
  * property (default {@code false}). It is off by default because an atom with
@@ -55,10 +56,7 @@ public final class AtomTyped implements Atom {
     @Override
     public Phi lambda() {
         final Phi computed = new AtomSafe(this.origin).lambda();
-        if (AtomTyped.ENABLED
-            && !this.declared.isEmpty()
-            && !AtomTyped.generic(this.declared)
-            && !this.declared.equals(computed.forma())) {
+        if (AtomTyped.ENABLED && !new AtomType(this.declared).admits(computed.forma())) {
             throw new ExFailure(
                 "The atom computed an object of type \"%s\", but \"%s\" was declared",
                 computed.forma(),
@@ -66,9 +64,5 @@ public final class AtomTyped implements Atom {
             );
         }
         return computed;
-    }
-
-    private static boolean generic(final String declared) {
-        return declared.matches("[A-F]");
     }
 }
