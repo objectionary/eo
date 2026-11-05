@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/mandatory-as.xsl
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='fopen']/o[@name='λ' and @atom='Φ.a.b.c(Φ.a.b.c,Φ.string)|Φ.bar']
+  - /object/o[@name='fopen']/o[@name='x' and @base='∅' and @type='Φ.pair(Φ.a.b.c)?']
+  - /object/o[@name='fopen']/o[@name='e' and @base='∅' and @args='Φ.a.b.c(A) Φ.a.b.c']
+input: |
+  +alias foo a.b.c
+
+  [] > fopen /foo(foo,string)|bar
+    ? > x /Q.pair(foo)?
+    ? > e /{foo(A) foo}

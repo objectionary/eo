@@ -25,17 +25,17 @@ package org.eolang.parser;
  * void may carry exactly one type annotation (R-3.4.8):</p>
  *
  * <ul>
- * <li>{@code /type} — the void's own type: a concrete forma or a
- * generic type variable ({@code A}–{@code F}), with an optional
- * trailing {@code ?} marking a maybe-terminator value. Emits
- * {@code @type}.</li>
+ * <li>{@code /type} — the void's own type, a {@link TypeTree} of
+ * concrete formas and generic type variables ({@code A}–{@code F}),
+ * with an optional trailing {@code ?} marking a maybe-terminator value.
+ * Emits {@code @type}.</li>
  * <li>{@code /{type …}} — the void is a callback formation;
  * the brace list gives the types of its void parameters (the arguments
- * the atom supplies to that branch). No {@code ?} inside. Emits
- * {@code @args}.</li>
+ * the atom supplies to that branch), each a {@link TypeTree}. No
+ * {@code ?} inside. Emits {@code @args}.</li>
  * </ul>
  *
- * <p>A concrete forma has a leading {@code Q.} promoted to {@code Φ.};
+ * <p>Every {@code Q.} root inside a type is promoted to {@code Φ.};
  * a generic type variable stays verbatim. Both annotation forms are
  * rejected outside an atom.</p>
  *
@@ -167,27 +167,20 @@ final class LnVoid implements Line {
         final int begin = idx;
         while (idx < tail.length()
             && tail.charAt(idx) != ' '
-            && tail.charAt(idx) != '?'
             && tail.charAt(idx) != '/') {
             idx = idx + 1;
         }
-        if (idx == begin) {
+        final String raw = tail.substring(begin, idx);
+        if (raw.isEmpty() || "?".equals(raw)) {
             throw new ParseError(
                 span.line(), span.indent(),
                 "a void type annotation requires a type"
             );
         }
-        final String base = Suffix.typeAtom(
-            tail.substring(begin, idx), span, span.indent() + 1 + begin
-        );
-        final String result;
-        if (idx < tail.length() && tail.charAt(idx) == '?') {
-            LnVoid.endsClean(tail, idx + 1, span);
-            result = base.concat("?");
-        } else {
-            LnVoid.endsClean(tail, idx, span);
-            result = base;
-        }
+        final String result = new TypeTree(
+            raw, tail.substring(idx), span, span.indent() + 1 + begin
+        ).asString();
+        LnVoid.endsClean(tail, idx, span);
         return result;
     }
 
@@ -234,7 +227,11 @@ final class LnVoid implements Line {
             if (out.length() > 0) {
                 out.append(' ');
             }
-            out.append(Suffix.typeAtom(member, span, span.indent() + 1 + offset + idx));
+            out.append(
+                new TypeTree(
+                    member, inside.substring(end), span, span.indent() + 1 + offset + idx
+                ).asString()
+            );
             idx = end + 1;
             if (idx == inside.length()) {
                 throw new ParseError(

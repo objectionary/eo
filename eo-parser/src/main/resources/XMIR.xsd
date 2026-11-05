@@ -84,25 +84,31 @@
     <xs:annotation>
       <xs:appinfo>An atom return-type signature</xs:appinfo>
       <xs:documentation>
-        The declared return type of an atom: a fully qualified name (fqn) of a concrete
-        forma, or a single-letter generic type variable A-F (universally quantified over
-        the atom). Used on the lambda marker (name="λ").
+        The declared return type of an atom, as one string with no spaces. A type is a
+        name or a tree of names: a fully qualified name (fqn) of a concrete forma, or a
+        single-letter generic type variable A-F (universally quantified over the atom);
+        a name may take a bracket list of types for the voids of the object it names,
+        separated by commas, as in "Φ.posix.status-return(Φ.number,Φ.string)"; and "|"
+        joins two types into a union, as in "Φ.true|Φ.false". A type variable takes no
+        brackets. The pattern checks the shape of the names and of the glyphs between
+        them; the parser alone checks that the brackets balance and that a union holds
+        two types at most. Used on the lambda marker (name="λ").
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="[A-F]|⊥|∅|\.(ρ|φ|[a-z][^\s.]*|α[0-9]*)|([Φξ])(\.(ρ|φ|[a-z][^\s.]*|α[0-9]*))*|[a-z][^\s.]*(\.[a-z][^\s.]*)*"/>
+      <xs:pattern value="([A-F]|⊥|∅|\.(ρ|φ|[a-z][^\s.(),|?]*|α[0-9]*)|[Φξ](\.(ρ|φ|[a-z][^\s.(),|?]*|α[0-9]*))*|[a-z][^\s.(),|?]*(\.[a-z][^\s.(),|?]*)*)(([(,|]|\)+[,|])([A-F]|⊥|∅|\.(ρ|φ|[a-z][^\s.(),|?]*|α[0-9]*)|[Φξ](\.(ρ|φ|[a-z][^\s.(),|?]*|α[0-9]*))*|[a-z][^\s.(),|?]*(\.[a-z][^\s.(),|?]*)*))*\)*"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="type-anno">
     <xs:annotation>
       <xs:appinfo>A void attribute type annotation</xs:appinfo>
       <xs:documentation>
-        The declared type of a void attribute of an atom: a concrete forma or a generic
-        type variable A-F, with an optional trailing "?" marking a maybe-⊥ value.
+        The declared type of a void attribute of an atom: a type as in "signature", with
+        an optional trailing "?" marking a maybe-⊥ value, as in "Φ.number|Φ.string?".
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="([A-F]|⊥|∅|([Φξ])(\.(ρ|φ|[a-z][^\s.]*|α[0-9]*))*)[?]?"/>
+      <xs:pattern value="(([A-F]|⊥|∅|\.(ρ|φ|[a-z][^\s.(),|?]*|α[0-9]*)|[Φξ](\.(ρ|φ|[a-z][^\s.(),|?]*|α[0-9]*))*|[a-z][^\s.(),|?]*(\.[a-z][^\s.(),|?]*)*)(([(,|]|\)+[,|])([A-F]|⊥|∅|\.(ρ|φ|[a-z][^\s.(),|?]*|α[0-9]*)|[Φξ](\.(ρ|φ|[a-z][^\s.(),|?]*|α[0-9]*))*|[a-z][^\s.(),|?]*(\.[a-z][^\s.(),|?]*)*))*\)*)[?]?"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="locator">
@@ -215,8 +221,10 @@
         <xs:appinfo>The return-type signature of an atom</xs:appinfo>
         <xs:documentation>
           Used only on the lambda marker (name="λ") of an atom. Holds the
-          fully qualified name of the object that the atom returns, or a
-          single-letter generic type variable A-F (§3.10.10).
+          type of the object that the atom returns (R-3.10.10), as one string:
+          a fully qualified name, a single-letter generic type variable A-F,
+          or a tree of them with brackets and "|", such as
+          "Φ.posix.status-return(Φ.number,Φ.string)" or "Φ.true|Φ.false".
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
@@ -225,8 +233,8 @@
         <xs:appinfo>The declared type of an atom's void attribute</xs:appinfo>
         <xs:documentation>
           Used on a void attribute of an atom (the bare "/type" annotation, R-3.4.8).
-          Holds the FQN of a concrete forma or a generic type variable A-F, with an
-          optional trailing "?" marking a maybe-⊥ value.
+          Holds a type written the same way as in "atom", with an optional
+          trailing "?" marking a maybe-⊥ value, such as "Φ.number|Φ.string?".
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
@@ -235,8 +243,9 @@
         <xs:appinfo>Space-separated argument types of an atom void callback branch</xs:appinfo>
         <xs:documentation>
           Used on a void callback attribute of an atom (the "/{…}" argument list, R-3.4.8).
-          Holds the space-separated types (concrete FQNs or generic variables A-F) of the
-          arguments the atom supplies to that branch.
+          Holds the space-separated types of the arguments the atom supplies to that
+          branch, each written the same way as in "atom" and with no "?", such as
+          "Φ.string Φ.pair(A,Φ.bytes)".
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>

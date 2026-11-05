@@ -72,22 +72,41 @@
     <xsl:variable name="local" select="concat($package, '.', $name)"/>
     <xsl:sequence select="concat('Φ.', if ($package != '' and $local = $known) then $local else $name)"/>
   </xsl:function>
+  <!-- The short names the "+alias" metas declare. -->
+  <xsl:variable name="aliases" select="/object/metas/meta[head='alias']/part[1]"/>
+  <!--
+  Home every bare name of a type: a return in "@atom", a void type in
+  "@type" or a callback list in "@args". A type is a tree such as
+  "Φ.pair(A,number)|bytes", so the brackets, the commas, the "|", a
+  trailing "?" and the spaces between "@args" members stay as they are,
+  and each name between them is homed on its own. A type variable, a
+  dotted name, a special token and an alias name stay as they are. Any
+  other name goes to the current package when "local" is true and the
+  package has it, as "eo:homed" decides, and to the root "Φ" otherwise.
+  -->
+  <xsl:function name="eo:typed" as="xs:string">
+    <xsl:param name="type" as="xs:string"/>
+    <xsl:param name="local" as="xs:boolean"/>
+    <xsl:variable name="parts" as="xs:string*">
+      <xsl:analyze-string select="$type" regex="[^(),|? ]+">
+        <xsl:matching-substring>
+          <xsl:sequence select="if (matches(., '^[A-F]$') or contains(., '.') or .=$eo:phi or .=$eo:program or .=$eo:rho or .=$eo:empty or .=$eo:xi or .=$eo:bottom or .=$aliases) then string(.) else if ($local) then eo:homed(.) else concat('Φ.', .)"/>
+        </xsl:matching-substring>
+        <xsl:non-matching-substring>
+          <xsl:sequence select="string(.)"/>
+        </xsl:non-matching-substring>
+      </xsl:analyze-string>
+    </xsl:variable>
+    <xsl:sequence select="string-join($parts, '')"/>
+  </xsl:function>
   <xsl:template match="o[@base]">
     <xsl:apply-templates select="." mode="with-base"/>
   </xsl:template>
-  <xsl:template match="o[@atom][not(matches(@atom, '^[A-F]$'))]">
-    <xsl:apply-templates select="." mode="with-atom"/>
+  <xsl:template match="o/@atom">
+    <xsl:attribute name="atom" select="eo:typed(., true())"/>
   </xsl:template>
-  <xsl:template match="@args">
-    <xsl:attribute name="args">
-      <xsl:value-of separator=" " select="for $t in tokenize(., ' ') return if (matches($t, '^[A-F]$') or contains($t, '.') or $t=$eo:phi or $t=$eo:program or $t=$eo:rho or $t=$eo:empty or $t=$eo:xi or $t=$eo:bottom or $t=/object/metas/meta[head='alias']/part[1]) then $t else concat('Φ.', $t)"/>
-    </xsl:attribute>
-  </xsl:template>
-  <xsl:template match="@type">
-    <xsl:variable name="opt" select="ends-with(., '?')"/>
-    <xsl:variable name="type" select="if ($opt) then substring(., 1, string-length(.) - 1) else string(.)"/>
-    <xsl:variable name="homed" select="if (matches($type, '^[A-F]$') or contains($type, '.') or $type=$eo:phi or $type=$eo:program or $type=$eo:rho or $type=$eo:empty or $type=$eo:xi or $type=$eo:bottom or $type=/object/metas/meta[head='alias']/part[1]) then $type else concat('Φ.', $type)"/>
-    <xsl:attribute name="type" select="if ($opt) then concat($homed, '?') else $homed"/>
+  <xsl:template match="@args|@type">
+    <xsl:attribute name="{name()}" select="eo:typed(., false())"/>
   </xsl:template>
   <xsl:template match="/object/metas/meta[head='also']/(tail|part)">
     <xsl:apply-templates select="." mode="meta"/>
@@ -115,18 +134,6 @@
     <xsl:copy>
       <xsl:attribute name="base" select="eo:homed(@base)"/>
       <xsl:apply-templates select="node()|@* except @base"/>
-    </xsl:copy>
-  </xsl:template>
-  <xsl:template match="o[not(contains(@atom, '.'))]" mode="with-atom">
-    <xsl:apply-templates select="." mode="atom-no-dots"/>
-  </xsl:template>
-  <xsl:template match="o[@atom!=$eo:phi and @atom!=$eo:program and @atom!=$eo:rho and @atom!=$eo:empty and @atom!=$eo:xi and @atom!=$eo:bottom]" mode="atom-no-dots">
-    <xsl:apply-templates select="." mode="atom-no-specials"/>
-  </xsl:template>
-  <xsl:template match="o[not(@atom=/object/metas/meta[head='alias']/part[1])]" mode="atom-no-specials">
-    <xsl:copy>
-      <xsl:attribute name="atom" select="eo:homed(@atom)"/>
-      <xsl:apply-templates select="node()|@* except @atom"/>
     </xsl:copy>
   </xsl:template>
   <xsl:template match="node()|@*" mode="#all">

@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+errors: 0
+document: |
+  <object author="eo-parser">
+    <o name="app">
+      <o name="foo">
+        <o name="b" base="∅" type="Φ.number|Φ.string?"/>
+        <o name="c" base="∅" type="Φ.pair(A,Φ.bytes|B)"/>
+        <o name="cant" base="∅" args="Φ.a(Φ.b,A)|Φ.c B"/>
+        <o name="λ" atom="Φ.number(Φ.x(Φ.y)|Φ.bytes)"/>
+      </o>
+      <o name="bar">
+        <o name="λ" atom="Φ.posix.status-return(Φ.number,io.text|A)"/>
+      </o>
+    </o>
+  </object>

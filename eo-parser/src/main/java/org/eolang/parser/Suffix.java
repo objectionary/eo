@@ -31,10 +31,11 @@ import java.util.regex.Pattern;
  * <ul>
  * <li>R-3.10.2 — {@code >>} cannot carry {@code /sig}.</li>
  * <li>R-3.10.3 — {@code > name!} cannot combine with {@code /sig}.</li>
- * <li>R-3.10.10 — {@code /sig} must be a non-empty dotted name
- * (optionally rooted at {@code Q}) or a generic type variable
- * {@code A}–{@code F}; a bare {@code /}, {@code /Q} alone, or a
- * {@code ?} optional marker (void-only) is rejected.</li>
+ * <li>R-3.10.10 — {@code /sig} must be a {@link TypeTree}: dotted
+ * names (optionally rooted at {@code Q}) and generic type variables
+ * {@code A}–{@code F}, with brackets and unions; a bare {@code /},
+ * {@code /Q} alone, or a trailing {@code ?} optional marker (void-only)
+ * is rejected.</li>
  * <li>R-6.3.5 — a {@code +>} test name must be a {@code NAME} token,
  * not {@code @} (PHI).</li>
  * </ul>
@@ -175,7 +176,7 @@ final class Suffix {
     /**
      * Atom signature. Empty if no {@code /sig} was present.
      *
-     * @return Signature, with leading {@code Q} promoted to {@code Φ}
+     * @return Signature, with every {@code Q} root promoted to {@code Φ}
      */
     String sig() {
         return this.sig;
@@ -302,8 +303,9 @@ final class Suffix {
 
     /**
      * Classify and promote a single type atom — a generic type variable
-     * or a concrete forma — shared by an atom return signature
-     * (§3.10.10) and a void type annotation (§3.4.8, {@link LnVoid}).
+     * or a concrete forma — one name of the {@link TypeTree} that an atom
+     * return signature (§3.10.10) or a void type annotation (§3.4.8,
+     * {@link LnVoid}) is made of.
      *
      * <p>A single uppercase letter {@code A}–{@code F} is a generic type
      * variable, returned verbatim so that no later pass homes it into
@@ -600,7 +602,7 @@ final class Suffix {
             );
         }
         final String raw = tail.substring(after, idx);
-        if (raw.indexOf('?') >= 0) {
+        if (raw.endsWith("?")) {
             throw new ParseError(
                 span.line(), home + after,
                 "optional marker ? is allowed only on a void attribute"
@@ -612,7 +614,7 @@ final class Suffix {
                 "atom signature requires a name"
             );
         }
-        return Suffix.typeAtom(raw, span, home + after);
+        return new TypeTree(raw, tail.substring(idx), span, home + after).asString();
     }
 
     private static boolean blank(final String tail, final int from) {
