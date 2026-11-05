@@ -9,18 +9,12 @@
 # above U+10FFFF (`F4` with a `90`-`BF` second byte, and `F5`-`FF` leads) are
 # rejected. A sequence that is incomplete or malformed terminates the
 # computation, exactly like `slice` does for a truncated character.
-#
-# @todo #9650:30min Remove `+unlint too-deep-object:93-111` from the
-#  metas below. It hides how deep `reclen` nests the checks of a four-byte
-#  character, up to 14 levels where the lint allows 12. Move those checks
-#  into objects of their own, so that `reclen` nests no deeper.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint too-deep-object:93-111
 +version 0.0.0
 
 [^text] > length
@@ -87,32 +81,40 @@
                   index
                   4
                   b2cont.and
-                    and.
-                      eq.
-                        and.
-                          text.text.as-bytes.slice (index.plus 3) 1
-                          C0-
-                        80-
-                      if.
-                        lead.eq F0-
-                        or.
-                          eq. (b1.and F0-) 90-
-                          eq. (b1.and E0-) A0-
-                        if.
-                          lead.eq F4-
-                          eq. (b1.and F0-) 80-
-                          if.
-                            or. >>
-                              lead.eq F1- >> leadf1
-                              or.
-                                lead.eq F2-
-                                lead.eq F3-
-                            b1cont
-                            false
+                    b3cont.and b1range
                   accum
                 T
                   "Unknown byte format (%x), can't recognize character".printf
                     * lead
+      if. > b1range
+        lead.eq F0-
+        or.
+          eq.
+            b1.and F0-
+            90-
+          eq.
+            b1.and E0-
+            A0-
+        if.
+          lead.eq F4-
+          eq.
+            b1.and F0-
+            80-
+          if.
+            or. >>
+              lead.eq F1- >> leadf1
+              or.
+                lead.eq F2-
+                lead.eq F3-
+            b1cont
+            false
+      eq. > b3cont
+        and.
+          text.text.as-bytes.slice
+            index.plus 3
+            1
+          C0-
+        80-
     | 0 0
   if. > [^text idx csize valid accum] >> step
     gt.
