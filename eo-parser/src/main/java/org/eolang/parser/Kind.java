@@ -118,10 +118,9 @@ enum Kind {
     /**
      * The identity object {@code I} standing alone as a line head
      * (§3.16) — a formation that binds nothing but its own void, so a
-     * pipe may apply arguments to it (R-3.14.2). It is not a
-     * {@link #formation()}: its deeper-indent children are arguments
-     * applied to the identity, not bindings, exactly as under
-     * {@link #HEAD}.
+     * pipe may apply arguments to it (R-3.14.2). It has no direct
+     * deeper-indent children, but a same-indent method may still wrap it
+     * because it is vertically, not horizontally, completed.
      */
     IDENTITY_OBJECT;
 
