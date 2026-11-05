@@ -8,7 +8,7 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@name='foo' and not(@base)][o[@base='∅' and @name='x']]
+  - //o[@name='foo' and not(@base)][o[@base='∅' and @name='v🌵x']]
   - //o[@name='bar' and count(o)=1]
   - //o[@name='bar']/o[@base='Φ.number']
 input: |

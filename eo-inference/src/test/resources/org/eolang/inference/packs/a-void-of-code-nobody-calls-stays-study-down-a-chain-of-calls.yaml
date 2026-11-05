@@ -1,0 +1,34 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls dead, so its size is the void of an object nobody calls. The
+# call reader size waits for a stop (rule b), and then makes the copy of reader
+# with that unknown in count, and dead reads got off that copy. reader hands
+# count to sink, whose call waits too and then puts the same unknown into
+# amount. So each void down the chain holds the study unknown, and none of
+# them reads T.
+sources:
+  dead.eo: |
+    [size] > dead
+      got. > @
+        reader size
+  reader.eo: |
+    [count] > reader
+      sink count > got
+  sink.eo: |
+    [amount] > sink
+      42 > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.dead.v🌵size' and count(*)=1]/unknown[@kind='study']
+  - /answers/o[@loc='Φ.dead.φ.ρ.α0' and @lands='v🌵count' and count(*)=1]/unknown[@kind='study']
+  - /answers/o[@loc='Φ.reader.v🌵count' and count(*)=1]/unknown[@kind='study']
+  - /answers/o[@loc='Φ.reader.got.α0' and @lands='v🌵amount' and count(*)=1]/unknown[@kind='study']
+  - /answers/o[@loc='Φ.sink.v🌵amount' and count(*)=1]/unknown[@kind='study']
+  - /answers[not(//terminator)]

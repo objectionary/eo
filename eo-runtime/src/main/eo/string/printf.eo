@@ -40,6 +40,11 @@
 # text encodes, so it is rejected. `%b` remains the conversion to reach
 # for a boolean either way.
 #
+# A number gets no better answer from `%s`: its bytes are printed as text
+# when they decode as UTF-8, and refused when they do not, so the outcome
+# depends on the value. `42` prints as `@E` and six NUL characters, while `1`
+# terminates. `%d` and `%f` are the conversions to reach for a number.
+#
 # The `%b` conversion refuses an argument whose bytes are neither `00-` nor
 # `FF-`, so a text or a number reaching it terminates instead of being
 # printed as `false`. The coin lands the other way up as well: the
@@ -510,6 +515,11 @@
         "Jeff"
         "X"
 
+  eq. ++> can-print-a-number-as-a-string
+    "@E\u0000\u0000\u0000\u0000\u0000\u0000"
+    "%s".printf
+      * 42
+
   eq. ++> can-print-a-percent-sign
     "%Jeff"
     "%%%s".printf
@@ -525,6 +535,11 @@
     "%d".printf
       * 42.as-i64.as-number
 
+  eq. ++> can-print-an-i64-as-a-string
+    "\u0000\u0000\u0000\u0000\u0000\u0000\u0000*"
+    "%s".printf
+      * 42.as-i64
+
   not. ++> can-print-an-i64-not-as-a-number
     eq.
       "%d".printf
@@ -535,6 +550,16 @@
     "40-45-00-00-00-00-00-00"
     "%x".printf
       * 42.as-bytes
+
+  eq. ++> can-print-the-bytes-of-a-number-that-decode-as-text
+    "@E\u0000\u0000\u0000\u0000\u0000\u0000"
+    "%s".printf
+      * 42
+
+  eq. ++> can-print-the-bytes-of-an-i64-that-decode-as-text
+    "\u0000\u0000\u0000\u0000\u0000\u0000\u0000*"
+    "%s".printf
+      * 42.as-i64
 
   eq. ++> can-round-a-float-carrying-into-the-integer-part
     "1.000000"
@@ -574,6 +599,13 @@
     recovered
       "%f".printf
         * "x"
+      "stopped"
+
+  eq. ++> can-stop-on-an-unsupported-format
+    "stopped"
+    recovered
+      "%o".printf
+        * 8
       "stopped"
 
   eq. ++> can-truncate-a-negative-float-toward-zero
@@ -628,10 +660,6 @@
     "%s"
     * 3.14
 
-  printf. --> stops-on-a-number-as-a-string
-    "%s"
-    * 42
-
   printf. --> stops-on-a-paren-flag-with-s
     "%(s"
     * "Jeff"
@@ -668,17 +696,9 @@
     "%0$s"
     * "first"
 
-  printf. --> stops-on-an-i64-as-a-string
-    "%s"
-    * 42.as-i64
-
   printf. --> stops-on-an-oversized-positional-index
     "%99999999999999999999$s"
     * "Jeff"
-
-  printf. --> stops-on-an-unsupported-format
-    "%o"
-    *
 
   printf. --> stops-on-arguments-that-do-not-match
     "%s%s"

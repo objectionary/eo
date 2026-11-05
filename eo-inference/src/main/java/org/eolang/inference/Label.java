@@ -11,11 +11,10 @@ import java.util.Map;
  *
  * <p>The engine labels what a copy gives: a locator such as
  * {@code Φ.number}, {@code D} for a datum, {@code T} for an error, a mark
- * that starts with {@code ?} when it cannot name anything, and one that
- * starts with {@code !} when a read fails. A page lists them under a mark,
- * and the reader is given words in place of the marks and the bare name in
- * place of a read that fails, so each label comes with a kind, which says
- * how a page draws it, and the words it is drawn with.</p>
+ * that starts with {@code ?} when it cannot name anything. A page lists
+ * them under a mark, and the reader is given words in place of the marks,
+ * so each label comes with a kind, which says how a page draws it, and the
+ * words it is drawn with.</p>
  *
  * @since 0.76.0
  */
@@ -27,12 +26,10 @@ final class Label {
     private static final Map<String, String> WORDS = Map.of(
         "D", "a datum",
         "T", "an error (T)",
-        "?open-void", "an open void, filled by nobody",
-        "?open-void-atom", "an open void, filled by an atom",
-        "?can't-tell", "can't tell",
-        "?cut", "cut",
-        "!only-java-fills-ρ",
-        "an error: this ^ is empty, and only Java fills it once an atom reads the object"
+        "?unknown-empty", "unknown, filled by nobody",
+        "?unknown-study", "unknown, nobody calls this object",
+        "?unknown-java", "unknown, filled by an atom",
+        "?unknown-loop", "unknown, nothing ever answers"
     );
 
     /**
@@ -52,17 +49,12 @@ final class Label {
     /**
      * How a page draws it.
      *
-     * @return One of {@code words}, {@code fails}, {@code skipped} and
-     *  {@code name}
+     * @return One of {@code words} and {@code name}
      */
     String kind() {
         final String found;
         if (Label.WORDS.containsKey(this.text)) {
             found = "words";
-        } else if (this.text.startsWith("!")) {
-            found = "fails";
-        } else if (this.text.startsWith("?skipped")) {
-            found = "skipped";
         } else if (this.text.startsWith("?")) {
             found = "words";
         } else {
@@ -74,16 +66,12 @@ final class Label {
     /**
      * What a page says.
      *
-     * @return The words, the name a read fails on, or the label itself
+     * @return The words, or the label itself
      */
     String words() {
         final String found;
         if (Label.WORDS.containsKey(this.text)) {
             found = Label.WORDS.get(this.text);
-        } else if (this.text.startsWith("!")) {
-            found = this.text.substring(1);
-        } else if (this.text.startsWith("?skipped")) {
-            found = "skipped";
         } else if (this.text.startsWith("?")) {
             found = this.text.substring(1).replace('-', ' ');
         } else {

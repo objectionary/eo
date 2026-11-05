@@ -58,7 +58,7 @@
           0
         entry
       T
-        "Cant touch the file '%s': %s".printf
+        "Can't touch the file '%s': %s".printf
           * entry.path opened.message
 
   ++> can-keep-the-symlink-path-after-touching-a-dangling-symlink

@@ -6,8 +6,8 @@ sheets: []
 asserts:
   - /object[not(errors)]
   - //o[@base='ξ.outer' and count(o)=1]
-  - //o[@base='ξ.outer']/o[@base='ξ.inner' and o[@base='ξ.x']]
-  - //o[@name='app']/o[@name='inner' and not(@base) and o[@base='∅' and @name='b']]
+  - //o[@base='ξ.outer']/o[@base='ξ.inner' and o[@base='ξ.v🌵x']]
+  - //o[@name='app']/o[@name='inner' and not(@base) and o[@base='∅' and @name='v🌵b']]
 input: |
   [x] > app
     [a] > outer

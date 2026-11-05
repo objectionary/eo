@@ -19,7 +19,7 @@ import java.util.Set;
  * growing pool is a change. This is the one place where values of
  * different calls meet on purpose. A void read with nothing in its pool
  * waits: at a stop where nothing else is decided, change a decides it is
- * one Java alone fills, and from then on it reads "open void" next to
+ * one Java alone fills, and from then on it reads an unknown next to
  * whatever EO code puts into it later.</p>
  *
  * @since 0.76.0
@@ -71,7 +71,7 @@ final class Pool {
      * @param copy The copy
      * @param name The void
      * @param site The site of the read, under the tag of the reader
-     * @return What it holds, the decided open void too, nothing while it
+     * @return What it holds, the decided unknown too, nothing while it
      *  waits
      */
     Ints read(final int copy, final String name, final Site site) {

@@ -38,10 +38,10 @@ sources:
     [@] > bytes
       [] > as-number /Q.number
 facts:
-  - /facts/objects/type[@id='Φ.posix.send']/attr[@name='buffer' and not(@holds)]
+  - /facts/objects/type[@id='Φ.posix.send']/attr[@name='v🌵buffer' and not(@holds)]
   - /facts/objects/type[@id='Φ.posix.send' and @returns='Φ.number']
 answers:
-  - /answers/o[@loc='Φ.app.a🌵5-4.ρ.α0.α1' and @lands='buffer']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.a🌵5-4.ρ.α0.α1' and @lands='v🌵buffer']/is[@loc='Φ.string']
   - /answers/o[@loc='Φ.app.a🌵5-4.ρ.α0']/is[@loc='Φ.number']
   - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.number']
   - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.number.eq']

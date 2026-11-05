@@ -6,15 +6,17 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint invalid-name-notation
 +version 0.0.0
 
-[as-bytes] > u32
+[bts] > u32
   if. > @
     as-bytes.size.eq 4
     as-bytes
     T
       "A u32 needs exactly 4 bytes, got %d".printf
         * as-bytes.size
+  bts > as-bytes
   i64 > [^num] > as-i64
     00-00-00-00.concat num.as-bytes
   as-i64.as-number > as-number

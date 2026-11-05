@@ -25,4 +25,4 @@ answers:
   - /answers/o[@loc='Φ.one.φ']/is[@loc='Φ.two']
   - /answers/o[@loc='Φ.one']/reduced/is[@loc='Φ.two']
   - /answers/o[@loc='Φ.two']/reduced/is[@loc='Φ.two']
-  - /answers/o[@loc='Φ.app.φ']/unknown
+  - /answers/o[@loc='Φ.app.φ' and count(*)=1]/unknown[@kind='loop']

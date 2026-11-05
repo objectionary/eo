@@ -130,7 +130,9 @@ final class MjInferenceTest {
                     .resolve("x")
                     .resolve("main.xmir")
             ),
-            XhtmlMatchers.hasXPath("//o[@base='.hinge']/o[@base='.lid']/o[@base='.x']/o[@base='ξ']")
+            XhtmlMatchers.hasXPath(
+                "//o[@base='.hinge']/o[@base='.lid']/o[@base='.v🌵x']/o[@base='ξ']"
+            )
         );
     }
 }

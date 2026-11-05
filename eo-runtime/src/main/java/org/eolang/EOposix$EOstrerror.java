@@ -22,13 +22,13 @@ public final class EOposix$EOstrerror extends PhDefault implements Atom {
      * Ctor.
      */
     public EOposix$EOstrerror() {
-        super(new Attrs(new Attr("errno", new AtVoid("errno"))));
+        super(new Attrs(new Attr("errno")));
     }
 
     @Override
     public Phi lambda() {
         return new Data.ToPhi(
-            new Strerror(new Int(Expect.at(this, "errno")).it()).it()
+            new Strerror(new Int(this.expected("errno")).it()).it()
         );
     }
 }

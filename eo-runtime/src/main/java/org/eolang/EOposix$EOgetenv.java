@@ -26,12 +26,12 @@ public final class EOposix$EOgetenv extends PhDefault implements Atom {
      * Ctor.
      */
     public EOposix$EOgetenv() {
-        super(new Attrs(new Attr("name", new AtVoid("name"))));
+        super(new Attrs(new Attr("name")));
     }
 
     @Override
     public Phi lambda() {
-        final String name = new Cstring(Expect.at(this, "name")).it();
+        final String name = new Cstring(this.expected("name")).it();
         final Phi result = Phi.Φ.take("posix").take("getenv-return").copy();
         final String env = CStdLib.INSTANCE.getenv(name);
         result.put(0, new Data.ToPhi(env != null));

@@ -8,24 +8,42 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Study copies (design doc 3.4): the copies stop w gives the formations
  * nobody calls.
  *
- * <p>Stop w picks the formations that no copy calls and that have a void
- * no copy fills. Such a formation gets one study copy inside every real
+ * <p>Stop w picks the formations that no copy calls and whose copy as
+ * written does not count, for one of two reasons: a void of its own that no
+ * copy fills, or a {@code ^} that does not count. It picks them in rounds.
+ * One of them waits while the formation right around it is one of them too,
+ * or while a place in another one of them reads it as an attribute: the
+ * others are picked and walked first, and the next stop looks again, where
+ * one that has got a real copy since is no longer picked. If every one of
+ * them waits, all are picked at once.</p>
+ *
+ * <p>A formation stop w picks gets one study copy inside every real
  * copy of the formation right around it: one that counts and is neither
  * the copy as written nor a study copy. The study copy is born
  * {@code in:H}, with {@code H} the real copy, which is its {@code ^} and
- * only one; its own voids stay empty. If the formation around has no real
- * copy, the study copies go inside its study copies; if it has neither,
- * or nothing is around, the copy as written is kept. Every later stop
- * gives a study copy to each real copy that has appeared since, and a kept
- * copy stays kept, and counts.</p>
+ * only one when it declares {@code ^}; one that declares none has no
+ * {@code ^} at all (#9785). A formation with no name of its own takes as
+ * its {@code ^} only the object it goes into, which a study copy stands
+ * for but does not have, so its {@code ^} stays empty (#9655). Its own
+ * voids stay empty. If the formation around has no real copy, the study
+ * copies go inside its study copies; if it has neither, or nothing is
+ * around, the copy as written is kept. Every
+ * later stop gives a study copy to each real copy that has appeared since,
+ * and a kept copy stays kept, and counts while the walk goes on. Once the
+ * walk is over, a study copy counts only if its formation never got a real
+ * copy and the copy it was made inside counts, while a real copy counts
+ * wherever the call or the read that made it was, even inside a study copy
+ * (#9655).</p>
  *
  * @since 0.76.0
  */
@@ -57,9 +75,14 @@ final class Study {
     private final BitSet stays;
 
     /**
-     * The study copies.
+     * The study copies, each with the real copy it was made inside.
      */
-    private final BitSet samples;
+    private final Map<Integer, Integer> samples;
+
+    /**
+     * The study copies that do not count once the walk is over.
+     */
+    private final BitSet retired;
 
     /**
      * The study copies of each formation.
@@ -78,7 +101,8 @@ final class Study {
         this.written = new LinkedHashMap<>(0);
         this.studied = new LinkedHashMap<>(0);
         this.stays = new BitSet();
-        this.samples = new BitSet();
+        this.samples = new HashMap<>(0);
+        this.retired = new BitSet();
         this.grouped = new HashMap<>(0);
     }
 
@@ -103,13 +127,56 @@ final class Study {
     }
 
     /**
-     * Stop w: pick the formations no copy calls with a void no copy fills,
-     * each with those voids.
+     * Whether a study copy does not count once the walk is over.
+     *
+     * @param num The copy
+     * @return TRUE if it does not
+     */
+    boolean retired(final int num) {
+        return this.retired.get(num);
+    }
+
+    /**
+     * Decide, once the walk is over, which study copies still count: one
+     * counts only if its formation never got a real copy and the copy it
+     * was made inside counts. A real copy counts wherever the call or the
+     * read that made it was, even inside a study copy, so what it counts
+     * as stays.
+     */
+    void conclude() {
+        final Map<String, Ints> real = this.reals();
+        final List<Integer> order = new ArrayList<>(this.samples.keySet());
+        order.sort(
+            Comparator.comparingInt(
+                copy -> {
+                    final String form = this.world.value(copy).form();
+                    return form.length() - form.replace(".", "").length();
+                }
+            )
+        );
+        for (final int copy : order) {
+            final int host = this.samples.get(copy);
+            if (real.containsKey(this.world.value(copy).form()) || this.retired.get(host)
+                || !this.state.counts(host)) {
+                this.retired.set(copy);
+            }
+        }
+        this.state.grow();
+    }
+
+    /**
+     * Stop w: pick, for this round, the formations no copy calls whose copy
+     * as written does not count, each with the voids no copy fills.
      *
      * @return TRUE if it picked any
      */
     boolean pick() {
-        final Map<String, List<String>> picked = this.stays();
+        final Map<String, List<String>> found = this.stays();
+        final Map<String, List<String>> picked = new LinkedHashMap<>(found);
+        picked.keySet().removeAll(this.waiting(found.keySet()));
+        if (picked.isEmpty()) {
+            picked.putAll(found);
+        }
         this.studied.putAll(picked);
         return !picked.isEmpty();
     }
@@ -161,7 +228,7 @@ final class Study {
                         never.add(name);
                     }
                 }
-                if (!never.isEmpty()) {
+                if (!never.isEmpty() || this.state.alone(entry.getValue())) {
                     out.put(form, never);
                 }
             }
@@ -189,7 +256,23 @@ final class Study {
 
     private boolean lonely(final String form, final int copy, final Map<String, Ints> real) {
         return !this.studied.containsKey(form) && !real.containsKey(form)
-            && this.state.bare(copy) && !this.state.alone(copy);
+            && !this.state.counts(copy);
+    }
+
+    private Set<String> waiting(final Set<String> forms) {
+        final Set<String> found = new HashSet<>(0);
+        for (final String form : forms) {
+            if (forms.contains(this.world.nearest(form))) {
+                found.add(form);
+            }
+            for (final String place : this.world.body(form)) {
+                final String read = this.world.copied(place);
+                if (!read.equals(form) && forms.contains(read)) {
+                    found.add(read);
+                }
+            }
+        }
+        return found;
     }
 
     private List<Integer> hosts(final String form, final Map<String, Ints> real) {
@@ -214,6 +297,12 @@ final class Study {
     }
 
     private void sample(final String form, final int host, final Pile out) {
+        final Map<String, int[]> rows;
+        if (this.world.form(form).applied()) {
+            rows = Map.of();
+        } else {
+            rows = Map.of("ρ", new int[] {host});
+        }
         final int copy = this.state.copy(
             new Value(
                 form,
@@ -223,11 +312,11 @@ final class Study {
                 ),
                 Formation.RHO
             ),
-            Map.of("ρ", new int[] {host})
+            rows
         );
         if (this.world.value(copy).kind() == 'O' && !this.stays.get(copy)) {
             this.stays.set(copy);
-            this.samples.set(copy);
+            this.samples.put(copy, host);
             this.grouped.computeIfAbsent(form, key -> new ArrayList<>(1)).add(copy);
             out.push(copy);
         }
@@ -240,7 +329,7 @@ final class Study {
             final int ctx = all.get(idx);
             final Value value = this.world.value(ctx);
             if (value.kind() == 'O' && Study.real(value)
-                && !this.samples.get(ctx) && this.state.counts(ctx)) {
+                && !this.samples.containsKey(ctx) && this.state.counts(ctx)) {
                 found.computeIfAbsent(value.form(), key -> new Ints())
                     .add(this.state.joined(ctx));
             }

@@ -17,7 +17,7 @@ final class Kid extends PhDefault {
     Kid() {
         super(
             new Attrs(
-                new Attr("z", new AtVoid("z")),
+                new Attr("z"),
                 new Attr(
                     Phi.PHI,
                     new AtComposite(new PhDefault(), rho -> new Data.ToPhi(true))

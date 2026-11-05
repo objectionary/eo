@@ -6,7 +6,7 @@ sheets: []
 asserts:
   - /object[not(errors)]
   - /object/o[@name='printf']/o[1][@name='ρ' and @base='∅' and @local='s']
-  - /object/o[@name='printf']/o[2][@name='args' and @base='∅' and not(@local)]
+  - /object/o[@name='printf']/o[2][@name='v🌵args' and @base='∅' and not(@local)]
 input: |
   [^s args] > printf
     s.^.bar args > @

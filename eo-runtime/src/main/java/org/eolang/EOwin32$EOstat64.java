@@ -29,12 +29,12 @@ public final class EOwin32$EOstat64 extends PhDefault implements Atom {
      * Ctor.
      */
     public EOwin32$EOstat64() {
-        super(new Attrs(new Attr("path", new AtVoid("path"))));
+        super(new Attrs(new Attr("path")));
     }
 
     @Override
     public Phi lambda() {
-        final WString path = new WString(new Cstring(Expect.at(this, "path")).it());
+        final WString path = new WString(new Cstring(this.expected("path")).it());
         final WinStat info = new WinStat();
         final Phi result = Phi.Φ.take("win32").take("stat-return").copy();
         final int code = Msvcrt.INSTANCE._wstat64(path, info);

@@ -8,8 +8,9 @@
 # That wide leaves fail empty and nobody reads off it, so it stays itself.
 sources:
   choice.eo: |
-    [pick] > choice
+    [fork] > choice
       pick > @
+      fork > pick
       [] > not
         ^.pick no yes > @
   yes.eo: |
@@ -51,8 +52,8 @@ sources:
 answers:
   - /answers/o[@loc='Φ.num.wide.φ']/is[@loc='Φ.big']
   - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.big']
-  - /answers/o[@loc='Φ.app.φ.α0' and @lands='b']/is[@loc='Φ.num']
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵b']/is[@loc='Φ.num']
   - /answers/o[@loc='Φ.big.div.φ']/is[@loc='Φ.num.wide']
   - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.num.wide']
-  - /answers/o[@loc='Φ.num.wide.fail']/open
+  - /answers/o[@loc='Φ.num.wide.v🌵fail']/unknown
   - /answers/o[@loc='Φ.num.wide']/reduced/set/is[@loc='Φ.num.wide']

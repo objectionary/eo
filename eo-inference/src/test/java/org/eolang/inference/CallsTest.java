@@ -48,12 +48,12 @@ final class CallsTest {
         MatcherAssert.assertThat(
             "an argument must land in the void it fills, but it didnt",
             new Settled(CallsTest.world(temp)).state().lands(),
-            Matchers.hasEntry("Φ.app.φ.α1", "lid")
+            Matchers.hasEntry("Φ.app.φ.α1", "v🌵lid")
         );
     }
 
     private static int app(final World world) {
-        return world.intern(new Value('O', "Φ.app", "Φ.app", Formation.RHO, "", -1, 0));
+        return world.intern(new Value('O', "Φ.app", "Φ.app", 0L, "", -1, 0));
     }
 
     private static World world(final Path temp) throws IOException {

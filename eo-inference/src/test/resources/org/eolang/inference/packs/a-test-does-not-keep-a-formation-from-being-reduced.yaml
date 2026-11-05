@@ -28,6 +28,6 @@ sources:
     [@] > string
 answers:
   - /answers/o[@loc='Φ.checked.φ']/is[@loc='Φ.oak']
-  - /answers/o[@loc='Φ.app.φ.α0' and @lands='item']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵item']/is[@loc='Φ.oak']
   - /answers/o[@loc='Φ.checked']/reduced/is[@loc='Φ.oak']
   - /answers/o[@loc='Φ.checked.p🌵can-be-an-oak.φ']/is[@loc='Φ.oak']

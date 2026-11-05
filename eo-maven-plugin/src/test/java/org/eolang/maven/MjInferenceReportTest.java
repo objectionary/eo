@@ -30,7 +30,11 @@ final class MjInferenceReportTest {
         maven.execute(MjParse.class).execute(MjInference.class);
         Files.writeString(
             maven.targetPath().resolve(maven.dirName("inference")).resolve("answers.xml"),
-            "<answers><o loc='Φ.foo.x.main' copies='1'><is loc='Φ.foo.x.main'/></o></answers>"
+            String.join(
+                "",
+                "<answers><o loc='Φ.app' copies='1'><is loc='Φ.app'/></o>",
+                "<o loc='Φ.app.t' copies='3'><is loc='Φ.app.t'/></o></answers>"
+            )
         );
         maven.execute(MjInferenceReport.class);
         MatcherAssert.assertThat(

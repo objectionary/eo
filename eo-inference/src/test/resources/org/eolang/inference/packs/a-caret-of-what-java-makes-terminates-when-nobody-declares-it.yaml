@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The atom forge says Java makes a gadget, and gadget declares no ^, so the
+# ^ of the copy Java makes is T too: its knob is T, and so is the dial app
+# reads off it.
+sources:
+  gadget.eo: |
+    [] > gadget
+      ^.knob > @
+  forge.eo: |
+    [] > forge /Q.gadget
+  app.eo: |
+    [] > app
+      forge.dial > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.gadget.φ.ρ']/terminator
+  - /answers/o[@loc='Φ.gadget.φ']/terminator
+  - /answers/o[@loc='Φ.app.φ']/terminator

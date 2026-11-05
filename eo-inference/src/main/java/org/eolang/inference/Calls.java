@@ -20,18 +20,31 @@ import java.util.Set;
  * <p>Each argument is worked out in the copy around and reduced (4.2). A
  * call makes one copy per head and place, and each void it fills gets the
  * whole set of its argument, so calls never mix (rule 3). It makes no copy
- * while an argument it binds has nothing yet, the absence rule (4.1). The
- * rules come in here: 3 for an argument whose every value fails, b for an
- * argument that is only an open void, A for a mark, F for a call on what
- * Java made or on a finished shared kind, and call then narrow (3.5) for
- * an object whose {@code @} is its void. Every argument of an atom is
- * dataized, a void its atom calls back gets its copies made, and a void of
- * what Java makes fills its pool.</p>
+ * while an argument it binds has nothing yet, the absence rule (4.1). A
+ * call on a datum is T, and an argument that holds T goes into its void as
+ * T. The rules come in here: b for an argument that holds only unknowns,
+ * whose copy waits for a stop and then gets those unknowns in its voids, A
+ * for a mark, F for a call on what Java made or on a finished shared kind,
+ * and call then narrow (3.5) for an object whose {@code @} is one of its
+ * voids, once the call fills the last of its empty voids; a call that
+ * leaves some empty makes a plain copy, and a later call fills the rest.
+ * Every argument of an atom is dataized, a void its atom calls back gets
+ * its copies made, and a void of what Java makes fills its pool. A
+ * formation with no name of its own, written as an argument, gets the copy
+ * the call makes as its {@code ^}, an atom's copy too: that is the object
+ * it goes into, and nothing else is.</p>
  *
  * <p>For each head the call also notes where each argument lands: the
  * void of a copy made in EO code, or no void.</p>
  *
  * @since 0.76.0
+ * @todo #9661:60min Land the argument of a call on rule A's mark in the
+ *  void the mark stands for. A curried copy that counts goes into a void
+ *  both as itself and as its mark. So when {@code [f] > fin} also reads
+ *  {@code f.plus 0}, the call {@code f 2} on {@code foo 1} puts 2 into the
+ *  {@code y} of the copy, but off the mark it lands in no void, and the
+ *  argument loses its name. The mark has to keep the copy it came from, so
+ *  that {@code marked()} fills that copy the way {@code object()} does.
  */
 final class Calls {
 
@@ -79,8 +92,8 @@ final class Calls {
     Ints apply(final Ints heads, final int ctx, final String place) {
         final List<String> args = this.world.args(place);
         final List<int[]> raw = new ArrayList<>(args.size());
-        for (int arg = 0; arg < args.size(); ++arg) {
-            raw.add(this.argument(args.get(arg), arg, ctx, place));
+        for (final String arg : args) {
+            raw.add(this.argument(arg, ctx));
         }
         final List<int[]> argsets = new ArrayList<>(args.size());
         for (final int[] set : raw) {
@@ -129,21 +142,10 @@ final class Calls {
         return found;
     }
 
-    private int[] argument(final String arg, final int pos, final int ctx, final String place) {
-        final Ids got = this.state.evaluate(arg, ctx);
-        final Ints kept = new Ints();
-        for (int idx = 0; idx < got.size(); ++idx) {
-            if (this.world.value(got.get(idx)).kind() != 'X') {
-                kept.add(got.get(idx));
-            }
-        }
-        final Wish wish = new Wish('3', place, ctx, pos);
-        if (!got.isEmpty() && this.state.taken(wish)) {
-            kept.add(this.world.unknown("can't tell"));
-        } else if (!got.isEmpty() && kept.isEmpty()) {
-            this.state.wish(wish);
-        }
-        return kept.array();
+    private int[] argument(final String arg, final int ctx) {
+        final Ints got = new Ints();
+        got.addAll(this.state.evaluate(arg, ctx));
+        return got.array();
     }
 
     private Ints head(final int num, final Call call, final Set<Landing> landed) {
@@ -162,8 +164,8 @@ final class Calls {
         } else if (kind == 'O') {
             out.addAll(this.object(head, value, call, voids));
         } else if (kind == 'D') {
-            out.add(this.world.conflict("data()"));
-        } else if (kind != 'X') {
+            out.add(Values.TERM);
+        } else {
             out.add(head);
         }
         return out;
@@ -188,7 +190,7 @@ final class Calls {
             for (int arg = 0; arg < args; ++arg) {
                 landed.add(new Landing(arg, voids.get(arg)));
             }
-        } else if (kind != 'O' && kind != 'T' && kind != 'D' && kind != 'X') {
+        } else if (kind != 'O' && kind != 'T' && kind != 'D') {
             for (int arg = 0; arg < args; ++arg) {
                 landed.add(new Landing(arg, ""));
             }
@@ -227,31 +229,26 @@ final class Calls {
         if ((Values.JBORN.equals(value.birth()) || this.state.shared(head))
             && call.size() > 0 || voids.size() < call.size()) {
             out = new Ints(Values.TERM);
-        } else if (passed.isEmpty()) {
+        } else if (passed.isEmpty() || voids.size() < this.world.opened(value).size()) {
             out = this.made(head, value, call, voids, false);
         } else if ((value.bound() & this.world.form(value.form()).bit(passed)) == 0) {
-            out = this.narrowed(head, value, call, voids, voids.indexOf(passed));
+            out = this.narrowed(
+                head, value, call, voids, call.sets().get(voids.indexOf(passed))
+            );
         } else {
-            out = new Ints(this.state.cell(head, passed));
+            out = this.narrowed(head, value, call, voids, this.state.cell(head, passed));
         }
         return out;
     }
 
     private Ints narrowed(
         final int head, final Value value, final Call call, final List<String> voids,
-        final int pos
+        final int... answer
     ) {
         final int free = this.world.opened(value).size();
-        final Ints out = new Ints();
-        if (pos >= 0) {
-            for (final int val : call.sets().get(pos)) {
-                out.add(val);
-            }
-            if (!this.gapped(call.raw(), free) && !call.lacking(free)) {
-                out.addAll(this.made(head, value, call, voids, true));
-            }
-        } else {
-            out.addAll(this.made(head, value, call, voids, false));
+        final Ints out = new Ints(answer);
+        if (!this.gapped(call.raw(), free) && !call.lacking(free)) {
+            out.addAll(this.made(head, value, call, voids, true));
         }
         return out;
     }
@@ -263,15 +260,9 @@ final class Calls {
         final List<String> free = this.world.opened(value);
         final Wish wish = new Wish('b', call.site().place(), call.ctx(), head);
         final Ints out = new Ints();
-        if (this.state.taken(wish)) {
-            out.add(this.state.await(head));
-        }
-        if (this.gapped(call.raw(), free.size())) {
-            if (!this.state.taken(wish)) {
-                this.state.wish(wish);
-            }
+        if (this.gapped(call.raw(), free.size()) && !this.state.taken(wish)) {
+            this.state.wish(wish);
         } else if (!call.lacking(free.size())) {
-            this.bind(value, voids, call);
             final int copy = this.state.copy(
                 new Value(
                     value.form(), this.world.born(call.site(), value.form()),
@@ -279,12 +270,33 @@ final class Calls {
                 ),
                 this.rows(head, value, voids, call.sets())
             );
+            this.applied(copy, call);
+            this.bind(value, voids, call);
             this.state.remember(copy);
             if (!narrowed) {
                 out.add(copy);
             }
         }
         return out;
+    }
+
+    private void applied(final int copy, final Call call) {
+        final List<String> args = this.world.args(call.site().place());
+        for (int arg = 0; arg < call.raw().size(); ++arg) {
+            for (final int val : call.raw().get(arg)) {
+                final int inside = this.world.bare(val);
+                final Value value = this.world.value(inside);
+                if (Calls.handed(value, args.get(arg))
+                    && this.world.form(value.form()).applied()) {
+                    this.state.gather(inside, "ρ", copy);
+                }
+            }
+        }
+    }
+
+    private static boolean handed(final Value value, final String arg) {
+        return value.kind() == 'O' && value.form().equals(arg)
+            && (value.bound() & Formation.RHO) != 0;
     }
 
     private void bind(final Value value, final List<String> voids, final Call call) {
@@ -311,16 +323,12 @@ final class Calls {
 
     private void back(final String name, final int arg, final Formation shape, final Call call) {
         for (final int val : call.raw().get(arg)) {
-            this.state.handed(val);
             this.state.called(val, shape.args(name), call.site());
         }
     }
 
     private void dataized(final String name, final int arg, final Call call) {
         final Usage usage = new Usage(name, call.site(), Counting.DATAIZED);
-        for (final int val : call.raw().get(arg)) {
-            this.state.handed(val);
-        }
         for (final int val : call.raw().get(arg)) {
             this.state.use(val, usage, new Ints());
         }
@@ -353,7 +361,7 @@ final class Calls {
     private boolean gaps(final int... set) {
         boolean all = set.length > 0;
         for (final int val : set) {
-            if (!this.world.gap(val)) {
+            if (this.world.value(val).kind() != 'U') {
                 all = false;
                 break;
             }

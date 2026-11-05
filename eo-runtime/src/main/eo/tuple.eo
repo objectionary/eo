@@ -7,7 +7,7 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[tail head length] > tuple
+[prior last count] > tuple
   [^list i fallback] > at
     if. > @
       or.
@@ -45,6 +45,9 @@
           list.receq first.tail second.tail
           false
       | list other
+  last > head
+  count > length
+  prior > tail
   tuple > [^list x] > with
     list
     x
@@ -233,7 +236,8 @@
             "d"
             "e"
       5
-    [elements] > array
+    [items] > array
+      items > elements
 
   ++> can-report-the-length-of-an-empty-tuple
     eq. > @
@@ -242,7 +246,8 @@
           array
             *
       0
-    [elements] > array
+    [items] > array
+      items > elements
 
   ++> can-take-the-first-item-by-a-negative-index
     eq. > @

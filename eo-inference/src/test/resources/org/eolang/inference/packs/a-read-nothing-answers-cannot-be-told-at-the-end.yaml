@@ -6,7 +6,7 @@
 # it; the end step says it cannot be told.
 sources:
   loop.eo: |
-    [] > loop
+    [^] > loop
       ^.loop.value > value
       value > @
   bytes.eo: |
@@ -19,5 +19,5 @@ answers:
   - /answers/o[@loc='Φ.loop.φ.ρ']/is[@loc='Φ.loop']
   - /answers/o[@loc='Φ.loop.value.ρ']/is[@loc='Φ.loop']
   - /answers[not(o[@loc='Φ.loop.φ']//is)]
-  - /answers/o[@loc='Φ.loop.φ']/unknown
-  - /answers/o[@loc='Φ.loop.value']/unknown
+  - /answers/o[@loc='Φ.loop.φ']/unknown[@kind='loop']
+  - /answers/o[@loc='Φ.loop.value']/unknown[@kind='loop']

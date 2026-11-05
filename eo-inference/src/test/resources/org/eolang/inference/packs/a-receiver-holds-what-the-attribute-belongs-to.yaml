@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# Nobody calls grow or inc, so each is walked with x open. The ^ of grow holds
-# the tree it is an attribute of, and the ^ of inc, written at the top of its
-# file, holds Φ.
+# Nobody calls grow or inc, so each is walked with x unknown. The ^ of grow
+# holds the tree it is an attribute of, and the ^ of inc, written at the top of
+# its file, holds Φ.
 sources:
   tree.eo: |
     [] > tree
@@ -20,8 +20,8 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers[not(o[@lands='x'])]
-  - /answers/o[@loc='Φ.tree.grow.x']/open
-  - /answers/o[@loc='Φ.inc.x']/open
+  - /answers[not(o[@lands='v🌵x'])]
+  - /answers/o[@loc='Φ.tree.grow.v🌵x']/unknown
+  - /answers/o[@loc='Φ.inc.v🌵x']/unknown
   - /answers/o[@loc='Φ.tree.grow.ρ']/is[@loc='Φ.tree']
   - /answers/o[@loc='Φ.inc.ρ']/is[@loc='Φ']

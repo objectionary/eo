@@ -5,17 +5,20 @@
 # twice is a method of number, a package that gives back new data, so it takes
 # no tag even when list code calls it: the two lists of app call it at one
 # place and share one copy of it, the only one next to its copy as written,
-# and the tuple it builds starts a tag of its own.
+# and the tuple it builds starts a tag of its own. So three copies of tuple
+# hold numbers. Nobody calls with, so each copy of tuple studies it, and its
+# call tuple x ^ waits for a stop (rule b) and then makes a copy of tuple with
+# the unknown x in item: three more copies, whose rest holds a tuple.
 sources:
   tuple.eo: |
     [item rest] > tuple
-      [x] > with
+      [^ x] > with
         tuple x ^ > @
-      [] > doubled
+      [^] > doubled
         ^.item.twice > @
   number.eo: |
     [@] > number
-      [] > twice
+      [^] > twice
         tuple ^ ^ > @
   app.eo: |
     [] > app
@@ -28,4 +31,6 @@ sources:
 answers:
   - /answers/o[@loc='Φ.tuple.doubled.φ' and @copies='2']
   - /answers/o[@loc='Φ.number.twice' and @copies='2']
-  - /answers/o[@loc='Φ.tuple' and @copies='3']
+  - /answers/o[@loc='Φ.tuple' and @copies='6']
+  - /answers/o[@loc='Φ.tuple.v🌵rest']/set[@copies='3' and count(*)=1]/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.tuple.v🌵item']/set[@copies='3' and count(*)=1]/unknown[@kind='study']

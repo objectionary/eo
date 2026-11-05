@@ -29,12 +29,9 @@ public final class EOchunk$EOread extends PhDefault implements Atom {
     public EOchunk$EOread() {
         super(new Attrs(
             new Attr(Phi.RHO, new AtRho()),
-            new Attr("offset", new AtVoid("offset")),
-            new Attr("length", new AtVoid("length")),
-            new Attr(
-                EOchunk$EOread.FALLBACK,
-                new AtVoid(EOchunk$EOread.FALLBACK)
-            )
+            new Attr("offset"),
+            new Attr("length"),
+            new Attr(EOchunk$EOread.FALLBACK)
         ));
     }
 
@@ -42,8 +39,8 @@ public final class EOchunk$EOread extends PhDefault implements Atom {
     public Phi lambda() {
         return this.bytes(
             new Natural(Expect.at(this.take(Phi.RHO), "id")).it(),
-            new Natural(Expect.at(this, "offset")).it(),
-            new Natural(Expect.at(this, "length")).it()
+            new Natural(this.expected("offset")).it(),
+            new Natural(this.expected("length")).it()
         );
     }
 
@@ -54,7 +51,7 @@ public final class EOchunk$EOread extends PhDefault implements Atom {
         if (data.isPresent()) {
             result = new Data.ToPhi(data.get());
         } else {
-            result = this.take(EOchunk$EOread.FALLBACK);
+            result = this.free(EOchunk$EOread.FALLBACK);
             result.put(
                 0,
                 new Data.ToPhi(

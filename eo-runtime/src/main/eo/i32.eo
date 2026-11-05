@@ -5,15 +5,17 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint invalid-name-notation
 +version 0.0.0
 
-[as-bytes] > i32
+[bts] > i32
   if. > @
     as-bytes.size.eq 4
     as-bytes
     T
       "An i32 needs exactly 4 bytes, got %d".printf
         * as-bytes.size
+  bts > as-bytes
   [^num cant-convert] > as-i16
     if. > @
       num.eq
@@ -42,12 +44,17 @@
       cant-divide
         "Can't divide %d by i32 zero".printf
           * num.as-i64.as-number
-      i32
-        slice.
-          as-bytes.
-            num.as-i64.div other.as-i64
-          4
-          4
+      if.
+        and.
+          num.as-bytes.eq 80-00-00-00
+          other.as-bytes.eq FF-FF-FF-FF
+        cant-divide "the smallest i32 divided by minus one is past the largest i32"
+        i32
+          slice.
+            as-bytes.
+              num.as-i64.div other.as-i64
+            4
+            4
   num.as-i64.gt b.as-i32.as-i64 > [^num b] > gt
   num.as-i64.gte b.as-i32.as-i64 > [^num b] > gte
   num.as-i64.lt b.as-i32.as-i64 > [^num b] > lt
@@ -107,7 +114,7 @@
     eq. > @
       dividend.div 1.as-i64.as-i32
       dividend
-    -235.as-i64.as-i32 > dividend
+    -2147483648.as-i64.as-i32 > dividend
 
   lt. ++> can-divide-into-less-than-one
     1.as-i64.as-i32.div 5.as-i64.as-i32
@@ -116,10 +123,6 @@
   eq. ++> can-divide-with-a-remainder
     13.as-i64.as-i32.div -5.as-i64.as-i32
     -2.as-i64.as-i32
-
-  eq. ++> can-divide-with-overflow
-    -2147483648.as-i64.as-i32.div -1.as-i64.as-i32
-    -2147483648.as-i64.as-i32
 
   123.as-i64.as-i32.eq 123.as-i64.as-i32 ++> can-equal-the-same-i32
 
@@ -148,6 +151,13 @@
     i32 00-00-00-2A
     2.as-i64.as-i32.div
       0.as-i64.as-i32
+      i32 00-00-00-2A > [message]
+
+  eq. ++> can-recover-from-min-divided-by-minus-one
+    i32 00-00-00-2A
+    div.
+      i32 80-00-00-00
+      i32 FF-FF-FF-FF
       i32 00-00-00-2A > [message]
 
   eq. ++> can-subtract-one-from-one
@@ -204,3 +214,7 @@
   247483647.as-i64.as-i32.as-i16 --> stops-on-converting-out-of-bounds-to-i16
 
   2.as-i64.as-i32.div 0.as-i64.as-i32 --> stops-on-division-by-zero
+
+  div. --> stops-on-min-divided-by-minus-one
+    i32 80-00-00-00
+    i32 FF-FF-FF-FF

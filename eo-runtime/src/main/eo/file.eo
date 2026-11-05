@@ -6,7 +6,7 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[path] > file
+[location] > file
   path > @
   @. > as-path
     Q.path path
@@ -86,7 +86,7 @@
         seq *
           [^pick] >>
             os.is-windows.if > @
-              [^req syscall] >> open-through
+              [^req kernel] >> open-through
                 if. > @
                   opened.code.eq -1
                   req.pick.cant-open
@@ -121,6 +121,7 @@
                     seq *
                       syscall.close opened.code
                       scoped
+                kernel > syscall
               |
                 []
                   win32 > @
@@ -190,6 +191,7 @@
     not. >> writable
       as-bool.
         access.eq "r"
+  location > path
 
   eq. ++> can-append-data-to-a-file
     size.
@@ -536,9 +538,8 @@
     "r+"
     I
 
-  tmpfile. --> stops-on-touching-a-temp-file-in-an-absent-directory
-    as-dir.
-      mktemp.as-path.resolved "foo"
+  --> stops-on-touching-a-temp-file-in-an-absent-directory
+    mktemp.tmpfile.deleted.as-path.as-dir.tmpfile > @
 
   mktemp.tmpfile.open --> stops-on-writing-with-a-wrong-mode
     "r"

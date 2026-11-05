@@ -29,5 +29,5 @@ sources:
 facts:
   - /facts/objects/type[@id='Φ.inc']/attr[@name='p🌵adds-one-to-a-number' and @type='Φ.inc.p🌵adds-one-to-a-number']
 answers:
-  - /answers/o[@loc='Φ.inc.p🌵adds-one-to-a-number.φ.ρ.α0' and @lands='x']/is[@loc='Φ.number']
-  - /answers/o[@loc='Φ.inc.x' and @copies='1']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.inc.p🌵adds-one-to-a-number.φ.ρ.α0' and @lands='v🌵x']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.inc.v🌵x' and @copies='1']/is[@loc='Φ.number']

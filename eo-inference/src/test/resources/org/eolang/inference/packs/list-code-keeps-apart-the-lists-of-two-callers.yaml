@@ -24,8 +24,8 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.tuple.with.x' and @copies='2']/set[@copies='1']/is[@loc='Φ.number']
-  - /answers/o[@loc='Φ.tuple.with.x' and @copies='2']/set[@copies='1']/is[@loc='Φ.string']
-  - /answers/o[@loc='Φ.tuple.item']/set/is[@loc='Φ.number']
-  - /answers/o[@loc='Φ.tuple.item']/set/is[@loc='Φ.string']
-  - /answers[not(o[@loc='Φ.tuple.item']/set[is[@loc='Φ.number'] and is[@loc='Φ.string']])]
+  - /answers/o[@loc='Φ.tuple.with.v🌵x' and @copies='2']/set[@copies='1']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.tuple.with.v🌵x' and @copies='2']/set[@copies='1']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.tuple.v🌵item']/set/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.tuple.v🌵item']/set/is[@loc='Φ.string']
+  - /answers[not(o[@loc='Φ.tuple.v🌵item']/set[is[@loc='Φ.number'] and is[@loc='Φ.string']])]
