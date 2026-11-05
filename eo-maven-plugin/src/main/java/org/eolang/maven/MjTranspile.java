@@ -100,7 +100,7 @@ public final class MjTranspile extends MjSafe {
      * lean. The hits are appended to the file named by the
      * {@code eo.coverageFile} system property of the JVM that runs the
      * compiled program; when that property is absent, every hit is a
-     * silent no-op. In {@code eo-runtime} the {@code coverage-file}
+     * silent no-op. In {@code eo-runtime} the {@code coverage}
      * profile turns this on and forwards that property to surefire in
      * one step (see its {@code pom.xml}). The {@code coverage-report}
      * Maven goal ({@link MjCoverageReport}) turns the raw hits into an
