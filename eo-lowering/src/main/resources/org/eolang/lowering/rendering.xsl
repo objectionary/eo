@@ -37,7 +37,8 @@
   when a reader calls it: a void is read off the object the atom lives in,
   a minted symbol is the operation of its λ, a symbolized one is a literal
   in the place of every call, a joined one is an if that returns one branch
-  or the other, and a deferred one is the copy of an object of the entry with
+  or the other, or throws the message of the copy of "throw" that a side
+  raised, when phino took that side for the terminator, and a deferred one is the copy of an object of the entry with
   its arguments bound, which phino left for the run to work out. A loop
   phino cut gets no symbol, so a flow that met one makes the entry a taint.
   The copy is made where phino defers it, and dataized only where a λ reads
@@ -435,21 +436,55 @@
     <xsl:param name="leaf" as="element()"/>
     <xsl:variable name="stop" select="eo:stop($leaf)"/>
     <xsl:if test="exists($stop)">
-      <xsl:variable name="message" select="normalize-space(($eo:doc//(applied | formed)[@meta = normalize-space($stop)]/*[@attr = 'message'])[1])"/>
-      <xsl:variable name="bytes" select="eo:octets($message)"/>
-      <xsl:variable name="prefix" select="concat('The entry ', $number, ' throws on ', eo:flow($leaf), ', but ')"/>
-      <xsl:choose>
-        <xsl:when test="$message = ''">
-          <xsl:sequence select="eo:taint(concat($prefix, 'phino stopped at L_throw for ', normalize-space($stop), ', while no record of its protocol gives the message'))"/>
-        </xsl:when>
-        <xsl:when test="exists($bytes) and not(eo:text($bytes) = -1)">
-          <xsl:sequence select="concat('&quot;', eo:message($bytes), '&quot;')"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:sequence select="concat('new Dataized(', eo:computed($message, $prefix), ').asString()')"/>
-        </xsl:otherwise>
-      </xsl:choose>
+      <xsl:sequence select="eo:raising(normalize-space($stop), concat('The entry ', $number, ' throws on ', eo:flow($leaf), ', but '))"/>
     </xsl:if>
+  </xsl:function>
+  <!--
+  The message a copy of "throw" carries, as the Java of a string, where the
+  copy is named by the meta of the record that applied "throw" to it. The
+  prefix opens the reason of the taint, when there is one.
+  -->
+  <xsl:function name="eo:raising" as="xs:string">
+    <xsl:param name="copy" as="xs:string"/>
+    <xsl:param name="prefix" as="xs:string"/>
+    <xsl:variable name="message" select="normalize-space(($eo:doc//(applied | formed)[@meta = $copy]/*[@attr = 'message'])[1])"/>
+    <xsl:variable name="bytes" select="eo:octets($message)"/>
+    <xsl:choose>
+      <xsl:when test="$message = ''">
+        <xsl:sequence select="eo:taint(concat($prefix, 'phino stopped at L_throw for ', $copy, ', while no record of its protocol gives the message'))"/>
+      </xsl:when>
+      <xsl:when test="exists($bytes) and not(eo:text($bytes) = -1)">
+        <xsl:sequence select="concat('&quot;', eo:message($bytes), '&quot;')"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="concat('new Dataized(', eo:computed($message, $prefix), ').asString()')"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+  <!--
+  The meta of the copy of "throw" that the terminator of a joined symbol
+  raised, which phino names when it takes a side for the terminator. A
+  terminator that raised nothing leaves no message to throw, so its entry
+  is a taint.
+  -->
+  <xsl:function name="eo:raised" as="xs:string">
+    <xsl:param name="joined" as="element()"/>
+    <xsl:if test="empty($joined/@raised)">
+      <xsl:sequence select="eo:taint(concat('The symbol ', $joined/@symbol, ' of the entry ', $number, ' takes ', $joined/@terminator, ' for the terminator, but names no copy of throw it raised'))"/>
+    </xsl:if>
+    <xsl:sequence select="string($joined/@raised)"/>
+  </xsl:function>
+  <!--
+  The Java of one side of a joined symbol, as the statement of its branch:
+  the return of the symbol of that side, or the throw of the message that
+  side raised, when phino took it for the terminator.
+  -->
+  <xsl:function name="eo:side" as="xs:string">
+    <xsl:param name="joined" as="element()"/>
+    <xsl:param name="side" as="xs:string"/>
+    <xsl:param name="type" as="xs:string"/>
+    <xsl:variable name="symbol" select="eo:branch($joined, $side)"/>
+    <xsl:sequence select="if ($symbol = $joined/@terminator) then concat('throw new ExFailure(&quot;%s&quot;, ', eo:raising(eo:raised($joined), concat('The symbol ', $joined/@symbol, ' of the entry ', $number, ' throws on its ', $side, ' side, but ')), ');') else concat('return ', eo:value($symbol, $type), ';')"/>
   </xsl:function>
   <!--
   The bytes of a message the protocol names by the meta of its record, as
@@ -530,9 +565,13 @@
     <xsl:param name="leaf" as="element()"/>
     <xsl:variable name="stop" select="eo:stop($leaf)"/>
     <xsl:if test="exists($stop)">
-      <xsl:variable name="meta" select="normalize-space($stop)"/>
-      <xsl:sequence select="eo:borne(normalize-space(($eo:doc//(applied | formed)[@meta = $meta]/*[@attr = 'message'])[1]))"/>
+      <xsl:sequence select="eo:carried(normalize-space($stop))"/>
     </xsl:if>
+  </xsl:function>
+  <!-- The symbols the message of a copy of "throw" is built from, where the copy is named by its meta. -->
+  <xsl:function name="eo:carried" as="xs:string*">
+    <xsl:param name="copy" as="xs:string"/>
+    <xsl:sequence select="eo:borne(normalize-space(($eo:doc//(applied | formed)[@meta = $copy]/*[@attr = 'message'])[1]))"/>
   </xsl:function>
   <!-- The code points of bytes read as text in UTF-8, with -1 where they are no such text. -->
   <xsl:function name="eo:text" as="xs:integer*">
@@ -816,7 +855,7 @@
           <xsl:when test="not($symbol = $reached)"/>
           <xsl:when test="exists(key('eo:joined', $symbol, $eo:doc))">
             <xsl:variable name="joined" select="key('eo:joined', $symbol, $eo:doc)[1]"/>
-            <xsl:sequence select="(eo:condition($joined), eo:branch($joined, 'left'), eo:branch($joined, 'right'))"/>
+            <xsl:sequence select="(eo:condition($joined), ('left', 'right') ! eo:branch($joined, .)[not(. = $joined/@terminator)], $joined[@terminator = (@left, @right)] ! eo:carried(eo:raised(.)))"/>
           </xsl:when>
           <xsl:when test="exists(key('eo:deferred', $symbol, $eo:doc))">
             <xsl:sequence select="eo:arguments(key('eo:deferred', $symbol, $eo:doc)[1]) ! substring-after(., ':')[not(map:contains($eo:voids, .))]"/>
@@ -1028,7 +1067,7 @@
       <xsl:when test="exists(key('eo:deferred', $symbol, $eo:doc))">
         <xsl:sequence select="'Phi'"/>
       </xsl:when>
-      <xsl:when test="exists($joined) and (eo:branch($joined, 'left'), eo:branch($joined, 'right'))[not(eo:constant(.))] ! eo:type(.) = 'Phi'">
+      <xsl:when test="exists($joined) and (eo:branch($joined, 'left'), eo:branch($joined, 'right'))[not(. = $joined/@terminator)][not(eo:constant(.))] ! eo:type(.) = 'Phi'">
         <xsl:sequence select="'Phi'"/>
       </xsl:when>
       <xsl:otherwise>
@@ -1175,7 +1214,7 @@
           <xsl:sequence select="concat('        return new Dataized(', eo:object($symbol), ').take();&#10;')"/>
         </xsl:when>
         <xsl:when test="exists($joined)">
-          <xsl:sequence select="concat('        if (', eo:value(eo:condition($joined), 'boolean'), ') {&#10;', '            return ', eo:value(eo:branch($joined, 'left'), $type), ';&#10;', '        } else {&#10;', '            return ', eo:value(eo:branch($joined, 'right'), $type), ';&#10;', '        }&#10;')"/>
+          <xsl:sequence select="concat('        if (', eo:value(eo:condition($joined), 'boolean'), ') {&#10;', '            ', eo:side($joined, 'left', $type), '&#10;', '        } else {&#10;', '            ', eo:side($joined, 'right', $type), '&#10;', '        }&#10;')"/>
         </xsl:when>
         <xsl:when test="exists(key('eo:deferred', $symbol, $eo:doc))">
           <xsl:variable name="deferred" select="key('eo:deferred', $symbol, $eo:doc)[1]"/>
