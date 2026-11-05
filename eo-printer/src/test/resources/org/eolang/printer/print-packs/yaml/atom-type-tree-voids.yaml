@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  +package org.eolang
+
+  [] > inner /Q.number(Q.x(Q.y)|Q.bytes)
+    ? > b /Q.number|Q.string?
+    ? > c /Q.pair(A,Q.bytes|B)
+    ? > cant /{Q.a(Q.b,A)|Q.c B}

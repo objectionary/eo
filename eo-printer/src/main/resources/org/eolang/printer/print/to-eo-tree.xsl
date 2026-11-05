@@ -141,16 +141,18 @@
     <xsl:sequence select="if (contains($text, $eo:cactus-name)) then replace($text, $eo:cactus-pattern, 'v$1_$2') else $text"/>
   </xsl:function>
   <!--
-  Render a stored signature (an atom's "/sig" or a void forma) as its EO
-  surface form. A rooted "Φ.name" always keeps an explicit "Q." root, so
-  every rooted signature reads uniformly and re-parses directly back to its
-  "Φ." root instead of relying on a bare name being re-homed. Names with no
-  "Φ." root pass through.
+  Render a stored type (an atom's "/sig", a void type or a callback list)
+  as its EO surface form. A type is a tree such as
+  "Φ.pair(A,Φ.bytes)|Φ.number", so every name in it that has a "Φ." root
+  keeps an explicit "Q." root, wherever it stands: at the head, after a
+  bracket, a comma, a "|" or the space between two callback members. Every
+  rooted type reads uniformly and re-parses directly back to its "Φ." roots
+  instead of relying on a bare name being re-homed. Names with no "Φ."
+  root, type variables, the delimiters and a trailing "?" pass through.
   -->
   <xsl:function name="eo:signature" as="xs:string">
     <xsl:param name="sig" as="xs:string"/>
-    <xsl:variable name="rest" select="substring-after($sig, $eo:root-prefix)"/>
-    <xsl:sequence select="if (starts-with($sig, $eo:root-prefix)) then concat('Q.', $rest) else $sig"/>
+    <xsl:sequence select="replace($sig, concat('(^|[(),| ])', $eo:program, '\.'), '$1Q.')"/>
   </xsl:function>
   <!-- Count the leading run of consecutive ρ segments in a sequence. -->
   <xsl:function name="eo:rho-run" as="xs:integer">
@@ -185,20 +187,20 @@
     <xsl:sequence select="eo:void($o) and ((exists($o/@local) and not($o/@name = $eo:rho)) or eo:bare-void($o) or exists($o/@type) or exists($o/@args) or eo:atom($o/..))"/>
   </xsl:function>
   <!--
-  A void's type tail (R-3.4.8): " /type" for its own forma, " /{type …}"
+  A void's type tail (R-3.4.8): " /type" for its own type, " /{type …}"
   for the argument types of a callback branch, or the empty string when
-  the void is untyped. Every forma is rendered like the atom's own "/sig"
-  — the implicit Φ. root stripped, a type variable verbatim — and a
-  trailing "?" marking a maybe-⊥ value survives the stripping.
+  the void is untyped. Every type is rendered like the atom's own "/sig",
+  each "Φ." root shown as "Q." and a type variable verbatim, and a
+  trailing "?" marking a maybe-⊥ value stays where it is.
   -->
   <xsl:function name="eo:void-type" as="xs:string">
     <xsl:param name="o" as="element()"/>
     <xsl:choose>
       <xsl:when test="exists($o/@type)">
-        <xsl:sequence select="concat(' /', eo:signature(replace($o/@type, '\?$', '')), if (ends-with($o/@type, '?')) then '?' else '')"/>
+        <xsl:sequence select="concat(' /', eo:signature(string($o/@type)))"/>
       </xsl:when>
       <xsl:when test="exists($o/@args)">
-        <xsl:sequence select="concat(' /{', string-join(for $t in tokenize($o/@args, ' ') return eo:signature($t), ' '), '}')"/>
+        <xsl:sequence select="concat(' /{', eo:signature(string($o/@args)), '}')"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:sequence select="''"/>
