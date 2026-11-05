@@ -108,7 +108,7 @@
                                 ctx.text.as-bytes.slice (index.plus 2) 1
                                 C0-
                               80-
-                            b1three
+                            triplet
                         accum.plus 1
                         result
                         cause
@@ -118,14 +118,21 @@
                           increase
                             index
                             4
-                            b2cont.and (b3cont.and b1four)
+                            b2cont.and (fourth.and quartet)
                           accum.plus 1
                           result
                           cause
                         T
                           "Unknown byte format (%x), can't recognize character".printf
                             * byte
-            if. > b1four
+            eq. > fourth
+              and.
+                ctx.text.as-bytes.slice
+                  index.plus 3
+                  1
+                C0-
+              80-
+            if. > quartet
               byte.eq F0-
               or.
                 eq.
@@ -147,7 +154,7 @@
                       byte.eq F3-
                   b1cont
                   false
-            if. > b1three
+            if. > triplet
               byte.eq E0-
               eq.
                 b1.and E0-
@@ -158,13 +165,6 @@
                   b1.and E0-
                   80-
                 b1cont
-            eq. > b3cont
-              and.
-                ctx.text.as-bytes.slice
-                  index.plus 3
-                  1
-                C0-
-              80-
           |
             bstart
             0
