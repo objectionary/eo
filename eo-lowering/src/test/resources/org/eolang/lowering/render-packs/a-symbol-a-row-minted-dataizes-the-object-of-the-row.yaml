@@ -188,7 +188,7 @@ java: |
 
       @Override
       public Phi lambda() {
-          return new Data.ToPhi(java.nio.ByteBuffer.wrap(this.𝜎7()).getDouble());
+          return new Data.ToPhi(new Dataized(new Data.ToPhi(this.𝜎7())).asNumber());
       }
 
       private byte[] 𝜎2() {
@@ -200,14 +200,14 @@ java: |
       }
 
       private byte[] 𝜎5() {
-          return new Dataized(new Data.ToPhi(java.nio.ByteBuffer.wrap(this.𝜎2()).getDouble()).take("twice")).take();
+          return new Dataized(new Data.ToPhi(new Dataized(new Data.ToPhi(this.𝜎2())).asNumber()).take("twice")).take();
       }
 
       private byte[] 𝜎6() {
-          return new Dataized(new Data.ToPhi(java.nio.ByteBuffer.wrap(this.𝜎3()).getDouble()).take("twice")).take();
+          return new Dataized(new Data.ToPhi(new Dataized(new Data.ToPhi(this.𝜎3())).asNumber()).take("twice")).take();
       }
 
       private byte[] 𝜎7() {
-          return java.nio.ByteBuffer.allocate(8).putDouble(java.nio.ByteBuffer.wrap(this.𝜎5()).getDouble() + java.nio.ByteBuffer.wrap(this.𝜎6()).getDouble()).array();
+          return java.nio.ByteBuffer.allocate(8).putDouble(new Dataized(new Data.ToPhi(this.𝜎5())).asNumber() + new Dataized(new Data.ToPhi(this.𝜎6())).asNumber()).array();
       }
   }

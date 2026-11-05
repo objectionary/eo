@@ -84,6 +84,6 @@ java: |
       }
 
       private byte[] 𝜎5() {
-          return new BytesOf(this.𝜎3()).shift(new Int("b", new Data.ToPhi(java.nio.ByteBuffer.wrap(this.𝜎4()).getDouble())).it()).take();
+          return new BytesOf(this.𝜎3()).shift(new Int("b", new Data.ToPhi(new Dataized(new Data.ToPhi(this.𝜎4())).asNumber())).it()).take();
       }
   }
