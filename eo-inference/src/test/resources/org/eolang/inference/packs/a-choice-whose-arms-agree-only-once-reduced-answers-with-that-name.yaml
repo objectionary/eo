@@ -3,8 +3,8 @@
 ---
 # yamllint disable rule:line-length
 # and hands FF-.eq x and false to the if of its bool. FF-.eq x is what
-# bytes.eq returns, a bool, and false reduces to the bool its @ gives, so both
-# arms are a bool, and so is and.
+# bytes.eq returns: a true or a false Java makes. Each of them reduces to the
+# bool its @ gives, and so does false. So both arms are a bool, and so is and.
 sources:
   bool.eo: |
     [fork] > bool
@@ -31,7 +31,7 @@ sources:
           right > @
   bytes.eo: |
     [@] > bytes
-      [] > eq /Q.bool
+      [] > eq /Q.true|Q.false
         ? > ^
         ? > b
   number.eo: |
@@ -45,3 +45,4 @@ answers:
   - /answers/o[@loc='Φ.bool.and.φ.α1' and @lands='a🌵5-6']/is[@loc='Φ.bool']
   - /answers/o[@loc='Φ.bool.and.φ']/is[@loc='Φ.bool']
   - /answers/o[@loc='Φ.bool.and']/reduced/is[@loc='Φ.bool']
+  - /answers[not(o[starts-with(@loc, 'Φ.bool.and')]//unknown[@kind='java'])]

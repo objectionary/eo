@@ -21,7 +21,10 @@ call or the read was. A call handed only unknowns waits until nothing else
 grows, so that a real value can still come first, and then makes its copy
 with those unknowns in its voids, each of its own kind. So a void of code
 nobody calls stays that unknown down every call it goes through, and a read
-of it never gives T.
+of it never gives T. What Java puts into an object an atom returns comes from
+the type of the atom. The engine makes one copy for each option of a union,
+its voids typed in order by the brackets, and a void the type leaves out
+holds the unknown only Java fills.
 
 ## What it writes
 
@@ -32,7 +35,8 @@ number. The first, `facts.xml`, has four parts:
 - `objects`: every formation with its attributes. For each void it says
   whether a type is declared (`holds`, from `? > code /Q.number`) and
   whether an atom calls it back (`args`, from `? > scope /{Q.chunk}`). For an
-  atom it says what it returns.
+  atom it says what it returns, a type tree as the parser writes it, such as
+  `Φ.posix.status-return(Φ.number,Φ.string)` or `Φ.true|Φ.false`.
 - `reads`: every name read, and what it is read off.
 - `heads`: what each chain starts from: `Φ`, the formation around a bare
   `ξ`, a datum or a termination.

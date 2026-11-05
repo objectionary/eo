@@ -2,14 +2,14 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# one and two put a cat and a bag into the pool of stuff, so the thing read
-# off what check returns is a cat or a bag, and size read off it is T on the
-# cat, which has no size, and the size of the bag. The argument of box holds
-# both and goes into item as it is, so item is T or the size of bag.
+# check returns a status whose stuff is a cat or a bag, so the thing read off
+# what check returns is a cat or a bag, and size read off it is T on the cat,
+# which has no size, and the size of the bag. The argument of box holds both
+# and goes into item as it is, so item is T or the size of bag.
 sources:
   os.eo: |
     [] > os
-      [] > check /Q.os.status
+      [] > check /Q.os.status(Q.cat|Q.bag)
       [stuff] > status
         stuff > @
         stuff > thing
@@ -18,12 +18,6 @@ sources:
   bag.eo: |
     [] > bag
       [] > size
-  one.eo: |
-    [] > one
-      os.status cat > @
-  two.eo: |
-    [] > two
-      os.status bag > @
   box.eo: |
     [item] > box
       item > @
@@ -37,8 +31,7 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.one.φ.α0' and @lands='v🌵stuff']/is[@loc='Φ.cat']
-  - /answers/o[@loc='Φ.two.φ.α0' and @lands='v🌵stuff']/is[@loc='Φ.bag']
+  - /answers/o[@loc='Φ.os.status.v🌵stuff' and count(*)=2 and ./is[@loc='Φ.cat']]/is[@loc='Φ.bag']
   - /answers/o[@loc='Φ.app.φ.α0.ρ' and is[@loc='Φ.cat'] and is[@loc='Φ.bag']]
   - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵item' and terminator and count(*)=2]/is[@loc='Φ.bag.size']
   - /answers[not(o//fails)]

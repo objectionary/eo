@@ -90,13 +90,26 @@ final class Population {
     }
 
     /**
-     * The copy of a formation Java makes, with Java's own {@code ρ}.
+     * The copy Java makes of one option of a type, its voids typed by the
+     * brackets of the option.
      *
-     * @param form The formation
+     * @param option The option
      * @return The copy
      */
-    int java(final String form) {
-        return this.copies.java(form);
+    int java(final Annotation option) {
+        return this.copies.java(option);
+    }
+
+    /**
+     * The copy of one option of the type a void declares, born at a read of
+     * that void.
+     *
+     * @param option The option
+     * @param born Where it is born, with its tag
+     * @return The copy
+     */
+    int declared(final Annotation option, final Site born) {
+        return this.copies.declared(option, born);
     }
 
     /**
@@ -202,15 +215,6 @@ final class Population {
      */
     Ints row(final int copy, final String name) {
         return this.rows.row(copy, name);
-    }
-
-    /**
-     * Every row, by copy and void.
-     *
-     * @return The rows
-     */
-    Map<Slot, Ints> table() {
-        return this.rows.all();
     }
 
     /**

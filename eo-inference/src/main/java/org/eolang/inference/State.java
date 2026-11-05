@@ -91,13 +91,26 @@ final class State {
     }
 
     /**
-     * The copy of a formation Java makes, with Java's own {@code ρ}.
+     * The copy Java makes of one option of a type, with Java's own
+     * {@code ρ} and its voids typed by the brackets of the option.
      *
-     * @param form The formation
+     * @param option The option
      * @return The copy
      */
-    int java(final String form) {
-        return this.population.java(form);
+    int java(final Annotation option) {
+        return this.population.java(option);
+    }
+
+    /**
+     * The copy of one option of the type a void declares, born at a read of
+     * that void, its voids typed by the brackets of the option.
+     *
+     * @param option The option
+     * @param born Where it is born, with its tag
+     * @return The copy
+     */
+    int declared(final Annotation option, final Site born) {
+        return this.population.declared(option, born);
     }
 
     /**
@@ -203,15 +216,6 @@ final class State {
      */
     Ints row(final int copy, final String name) {
         return this.population.row(copy, name);
-    }
-
-    /**
-     * Every row, by copy and void.
-     *
-     * @return The rows
-     */
-    Map<Slot, Ints> table() {
-        return this.population.table();
     }
 
     /**
@@ -563,64 +567,8 @@ final class State {
     }
 
     /**
-     * Read an empty void of a copy Java made, from its pool.
-     *
-     * @param copy The copy
-     * @param name The void
-     * @param site The site of the read, under the tag of the reader
-     * @return What it holds, the decided unknown too, nothing while it
-     *  waits
-     */
-    Ints read(final int copy, final String name, final Site site) {
-        return this.course.read(copy, name, site);
-    }
-
-    /**
-     * Put what a call hands to a void of what Java makes into its pool.
-     *
-     * @param form The formation
-     * @param name The void
-     * @param values The values
-     */
-    void fill(final String form, final String name, final int... values) {
-        this.course.fill(form, name, values);
-    }
-
-    /**
-     * Change a: the voids of objects atoms return that were read with
-     * nothing in their pool, and are not decided yet.
-     *
-     * @return The voids, as formation and void, in order
-     */
-    List<List<String>> waiting() {
-        return this.course.waiting();
-    }
-
-    /**
-     * Decide that Java alone fills these voids.
-     *
-     * @param pairs The voids, as formation and void
-     */
-    void decide(final List<List<String>> pairs) {
-        this.course.decide(pairs);
-    }
-
-    /**
-     * Whether nobody fills a void of what Java makes: it was read with
-     * nothing in the pool and never decided.
-     *
-     * @param form The formation
-     * @param name The void
-     * @return TRUE if nobody fills it
-     */
-    boolean unfilled(final String form, final String name) {
-        return this.course.unfilled(form, name);
-    }
-
-    /**
-     * Tell which study copies no longer count, mark the reads with no
-     * answer, keep aside what holds a decided unknown, and make it a plain
-     * one everywhere else.
+     * Tell which study copies no longer count, and mark the reads with no
+     * answer.
      */
     void step() {
         this.course.step();
@@ -635,28 +583,6 @@ final class State {
      */
     String token(final String place, final int ctx) {
         return this.course.token(place, ctx);
-    }
-
-    /**
-     * An answer as it was before the end step.
-     *
-     * @param key The question
-     * @param answer The answer now
-     * @return The answer it had
-     */
-    Ints untidy(final Key key, final Ids answer) {
-        return this.course.untidy(key, answer);
-    }
-
-    /**
-     * A row as it was before the end step.
-     *
-     * @param copy The copy
-     * @param name The void
-     * @return The row it was
-     */
-    Ints untidy(final int copy, final String name) {
-        return this.course.untidy(copy, name);
     }
 
     /**
@@ -689,16 +615,6 @@ final class State {
      */
     List<Key> questions() {
         return this.inquiry.questions();
-    }
-
-    /**
-     * Put another answer in place of a stored one, after the passes.
-     *
-     * @param key The question
-     * @param answer The answer
-     */
-    void replace(final Key key, final Ints answer) {
-        this.inquiry.replace(key, answer);
     }
 
     /**

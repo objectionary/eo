@@ -55,4 +55,37 @@ final class CallbacksTest {
             Matchers.equalTo("Φ.block@java{}")
         );
     }
+
+    @Test
+    void typesVoidsOfWhatJavaMakesAsCallBackListSays(@Mktmp final Path temp)
+        throws IOException {
+        final World world = new Sources(temp).with(
+            "memory.eo",
+            "[] > memory",
+            "  [] > use /Q.number",
+            "    ? > scope /{Q.block(Q.string)}"
+        ).with(
+            "block.eo",
+            "[size] > block",
+            "  size > length"
+        ).with(
+            "app.eo",
+            "[] > app",
+            "  memory.use > @",
+            "    [b]",
+            "      b.length > @"
+        ).world();
+        MatcherAssert.assertThat(
+            "the block Java makes must have its void typed as the list says, but it didnt",
+            world.full(
+                new Settled(world).state().row(
+                    world.intern(
+                        new Value('O', "Φ.app.φ.α0", "Φ.app.φ", 1L, "", -1, 0)
+                    ),
+                    "v🌵b"
+                ).get(0)
+            ),
+            Matchers.equalTo("Φ.block@java(Φ.string){v🌵size}")
+        );
+    }
 }

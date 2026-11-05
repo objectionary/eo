@@ -12,8 +12,9 @@ package org.eolang.inference;
  * <li>Number, string and bytes reduce to their one shared copy.</li>
  * <li>A decorator reduces to what its {@code @} gives; an object met
  * again while it is reduced does not count itself (rule s).</li>
- * <li>A finished atom reduces to what it returns: a new Java copy, or
- * what the own voids it names hold.</li>
+ * <li>A finished atom reduces to what it returns: the copies Java makes,
+ * one for each option of its type, and what the own voids it names
+ * hold.</li>
  * <li>What an object with empty voids reduces to carries a mark, the
  * number of its empty voids (rule A); a call uses the mark up.</li>
  * <li>An object whose {@code @} gives nothing typed is nothing until a
@@ -239,23 +240,25 @@ final class Reduction {
 
     private Ints atom(final int num) {
         final Value value = this.world.value(num);
-        final String ret = this.world.form(value.form()).returns();
         final Ints result = new Ints();
-        if (this.world.formation(ret)) {
-            final int made = this.state.java(ret);
-            this.state.remember(made);
-            result.add(made);
-        } else if (this.world.own(value.form()).isEmpty()) {
-            result.add(num);
-        } else {
-            for (final String own : this.world.own(value.form())) {
-                final Ids got = this.state.attr(
-                    num, own, new Site(String.join(".", value.form(), own), value.tag())
-                );
-                for (int idx = 0; idx < got.size(); ++idx) {
-                    result.addAll(this.kind(got.get(idx)));
-                }
+        for (final Annotation option
+            : new Annotation(this.world.form(value.form()).returns()).options()) {
+            if (this.world.formation(option.head())) {
+                final int made = this.state.java(option);
+                this.state.remember(made);
+                result.add(made);
             }
+        }
+        for (final String own : this.world.own(value.form())) {
+            final Ids got = this.state.attr(
+                num, own, new Site(String.join(".", value.form(), own), value.tag())
+            );
+            for (int idx = 0; idx < got.size(); ++idx) {
+                result.addAll(this.kind(got.get(idx)));
+            }
+        }
+        if (result.isEmpty() && this.world.own(value.form()).isEmpty()) {
+            result.add(num);
         }
         return result;
     }

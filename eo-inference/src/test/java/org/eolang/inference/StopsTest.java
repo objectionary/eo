@@ -46,4 +46,27 @@ final class StopsTest {
             Matchers.is(true)
         );
     }
+
+    @Test
+    void leavesNothingWaitingAfterReadOfVoidJavaFills(@Mktmp final Path temp)
+        throws IOException {
+        final State state = new State(
+            new Sources(temp).with(
+                "os.eo",
+                "[] > os",
+                "  [] > check /Q.os.status",
+                "  [code] > status",
+                "    code > @"
+            ).world()
+        );
+        state.seed();
+        state.attr(
+            state.java(new Annotation("Φ.os.status")), "v🌵code", new Site("Φ.app.φ", "")
+        );
+        MatcherAssert.assertThat(
+            "a read of a void Java fills must leave nothing waiting for a stop, but it left something",
+            state.pending(),
+            Matchers.is(false)
+        );
+    }
 }

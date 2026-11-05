@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The void item of put says it holds a number or a string, so the call in app
+# leaves both there, next to the bytes it puts in.
+sources:
+  os.eo: |
+    [] > os
+      [] > put /Q.number
+        ? > item /Q.number|Q.string
+  app.eo: |
+    [] > app
+      os.put 01- > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts:
+  - /facts/objects/type[@id='Φ.os.put']/attr[@name='v🌵item' and @holds='Φ.number|Φ.string']
+answers:
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵item']/is[@loc='Φ.bytes']
+  - /answers/o[@loc='Φ.os.put.v🌵item' and count(*)=3 and ./is[@loc='Φ.number'] and ./is[@loc='Φ.string']]/is[@loc='Φ.bytes']

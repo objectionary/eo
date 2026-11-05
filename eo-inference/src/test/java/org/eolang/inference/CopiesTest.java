@@ -129,4 +129,76 @@ final class CopiesTest {
             Matchers.hasToString(new Ids(Values.ROOT).toString())
         );
     }
+
+    @Test
+    void bearsCopyJavaMakesWithBracketsOfItsType(@Mktmp final Path temp) throws IOException {
+        final World world = CopiesTest.status(temp);
+        final State state = new State(world);
+        state.seed();
+        MatcherAssert.assertThat(
+            "the copy Java makes must be born with the brackets of its type, but it wasnt",
+            world.full(state.java(new Annotation("Φ.os.status(Φ.number,Φ.string)"))),
+            Matchers.equalTo("Φ.os.status@java(Φ.number,Φ.string){v🌵code,v🌵note}")
+        );
+    }
+
+    @Test
+    void keepsApartTwoTypesOfOneFormation(@Mktmp final Path temp) throws IOException {
+        final State state = new State(CopiesTest.status(temp));
+        state.seed();
+        MatcherAssert.assertThat(
+            "two types that put different things into one formation must make two copies, but they made one",
+            state.java(new Annotation("Φ.os.status(Φ.string,Φ.bytes)")),
+            Matchers.not(Matchers.equalTo(state.java(new Annotation("Φ.os.status(Φ.bytes,Φ.string)"))))
+        );
+    }
+
+    @Test
+    void putsCopyOfEachOptionOfMemberIntoItsVoid(@Mktmp final Path temp) throws IOException {
+        final State state = new State(CopiesTest.status(temp));
+        state.seed();
+        MatcherAssert.assertThat(
+            "a union in brackets must put a copy of each option into its void, but it didnt",
+            state.row(state.java(new Annotation("Φ.os.status(Φ.bytes|Φ.string)")), "v🌵code")
+                .frozen(),
+            Matchers.hasToString(
+                new Ints(state.shared("Φ.bytes"), state.shared("Φ.string")).frozen().toString()
+            )
+        );
+    }
+
+    @Test
+    void leavesVoidOutOfBracketsUnbound(@Mktmp final Path temp) throws IOException {
+        final World world = CopiesTest.status(temp);
+        final State state = new State(world);
+        state.seed();
+        MatcherAssert.assertThat(
+            "a void the brackets leave out must stay unbound, but it was bound",
+            world.opened(world.value(state.java(new Annotation("Φ.os.status(Φ.bytes)")))),
+            Matchers.contains("v🌵note")
+        );
+    }
+
+    @Test
+    void givesSharedCopyToKindOfCanonWhateverItsBrackets(@Mktmp final Path temp)
+        throws IOException {
+        final State state = new State(CopiesTest.status(temp));
+        state.seed();
+        MatcherAssert.assertThat(
+            "Java must make the shared copy of a kind of the canon, but it made another",
+            state.java(new Annotation("Φ.number(Φ.string)")),
+            Matchers.equalTo(state.shared("Φ.number"))
+        );
+    }
+
+    private static World status(final Path temp) throws IOException {
+        return new Sources(temp).with(
+            "os.eo",
+            "[] > os",
+            "  [] > check /Q.os.status",
+            "  [code note] > status",
+            "    code > @",
+            "    note > text"
+        ).world();
+    }
 }

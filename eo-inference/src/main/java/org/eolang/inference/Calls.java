@@ -28,8 +28,8 @@ import java.util.Set;
  * and call then narrow (3.5) for an object whose {@code @} is one of its
  * voids, once the call fills the last of its empty voids; a call that
  * leaves some empty makes a plain copy, and a later call fills the rest.
- * Every argument of an atom is dataized, a void its atom calls back gets
- * its copies made, and a void of what Java makes fills its pool. A
+ * Every argument of an atom is dataized, and a void its atom calls back gets
+ * its copies made. A
  * formation with no name of its own, written as an argument, gets the copy
  * the call makes as its {@code ^}, an atom's copy too: that is the object
  * it goes into, and nothing else is.</p>
@@ -200,7 +200,7 @@ final class Calls {
     private boolean fits(
         final int head, final Value value, final List<String> voids, final int args
     ) {
-        return !Values.JBORN.equals(value.birth()) && !this.state.shared(head)
+        return !value.java() && !this.state.shared(head)
             && voids.size() == args;
     }
 
@@ -226,7 +226,7 @@ final class Calls {
     ) {
         final String passed = this.world.passes(value.form());
         final Ints out;
-        if ((Values.JBORN.equals(value.birth()) || this.state.shared(head))
+        if ((value.java() || this.state.shared(head))
             && call.size() > 0 || voids.size() < call.size()) {
             out = new Ints(Values.TERM);
         } else if (passed.isEmpty() || voids.size() < this.world.opened(value).size()) {
@@ -301,11 +301,6 @@ final class Calls {
 
     private void bind(final Value value, final List<String> voids, final Call call) {
         final String form = value.form();
-        if (this.world.returned(form)) {
-            for (int arg = 0; arg < voids.size(); ++arg) {
-                this.state.fill(form, voids.get(arg), call.sets().get(arg));
-            }
-        }
         final Formation shape = this.world.form(form);
         for (int arg = 0; arg < voids.size(); ++arg) {
             if (shape.back(voids.get(arg))) {

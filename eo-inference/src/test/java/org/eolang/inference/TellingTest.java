@@ -79,4 +79,67 @@ final class TellingTest {
         state.step();
         return new Telling(state, world).told();
     }
+
+    @Test
+    void tellsVoidOfJavaCopyByTheTypeItsAtomGives(@Mktmp final Path temp)
+        throws IOException {
+        MatcherAssert.assertThat(
+            "a void of a copy Java made must be told by the type its atom gives, but it wasnt",
+            TellingTest.status(temp).sets().get("Φ.os.status.v🌵code"),
+            Matchers.equalTo(Map.of("Φ.number", 2))
+        );
+    }
+
+    @Test
+    void tellsVoidTypeLeavesOutAsUnknownOnlyJavaFills(@Mktmp final Path temp)
+        throws IOException {
+        MatcherAssert.assertThat(
+            "a void of a copy Java made that its type leaves out must be told as the unknown only Java fills, but it wasnt",
+            TellingTest.status(temp).sets().get("Φ.os.status.v🌵note"),
+            Matchers.hasEntry("?unknown-java", 1)
+        );
+    }
+
+    @Test
+    void tellsEachOptionOfDeclaredUnion(@Mktmp final Path temp) throws IOException {
+        final World world = new Sources(temp).with(
+            "os.eo",
+            "[] > os",
+            "  [] > put /Q.number",
+            "    ? > item /Q.bytes|Q.string"
+        ).with(
+            "app.eo",
+            "[] > app",
+            "  os.put 7 > @"
+        ).world();
+        final State state = new Settled(world).state();
+        state.step();
+        MatcherAssert.assertThat(
+            "a void declared as a union must be told by each of its options, but it wasnt",
+            new Telling(state, world).told().sets().get("Φ.os.put.v🌵item"),
+            Matchers.hasKey("Φ.bytes\tΦ.number\tΦ.string")
+        );
+    }
+
+    private static Told status(final Path temp) throws IOException {
+        final World world = new Sources(temp).with(
+            "os.eo",
+            "[] > os",
+            "  [] > check /Q.os.status(Q.number)",
+            "  [code note] > status",
+            "    code > @",
+            "    note > text"
+        ).with(
+            "app.eo",
+            "[] > app",
+            "  os.check.text > @"
+        ).with(
+            "report.eo",
+            "[] > report",
+            "  os.status 0 \"ok\" > @"
+        ).world();
+        final State state = new Settled(world).state();
+        state.step();
+        return new Telling(state, world).told();
+    }
 }

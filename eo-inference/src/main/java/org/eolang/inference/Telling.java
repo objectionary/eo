@@ -21,12 +21,18 @@ import java.util.TreeSet;
  * that count, and each copy says a set of labels there. A copy is named by
  * its formation; a copy that counts, of a decorator or of an atom that
  * returns its own voids, is named by every name its {@code @} gives, next
- * to the T it says, and every unknown it gives is left out. A copy keeps
+ * to the T it says, and every unknown it gives is left out. A copy of an
+ * atom that returns formations is named the way the copies Java makes of
+ * them are named, one for each option of its type. A copy keeps
  * its own name when its {@code @} gives no name, or gives D or a hidden
  * name, and a copy whose {@code @} gives only T is named T. A formation
  * and its voids are told too, from the copies of it that count: what each
  * void holds, what Java gives, and how many of those copies are copies a
- * stop keeps. Whatever the engine cannot name is an
+ * stop keeps. A copy Java made says what the type of its atom puts into
+ * each void, and the unknown only Java fills in a void the type leaves out,
+ * the same as a read of that void. A type a void declares, or an atom
+ * returns, names a formation for each option of its union. Whatever the
+ * engine cannot name is an
  * unknown of one of four kinds: {@code ?unknown-empty}, a void nobody fills
  * in a copy a call made, said only on that void's own row, since a read of
  * it is T; {@code ?unknown-study}, a void nobody fills in a copy that stands
@@ -130,12 +136,11 @@ final class Telling {
     }
 
     private Set<String> labels(
-        final Key key, final Ids answer, final Map<String, Map<String, Integer>> holders
+        final Key key, final Ids got, final Map<String, Map<String, Integer>> holders
     ) {
-        final Ints got = this.state.untidy(key, answer);
         final Set<String> labels = new TreeSet<>(new CodeOrder());
         if (got.isEmpty()) {
-            labels.add(this.missing(key));
+            labels.add("?unknown-loop");
         } else if (this.world.formation(key.place())) {
             for (int pos = 0; pos < got.size(); ++pos) {
                 labels.add(this.word(got.get(pos)));
@@ -147,7 +152,7 @@ final class Telling {
     }
 
     private Set<String> given(
-        final String place, final Ints got, final Map<String, Map<String, Integer>> holders
+        final String place, final Ids got, final Map<String, Map<String, Integer>> holders
     ) {
         final String name = this.off(place);
         final Set<String> labels = new TreeSet<>(new CodeOrder());
@@ -181,16 +186,6 @@ final class Telling {
     private boolean owns(final int num, final String name) {
         final Value value = this.world.value(this.world.bare(num));
         return !name.isEmpty() && value.kind() == 'O' && this.world.form(value.form()).has(name);
-    }
-
-    private String missing(final Key key) {
-        final String label;
-        if (EndStep.NOBODY.equals(this.state.token(key.place(), key.value()))) {
-            label = "?unknown-java";
-        } else {
-            label = "?unknown-loop";
-        }
-        return label;
     }
 
     private Map<String, Map<String, Integer>> reduction() {
@@ -229,10 +224,9 @@ final class Telling {
         }
         if (!shape.returns().isEmpty()) {
             final Set<String> gives = new TreeSet<>(new CodeOrder());
-            if (shape.gives().isEmpty()) {
-                gives.add(shape.returns());
-            } else {
-                gives.addAll(shape.gives());
+            gives.addAll(shape.gives());
+            for (final Annotation option : new Annotation(shape.returns()).options()) {
+                gives.add(option.toString());
             }
             Telling.count(groups, String.join(".", form, "λ"), String.join("\t", gives));
         }
@@ -243,15 +237,13 @@ final class Telling {
         final Formation shape = this.world.form(value.form());
         final String holds = shape.holds(name);
         final Set<String> said = new TreeSet<>(new CodeOrder());
-        if (Values.JBORN.equals(value.birth()) || (value.bound() & shape.bit(name)) == 0) {
-            said.add(this.vacant(copy, holds));
+        if ((value.bound() & shape.bit(name)) == 0) {
+            said.addAll(this.vacant(copy, holds));
         } else {
-            for (final int val : this.state.untidy(copy, name).array()) {
+            for (final int val : this.state.row(copy, name).array()) {
                 said.addAll(this.last(val));
             }
-            if (!holds.isEmpty()) {
-                said.add(holds);
-            }
+            said.addAll(Telling.heads(holds));
             if (said.isEmpty()) {
                 throw new IllegalStateException(
                     String.format(
@@ -268,7 +260,7 @@ final class Telling {
         final Set<String> said = new TreeSet<>(new CodeOrder());
         final Ints row = this.caret(copy);
         if (row.isEmpty()) {
-            said.add(this.vacant(copy, ""));
+            said.addAll(this.vacant(copy, ""));
         } else {
             for (final int val : row.array()) {
                 said.add(this.word(val));
@@ -288,10 +280,10 @@ final class Telling {
     private Ints caret(final int copy) {
         final Value value = this.world.value(copy);
         final Ints row;
-        if (Values.JBORN.equals(value.birth()) || (value.bound() & Formation.RHO) == 0) {
+        if (value.java() || (value.bound() & Formation.RHO) == 0) {
             row = new Ints();
         } else {
-            row = this.state.untidy(copy, "ρ");
+            row = this.state.row(copy, "ρ");
         }
         return row;
     }
@@ -323,18 +315,36 @@ final class Telling {
         final String form = this.world.value(num).form();
         final Formation shape = this.world.form(form);
         final Set<String> result = new HashSet<>(1);
-        if (!this.world.decorator(form) && !shape.returns().isEmpty()
-            && !shape.has("φ") && this.world.formation(shape.returns())) {
-            result.add(shape.returns());
-        } else {
-            final List<String> voids = this.behind(num);
-            if (voids.isEmpty() || this.walking.get(num)) {
-                result.add(form);
-            } else {
-                result.addAll(this.followed(num, voids));
-            }
+        if (!this.world.decorator(form) && !shape.returns().isEmpty() && !shape.has("φ")) {
+            result.addAll(this.made(num, shape));
+        }
+        final List<String> voids = this.behind(num);
+        if (!voids.isEmpty() && !this.walking.get(num)) {
+            result.addAll(this.followed(num, voids));
+        } else if (result.isEmpty()) {
+            result.add(form);
         }
         return result;
+    }
+
+    private Set<String> made(final int num, final Formation shape) {
+        final Set<String> said = new HashSet<>(1);
+        this.walking.set(num);
+        try {
+            for (final Annotation option : new Annotation(shape.returns()).options()) {
+                if (this.world.formation(option.head())) {
+                    final int copy = this.state.java(option);
+                    if (this.walking.get(copy)) {
+                        said.add(option.head());
+                    } else {
+                        said.addAll(this.last(copy));
+                    }
+                }
+            }
+        } finally {
+            this.walking.clear(num);
+        }
+        return said;
     }
 
     private List<String> behind(final int num) {
@@ -422,19 +432,19 @@ final class Telling {
         return !"T".equals(label) && !"D".equals(label) && !label.contains("🌵");
     }
 
-    private String vacant(final int copy, final String holds) {
-        final String label;
+    private Set<String> vacant(final int copy, final String holds) {
+        final Set<String> labels = new TreeSet<>(new CodeOrder());
         if (holds.isEmpty()) {
-            label = this.gap(copy);
+            labels.add(this.gap(copy));
         } else {
-            label = holds;
+            labels.addAll(Telling.heads(holds));
         }
-        return label;
+        return labels;
     }
 
     private String gap(final int copy) {
         final String label;
-        if (Values.JBORN.equals(this.world.value(copy).birth())) {
+        if (this.world.value(copy).java()) {
             label = "?unknown-java";
         } else if (this.state.kept(copy)) {
             label = "?unknown-study";
@@ -442,6 +452,16 @@ final class Telling {
             label = "?unknown-empty";
         }
         return label;
+    }
+
+    private static Set<String> heads(final String type) {
+        final Set<String> found = new TreeSet<>(new CodeOrder());
+        if (!type.isEmpty()) {
+            for (final Annotation option : new Annotation(type).options()) {
+                found.add(option.head());
+            }
+        }
+        return found;
     }
 
     private static void count(

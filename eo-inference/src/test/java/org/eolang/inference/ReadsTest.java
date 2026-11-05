@@ -93,4 +93,46 @@ final class ReadsTest {
             .with("cat.eo", "[] > cat", "  \"meow\" > voice")
             .world();
     }
+
+    @Test
+    void readsVoidTypeLeavesOutAsUnknownOnlyJavaFills(@Mktmp final Path temp)
+        throws IOException {
+        final State state = new Settled(ReadsTest.status(temp)).state();
+        MatcherAssert.assertThat(
+            "a void of a copy Java made that its type leaves out must read the unknown only Java fills, but it didnt",
+            state.attr(
+                state.java(new Annotation("Φ.os.status(Φ.number)")),
+                "v🌵note", new Site("Φ.app.φ", "")
+            ),
+            Matchers.hasToString(new Ids(Values.JGAP).toString())
+        );
+    }
+
+    @Test
+    void readsVoidTypeGivesAsThatType(@Mktmp final Path temp) throws IOException {
+        final State state = new Settled(ReadsTest.status(temp)).state();
+        MatcherAssert.assertThat(
+            "a void of a copy Java made must read what its type gives it, but it didnt",
+            state.attr(
+                state.java(new Annotation("Φ.os.status(Φ.number,Φ.string)")),
+                "v🌵note", new Site("Φ.app.φ", "")
+            ),
+            Matchers.hasToString(new Ids(state.shared("Φ.string")).toString())
+        );
+    }
+
+    private static World status(final Path temp) throws IOException {
+        return new Sources(temp).with(
+            "os.eo",
+            "[] > os",
+            "  [] > check /Q.os.status",
+            "  [code note] > status",
+            "    code > @",
+            "    note > text"
+        ).with(
+            "report.eo",
+            "[] > report",
+            "  os.status 0 \"ok\" > @"
+        ).world();
+    }
 }

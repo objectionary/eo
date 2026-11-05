@@ -2,8 +2,8 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# Nothing in EO fills the code of the status that check returns, so a stop
-# decides Java alone fills it. app hands that code to box, whose call waits
+# The annotation of check does not type the code of the status it returns,
+# so Java alone fills it. app hands that code to box, whose call waits
 # for a stop (rule b) and then makes the copy of box with the unknown in item.
 # So item holds the unknown only Java fills, and reading it gives that unknown,
 # not T.

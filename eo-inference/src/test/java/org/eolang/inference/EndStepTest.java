@@ -39,28 +39,14 @@ final class EndStepTest {
     }
 
     @Test
-    void makesDecidedOpenVoidPlainInAnswers(@Mktmp final Path temp) throws IOException {
+    void leavesUnknownOnlyJavaFillsInAnswers(@Mktmp final Path temp) throws IOException {
         final World world = EndStepTest.world(temp);
         final State state = new Settled(world).state();
         state.step();
         MatcherAssert.assertThat(
-            "an answer with a decided open void must hold a plain one after the end step, but it didnt",
+            "an answer with the unknown only Java fills must keep it after the end step, but it didnt",
             state.stored(EndStepTest.read(world)),
-            Matchers.hasToString(new Ids(Values.GAP).toString())
-        );
-    }
-
-    @Test
-    void keepsAsideAnswerWithDecidedOpenVoid(@Mktmp final Path temp) throws IOException {
-        final World world = EndStepTest.world(temp);
-        final State state = new Settled(world).state();
-        state.step();
-        MatcherAssert.assertThat(
-            "the answer as it was before the end step must be kept aside, but it wasnt",
-            state.untidy(
-                EndStepTest.read(world), state.stored(EndStepTest.read(world))
-            ).array(),
-            Matchers.equalTo(new int[] {Values.JGAP})
+            Matchers.hasToString(new Ids(Values.JGAP).toString())
         );
     }
 

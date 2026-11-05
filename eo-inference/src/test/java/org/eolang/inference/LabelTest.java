@@ -68,4 +68,13 @@ final class LabelTest {
             Matchers.equalTo("name")
         );
     }
+
+    @Test
+    void saysTypeTreeAsItIsWritten() {
+        MatcherAssert.assertThat(
+            "a type tree must be said as it is written, but it was changed",
+            new Label("Φ.posix.status-return(Φ.number,Φ.bytes|Φ.string)").words(),
+            Matchers.equalTo("Φ.posix.status-return(Φ.number,Φ.bytes|Φ.string)")
+        );
+    }
 }

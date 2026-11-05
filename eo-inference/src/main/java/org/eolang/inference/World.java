@@ -260,26 +260,6 @@ final class World {
     }
 
     /**
-     * Whether a formation is one an atom returns.
-     *
-     * @param form The formation
-     * @return TRUE if it is
-     */
-    boolean returned(final String form) {
-        return this.roles.returned(form);
-    }
-
-    /**
-     * The voids of the formations atoms return that have no declared type,
-     * as formation and void, in order.
-     *
-     * @return The pairs
-     */
-    List<List<String>> javaVoids() {
-        return this.roles.javaVoids();
-    }
-
-    /**
      * Whether a read is inner: it reads into a formation of the copy's own.
      *
      * @param place The place of the read
