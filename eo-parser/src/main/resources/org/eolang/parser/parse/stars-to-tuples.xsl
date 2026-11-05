@@ -36,6 +36,8 @@
   </o>
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
+  <!-- Pipe predecessors travel before the element that applies them. -->
+  <xsl:key name="pipe-predecessor" match="o[@float-up]" use="generate-id(following-sibling::o[not(@float-up)][1])"/>
   <!--
   A tuple of N elements is a chain N levels deep, and every sheet after this
   one walks it once per level, so a long one overflows the stack with no line
@@ -79,6 +81,9 @@
   "| args" pipe that follows it is. It is excluded from the "Φ.tuple" layers
   and the length count, but still emitted as a passenger child so the next
   sheet "vars-float-up" can hoist its definition and drop the in-place node.
+  Keep each passenger before its pipe: appending all passengers at the end
+  makes the floated pipe precede its const formation, leaving the printer
+  with no adjacent predecessor from which to restore the "|" head (#9721).
   Counting it would leave a spurious extra layer with a stray "Φ.number" once
   it is dropped (the parse-side mirror of #5858).
 
@@ -110,7 +115,7 @@
                   <xsl:attribute name="base" select="'Φ.tuple'"/>
                   <xsl:apply-templates select="$star/(@line | @pos)"/>
                   <xsl:sequence select="$layer"/>
-                  <xsl:apply-templates select="."/>
+                  <xsl:apply-templates select="key('pipe-predecessor', generate-id(.)) | ."/>
                   <xsl:call-template name="length">
                     <xsl:with-param name="star" select="$star"/>
                     <xsl:with-param name="value" select="$index + 1"/>
@@ -125,12 +130,11 @@
           <xsl:attribute name="base" select="'Φ.tuple'"/>
           <xsl:apply-templates select="@* except (@star | @base)"/>
           <xsl:sequence select="$nested"/>
-          <xsl:apply-templates select="$elems[last()]"/>
+          <xsl:apply-templates select="key('pipe-predecessor', generate-id($elems[last()])) | $elems[last()]"/>
           <xsl:call-template name="length">
             <xsl:with-param name="star" select="$star"/>
             <xsl:with-param name="value" select="count($elems)"/>
           </xsl:call-template>
-          <xsl:apply-templates select="o[@float-up]"/>
         </o>
       </xsl:when>
       <xsl:otherwise>
