@@ -3,11 +3,11 @@
 ---
 # yamllint disable rule:line-length
 # The message the flow throws is a printf over the sizes, and the protocol
-# names it through a dispatch, not through a chain of objects of the world,
-# so the atom has nothing to build it from, and the entry stays in EO.
+# builds it of a record it never spells out, so the atom has nothing to
+# build that part from, and the entry stays in EO.
 locator: Φ.bytes.xor
 number: 7
-taint: its message 𝑛·1·25 is no object of the world applied to its φ, so the atom cannot build it
+taint: its message is built of 𝑛·1·12.size, which no record of the protocol spells out, so the atom cannot build it
 eo:
   bytes.eo: |
     [@] > bytes
