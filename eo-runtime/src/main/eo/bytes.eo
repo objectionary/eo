@@ -254,7 +254,9 @@
       3
     1F-EE-B5
 
-  "你好, друг!".eq "你好, друг!" ++> can-turn-bytes-into-a-string
+  eq. ++> can-turn-bytes-into-a-string
+    "你好, друг!"
+    E4-BD-A0-E5-A5-BD-2C-20-D0-B4-D1-80-D1-83-D0-B3-21
 
   slice. --> stops-on-a-slice-offset-exceeding-the-int-range
     20-1F-EE-B5-90
