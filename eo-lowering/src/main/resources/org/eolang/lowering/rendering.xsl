@@ -126,7 +126,7 @@
   <xsl:key name="eo:joined" match="joined" use="@symbol"/>
   <xsl:key name="eo:symbolized" match="symbolized" use="@symbol"/>
   <xsl:key name="eo:number" match="dataized[@number] | symbolized[@number]" use="upper-case(normalize-space(.))"/>
-  <xsl:key name="eo:deferred" match="deferred" use="@symbol"/>
+  <xsl:key name="eo:deferred" match="deferred | looped[@symbol]" use="@symbol"/>
   <!-- The voids of this entry, by symbol, each as its path and its carrier. -->
   <xsl:variable name="eo:voids" as="map(xs:string, xs:string+)">
     <xsl:map>
@@ -273,7 +273,7 @@
     <xsl:if test="empty($eo:run)">
       <xsl:sequence select="eo:taint(concat('The protocol of the entry ', $number, ' holds no run, while phino writes the dataization of every run'))"/>
     </xsl:if>
-    <xsl:for-each-group select="$eo:doc//(minted | joined | symbolized | deferred)/@symbol" group-by=".">
+    <xsl:for-each-group select="$eo:doc//(minted | joined | symbolized | deferred | looped)/@symbol" group-by=".">
       <xsl:if test="count(current-group()) &gt; 1">
         <xsl:sequence select="eo:taint(concat('The symbol ', current-grouping-key(), ' of the entry ', $number, ' is defined ', count(current-group()), ' times, while phino mints every symbol once'))"/>
       </xsl:if>
@@ -459,7 +459,7 @@
         <xsl:sequence select="concat('&quot;', eo:message($bytes), '&quot;')"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:sequence select="concat('new Dataized(', eo:computed($message, $prefix), ').asString()')"/>
+        <xsl:sequence select="concat('new Dataized(', eo:computed($message, concat($prefix, 'its message')), ').asString()')"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -521,16 +521,17 @@
   of the entry says only that its object is an attribute of the entry,
   which every object the atom takes off itself already is, so that "ρ" is
   left out too. Anything else names an object this stage cannot build,
-  since it never parses a phi-expression, so its entry is a taint.
+  since it never parses a phi-expression, so its entry is a taint, whose
+  reason opens with the subject, the object that is being built.
   -->
   <xsl:function name="eo:computed" as="xs:string">
     <xsl:param name="meta" as="xs:string"/>
     <xsl:param name="prefix" as="xs:string"/>
-    <xsl:variable name="record" select="($eo:doc//(applied | formed)[@meta = $meta])[1]"/>
+    <xsl:variable name="record" select="eo:record($meta)"/>
     <xsl:variable name="binds" select="eo:binds($record)"/>
     <xsl:choose>
       <xsl:when test="empty($record/@of)">
-        <xsl:sequence select="eo:taint(concat($prefix, 'its message is built of ', $meta, ', which no record of the protocol spells out, so the atom cannot build it'))"/>
+        <xsl:sequence select="eo:taint(concat($prefix, ' is built of ', $meta, ', which no record of the protocol spells out, so the atom cannot build it'))"/>
       </xsl:when>
       <xsl:when test="$record/@of = 'Φ.bytes' and count($binds) = 1 and $binds[self::datum and @attr = 'φ']">
         <xsl:sequence select="eo:literal-of(normalize-space($binds), 'Phi')"/>
@@ -578,7 +579,7 @@
         <xsl:sequence select="eo:passed(normalize-space($bind))"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:sequence select="eo:taint(concat($prefix, 'the ', $bind/@attr, ' of its message is a ', name($bind), ', which the atom cannot build'))"/>
+        <xsl:sequence select="eo:taint(concat($prefix, ' binds ', $bind/@attr, ' to a ', name($bind), ', which the atom cannot build'))"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -592,7 +593,7 @@
     <xsl:variable name="head" select="tokenize($path, '\.')[1]"/>
     <xsl:choose>
       <xsl:when test="$head = 'Φ' and ($path = $locator or starts-with($path, concat($locator, '.')))">
-        <xsl:sequence select="eo:taint(concat($prefix, 'its message reaches ', $path, ', which is inside ', $locator))"/>
+        <xsl:sequence select="eo:taint(concat($prefix, ' reaches ', $path, ', which is inside ', $locator))"/>
       </xsl:when>
       <xsl:when test="$head = 'Φ'">
         <xsl:sequence select="eo:global($path)"/>
@@ -603,6 +604,17 @@
     </xsl:choose>
   </xsl:function>
   <!--
+  The record of the protocol that spells out the object a meta names. A
+  meta that is only an answer, a morph or a binding of another one stands
+  for the object that other one names.
+  -->
+  <xsl:function name="eo:record" as="element()?">
+    <xsl:param name="meta" as="xs:string"/>
+    <xsl:variable name="record" select="($eo:doc//(applied | formed)[@meta = $meta])[1]"/>
+    <xsl:variable name="alias" select="($eo:doc//(answered | morphed | bound)[@meta = $meta])[1]"/>
+    <xsl:sequence select="if (exists($record) or empty($alias)) then $record else eo:record(normalize-space($alias))"/>
+  </xsl:function>
+  <!--
   Every symbol a record names, down to the bottom, so that the atom
   computes them before it throws. Whether the record can be built at all
   is not asked here, since a record that cannot says so where it is built,
@@ -610,7 +622,7 @@
   -->
   <xsl:function name="eo:borne" as="xs:string*">
     <xsl:param name="meta" as="xs:string"/>
-    <xsl:variable name="record" select="($eo:doc//(applied | formed)[@meta = $meta])[1]"/>
+    <xsl:variable name="record" select="eo:record($meta)"/>
     <xsl:variable name="binds" select="$record/*[not(@attr = 'ρ')]"/>
     <xsl:sequence select="(($record/@of, $binds[self::ref]) ! tokenize(normalize-space(.), '\.')[1][. != 'Φ'] ! eo:borne(.), $binds[self::symbol] ! normalize-space(.), $binds[self::meta] ! eo:borne(normalize-space(.)))"/>
   </xsl:function>
@@ -893,7 +905,7 @@
   since a void bound to a copy is the object it is as well.
   -->
   <xsl:function name="eo:reached" as="xs:string*">
-    <xsl:variable name="all" select="distinct-values(($eo:doc//(minted | joined | deferred)/@symbol, map:keys($eo:voids)))"/>
+    <xsl:variable name="all" select="distinct-values(($eo:doc//(minted | joined | deferred | looped)/@symbol, map:keys($eo:voids)))"/>
     <xsl:variable name="seeds" as="xs:string*" select="(map:keys($eo:leaves) ! (eo:root($eo:leaves(.)), eo:bearing($eo:leaves(.)))[not(map:contains($eo:voids, .)) and not(eo:constant(.))], map:keys($eo:nodes) ! $eo:nodes(.)[not(eo:constant(.))])"/>
     <xsl:iterate select="sort($all, (), function($s) { -eo:serial($s) })">
       <xsl:param name="reached" as="xs:string*" select="distinct-values($seeds)"/>
@@ -912,7 +924,7 @@
             <xsl:sequence select="(eo:condition($joined), ('left', 'right') ! eo:branch($joined, .)[not(. = $joined/@terminator)], $joined[@terminator = (@left, @right) and @raised] ! eo:carried(string(@raised)))"/>
           </xsl:when>
           <xsl:when test="exists(key('eo:deferred', $symbol, $eo:doc))">
-            <xsl:sequence select="eo:arguments(key('eo:deferred', $symbol, $eo:doc)[1]) ! substring-after(., ':')[not(map:contains($eo:voids, .))]"/>
+            <xsl:sequence select="eo:arguments(key('eo:deferred', $symbol, $eo:doc)[1]) ! (if (self::symbol) then normalize-space(.) else if (self::meta) then eo:borne(normalize-space(.)) else ())[not(map:contains($eo:voids, .))]"/>
           </xsl:when>
           <xsl:when test="map:contains($eo:voids, $symbol)"/>
           <xsl:otherwise>
@@ -991,20 +1003,23 @@
     <xsl:sequence select="tokenize(normalize-space(key('eo:minted', $symbol, $eo:doc)[1]), ' ')"/>
   </xsl:function>
   <!--
-  The arguments a deferred copy takes, each as its name and its symbol with
-  a colon between them. A copy with an argument that is no symbol cannot be
-  made, since the atom has nothing to bind that argument to, and a void left
-  unset fails the copy once the program runs.
+  The arguments a copy takes, as the records of the protocol that bind
+  them. A deferred copy with an argument that is no symbol cannot be made,
+  since the atom has nothing to bind that argument to, and a void left
+  unset fails the copy once the program runs. A copy phino put a symbol
+  in the place of, where it cut a loop, takes every argument as the record
+  of the protocol that spells it out.
   -->
-  <xsl:function name="eo:arguments" as="xs:string*">
-    <xsl:param name="deferred" as="element()"/>
-    <xsl:for-each select="$deferred/with/*[not(self::symbol)][1]">
-      <xsl:sequence select="eo:taint(concat('The deferred symbol ', $deferred/@symbol, ' of the entry ', $number, ' has the argument ', @attr, ', which is no symbol'))"/>
+  <xsl:function name="eo:arguments" as="element()*">
+    <xsl:param name="copy" as="element()"/>
+    <xsl:for-each select="$copy[self::deferred]/with/*[not(self::symbol)][1]">
+      <xsl:sequence select="eo:taint(concat('The deferred symbol ', $copy/@symbol, ' of the entry ', $number, ' has the argument ', @attr, ', which is no symbol'))"/>
     </xsl:for-each>
-    <xsl:sequence select="$deferred/with/symbol ! concat(@attr, ':', normalize-space(.))"/>
+    <xsl:sequence select="$copy/with/*"/>
   </xsl:function>
   <!--
-  The object a deferred copy is made of, as a chain of takes off the atom.
+  The object a copy is made of, as a chain of takes off the atom: the
+  object phino names, or the formation a deferred copy has no object for.
   It must be inside the formation of the entry, since the atom reaches
   nothing else, and outside its "φ", since the patching drops that "φ" along
   with all it holds. A copy of a formation no object of the world declares,
@@ -1013,17 +1028,17 @@
   -->
   <xsl:function name="eo:copied" as="xs:string">
     <xsl:param name="deferred" as="element()"/>
-    <xsl:variable name="of" select="string($deferred/@of)"/>
+    <xsl:variable name="of" select="string(($deferred/@object, $deferred/@of)[1])"/>
     <xsl:variable name="names" select="tokenize(substring-after($of, concat($locator, '.')), '\.')"/>
     <xsl:choose>
       <xsl:when test="starts-with($of, '𝑛')">
-        <xsl:sequence select="eo:taint(concat('The deferred symbol ', $deferred/@symbol, ' of the entry ', $number, ' copies the formation ', $of, ', which no object of the world declares'))"/>
+        <xsl:sequence select="eo:taint(concat('The ', name($deferred), ' symbol ', $deferred/@symbol, ' of the entry ', $number, ' copies the formation ', $of, ', which no object of the world declares'))"/>
       </xsl:when>
       <xsl:when test="empty($names)">
-        <xsl:sequence select="eo:taint(concat('The deferred symbol ', $deferred/@symbol, ' of the entry ', $number, ' copies ', $of, ', which is not inside ', $locator))"/>
+        <xsl:sequence select="eo:taint(concat('The ', name($deferred), ' symbol ', $deferred/@symbol, ' of the entry ', $number, ' copies ', $of, ', which is not inside ', $locator))"/>
       </xsl:when>
       <xsl:when test="$names[1] = ('φ', 'body🌵')">
-        <xsl:sequence select="eo:taint(concat('The deferred symbol ', $deferred/@symbol, ' of the entry ', $number, ' copies ', $of, ', which the atom replaces'))"/>
+        <xsl:sequence select="eo:taint(concat('The ', name($deferred), ' symbol ', $deferred/@symbol, ' of the entry ', $number, ' copies ', $of, ', which the atom replaces'))"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:sequence select="string-join(('this.take(&quot;ρ&quot;)', $names ! concat('.take(&quot;', eo:literal(.), '&quot;)')), '')"/>
@@ -1292,7 +1307,7 @@
         </xsl:when>
         <xsl:when test="exists(key('eo:deferred', $symbol, $eo:doc))">
           <xsl:variable name="deferred" select="key('eo:deferred', $symbol, $eo:doc)[1]"/>
-          <xsl:sequence select="concat('        return new PhApplication(', string-join((eo:copied($deferred), eo:arguments($deferred) ! ('new Bind(&quot;' || eo:literal(eo:unveiled(substring-before(., ':'))) || '&quot;, ' || eo:passed(substring-after(., ':')) || ')')), ', '), ');&#10;')"/>
+          <xsl:sequence select="concat('        return new PhApplication(', string-join((eo:copied($deferred), eo:arguments($deferred) ! ('new Bind(&quot;' || eo:literal(eo:unveiled(@attr)) || '&quot;, ' || eo:bound(., concat('The argument ', @attr, ' of the ', name($deferred), ' symbol ', $deferred/@symbol, ' of the entry ', $number)) || ')')), ', '), ');&#10;')"/>
         </xsl:when>
         <xsl:when test="map:contains($eo:rows, eo:lambda($symbol))">
           <xsl:sequence select="concat('        return new Dataized(', eo:rowed($symbol), ').take();&#10;')"/>
