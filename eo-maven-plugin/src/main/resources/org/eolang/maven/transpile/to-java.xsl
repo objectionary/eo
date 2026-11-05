@@ -979,6 +979,7 @@
             <xsl:text>Assertions.assertThrows(Exception.class, () -&gt; {</xsl:text>
             <xsl:apply-templates select="." mode="dataized">
               <xsl:with-param name="indent" select="3"/>
+              <xsl:with-param name="method" select="'take'"/>
             </xsl:apply-templates>
             <xsl:text>;</xsl:text>
             <xsl:value-of select="eo:eol(2)"/>
@@ -1002,10 +1003,13 @@
   <!-- Dataize test -->
   <xsl:template match="attr" mode="dataized">
     <xsl:param name="indent"/>
+    <xsl:param name="method" select="'asBool'"/>
     <xsl:value-of select="eo:eol($indent)"/>
     <xsl:text>new Dataized(this.take(</xsl:text>
     <xsl:value-of select="eo:attr-name(eo:unmarked(@name), true())"/>
-    <xsl:text>)).asBool()</xsl:text>
+    <xsl:text>)).</xsl:text>
+    <xsl:value-of select="$method"/>
+    <xsl:text>()</xsl:text>
   </xsl:template>
   <!-- Package -->
   <xsl:template match="*" mode="package">

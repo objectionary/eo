@@ -515,6 +515,11 @@
         "Jeff"
         "X"
 
+  eq. ++> can-print-a-number-as-a-string
+    "@E\u0000\u0000\u0000\u0000\u0000\u0000"
+    "%s".printf
+      * 42
+
   eq. ++> can-print-a-percent-sign
     "%Jeff"
     "%%%s".printf
@@ -529,6 +534,11 @@
     "42"
     "%d".printf
       * 42.as-i64.as-number
+
+  eq. ++> can-print-an-i64-as-a-string
+    "\u0000\u0000\u0000\u0000\u0000\u0000\u0000*"
+    "%s".printf
+      * 42.as-i64
 
   not. ++> can-print-an-i64-not-as-a-number
     eq.
