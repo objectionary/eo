@@ -8,6 +8,7 @@ import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.matchers.XhtmlMatchers;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.hamcrest.MatcherAssert;
@@ -21,6 +22,21 @@ import org.w3c.dom.Element;
  * @since 0.70.0
  */
 final class PiecesTest {
+
+    @Test
+    void marksAllClosingQuotesOfATextBlock() throws ParserConfigurationException {
+        MatcherAssert.assertThat(
+            "the text block mark must cover three quotes and leave the binding plain, but it didnt",
+            PiecesTest.drawn(
+                "  \"\"\" > text",
+                new Written("Φ.app.text", 2, "", "Φ.string")
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/line/bit[text='\"\"\"']/told[@loc='Φ.app.text']",
+                "/line/bit[.=' > text' and not(@band)]"
+            )
+        );
+    }
 
     @Test
     void walksAChainOfReceiversLeftward() throws ParserConfigurationException {
@@ -104,6 +120,34 @@ final class PiecesTest {
     }
 
     @Test
+    void marksTheNameOfAFormationWrittenAfterItsAt() throws ParserConfigurationException {
+        MatcherAssert.assertThat(
+            "a formation written after its @ must be marked on its name, but it wasnt",
+            PiecesTest.drawn(
+                "      if. > [^sock descriptor] > closed-socket",
+                new Written("Φ.s.closed-socket", 6, "closed-socket", ""),
+                new Written("Φ.s.closed-socket.ρ", 13, "ρ", "∅"),
+                new Written("Φ.s.closed-socket.v🌵descriptor", 19, "v🌵descriptor", "∅"),
+                new Written("Φ.s.closed-socket.φ", 6, "φ", ".if")
+            ),
+            XhtmlMatchers.hasXPath("/line/bit[text='closed-socket']/told[@loc='Φ.s.closed-socket']")
+        );
+    }
+
+    @Test
+    void keepsTheAtOfAFormationWrittenAfterItsAt() throws ParserConfigurationException {
+        MatcherAssert.assertThat(
+            "the @ written in front of a formation must keep its mark, but it lost it",
+            PiecesTest.drawn(
+                "      if. > [^sock descriptor] > closed-socket",
+                new Written("Φ.s.closed-socket", 6, "closed-socket", ""),
+                new Written("Φ.s.closed-socket.φ", 6, "φ", ".if")
+            ),
+            XhtmlMatchers.hasXPath("/line/bit[text='if']/told[@loc='Φ.s.closed-socket.φ']")
+        );
+    }
+
+    @Test
     void keepsTheBracketOfAFormationBoundToNoName() throws ParserConfigurationException {
         MatcherAssert.assertThat(
             "a formation with no name must stay marked on its bracket, but it vanished",
@@ -179,7 +223,15 @@ final class PiecesTest {
             .newDocument();
         final Element row = page.createElement("line");
         page.appendChild(row);
-        final Table table = new Table(new Xnav("<answers/>"));
+        final Table table = new Table(
+            new Xnav(
+                Arrays.stream(objects).map(
+                    object -> String.format(
+                        "<o loc='%s' copies='2'><is loc='Φ.number'/></o>", object.loc()
+                    )
+                ).collect(Collectors.joining("", "<answers>", "</answers>"))
+            )
+        );
         new Pieces(line, Arrays.asList(objects)).drawn(
             row,
             new Entries(table, new Shapes(new HashMap<>(0), new HashMap<>(0), table), "app.eo")

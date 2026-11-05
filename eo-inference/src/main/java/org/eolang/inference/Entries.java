@@ -18,12 +18,14 @@ import org.w3c.dom.Element;
  *
  * <p>A mark colours the word by its {@link Band} and lists what the object
  * answers, with how many of its copies answer it, the most copies first. A
- * name is listed as it is and a mark of the engine in words. Formations with
- * no name of their own are listed by their {@link Shapes}, one entry for all
- * the formations of one shape, counted in the copies that answer any of them,
- * with a link to every line where one of them is written: {@code line 4} or
+ * name is listed as it is and a mark of the engine in words, so an unknown
+ * says its kind. Formations with no name of their own are listed by their
+ * {@link Shapes}, one entry for all the formations of
+ * one shape, counted in the copies that answer any of them, with a link to
+ * every line where one of them is written: {@code line 4} or
  * {@code lines 4, 9} in the same file, {@code bytes.eo:12} in another, and
- * the locator as the link's hover text.</p>
+ * the locator as the link's hover text. The mark of a formation with study
+ * copies also says how many of its copies are study copies.</p>
  *
  * @since 0.76.0
  */
@@ -84,7 +86,9 @@ final class Entries {
                 final Label label = new Label(answer.getKey());
                 entries.put(
                     answer.getKey(),
-                    Entries.entry(page, label.kind(), answer.getValue(), label.words())
+                    Entries.entry(
+                        page, label.kind(), answer.getValue(), label.words()
+                    )
                 );
                 copies.put(answer.getKey(), answer.getValue());
             }
@@ -105,6 +109,12 @@ final class Entries {
         );
         for (final String key : order) {
             told.appendChild(entries.get(key));
+        }
+        final int study = this.table.study(loc);
+        if (study > 0) {
+            final Element note = page.createElement("studied");
+            note.setAttribute("n", Integer.toString(study));
+            told.appendChild(note);
         }
     }
 

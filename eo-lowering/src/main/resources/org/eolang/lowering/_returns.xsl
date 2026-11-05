@@ -25,23 +25,21 @@
   The labels the copies of a place say it is, from its row of
   "answers.xml" or from the "reduced" of that row. A label stands right
   under the row when every copy says the same, or inside one "set" per
-  group of copies otherwise, and all of them are taken. A "terminator", an
-  "open" void and a failing read, "fails", are left out: each is a gap
-  next to the names, and none of them says what the place is when it is
-  something.
+  group of copies otherwise, and all of them are taken. A "terminator" and an
+  "unknown" are left out: each is a gap next to the names, and neither says
+  what the place is when it is something.
   -->
   <xsl:function name="eo:labels" as="element()*">
     <xsl:param name="row" as="element()*"/>
-    <xsl:sequence select="$row/(*[not(self::set or self::reduced)] | set/*)[not(self::terminator or self::open or self::fails)]"/>
+    <xsl:sequence select="$row/(*[not(self::set or self::reduced)] | set/*)[not(self::terminator or self::unknown)]"/>
   </xsl:function>
   <!--
   The types the body of the object with this locator may be, as the tables
   of "eo:inference" say, or none where they say nothing. They are the
-  objects the row of the "φ" of the object names, while a datum and a place
-  the engine cannot tell name no object. An atom among them counts as the
-  type it "returns" in "facts.xml", and a formation counts as what the
-  "reduced" of its own row names other than itself, when it names anything
-  else.
+  objects the row of the "φ" of the object names, while a datum and an
+  unknown name no object. An atom among them counts as the type it
+  "returns" in "facts.xml", and a formation counts as what the "reduced" of
+  its own row names other than itself, when it names anything else.
   -->
   <xsl:function name="eo:returns" as="xs:string*">
     <xsl:param name="loc" as="xs:string"/>

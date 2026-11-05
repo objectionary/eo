@@ -27,6 +27,6 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.left.first']/is[@loc='Φ.number']
-  - /answers/o[@loc='Φ.right.other']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.left.v🌵first']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.right.v🌵other']/is[@loc='Φ.number']
   - /answers/o[@loc='Φ.pick.φ.α0' and not(@lands)]

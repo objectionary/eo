@@ -3,8 +3,7 @@
 ---
 # yamllint disable rule:line-length
 # inc is called with a t, so its x is a t and x.next is t.next. That next has
-# nothing in it, so the foo read off it fails, and the @ of inc names the
-# missing foo.
+# nothing in it, so the foo read off it is T, and so is the @ of inc.
 sources:
   app.eo: |
     [] > app
@@ -20,8 +19,8 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.app.φ.α0' and @lands='x']/is[@loc='Φ.app.t']
-  - /answers/o[@loc='Φ.app.inc.x']/is[@loc='Φ.app.t']
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵x']/is[@loc='Φ.app.t']
+  - /answers/o[@loc='Φ.app.inc.v🌵x']/is[@loc='Φ.app.t']
   - /answers/o[@loc='Φ.app.inc.φ.ρ']/is[@loc='Φ.app.t.next']
   - /answers[not(o[@loc='Φ.app.t.next.foo'])]
-  - /answers/o[@loc='Φ.app.inc.φ']/fails[@name='Φ.app.t.next.foo']
+  - /answers/o[@loc='Φ.app.inc.φ' and count(*)=1]/terminator

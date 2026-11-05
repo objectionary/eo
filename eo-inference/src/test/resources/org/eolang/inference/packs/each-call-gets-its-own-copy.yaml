@@ -25,8 +25,8 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.home.kitten.α0' and @lands='pet']/is[@loc='Φ.cat']
-  - /answers/o[@loc='Φ.home.puppy.α0' and @lands='pet']/is[@loc='Φ.dog']
+  - /answers/o[@loc='Φ.home.kitten.α0' and @lands='v🌵pet']/is[@loc='Φ.cat']
+  - /answers/o[@loc='Φ.home.puppy.α0' and @lands='v🌵pet']/is[@loc='Φ.dog']
   - /answers/o[@loc='Φ.speak' and @copies='2']
   - /answers/o[@loc='Φ.home.kitten' and count(*)=1]/is[@loc='Φ.string']
   - /answers/o[@loc='Φ.home.puppy' and count(*)=1]/is[@loc='Φ.number']

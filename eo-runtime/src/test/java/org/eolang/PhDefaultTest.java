@@ -154,7 +154,7 @@ final class PhDefaultTest {
     void needsRhoWhenItIsDeclaredAsVoid() {
         MatcherAssert.assertThat(
             String.format("Object with %s declared as void must await a receiver", Phi.RHO),
-            new PhDefault(new Attrs(new Attr(Phi.RHO, new AtVoid(Phi.RHO)))).needsRho(),
+            new PhDefault(new Attrs(new Attr(Phi.RHO))).needsRho(),
             Matchers.is(true)
         );
     }
@@ -653,8 +653,8 @@ final class PhDefaultTest {
     void countsVoidAttributesWhenRefusingToPut() {
         final Phi phi = new PhDefault(
             new Attrs(
-                new Attr("alpha", new AtVoid("alpha")),
-                new Attr("beta", new AtVoid("beta"))
+                new Attr("alpha"),
+                new Attr("beta")
             )
         );
         phi.put(0, new Data.ToPhi(1L));
@@ -689,6 +689,26 @@ final class PhDefaultTest {
                 "context-returnsTerminatorForAbsentAttribute"
             ).take("non-existent-attribute"),
             Matchers.instanceOf(PhTerminator.class)
+        );
+    }
+
+    @Test
+    void freesItsOwnVoidByTheNameItsSourceGivesIt() {
+        final PhDefault phi = new PhDefault(new Attrs(new Attr("left")));
+        phi.put(0, new Data.ToPhi(-7.25));
+        MatcherAssert.assertThat(
+            "an object must read its own void by the plain name, but it didnt",
+            new Dataized(phi.free("left")).asNumber(),
+            Matchers.equalTo(-7.25)
+        );
+    }
+
+    @Test
+    void refusesToFreeAVoidItDoesNotHave() {
+        Assertions.assertThrows(
+            ExFailure.class,
+            () -> new PhDefault(new Attrs(new Attr("left"))).free("right"),
+            "freeing a void the object lacks must fail at once, but it didnt"
         );
     }
 

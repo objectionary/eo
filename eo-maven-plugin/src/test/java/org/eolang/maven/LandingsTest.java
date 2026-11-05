@@ -105,7 +105,7 @@ final class LandingsTest {
         );
     }
 
-    private static Path tables(
+    static Path tables(
         final Path dir, final String facts, final String... rows
     ) throws IOException {
         Files.write(dir.resolve("facts.xml"), facts.getBytes(StandardCharsets.UTF_8));
@@ -117,7 +117,7 @@ final class LandingsTest {
         return dir;
     }
 
-    private static String grounded(final String call, final String... args) {
+    static String grounded(final String call, final String... args) {
         return String.format(
             "<facts><objects><type id='Φ.made'/></objects><reads/><heads><type id='%1$s'><ref loc='Φ.made'/></type></heads><calls><call loc='%1$s'>%2$s</call></calls></facts>",
             call,

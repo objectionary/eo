@@ -1,0 +1,49 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# safe has nothing but its voids and its @, so it is a decorator, and
+# anywhere else a copy of it is named by what its @ gives: the if of bool
+# gives back its left or its right, a string or bytes. safe reads x and
+# error-text off itself, through the $ the parser puts in front of each.
+# Both are voids of safe, so the rows of those $ name safe, the formation of
+# the copy app makes, and say that it reduces to a string or bytes. The 5
+# that x holds has an as-bytes of its own, so the row it is read off names a
+# number and says nothing more.
+sources:
+  safe.eo: |
+    [x error-text] > safe
+      if. > @
+        x.eq 0
+        error-text
+        x.as-bytes
+  app.eo: |
+    [] > app
+      safe 5 "zero" > @
+  bool.eo: |
+    [@] > bool
+      [] > if /A
+        ? > ^
+        ? > left /A?
+        ? > right /A
+  number.eo: |
+    [@] > number
+      [] > eq /Q.bool
+        ? > ^
+        ? > other
+      [] > as-bytes /Q.bytes
+        ? > ^
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.safe.φ.α0.ρ' and @copies='1' and count(is)=1]/is[@loc='Φ.safe']
+  - /answers/o[@loc='Φ.safe.φ.α0.ρ' and count(reduced/*)=2]/reduced/is[@loc='Φ.bytes']
+  - /answers/o[@loc='Φ.safe.φ.α0.ρ']/reduced/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.safe.φ.α1.ρ.ρ' and count(is)=1]/is[@loc='Φ.safe']
+  - /answers/o[@loc='Φ.safe.φ.α1.ρ.ρ']/reduced/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.safe.φ.ρ.ρ.ρ' and count(is)=1 and count(reduced/*)=2]/is[@loc='Φ.safe']
+  - /answers/o[@loc='Φ.safe.φ.α1.ρ' and not(reduced) and count(*)=1]/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.safe' and count(reduced/*)=2]/reduced/is[@loc='Φ.bytes']
+  - /answers[not(//fails)]

@@ -13,7 +13,7 @@ eo:
     [b] > mix
       T (string b.concat b) > @
 voids:
-  - "𝜎1\t4\tb\tbytes"
+  - "𝜎1\t4\tv🌵b\tbytes"
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e4">
@@ -69,7 +69,7 @@ java: |
       }
 
       private byte[] 𝜎1() {
-          return new Dataized(this.take("ρ").take("b")).take();
+          return new Dataized(this.take("ρ").take("v🌵b")).take();
       }
 
       private byte[] 𝜎2() {

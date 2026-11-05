@@ -18,8 +18,8 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.app.φ.b' and @lands='b']/is[@loc='Φ.string']
-  - /answers/o[@loc='Φ.app.φ.a' and @lands='a']/is[@loc='Φ.number']
-  - /answers/o[@loc='Φ.pair.b']/is[@loc='Φ.string']
-  - /answers/o[@loc='Φ.pair.a']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ.v🌵b' and @lands='v🌵b']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.φ.v🌵a' and @lands='v🌵a']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.pair.v🌵b']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.pair.v🌵a']/is[@loc='Φ.number']
   - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.string']

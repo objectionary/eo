@@ -23,8 +23,8 @@ import java.util.Set;
  * formation, or its own voids it names, which it gives back.</li>
  * <li>A <b>test</b> is a formation named {@code p🌵…} or {@code n🌵…}.</li>
  * <li>An object whose {@code @} is one of its own voids (3.5, call then
- * narrow) passes that void on, and its call answers what goes in
- * there.</li>
+ * narrow) passes that void on, and the call that fills the last of its
+ * empty voids answers what that void holds.</li>
  * <li>A formation an atom <b>returns</b> is made by Java, and its voids
  * with no declared type are read from the pool (4.5).</li>
  * <li>A read is <b>inner</b> when it reads through {@code ξ}, {@code ^}

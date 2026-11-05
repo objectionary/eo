@@ -15,7 +15,7 @@ concurrency:
 jobs:
   codecov:
     timeout-minutes: 25
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-java@v6
@@ -30,10 +30,12 @@ jobs:
             maven-
       # The `lower` goal needs the exact phino version pinned in the plugin,
       # and this job is the one that always builds with lowering on.
-      - uses: objectionary/phino@768aaec459b06c2e514af32accf218545ed20c2f  # master
+      - uses: objectionary/phino@75b40d0a4ba07f04c1bba4a5e7568a35c9a0816f  # master
         with:
           version: 0.0.160
       - run: mvn install '-Deo.coverageTracking=true' '-Deo.lowering=true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # The goal must have run, and a missing folder is how a silently
       # disabled lowering would look.
       - run: test -n "$(find eo-runtime/target/eo -maxdepth 1 -type d -name '[0-9][0-9]-lowering')"
@@ -45,7 +47,7 @@ jobs:
         if: github.ref == 'refs/heads/master'
   telegram:
     needs: codecov
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     if: ${{ always() }}
     permissions:
       actions: read

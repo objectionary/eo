@@ -6,7 +6,7 @@ sheets: []
 asserts:
   - /object[not(errors)]
   - /object/o[@name='lt']/o[1][@name='ρ' and @base='∅']
-  - /object/o[@name='lt']/o[2][@name='x' and @base='∅']
+  - /object/o[@name='lt']/o[2][@name='v🌵x' and @base='∅']
 input: |
   [^ x] > lt
     x > @

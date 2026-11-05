@@ -25,9 +25,9 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.first.φ.α0' and @lands='x']/is[@loc='Φ.oak']
-  - /answers/o[@loc='Φ.second.φ.α0' and @lands='x']/is[@loc='Φ.elm']
+  - /answers/o[@loc='Φ.first.φ.α0' and @lands='v🌵x']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.second.φ.α0' and @lands='v🌵x']/is[@loc='Φ.elm']
   - /answers/o[@loc='Φ.inc' and @copies='2']
-  - /answers/o[@loc='Φ.inc.x']/set[@copies='1']/is[@loc='Φ.oak']
-  - /answers/o[@loc='Φ.inc.x']/set[@copies='1']/is[@loc='Φ.elm']
-  - /answers[not(o[@loc='Φ.inc.x']/set[is[@loc='Φ.oak'] and is[@loc='Φ.elm']])]
+  - /answers/o[@loc='Φ.inc.v🌵x']/set[@copies='1']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.inc.v🌵x']/set[@copies='1']/is[@loc='Φ.elm']
+  - /answers[not(o[@loc='Φ.inc.v🌵x']/set[is[@loc='Φ.oak'] and is[@loc='Φ.elm']])]

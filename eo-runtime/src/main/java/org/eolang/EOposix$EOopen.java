@@ -32,18 +32,18 @@ public final class EOposix$EOopen extends PhDefault implements Atom {
     public EOposix$EOopen() {
         super(
             new Attrs(
-                new Attr("path", new AtVoid("path")),
-                new Attr("flags", new AtVoid("flags")),
-                new Attr("mode", new AtVoid("mode"))
+                new Attr("path"),
+                new Attr("flags"),
+                new Attr("mode")
             )
         );
     }
 
     @Override
     public Phi lambda() {
-        final String path = new Cstring(Expect.at(this, "path")).it();
-        final int flags = new Int(Expect.at(this, "flags")).it();
-        final int mode = new Int(Expect.at(this, "mode")).it();
+        final String path = new Cstring(this.expected("path")).it();
+        final int flags = new Int(this.expected("flags")).it();
+        final int mode = new Int(this.expected("mode")).it();
         final Phi result = Phi.Φ.take("posix").take("status-return").copy();
         final int code = CStdLib.INSTANCE.open(path, flags, mode);
         result.put(0, new Data.ToPhi(code));

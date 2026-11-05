@@ -1,0 +1,48 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The fork of a bool is a void read through its if, and the program fills it
+# twice: true puts its own picker there and false puts another. The receiver
+# of true.if says which of the two the call lands on, so its arguments go into
+# the voids of the picker of true and into no other, and the arguments of
+# false.if go into the voids of the picker of false alone. Relaying them into
+# both pickers made each one list what only the other caller passed (#9363).
+sources:
+  bool.eo: |
+    [fork] > bool
+      if > @
+      fork > if
+  true.eo: |
+    [^] > true
+      bool > @
+        [^ left right]
+          left > @
+  false.eo: |
+    [^] > false
+      bool > @
+        [^ left right]
+          right > @
+  oak.eo: |
+    [] > oak
+  elm.eo: |
+    [] > elm
+  ash.eo: |
+    [] > ash
+  fir.eo: |
+    [] > fir
+  app.eo: |
+    [] > app
+      true.if oak elm > x
+      false.if ash fir > y
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.x' and count(*)=1]/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.y' and count(*)=1]/is[@loc='Φ.fir']
+  - /answers[not(o[starts-with(@loc,'Φ.false.φ.α0.')]//is[@loc='Φ.oak' or @loc='Φ.elm'])]
+  - /answers[not(o[starts-with(@loc,'Φ.true.φ.α0.')]//is[@loc='Φ.ash' or @loc='Φ.fir'])]

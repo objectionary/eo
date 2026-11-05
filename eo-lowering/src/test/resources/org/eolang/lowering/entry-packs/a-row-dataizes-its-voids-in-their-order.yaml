@@ -26,11 +26,11 @@ eo:
       glued "x" 01- > used
 xmir:
   - "//o[@name='e1']/o[@name='φ' and @base='.body🌵']/o[@base='Φ.glued']\
-    /o[@as='a' and @base='Φ.string']"
+    /o[@as='v🌵a' and @base='Φ.string']"
 rows:
-  - "L_glued\tΦ.glued\tΦ.glued\ta:string\tb:bytes"
+  - "L_glued\tΦ.glued\tΦ.glued\tv🌵a:string\tv🌵b:bytes"
 table:
   - "- λ: L_glued"
-  - "    𝛿1: $.a"
-  - "    𝛿2: $.b"
+  - "    𝛿1: $.v🌵a"
+  - "    𝛿2: $.v🌵b"
   - "  𝑛: Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )"

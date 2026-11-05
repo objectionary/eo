@@ -4,7 +4,6 @@
  */
 package org.eolang.inference;
 
-import java.util.BitSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,9 +16,6 @@ import java.util.Map;
  * void gets one more copy at the call, its first n empty voids filled with
  * Java's own T1 … Tn, and that copy is walked: {@code malloc.of 5 [m]}
  * gives {@code m} a {@code Φ.chunk}, as Java does.</p>
- *
- * <p>A copy handed to an atom whose {@code ^} is a declared void with no
- * type and is not bound gets it from Java alone, and the answers say so.</p>
  *
  * @since 0.76.0
  */
@@ -36,11 +32,6 @@ final class Callbacks {
     private final World world;
 
     /**
-     * The copies handed to an atom whose {@code ρ} only Java fills.
-     */
-    private final BitSet handed;
-
-    /**
      * Ctor.
      *
      * @param walk The state of the walk
@@ -49,7 +40,6 @@ final class Callbacks {
     Callbacks(final State walk, final World world) {
         this.state = walk;
         this.world = world;
-        this.handed = new BitSet();
     }
 
     /**
@@ -73,44 +63,15 @@ final class Callbacks {
                 this.state.remember(made);
                 rows.put(holes.get(idx), new int[] {made});
             }
-            final int copy = this.state.copy(
-                new Value(
-                    value.form(), this.world.born(site, value.form()),
-                    value.bound() | this.state.bits(value.form(), holes.subList(0, count))
-                ),
-                rows
+            this.state.remember(
+                this.state.copy(
+                    new Value(
+                        value.form(), this.world.born(site, value.form()),
+                        value.bound() | this.state.bits(value.form(), holes.subList(0, count))
+                    ),
+                    rows
+                )
             );
-            this.state.remember(copy);
-            if (this.handed.get(num)) {
-                this.handed.set(copy);
-            }
         }
-    }
-
-    /**
-     * Note a value handed to an atom: a copy whose {@code ρ} is a declared
-     * void with no type, and not bound, gets it from Java alone.
-     *
-     * @param num The value
-     */
-    void handed(final int num) {
-        final int inside = this.world.bare(num);
-        final Value value = this.world.value(inside);
-        if (value.kind() == 'O' && value.placed() && (value.bound() & Formation.RHO) == 0) {
-            final Formation shape = this.world.form(value.form());
-            if (shape.open("ρ") && shape.parent().isEmpty()) {
-                this.handed.set(inside);
-            }
-        }
-    }
-
-    /**
-     * Whether only Java fills the {@code ρ} of a copy handed to an atom.
-     *
-     * @param num The copy
-     * @return TRUE if only Java does
-     */
-    boolean handedToJava(final int num) {
-        return this.handed.get(num);
     }
 }

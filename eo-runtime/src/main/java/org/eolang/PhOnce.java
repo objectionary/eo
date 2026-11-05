@@ -115,7 +115,7 @@ public abstract class PhOnce implements Phi {
 
     @Override
     public final byte[] delta() {
-        return this.object.get().delta();
+        return this.dataized();
     }
 
     @Override
@@ -133,6 +133,15 @@ public abstract class PhOnce implements Phi {
     @Override
     public final String φTerm() {
         return this.phrase.map(Supplier::get).orElseGet(() -> this.object.get().φTerm());
+    }
+
+    /**
+     * Dataizes the origin; overrides must return equivalent known data.
+     *
+     * @return Data bytes
+     */
+    protected byte[] dataized() {
+        return this.object.get().delta();
     }
 
     /**

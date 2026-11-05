@@ -53,14 +53,17 @@ public final class Bind {
     /**
      * Ctor.
      *
-     * @param name The name of the attribute
+     * <p>A named binding fills a void, so it fills it under the name
+     * {@link Attr#veiled(String)} gives the void.</p>
+     *
+     * @param name The name of the void, as the EO source spells it
      * @param obj The object to bind
      */
     public Bind(final String name, final Phi obj) {
         this(
             "φ".equals(name),
-            target -> target.put(name, obj),
-            () -> String.format("%s->%s", name, obj.φTerm())
+            target -> target.put(Attr.veiled(name), obj),
+            () -> String.format("%s->%s", Attr.veiled(name), obj.φTerm())
         );
     }
 

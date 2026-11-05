@@ -26,7 +26,7 @@
     folder.is-directory.if
       folder
       T
-        "Cant make the directory '%s': a file already occupies that path".printf
+        "Can't make the directory '%s': a file already occupies that path".printf
           * folder.path
     seq *
       if.
@@ -34,7 +34,7 @@
           path.
             file folder.as-path.dirname >> above
         T
-          "Cant make the directory '%s': it has no parent".printf
+          "Can't make the directory '%s': it has no parent".printf
             * folder.path
         made.
           directory above
@@ -48,7 +48,7 @@
             folder.is-directory
         folder
         T
-          "Cant make the directory '%s': %s".printf
+          "Can't make the directory '%s': %s".printf
             *
               folder.path
               message.

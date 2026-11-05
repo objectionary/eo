@@ -66,6 +66,43 @@ final class DataTest {
     }
 
     @Test
+    void wrapsAndDataizesOnlyFiniteValues() {
+        MatcherAssert.assertThat(
+            "finite values use literal wrappers",
+            Stream.<Object>of(
+                42L, "雪", new byte[] {1}, true, Double.NaN,
+                Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY
+            ).map(Data.ToPhi::new).map(Phi::copy).map(PhApplication.class::isInstance).toList(),
+            Matchers.contains(true, true, true, false, false, false, false)
+        );
+    }
+
+    @Test
+    void dataizesKnownLiteralBytes() {
+        MatcherAssert.assertThat(
+            "known number and string bytes must remain exact",
+            Stream.of(new Data.ToPhi(42.0d).delta(), new Data.ToPhi("雪").delta()).toList(),
+            Matchers.contains(
+                Matchers.equalTo(new BytesOf(42.0d).take()),
+                Matchers.equalTo(new byte[] {(byte) 0xE9, (byte) 0x9B, (byte) 0xAA})
+            )
+        );
+    }
+
+    @Test
+    void freezesByteInputForSnapshotAndOrigin() {
+        final byte[] source = {1, 2, 3};
+        final Phi data = new Data.ToPhi(source);
+        source[0] = 9;
+        data.delta()[1] = 9;
+        MatcherAssert.assertThat(
+            "literal input, returned, and origin bytes must remain frozen",
+            Stream.of(data.delta(), data.take(Phi.PHI).delta()).toList(),
+            Matchers.everyItem(Matchers.equalTo(new byte[] {1, 2, 3}))
+        );
+    }
+
+    @Test
     void printsStringValueAsTerm() {
         MatcherAssert.assertThat(
             "String must render as a quoted value in φ-term, but it didnt",

@@ -23,12 +23,14 @@ final class ValuesTest {
 
     @Test
     void givesSameNumberToSameValue(@Mktmp final Path temp) throws IOException {
-        final Values values = new Values(new Sources(temp).program());
-        values.unknown("can't tell");
+        final Values values = new Values(
+            new Sources(temp).with("mug.eo", "[tea] > mug", "  tea > @").program()
+        );
+        values.intern(new Value('O', "Φ.mug", "Φ.app.φ", 1L, "", -1, 0));
         MatcherAssert.assertThat(
             "the same value must get the same number again, but it didnt",
-            values.unknown("can't tell"),
-            Matchers.equalTo(values.unknown("can't tell"))
+            values.intern(new Value('O', "Φ.mug", "Φ.app.φ", 1L, "", -1, 0)),
+            Matchers.equalTo(values.intern(new Value('O', "Φ.mug", "Φ.app.φ", 1L, "", -1, 0)))
         );
     }
 
@@ -44,18 +46,7 @@ final class ValuesTest {
                     new Value('O', "Φ.pair", "Φ.app.φ", 2L | Formation.RHO, "Φ.app", -1, 0)
                 )
             ),
-            Matchers.equalTo("Φ.pair@Φ.app.φ#Φ.app{right,ρ}")
-        );
-    }
-
-    @Test
-    void takesDecidedOpenVoidAsGap(@Mktmp final Path temp) throws IOException {
-        final Values values = new Values(new Sources(temp).program());
-        values.unknown("open void");
-        MatcherAssert.assertThat(
-            "an open void a stop decided must still be a gap, but it wasnt",
-            values.vacant(Values.JGAP),
-            Matchers.is(true)
+            Matchers.equalTo("Φ.pair@Φ.app.φ#Φ.app{v🌵right,ρ}")
         );
     }
 
@@ -66,7 +57,7 @@ final class ValuesTest {
             new Values(
                 new Sources(temp).with("pair.eo", "[left right] > pair", "  left > @").program()
             ).opened(new Value('O', "Φ.pair", "Φ.pair", 1L | Formation.RHO, "", -1, 0)),
-            Matchers.contains("right")
+            Matchers.contains("v🌵right")
         );
     }
 }

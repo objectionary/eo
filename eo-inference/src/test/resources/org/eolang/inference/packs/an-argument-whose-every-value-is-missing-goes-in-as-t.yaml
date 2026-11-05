@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A number has no size, so the only value handed to box is T. The argument
+# goes into item as T, so item is T, and so is the @ of app, which is item.
+sources:
+  box.eo: |
+    [item] > box
+      item > @
+  app.eo: |
+    [] > app
+      box 5.size > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵item' and @copies='1' and count(*)=1]/terminator
+  - /answers/o[@loc='Φ.box.v🌵item' and count(*)=1]/terminator
+  - /answers/o[@loc='Φ.app.φ' and count(*)=1]/terminator

@@ -28,8 +28,9 @@ sources:
       dir > inner
         leaf "a"
   bool.eo: |
-    [if] > bool
+    [fork] > bool
       if > @
+      fork > if
       [] > not
         ^.if false true > @
   true.eo: |
@@ -53,9 +54,9 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.bool.if']/set/open[@by='java']
+  - /answers/o[@loc='Φ.bool.v🌵fork']/set/unknown[@kind='java']
   - /answers/o[@loc='Φ.dir.temp.φ' and terminator]/is[@loc='Φ.leaf']
   - /answers/o[@loc='Φ.dir.temp']/reduced[terminator]/is[@loc='Φ.leaf']
-  - /answers/o[@loc='Φ.app.outer.α0' and @lands='file' and terminator]/is[@loc='Φ.leaf']
-  - /answers/o[@loc='Φ.app.inner.α0' and @lands='file']/is[@loc='Φ.leaf']
+  - /answers/o[@loc='Φ.app.outer.α0' and @lands='v🌵file' and terminator]/is[@loc='Φ.leaf']
+  - /answers/o[@loc='Φ.app.inner.α0' and @lands='v🌵file']/is[@loc='Φ.leaf']
   - /answers[not(o[@loc='Φ.app.inner.α0']/terminator)]

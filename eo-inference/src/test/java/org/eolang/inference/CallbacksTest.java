@@ -47,29 +47,12 @@ final class CallbacksTest {
             world.full(
                 new Settled(world).state().row(
                     world.intern(
-                        new Value('O', "Φ.app.φ.α1", "Φ.app.φ", 1L | Formation.RHO, "", -1, 0)
+                        new Value('O', "Φ.app.φ.α1", "Φ.app.φ", 1L, "", -1, 0)
                     ),
-                    "b"
+                    "v🌵b"
                 ).get(0)
             ),
-            Matchers.equalTo("Φ.block@java{ρ}")
-        );
-    }
-
-    @Test
-    void notesCopyWhoseRhoOnlyJavaFills(@Mktmp final Path temp) throws IOException {
-        final World world = new Sources(temp)
-            .with("jobs.eo", "[] > jobs", "  [] > run /Q.number", "    ? > job")
-            .with("app.eo", "[] > app", "  jobs.run > @", "    [^]", "      42 > @")
-            .world();
-        MatcherAssert.assertThat(
-            "a copy handed to an atom with a declared ^ nobody binds must be noted, but it wasnt",
-            new Settled(world).state().handedToJava(
-                world.intern(
-                    new Value('O', "Φ.app.φ.α0", "Φ.app.φ.α0", 0L, "", -1, 0)
-                )
-            ),
-            Matchers.is(true)
+            Matchers.equalTo("Φ.block@java{}")
         );
     }
 }
