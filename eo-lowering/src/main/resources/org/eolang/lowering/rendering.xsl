@@ -1070,8 +1070,19 @@
     </xsl:if>
     <xsl:variable name="held" select="starts-with($takes[1], 'ρ:')"/>
     <xsl:variable name="object" select="if ($held) then concat(eo:wrapped($operands[1], substring-after($takes[1], ':')), '.take(&quot;', eo:literal(tokenize($row[1], '\.')[last()]), '&quot;)') else eo:global($row[1])"/>
-    <xsl:variable name="binds" select="for $i in (if ($held) then 2 else 1) to count($takes) return concat('new Bind(&quot;', eo:literal(eo:unveiled(substring-before($takes[$i], ':'))), '&quot;, ', eo:wrapped($operands[$i], substring-after($takes[$i], ':')), ')')"/>
+    <xsl:variable name="binds" select="for $i in (if ($held) then 2 else 1) to count($takes) return concat('new Bind(&quot;', eo:literal(eo:unveiled(substring-before($takes[$i], ':'))), '&quot;, ', eo:lazy($operands[$i], eo:wrapped($operands[$i], substring-after($takes[$i], ':'))), ')')"/>
     <xsl:sequence select="if (empty($binds)) then $object else concat('new PhApplication(', string-join(($object, $binds), ', '), ')')"/>
+  </xsl:function>
+  <!--
+  The Java of an argument of a call, built only when the object of the call
+  reads it, because EO computes an argument only then, and an object such as
+  "false.and" never reads its own. A constant costs nothing to build and stays
+  as it is.
+  -->
+  <xsl:function name="eo:lazy" as="xs:string">
+    <xsl:param name="token" as="xs:string"/>
+    <xsl:param name="java" as="xs:string"/>
+    <xsl:sequence select="if (eo:constant($token)) then $java else concat('new PhLazy(() -> ', $java, ')')"/>
   </xsl:function>
   <!-- The Java of a token as the object of a carrier, the way "Data.ToPhi" and the library make one of data. -->
   <xsl:function name="eo:wrapped" as="xs:string">
