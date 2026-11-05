@@ -369,13 +369,6 @@
                 -->
                 <lint>unit-test-is-not-verb</lint>
                 <!--
-                @todo #8654:30min Stop skipping 'invalid-name-notation' here.
-                The lint holds a name to '[a-z]+(-[a-z]+)*', which leaves no
-                room for the digit in 'bytes/as-u8.eo:12' or in its siblings
-                from 'as-i8' to 'as-u64'.
-                -->
-                <lint>invalid-name-notation</lint>
-                <!--
                 'broad-scope' asks for a private attribute read by one sibling
                 to move inside it, which for a recursive head means computing
                 it again on every step: 'i64.div' hoists 'bit' and 'dividend'
