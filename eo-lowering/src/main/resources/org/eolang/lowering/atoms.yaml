@@ -52,7 +52,7 @@
   𝑛: >-
     ⟦ φ ↦ Φ.bool( v🌵fork ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
     on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧
-- λ: L_bytes_(and|or|concat|right)
+- λ: L_bytes_(and|or|concat|left|right)
   dataize:
     𝛿1: $.ρ
     𝛿2: $.v🌵b
