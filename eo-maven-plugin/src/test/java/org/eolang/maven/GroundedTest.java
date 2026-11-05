@@ -99,6 +99,66 @@ final class GroundedTest {
         );
     }
 
+    @Test
+    void groundsArgumentOfCallOnTheHeadOfTreeAtomReturns(@Mktmp final Path temp)
+        throws IOException {
+        final String name = String.format("rt%d", new SecureRandom().nextInt(10_000));
+        MatcherAssert.assertThat(
+            "an argument of a call on the head of a tree an atom returns must be grounded, but it isnt",
+            new Grounded(
+                GroundedTest.facts(
+                    temp,
+                    "<objects><type id='Φ'>",
+                    "<attr name='check' type='Φ.check'/>",
+                    String.format("<attr name='%1$s' type='Φ.%1$s'/>", name),
+                    String.format("</type><type id='Φ.check' returns='Φ.%s(Φ.number,Φ.string)'>", name),
+                    "</type>",
+                    String.format("<type id='Φ.%s'>", name),
+                    String.format("<attr name='code' type='Φ.%s.code' void='true'/>", name),
+                    String.format("<attr name='retry' type='Φ.%s.retry'/>", name),
+                    String.format("</type><type id='Φ.%s.retry'>", name),
+                    String.format("<attr name='times' type='Φ.%s.retry.times' void='true'/>", name),
+                    "</type></objects><reads>",
+                    "<read id='Φ.app.φ' name='retry' of='Φ.app.φ.ρ'/>",
+                    "<read id='Φ.app.φ.ρ' name='check' of='Φ.app.φ.ρ.ρ'/>",
+                    "</reads>",
+                    "<heads><type id='Φ.app.φ.ρ.ρ'><ref loc='Φ'/></type></heads>",
+                    "<calls><call loc='Φ.app.φ'><arg loc='Φ.app.φ.α0' n='0'/></call></calls>"
+                )
+            ).arguments(),
+            Matchers.hasItem("Φ.app.φ.α0")
+        );
+    }
+
+    @Test
+    void groundsNoArgumentOfCallOnUnionAtomReturns(@Mktmp final Path temp)
+        throws IOException {
+        MatcherAssert.assertThat(
+            "an argument of a call on a union an atom returns must not be grounded, but it is",
+            new Grounded(
+                GroundedTest.facts(
+                    temp,
+                    "<objects><type id='Φ'>",
+                    "<attr name='less' type='Φ.less'/>",
+                    "<attr name='yes' type='Φ.yes'/>",
+                    "<attr name='no' type='Φ.no'/>",
+                    "</type><type id='Φ.less' returns='Φ.yes|Φ.no'>",
+                    "</type><type id='Φ.yes'><attr name='and' type='Φ.yes.and'/></type>",
+                    "<type id='Φ.yes.and'><attr name='x' type='Φ.yes.and.x' void='true'/></type>",
+                    "<type id='Φ.no'><attr name='and' type='Φ.no.and'/></type>",
+                    "<type id='Φ.no.and'><attr name='x' type='Φ.no.and.x' void='true'/></type>",
+                    "</objects><reads>",
+                    "<read id='Φ.app.φ' name='and' of='Φ.app.φ.ρ'/>",
+                    "<read id='Φ.app.φ.ρ' name='less' of='Φ.app.φ.ρ.ρ'/>",
+                    "</reads>",
+                    "<heads><type id='Φ.app.φ.ρ.ρ'><ref loc='Φ'/></type></heads>",
+                    "<calls><call loc='Φ.app.φ'><arg loc='Φ.app.φ.α0' n='0'/></call></calls>"
+                )
+            ).arguments(),
+            Matchers.not(Matchers.hasItem("Φ.app.φ.α0"))
+        );
+    }
+
     private static Path facts(final Path dir, final String... parts) throws IOException {
         final Path table = dir.resolve("facts.xml");
         Files.write(

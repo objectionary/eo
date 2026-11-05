@@ -36,6 +36,12 @@ import java.util.stream.Collectors;
  * formation from {@code facts.xml} alone, since then no caller can change the
  * void it lands in.</p>
  *
+ * <p>What an atom returns is a type, such as
+ * {@code Φ.posix.status-return(Φ.number,Φ.string)}, and the formation it
+ * fixes is the name before the brackets. A union, such as
+ * {@code Φ.true|Φ.false}, fixes no formation, since the atom may return
+ * either of the two.</p>
+ *
  * @since 0.76.0
  */
 final class Grounded {
@@ -107,11 +113,32 @@ final class Grounded {
 
     private static Map<String, String> targets(final Xnav type) {
         final Map<String, String> attrs = new HashMap<>(0);
-        type.attribute("returns").text().ifPresent(back -> attrs.put("φ", back));
+        type.attribute("returns").text().ifPresent(back -> attrs.put("φ", Grounded.head(back)));
         type.elements(Filter.withName("attr")).forEach(
             attr -> attrs.put(attr.attribute("name").text().get(), Grounded.target(attr))
         );
         return attrs;
+    }
+
+    private static String head(final String type) {
+        final StringBuilder outside = new StringBuilder(type.length());
+        int depth = 0;
+        for (final char glyph : type.toCharArray()) {
+            if (glyph == '(') {
+                depth += 1;
+            } else if (glyph == ')') {
+                depth -= 1;
+            } else if (depth == 0) {
+                outside.append(glyph);
+            }
+        }
+        final String found;
+        if (outside.indexOf("|") < 0) {
+            found = outside.toString();
+        } else {
+            found = "";
+        }
+        return found;
     }
 
     private static String target(final Xnav attr) {
