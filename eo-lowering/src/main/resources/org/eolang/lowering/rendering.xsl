@@ -591,8 +591,9 @@
   the entry, or a record, with the attributes taken off it one by one.
   -->
   <xsl:function name="eo:dispatched" as="xs:string">
-    <xsl:param name="path" as="xs:string"/>
+    <xsl:param name="raw" as="xs:string"/>
     <xsl:param name="prefix" as="xs:string"/>
+    <xsl:variable name="path" select="eo:unrowed($raw)"/>
     <xsl:variable name="head" select="tokenize($path, '\.')[1]"/>
     <xsl:choose>
       <xsl:when test="$head = 'Φ' and ($path = $locator or starts-with($path, concat($locator, '.')))">
@@ -602,7 +603,7 @@
         <xsl:sequence select="eo:global($path)"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:sequence select="string-join((eo:computed($head, $prefix), tokenize($path, '\.')[position() gt 1] ! concat('take(&quot;', eo:literal(.), '&quot;)')), '.')"/>
+        <xsl:sequence select="string-join((eo:computed($head, $prefix), tokenize($path, '\.')[position() gt 1] ! concat('take(&quot;', eo:literal(eo:spelled(.)), '&quot;)')), '.')"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -872,10 +873,25 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
+  <!--
+  The name of an attribute the way the program that runs knows it. The
+  planting gives a helper the parser lifted out of the body of a formation
+  with a row a trailing 🌵 in the copy phino reads, which the program never
+  sees, so that 🌵 comes off.
+  -->
+  <xsl:function name="eo:spelled" as="xs:string">
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:sequence select="replace($name, '^(a🌵.+)🌵$', '$1')"/>
+  </xsl:function>
+  <!-- A path the protocol writes, with every name in it the way the program that runs knows it. -->
+  <xsl:function name="eo:unrowed" as="xs:string">
+    <xsl:param name="path" as="xs:string"/>
+    <xsl:sequence select="string-join(tokenize($path, '\.') ! eo:spelled(.), '.')"/>
+  </xsl:function>
   <!-- An object of the world, as a chain of takes off the root of the universe. -->
   <xsl:function name="eo:global" as="xs:string">
     <xsl:param name="object" as="xs:string"/>
-    <xsl:sequence select="string-join(('Phi.Φ', tokenize(substring-after($object, 'Φ.'), '\.') ! concat('take(&quot;', eo:literal(.), '&quot;)')), '.')"/>
+    <xsl:sequence select="string-join(('Phi.Φ', tokenize(substring-after($object, 'Φ.'), '\.') ! concat('take(&quot;', eo:literal(eo:spelled(.)), '&quot;)')), '.')"/>
   </xsl:function>
   <!--
   The last statement of a leaf of the tree of ifs: the return of what the
@@ -1046,7 +1062,7 @@
   -->
   <xsl:function name="eo:copied" as="xs:string">
     <xsl:param name="deferred" as="element()"/>
-    <xsl:variable name="of" select="string(($deferred/@object, $deferred/@of)[1])"/>
+    <xsl:variable name="of" select="eo:unrowed(string(($deferred/@object, $deferred/@of)[1]))"/>
     <xsl:variable name="names" select="tokenize(substring-after($of, concat($locator, '.')), '\.')"/>
     <xsl:choose>
       <xsl:when test="starts-with($of, '𝑛')">
@@ -1059,7 +1075,7 @@
         <xsl:sequence select="eo:taint(concat('The ', name($deferred), ' symbol ', $deferred/@symbol, ' of the entry ', $number, ' copies ', $of, ', which the atom replaces'))"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:sequence select="string-join(('this.take(&quot;ρ&quot;)', $names ! concat('.take(&quot;', eo:literal(.), '&quot;)')), '')"/>
+        <xsl:sequence select="string-join(('this.take(&quot;ρ&quot;)', $names ! concat('.take(&quot;', eo:literal(eo:spelled(.)), '&quot;)')), '')"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
