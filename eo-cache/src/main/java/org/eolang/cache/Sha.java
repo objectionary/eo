@@ -23,9 +23,9 @@ import java.util.stream.Stream;
  * For a directory, hashes every file sorted by its relative path, framed by that path and by
  * the amount of bytes read from it, so that trees differing in file names or in file boundaries
  * never collide. Only files speak into the digest, hence a directory holding none of them stays
- * invisible to the hash, the way Git also sees it. A directory opens the digest with a word
- * of its own, so that an empty one is not read as an empty file and a cache keyed by this
- * hash cannot serve the output of one for the other.
+ * invisible to the hash, the way Git also sees it. A directory opens the digest with the word
+ * {@code dir\0} and a lone file with the word {@code file\0}, so that neither kind is read as
+ * the other and no file content can spell the word of its kind.
  * The walk follows symbolic links, because everything else here already does:
  * a path is called a directory with {@link Files#isDirectory(Path, java.nio.file.LinkOption...)}
  * and a file with {@link Files#isRegularFile(Path, java.nio.file.LinkOption...)}, and both look
@@ -82,6 +82,7 @@ public final class Sha {
             digest.update("dir\0".getBytes(StandardCharsets.UTF_8));
             active = this.filter;
         } else {
+            digest.update("file\0".getBytes(StandardCharsets.UTF_8));
             active = any -> true;
         }
         try (Stream<Path> walk = Files.walk(this.path, FileVisitOption.FOLLOW_LINKS)) {

@@ -43,6 +43,24 @@ final class ReachTest {
     }
 
     @Test
+    void coversAllThreeQuotesOfATextBlockDelimiter() {
+        MatcherAssert.assertThat(
+            "all three closing quotes must be covered without the binding, but they werent",
+            new Reach("  \"\"\" > text").from(2),
+            Matchers.equalTo(3)
+        );
+    }
+
+    @Test
+    void keepsAnEmptyStringAtTwoQuotes() {
+        MatcherAssert.assertThat(
+            "an empty string must stop before its binding, but it didnt",
+            new Reach("  \"\" > text").from(2),
+            Matchers.equalTo(2)
+        );
+    }
+
+    @Test
     void carriesTheDecimalPointOfANumber() {
         MatcherAssert.assertThat(
             "3.14 is four characters of one number, but it was measured shorter",
@@ -57,6 +75,51 @@ final class ReachTest {
             "-1 is a number of two characters and not a lone dash, but it measured otherwise",
             new Reach("times -1").from(6),
             Matchers.equalTo(2)
+        );
+    }
+
+    @Test
+    void extendsTheVoidToBothItsDashes() {
+        MatcherAssert.assertThat(
+            "-- at the start of a line is two characters of one literal, but only its first dash was measured",
+            new Reach("--.size > sz").from(0),
+            Matchers.equalTo(2)
+        );
+    }
+
+    @Test
+    void extendsTheVoidAfterAGapToBothItsDashes() {
+        MatcherAssert.assertThat(
+            "-- after a gap is two characters of one literal, but only its first dash was measured",
+            new Reach("x --.size").from(2),
+            Matchers.equalTo(2)
+        );
+    }
+
+    @Test
+    void keepsANumberWithAnInnerDashWhole() {
+        MatcherAssert.assertThat(
+            "01-02 is five characters of one number, but the dash cut it short",
+            new Reach("x 01-02").from(2),
+            Matchers.equalTo(5)
+        );
+    }
+
+    @Test
+    void stopsALoneDashAtOneCharacter() {
+        MatcherAssert.assertThat(
+            "a lone dash between spaces is one character, but it grew",
+            new Reach("a - b").from(2),
+            Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    void stopsALoneDashAtTheEndOfTheLine() {
+        MatcherAssert.assertThat(
+            "a dash at the end of the line is one character, but it grew",
+            new Reach("x -").from(2),
+            Matchers.equalTo(1)
         );
     }
 

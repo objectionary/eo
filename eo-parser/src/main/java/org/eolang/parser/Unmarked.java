@@ -6,7 +6,6 @@ package org.eolang.parser;
 
 import org.cactoos.Input;
 import org.cactoos.Text;
-import org.cactoos.text.TextOf;
 
 /**
  * Source text without the byte order mark some editors write in front of it.
@@ -38,7 +37,7 @@ final class Unmarked implements Text {
      * @param input The source to read the text from
      */
     Unmarked(final Input input) {
-        this(new TextOf(input));
+        this(new Utf8(input));
     }
 
     /**

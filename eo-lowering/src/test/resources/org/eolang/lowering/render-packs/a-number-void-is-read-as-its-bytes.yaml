@@ -61,7 +61,7 @@ java: |
 
       @Override
       public Phi lambda() {
-          return new Data.ToPhi(java.nio.ByteBuffer.wrap(this.𝜎128()).getDouble());
+          return new Data.ToPhi(new Dataized(new Data.ToPhi(this.𝜎128())).asNumber());
       }
 
       private byte[] 𝜎27() {

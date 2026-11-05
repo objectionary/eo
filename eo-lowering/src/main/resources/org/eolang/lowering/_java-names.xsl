@@ -10,10 +10,14 @@
   locator-to-class mapping. Extracted from "to-java.xsl" so that every sheet
   rendering Java derives a name the same way, since a declaration and a
   reference produced by two different sheets must never diverge.
-  The "$eo:phi"/"$eo:alpha"/"$eo:cactoos" variables come from "_specials.xsl",
-  which an importing sheet must bring in alongside (importing it from here
-  trips Saxon's cycle check under the classpath resolver, whose sources
-  carry no system identifiers).
+  It lives in "eo-lowering" and not in the transpiler, because "rendering.xsl"
+  names the class of an atom by the very same rules and both sheets import it
+  from here (#9141).
+  The "$eo:phi"/"$eo:alpha"/"$eo:cactoos" variables must come from the
+  importing sheet: "to-java.xsl" brings in "_specials.xsl" alongside (importing
+  it from here trips Saxon's cycle check under the classpath resolver, whose
+  sources carry no system identifiers), and "rendering.xsl", which has no
+  "eo-parser" to read it from, declares the three itself.
   -->
   <!--
   Unicode escape of a character Java forbids in an identifier. Six digits,

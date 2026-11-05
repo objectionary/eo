@@ -79,6 +79,8 @@ final class LnApplication implements Line {
         final Openness openness;
         if (kind == Kind.HAPPLICATION) {
             openness = Openness.HCOMPLETED;
+        } else if (kind == Kind.IDENTITY_OBJECT) {
+            openness = Openness.VCOMPLETED;
         } else {
             openness = Openness.OPEN;
         }

@@ -544,9 +544,8 @@
     "r+"
     I
 
-  tmpfile. --> stops-on-touching-a-temp-file-in-an-absent-directory
-    as-dir.
-      mktemp.as-path.resolved "foo"
+  --> stops-on-touching-a-temp-file-in-an-absent-directory
+    mktemp.tmpfile.deleted.as-path.as-dir.tmpfile > @
 
   mktemp.tmpfile.open --> stops-on-writing-with-a-wrong-mode
     "r"

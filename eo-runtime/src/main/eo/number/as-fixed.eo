@@ -52,10 +52,10 @@
         [^num a] >> positive
           if. > @
             eq.
-              floor. >> digits
-                plus.
-                  times. (a.minus a.floor) num.scale
-                  0.5
+              round >> digits
+                times.
+                  a.minus a.floor
+                  num.scale
               num.scale
             if. > [^frac unit rest] >> written
               frac.num.places.eq 0
@@ -71,17 +71,25 @@
       if.
         num.lt 0
         if. > [^num a] >> signed
-          eq.
-            floor.
-              plus.
-                a.times num.scale
-                0.5
-            0
+          lt.
+            a.times num.scale
+            0.5
           positive a
           "-".as-bytes.concat
             positive a
         | (num.times -1)
         positive num
+  [value] >> round
+    if. > @
+      gte.
+        value.minus
+          number whole
+        0.5
+      plus.
+        number whole
+        1
+      number whole
+    value.floor > whole!
   if. > [^num p] >> pow10
     p.eq 0
     1
@@ -314,3 +322,33 @@
       0.as-fixed 6
 
   3.14159.as-fixed -2 --> stops-on-negative-places
+
+  eq. ++> can-round-a-value-below-half-down
+    "0"
+    string
+      0.49999999999999994.as-fixed 0
+
+  eq. ++> can-drop-the-sign-of-a-value-below-half
+    "0"
+    string
+      -0.49999999999999994.as-fixed 0
+
+  eq. ++> can-round-a-fraction-below-half-down
+    "0.12"
+    string
+      0.12499999999999999.as-fixed 2
+
+  eq. ++> can-round-a-fraction-at-half-up
+    "0.13"
+    string
+      0.125.as-fixed 2
+
+  eq. ++> can-round-a-negative-fraction-at-half-away-from-zero
+    "-0.13"
+    string
+      -0.125.as-fixed 2
+
+  eq. ++> can-round-a-scaled-decimal-half-up
+    "0.2"
+    string
+      0.15.as-fixed 1
