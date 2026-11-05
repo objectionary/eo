@@ -4,10 +4,13 @@
  */
 package org.eolang;
 
+import java.security.SecureRandom;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 /**
  * Test case for {@link EOwin32$EOgetenv}.
@@ -35,6 +38,38 @@ final class EOwin32EOgetenvTest {
                 Matchers.containsString("'name' attribute"),
                 Matchers.containsString("NUL")
             )
+        );
+    }
+
+    @Test
+    @EnabledOnOs(OS.WINDOWS)
+    void putsOneIntoTheCodeOfVariableItFinds() {
+        MatcherAssert.assertThat(
+            "a variable that is set must put the number one into the code, but it didnt",
+            new Dataized(
+                new PhApplication(
+                    new EOwin32$EOgetenv(), "name", new Data.ToPhi("PATH")
+                ).take("v🌵cde")
+            ).asNumber(),
+            Matchers.equalTo(1.0)
+        );
+    }
+
+    @Test
+    @EnabledOnOs(OS.WINDOWS)
+    void putsZeroIntoTheCodeOfVariableItMisses() {
+        MatcherAssert.assertThat(
+            "a variable that is not set must put the number zero into the code, but it didnt",
+            new Dataized(
+                new PhApplication(
+                    new EOwin32$EOgetenv(),
+                    "name",
+                    new Data.ToPhi(
+                        String.format("EO_UNSET_%d", new SecureRandom().nextInt(1_000_000))
+                    )
+                ).take("v🌵cde")
+            ).asNumber(),
+            Matchers.equalTo(0.0)
         );
     }
 }

@@ -16,7 +16,7 @@
   [] > div /Q.number
     ? > ^
     ? > b /Q.number
-  [] > gt /Q.bool
+  [] > gt /Q.true|Q.false
     ? > ^
     ? > b /Q.number
   [] > plus /Q.number

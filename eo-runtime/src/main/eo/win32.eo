@@ -52,20 +52,20 @@
   -1 > failure
   [] > find-close /Q.number
     ? > search /Q.number
-  [] > find-first-file /Q.win32.search-return
+  [] > find-first-file /Q.win32.search-return(Q.number,Q.string,Q.string)
     ? > pattern /Q.string
-  [] > find-next-file /Q.win32.dir-return
+  [] > find-next-file /Q.win32.dir-return(Q.number,Q.string)
     ? > search /Q.number
-  [] > ftime64-s /Q.win32.time-return
+  [] > ftime64-s /Q.win32.time-return(Q.number,Q.number,Q.number)
   [] > get-file-attributes /Q.number
     ? > path /Q.string
-  [] > getenv /Q.win32.getenv-return
+  [] > getenv /Q.win32.getenv-return(Q.number,Q.string)
     ? > name /Q.string
   [cde vle] > getenv-return
     win32.getenv-return > called
-      code
+      cde
       value
-    FF-.eq cde! > code
+    1.eq cde! > code
     string vle! > value
   [] > getpid /Q.number
   2 > inet
@@ -75,17 +75,17 @@
   [] > listen /Q.number
     ? > descriptor /Q.number
     ? > backlog /Q.number
-  [] > mkdir /Q.win32.status-return
+  [] > mkdir /Q.win32.status-return(Q.number,Q.string)
     ? > path /Q.string
   384 > mode
   -1 > none
-  [] > open /Q.win32.status-return
+  [] > open /Q.win32.status-return(Q.number,Q.string)
     ? > path /Q.string
     ? > flags /Q.number
     ? > mode /Q.number
   32768 > rdonly
   32770 > rdwr
-  [] > read /Q.win32.read-return
+  [] > read /Q.win32.read-return(Q.number,Q.bytes)
     ? > descriptor /Q.number
     ? > size /Q.number
   [cde dta] > read-return
@@ -95,15 +95,15 @@
       data
     number cde! > code
     bytes dta! > data
-  [] > recv /Q.win32.read-return
+  [] > recv /Q.win32.read-return(Q.number,Q.bytes)
     ? > descriptor /Q.number
     ? > size /Q.number
     ? > flags /Q.number
-  [] > rename /Q.win32.status-return
+  [] > rename /Q.win32.status-return(Q.number,Q.string)
     ? > from /Q.string
     ? > to /Q.string
   00-00-00-00-00-00-04-00 > reparse
-  [] > rmdir /Q.win32.status-return
+  [] > rmdir /Q.win32.status-return(Q.number,Q.string)
     ? > path /Q.string
   [cde nme msg] > search-return
     win32.search-return > called
@@ -142,7 +142,7 @@
     string msg! > message
     number mde! > mode
     number sze! > size
-  [] > stat64 /Q.win32.stat-return
+  [] > stat64 /Q.win32.stat-return(Q.number,Q.string,Q.number,Q.number)
     ? > path /Q.string
   [cde msg] > status-return
     win32.status-return > called
@@ -164,7 +164,7 @@
     number mcrs! > micros
     number scnds! > seconds
   512 > trunc
-  [] > unlink /Q.win32.status-return
+  [] > unlink /Q.win32.status-return(Q.number,Q.string)
     ? > path /Q.string
   4294967295 > unresolved
   02-02 > version
@@ -277,6 +277,15 @@
     eq.
       win32.inet-addr "127.0.0.1"
       16777343
+
+  code. ++> can-say-a-variable-is-set-when-its-code-is-one
+    win32.getenv-return
+      1
+      "C:\\жук;C:\\bin"
+
+  not. ++> can-say-a-variable-is-unset-when-its-code-is-zero
+    code.
+      win32.getenv-return 0 ""
 
   eq. ++> can-stand-for-the-bytes-a-read-returned
     win32.read-return

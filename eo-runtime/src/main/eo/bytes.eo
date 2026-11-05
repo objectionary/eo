@@ -27,7 +27,7 @@
   [] > concat /Q.bytes
     ? > ^
     ? > b
-  [] > eq /Q.bool
+  [] > eq /Q.true|Q.false
     ? > ^
     ? > b
   [] > left /Q.bytes

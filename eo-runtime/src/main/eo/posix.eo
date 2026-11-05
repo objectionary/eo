@@ -28,7 +28,7 @@
     ? > length /Q.number
   [] > close /Q.number
     ? > descriptor /Q.number
-  [] > closedir /Q.posix.status-return
+  [] > closedir /Q.posix.status-return(Q.number,Q.string)
     ? > dirp /Q.number
   [] > connect /Q.number
     ? > descriptor /Q.number
@@ -50,40 +50,40 @@
   os.is-macos.if > exclusive
     2048
     128
-  [] > getenv /Q.posix.getenv-return
+  [] > getenv /Q.posix.getenv-return(Q.number,Q.string)
     ? > name /Q.string
   [cde vle] > getenv-return
     posix.getenv-return > called
-      code
+      cde
       value
-    FF-.eq cde! > code
+    1.eq cde! > code
     string vle! > value
   [] > getpid /Q.number
-  [] > gettimeofday /Q.posix.time-return
+  [] > gettimeofday /Q.posix.time-return(Q.number,Q.number,Q.number)
   2 > inet
   [] > inet-addr /Q.number
     ? > address /Q.string
   [] > listen /Q.number
     ? > descriptor /Q.number
     ? > backlog /Q.number
-  [] > lstat /Q.posix.stat-return
+  [] > lstat /Q.posix.stat-return(Q.number,Q.string,Q.number,Q.number)
     ? > path /Q.string
-  [] > mkdir /Q.posix.status-return
+  [] > mkdir /Q.posix.status-return(Q.number,Q.string)
     ? > path /Q.string
     ? > mode /Q.number
   420 > mode
   -1 > none
-  [] > open /Q.posix.status-return
+  [] > open /Q.posix.status-return(Q.number,Q.string)
     ? > path /Q.string
     ? > flags /Q.number
     ? > mode /Q.number
-  [] > opendir /Q.posix.status-return
+  [] > opendir /Q.posix.status-return(Q.number,Q.string)
     ? > path /Q.string
   511 > permissions
   384 > private
   0 > rdonly
   2 > rdwr
-  [] > read /Q.posix.read-return
+  [] > read /Q.posix.read-return(Q.number,Q.bytes)
     ? > descriptor /Q.number
     ? > size /Q.number
   [cde dta] > read-return
@@ -93,16 +93,16 @@
       data
     number cde! > code
     bytes dta! > data
-  [] > readdir /Q.posix.dir-return
+  [] > readdir /Q.posix.dir-return(Q.number,Q.string)
     ? > dirp /Q.number
-  [] > recv /Q.posix.read-return
+  [] > recv /Q.posix.read-return(Q.number,Q.bytes)
     ? > descriptor /Q.number
     ? > size /Q.number
     ? > flags /Q.number
-  [] > rename /Q.posix.status-return
+  [] > rename /Q.posix.status-return(Q.number,Q.string)
     ? > from /Q.string
     ? > to /Q.string
-  [] > rmdir /Q.posix.status-return
+  [] > rmdir /Q.posix.status-return(Q.number,Q.string)
     ? > path /Q.string
   [] > send /Q.number
     ? > descriptor /Q.number
@@ -123,7 +123,7 @@
     ? > domain /Q.number
     ? > type /Q.number
     ? > protocol /Q.number
-  [] > stat /Q.posix.stat-return
+  [] > stat /Q.posix.stat-return(Q.number,Q.string,Q.number,Q.number)
     ? > path /Q.string
   [cde msg mde sze] > stat-return
     posix.stat-return > called
@@ -147,7 +147,7 @@
   1 > stream
   [] > strerror /Q.string
     ? > errno /Q.number
-  [] > symlink /Q.posix.status-return
+  [] > symlink /Q.posix.status-return(Q.number,Q.string)
     ? > target /Q.string
     ? > path /Q.string
   6 > tcp
@@ -162,7 +162,7 @@
   os.is-macos.if > trunc
     1024
     512
-  [] > unlink /Q.posix.status-return
+  [] > unlink /Q.posix.status-return(Q.number,Q.string)
     ? > path /Q.string
   4294967295 > unresolved
   [] > write /Q.number
@@ -284,6 +284,15 @@
     eq.
       posix.inet-addr "255.255.255.255"
       posix.unresolved
+
+  code. ++> can-say-a-variable-is-set-when-its-code-is-one
+    posix.getenv-return
+      1
+      "/opt/жук:/bin"
+
+  not. ++> can-say-a-variable-is-unset-when-its-code-is-zero
+    code.
+      posix.getenv-return 0 ""
 
   eq. ++> can-stand-for-the-bytes-a-read-returned
     posix.read-return
