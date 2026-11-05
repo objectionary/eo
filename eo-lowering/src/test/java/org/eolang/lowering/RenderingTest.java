@@ -267,6 +267,16 @@ final class RenderingTest {
         ).value();
     }
 
+    private static String planted(final String name, final String text) throws IOException {
+        final String xmir;
+        if (name.endsWith(".xmir")) {
+            xmir = text;
+        } else {
+            xmir = new EoSyntax(text).parsed().toString();
+        }
+        return xmir;
+    }
+
     private static List<String> logged(final Rendering rendering, final Path home)
         throws IOException {
         final List<String> messages = new ArrayList<>(0);
@@ -419,8 +429,9 @@ final class RenderingTest {
                 : ((Map<?, ?>) this.story.map().get("eo")).entrySet()) {
                 Files.write(
                     sources.resolve(source.getKey().toString().replace(".eo", ".xmir")),
-                    new EoSyntax(source.getValue().toString()).parsed().toString()
-                        .getBytes(StandardCharsets.UTF_8)
+                    RenderingTest.planted(
+                        source.getKey().toString(), source.getValue().toString()
+                    ).getBytes(StandardCharsets.UTF_8)
                 );
             }
             final Path protocol = this.temp.resolve("5-protocols")

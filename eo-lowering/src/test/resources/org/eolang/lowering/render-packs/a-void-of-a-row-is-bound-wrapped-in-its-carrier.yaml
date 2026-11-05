@@ -171,7 +171,7 @@ java: |
       }
 
       private byte[] 𝜎5() {
-          return new Dataized(new PhApplication(Phi.Φ.take("len"), new Bind("s", new PhApplication(Phi.Φ.take("string"), "φ", new Data.ToPhi(this.𝜎4()))))).take();
+          return new Dataized(new PhApplication(Phi.Φ.take("len"), new Bind("s", new PhLazy(() -> new PhApplication(Phi.Φ.take("string"), "φ", new Data.ToPhi(this.𝜎4())))))).take();
       }
 
       private byte[] 𝜎6() {

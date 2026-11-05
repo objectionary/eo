@@ -79,7 +79,12 @@
   it by its names at run time, and its λ must be spelled with letters,
   digits and underscores only, and by no other formation. The entry of a
   formation that has a row takes "body🌵" off the planted object, so that
-  its own body is still spelled out in its own protocol.
+  its own body is still spelled out in its own protocol. A helper the
+  parser lifted out of the body, such as a constant, stands in the copy
+  beside "body🌵" under a name that starts with "a🌵", and phino would take
+  it for an attribute of the formation's own, which keeps the λ from
+  firing, so the copy gives that name a trailing 🌵, the way phino marks a
+  name no program spells, and so does every reference to it.
   The "ρ" of a nested formation is a void like the others, but it cannot be
   bound by name: XMIR has no "as" of "ρ". So a formation whose "ρ" is filled
   is written as a dispatch off the planted object, "⟨𝜎5⟩.minus(…)" rather than
@@ -157,11 +162,13 @@
   <!--
   The path the calculus walks to reach an object once the rows are in the
   world: the same path, but through "body🌵" wherever it takes the "φ" of a
-  formation that has a row, since that is where the body stands then.
+  formation that has a row, since that is where the body stands then, and
+  through the name with a trailing 🌵 wherever it takes a helper of such
+  a formation.
   -->
   <xsl:function name="eo:walk" as="xs:string">
     <xsl:param name="o" as="element(o)"/>
-    <xsl:sequence select="if ($o/parent::o) then concat(eo:walk($o/parent::o), '.', (if ($o/@as) then string($o/@as) else if ($o/@name = 'φ' and eo:rowed($o/parent::o)) then 'body🌵' else if ($o/@name) then string($o/@name) else 'ρ')) else string($o/@loc)"/>
+    <xsl:sequence select="if ($o/parent::o) then concat(eo:walk($o/parent::o), '.', (if ($o/@as) then string($o/@as) else if ($o/@name = 'φ' and eo:rowed($o/parent::o)) then 'body🌵' else if (starts-with($o/@name, 'a🌵') and eo:formation($o/parent::o) and eo:rowed($o/parent::o)) then $o/@name || '🌵' else if ($o/@name) then string($o/@name) else 'ρ')) else string($o/@loc)"/>
   </xsl:function>
   <!-- Whether every step of a path is a name, with no place left in it. -->
   <xsl:function name="eo:walkable" as="xs:boolean">
@@ -382,6 +389,15 @@
         <xsl:value-of select="eo:lambda(.)"/>
       </o>
     </xsl:copy>
+  </xsl:template>
+  <!-- A helper of a formation with a row ends in a 🌵 in the copy. -->
+  <xsl:template match="o[eo:formation(.)][eo:rowed(.)]/o/@name[starts-with(., 'a🌵')]" mode="eo:rowing">
+    <xsl:attribute name="name" select="concat(., '🌵')"/>
+  </xsl:template>
+  <!-- A reference to a helper of a formation with a row ends in a 🌵 too. -->
+  <xsl:template match="o[ancestor::o[eo:formation(.)][eo:rowed(.)]]/@base" mode="eo:rowing">
+    <xsl:variable name="helpers" select="ancestor::o[eo:formation(.)][eo:rowed(.)]/o/@name[starts-with(., 'a🌵')] ! string(.)"/>
+    <xsl:attribute name="base" select="string-join(tokenize(., '\.') ! (if (. = $helpers) then concat(., '🌵') else .), '.')"/>
   </xsl:template>
   <xsl:template match="o[eo:formation(.)][eo:rowed(.)]/o[@name = 'φ']" mode="eo:rowing">
     <xsl:copy>

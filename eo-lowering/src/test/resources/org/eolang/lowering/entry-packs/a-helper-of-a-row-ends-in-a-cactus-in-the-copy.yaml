@@ -1,0 +1,43 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The parser names a helper object it lifts out of a body, such as a constant,
+# after where it stands in the source, and that name is an attribute of the
+# formation like any other. In the copy of a formation that has a row, the
+# helper stands beside "body🌵" and the λ, and phino would take it for an
+# attribute of the formation's own and never fire the λ, so the helper ends
+# in a 🌵 as well, and so does every reference the body makes to it. A
+# helper that is a formation of its own gets an entry, which walks to it
+# by the name the copy gives it, while its locator keeps the name the
+# parser gave it.
+eo:
+  twice.eo: |
+    +package number
+
+    [^] > twice
+      ^.plus > @
+        ^.plus ^ >> half!
+      [] >> inner
+        ^.^.plus ^.^ > @
+  number.eo: |
+    [@] > number
+      [] > plus /Q.number
+        ? > ^
+        ? > b /Q.number
+xmir:
+  - "//o[@name='e2' and @base='Φ.number.twice.a🌵6-2🌵']"
+copies:
+  - "//o[@loc='Φ.number.twice']/o[@name='a🌵5-4🌵']"
+  - "//o[@loc='Φ.number.twice'][not(o[@name='a🌵5-4'])]"
+  - "//o[@loc='Φ.number.twice']/o[@name='body🌵']//o[@base='ξ.a🌵5-4🌵']"
+  - "//o[@loc='Φ.number.twice']/o[@name='body🌵'][not(.//o[@base='ξ.a🌵5-4'])]"
+voids:
+  - "𝜎1\t1\tρ\tnumber"
+entries:
+  - "1\tΦ.number.twice"
+  - "2\tΦ.number.twice.a🌵6-2"
+rows:
+  - "L_number_twice\tΦ.number.twice\tΦ.number.twice\tρ:number"
+table:
+  - "- λ: L_number_twice"

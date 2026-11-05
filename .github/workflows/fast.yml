@@ -116,7 +116,7 @@ jobs:
       - if: ${{ matrix.os == 'ubuntu-24.04' }}
         uses: objectionary/phino@75b40d0a4ba07f04c1bba4a5e7568a35c9a0816f  # master
         with:
-          version: 0.0.160
+          version: 0.0.161
       - if: ${{ matrix.os != 'ubuntu-24.04' }}
         run: echo "LOWERING=-Deo.lowering=false" >> "$GITHUB_ENV"
       # `OyRemote` reads `GITHUB_TOKEN`: without it every directory check asks
