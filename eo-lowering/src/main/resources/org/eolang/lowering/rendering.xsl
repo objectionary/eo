@@ -574,7 +574,7 @@
         <xsl:sequence select="eo:dispatched(normalize-space($bind), $prefix)"/>
       </xsl:when>
       <xsl:when test="$bind[self::symbol]">
-        <xsl:sequence select="eo:argument(normalize-space($bind))"/>
+        <xsl:sequence select="eo:passed(normalize-space($bind))"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:sequence select="eo:taint(concat($prefix, 'the ', $bind/@attr, ' of its message is a ', name($bind), ', which the atom cannot build'))"/>
@@ -1037,6 +1037,15 @@
     <xsl:param name="symbol" as="xs:string"/>
     <xsl:sequence select="if (map:contains($eo:voids, $symbol)) then eo:object($symbol) else eo:value($symbol, 'Phi')"/>
   </xsl:function>
+  <!--
+  The Java of a symbol as an argument a copy takes: a void as it is, since
+  taking it computes nothing, and anything else built only when the copy
+  reads it.
+  -->
+  <xsl:function name="eo:passed" as="xs:string">
+    <xsl:param name="symbol" as="xs:string"/>
+    <xsl:sequence select="if (map:contains($eo:voids, $symbol)) then eo:object($symbol) else eo:lazy($symbol, eo:argument($symbol))"/>
+  </xsl:function>
   <!-- The λ a minted symbol was minted by. -->
   <xsl:function name="eo:lambda" as="xs:string">
     <xsl:param name="symbol" as="xs:string"/>
@@ -1282,7 +1291,7 @@
         </xsl:when>
         <xsl:when test="exists(key('eo:deferred', $symbol, $eo:doc))">
           <xsl:variable name="deferred" select="key('eo:deferred', $symbol, $eo:doc)[1]"/>
-          <xsl:sequence select="concat('        return new PhApplication(', string-join((eo:copied($deferred), eo:arguments($deferred) ! ('new Bind(&quot;' || eo:literal(eo:unveiled(substring-before(., ':'))) || '&quot;, ' || eo:argument(substring-after(., ':')) || ')')), ', '), ');&#10;')"/>
+          <xsl:sequence select="concat('        return new PhApplication(', string-join((eo:copied($deferred), eo:arguments($deferred) ! ('new Bind(&quot;' || eo:literal(eo:unveiled(substring-before(., ':'))) || '&quot;, ' || eo:passed(substring-after(., ':')) || ')')), ', '), ');&#10;')"/>
         </xsl:when>
         <xsl:when test="map:contains($eo:rows, eo:lambda($symbol))">
           <xsl:sequence select="concat('        return new Dataized(', eo:rowed($symbol), ').take();&#10;')"/>

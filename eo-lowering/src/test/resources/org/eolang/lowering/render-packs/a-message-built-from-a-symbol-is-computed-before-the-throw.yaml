@@ -65,7 +65,7 @@ java: |
 
       @Override
       public Phi lambda() {
-          throw new ExFailure("%s", new Dataized(new PhApplication(Phi.Φ.take("string"), "φ", new Data.ToPhi(this.𝜎2()))).asString());
+          throw new ExFailure("%s", new Dataized(new PhApplication(Phi.Φ.take("string"), "φ", new PhLazy(() -> new Data.ToPhi(this.𝜎2())))).asString());
       }
 
       private byte[] 𝜎1() {
