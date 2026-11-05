@@ -63,6 +63,8 @@ jobs:
       # it has cores: sixteen budgets of 4G on a 24G heap can never hold, so
       # every test stayed inside its own and the heap died under all of them.
       - run: mvn -ntp --errors --batch-mode '-Deo.coverageTracking=true' '-Deo.deadline=120' '-Deo.maxmem=1G' '-Dheap-size=24G' -Psite -Pjacoco clean install site
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   terminate-instance:
     needs:
       - start-instance
