@@ -530,6 +530,9 @@
     <xsl:variable name="record" select="eo:record($meta)"/>
     <xsl:variable name="binds" select="eo:binds($record)"/>
     <xsl:choose>
+      <xsl:when test="eo:path($meta) != ''">
+        <xsl:sequence select="eo:dispatched(eo:path($meta), $prefix)"/>
+      </xsl:when>
       <xsl:when test="empty($record/@of)">
         <xsl:sequence select="eo:taint(concat($prefix, ' is built of ', $meta, ', which no record of the protocol spells out, so the atom cannot build it'))"/>
       </xsl:when>
@@ -611,8 +614,23 @@
   <xsl:function name="eo:record" as="element()?">
     <xsl:param name="meta" as="xs:string"/>
     <xsl:variable name="record" select="($eo:doc//(applied | formed)[@meta = $meta])[1]"/>
-    <xsl:variable name="alias" select="($eo:doc//(answered | morphed | bound)[@meta = $meta])[1]"/>
-    <xsl:sequence select="if (exists($record) or empty($alias)) then $record else eo:record(normalize-space($alias))"/>
+    <xsl:variable name="alias" select="eo:alias($meta)"/>
+    <xsl:sequence select="if (exists($record) or $alias = '' or contains($alias, '.')) then $record else eo:record($alias)"/>
+  </xsl:function>
+  <!--
+  The path a meta stands for, when the answer, morph or binding that names
+  it, or the one that names that one in turn, is an attribute taken off
+  another meta, or nothing when it stands for a record.
+  -->
+  <xsl:function name="eo:path" as="xs:string">
+    <xsl:param name="meta" as="xs:string"/>
+    <xsl:variable name="alias" select="eo:alias($meta)"/>
+    <xsl:sequence select="if (exists(($eo:doc//(applied | formed)[@meta = $meta])[1]) or $alias = '') then '' else if (contains($alias, '.')) then $alias else eo:path($alias)"/>
+  </xsl:function>
+  <!-- The meta or path an answer, a morph or a binding gives another meta, or nothing. -->
+  <xsl:function name="eo:alias" as="xs:string">
+    <xsl:param name="meta" as="xs:string"/>
+    <xsl:sequence select="normalize-space(($eo:doc//(answered | morphed | bound)[@meta = $meta])[1])"/>
   </xsl:function>
   <!--
   Every symbol a record names, down to the bottom, so that the atom
@@ -624,7 +642,7 @@
     <xsl:param name="meta" as="xs:string"/>
     <xsl:variable name="record" select="eo:record($meta)"/>
     <xsl:variable name="binds" select="$record/*[not(@attr = 'ρ')]"/>
-    <xsl:sequence select="(($record/@of, $binds[self::ref]) ! tokenize(normalize-space(.), '\.')[1][. != 'Φ'] ! eo:borne(.), $binds[self::symbol] ! normalize-space(.), $binds[self::meta] ! eo:borne(normalize-space(.)))"/>
+    <xsl:sequence select="(eo:path($meta) ! tokenize(., '\.')[1][. != 'Φ'] ! eo:borne(.), ($record/@of, $binds[self::ref]) ! tokenize(normalize-space(.), '\.')[1][. != 'Φ'] ! eo:borne(.), $binds[self::symbol] ! normalize-space(.), $binds[self::meta] ! eo:borne(normalize-space(.)))"/>
   </xsl:function>
   <!-- The symbols the message a flow throws is built from, or nothing when it throws none. -->
   <xsl:function name="eo:bearing" as="xs:string*">
