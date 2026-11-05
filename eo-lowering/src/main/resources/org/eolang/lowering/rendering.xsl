@@ -460,7 +460,7 @@
         <xsl:sequence select="concat('&quot;', eo:message($bytes), '&quot;')"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:sequence select="concat('new Dataized(', eo:computed($message, concat($prefix, 'its message')), ').asString()')"/>
+        <xsl:sequence select="concat('new Dataized(', eo:computed($message, $prefix || 'its message'), ').asString()')"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -483,10 +483,10 @@
         <xsl:sequence select="concat('return ', eo:value($symbol, $type), ';')"/>
       </xsl:when>
       <xsl:when test="empty($joined/@raised)">
-        <xsl:sequence select="concat('throw new ExFailure(&quot;', eo:literal(concat('The object ', $locator, ' came to ⊥ on the ', $side, ' side of ', $joined/@symbol)), '&quot;);')"/>
+        <xsl:sequence select="concat('throw new ExFailure(&quot;', eo:literal('The object ' || $locator || ' came to ⊥ on the ' || $side || ' side of ' || $joined/@symbol), '&quot;);')"/>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:sequence select="concat('throw new ExFailure(&quot;%s&quot;, ', eo:raising(string($joined/@raised), concat('The symbol ', $joined/@symbol, ' of the entry ', $number, ' throws on its ', $side, ' side, but ')), ');')"/>
+        <xsl:sequence select="concat('throw new ExFailure(&quot;%s&quot;, ', eo:raising(string($joined/@raised), 'The symbol ' || $joined/@symbol || ' of the entry ' || $number || ' throws on its ' || $side || ' side, but '), ');')"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -543,7 +543,7 @@
       <xsl:otherwise>
         <xsl:variable name="object" select="eo:dispatched(string($record/@of), $prefix)"/>
         <xsl:variable name="args" select="$binds ! concat('&quot;', eo:literal(eo:unveiled(@attr)), '&quot;, ', eo:bound(., $prefix))"/>
-        <xsl:sequence select="if (empty($args)) then $object else if (count($args) = 1) then concat('new PhApplication(', $object, ', ', $args, ')') else concat('new PhApplication(', string-join(($object, $args ! concat('new Bind(', ., ')')), ', '), ')')"/>
+        <xsl:sequence select="if (empty($args)) then $object else if (count($args) = 1) then concat('new PhApplication(', $object, ', ', $args, ')') else concat('new PhApplication(', string-join(($object, $args ! ('new Bind(' || . || ')')), ', '), ')')"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -1142,7 +1142,7 @@
   <xsl:function name="eo:lazy" as="xs:string">
     <xsl:param name="token" as="xs:string"/>
     <xsl:param name="java" as="xs:string"/>
-    <xsl:sequence select="if (eo:constant($token)) then $java else concat('new PhLazy(() -> ', $java, ')')"/>
+    <xsl:sequence select="if (eo:constant($token)) then $java else concat('new PhLazy(() -&gt; ', $java, ')')"/>
   </xsl:function>
   <!-- The Java of a token as the object of a carrier, the way "Data.ToPhi" and the library make one of data. -->
   <xsl:function name="eo:wrapped" as="xs:string">
@@ -1342,7 +1342,7 @@
         </xsl:when>
         <xsl:when test="exists(key('eo:deferred', $symbol, $eo:doc))">
           <xsl:variable name="deferred" select="key('eo:deferred', $symbol, $eo:doc)[1]"/>
-          <xsl:sequence select="concat('        return new PhApplication(', string-join((eo:copied($deferred), eo:arguments($deferred) ! ('new Bind(&quot;' || eo:literal(eo:unveiled(@attr)) || '&quot;, ' || eo:bound(., concat('The argument ', @attr, ' of the ', name($deferred), ' symbol ', $deferred/@symbol, ' of the entry ', $number)) || ')')), ', '), ');&#10;')"/>
+          <xsl:sequence select="concat('        return new PhApplication(', string-join((eo:copied($deferred), eo:arguments($deferred) ! ('new Bind(&quot;' || eo:literal(eo:unveiled(@attr)) || '&quot;, ' || eo:bound(., 'The argument ' || @attr || ' of the ' || name($deferred) || ' symbol ' || $deferred/@symbol || ' of the entry ' || $number) || ')')), ', '), ');&#10;')"/>
         </xsl:when>
         <xsl:when test="map:contains($eo:rows, eo:lambda($symbol))">
           <xsl:sequence select="concat('        return new Dataized(', eo:rowed($symbol), ').take();&#10;')"/>

@@ -168,7 +168,7 @@
   -->
   <xsl:function name="eo:walk" as="xs:string">
     <xsl:param name="o" as="element(o)"/>
-    <xsl:sequence select="if ($o/parent::o) then concat(eo:walk($o/parent::o), '.', (if ($o/@as) then string($o/@as) else if ($o/@name = 'φ' and eo:rowed($o/parent::o)) then 'body🌵' else if (starts-with($o/@name, 'a🌵') and eo:formation($o/parent::o) and eo:rowed($o/parent::o)) then concat($o/@name, '🌵') else if ($o/@name) then string($o/@name) else 'ρ')) else string($o/@loc)"/>
+    <xsl:sequence select="if ($o/parent::o) then concat(eo:walk($o/parent::o), '.', (if ($o/@as) then string($o/@as) else if ($o/@name = 'φ' and eo:rowed($o/parent::o)) then 'body🌵' else if (starts-with($o/@name, 'a🌵') and eo:formation($o/parent::o) and eo:rowed($o/parent::o)) then $o/@name || '🌵' else if ($o/@name) then string($o/@name) else 'ρ')) else string($o/@loc)"/>
   </xsl:function>
   <!-- Whether every step of a path is a name, with no place left in it. -->
   <xsl:function name="eo:walkable" as="xs:boolean">
