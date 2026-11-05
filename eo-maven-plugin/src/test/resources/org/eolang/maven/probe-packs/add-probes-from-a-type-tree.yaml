@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A type may be a tree, with the types of the voids in brackets after the
+# name, and every name in it must be probed: the object the atom returns,
+# and each type its brackets give, nested ones too.
+probes:
+  - 'posix'
+  - 'posix.status-return'
+  - 'number'
+  - 'string'
+  - 'bytes'
+eo: |
+  +package custom
+  +version 0.0.0
+
+  [] > foo /Q.posix.status-return(Q.number,Q.string(Q.bytes))
