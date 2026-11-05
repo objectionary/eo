@@ -8,6 +8,8 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link Tokens}.
@@ -15,6 +17,36 @@ import org.junit.jupiter.api.Test;
  * @since 0.1
  */
 final class TokensTest {
+
+    @ParameterizedTest
+    @ValueSource(
+        strings = {
+            "f (g a\"b) > x",
+            "* a\"b > x",
+            "f (a\"b > []) > x",
+            "f (g \"a(b)\") > x"
+        }
+    )
+    void distinguishesNamesFromStringLiterals(final String expression) throws Exception {
+        MatcherAssert.assertThat(
+            "a quote inside a name must not start a string, while real strings keep their parentheses",
+            new EoSyntax(
+                String.format("+package foo%n%n[] > foo%n  %s%n  x > @%n", expression)
+            ).parsed().xpath("/object/errors/error/text()"),
+            Matchers.empty()
+        );
+    }
+
+    @Test
+    void reportsRedundantParentheses() throws Exception {
+        MatcherAssert.assertThat(
+            "a grouped name must report redundant parentheses instead of an unterminated string",
+            new EoSyntax(
+                String.format("+package foo%n%n[] > foo%n  f (a\"b) > x%n  x > @%n")
+            ).parsed().xpath("/object/errors/error/text()"),
+            Matchers.hasItem(Matchers.containsString("redundant parentheses"))
+        );
+    }
 
     @Test
     void readsIdentifierWithHyphen() {
