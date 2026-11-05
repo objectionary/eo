@@ -543,7 +543,7 @@
       <xsl:otherwise>
         <xsl:variable name="object" select="eo:dispatched(string($record/@of), $prefix)"/>
         <xsl:variable name="args" select="$binds ! concat('&quot;', eo:literal(eo:unveiled(@attr)), '&quot;, ', eo:bound(., $prefix))"/>
-        <xsl:sequence select="if (empty($args)) then $object else if (count($args) = 1) then concat('new PhApplication(', $object, ', ', $args, ')') else concat('new PhApplication(', string-join(($object, $args ! ('new Bind(' || . || ')')), ', '), ')')"/>
+        <xsl:sequence select="if (empty($args)) then $object else if (count($args) = 1) then 'new PhApplication(' || $object || ', ' || $args || ')' else 'new PhApplication(' || string-join(($object, $args ! ('new Bind(' || . || ')')), ', ') || ')'"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
