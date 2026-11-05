@@ -1,12 +1,12 @@
 # Signed 64-bit integer.
 # Here `as-bytes` must be a `bytes` object.
 #
-# The out-of-bounds message of `as-i32` names the receiver with `%s` and
-# `as-scientific`, not with `%d`, because `%d` would take a `number` and the
+# The out-of-bounds message of `as-i32` names the receiver with `%s` over
+# `as-decimal`, not with `%d`, because `%d` would take a `number` and the
 # `i64` to `number` conversion is lossy at the top of the 64-bit range: the
 # nearest double of `9223372036854775807` is `2^63`, which is one past the
 # `long` range that `printf`'s own `%d` guard accepts, so the message itself
-# used to terminate instead of being printed.
+# used to terminate; `as-scientific` rounds the mantissa to six digits (#9725).
 #
 # Negation is two's complement, one `plus` over the flipped bits, and not
 # `times` by minus one. Every bit of minus one is set, so the shift-and-add
@@ -54,7 +54,7 @@
       cant-convert
         "Can't convert i64 number %s to i32 because it's out of i32 bounds".printf
           *
-            string num.as-number.as-scientific
+            string num.as-decimal
   [^num] > as-number
     if. > @
       eq.
@@ -255,6 +255,10 @@
   0.@.eq 0.@ ++> can-equal-zero-to-zero
 
   42.as-i64.as-bytes.eq 00-00-00-00-00-00-00-2A ++> can-expose-valid-bytes
+
+  eq. ++> can-format-the-error-message-of-the-number-past-i32-max
+    "Can't convert i64 number 2147483648 to i32 because it's out of i32 bounds"
+    2147483648.as-i64.as-i32 I
 
   eq. ++> can-keep-the-low-bits-of-a-large-product
     2147483647.as-i64.times 2147483647.as-i64
