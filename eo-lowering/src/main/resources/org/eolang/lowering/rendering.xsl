@@ -38,7 +38,8 @@
   a minted symbol is the operation of its λ, a symbolized one is a literal
   in the place of every call, a joined one is an if that returns one branch
   or the other, or throws the message of the copy of "throw" that a side
-  raised, when phino took that side for the terminator, and a deferred one is the copy of an object of the entry with
+  raised, or a failure when that side came to a bare ⊥, when phino took
+  that side for the terminator, and a deferred one is the copy of an object of the entry with
   its arguments bound, which phino left for the run to work out. A loop
   phino cut gets no symbol, so a flow that met one makes the entry a taint.
   The copy is made where phino defers it, and dataized only where a λ reads
@@ -462,29 +463,30 @@
     </xsl:choose>
   </xsl:function>
   <!--
-  The meta of the copy of "throw" that the terminator of a joined symbol
-  raised, which phino names when it takes a side for the terminator. A
-  terminator that raised nothing leaves no message to throw, so its entry
-  is a taint.
-  -->
-  <xsl:function name="eo:raised" as="xs:string">
-    <xsl:param name="joined" as="element()"/>
-    <xsl:if test="empty($joined/@raised)">
-      <xsl:sequence select="eo:taint(concat('The symbol ', $joined/@symbol, ' of the entry ', $number, ' takes ', $joined/@terminator, ' for the terminator, but names no copy of throw it raised'))"/>
-    </xsl:if>
-    <xsl:sequence select="string($joined/@raised)"/>
-  </xsl:function>
-  <!--
   The Java of one side of a joined symbol, as the statement of its branch:
-  the return of the symbol of that side, or the throw of the message that
-  side raised, when phino took it for the terminator.
+  the return of the symbol of that side, or a throw, when phino took that
+  side for the terminator. A terminator that raised a copy of "throw"
+  throws the message of that copy. One that raised none came to a bare ⊥,
+  which has no message, so it throws a failure that names where the atom
+  came to it, and every failure of the runtime, such as an unset void,
+  extends that failure.
   -->
   <xsl:function name="eo:side" as="xs:string">
     <xsl:param name="joined" as="element()"/>
     <xsl:param name="side" as="xs:string"/>
     <xsl:param name="type" as="xs:string"/>
     <xsl:variable name="symbol" select="eo:branch($joined, $side)"/>
-    <xsl:sequence select="if ($symbol = $joined/@terminator) then concat('throw new ExFailure(&quot;%s&quot;, ', eo:raising(eo:raised($joined), concat('The symbol ', $joined/@symbol, ' of the entry ', $number, ' throws on its ', $side, ' side, but ')), ');') else concat('return ', eo:value($symbol, $type), ';')"/>
+    <xsl:choose>
+      <xsl:when test="not($symbol = $joined/@terminator)">
+        <xsl:sequence select="concat('return ', eo:value($symbol, $type), ';')"/>
+      </xsl:when>
+      <xsl:when test="empty($joined/@raised)">
+        <xsl:sequence select="concat('throw new ExFailure(&quot;', eo:literal(concat('The object ', $locator, ' came to ⊥ on the ', $side, ' side of ', $joined/@symbol)), '&quot;);')"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="concat('throw new ExFailure(&quot;%s&quot;, ', eo:raising(string($joined/@raised), concat('The symbol ', $joined/@symbol, ' of the entry ', $number, ' throws on its ', $side, ' side, but ')), ');')"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:function>
   <!--
   The bytes of a message the protocol names by the meta of its record, as
@@ -906,7 +908,7 @@
           <xsl:when test="not($symbol = $reached)"/>
           <xsl:when test="exists(key('eo:joined', $symbol, $eo:doc))">
             <xsl:variable name="joined" select="key('eo:joined', $symbol, $eo:doc)[1]"/>
-            <xsl:sequence select="(eo:condition($joined), ('left', 'right') ! eo:branch($joined, .)[not(. = $joined/@terminator)], $joined[@terminator = (@left, @right)] ! eo:carried(eo:raised(.)))"/>
+            <xsl:sequence select="(eo:condition($joined), ('left', 'right') ! eo:branch($joined, .)[not(. = $joined/@terminator)], $joined[@terminator = (@left, @right) and @raised] ! eo:carried(string(@raised)))"/>
           </xsl:when>
           <xsl:when test="exists(key('eo:deferred', $symbol, $eo:doc))">
             <xsl:sequence select="eo:arguments(key('eo:deferred', $symbol, $eo:doc)[1]) ! substring-after(., ':')[not(map:contains($eo:voids, .))]"/>
