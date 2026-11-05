@@ -18,7 +18,7 @@ eo:
         acc > @
   number.eo: |
     [@] > number
-      [] > eq /Q.bool
+      [] > eq /Q.true|Q.false
         ? > ^
         ? > b
   tuple.eo: |

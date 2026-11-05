@@ -17,7 +17,7 @@ eo:
       ^.gt 0 > @
   number.eo: |
     [@] > number
-      [] > gt /Q.bool
+      [] > gt /Q.true|Q.false
         ? > ^
         ? > b /Q.number
 copies:
