@@ -16,6 +16,7 @@ import java.util.List;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
+import org.eolang.inference.Annotation;
 
 /**
  * The types that go into an object and the type that comes out of it.
@@ -138,7 +139,7 @@ final class Signatures {
         for (final String type : this.facts.value().xpath(
             String.format("/facts/objects/type[@id='%s'][1]/@returns", name)
         )) {
-            found.add(Signatures.head(type));
+            found.add(new Annotation(type).head());
         }
         if (found.isEmpty()) {
             for (final String other : this.names(name, "/reduced")) {
@@ -162,22 +163,6 @@ final class Signatures {
                 )
             )
         );
-    }
-
-    private static String head(final String type) {
-        final StringBuilder outside = new StringBuilder(type.length());
-        int depth = 0;
-        for (int idx = 0; idx < type.length(); ++idx) {
-            final char glyph = type.charAt(idx);
-            if (glyph == '(') {
-                depth += 1;
-            } else if (glyph == ')') {
-                depth -= 1;
-            } else if (depth == 0) {
-                outside.append(glyph);
-            }
-        }
-        return outside.toString();
     }
 
     private static XML table(final Path file) throws IOException {

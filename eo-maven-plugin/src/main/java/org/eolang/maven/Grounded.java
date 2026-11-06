@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.eolang.inference.Annotation;
 
 /**
  * The arguments of the calls whose head the code alone fixes.
@@ -111,27 +112,13 @@ final class Grounded {
 
     private static Map<String, String> targets(final Xnav type) {
         final Map<String, String> attrs = new HashMap<>(0);
-        type.attribute("returns").text().ifPresent(back -> attrs.put("φ", Grounded.head(back)));
+        type.attribute("returns").text().ifPresent(
+            back -> attrs.put("φ", new Annotation(back).head())
+        );
         type.elements(Filter.withName("attr")).forEach(
             attr -> attrs.put(attr.attribute("name").text().get(), Grounded.target(attr))
         );
         return attrs;
-    }
-
-    private static String head(final String type) {
-        final StringBuilder outside = new StringBuilder(type.length());
-        int depth = 0;
-        for (int idx = 0; idx < type.length(); ++idx) {
-            final char glyph = type.charAt(idx);
-            if (glyph == '(') {
-                depth += 1;
-            } else if (glyph == ')') {
-                depth -= 1;
-            } else if (depth == 0) {
-                outside.append(glyph);
-            }
-        }
-        return outside.toString();
     }
 
     private static String target(final Xnav attr) {

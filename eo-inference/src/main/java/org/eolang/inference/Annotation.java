@@ -26,7 +26,7 @@ import java.util.List;
  *
  * @since 0.76.0
  */
-final class Annotation {
+public final class Annotation {
 
     /**
      * The type, as the XMIR writes it.
@@ -38,7 +38,7 @@ final class Annotation {
      *
      * @param type The type, as the XMIR writes it
      */
-    Annotation(final String type) {
+    public Annotation(final String type) {
         this.text = type;
     }
 
@@ -52,7 +52,7 @@ final class Annotation {
      *
      * @return The path or the variable
      */
-    String head() {
+    public String head() {
         final String bare = this.bare();
         final int open = bare.indexOf('(');
         final String found;
