@@ -30,7 +30,7 @@ final class EOwin32EOfindfirstfileTest {
                 new PhApplication(
                     new EOwin32$EOfind_first_file(),
                     "pattern",
-                    new Data.ToPhi(temp.resolve("плюшка").resolve("*").toString())
+                    new Data.ToPhi(String.format("%s\\плюшка\\*", temp))
                 ).take("name")
             ).asString(),
             Matchers.emptyString()
@@ -47,7 +47,7 @@ final class EOwin32EOfindfirstfileTest {
                 new PhApplication(
                     new EOwin32$EOfind_first_file(),
                     "pattern",
-                    new Data.ToPhi(temp.resolve("*").toString())
+                    new Data.ToPhi(String.format("%s\\*", temp))
                 ).take("message")
             ).asString(),
             Matchers.emptyString()
