@@ -57,7 +57,7 @@ final class MjAtomsTableTest {
     }
 
     @Test
-    void keepsTypeTreeWithCommasWhole(@Mktmp final Path temp) throws Exception {
+    void writesOnlyTheNameBeforeTheBracketsOfTypeTree(@Mktmp final Path temp) throws Exception {
         new Saved(
             new EoSyntax(
                 new InputOf(
@@ -79,9 +79,9 @@ final class MjAtomsTableTest {
             .with("csv", temp.resolve("classes/org/eolang/atoms.csv").toFile())
             .execute(MjAtomsTable.class);
         MatcherAssert.assertThat(
-            "a type tree with commas must stay whole after the first comma of its line, but it didnt",
+            "a type tree must be written as the name before its brackets, but it wasnt",
             Files.readAllLines(temp.resolve("classes/org/eolang/atoms.csv")),
-            Matchers.hasItem("Φ.bar.os.check,Φ.os.status(Φ.number,Φ.string(Φ.bytes))")
+            Matchers.hasItem("Φ.bar.os.check,Φ.os.status")
         );
     }
 

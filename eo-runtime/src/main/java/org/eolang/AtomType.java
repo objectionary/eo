@@ -10,12 +10,12 @@ package org.eolang;
  *
  * <p>The type is the {@code /Q.foo} suffix of the atom in EO, with every
  * {@code Q} turned into {@code Φ}. It is a type variable, {@code A} to
- * {@code F}, or a forma with the types of its voids in brackets right after
- * it or none, such as {@code Φ.posix.status-return(Φ.number,Φ.string)}. A
- * computed object fits the type when its forma is the forma the type starts
- * with, the name before the brackets. The brackets are not checked, since
- * that would dataize the voids of the computed object. A type variable and
- * an empty type fit any object.</p>
+ * {@code F}, or a forma. When EO writes the type as a tree, with the types
+ * of its voids in brackets, such as
+ * {@code Φ.posix.status-return(Φ.number,Φ.string)}, the table keeps only
+ * the name before the brackets, since checking the voids would dataize
+ * them. A computed object fits the type when its forma equals it. A type
+ * variable and an empty type fit any object.</p>
  *
  * @since 0.76.0
  */
@@ -42,18 +42,6 @@ final class AtomType {
      * @return TRUE if it fits
      */
     boolean admits(final String forma) {
-        final StringBuilder outside = new StringBuilder(this.type.length());
-        int depth = 0;
-        for (final char glyph : this.type.toCharArray()) {
-            if (glyph == '(') {
-                depth += 1;
-            } else if (glyph == ')') {
-                depth -= 1;
-            } else if (depth == 0) {
-                outside.append(glyph);
-            }
-        }
-        final String head = outside.toString();
-        return head.isEmpty() || head.matches("[A-F]") || head.equals(forma);
+        return this.type.isEmpty() || this.type.matches("[A-F]") || this.type.equals(forma);
     }
 }
