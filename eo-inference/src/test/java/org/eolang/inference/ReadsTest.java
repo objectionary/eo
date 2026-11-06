@@ -86,14 +86,6 @@ final class ReadsTest {
         );
     }
 
-    private static World world(final Path temp) throws IOException {
-        return new Sources(temp)
-            .with("vase.eo", "[flower water] > vase", "  flower > @", "  water > wet")
-            .with("app.eo", "[] > app", "  (vase 5).wet > @")
-            .with("cat.eo", "[] > cat", "  \"meow\" > voice")
-            .world();
-    }
-
     @Test
     void readsVoidTypeLeavesOutAsUnknownOnlyJavaFills(@Mktmp final Path temp)
         throws IOException {
@@ -119,6 +111,14 @@ final class ReadsTest {
             ),
             Matchers.hasToString(new Ids(state.shared("Φ.string")).toString())
         );
+    }
+
+    private static World world(final Path temp) throws IOException {
+        return new Sources(temp)
+            .with("vase.eo", "[flower water] > vase", "  flower > @", "  water > wet")
+            .with("app.eo", "[] > app", "  (vase 5).wet > @")
+            .with("cat.eo", "[] > cat", "  \"meow\" > voice")
+            .world();
     }
 
     private static World status(final Path temp) throws IOException {

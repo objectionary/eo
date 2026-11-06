@@ -153,22 +153,26 @@ final class Roles {
         final List<String> known = new ArrayList<>(0);
         if (this.atom(form)) {
             final Formation shape = this.program.form(form);
-            final List<String> locs = new ArrayList<>(shape.gives());
-            if (locs.isEmpty()) {
-                for (final Annotation option : new Annotation(shape.returns()).options()) {
-                    if (!this.program.formation(option.head())) {
-                        locs.add(option.head());
-                    }
-                }
-            }
             final String prefix = form.concat(".");
-            for (final String loc : locs) {
+            for (final String loc : this.locators(shape)) {
                 if (loc.startsWith(prefix) && shape.has(loc.substring(prefix.length()))) {
                     known.add(loc.substring(prefix.length()));
                 }
             }
         }
         return known;
+    }
+
+    private List<String> locators(final Formation shape) {
+        final List<String> locs = new ArrayList<>(shape.gives());
+        if (locs.isEmpty()) {
+            for (final Annotation option : new Annotation(shape.returns()).options()) {
+                if (!this.program.formation(option.head())) {
+                    locs.add(option.head());
+                }
+            }
+        }
+        return locs;
     }
 
     private String passed(final String form) {

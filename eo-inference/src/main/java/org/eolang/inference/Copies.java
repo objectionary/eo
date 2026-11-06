@@ -38,10 +38,10 @@ import java.util.Map;
  * @todo #9657:60min Let a type variable in the brackets of a type or in a
  *  call back list, as in {@code Φ.box(A)} or {@code /{Q.string B}}, stand
  *  for what the voids of the atom that carry the same letter hold, the way
- *  {@code /A} does for the whole return of {@code recovered}. The copy Java makes would then depend on the copy of
- *  the atom it comes from, so it could no longer be one copy per type, and
- *  for now {@code java()} stops the engine on such a type. Nothing in
- *  eo-runtime writes one yet.
+ *  {@code /A} does for the whole return of {@code recovered}. The copy
+ *  Java makes would then depend on the copy of the atom it comes from, so
+ *  it could no longer be one copy per type, and for now {@code java()}
+ *  stops the engine on such a type. Nothing in eo-runtime writes one yet.
  */
 final class Copies {
 

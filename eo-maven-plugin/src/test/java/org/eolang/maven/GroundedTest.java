@@ -111,7 +111,9 @@ final class GroundedTest {
                     "<objects><type id='Φ'>",
                     "<attr name='check' type='Φ.check'/>",
                     String.format("<attr name='%1$s' type='Φ.%1$s'/>", name),
-                    String.format("</type><type id='Φ.check' returns='Φ.%s(Φ.number,Φ.string)'>", name),
+                    String.format(
+                        "</type><type id='Φ.check' returns='Φ.%s(Φ.number,Φ.string)'>", name
+                    ),
                     "</type>",
                     String.format("<type id='Φ.%s'>", name),
                     String.format("<attr name='code' type='Φ.%s.code' void='true'/>", name),

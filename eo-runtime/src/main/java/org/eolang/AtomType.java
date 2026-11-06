@@ -56,7 +56,7 @@ final class AtomType {
             }
         }
         boolean fits = this.type.isEmpty();
-        for (final String head : outside.toString().split("\\|")) {
+        for (final String head : outside.toString().split("\\|", -1)) {
             fits = fits || head.matches("[A-F]") || head.equals(forma);
         }
         return fits;

@@ -58,28 +58,6 @@ final class TellingTest {
         );
     }
 
-    private static Told told(final Path temp) throws IOException {
-        final World world = new Sources(temp).with(
-            "five.eo",
-            "[] > five",
-            "  5 > @"
-        ).with(
-            "box.eo",
-            "[item spare] > box",
-            "  item > @",
-            "  spare > other"
-        ).with(
-            "app.eo",
-            "[] > app",
-            "  five > @",
-            "  (box 1).other > one",
-            "  (box \"a\").other > word"
-        ).world();
-        final State state = new Settled(world).state();
-        state.step();
-        return new Telling(state, world).told();
-    }
-
     @Test
     void tellsVoidOfJavaCopyByTheTypeItsAtomGives(@Mktmp final Path temp)
         throws IOException {
@@ -119,6 +97,28 @@ final class TellingTest {
             new Telling(state, world).told().sets().get("Φ.os.put.v🌵item"),
             Matchers.hasKey("Φ.bytes\tΦ.number\tΦ.string")
         );
+    }
+
+    private static Told told(final Path temp) throws IOException {
+        final World world = new Sources(temp).with(
+            "five.eo",
+            "[] > five",
+            "  5 > @"
+        ).with(
+            "box.eo",
+            "[item spare] > box",
+            "  item > @",
+            "  spare > other"
+        ).with(
+            "app.eo",
+            "[] > app",
+            "  five > @",
+            "  (box 1).other > one",
+            "  (box \"a\").other > word"
+        ).world();
+        final State state = new Settled(world).state();
+        state.step();
+        return new Telling(state, world).told();
     }
 
     private static Told status(final Path temp) throws IOException {

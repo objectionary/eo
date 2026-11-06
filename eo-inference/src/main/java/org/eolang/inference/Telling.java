@@ -319,10 +319,12 @@ final class Telling {
             result.addAll(this.made(num, shape));
         }
         final List<String> voids = this.behind(num);
-        if (!voids.isEmpty() && !this.walking.get(num)) {
+        if (voids.isEmpty() || this.walking.get(num)) {
+            if (result.isEmpty()) {
+                result.add(form);
+            }
+        } else {
             result.addAll(this.followed(num, voids));
-        } else if (result.isEmpty()) {
-            result.add(form);
         }
         return result;
     }

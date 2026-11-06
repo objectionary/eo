@@ -169,7 +169,8 @@ final class Signatures {
     private static List<String> heads(final String type) {
         final StringBuilder outside = new StringBuilder(type.length());
         int depth = 0;
-        for (final char glyph : type.toCharArray()) {
+        for (int idx = 0; idx < type.length(); ++idx) {
+            final char glyph = type.charAt(idx);
             if (glyph == '(') {
                 depth += 1;
             } else if (glyph == ')') {

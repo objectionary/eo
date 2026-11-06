@@ -22,9 +22,9 @@ import java.util.List;
  * declared. So {@code Φ.posix.status-return(Φ.number,Φ.string)} is a
  * {@code status-return} with a number in its first void and a string in its
  * second, and {@code Φ.true|Φ.false} is either of the two. A {@code ?} that
- * ends the own type of a void says the void may hold ⊥, and is dropped here.
- * The parser has already checked the grammar, so nothing is checked
- * again.</p>
+ * ends the own type of a void says the void may hold a terminator, and is
+ * dropped here. The parser has already checked the grammar, so nothing is
+ * checked again.</p>
  *
  * @since 0.76.0
  */
@@ -44,6 +44,11 @@ final class Annotation {
         this.text = type;
     }
 
+    @Override
+    public String toString() {
+        return this.bare();
+    }
+
     /**
      * The options of its union, in the order written: two for a union, or
      * itself alone.
@@ -51,7 +56,7 @@ final class Annotation {
      * @return The options
      */
     List<Annotation> options() {
-        return this.parts(this.bare(), '|');
+        return this.parts('|');
     }
 
     /**
@@ -84,7 +89,7 @@ final class Annotation {
         if (open < 0) {
             found = new ArrayList<>(0);
         } else {
-            found = this.parts(bare.substring(open + 1, bare.length() - 1), ',');
+            found = new Annotation(bare.substring(open + 1, bare.length() - 1)).parts(',');
         }
         return found;
     }
@@ -97,11 +102,6 @@ final class Annotation {
     boolean variable() {
         final String head = this.head();
         return head.length() == 1 && head.charAt(0) >= 'A' && head.charAt(0) <= 'F';
-    }
-
-    @Override
-    public String toString() {
-        return this.bare();
     }
 
     private String single() {
@@ -123,7 +123,8 @@ final class Annotation {
         return found;
     }
 
-    private List<Annotation> parts(final String type, final char separator) {
+    private List<Annotation> parts(final char separator) {
+        final String type = this.bare();
         final List<Annotation> found = new ArrayList<>(2);
         int depth = 0;
         int start = 0;

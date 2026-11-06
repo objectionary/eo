@@ -149,7 +149,9 @@ final class CopiesTest {
         MatcherAssert.assertThat(
             "two types that put different things into one formation must make two copies, but they made one",
             state.java(new Annotation("Φ.os.status(Φ.string,Φ.bytes)")),
-            Matchers.not(Matchers.equalTo(state.java(new Annotation("Φ.os.status(Φ.bytes,Φ.string)"))))
+            Matchers.not(
+                Matchers.equalTo(state.java(new Annotation("Φ.os.status(Φ.bytes,Φ.string)")))
+            )
         );
     }
 

@@ -53,11 +53,6 @@ final class TypeTree {
     private static final Pattern VARIABLE = Pattern.compile("[A-F]");
 
     /**
-     * The glyphs that end a name inside the tree.
-     */
-    private static final String DELIMITERS = "(),|";
-
-    /**
      * The message for brackets that follow no name.
      */
     private static final String FOLLOW = "brackets in a type must follow a name";
@@ -126,7 +121,7 @@ final class TypeTree {
      */
     String asString() {
         final String body = this.body();
-        this.checkSpaced(body);
+        this.checkSpaced();
         this.walk(body);
         return TypeTree.ROOT.matcher(body).replaceAll("$1Φ.")
             .concat(this.word.substring(body.length()));
@@ -142,13 +137,13 @@ final class TypeTree {
         return body;
     }
 
-    private void checkSpaced(final String body) {
+    private void checkSpaced() {
         int idx = 0;
         while (idx < this.rest.length()
             && (this.rest.charAt(idx) == ' ' || this.rest.charAt(idx) == '\t')) {
             idx = idx + 1;
         }
-        if (idx > 0 && (this.open(body)
+        if (idx > 0 && (this.open()
             || idx < this.rest.length() && "()|,".indexOf(this.rest.charAt(idx)) >= 0)) {
             throw new ParseError(
                 this.span.line(), this.pos + this.word.length(),
@@ -157,10 +152,11 @@ final class TypeTree {
         }
     }
 
-    private boolean open(final String body) {
-        final long depth = body.chars().filter(glyph -> glyph == '(').count()
-            - body.chars().filter(glyph -> glyph == ')').count();
-        return depth > 0 || !body.isEmpty() && "(|,".indexOf(body.charAt(body.length() - 1)) >= 0;
+    private boolean open() {
+        final String body = this.body();
+        return body.chars().filter(glyph -> glyph == '(').count()
+            > body.chars().filter(glyph -> glyph == ')').count()
+            || !body.isEmpty() && "(|,".indexOf(body.charAt(body.length() - 1)) >= 0;
     }
 
     private void walk(final String body) {
@@ -187,11 +183,11 @@ final class TypeTree {
 
     private int name(final String body, final int from, final boolean top) {
         int end = from;
-        while (end < body.length() && TypeTree.DELIMITERS.indexOf(body.charAt(end)) < 0) {
+        while (end < body.length() && "(),|".indexOf(body.charAt(end)) < 0) {
             end = end + 1;
         }
         if (end == from) {
-            throw this.empty(body, from);
+            throw this.empty(from);
         }
         final String token = body.substring(from, end);
         final int mark = token.indexOf('?');
@@ -211,9 +207,9 @@ final class TypeTree {
         return end;
     }
 
-    private ParseError empty(final String body, final int idx) {
-        final char next = this.glyph(body, idx);
-        final char prev = this.glyph(body, idx - 1);
+    private ParseError empty(final int idx) {
+        final char next = this.glyph(idx);
+        final char prev = this.glyph(idx - 1);
         final ParseError error;
         if (next == '(') {
             error = new ParseError(this.span.line(), this.pos + idx, TypeTree.FOLLOW);
@@ -238,7 +234,8 @@ final class TypeTree {
         return error;
     }
 
-    private char glyph(final String body, final int idx) {
+    private char glyph(final int idx) {
+        final String body = this.body();
         final char glyph;
         if (idx >= 0 && idx < body.length()) {
             glyph = body.charAt(idx);
@@ -287,17 +284,19 @@ final class TypeTree {
     private void delimit(
         final char glyph, final int idx, final Deque<Integer> opens, final Deque<Integer> bars
     ) {
-        if (glyph == '(') {
-            opens.push(idx);
-            bars.push(0);
-        } else if (glyph == '|' && bars.peek() > 0) {
+        if (glyph == '|' && bars.peek() > 0) {
             throw new ParseError(
                 this.span.line(), this.pos + idx, "a union holds at most two types"
             );
+        }
+        if (glyph == ',' && opens.isEmpty()) {
+            throw new ParseError(this.span.line(), this.pos + idx, TypeTree.COMMA);
+        }
+        if (glyph == '(') {
+            opens.push(idx);
+            bars.push(0);
         } else if (glyph == '|') {
             bars.push(bars.pop() + 1);
-        } else if (opens.isEmpty()) {
-            throw new ParseError(this.span.line(), this.pos + idx, TypeTree.COMMA);
         } else {
             bars.pop();
             bars.push(0);
