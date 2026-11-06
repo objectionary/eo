@@ -9,6 +9,15 @@
 # A magnitude below the normal range of a `double` is brought up into that range
 # before the mantissa is taken, since the power of ten that would scale it in
 # one step is itself subnormal and carries too few bits to divide by.
+#
+# The value is rounded to the width of the mantissa before it is divided, since
+# the division itself loses an exact tie: `44964375` has the mantissa
+# `4.4964375`, which rounds up to `4.496438`, while the divided value lands a
+# hair below the tie and keeps the seven. Up to `10^6` the rounding is left to
+# `as-fixed`, which takes at most 15 places; past that the value snaps to a
+# multiple of its own step, `10^(raw-6)`, which `mod` measures exactly. Below
+# `10^-9` the places needed are past those 15, so the value is divided as it
+# is; no exact tie is that small.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -30,14 +39,29 @@
         eq.
           as-fixed. >> mantissa!
             div.
-              if. >> scaled
-                as-bool.
-                  and. >> tiny!
-                    num.abs.lt (1.div boost)
-                    not. (num.eq 0)
-                num.times
-                  number (10.power 300)! >> boost
-                num
+              if.
+                gt.
+                  number raw
+                  6
+                snapped
+                  scaled
+                  number
+                    10.power ((number raw).minus 6)
+                if.
+                  gte. (number raw) -9
+                  as-number.
+                    string
+                      as-fixed.
+                        if. >> scaled
+                          as-bool.
+                            and. >> tiny!
+                              num.abs.lt (1.div boost)
+                              not. (num.eq 0)
+                          num.times
+                            number (10.power 300)! >> boost
+                          num
+                        6.minus (number raw)
+                  scaled
               10.power
                 number raw
             6
@@ -78,6 +102,20 @@
         m.div 10
         as-number.
           count.plus 1
+  [value step] > snapped
+    if. > @
+      rest.abs.gte
+        step.div 2
+      if.
+        value.lt 0
+        value.minus
+          plus.
+            number >> rest
+              value.mod step
+            step
+        value.minus
+          rest.minus step
+      value.minus rest
 
   eq. ++> can-carry-a-rounded-mantissa-into-the-next-power-of-ten
     "1.000000e1"
@@ -134,6 +172,30 @@
   eq. ++> can-name-positive-infinity
     "infinity"
     string pinf.as-scientific
+
+  eq. ++> can-round-a-negative-exact-tie-up
+    "-4.496438e3"
+    string -4496.4375.as-scientific
+
+  eq. ++> can-round-a-negative-exact-tie-up-past-the-fixed-range
+    "-4.496438e7"
+    string -44964375.as-scientific
+
+  eq. ++> can-round-an-exact-tie-up
+    "4.496438e3"
+    string 4496.4375.as-scientific
+
+  eq. ++> can-round-an-exact-tie-up-past-the-fixed-range
+    "4.496438e7"
+    string 44964375.as-scientific
+
+  eq. ++> can-round-an-exact-tie-up-with-a-power-of-three
+    "2.080438e3"
+    string 2080.4375.as-scientific
+
+  eq. ++> can-round-an-exact-tie-up-with-a-power-of-two
+    "6.515938e2"
+    string 651.59375.as-scientific
 
   eq. ++> can-write-zero-in-scientific-notation
     "0.000000e0"
