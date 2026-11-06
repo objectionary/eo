@@ -200,11 +200,11 @@ java: |
       }
 
       private byte[] 𝜎5() {
-          return new Dataized(new PhApplication(Phi.Φ.take("number"), "φ", new Data.ToPhi(this.𝜎2())).take("twice")).take();
+          return new Dataized(new Data.ToPhi(new Dataized(new Data.ToPhi(this.𝜎2())).asNumber()).take("twice")).take();
       }
 
       private byte[] 𝜎6() {
-          return new Dataized(new PhApplication(Phi.Φ.take("number"), "φ", new Data.ToPhi(this.𝜎3())).take("twice")).take();
+          return new Dataized(new Data.ToPhi(new Dataized(new Data.ToPhi(this.𝜎3())).asNumber()).take("twice")).take();
       }
 
       private byte[] 𝜎7() {

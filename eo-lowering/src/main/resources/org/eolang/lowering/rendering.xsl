@@ -1144,25 +1144,22 @@
     <xsl:param name="java" as="xs:string"/>
     <xsl:sequence select="if (eo:constant($token)) then $java else concat('new PhLazy(() -&gt; ', $java, ')')"/>
   </xsl:function>
-  <!--
-  The Java of a token as the object of a carrier, the way "Data.ToPhi" and
-  the library make one of data. A number and a string are their object
-  applied to the bytes of the token as they are, the way the planting wraps
-  a void. A number may hold any bytes, while a double holds eight, so a
-  number of one byte that went through a double would fail the atom.
-  -->
+  <!-- The Java of a token as the object of a carrier, the way "Data.ToPhi" and the library make one of data. -->
   <xsl:function name="eo:wrapped" as="xs:string">
     <xsl:param name="token" as="xs:string"/>
     <xsl:param name="carrier" as="xs:string"/>
     <xsl:choose>
-      <xsl:when test="$carrier = ('number', 'string')">
-        <xsl:sequence select="concat('new PhApplication(', eo:global('Φ.' || $carrier), ', &quot;φ&quot;, ', eo:value($token, 'Phi'), ')')"/>
+      <xsl:when test="$carrier = 'number'">
+        <xsl:sequence select="concat('new Data.ToPhi(', eo:value($token, 'double'), ')')"/>
       </xsl:when>
       <xsl:when test="$carrier = 'bool'">
         <xsl:sequence select="concat('new Data.ToPhi(', eo:value($token, 'boolean'), ')')"/>
       </xsl:when>
       <xsl:when test="$carrier = 'bytes'">
         <xsl:sequence select="eo:value($token, 'Phi')"/>
+      </xsl:when>
+      <xsl:when test="$carrier = 'string'">
+        <xsl:sequence select="concat('new PhApplication(', eo:global('Φ.string'), ', &quot;φ&quot;, ', eo:value($token, 'Phi'), ')')"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:sequence select="eo:taint(concat('The operand ', $token, ' of the entry ', $number, ' is wrapped as a ', $carrier, ', which is no carrier'))"/>
