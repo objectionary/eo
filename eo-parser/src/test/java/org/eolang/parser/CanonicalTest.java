@@ -40,6 +40,7 @@ final class CanonicalTest {
     }
 
     @Test
+    @Timeout(120L)
     void acceptsTupleOfTheLargestSize() throws Exception {
         MatcherAssert.assertThat(
             "A tuple of 256 elements must parse without this error, but it didnt",
