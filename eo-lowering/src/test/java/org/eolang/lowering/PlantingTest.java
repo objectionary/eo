@@ -17,7 +17,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.cactoos.list.ListOf;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.eolang.jucs.ClasspathSource;
 import org.eolang.parser.EoSyntax;
 import org.eolang.xax.XtSticky;
@@ -37,13 +41,17 @@ import org.xembly.Xembler;
  * Tests of the class {@link Planting}.
  *
  * <p>Most of the checks are in the YAML files of the directory
- * {@code entry-packs}. They say which objects get an entry, and what their
- * voids get. Every file has an EO program, the tables that
- * {@code eo:inference} would write for it, the XPath queries that the
- * XMIR of the entries must match, and the rows that {@code entries.tsv}
- * and {@code voids.tsv} must have. The tests in this class check the
- * things that an EO program cannot show: which files are written, whether
- * two runs give the same result, and when the stage refuses to work.</p>
+ * {@code entry-packs}. They say which objects get an entry, what their
+ * voids get, and which objects become rows of the table of operations.
+ * Every file has an EO program, which the engine of {@code eo:inference}
+ * reads to write the tables the planting reads, see {@link Tables}, the
+ * XPath queries that the XMIR of the entries and the copies must match,
+ * and the rows that {@code entries.tsv}, {@code voids.tsv},
+ * {@code rows.tsv} and {@code atoms.yaml} must have.
+ * The tests in this class check the things that an EO program cannot
+ * show: which files are written, whether two runs give the same result,
+ * what the table of operations holds before any row is added, and when
+ * the stage refuses to work.</p>
  *
  * @since 0.64.0
  */
@@ -70,14 +78,16 @@ final class PlantingTest {
     }
 
     @Test
-    void writesTheThreeFilesOfTheBuild(@Mktmp final Path temp) throws IOException {
+    void writesTheFilesOfTheBuild(@Mktmp final Path temp) throws IOException {
         final Path home = PlantingTest.planted(temp);
         MatcherAssert.assertThat(
-            "the planting must leave the entries and both tables behind, but it didnt",
+            "the planting must leave the entries, the tables and the table of operations behind, but it didnt",
             new ListOf<>(
                 Files.exists(home.resolve("entries.xmir")),
                 Files.exists(home.resolve("voids.tsv")),
-                Files.exists(home.resolve("entries.tsv"))
+                Files.exists(home.resolve("entries.tsv")),
+                Files.exists(home.resolve("rows.tsv")),
+                Files.exists(home.resolve("atoms.yaml"))
             ),
             Matchers.everyItem(Matchers.is(true))
         );
@@ -96,6 +106,63 @@ final class PlantingTest {
     }
 
     @Test
+    void writesTheTableOfOperationsBesideTheWorld(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "the table must name the operations phino may write down, but it doesnt",
+            PlantingTest.text(PlantingTest.planted(temp).resolve("atoms.yaml")),
+            Matchers.containsString("L_number_gt")
+        );
+    }
+
+    @Test
+    void answersEveryAtomOfBytesInTheTable(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "the table must answer every atom of bytes, but it leaves one standing",
+            Stream.of("and", "concat", "eq", "not", "or", "right", "size", "slice")
+                .map(atom -> String.format("L_bytes_%s", atom))
+                .collect(Collectors.toList()),
+            Matchers.everyItem(
+                Matchers.matchesPattern(
+                    Files.readAllLines(PlantingTest.planted(temp).resolve("atoms.yaml")).stream()
+                        .filter(line -> line.startsWith("- λ: "))
+                        .map(line -> String.format("(?:%s)", line.substring(5)))
+                        .collect(Collectors.joining("|"))
+                )
+            )
+        );
+    }
+
+    @Test
+    void forksOnTheConditionInsteadOfAnsweringAnIf(@Mktmp final Path temp)
+        throws IOException {
+        MatcherAssert.assertThat(
+            "the fork must read a fabricated copy by the names phino gives it and name itself when a join fails, but it doesnt",
+            PlantingTest.text(PlantingTest.planted(temp).resolve("atoms.yaml")),
+            Matchers.stringContainsInOrder(
+                "- λ: L_fork", "dataize:", "𝛿1: $.on🌵", "morph:", "𝑛1: $.left🌵", "𝑛2: $.right🌵",
+                "undress:", "𝑛15: 𝑛9", "𝑛16: 𝑛10", "stay:", "evaluate:", "𝑛17: 𝑛15", "𝑛18: 𝑛16", "rewrite:",
+                "symbolize:", "𝑛11: 𝑛17", "𝑛12: 𝑛18", "defer:",
+                "cast:", "𝑛19: 𝑛13", "𝑛20: 𝑛14",
+                "join:", "'on': 𝛿1", "left: 𝑛19", "right: 𝑛20", "otherwise: L_fork"
+            )
+        );
+    }
+
+    @Test
+    void answersEveryBoolAsTheFormationWrappingIt(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "every bool the table answers must be the formation wrapping it, but one is bare",
+            Files.readAllLines(PlantingTest.planted(temp).resolve("atoms.yaml")).stream()
+                .filter(line -> line.matches("(  𝑛: |    )[^ ].*Φ\\.bool\\(.*"))
+                .collect(Collectors.toList()),
+            Matchers.<List<String>>allOf(
+                Matchers.not(Matchers.empty()),
+                Matchers.everyItem(Matchers.matchesRegex("(  𝑛: |    )⟦ φ ↦ Φ\\.bool\\(.*"))
+            )
+        );
+    }
+
+    @Test
     void failsNamingTheTablesItCannotFind(@Mktmp final Path temp) {
         final Path absent = temp.resolve("tables");
         MatcherAssert.assertThat(
@@ -109,36 +176,45 @@ final class PlantingTest {
         );
     }
 
-    private static Path planted(final Path temp) throws IOException {
-        PlantingTest.parsed(
-            Files.createDirectories(temp.resolve("1-planting")).resolve("gap.xmir"),
-            String.format("[a b] > gap%n  a.plus b > @%n")
+    @Test
+    void failsNamingTheAnswersItCannotFind(@Mktmp final Path temp) throws IOException {
+        final Path tables = Files.createDirectories(temp.resolve("tables"));
+        Files.write(tables.resolve("facts.xml"), "<facts/>".getBytes(StandardCharsets.UTF_8));
+        MatcherAssert.assertThat(
+            "the failure must name the table that is missing, but it doesnt",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> new Planting(tables).exec(temp),
+                "answers that are not there must fail the planting"
+            ).getMessage(),
+            Matchers.containsString("answers.xml")
         );
-        new Planting(
-            PlantingTest.tables(
-                temp,
-                String.join(
-                    "",
-                    "<provides><type id='Φ.gap'>",
-                    "<attr name='a' void='true' holds='Φ.number'/>",
-                    "<attr name='b' void='true' holds='Φ.number'/>",
-                    "</type></provides>"
-                )
-            )
-        ).exec(temp);
-        return temp;
     }
 
-    private static Path tables(final Path temp, final String provides) throws IOException {
-        final Path made = Files.createDirectories(temp.resolve("tables"));
-        Files.write(made.resolve("provides.xml"), provides.getBytes(StandardCharsets.UTF_8));
-        return made;
+    private static Path planted(final Path temp) throws IOException {
+        final Map<String, String> program = new MapOf<String, String>(
+            new MapEntry<>("gap.eo", String.format("[a b] > gap%n  a.plus b > @%n")),
+            new MapEntry<>("app.eo", String.format("[] > app%n  gap 4 9 > used%n"))
+        );
+        for (final Map.Entry<String, String> source : program.entrySet()) {
+            PlantingTest.parsed(
+                Files.createDirectories(temp.resolve("1-planting"))
+                    .resolve(source.getKey().replace(".eo", ".xmir")),
+                source.getValue()
+            );
+        }
+        new Planting(new Inferred(temp.resolve("engine"), program).value()).exec(temp);
+        return temp;
     }
 
     private static Path parsed(final Path file, final String program) throws IOException {
         return Files.write(
             file, new EoSyntax(program).parsed().toString().getBytes(StandardCharsets.UTF_8)
         );
+    }
+
+    private static String text(final Path file) throws IOException {
+        return new String(Files.readAllBytes(file), StandardCharsets.UTF_8);
     }
 
     /**
@@ -180,7 +256,8 @@ final class PlantingTest {
             final Collection<String> failed = new ArrayList<>(0);
             for (final Object key : this.story.map().keySet()) {
                 if (!Arrays.asList(
-                    "eo", "dealpha", "provides", "xmir", "voids", "entries"
+                    "eo", "dealpha", "facts", "answers",
+                    "xmir", "copies", "voids", "entries", "rows", "table"
                 ).contains(key)) {
                     failed.add(String.format("unknown key: %s", key));
                 }
@@ -192,8 +269,19 @@ final class PlantingTest {
                     failed.add(String.format("entries.xmir: %s", xpath));
                 }
             }
-            failed.addAll(this.missing(home, "voids"));
-            failed.addAll(this.missing(home, "entries"));
+            final Collection<XMLDocument> copies = new ArrayList<>(0);
+            for (final Path copy : new Copies(home)) {
+                copies.add(new XMLDocument(copy));
+            }
+            for (final Object xpath : this.demands("copies")) {
+                if (copies.stream().allMatch(copy -> copy.nodes(xpath.toString()).isEmpty())) {
+                    failed.add(String.format("copies: %s", xpath));
+                }
+            }
+            failed.addAll(this.missing(home, "voids", "voids.tsv"));
+            failed.addAll(this.missing(home, "entries", "entries.tsv"));
+            failed.addAll(this.missing(home, "rows", "rows.tsv"));
+            failed.addAll(this.missing(home, "table", "atoms.yaml"));
             return failed;
         }
 
@@ -210,11 +298,7 @@ final class PlantingTest {
                     )
                 );
             }
-            new Planting(
-                PlantingTest.tables(
-                    this.temp, this.story.map().getOrDefault("provides", "<provides/>").toString()
-                )
-            ).exec(this.temp);
+            new Planting(new Tables(this.temp, this.story.map()).value()).exec(this.temp);
             return this.temp;
         }
 
@@ -234,15 +318,15 @@ final class PlantingTest {
             return xmir;
         }
 
-        private Collection<String> missing(final Path home, final String name)
+        private Collection<String> missing(final Path home, final String key, final String file)
             throws IOException {
             final Collection<String> failed = new ArrayList<>(0);
             final List<String> rows = Files.readAllLines(
-                home.resolve(String.format("%s.tsv", name)), StandardCharsets.UTF_8
+                home.resolve(file), StandardCharsets.UTF_8
             );
-            for (final Object row : this.demands(name)) {
+            for (final Object row : this.demands(key)) {
                 if (!rows.contains(row.toString())) {
-                    failed.add(String.format("%s.tsv: %s", name, row));
+                    failed.add(String.format("%s: %s", file, row));
                 }
             }
             return failed;

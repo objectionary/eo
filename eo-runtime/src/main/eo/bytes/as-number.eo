@@ -28,9 +28,9 @@
         * data
 
   eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-a-number
-    "recovered"
+    42
     01-01-01-01.as-number
-      "recovered" > [message]
+      42 > [message]
 
   is-nan. ++> can-route-non-canonical-nan-bytes-to-nan
     FF-F8-00-00-00-00-00-00.as-number

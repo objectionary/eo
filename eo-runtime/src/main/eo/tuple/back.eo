@@ -12,16 +12,15 @@
   index.is-integer.if > @
     if.
       0.gt
-        list.length.minus index! >> start!
+        number (list.length.minus index)! >> start
       list
       list.reducedi
         *
-        if. > [^ accum item idx] >>
+        if. > [^list accum item idx] >>
           idx.gte start
           accum.with item
           accum
-    T
-      "Given index must be an integer"
+    T "Given index must be an integer"
 
   eq. ++> can-take-a-back-slice
     back.

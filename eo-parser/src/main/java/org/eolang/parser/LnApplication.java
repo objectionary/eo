@@ -79,10 +79,13 @@ final class LnApplication implements Line {
         final Openness openness;
         if (kind == Kind.HAPPLICATION) {
             openness = Openness.HCOMPLETED;
+        } else if (kind == Kind.IDENTITY_OBJECT) {
+            openness = Openness.VCOMPLETED;
         } else {
             openness = Openness.OPEN;
         }
         this.transition(stack, suffix, kind, openness);
+        stack.hop(chain.size(), this.span.line(), this.span.indent());
         Bindings.observeChild(stack, outer, this.span);
         globals.clearBlanks();
         globals.markEmitted();

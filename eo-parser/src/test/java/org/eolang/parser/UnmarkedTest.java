@@ -4,9 +4,11 @@
  */
 package org.eolang.parser;
 
+import org.cactoos.io.InputOf;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -44,6 +46,18 @@ final class UnmarkedTest {
             "an empty source must come through untouched, but it didnt",
             new Unmarked(new TextOf("")).asString(),
             Matchers.equalTo("")
+        );
+    }
+
+    @Test
+    void rejectsABadByteOnTheFirstLine() {
+        MatcherAssert.assertThat(
+            "a source that is not UTF-8 must be rejected on its line, but it wasnt",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> new Unmarked(new InputOf(new byte[] {(byte) 0xE9})).asString()
+            ).getMessage(),
+            Matchers.containsString("line 1:")
         );
     }
 }

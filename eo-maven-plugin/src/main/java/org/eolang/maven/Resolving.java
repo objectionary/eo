@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,7 +28,7 @@ import org.cactoos.text.Joined;
 
 /**
  * Resolves all required runtime dependencies: downloads from Maven Central,
- * unpacks and places them into a directory {@link Subdir} numbers "resolve".
+ * unpacks and places them into a directory {@code Seqdir} numbers "resolve".
  *
  * @since 0.61.0
  */
@@ -122,8 +123,8 @@ final class Resolving implements Step {
     }
 
     @Override
-    public void exec() {
-        final Path dir = new Subdir(this.target, "resolve").path();
+    public void exec() throws IOException {
+        final Path dir = new Seqdir(this.target, 2).dirs().once("resolve");
         final DpsDefault defaults = new DpsDefault(
             this.tojos, this.discover, this.skipzero, this.jna
         );

@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A const reference (`scan 0!`) to an applied `>>` formation handle. Folding
+# the formation into the reference would build a `|` pipe that carries only
+# the reference's `@as`, and the `@const` that `dataized-to-const` put on the
+# reference would stay behind, so the printed file would recompute at every
+# use what the `!` asks to be dataized once and cached (#9607). The handle
+# stays standing instead, and the reference prints its `!` back.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > app
+    plus. > @
+      number (scan 0)!
+      1
+    scan (idx.plus 1) > [^ idx] >> scan
+
+
+printed: |
+  [] > app
+    plus. > @
+      number (scan 0)!
+      1
+    ^.scan > [^ idx] >> scan
+      idx.plus 1

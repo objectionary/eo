@@ -1,8 +1,9 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 # phino reduced the body of the entry to ⊥ before it computed anything, so
-# the root was never asked to dataize.
+# the run stopped right after it took the "φ" of the entry.
 locator: Φ.wide.as-number
 number: 11
 taint: The body of the entry 11 reduced to ⊥ before phino computed anything
@@ -12,17 +13,14 @@ eo:
       as-bytes.size > as-number
 protocol: |
   <protocol>
-    <morph at="Φ.l/.e11">
-      <evaluate λ="L_entry" by="morph" at="Φ.l/.e11">
-        <bind meta="𝛿1·1">40-26-00-00-00-00-00-00</bind>
-        <bind meta="𝑛1·1">⊥</bind>
-        <applied meta="𝑛·1·1" of="Φ.l/.root"><attr name="α0">⊥</attr></applied>
-        <built meta="𝑛·1·2">𝑛·1·1</built>
-        <formed meta="𝑛·1·3" of="Φ.l/.root"><attr name="v">⊥</attr></formed>
-        <answer meta="𝑛·1·4">𝑛·1·3</answer>
-      </evaluate>
-    </morph>
+    <dataize at="Φ.l🌵.e11">
+      <morph at="Φ.l🌵.e11">
+        <morphed meta="𝑛·0·1">Φ.l🌵.e11</morphed>
+      </morph>
+      <boxed meta="𝑛·0·2">Φ.l🌵.e11.φ</boxed>
+      <unanswered λ="⊥" by="dataize">⊥</unanswered>
+    </dataize>
     <msec>225</msec>
-    <firings>1</firings>
-    <fps>4</fps>
+    <firings>0</firings>
+    <fps>0</fps>
   </protocol>

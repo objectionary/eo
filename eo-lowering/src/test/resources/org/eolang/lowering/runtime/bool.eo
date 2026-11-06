@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+
+[fork] > bool
+  if > @
+    FF-
+    00-
+  flag.if > [^flag x] > and
+    FF-.eq x
+    false
+  fork > if
+  if > not
+    false
+    true
+  flag.if > [^flag x] > or
+    true
+    FF-.eq x

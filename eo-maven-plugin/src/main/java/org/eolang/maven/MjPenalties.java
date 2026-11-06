@@ -74,7 +74,7 @@ abstract class MjPenalties extends MjSafe {
     /**
      * The column after which characters start being charged.
      */
-    @Parameter(alias = "penaltyWidth", property = "eo.width")
+    @Parameter(alias = "penaltyWidth", property = "eo.penaltyWidth")
     private Integer width;
 
     /**

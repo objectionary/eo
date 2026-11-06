@@ -15,8 +15,8 @@ asserts:
   - //java[contains(text(), 'Phi rb = new PhDispatch(h, "x");')]
   - //java[contains(text(), 'rb = rb.take("ρ");')]
   - //java[contains(text(), 'rb = new PhDispatch(rb, "or");')]
-  - //java[contains(text(), 'Phi rb1 = new PhDispatch(Phi.Φ, "number");')]
-  - //java[contains(text(), 'Phi rb11 = new PhDispatch(Phi.Φ, "bytes")')]
+  - //java[contains(text(), 'Phi rb_1 = new PhDispatch(Phi.Φ, "number");')]
+  - //java[contains(text(), 'Phi rb_1_1 = new PhDispatch(Phi.Φ, "bytes")')]
   - //java[contains(text(), 'Phi r = new PhDispatch(rb, "and");')]
 input: |
   [] > foo

@@ -312,11 +312,15 @@
   when that reference carries no positional "@as": no handle name is there for
   the reference to read the formation back by, so leaving it standing prints
   the reference against a synthetic "vL_P" that nothing declares (#9164).
+  A const reference (`scan 0!`, carrying the "@const" that "dataized-to-const"
+  put there) never folds: the pipe node the fold builds takes only the
+  reference's "@as", so the "!" would stay behind and the printed file would
+  recompute at every use what it asks to be dataized once and cached (#9607).
   -->
   <xsl:function name="eo:applied-hosted" as="xs:boolean">
     <xsl:param name="attr" as="element()"/>
     <xsl:variable name="refs" select="eo:applied-refs($attr)"/>
-    <xsl:sequence select="exists($refs) and eo:abstract($attr) and (eo:receiver-ref($refs[1]) or eo:block-handle($attr) or (empty($attr/@local) and empty($refs[1]/@as)))"/>
+    <xsl:sequence select="exists($refs) and eo:abstract($attr) and empty($refs[1]/@const) and (eo:receiver-ref($refs[1]) or eo:block-handle($attr) or (empty($attr/@local) and empty($refs[1]/@as)))"/>
   </xsl:function>
   <xsl:function name="eo:applied-handle" as="element()*">
     <xsl:param name="ref" as="element()"/>

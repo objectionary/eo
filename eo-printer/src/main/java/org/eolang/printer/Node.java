@@ -156,6 +156,14 @@ final class Node {
      * it. Only a receiver-only dispatch is spelled that way, since the
      * grammar takes no arguments under a continuation line.</p>
      *
+     * <p>A reversed dispatch whose receiver is a const has no inline shape at
+     * all. The suffix shape would have to glue the {@code !} in front of the
+     * dot, which {@link #braced()} turns down, and the reversed one-liner
+     * ({@code eq. 5! 40-14-...}) is no body an only-phi formation takes
+     * (R-3.10.6) and floats the const out into a handle of its own on the next
+     * parse anyway. Such a dispatch is laid out vertically, where the const is
+     * written as the {@code 5 >>!} handle that parse makes of it (#9446).</p>
+     *
      * @param style The style to lay out in
      * @param indent The indentation level
      * @return The rendered block
@@ -466,7 +474,8 @@ final class Node {
         final Optional<String> result;
         if (this.abstractt) {
             result = this.phi(style, indent);
-        } else if (this.children.isEmpty() || this.glyph()) {
+        } else if (this.children.isEmpty() || this.glyph()
+            || this.reversed && this.children.get(0).constant()) {
             result = Optional.empty();
         } else {
             result = new Horizontal(
@@ -530,7 +539,7 @@ final class Node {
 
     private Optional<String> spelled() {
         final Optional<String> result;
-        if (this.reversed && this.children.size() <= 1) {
+        if (this.reversed) {
             result = Optional.empty();
         } else if (this.abstractt || !this.tail.isEmpty() || "*".equals(this.base)) {
             result = Optional.empty();

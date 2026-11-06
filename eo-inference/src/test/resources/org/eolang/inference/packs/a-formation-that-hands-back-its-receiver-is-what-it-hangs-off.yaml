@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# mine is walked where it is written, inside tree, so its ^ holds the tree.
+# Its @ gives that ^ back, so mine reduces to tree.
+sources:
+  tree.eo: |
+    [] > tree
+      [^] > mine
+        ^ > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.tree.mine.ρ']/is[@loc='Φ.tree']
+  - /answers/o[@loc='Φ.tree.mine.φ']/is[@loc='Φ.tree']
+  - /answers/o[@loc='Φ.tree.mine']/reduced/is[@loc='Φ.tree']

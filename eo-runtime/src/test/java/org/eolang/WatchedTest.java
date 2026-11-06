@@ -167,6 +167,23 @@ final class WatchedTest {
     }
 
     @Test
+    void skipsBodyWhoseThreadAteTooMuchAndLeft() {
+        Assertions.assertThrows(
+            TestAbortedException.class,
+            () -> new Watched(1024L * 1024L).through(
+                () -> {
+                    final byte[][] junk = new byte[1][];
+                    final Thread extra = new Thread(() -> junk[0] = new byte[8 * 1024 * 1024]);
+                    extra.start();
+                    extra.join();
+                    return null;
+                }
+            ),
+            "A body whose own thread ate more than the test was given must be reported as skipped, but it wasnt"
+        );
+    }
+
+    @Test
     void stopsThreadTheBodyLeftBehind() {
         MatcherAssert.assertThat(
             "A thread the body left behind must be gone before the guard returns, but it wasnt",
@@ -211,7 +228,7 @@ final class WatchedTest {
     @Test
     void namesThreadThatOutlivedItsBody() {
         final AtomicBoolean release = new AtomicBoolean(false);
-        final Watched watched = new Watched(64L * 1024L * 1024L, 100L);
+        final Watched watched = new Watched(Long.MAX_VALUE, 100L);
         try {
             MatcherAssert.assertThat(
                 "The thread that outlived the test must be named, but it wasnt",

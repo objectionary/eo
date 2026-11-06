@@ -64,6 +64,18 @@
       <xsl:if test="@as">
         <xsl:attribute name="as" select="@as"/>
       </xsl:if>
+      <!--
+      "float-up" (put here by "wrap-applications" on the formation that
+      precedes a pipe inside an argument block) names the slot of the
+      enclosing application, and after this template that slot holds the
+      wrapper, not the object inside it. Sending the marker down with the
+      rest of the attributes would make "vars-float-up" hoist the object
+      out of "Φ.dataized" and leave the wrapper with no argument, while
+      the slot stayed where it was (#9299).
+      -->
+      <xsl:if test="@float-up">
+        <xsl:attribute name="float-up"/>
+      </xsl:if>
       <o>
         <xsl:attribute name="base" select="'Φ.dataized'"/>
         <xsl:attribute name="line" select="@line"/>
@@ -83,7 +95,7 @@
           list and travels with the rest of the node's attributes onto the
           nested copy below.
           -->
-          <xsl:for-each select="@*[name()!='const' and name()!='name' and name()!='as']">
+          <xsl:for-each select="@*[name()!='const' and name()!='name' and name()!='as' and name()!='float-up']">
             <xsl:attribute name="{name()}">
               <xsl:value-of select="."/>
             </xsl:attribute>

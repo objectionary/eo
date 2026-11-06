@@ -123,10 +123,12 @@ final class Phino {
     /**
      * Ask phino to compute one entry of the world, with symbols as inputs.
      *
-     * <p>This is called "morphing". The stage {@link Planting} put every
-     * entry into an object named {@code l/}, under the name {@code e} plus
-     * the number of the entry, and this method asks phino to work on
-     * exactly that one. The name of that object holds nothing but ASCII,
+     * <p>The stage that calls this is named "morphing", since phino
+     * dataizes an object by morphing it first, and the morphs are most of
+     * what the protocol holds. The stage {@link Planting} put every entry
+     * into an object named {@code l🌵}, under the name {@code e} plus the
+     * number of the entry, and this method asks phino to dataize exactly
+     * that one. The name of that object holds nothing but ASCII,
      * because Java writes the arguments of a child process in the encoding
      * of the locale, and a locale outside UTF-8, which many containers run
      * with, turns every other letter into a question mark that phino
@@ -139,7 +141,7 @@ final class Phino {
      * nothing else. One entry that never ends must not stop the whole build,
      * so phino is told how many seconds it may work, and it stops by itself
      * when they are over. Then it closes the protocol with a {@code timeout}
-     * element, or with a {@code timeout(…)} line when the protocol is
+     * element, or with a {@code timeout …} line when the protocol is
      * indented text, and fails. This class never kills phino, because a
      * killed phino leaves a protocol cut in the middle, which nobody can
      * read.</p>
@@ -157,17 +159,17 @@ final class Phino {
      *  {@link KilledException} if phino stopped because its time was over
      * @checkstyle ParameterNumberCheck (10 lines)
      */
-    void morph(
+    void dataize(
         final Path world, final Path atoms, final int entry, final Path protocol,
         final int steps, final int loops, final Duration budget
     ) throws IOException {
-        final String task = String.format("morphing the entry %d of '%s'", entry, world);
+        final String task = String.format("dataizing the entry %d of '%s'", entry, world);
         try {
             this.run(
                 new Jaxec(
                     this.binary,
                     String.format("--pin=%s", this.version),
-                    "morph",
+                    "dataize",
                     "--acyclic=plausible",
                     String.format("--max-loops=%d", loops),
                     "--partial",
@@ -176,7 +178,7 @@ final class Phino {
                     "--hide-rho",
                     "--abridged",
                     String.format("--symbolic=%s", atoms),
-                    String.format("--locator=Q.l/.e%d", entry),
+                    String.format("--locator=Q.l🌵.e%d", entry),
                     String.format("--protocol=%s", protocol),
                     String.format("--max-steps=%d", steps),
                     String.format(
@@ -193,7 +195,7 @@ final class Phino {
             }
             try (Stream<String> lines = Files.lines(protocol)) {
                 if (lines.noneMatch(
-                    line -> line.contains("<timeout ") || line.trim().startsWith("timeout(")
+                    line -> line.contains("<timeout ") || line.trim().startsWith("timeout ")
                 )) {
                     throw ex;
                 }

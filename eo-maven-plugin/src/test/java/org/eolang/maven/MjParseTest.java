@@ -288,7 +288,7 @@ final class MjParseTest {
         MatcherAssert.assertThat(
             "the XMIR stayed as it was, while the source it came from had changed",
             new XMLDocument(parsed),
-            XhtmlMatchers.hasXPaths("//o[@name='greeting']")
+            XhtmlMatchers.hasXPaths("//o[@name='v🌵greeting']")
         );
     }
 
@@ -357,7 +357,7 @@ final class MjParseTest {
             ),
             XhtmlMatchers.hasXPaths(
                 "//error[@severity='critical']",
-                "//error[@check='mandatory-object-name'][contains(text(), 'found 0')]"
+                "//error[@check='mandatory-object-name'][contains(text(), 'XMIR should have either')]"
             )
         );
     }

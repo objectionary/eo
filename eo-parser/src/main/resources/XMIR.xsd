@@ -340,7 +340,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:simpleContent>
-      <xs:extension base="non-empty">
+      <xs:extension base="xs:string">
         <xs:attribute name="line" use="required" type="whole"/>
       </xs:extension>
     </xs:simpleContent>

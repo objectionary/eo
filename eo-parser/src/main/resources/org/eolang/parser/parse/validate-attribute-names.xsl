@@ -7,8 +7,9 @@
   <!--
   Here we add an error with severity 'critical' when one formation declares
   two attributes with the same name, since the second one would silently
-  replace the first one in the object built at run time. Voids are left out,
-  they are a different declaration and are checked elsewhere.
+  replace the first one in the object built at run time. The index includes
+  void phi declarations so a bound phi cannot repeat a void of the same
+  formation (#9720). Other voids and repeated voids are checked elsewhere.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <!--
@@ -20,7 +21,7 @@
   and keys answer in document order, so "not the first one" is exactly
   "has a preceding sibling of the same name".
   -->
-  <xsl:key name="named" match="o[@name][not(@base='∅')]" use="concat(generate-id(..), ' ', @name)"/>
+  <xsl:key name="named" match="o[@name][not(@base='∅') or @name='φ']" use="concat(generate-id(..), ' ', @name)"/>
   <xsl:template match="/object">
     <xsl:variable name="errors" as="element()*">
       <xsl:for-each select="descendant-or-self::*[self::object or self::o[not(@base)]]/o[@name and not(@base='∅')]">

@@ -24,6 +24,19 @@ import org.junit.jupiter.params.provider.ValueSource;
 final class PhTerminatorTest {
 
     @Test
+    void namesTheObjectAnAbsentAttributeWasAskedFrom() {
+        MatcherAssert.assertThat(
+            "the reason must name the number, not the data object it decorates",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Dataized(new Data.ToPhi(5.0).take("foo")).take(),
+                "an absent attribute of a number must terminate the computation"
+            ).getMessage(),
+            Matchers.containsString("Φ.number")
+        );
+    }
+
+    @Test
     void failsWhenDataized() {
         Assertions.assertThrows(
             ExFailure.class,

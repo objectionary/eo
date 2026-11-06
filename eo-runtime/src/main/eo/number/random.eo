@@ -15,21 +15,24 @@
         plus.
           as-i64.
             and.
-              tbytes.left shift1
+              left.
+                clock.as-bytes >> tbytes
+                35
               as-bytes.
-                minus. (one.left 53).as-i64 one
+                minus.
+                  as-i64.
+                    left.
+                      00-00-00-00-00-00-00-01 >> one
+                      53
+                  00-00-00-00-00-00-00-01
           plus.
             as-i64.
               and.
-                tbytes.left shift3
+                tbytes.left 17
                 as-bytes.
-                  minus. (one.left shift1).as-i64 one
+                  minus. (one.left 35).as-i64 00-00-00-00-00-00-00-01
             as-i64.
-              tbytes.and ((one.left shift3).as-i64.minus one).as-bytes
-    00-00-00-00-00-00-00-01 > one
-    35 > shift1
-    17 > shift3
-    clock.as-bytes > tbytes
+              tbytes.and ((one.left 17).as-i64.minus 00-00-00-00-00-00-00-01).as-bytes
   as-i64. > high
     and.
       as-bytes.
@@ -59,8 +62,8 @@
 
   not. ++> can-differ-between-two-draws
     eq.
-      random.clocked 123.as-i64
-      random.clocked 456.as-i64
+      1.random.clocked 123.as-i64
+      1.random.clocked 456.as-i64
 
   ++> can-reach-the-upper-half
     not. > @

@@ -23,21 +23,23 @@
 +version 0.0.0
 
 [^source output] > tee
-  [^ size] > read
+  [^tee size] > read
     read. > @
       input-block
-        ^.source
-        ^.output
+        tee.source
+        tee.output
         --
       size
-    [^ input output buffer] > input-block
+    [^op input output buffer] > input-block
       buffer > @
-      [^ size] > read
+      [^block size] > read
         seq * > @
-          written
-          ^.^.input-block chunk written chunk.as-bytes
-        ^. (^.input.read size).read > chunk
-        ^. (^.output.write chunk).write > written
+          ^. (block.output.write chunk).write >> written
+          block.op.input-block
+            chunk
+            written
+            as-bytes.
+              ^. (block.input.read size).read >> chunk
 
   eq. ++> can-read-from-bytes-and-write-to-memory
     malloc.of

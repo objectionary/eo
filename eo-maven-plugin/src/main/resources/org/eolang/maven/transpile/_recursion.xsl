@@ -13,7 +13,8 @@
   <!--
   Is the object in a tail position of the expression rooted at $root? It is
   when every step from $root down to it is one of two: a branch of an ".if"
-  (its first or second argument, never the receiver), or the last element of
+  that may belong to a "bool" (its first or second argument, never the
+  receiver, see "eo:choice"), or the last element of
   the tuple that a "seq" is applied to, which after "stars-to-tuples" is the
   second argument of the "Φ.tuple" standing as the first argument of the
   "Φ.seq". The arguments are counted by "eo:arg", so it makes no difference
@@ -34,7 +35,7 @@
       <xsl:when test="empty($parent)">
         <xsl:sequence select="false()"/>
       </xsl:when>
-      <xsl:when test="($parent/@base = '.if' or ends-with($parent/@base, '.if')) and eo:arg($o) = (0, 1)">
+      <xsl:when test="eo:choice($parent) and eo:arg($o) = (0, 1)">
         <xsl:sequence select="eo:tail($parent, $root)"/>
       </xsl:when>
       <xsl:when test="$parent/@base = 'Φ.tuple' and eo:arg($parent) = 0 and $parent/parent::o/@base = 'Φ.seq' and eo:arg($o) = 1">
@@ -44,6 +45,19 @@
         <xsl:sequence select="false()"/>
       </xsl:otherwise>
     </xsl:choose>
+  </xsl:function>
+  <!--
+  May the dispatch $o be the ".if" of a "bool"? Not when its receiver, "ξ.ρ.w"
+  in "ξ.ρ.w.if" or the receiver of ".if", names a formation in this program
+  that declares an "if" of its own, which does not have to return its
+  argument as is. A receiver that is a void or comes from another program
+  can't be told apart from a "bool" here, so it is taken for one.
+  -->
+  <xsl:function name="eo:choice" as="xs:boolean">
+    <xsl:param name="o" as="element()"/>
+    <xsl:variable name="receiver" select="if ($o/@base = '.if') then string($o/o[not(@as)][1]/@base) else replace($o/@base, '\.if$', '')"/>
+    <xsl:variable name="steps" select="tokenize($receiver, '\.')"/>
+    <xsl:sequence select="ends-with($o/@base, '.if') and not(matches($receiver, '^ξ(\.ρ)*\.[^.]+$') and exists($o/ancestor::*[self::class or self::abstract or self::o[not(@base)]][count($steps) - 1]/(o[not(@base)] | attr/abstract)[@name = $steps[last()]]/(o | attr)[@name = 'if']))"/>
   </xsl:function>
   <!--
   The place of the object among the arguments of its parent, counted from

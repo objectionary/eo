@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #9382: a const on a formation cannot keep the formation under the wrapper
+# "const-to-dataized" puts above it, since the wrapper takes the name, so
+# the formation goes next to it as "x-1" and the wrapper only reads it.
+# Printed back as it stood, the pair read "x-1 > x!" over "1 > [] > x-1",
+# which hands the program a public attribute nobody declared. The wrapper
+# takes the formation back here, and the sibling goes away with it.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > foo
+    [] > x!
+      1 > @
+    x > @
+
+printed: |
+  [] > foo
+    x > @
+    1 > [] > x!

@@ -4,86 +4,379 @@
  */
 package org.eolang.inference;
 
-import com.jcabi.xml.XML;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
- * Every call the program makes, against the object it was made on.
+ * A call ({@code apply()}): what its heads give once its arguments go into
+ * their empty voids.
  *
- * <p>An application names no receiver of its own — it copies whatever its base
- * settled on — so the links are what say who was called. A call written as
- * {@code ^.body index} arrives at the {@code body} of a {@code while}, and it
- * is only after the walk that the object called turns out to be a void.</p>
+ * <p>Each argument is worked out in the copy around and reduced (4.2). A
+ * call makes one copy per head and place, and each void it fills gets the
+ * whole set of its argument, so calls never mix (rule 3). It makes no copy
+ * while an argument it binds has nothing yet, the absence rule (4.1). A
+ * call on a datum is T, and an argument that holds T goes into its void as
+ * T. The rules come in here: b for an argument that holds only unknowns,
+ * whose copy waits for a stop and then gets those unknowns in its voids, A
+ * for a mark, F for a call on what Java made or on a finished shared kind,
+ * and call then narrow (3.5) for an object whose {@code @} is one of its
+ * voids, once the call fills the last of its empty voids; a call that
+ * leaves some empty makes a plain copy, and a later call fills the rest.
+ * Every argument of an atom is dataized, a void its atom calls back gets
+ * its copies made, and a void of what Java makes fills its pool. A
+ * formation with no name of its own, written as an argument, gets the copy
+ * the call makes as its {@code ^}, an atom's copy too: that is the object
+ * it goes into, and nothing else is.</p>
  *
- * <p>What was passed is settled the same way {@link Fillings} settles a
- * filling, and for the same reason: an argument written at one call site is a
- * locator nothing joins to the argument written at the next, and the two are
- * one type. A walk that runs into a void has no type to give, so what is kept
- * is the void it stopped at, which is a fact about another caller and still a
- * fact.</p>
+ * <p>For each head the call also notes where each argument lands: the
+ * void of a copy made in EO code, or no void.</p>
  *
- * @since 0.72.0
+ * @since 0.76.0
+ * @todo #9661:60min Land the argument of a call on rule A's mark in the
+ *  void the mark stands for. A curried copy that counts goes into a void
+ *  both as itself and as its mark. So when {@code [f] > fin} also reads
+ *  {@code f.plus 0}, the call {@code f 2} on {@code foo 1} puts 2 into the
+ *  {@code y} of the copy, but off the mark it lands in no void, and the
+ *  argument loses its name. The mark has to keep the copy it came from, so
+ *  that {@code marked()} fills that copy the way {@code object()} does.
  */
 final class Calls {
 
     /**
-     * Every application of the program.
+     * The state of the walk.
      */
-    private final Collection<XML> sites;
+    private final State state;
 
     /**
-     * What the links table says.
+     * The world the walk goes over.
      */
-    private final Said links;
+    private final World world;
 
     /**
-     * The provides table.
+     * Where the arguments land, by call place and copy around.
      */
-    private final XML given;
+    private final Map<Slot, Set<Landing>> lands;
+
+    /**
+     * Equal sets of landings, as one object.
+     */
+    private final Map<Set<Landing>, Set<Landing>> landings;
 
     /**
      * Ctor.
      *
-     * @param applications Every application of the program
-     * @param table What the links table says, as {@link Resolved} left it
-     * @param provides The provides table, which says where an argument can
-     *  land
+     * @param walk The state of the walk
+     * @param world The world the walk goes over
      */
-    Calls(final Collection<XML> applications, final Said table, final XML provides) {
-        this.sites = applications;
-        this.links = table;
-        this.given = provides;
+    Calls(final State walk, final World world) {
+        this.state = walk;
+        this.world = world;
+        this.lands = new LinkedHashMap<>(0);
+        this.landings = new HashMap<>(0);
     }
 
     /**
-     * Every call, one per argument.
+     * Apply heads to the arguments of the call at a place.
      *
-     * @return The calls, without the ones that pass the same type at the same
-     *  place of the same object twice
+     * @param heads What the place gives before the call
+     * @param ctx The copy around
+     * @param place The place of the call
+     * @return What the call gives
      */
-    Collection<Call> all() {
-        final Map<String, String> names = new Ends(this.links.all()).names();
-        final Map<String, String> landings = new Landed(this.links, this.given).all();
-        final Forms forms = new Forms(this.links.forms());
-        final Map<String, Call> found = new LinkedHashMap<>(0);
-        for (final Map.Entry<String, List<String>> made
-            : new Given(this.sites).arguments().entrySet()) {
-            final String applied = names.getOrDefault(made.getKey(), made.getKey());
-            final List<String> args = made.getValue();
-            for (int place = 0; place < args.size(); place += 1) {
-                final String arg = args.get(place);
-                if (!arg.isEmpty()) {
-                    final String end = landings.getOrDefault(arg, names.getOrDefault(arg, arg));
-                    found.putIfAbsent(
-                        String.join(" ", applied, String.valueOf(place), forms.name(end)),
-                        new Call(applied, place, forms.type(end))
-                    );
+    Ints apply(final Ints heads, final int ctx, final String place) {
+        final List<String> args = this.world.args(place);
+        final List<int[]> raw = new ArrayList<>(args.size());
+        for (final String arg : args) {
+            raw.add(this.argument(arg, ctx));
+        }
+        final List<int[]> argsets = new ArrayList<>(args.size());
+        for (final int[] set : raw) {
+            argsets.add(this.state.reduced(set));
+        }
+        for (final int[] set : argsets) {
+            for (final int val : set) {
+                this.state.remember(val);
+            }
+        }
+        final Call call = new Call(
+            new Site(place, this.world.carried(ctx)), ctx, raw, argsets
+        );
+        final Ints out = new Ints();
+        final Set<Landing> landed = new HashSet<>(0);
+        for (int pos = 0; pos < heads.size(); ++pos) {
+            out.addAll(this.head(heads.get(pos), call, landed));
+        }
+        this.landing(place, ctx, landed);
+        return out;
+    }
+
+    /**
+     * Where the arguments of each call land, over the copies around that
+     * count: the one void each lands in, for those that land in one.
+     *
+     * @return The voids, by the place of the argument
+     */
+    Map<String, String> lands() {
+        final Map<String, Set<String>> voids = new LinkedHashMap<>(0);
+        for (final Map.Entry<Slot, Set<Landing>> entry : this.lands.entrySet()) {
+            if (this.state.counts(entry.getKey().copy())) {
+                final List<String> args = this.world.args(entry.getKey().name());
+                for (final Landing landing : entry.getValue()) {
+                    voids.computeIfAbsent(args.get(landing.arg()), key -> new HashSet<>(1))
+                        .add(landing.name());
                 }
             }
         }
-        return found.values();
+        final Map<String, String> found = new LinkedHashMap<>(0);
+        for (final Map.Entry<String, Set<String>> entry : voids.entrySet()) {
+            if (entry.getValue().size() == 1 && !entry.getValue().contains("")) {
+                found.put(entry.getKey(), entry.getValue().iterator().next());
+            }
+        }
+        return found;
+    }
+
+    private int[] argument(final String arg, final int ctx) {
+        final Ints got = new Ints();
+        got.addAll(this.state.evaluate(arg, ctx));
+        return got.array();
+    }
+
+    private Ints head(final int num, final Call call, final Set<Landing> landed) {
+        int head = num;
+        Value value = this.world.value(head);
+        if (value.kind() == 'B') {
+            head = value.base();
+            value = this.world.value(head);
+        }
+        final List<String> voids = this.voids(value, call);
+        this.land(head, value, voids, call.size(), landed);
+        final char kind = value.kind();
+        final Ints out = new Ints();
+        if (kind == 'A') {
+            out.add(this.marked(value, call.size()));
+        } else if (kind == 'O') {
+            out.addAll(this.object(head, value, call, voids));
+        } else if (kind == 'D') {
+            out.add(Values.TERM);
+        } else {
+            out.add(head);
+        }
+        return out;
+    }
+
+    private List<String> voids(final Value value, final Call call) {
+        final List<String> voids;
+        if (value.kind() == 'O') {
+            voids = this.world.voids(value, call.site().place());
+        } else {
+            voids = Collections.emptyList();
+        }
+        return voids;
+    }
+
+    private void land(
+        final int head, final Value value, final List<String> voids, final int args,
+        final Set<Landing> landed
+    ) {
+        final char kind = value.kind();
+        if (kind == 'O' && this.fits(head, value, voids, args)) {
+            for (int arg = 0; arg < args; ++arg) {
+                landed.add(new Landing(arg, voids.get(arg)));
+            }
+        } else if (kind != 'O' && kind != 'T' && kind != 'D') {
+            for (int arg = 0; arg < args; ++arg) {
+                landed.add(new Landing(arg, ""));
+            }
+        }
+    }
+
+    private boolean fits(
+        final int head, final Value value, final List<String> voids, final int args
+    ) {
+        return !Values.JBORN.equals(value.birth()) && !this.state.shared(head)
+            && voids.size() == args;
+    }
+
+    private int marked(final Value value, final int args) {
+        final int result;
+        if (args < value.count()) {
+            result = this.state.mark(value.base(), value.count() - args);
+        } else if (args == value.count()) {
+            final Value base = this.world.value(value.base());
+            if (base.kind() == 'O' && !this.world.opened(base).isEmpty()) {
+                result = this.state.mark(value.base(), 0);
+            } else {
+                result = value.base();
+            }
+        } else {
+            result = Values.TERM;
+        }
+        return result;
+    }
+
+    private Ints object(
+        final int head, final Value value, final Call call, final List<String> voids
+    ) {
+        final String passed = this.world.passes(value.form());
+        final Ints out;
+        if ((Values.JBORN.equals(value.birth()) || this.state.shared(head))
+            && call.size() > 0 || voids.size() < call.size()) {
+            out = new Ints(Values.TERM);
+        } else if (passed.isEmpty() || voids.size() < this.world.opened(value).size()) {
+            out = this.made(head, value, call, voids, false);
+        } else if ((value.bound() & this.world.form(value.form()).bit(passed)) == 0) {
+            out = this.narrowed(
+                head, value, call, voids, call.sets().get(voids.indexOf(passed))
+            );
+        } else {
+            out = this.narrowed(head, value, call, voids, this.state.cell(head, passed));
+        }
+        return out;
+    }
+
+    private Ints narrowed(
+        final int head, final Value value, final Call call, final List<String> voids,
+        final int... answer
+    ) {
+        final int free = this.world.opened(value).size();
+        final Ints out = new Ints(answer);
+        if (!this.gapped(call.raw(), free) && !call.lacking(free)) {
+            out.addAll(this.made(head, value, call, voids, true));
+        }
+        return out;
+    }
+
+    private Ints made(
+        final int head, final Value value, final Call call, final List<String> voids,
+        final boolean narrowed
+    ) {
+        final List<String> free = this.world.opened(value);
+        final Wish wish = new Wish('b', call.site().place(), call.ctx(), head);
+        final Ints out = new Ints();
+        if (this.gapped(call.raw(), free.size()) && !this.state.taken(wish)) {
+            this.state.wish(wish);
+        } else if (!call.lacking(free.size())) {
+            final int copy = this.state.copy(
+                new Value(
+                    value.form(), this.world.born(call.site(), value.form()),
+                    value.bound() | this.state.bits(value.form(), voids)
+                ),
+                this.rows(head, value, voids, call.sets())
+            );
+            this.applied(copy, call);
+            this.bind(value, voids, call);
+            this.state.remember(copy);
+            if (!narrowed) {
+                out.add(copy);
+            }
+        }
+        return out;
+    }
+
+    private void applied(final int copy, final Call call) {
+        final List<String> args = this.world.args(call.site().place());
+        for (int arg = 0; arg < call.raw().size(); ++arg) {
+            for (final int val : call.raw().get(arg)) {
+                final int inside = this.world.bare(val);
+                final Value value = this.world.value(inside);
+                if (Calls.handed(value, args.get(arg))
+                    && this.world.form(value.form()).applied()) {
+                    this.state.gather(inside, "ρ", copy);
+                }
+            }
+        }
+    }
+
+    private static boolean handed(final Value value, final String arg) {
+        return value.kind() == 'O' && value.form().equals(arg)
+            && (value.bound() & Formation.RHO) != 0;
+    }
+
+    private void bind(final Value value, final List<String> voids, final Call call) {
+        final String form = value.form();
+        if (this.world.returned(form)) {
+            for (int arg = 0; arg < voids.size(); ++arg) {
+                this.state.fill(form, voids.get(arg), call.sets().get(arg));
+            }
+        }
+        final Formation shape = this.world.form(form);
+        for (int arg = 0; arg < voids.size(); ++arg) {
+            if (shape.back(voids.get(arg))) {
+                this.back(voids.get(arg), arg, shape, call);
+            }
+        }
+        if (this.world.atom(form)) {
+            for (int arg = 0; arg < voids.size(); ++arg) {
+                if (!shape.back(voids.get(arg))) {
+                    this.dataized(voids.get(arg), arg, call);
+                }
+            }
+        }
+    }
+
+    private void back(final String name, final int arg, final Formation shape, final Call call) {
+        for (final int val : call.raw().get(arg)) {
+            this.state.called(val, shape.args(name), call.site());
+        }
+    }
+
+    private void dataized(final String name, final int arg, final Call call) {
+        final Usage usage = new Usage(name, call.site(), Counting.DATAIZED);
+        for (final int val : call.raw().get(arg)) {
+            this.state.use(val, usage, new Ints());
+        }
+        for (final int val : call.sets().get(arg)) {
+            this.state.use(val, usage, new Ints());
+        }
+    }
+
+    private Map<String, int[]> rows(
+        final int head, final Value value, final List<String> voids, final List<int[]> argsets
+    ) {
+        final Map<String, int[]> rows = new LinkedHashMap<>(0);
+        for (final String name : this.world.bound(value)) {
+            rows.put(name, this.state.cell(head, name));
+        }
+        for (int arg = 0; arg < voids.size(); ++arg) {
+            rows.put(voids.get(arg), argsets.get(arg));
+        }
+        return rows;
+    }
+
+    private boolean gapped(final List<int[]> raw, final int free) {
+        boolean found = false;
+        for (int arg = 0; arg < Math.min(free, raw.size()) && !found; ++arg) {
+            found = this.gaps(raw.get(arg));
+        }
+        return found;
+    }
+
+    private boolean gaps(final int... set) {
+        boolean all = set.length > 0;
+        for (final int val : set) {
+            if (this.world.value(val).kind() != 'U') {
+                all = false;
+                break;
+            }
+        }
+        return all;
+    }
+
+    private void landing(final String place, final int ctx, final Set<Landing> landed) {
+        final Set<Landing> old = this.lands.getOrDefault(
+            new Slot(ctx, place), Collections.emptySet()
+        );
+        if (!old.containsAll(landed)) {
+            final Set<Landing> got = new HashSet<>(old);
+            got.addAll(landed);
+            this.lands.put(new Slot(ctx, place), this.landings.computeIfAbsent(got, set -> set));
+        }
     }
 }

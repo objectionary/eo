@@ -16,5 +16,7 @@ eo:
       as-bytes > @
       [x] > div
         x > @
+  bytes.eo: |
+    [@] > bytes
 pure:
   - "//o[@name='shifted' and @pure='true']"

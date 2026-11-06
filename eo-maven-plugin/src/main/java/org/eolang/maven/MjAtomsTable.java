@@ -10,6 +10,7 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.StClasspath;
 import com.yegor256.xsline.Xsline;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -43,7 +44,7 @@ public final class MjAtomsTable extends MjSafe {
 
     /**
      * Directory with XMIR sources to scan for atoms, falling back to the
-     * "parse" directory {@link Subdir} already found when unset.
+     * "parse" directory {@code Seqdir} already found when unset.
      */
     @Parameter(alias = "atomsInputDir", property = "eo.atomsInputDir")
     private File sources;
@@ -68,7 +69,13 @@ public final class MjAtomsTable extends MjSafe {
 
     @Override
     void exec() throws IOException {
-        final Path home = new Subdir(this.target, "parse").foundOrConfigured(this.sources);
+        final Path home;
+        if (this.sources == null) {
+            home = new Seqdir(this.target.toPath(), 2).dirs().find("parse")
+                .orElse(this.target.toPath().resolve("parse"));
+        } else {
+            home = this.sources.toPath();
+        }
         if (!Files.isDirectory(home)) {
             Logger.info(
                 this,

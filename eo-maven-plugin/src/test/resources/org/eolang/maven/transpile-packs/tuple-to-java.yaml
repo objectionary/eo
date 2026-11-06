@@ -12,13 +12,13 @@ sheets:
 asserts:
   - /object[not(errors)]
   - //java[contains(text(), 'package org.eolang;')]
-  - //java[contains(text(), 'Phi rr11 = new PhDispatch(Phi.Φ, "tuple");')]
-  - //java[contains(text(), 'new PhDispatch(rr111, "empty");')]
-  - //java[contains(text(), 'Phi rr112 = new PhDispatch(Phi.Φ, "number");')]
-  - //java[contains(text(), 'Phi rr113 = new PhDispatch(Phi.Φ, "number");')]
-  - //java[contains(text(), 'rr11 = new PhApplication(rr11, new Bind(0, rr111)')]
-  - //java[contains(text(), 'new Bind(1, rr112)')]
-  - //java[contains(text(), 'new Bind(2, rr113)')]
+  - //java[contains(text(), 'Phi rr_1_1 = new PhDispatch(Phi.Φ, "tuple");')]
+  - //java[contains(text(), 'new PhDispatch(rr_1_1_1, "empty");')]
+  - //java[contains(text(), 'Phi rr_1_1_2 = new PhDispatch(Phi.Φ, "number");')]
+  - //java[contains(text(), 'Phi rr_1_1_3 = new PhDispatch(Phi.Φ, "number");')]
+  - //java[contains(text(), 'rr_1_1 = new PhApplication(rr_1_1, new Bind(0, rr_1_1_1)')]
+  - //java[contains(text(), 'new Bind(1, rr_1_1_2)')]
+  - //java[contains(text(), 'new Bind(2, rr_1_1_3)')]
 input: |
   [] > tuples
     [] > foo

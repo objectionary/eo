@@ -15,7 +15,7 @@ concurrency:
 jobs:
   telegram:
     timeout-minutes: 15
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
         with:
@@ -26,7 +26,7 @@ jobs:
       - run: sudo apt-get update --yes --fix-missing && sudo apt-get install --yes jq bc
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 4.0.7
+          ruby-version: 4.0.9
           bundler-cache: true
       - run: gem install hoc
       - env:

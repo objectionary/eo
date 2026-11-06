@@ -10,11 +10,11 @@
 +unlint no-attribute-formation
 +version 0.0.0
 
-[] > dead
+[^] > dead
   [buffer] > write
-    [^] >> output-block
+    [^sink] >> output-block
       true > @
-      ^.^.output-block > [^ buffer] > write
+      block.sink.output-block > [^block buffer] > write
     | > @
 
   malloc.of ++> can-be-taken-off-any-output
@@ -24,4 +24,13 @@
         output m.to-output
       01-02-03
 
-  dead.write 01-02-03 ++> can-write-bytes-to-nowhere
+  eq. ++> can-write-bytes-to-nowhere
+    malloc.of
+      3
+      seq * > [m]
+        write.
+          dead.
+            output m.to-output
+          01-02-03
+        m
+    00-00-00

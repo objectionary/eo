@@ -13,12 +13,10 @@ eo:
         ^.at > @
 protocol: |
   <protocol>
-    <morph at="Φ.l/.e52">
-      <evaluate λ="L_entry" by="morph" at="Φ.l/.e52">
-        <unanswered>⊥</unanswered>
-        <stuck λ="⊥"/>
-      </evaluate>
-    </morph>
+    <dataize at="Φ.l🌵.e52">
+      <unanswered>⊥</unanswered>
+      <stuck λ="⊥"/>
+    </dataize>
     <msec>332</msec>
     <firings>1</firings>
     <fps>3</fps>

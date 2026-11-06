@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# 01- is a call of bytes with a datum, which lands in its φ, so the @ of two
+# is bytes.
+sources:
+  two.eo: |
+    [] > two
+      01- > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.two.φ.α0' and @lands='φ']/data
+  - /answers/o[@loc='Φ.two.φ']/is[@loc='Φ.bytes']

@@ -29,6 +29,57 @@
     <xsl:param name="o" as="element()"/>
     <xsl:sequence select="starts-with($o/@name, $eo:positive) or starts-with($o/@name, $eo:negative)"/>
   </xsl:function>
+  <!--
+  The formation that an object made of nothing but "ξ" and "ρ" hops lands
+  in, rolled as "ξ.ρ.ρ" or not as ".ρ" on top of "ξ", or nothing when the
+  object is anything else or climbs above the top of the document.
+  -->
+  <xsl:function name="eo:landing" as="element(o)?">
+    <xsl:param name="o" as="element(o)?"/>
+    <xsl:variable name="base" select="string($o/@base)"/>
+    <xsl:choose>
+      <xsl:when test="matches($base, concat('^', $eo:xi, '(\.', $eo:rho, ')*$'))">
+        <xsl:sequence select="$o/ancestor::o[eo:abstract(.)][count(tokenize($base, '\.'))]"/>
+      </xsl:when>
+      <xsl:when test="$base = concat('.', $eo:rho)">
+        <xsl:sequence select="eo:landing($o/o[1])/ancestor::o[eo:abstract(.)][1]"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="()"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+  <!--
+  The formation that an own read lands in, or nothing when the object is no
+  own read or climbs above the top of the document. An own read goes from
+  "ξ" through nothing but "ρ" hops to a name: a base rolled as "ξ.x",
+  "ξ.ρ.x" or "ξ.ρ.ρ.x.plus", or a dispatch ".x" made on an object that is
+  nothing but such hops. Each hop climbs to the formation around.
+  -->
+  <xsl:function name="eo:own-formation" as="element(o)?">
+    <xsl:param name="o" as="element(o)"/>
+    <xsl:variable name="segments" select="tokenize(string($o/@base), '\.')"/>
+    <xsl:choose>
+      <xsl:when test="$segments[1] = $eo:xi">
+        <xsl:sequence select="$o/ancestor::o[eo:abstract(.)][index-of(for $segment in $segments return $segment = $eo:rho, false())[2] - 1]"/>
+      </xsl:when>
+      <xsl:when test="$segments[1] = '' and count($segments) = 2">
+        <xsl:sequence select="eo:landing($o/o[1])"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="()"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+  <!--
+  The name that an own read takes in the formation it lands in, which is
+  "x" in "ξ.ρ.x.plus" and in ".x". The "plus" that follows is read from the
+  value of "x".
+  -->
+  <xsl:function name="eo:own-name" as="xs:string">
+    <xsl:param name="o" as="element(o)"/>
+    <xsl:sequence select="string(tokenize(string($o/@base), '\.')[. != $eo:rho][2])"/>
+  </xsl:function>
   <!-- BYTES TO STRING -->
   <xsl:function name="eo:bytes-to-string" as="xs:string">
     <xsl:param name="bytes" as="xs:string"/>

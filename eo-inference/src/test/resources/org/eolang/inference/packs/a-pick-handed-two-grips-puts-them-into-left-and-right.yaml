@@ -1,0 +1,46 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls both, so it is studied in each copy of choice, with x unknown.
+# ^.grip x lands in the left of the arm yes or no puts into pick and ^.grip
+# 04- in its right; only x and 04- land in the size of grip. With yes, both is
+# unknown, since x is; with no, it is bytes. The left the call hands the arm
+# holds only an unknown, so the call waits for a stop (rule b) and makes no
+# copy of the arm: the @ of each arm is unknown in the one copy it has.
+sources:
+  choice.eo: |
+    [pick] > choice
+      [^ size] > grip
+        size > @
+      ^.pick > [^ x] > both
+        ^.grip x
+        ^.grip 04-
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^ left right]
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^ left right]
+          right > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers[not(o[@lands='v🌵x'])]
+  - /answers/o[@loc='Φ.choice.both.v🌵x' and @copies='2']/unknown
+  - /answers/o[@loc='Φ.choice.both.φ.α0' and @lands='v🌵left']/unknown
+  - /answers/o[@loc='Φ.choice.both.φ.α1' and @lands='v🌵right']/is[@loc='Φ.bytes']
+  - /answers/o[@loc='Φ.choice.both.φ.α0.α0' and @lands='v🌵size']/unknown
+  - /answers/o[@loc='Φ.choice.both.φ.α1.α0' and @lands='v🌵size']/is[@loc='Φ.bytes']
+  - /answers[not(o[@lands='v🌵size' and @loc!='Φ.choice.both.φ.α0.α0' and @loc!='Φ.choice.both.φ.α1.α0'])]
+  - /answers/o[@loc='Φ.yes.φ.α0.φ' and @copies='1']/unknown
+  - /answers/o[@loc='Φ.choice.both.φ']/set/unknown
+  - /answers/o[@loc='Φ.no.φ.α0.φ' and @copies='1']/unknown
+  - /answers/o[@loc='Φ.choice.both.φ']/set/is[@loc='Φ.bytes']

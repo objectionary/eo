@@ -1,9 +1,10 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# A receiver is asked the same question as every other void, so one the
-# program only ever attaches to a formation is no better than a void filled
-# with a formation: the bytes of a formation are not what identifies it.
+# A declared "^" holds the formation it is written in, and "reads" is written
+# at the top of its file, where "^" holds the package it was loaded from. That
+# is no better than a void filled with a formation: the bytes of a formation
+# are not what identifies it.
 eo:
   app.eo: |
     [] > app
@@ -16,5 +17,7 @@ eo:
   number.eo: |
     [as-bytes] > number
       as-bytes > @
+  bytes.eo: |
+    [@] > bytes
 pure:
   - "//o[@name='reads' and not(@pure)]"

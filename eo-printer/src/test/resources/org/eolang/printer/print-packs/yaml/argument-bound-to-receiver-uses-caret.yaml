@@ -2,10 +2,8 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# An argument bound to a named void with ":^" (R-3.12.2a rho) must reprint
-# with its surface spelling, the way the base of an object already does:
-# the TAIL template's "@as" branch printed the raw internal "rho" glyph
-# instead of "^", and the result did not reparse (#7450).
+# The receiver is supplied by dispatch; R-3.12.2a forbids the old :^ binding.
+# Keep the positional argument when printing the call vertically.
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -15,10 +13,8 @@ penalties:
   SPACE: 7
 origin: |
   [] > user
-    lt x:0 y:^ > @
+    y.lt x:0 > @
 
 printed: |
-  [] > user
-    lt > @
-      x:0
-      y:^
+  y.lt > [] > user
+    x
