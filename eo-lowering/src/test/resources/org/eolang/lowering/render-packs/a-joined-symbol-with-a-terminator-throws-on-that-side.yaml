@@ -20,7 +20,7 @@ eo:
       [] > and /Q.bytes
         ? > ^
         ? > b /Q.bytes
-      [] > eq /Q.true|Q.false
+      [] > eq /Q.bool
         ? > ^
         ? > b
       [] > or /Q.bytes

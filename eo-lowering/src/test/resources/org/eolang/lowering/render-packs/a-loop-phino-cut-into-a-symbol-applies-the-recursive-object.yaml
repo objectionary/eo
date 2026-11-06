@@ -21,7 +21,7 @@ eo:
         with-delimiter acc tup.tail > @
   number.eo: |
     [@] > number
-      [] > eq /Q.true|Q.false
+      [] > eq /Q.bool
         ? > ^
         ? > b
   tuple.eo: |

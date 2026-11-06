@@ -14,7 +14,7 @@ eo:
         1.eq 1 > @
   number.eo: |
     [@] > number
-      [] > eq /Q.true|Q.false
+      [] > eq /Q.bool
         ? > ^
         ? > b
 xmir:

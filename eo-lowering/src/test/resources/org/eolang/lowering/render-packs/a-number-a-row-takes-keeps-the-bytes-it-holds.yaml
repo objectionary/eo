@@ -18,7 +18,7 @@ eo:
         ^.as-bytes.size.eq 8 > @
       [] > as-bytes /Q.bytes
         ? > ^
-      [] > eq /Q.true|Q.false
+      [] > eq /Q.bool
         ? > ^
         ? > b
   bytes.eo: |

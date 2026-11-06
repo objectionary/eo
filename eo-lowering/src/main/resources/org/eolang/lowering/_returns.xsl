@@ -48,27 +48,24 @@
   <!--
   What the object with this locator counts as when a body is it: the type
   an atom returns, what a formation reduces to other than itself, or the
-  object itself. The type an atom returns counts as its heads, so a union
-  such as "Φ.true|Φ.false" is either of the two, and a tree such as
-  "Φ.posix.status-return(Φ.number,Φ.string)" is the name before its
-  brackets.
+  object itself. The type an atom returns counts as its head, so a tree
+  such as "Φ.posix.status-return(Φ.number,Φ.string)" is the name before
+  its brackets.
   -->
   <xsl:function name="eo:behaves" as="xs:string+">
     <xsl:param name="name" as="xs:string"/>
     <xsl:variable name="atom" as="attribute()?" select="key('eo:type', $name, $eo:facts)[1]/@returns"/>
     <xsl:variable name="reduced" as="xs:string*" select="eo:labels(key('eo:row', $name, $eo:answers)/reduced)/self::is/@loc[. != $name] ! string(.)"/>
-    <xsl:sequence select="if (exists($atom)) then eo:heads(string($atom)) else if (exists($reduced)) then $reduced else $name"/>
+    <xsl:sequence select="if (exists($atom)) then eo:head(string($atom)) else if (exists($reduced)) then $reduced else $name"/>
   </xsl:function>
   <!--
-  The names a type spells outside every bracket, one for each side of a
-  union, with the trailing "?" of a maybe-⊥ annotation dropped:
-  "Φ.true|Φ.false" gives "Φ.true" and "Φ.false", and
-  "Φ.posix.status-return(Φ.number,Φ.string)" gives "Φ.posix.status-return".
-  The innermost brackets go first, until none is left, and what remains is
-  split at the bar.
+  The name a type spells outside every bracket, with the trailing "?" of a
+  maybe-⊥ annotation dropped: "Φ.posix.status-return(Φ.number,Φ.string)"
+  gives "Φ.posix.status-return". The innermost brackets go first, until
+  none is left.
   -->
-  <xsl:function name="eo:heads" as="xs:string*">
+  <xsl:function name="eo:head" as="xs:string">
     <xsl:param name="type" as="xs:string"/>
-    <xsl:sequence select="if (contains($type, '(')) then eo:heads(replace($type, '\([^()]*\)', '')) else tokenize(replace($type, '\?$', ''), '\|')[. != '']"/>
+    <xsl:sequence select="if (contains($type, '(')) then eo:head(replace($type, '\([^()]*\)', '')) else replace($type, '\?$', '')"/>
   </xsl:function>
 </xsl:stylesheet>

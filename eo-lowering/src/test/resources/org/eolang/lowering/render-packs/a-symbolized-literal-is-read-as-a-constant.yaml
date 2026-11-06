@@ -18,7 +18,7 @@ eo:
         2
   number.eo: |
     [@] > number
-      [] > gt /Q.true|Q.false
+      [] > gt /Q.bool
         ? > ^
         ? > b /Q.number
       [] > plus /Q.number

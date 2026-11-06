@@ -200,14 +200,13 @@
   <!--
   The carrier of what a void holds: one of the five kinds of data the
   renderer can declare in Java, or an empty string for any other object and
-  where the tables say nothing at all. A type is taken by its heads, so
-  "Φ.true|Φ.false" is a bool, while "Φ.number|Φ.string" is no carrier,
-  since its two sides are two kinds.
+  where the tables say nothing at all. A type is taken by its head, the
+  name before its brackets.
   -->
   <xsl:function name="eo:carrier" as="xs:string">
     <xsl:param name="holds" as="xs:string"/>
-    <xsl:variable name="kinds" as="xs:string*" select="distinct-values(eo:heads($holds) ! (if (. = 'Φ.number') then 'number' else if (. = 'Φ.string') then 'string' else if (. = 'Φ.bytes') then 'bytes' else if (. = ('Φ.bool', 'Φ.true', 'Φ.false')) then 'bool' else if (. = 'Φ.tuple') then 'tuple' else ''))"/>
-    <xsl:sequence select="if (count($kinds) = 1) then $kinds else ''"/>
+    <xsl:variable name="head" as="xs:string" select="eo:head($holds)"/>
+    <xsl:sequence select="if ($head = 'Φ.number') then 'number' else if ($head = 'Φ.string') then 'string' else if ($head = 'Φ.bytes') then 'bytes' else if ($head = ('Φ.bool', 'Φ.true', 'Φ.false')) then 'bool' else if ($head = 'Φ.tuple') then 'tuple' else ''"/>
   </xsl:function>
   <!--
   The carrier the body of the formation with this locator returns, as the

@@ -13,7 +13,7 @@ eo:
     [@] > bytes
       [^] > as-bool
         (^.eq FF-).if true false > @
-      [] > eq /Q.true|Q.false
+      [] > eq /Q.bool
         ? > ^
         ? > b
 voids:

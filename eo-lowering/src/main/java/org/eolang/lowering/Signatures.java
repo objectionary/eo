@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -32,9 +31,8 @@ import org.cactoos.scalar.Unchecked;
  * returns in {@code facts.xml}, as what a formation reduces to other than
  * itself, or as itself, in that order. A row says a termination or an
  * unknown next to the objects, and those are left out. The type an atom
- * returns counts as the names outside its brackets, one for each side of a
- * union, so {@code Φ.true|Φ.false} is shown as both and
- * {@code Φ.posix.status-return(Φ.number,Φ.string)} as
+ * returns counts as the name before its brackets, so
+ * {@code Φ.posix.status-return(Φ.number,Φ.string)} is shown as
  * {@code Φ.posix.status-return}.</p>
  *
  * <p>This is used only to tell the reader of the log what the atoms take
@@ -140,7 +138,7 @@ final class Signatures {
         for (final String type : this.facts.value().xpath(
             String.format("/facts/objects/type[@id='%s'][1]/@returns", name)
         )) {
-            found.addAll(Signatures.heads(type));
+            found.add(Signatures.head(type));
         }
         if (found.isEmpty()) {
             for (final String other : this.names(name, "/reduced")) {
@@ -166,7 +164,7 @@ final class Signatures {
         );
     }
 
-    private static List<String> heads(final String type) {
+    private static String head(final String type) {
         final StringBuilder outside = new StringBuilder(type.length());
         int depth = 0;
         for (int idx = 0; idx < type.length(); ++idx) {
@@ -179,7 +177,7 @@ final class Signatures {
                 outside.append(glyph);
             }
         }
-        return Arrays.asList(outside.toString().split("\\|"));
+        return outside.toString();
     }
 
     private static XML table(final Path file) throws IOException {

@@ -19,7 +19,7 @@ eo:
         acc > @
   number.eo: |
     [@] > number
-      [] > eq /Q.true|Q.false
+      [] > eq /Q.bool
         ? > ^
         ? > b
       [] > plus /Q.number
