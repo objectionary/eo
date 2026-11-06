@@ -39,8 +39,9 @@ import java.util.stream.Collectors;
  * <p>What an atom returns is a type, such as
  * {@code Φ.posix.status-return(Φ.number,Φ.string)}, and the formation it
  * fixes is the name before the brackets. A union, such as
- * {@code Φ.true|Φ.false}, fixes no formation, since the atom may return
- * either of the two.</p>
+ * {@code Φ.true|Φ.false}, keeps the name of each side, and {@link Origins}
+ * follows a call on it only when both sides lead the call to the same
+ * formation.</p>
  *
  * @since 0.76.0
  */
@@ -133,13 +134,7 @@ final class Grounded {
                 outside.append(glyph);
             }
         }
-        final String found;
-        if (outside.indexOf("|") < 0) {
-            found = outside.toString();
-        } else {
-            found = "";
-        }
-        return found;
+        return outside.toString();
     }
 
     private static String target(final Xnav attr) {
