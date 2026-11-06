@@ -22,9 +22,9 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.app.dead.α0' and @lands='x']/terminator
-  - /answers/o[@loc='Φ.app.alive.α0' and @lands='x']/is[@loc='Φ.oak']
-  - /answers/o[@loc='Φ.inc.x' and @copies='2']/set[@copies='1']/terminator
-  - /answers/o[@loc='Φ.inc.x' and @copies='2']/set[@copies='1']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.dead.α0' and @lands='v🌵x']/terminator
+  - /answers/o[@loc='Φ.app.alive.α0' and @lands='v🌵x']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.inc.v🌵x' and @copies='2']/set[@copies='1']/terminator
+  - /answers/o[@loc='Φ.inc.v🌵x' and @copies='2']/set[@copies='1']/is[@loc='Φ.oak']
   - /answers/o[@loc='Φ.app.dead']/terminator
   - /answers/o[@loc='Φ.app.alive']/is[@loc='Φ.oak']

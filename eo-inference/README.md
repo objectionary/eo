@@ -13,7 +13,15 @@ EO has no types. It has objects, and every object is a copy of some other one,
 which is a copy of another, and so on until the chain arrives at a formation
 written in the source. The engine follows those chains copy by copy: a copy is
 one use of a formation, with its own values in its voids, and every place is
-answered once per copy of the formation around it.
+answered once per copy of the formation around it. Code that nobody calls is
+answered in a study copy, whose voids stay empty. In the end a study copy
+counts only if its formation never got a copy from a call or a read and the
+copy around it counts, while a copy from a call or a read counts wherever the
+call or the read was. A call handed only unknowns waits until nothing else
+grows, so that a real value can still come first, and then makes its copy
+with those unknowns in its voids, each of its own kind. So a void of code
+nobody calls stays that unknown down every call it goes through, and a read
+of it never gives T.
 
 ## What it writes
 
@@ -32,6 +40,10 @@ number. The first, `facts.xml`, has four parts:
 
 Every object is named by its locator, a path from `Φ` down: `φ` is the `@`,
 `ρ` is `^`, and `α0`, `α1` are the first and the second argument of a call.
+The `^` of a named formation is the formation around it, or `Φ` at the top.
+A formation with no name, written as an argument, takes as its `^` the object
+it goes into, an atom too, and one that goes into no object has a `^` nobody
+fills.
 
 The second, `answers.xml`, is what the engine (`Walk`) works out from
 `facts.xml` alone. For every place it has the sets of objects the copies of
@@ -47,6 +59,39 @@ lands in:
   <set copies="1">
     <is loc="Φ.string"/>
   </set>
+</o>
+```
+
+A copy is named by its formation, but a copy of a decorator is named by what
+its `@` gives. Two rows are the exception and name the formation of each
+copy in them. One is the row of a `^`. The other is the row of the object a
+name is read off, for each copy that has that name itself, as a void or a
+bound attribute of its formation: `accept` in `socket.eo` reads `scope` and
+`cant-accept` off itself, so the `$` in front of each names `accept`. A copy
+that lacks the name hands the read on to its `@`, and there the row names
+what that `@` gives, as anywhere else. When the copies a row names reduce to
+something else, a `<reduced>` next to the names says what:
+
+```xml
+<o loc="Φ.app.φ.α0.ρ" copies="1">
+  <is loc="Φ.foo"/>
+  <reduced copies="1">
+    <is loc="Φ.number"/>
+  </reduced>
+</o>
+```
+
+The row of a formation has a `study` attribute: how many of its copies that
+count are study copies or copies as written that a stop kept. A formation
+with none has no `study`. Nobody calls `read` in `socket.eo`, so its one
+copy is a study copy:
+
+```xml
+<o loc="Φ.socket.as-input.read" copies="1" study="1">
+  <is loc="Φ.socket.as-input.read"/>
+  <reduced copies="1">
+    <is loc="Φ.socket.as-input.read"/>
+  </reduced>
 </o>
 ```
 
@@ -69,11 +114,20 @@ into them.
 The `inference-report` goal reads the prepared files and the `answers.xml` in
 `target/eo/NN-inference`, and writes a page per source file into
 `target/site/inference`, with an index. A page shows the source with a mark
-on every object, coloured by one of ten bands of what the engine answers
+on every object, coloured by one of nine bands of what the engine answers
 there: green for one name and nothing else, then names with gaps, two names,
-mixed names, lost track, voids an atom fills, voids nobody fills, only an
-error, not reached, and red where a read fails. The goal logs how many
-objects fall in each band.
+mixed names, an unknown of each of four kinds, and only an error. The four
+kinds are a read nothing ever answers, a void only Java fills, a void of an
+object nobody calls, and a void nobody fills, and `answers.xml` writes them
+as `<unknown kind="loop"/>`, `kind="java"`, `kind="study"` and
+`kind="empty"`. A place with no name and unknowns of several kinds takes the
+first of them in that order. The pop-up of the mark on the name of a
+formation with a `study` ends with the line
+`studied: nobody calls this object`, followed by `(1 of 3 copies)` when only
+some of its copies are study copies. The marks of its attributes get no
+such line, and the bands and the tally ignore it. The goal logs how many objects
+fall in each band. An object that `answers.xml` says nothing of stops the
+report with an error that names its locator.
 
 `Report` draws the same bytes as the Python report it is ported from, with the
 same `page.xsl` and `index.xsl`. `ReportTest` compares the two

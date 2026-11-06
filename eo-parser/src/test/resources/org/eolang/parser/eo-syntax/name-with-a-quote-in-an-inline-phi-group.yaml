@@ -9,7 +9,7 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@base='Φ.f' and @name='x']/o[o[@base='∅' and @name='n'] and o[@name='φ' and @base='Φ.a"b']]
+  - //o[@base='Φ.f' and @name='x']/o[o[@base='∅' and @name='v🌵n'] and o[@name='φ' and @base='Φ.a"b']]
 input: |
   +package foo
 

@@ -63,6 +63,7 @@ public final class Xmir implements XML {
             new TrFull(
                 new TrDefault<>(
                     new StUnhex(),
+                    new StClasspath("/org/eolang/printer/print/show-voids.xsl"),
                     new StClasspath("/org/eolang/printer/print/restore-local-names.xsl"),
                     new StClasspath("/org/eolang/printer/print/tuples-to-stars.xsl"),
                     new StClasspath("/org/eolang/printer/print/inline-cactoos.xsl"),

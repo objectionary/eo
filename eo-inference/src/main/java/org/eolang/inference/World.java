@@ -159,6 +159,16 @@ final class World {
     }
 
     /**
+     * The formation a place reads as an attribute.
+     *
+     * @param place The place
+     * @return The formation, empty when it reads none
+     */
+    String copied(final String place) {
+        return this.program.copied(place);
+    }
+
+    /**
      * The places answered in each copy of a formation, in the order of the
      * facts.
      *
@@ -306,36 +316,6 @@ final class World {
      */
     int size() {
         return this.values.size();
-    }
-
-    /**
-     * An unknown, for a reason.
-     *
-     * @param why The reason
-     * @return Its number
-     */
-    int unknown(final String why) {
-        return this.values.unknown(why);
-    }
-
-    /**
-     * A failing read.
-     *
-     * @param label What fails
-     * @return Its number
-     */
-    int conflict(final String label) {
-        return this.values.conflict(label);
-    }
-
-    /**
-     * Whether a value is an open void, decided or not.
-     *
-     * @param num The number
-     * @return TRUE if it is
-     */
-    boolean gap(final int num) {
-        return this.values.vacant(num);
     }
 
     /**

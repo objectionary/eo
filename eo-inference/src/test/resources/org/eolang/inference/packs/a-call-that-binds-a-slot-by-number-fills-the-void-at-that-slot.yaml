@@ -3,7 +3,7 @@
 ---
 # yamllint disable rule:line-length
 # A binding by slot number puts the argument into the void at that slot:
-# pair 5:1 puts 5 into b, the @ of pair, so app is a number.
+# pair 5:1 puts 5 into b, and nothing lands in a.
 sources:
   pair.eo: |
     [a b] > pair
@@ -18,6 +18,5 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.app.φ.α1' and @lands='b']/is[@loc='Φ.number']
-  - /answers[not(o[@lands='a'])]
-  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ.α1' and @lands='v🌵b']/is[@loc='Φ.number']
+  - /answers[not(o[@lands='v🌵a'])]

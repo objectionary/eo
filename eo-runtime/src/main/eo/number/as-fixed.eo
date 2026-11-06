@@ -49,44 +49,52 @@
     if.
       num.as-bytes.eq 80-00-00-00-00-00-00-00
       "-".as-bytes.concat
-        [^ a] >> positive
+        [^num a] >> positive
           if. > @
             eq.
-              floor. >> digits
-                plus.
-                  times. (a.minus a.floor) ^.scale
-                  0.5
-              ^.scale
-            if. > [^ unit rest] >> written
-              ^.^.places.eq 0
+              round >> digits
+                times.
+                  a.minus a.floor
+                  num.scale
+              num.scale
+            if. > [^frac unit rest] >> written
+              frac.num.places.eq 0
               unit.as-decimal
               concat.
                 unit.as-decimal.concat ".".as-bytes
                 concat.
                   rec-pad rest k --
-                  zeros (^.^.places.minus k) --
+                  zeros (frac.num.places.minus k) --
             | (a.floor.plus 1) 0
             written a.floor digits
         | 0
       if.
         num.lt 0
-        if. > [^ a] >> signed
-          eq.
-            floor.
-              plus.
-                a.times ^.scale
-                0.5
-            0
+        if. > [^num a] >> signed
+          lt.
+            a.times num.scale
+            0.5
           positive a
           "-".as-bytes.concat
             positive a
         | (num.times -1)
         positive num
-  if. > [^ p] >> pow10
+  [value] >> round
+    if. > @
+      gte.
+        value.minus
+          number whole
+        0.5
+      plus.
+        number whole
+        1
+      number whole
+    value.floor > whole!
+  if. > [^num p] >> pow10
     p.eq 0
     1
     times.
-      ^.pow10
+      num.pow10
         as-number.
           p.minus 1
       10
@@ -95,10 +103,10 @@
       places.gt 15
       15
       places
-  if. > [^ value count acc] >> rec-pad
+  if. > [^num value count acc] >> rec-pad
     count.eq 0
     acc
-    ^.rec-pad
+    num.rec-pad
       floor.
         value.div 10
       as-number.
@@ -111,10 +119,10 @@
                 times. (value.div 10).floor 10
             48
         acc
-  if. > [^ count acc] >> zeros
+  if. > [^num count acc] >> zeros
     count.eq 0
     acc
-    ^.zeros
+    num.zeros
       as-number.
         count.minus 1
       acc.concat "0".as-bytes
@@ -314,3 +322,33 @@
       0.as-fixed 6
 
   3.14159.as-fixed -2 --> stops-on-negative-places
+
+  eq. ++> can-round-a-value-below-half-down
+    "0"
+    string
+      0.49999999999999994.as-fixed 0
+
+  eq. ++> can-drop-the-sign-of-a-value-below-half
+    "0"
+    string
+      -0.49999999999999994.as-fixed 0
+
+  eq. ++> can-round-a-fraction-below-half-down
+    "0.12"
+    string
+      0.12499999999999999.as-fixed 2
+
+  eq. ++> can-round-a-fraction-at-half-up
+    "0.13"
+    string
+      0.125.as-fixed 2
+
+  eq. ++> can-round-a-negative-fraction-at-half-away-from-zero
+    "-0.13"
+    string
+      -0.125.as-fixed 2
+
+  eq. ++> can-round-a-scaled-decimal-half-up
+    "0.2"
+    string
+      0.15.as-fixed 1

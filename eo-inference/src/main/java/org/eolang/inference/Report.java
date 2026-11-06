@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -51,6 +50,11 @@ import org.w3c.dom.Node;
  * @since 0.70.0
  */
 public final class Report {
+
+    /**
+     * The extension of a page of the report.
+     */
+    private static final String PAGE = ".html";
 
     /**
      * The directory with the prepared XMIR files.
@@ -107,7 +111,7 @@ public final class Report {
             final Element drawn = new Page(root.getValue(), root.getKey(), table, shapes)
                 .drawn(page);
             page.appendChild(drawn);
-            Report.styled(sheet, page, out.resolve(root.getKey().concat(".html")));
+            Report.styled(sheet, page, out.resolve(root.getKey().concat(Report.PAGE)));
             tallies.put(root.getKey(), Report.tally(drawn));
         }
         final Document index = Report.document();
@@ -119,12 +123,12 @@ public final class Report {
 
     private static void wiped(final Path out) throws IOException {
         if (Files.exists(out)) {
-            final List<Path> all;
+            final List<Path> pages;
             try (Stream<Path> walked = Files.walk(out)) {
-                all = walked.sorted(Comparator.reverseOrder()).toList();
+                pages = walked.filter(path -> path.toString().endsWith(Report.PAGE)).toList();
             }
-            for (final Path path : all) {
-                Files.delete(path);
+            for (final Path page : pages) {
+                Files.delete(page);
             }
         }
     }
@@ -201,7 +205,7 @@ public final class Report {
         for (final String name : names) {
             final Element file = parent.getOwnerDocument().createElement("file");
             file.setAttribute("name", name.substring(name.lastIndexOf('/') + 1));
-            file.setAttribute("href", name.concat(".html"));
+            file.setAttribute("href", name.concat(Report.PAGE));
             for (final String band : Band.ORDER) {
                 file.setAttribute(band, Integer.toString(pages.get(name).get(band)));
             }

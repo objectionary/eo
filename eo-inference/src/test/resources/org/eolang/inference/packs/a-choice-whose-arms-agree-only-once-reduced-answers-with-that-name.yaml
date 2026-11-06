@@ -7,13 +7,14 @@
 # arms are a bool, and so is and.
 sources:
   bool.eo: |
-    [if] > bool
+    [fork] > bool
       if > @
         FF-
         00-
       ^.if > [^ x] > and
         FF-.eq x
         false
+      fork > if
   true.eo: |
     [^] > true
       bool > @

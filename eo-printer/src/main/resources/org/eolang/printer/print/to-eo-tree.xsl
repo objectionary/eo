@@ -513,7 +513,7 @@
           -->
           <xsl:value-of select="eo:translate-path($self-rest)"/>
         </xsl:when>
-        <xsl:when test="not(@local) and $segments[1] = $eo:xi and $rho-count = 0 and $hop-name != '' and $hop-name != $eo:rho and $hop-name != $eo:phi and $hop-name != $eo:xi and $hop-name != $eo:program and empty(ancestor::o[not(@base)][1]/o[@name=$hop-name]) and empty($local-handle)">
+        <xsl:when test="$segments[1] = $eo:xi and $rho-count = 0 and $hop-name != '' and $hop-name != $eo:rho and $hop-name != $eo:phi and $hop-name != $eo:xi and $hop-name != $eo:program and empty(ancestor::o[not(@base)][1]/o[@name=$hop-name]) and empty($local-handle)">
           <!--
           An explicit "$.name" (zero ρ hops) whose immediate enclosing
           formation has no "name" of its own, and which is not a
@@ -529,10 +529,9 @@
           DOES own "name", or "name" is such an in-scope file-local handle,
           bare and "$.name" resolve identically, so the otherwise branch
           below safely prints it bare, matching a plain same-scope
-          reference. A node that itself carries "@local" is a moniker's own
-          bound value, already relocated in place of its reference site by
-          merge-monikers.xsl, so its ancestor context here no longer
-          reflects its original scope — skip it too, matching bare.
+          reference. A node carrying "@local" may be an unread handle
+          still standing in its original scope, so its explicit self root
+          needs the same check (#9722).
           -->
           <xsl:value-of select="concat('$.', eo:translate-path($hop-rest))"/>
         </xsl:when>

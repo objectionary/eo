@@ -10,12 +10,12 @@ asserts:
   - //o[@base='Φ.true']
   - //o[@base='Φ.string']
   - //o[@name='hello' and @base='.as-bytes' and o[@base='Φ.dataized']]
-  - //o[@as='i']
+  - //o[@as='v🌵i']
   - //o[@as='α1']
   - //o[@as='α0']
   - //o[@base='ξ.five.plus']
   - /object[not(.//o[@name=''])]
-  - //o[o[@name='λ'] and @name='atom' and count(o[not(starts-with(@name, 'a🌵'))])=3 and o[@name='a']]
+  - //o[o[@name='λ'] and @name='atom' and count(o[not(starts-with(@name, 'a🌵'))])=3 and o[@name='v🌵a']]
 input: |
   +alias org.example.foo
   +alias test org.example.test

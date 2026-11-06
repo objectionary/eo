@@ -7,7 +7,7 @@ sheets:
 asserts:
   - /object[not(errors)]
   - //o[@name='rec']/o[@name='φ' and @base='Φ.seq']/o[@as='α0' and @base='Φ.tuple']/o[@as='α1' and @base='ξ.ρ.rec' and @again='true']/o[@as='α1' and @base='ξ.c🌵1']
-  - //o[@name='rec']/o[@name='φ' and @base='Φ.seq']/o[@as='α0' and @base='Φ.tuple']/o[@as='α0' and @base='Φ.tuple']/o[@as='α1' and @base='ξ.i' and not(@again)]
+  - //o[@name='rec']/o[@name='φ' and @base='Φ.seq']/o[@as='α0' and @base='Φ.tuple']/o[@as='α0' and @base='Φ.tuple']/o[@as='α1' and @base='ξ.v🌵i' and not(@again)]
 input: |
   [] > main
     [i] > rec

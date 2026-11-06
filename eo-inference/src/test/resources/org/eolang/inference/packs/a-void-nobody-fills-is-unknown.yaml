@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls inc, so it is walked once with x empty: x is unknown, and so is
+# the @ of inc, which is x. A void nobody fills is an unknown like any other,
+# so no place answers open.
+sources:
+  inc.eo: |
+    [x] > inc
+      x > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.inc' and @copies='1']
+  - /answers/o[@loc='Φ.inc.v🌵x' and @copies='1']/unknown
+  - /answers/o[@loc='Φ.inc.φ']/unknown
+  - /answers[not(//open)]

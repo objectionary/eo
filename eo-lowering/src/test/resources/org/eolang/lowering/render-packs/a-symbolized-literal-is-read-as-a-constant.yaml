@@ -28,7 +28,7 @@ eo:
     [] > app
       pick 5 > used
 voids:
-  - "𝜎1\t1\tx\tnumber"
+  - "𝜎1\t1\tv🌵x\tnumber"
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e1">
@@ -89,21 +89,21 @@ java: |
       @Override
       public Phi lambda() {
           if (this.𝜎2()[0] == -1) {
-              return new Data.ToPhi(java.nio.ByteBuffer.wrap(this.𝜎3()).getDouble());
+              return new Data.ToPhi(new Dataized(new Data.ToPhi(this.𝜎3())).asNumber());
           } else {
               return new Data.ToPhi(2.0d);
           }
       }
 
       private byte[] 𝜎1() {
-          return new Dataized(this.take("ρ").take("x")).take();
+          return new Dataized(this.take("ρ").take("v🌵x")).take();
       }
 
       private byte[] 𝜎2() {
-          return new byte[] {(byte) (java.nio.ByteBuffer.wrap(this.𝜎1()).getDouble() > Double.longBitsToDouble(0x0000000000000000L) ? 0xFF : 0x00)};
+          return new byte[] {(byte) (new Dataized(new Data.ToPhi(this.𝜎1())).asNumber() > Double.longBitsToDouble(0x0000000000000000L) ? 0xFF : 0x00)};
       }
 
       private byte[] 𝜎3() {
-          return java.nio.ByteBuffer.allocate(8).putDouble(java.nio.ByteBuffer.wrap(this.𝜎1()).getDouble() + Double.longBitsToDouble(0x3FF0000000000000L)).array();
+          return java.nio.ByteBuffer.allocate(8).putDouble(new Dataized(new Data.ToPhi(this.𝜎1())).asNumber() + Double.longBitsToDouble(0x3FF0000000000000L)).array();
       }
   }

@@ -76,6 +76,18 @@ final class RowsTest {
         );
     }
 
+    @Test
+    void leavesCopyOfFormationThatDeclaresNoCaretAsItIs(@Mktmp final Path temp)
+        throws IOException {
+        final World world = new Sources(temp).with("mug.eo", "[tea] > mug", "  tea > @").world();
+        final int mug = world.intern(new Value('O', "Φ.mug", "Φ.mug", 0L, "", -1, 0));
+        MatcherAssert.assertThat(
+            "a copy of a formation that declares no ^ must stay as it is when read out of a row, but it didnt",
+            RowsTest.state(world).stamp(mug, Values.ROOT, new Site("Φ.tray.ρ", "")),
+            Matchers.equalTo(mug)
+        );
+    }
+
     private static State state(final World world) {
         final State state = new State(world);
         state.seed();
@@ -83,7 +95,7 @@ final class RowsTest {
     }
 
     private static World world(final Path temp) throws IOException {
-        return new Sources(temp).with("cup.eo", "[tea] > cup", "  tea > @").world();
+        return new Sources(temp).with("cup.eo", "[^ tea] > cup", "  tea > @").world();
     }
 
     private static int cup(final World world, final long bound) {

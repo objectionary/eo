@@ -34,11 +34,13 @@
   the source, true of every caller there will ever be, and it answers first.
   Otherwise the row of the place of the void in "answers.xml" says what the
   copies of the formation hold there, and it answers when, with the
-  terminations, the open voids and the failing reads left out, it names one
-  object and nothing else. A declared "ρ" is not read off that row, since a
-  decorator in it is named by what its "φ" gives: it holds the formation it
-  is written in, the "rho" of the void in "facts.xml", which comes from the
-  locators alone. Nothing else is read: chasing anything from here would be
+  terminations and the unknowns left out, it names one
+  object and nothing else. A declared "ρ" holds the formation it is written
+  in, the "rho" of the void in "facts.xml", which comes from the locators
+  alone and is there even where no copy of the formation counts; its row
+  names the same formation. The "ρ" of a formation written as an argument,
+  the object it goes into, is never planted (see "eo:voids"). Nothing else
+  is read: chasing anything from here would be
   a second, worse copy of a job another module does. A formation gets an
   entry only when every void of it holds a number, a string, a bool, bytes
   or a tuple. A void that holds any other object, or one that module says
@@ -72,12 +74,17 @@
   tables say the body returns. Only a formation whose body the tables say
   is a number, a string, a bool or bytes gets a row, since a row answers
   data and nothing else, and only one whose voids all hold such data, since
-  a tuple is three attributes no one dataization carries. The formation
+  a tuple is three voids no one dataization carries. The formation
   must stand right inside formations, so that the atom of a caller reaches
   it by its names at run time, and its λ must be spelled with letters,
   digits and underscores only, and by no other formation. The entry of a
   formation that has a row takes "body🌵" off the planted object, so that
-  its own body is still spelled out in its own protocol.
+  its own body is still spelled out in its own protocol. A helper the
+  parser lifted out of the body, such as a constant, stands in the copy
+  beside "body🌵" under a name that starts with "a🌵", and phino would take
+  it for an attribute of the formation's own, which keeps the λ from
+  firing, so the copy gives that name a trailing 🌵, the way phino marks a
+  name no program spells, and so does every reference to it.
   The "ρ" of a nested formation is a void like the others, but it cannot be
   bound by name: XMIR has no "as" of "ρ". So a formation whose "ρ" is filled
   is written as a dispatch off the planted object, "⟨𝜎5⟩.minus(…)" rather than
@@ -155,11 +162,13 @@
   <!--
   The path the calculus walks to reach an object once the rows are in the
   world: the same path, but through "body🌵" wherever it takes the "φ" of a
-  formation that has a row, since that is where the body stands then.
+  formation that has a row, since that is where the body stands then, and
+  through the name with a trailing 🌵 wherever it takes a helper of such
+  a formation.
   -->
   <xsl:function name="eo:walk" as="xs:string">
     <xsl:param name="o" as="element(o)"/>
-    <xsl:sequence select="if ($o/parent::o) then concat(eo:walk($o/parent::o), '.', (if ($o/@as) then string($o/@as) else if ($o/@name = 'φ' and eo:rowed($o/parent::o)) then 'body🌵' else if ($o/@name) then string($o/@name) else 'ρ')) else string($o/@loc)"/>
+    <xsl:sequence select="if ($o/parent::o) then concat(eo:walk($o/parent::o), '.', (if ($o/@as) then string($o/@as) else if ($o/@name = 'φ' and eo:rowed($o/parent::o)) then 'body🌵' else if (starts-with($o/@name, 'a🌵') and eo:formation($o/parent::o) and eo:rowed($o/parent::o)) then $o/@name || '🌵' else if ($o/@name) then string($o/@name) else 'ρ')) else string($o/@loc)"/>
   </xsl:function>
   <!-- Whether every step of a path is a name, with no place left in it. -->
   <xsl:function name="eo:walkable" as="xs:boolean">
@@ -228,12 +237,14 @@
   <!-- The answer of a row, as the library shapes the carrier it is wrapped in: a fresh symbol where the bytes of a literal would be. -->
   <xsl:function name="eo:shape" as="xs:string">
     <xsl:param name="carrier" as="xs:string"/>
-    <xsl:sequence select="map {'number': 'Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )', 'string': 'Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )', 'bytes': 'Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )', 'bool': '⟦ φ ↦ Φ.bool( if ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧'}($carrier)"/>
+    <xsl:sequence select="map {'number': 'Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )', 'string': 'Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )', 'bytes': 'Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )', 'bool': '⟦ φ ↦ Φ.bool( v🌵fork ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧'}($carrier)"/>
   </xsl:function>
   <!--
   The plan for one void: what is planted in it and which symbols that
   planting spends. A carrier is planted as the library shapes that datum,
-  and a tuple as its three attributes.
+  and a tuple as its three voids. The symbols of a tuple are reached
+  through "length", "head" and "tail", the attributes that give those voids
+  to a reader outside the tuple, such as an atom.
   -->
   <xsl:function name="eo:plant" as="element()">
     <xsl:param name="holds" as="xs:string"/>
@@ -379,6 +390,15 @@
       </o>
     </xsl:copy>
   </xsl:template>
+  <!-- A helper of a formation with a row ends in a 🌵 in the copy. -->
+  <xsl:template match="o[eo:formation(.)][eo:rowed(.)]/o/@name[starts-with(., 'a🌵')]" mode="eo:rowing">
+    <xsl:attribute name="name" select="concat(., '🌵')"/>
+  </xsl:template>
+  <!-- A reference to a helper of a formation with a row ends in a 🌵 too. -->
+  <xsl:template match="o[ancestor::o[eo:formation(.)][eo:rowed(.)]]/@base" mode="eo:rowing">
+    <xsl:variable name="helpers" select="ancestor::o[eo:formation(.)][eo:rowed(.)]/o/@name[starts-with(., 'a🌵')] ! string(.)"/>
+    <xsl:attribute name="base" select="string-join(tokenize(., '\.') ! (if (. = $helpers) then concat(., '🌵') else .), '.')"/>
+  </xsl:template>
   <xsl:template match="o[eo:formation(.)][eo:rowed(.)]/o[@name = 'φ']" mode="eo:rowing">
     <xsl:copy>
       <xsl:apply-templates select="@* except @name" mode="eo:rowing"/>
@@ -419,12 +439,12 @@
     </o>
   </xsl:template>
   <!--
-  A bool carries its symbol inside the fork of its "if", because "bool.eo"
-  routes "and", "or", "not" and dataization through that attribute, and a
-  fork is what the run has to see when a branch is taken. The fork holds
-  the symbol and its two sides under the names phino gives the copies it
-  fabricates when a join fails, so that one entry of the table answers a
-  planted fork and a fabricated copy alike.
+  A bool carries its symbol inside its void "fork", hidden as "v🌵fork",
+  because "bool.eo" routes "and", "or", "not" and dataization through "if",
+  the attribute that gives that void, and a fork is what the run has to see
+  when a branch is taken. The fork holds the symbol and its two sides under
+  the names phino gives the copies it fabricates when a join fails, so that
+  one entry of the table answers a planted fork and a fabricated copy alike.
   -->
   <xsl:template match="plant[@carrier = 'bool']" mode="eo:xmir">
     <xsl:param name="as" as="xs:string" select="''"/>
@@ -432,7 +452,7 @@
       <xsl:if test="$as != ''">
         <xsl:attribute name="as" select="$as"/>
       </xsl:if>
-      <o as="if">
+      <o as="v🌵fork">
         <o name="λ">L_fork</o>
         <o base="∅" name="left"/>
         <o base="∅" name="right"/>
@@ -446,24 +466,24 @@
       </o>
     </o>
   </xsl:template>
-  <!-- A tuple spends one symbol on each of its three attributes. -->
+  <!-- A tuple spends one symbol on each of its three voids, hidden as "v🌵count", "v🌵last" and "v🌵prior". -->
   <xsl:template match="plant[@carrier = 'tuple']" mode="eo:xmir">
     <xsl:param name="as" as="xs:string" select="''"/>
     <o base="Φ.tuple">
       <xsl:if test="$as != ''">
         <xsl:attribute name="as" select="$as"/>
       </xsl:if>
-      <o as="length" base="Φ.number">
+      <o as="v🌵count" base="Φ.number">
         <o as="φ" base="Φ.bytes">
           <xsl:apply-templates select="sym[1]" mode="eo:xmir"/>
         </o>
       </o>
-      <o as="head">
+      <o as="v🌵last">
         <o name="λ">
           <xsl:value-of select="concat('𝜎', index-of($eo:symbols, generate-id(sym[2])))"/>
         </o>
       </o>
-      <o as="tail">
+      <o as="v🌵prior">
         <o name="λ">
           <xsl:value-of select="concat('𝜎', index-of($eo:symbols, generate-id(sym[3])))"/>
         </o>

@@ -20,23 +20,23 @@
 +version 0.0.0
 
 [^block] > to-output
-  [^ buffer] > write
+  [^output buffer] > write
     write. > @
-      [^ offset] >> output-block
+      [^sink offset] >> output-block
         true > @
-        seq * > [^ buffer] > write
+        seq * > [^block buffer] > write
           if.
             gt.
-              ^.offset.plus buffer.size
-              ^.^.^.block.size
+              block.offset.plus buffer.size
+              block.sink.output.block.size
             write.
-              ^.^.^.block.resized
-                ^.offset.plus buffer.size
-              ^.offset
+              block.sink.output.block.resized
+                block.offset.plus buffer.size
+              block.offset
               buffer
-            ^.^.^.block.write ^.offset buffer
-          ^.^.output-block
-            ^.offset.plus buffer.size
+            block.sink.output.block.write block.offset buffer
+          block.sink.output-block
+            block.offset.plus buffer.size
       | 0
       buffer
 

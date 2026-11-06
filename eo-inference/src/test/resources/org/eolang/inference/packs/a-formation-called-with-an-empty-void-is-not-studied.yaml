@@ -19,7 +19,7 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.show.head']/is[@loc='Φ.number']
-  - /answers/o[@loc='Φ.show.tail']/open
+  - /answers/o[@loc='Φ.show.v🌵head']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.show.v🌵tail']/unknown
   - /answers/o[@loc='Φ.show.φ']/terminator
-  - /answers[not(o[@loc='Φ.show.head']//open)]
+  - /answers[not(o[@loc='Φ.show.v🌵head']//unknown)]

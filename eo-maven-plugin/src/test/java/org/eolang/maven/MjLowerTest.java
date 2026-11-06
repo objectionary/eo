@@ -59,7 +59,7 @@ final class MjLowerTest {
                     .execute(MjLower.class),
                 "a binary that is not there must fail the build"
             ).getCause().getCause().getMessage(),
-            Matchers.containsString("0.0.160")
+            Matchers.containsString("0.0.161")
         );
     }
 
@@ -114,6 +114,27 @@ final class MjLowerTest {
                     .toAbsolutePath()
                     .toString()
             )
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void handsJavacTheAtomsUnderTheNumberAnEarlierBuildGaveThem(@Mktmp final Path temp)
+        throws IOException {
+        final Path atoms = Files.createDirectories(
+            new Seqdir(temp.resolve("target"), 2).dirs().once("lowering").resolve("5-atoms")
+        );
+        final MavenProjectStub project = new MavenProjectStub();
+        project.setCompileSourceRoots(new ArrayList<>(0));
+        MjLowerTest.inferred(temp)
+            .with("project", project)
+            .with("lowering", true)
+            .with("binary", MjLowerTest.binary(temp))
+            .execute(MjLower.class);
+        MatcherAssert.assertThat(
+            "the goal must hand javac the atoms where the lowering keeps them, but it didnt",
+            project.getCompileSourceRoots(),
+            Matchers.hasItem(atoms.toAbsolutePath().toString())
         );
     }
 
@@ -334,7 +355,7 @@ final class MjLowerTest {
                     .execute(MjLower.class),
                 "a binary of another version must fail the build"
             ).getCause().getCause().getMessage(),
-            Matchers.stringContainsInOrder("0.0.1", "0.0.160")
+            Matchers.stringContainsInOrder("0.0.1", "0.0.161")
         );
     }
 
@@ -354,7 +375,7 @@ final class MjLowerTest {
 
     private static String binary(final Path temp, final int code, final String protocol)
         throws IOException {
-        return MjLowerTest.binary(temp, code, protocol, "0.0.160");
+        return MjLowerTest.binary(temp, code, protocol, "0.0.161");
     }
 
     private static String binary(

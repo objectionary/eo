@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The program has no nope, so nope read off Φ is T. A call on T is T, so the
+# @ of app is T, and 5 lands in no void (#9654).
+sources:
+  app.eo: |
+    [] > app
+      nope 5 > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ' and count(*)=1]/terminator
+  - /answers[not(o[@loc='Φ.app.φ.α0' and @lands])]

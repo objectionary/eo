@@ -38,15 +38,17 @@ jobs:
       # macOS build with lowering explicitly off, keeping the disabled path
       # of the goal continuously covered.
       - if: ${{ matrix.os == 'ubuntu-24.04' }}
-        uses: objectionary/phino@768aaec459b06c2e514af32accf218545ed20c2f  # master
+        uses: objectionary/phino@53db9973d6da7e4eda93cda5fa7bd474dd449df1  # master
         with:
-          version: 0.0.160
+          version: 0.0.161
       - if: ${{ matrix.os != 'ubuntu-24.04' }}
         run: echo "LOWERING=-Deo.lowering=false" >> "$GITHUB_ENV"
       - run: mvn -ntp -PskipITs --errors --batch-mode '-Deo.coverageTracking=false' '-Deo.transpileTests=false' '-Deo.deadline=2' ${{ env.LOWERING }} clean install
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   telegram:
     needs: mvn
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     if: ${{ always() }}
     permissions:
       actions: read

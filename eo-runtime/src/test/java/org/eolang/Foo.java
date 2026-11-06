@@ -17,7 +17,7 @@ final class Foo extends PhDefault {
     Foo() {
         super(
             new Attrs(
-                new Attr("x", new AtVoid("x")),
+                new Attr("x"),
                 new Attr(
                     "kid",
                     new AtComposite(new PhDefault(), rho -> new Kid())

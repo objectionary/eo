@@ -32,8 +32,8 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.pick.choose' and @copies='2']/set[@copies='1' and count(*)=1]/is[@loc='Φ.yes.φ.α0']
-  - /answers/o[@loc='Φ.pick.choose' and @copies='2']/set[@copies='1' and count(*)=1]/is[@loc='Φ.no.φ.α0']
+  - /answers/o[@loc='Φ.pick.v🌵choose' and @copies='2']/set[@copies='1' and count(*)=1]/is[@loc='Φ.yes.φ.α0']
+  - /answers/o[@loc='Φ.pick.v🌵choose' and @copies='2']/set[@copies='1' and count(*)=1]/is[@loc='Φ.no.φ.α0']
   - /answers/o[@loc='Φ.pick.taken.α0' and @lands='a🌵4-6']/is[@loc='Φ.pick']
   - /answers/o[@loc='Φ.pick.taken.α1' and @lands='a🌵5-6']/is[@loc='Φ.pick']
   - /answers/o[@loc='Φ.pick.taken']/is[@loc='Φ.pick']

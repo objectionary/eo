@@ -21,19 +21,19 @@ public final class EOmalloc$EOof extends PhDefault implements Atom {
      */
     public EOmalloc$EOof() {
         super(new Attrs(
-            new Attr("size", new AtVoid("size")),
-            new Attr("scope", new AtVoid("scope"))
+            new Attr("size"),
+            new Attr("scope")
         ));
     }
 
     @Override
     public Phi lambda() {
         return Heaps.INSTANCE.malloc(
-            new Natural(Expect.at(this, "size")).it(),
+            new Natural(this.expected("size")).it(),
             identifier -> {
                 final Phi chunk = Phi.Φ.take("chunk").copy();
                 chunk.put(0, new Data.ToPhi((long) identifier));
-                final Phi scope = this.take("scope").copy();
+                final Phi scope = this.free("scope").copy();
                 scope.put(0, chunk);
                 return new Data.ToPhi(new Dataized(scope).take());
             }

@@ -23,12 +23,12 @@
           2.power 53 >> safe
         span.end.abs.lt safe
     range
-      [^] >>
-        [^ num] >> build
+      [^chain] >>
+        [^chain num] >> build
           num > @
-          ^.build > next
+          chain.build > next
             1.plus @
-        | ^.span.start > @
+        | chain.span.start > @
       span.end
     T
       "Range bounds must be integers within the safe unit-step range (|x| < 2^53), but were %s and %s".printf

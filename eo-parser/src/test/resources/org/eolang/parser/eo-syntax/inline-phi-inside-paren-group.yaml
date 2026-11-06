@@ -5,7 +5,7 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@as='α1' and not(@base) and o[@base='∅' and @name='m'] and o[@name='φ' and @base='ξ.m.put']]
+  - //o[@as='α1' and not(@base) and o[@base='∅' and @name='v🌵m'] and o[@name='φ' and @base='ξ.v🌵m.put']]
 input: |
   [] > foo
     bar 8 (m.put 10 > [m]) > baz

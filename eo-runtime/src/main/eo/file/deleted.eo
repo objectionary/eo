@@ -16,7 +16,7 @@
         entry.exists.not
       entry
       T
-        "Cant delete the file '%s': %s".printf
+        "Can't delete the file '%s': %s".printf
           *
             entry.path
             message.

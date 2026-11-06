@@ -29,9 +29,9 @@ public final class EOwin32$EOaccept extends PhDefault implements Atom {
     public EOwin32$EOaccept() {
         super(
             new Attrs(
-                new Attr("descriptor", new AtVoid("descriptor")),
-                new Attr("sockaddr", new AtVoid("sockaddr")),
-                new Attr("length", new AtVoid("length"))
+                new Attr("descriptor"),
+                new Attr("sockaddr"),
+                new Attr("length")
             )
         );
     }
@@ -41,9 +41,9 @@ public final class EOwin32$EOaccept extends PhDefault implements Atom {
         return new Data.ToPhi(
             Pointer.nativeValue(
                 Winsock.INSTANCE.accept(
-                    new Pointer(new Dataized(this.take("descriptor")).asNumber().longValue()),
-                    new Sockaddr(this.take("sockaddr")).it(),
-                    new IntByReference(new Int(Expect.at(this, "length")).it())
+                    new Pointer(new Dataized(this.free("descriptor")).asNumber().longValue()),
+                    new Sockaddr(this.free("sockaddr")).it(),
+                    new IntByReference(new Int(this.expected("length")).it())
                 )
             )
         );

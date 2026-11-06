@@ -19,8 +19,8 @@
 [^source] > as-bytes
   malloc.of > @
     0
-    seq * > [^ m] >>
-      ^.source.copied m.to-output
+    seq * > [^stream m] >>
+      stream.source.copied m.to-output
       m
 
   ++> can-convert-bytes-to-an-input-and-back
