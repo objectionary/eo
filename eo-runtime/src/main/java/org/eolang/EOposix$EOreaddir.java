@@ -14,8 +14,9 @@ import org.eolang.sys.Handles;
  * does.
  *
  * <p>The name comes with the code {@code 0}. The stream running out is a
- * {@code NULL} coming back, and then the code is {@code -1} and there is no
- * name: EO reads entries until it sees that, the way a C program does.</p>
+ * {@code NULL} coming back, and then the code is {@code -1} and the name is
+ * an empty string: EO reads entries until it sees that, the way a C program
+ * does.</p>
  *
  * <p>Only the name is read out of the {@code struct dirent}, and the whole
  * struct is never mapped, since the fields ahead of {@code d_name} differ from
@@ -69,7 +70,7 @@ public final class EOposix$EOreaddir extends PhDefault implements Atom {
         final Pointer entry = CStdLib.INSTANCE.readdir(stream);
         if (entry == null) {
             result.put(0, new Data.ToPhi(-1));
-            result.put(1, new PhDefault());
+            result.put(1, new Data.ToPhi(""));
         } else {
             final Phi name = Phi.Φ.take("string").copy();
             name.put(0, new Data.ToPhi(EOposix$EOreaddir.named(entry)));
