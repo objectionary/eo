@@ -13,18 +13,16 @@ import java.util.List;
  *
  * <p>The parser keeps a whole type in one attribute: the return of an atom
  * in {@code @atom}, the own type of a void in {@code @type}, and each member
- * of a call back list in {@code @args}. A type is one option, or a union of
- * two split by a {@code |} that stands outside every bracket. An option is a
- * type variable, {@code A} to {@code F}, or a path with a bracket list right
- * after it or none. The members of the list are split by a comma outside any
- * inner bracket, and each of them is a type in its turn: the i-th one types
- * the i-th void of the object the path names, in the order the voids are
+ * of a call back list in {@code @args}. A type is a type variable,
+ * {@code A} to {@code F}, or a path with a bracket list right after it or
+ * none. The members of the list are split by a comma outside any inner
+ * bracket, and each of them is a type in its turn: the i-th one types the
+ * i-th void of the object the path names, in the order the voids are
  * declared. So {@code Φ.posix.status-return(Φ.number,Φ.string)} is a
  * {@code status-return} with a number in its first void and a string in its
- * second, and {@code Φ.true|Φ.false} is either of the two. A {@code ?} that
- * ends the own type of a void says the void may hold a terminator, and is
- * dropped here. The parser has already checked the grammar, so nothing is
- * checked again.</p>
+ * second. A {@code ?} that ends the own type of a void says the void may
+ * hold a terminator, and is dropped here. The parser has already checked the
+ * grammar, so nothing is checked again.</p>
  *
  * @since 0.76.0
  */
@@ -50,22 +48,12 @@ final class Annotation {
     }
 
     /**
-     * The options of its union, in the order written: two for a union, or
-     * itself alone.
-     *
-     * @return The options
-     */
-    List<Annotation> options() {
-        return this.parts('|');
-    }
-
-    /**
-     * The path or the type variable an option starts with.
+     * The path or the type variable it starts with.
      *
      * @return The path or the variable
      */
     String head() {
-        final String bare = this.single();
+        final String bare = this.bare();
         final int open = bare.indexOf('(');
         final String found;
         if (open < 0) {
@@ -77,40 +65,31 @@ final class Annotation {
     }
 
     /**
-     * The types its bracket list gives the voids of an option, in the order
-     * written.
+     * The types its bracket list gives the voids of the object it names, in
+     * the order written.
      *
      * @return The types, none when it has no brackets
      */
     List<Annotation> members() {
-        final String bare = this.single();
+        final String bare = this.bare();
         final int open = bare.indexOf('(');
         final List<Annotation> found;
         if (open < 0) {
             found = new ArrayList<>(0);
         } else {
-            found = new Annotation(bare.substring(open + 1, bare.length() - 1)).parts(',');
+            found = new Annotation(bare.substring(open + 1, bare.length() - 1)).split();
         }
         return found;
     }
 
     /**
-     * Whether an option is a type variable.
+     * Whether it is a type variable.
      *
      * @return TRUE if it is
      */
     boolean variable() {
         final String head = this.head();
         return head.length() == 1 && head.charAt(0) >= 'A' && head.charAt(0) <= 'F';
-    }
-
-    private String single() {
-        if (this.options().size() > 1) {
-            throw new IllegalStateException(
-                String.format("The type %s is a union of two, not one option", this.text)
-            );
-        }
-        return this.bare();
     }
 
     private String bare() {
@@ -123,7 +102,7 @@ final class Annotation {
         return found;
     }
 
-    private List<Annotation> parts(final char separator) {
+    private List<Annotation> split() {
         final String type = this.bare();
         final List<Annotation> found = new ArrayList<>(2);
         int depth = 0;
@@ -134,7 +113,7 @@ final class Annotation {
                 depth += 1;
             } else if (glyph == ')') {
                 depth -= 1;
-            } else if (glyph == separator && depth == 0) {
+            } else if (glyph == ',' && depth == 0) {
                 found.add(new Annotation(type.substring(start, pos)));
                 start = pos + 1;
             }

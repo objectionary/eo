@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Java makes status from the atom check, whose type has no brackets. report
+# puts "ok" into the note of a status, and late puts there its own void x,
+# which only the walk could answer. So the note of the status Java makes
+# holds a string and the unknown only Java fills, and so does the text read
+# off what check returns.
+sources:
+  os.eo: |
+    [] > os
+      [] > check /Q.os.status
+      [code note] > status
+        code > @
+        note > text
+  app.eo: |
+    [] > app
+      os.check.text > @
+  late.eo: |
+    [x] > late
+      os.status 0 x > @
+  report.eo: |
+    [] > report
+      os.status 1 "ok" > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ' and count(*)=2 and unknown[@kind='java']]/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.late.φ.α1' and @lands='v🌵note']
+  - /answers/o[@loc='Φ.report.φ.α1' and @lands='v🌵note']/is[@loc='Φ.string']

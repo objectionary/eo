@@ -64,14 +64,12 @@ import org.xembly.Directives;
  * the row keeps it and whoever reads the table can ask a {@code number} what
  * the atom itself cannot answer.</p>
  *
- * <p>An annotation is a type tree ({@link Annotation}).
- * {@code /Q.true|Q.false} says the atom gives a {@code true} or a
- * {@code false}, and {@code /Q.posix.status-return(Q.number,Q.string)} gives
- * a {@code status-return} with a number and a string in its voids. The
- * {@code returns} cell keeps the tree as the XMIR writes it, with each type
- * variable of its top union put as the first void that carries that letter,
- * and the {@code holds} cell of a void keeps the options of its own type that
- * name an object, without the mark of termination.</p>
+ * <p>An annotation is a type tree ({@link Annotation}):
+ * {@code /Q.posix.status-return(Q.number,Q.string)} gives a
+ * {@code status-return} with a number and a string in its voids. The
+ * {@code returns} cell keeps the tree as the XMIR writes it, and the
+ * {@code holds} cell of a void keeps its own type when it names an object,
+ * without the mark of termination.</p>
  *
  * <p>An annotation may name a variable rather than an object, and then it
  * names the voids that carry the same letter. {@code [] > recovered /A} over
@@ -285,38 +283,23 @@ final class Provides implements Section {
         final Collection<String> found = new ArrayList<>(0);
         for (final Xnav kid : kids) {
             final Noted attr = new Noted(kid);
-            if ("λ".equals(attr.says("name"))) {
-                for (final Annotation option : Provides.options(attr.says("atom"))) {
-                    if (option.variable()) {
-                        found.addAll(Provides.carrying(kids, option.head()));
-                    }
-                }
+            final String annotation = attr.says("atom");
+            if ("λ".equals(attr.says("name"))
+                && !annotation.isEmpty() && !annotation.startsWith("Φ.")) {
+                found.addAll(Provides.carrying(kids, annotation));
             }
         }
         return found;
     }
 
     private static String locator(final String annotation, final Collection<Xnav> kids) {
-        final List<String> found = new ArrayList<>(0);
-        for (final Annotation option : Provides.options(annotation)) {
-            if (option.head().startsWith("Φ.")) {
-                found.add(option.toString());
-            } else if (option.variable()) {
-                Provides.carrying(kids, option.head()).stream().findFirst()
-                    .ifPresent(found::add);
-            }
+        String found = "";
+        if (annotation.startsWith("Φ.")) {
+            found = annotation;
+        } else if (!annotation.isEmpty()) {
+            found = Provides.carrying(kids, annotation).stream().findFirst().orElse("");
         }
-        return String.join("|", found);
-    }
-
-    private static String held(final String type) {
-        final List<String> found = new ArrayList<>(0);
-        for (final Annotation option : Provides.options(type)) {
-            if (option.head().startsWith("Φ.")) {
-                found.add(option.toString());
-            }
-        }
-        return String.join("|", found);
+        return found;
     }
 
     private static List<String> carrying(final Collection<Xnav> kids, final String letter) {
@@ -324,19 +307,18 @@ final class Provides implements Section {
         for (final Xnav kid : kids) {
             final Noted attr = new Noted(kid);
             if ("∅".equals(attr.says("base"))
-                && Provides.options(attr.says("type")).stream().anyMatch(
-                    option -> option.variable() && letter.equals(option.head())
-                )) {
+                && letter.equals(attr.says("type").replace("?", ""))) {
                 found.add(attr.says("loc"));
             }
         }
         return found;
     }
 
-    private static List<Annotation> options(final String type) {
-        final List<Annotation> found = new ArrayList<>(0);
-        if (!type.isEmpty()) {
-            found.addAll(new Annotation(type).options());
+    private static String held(final String type) {
+        final String bare = new Annotation(type).toString();
+        String found = "";
+        if (bare.startsWith("Φ.")) {
+            found = bare;
         }
         return found;
     }

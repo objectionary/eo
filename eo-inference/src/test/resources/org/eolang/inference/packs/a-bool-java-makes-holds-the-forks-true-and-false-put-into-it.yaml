@@ -2,12 +2,14 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# flag returns a true or a false, and Java makes a copy of each. So the if
-# read off what flag returns is the if of both, and app, which calls it with
-# "yes" and 42, is a string and a number, with no unknown next to them.
+# flag returns a bool, a type with no brackets, so the fork of the bool Java
+# makes holds what EO code puts there: the formations true and false hand to
+# bool, and nothing else. So the if read off what flag returns is the if of
+# both, and app, which calls it with "yes" and 42, is a string and a number,
+# with no unknown next to them.
 sources:
   flag.eo: |
-    [] > flag /Q.true|Q.false
+    [] > flag /Q.bool
   app.eo: |
     [] > app
       flag.if "yes" 42 > @
@@ -36,6 +38,6 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.flag.λ' and count(*)=2 and ./is[@loc='Φ.true']]/is[@loc='Φ.false']
+  - /answers/o[@loc='Φ.flag.λ']/is[@loc='Φ.bool']
   - /answers/o[@loc='Φ.app.φ' and count(*)=2 and ./is[@loc='Φ.string']]/is[@loc='Φ.number']
-  - /answers[not(o[starts-with(@loc, 'Φ.app') or starts-with(@loc, 'Φ.flag')]//unknown)]
+  - /answers[not(o[starts-with(@loc, 'Φ.app') or starts-with(@loc, 'Φ.flag') or @loc='Φ.bool.v🌵fork']//unknown)]

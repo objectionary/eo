@@ -46,6 +46,11 @@ final class World {
     private final Tags tags;
 
     /**
+     * What EO code puts into each void, before any walk.
+     */
+    private final Fillings fillings;
+
+    /**
      * Ctor.
      *
      * @param prog The program
@@ -57,6 +62,7 @@ final class World {
         this.roles = new Roles(prog);
         this.values = new Values(prog);
         this.tags = new Tags(this);
+        this.fillings = new Fillings(prog, this.values);
     }
 
     /**
@@ -206,6 +212,18 @@ final class World {
      */
     boolean scalar(final String form) {
         return this.names.scalar(form);
+    }
+
+    /**
+     * What EO code puts into a void of a formation, as the facts say it
+     * before any walk.
+     *
+     * @param form The formation
+     * @param name The void
+     * @return The fillings, none when no call fills it
+     */
+    List<Filling> fillings(final String form, final String name) {
+        return this.fillings.of(form, name);
     }
 
     /**

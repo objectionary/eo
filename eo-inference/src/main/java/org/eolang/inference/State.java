@@ -91,26 +91,27 @@ final class State {
     }
 
     /**
-     * The copy Java makes of one option of a type, with Java's own
-     * {@code ρ} and its voids typed by the brackets of the option.
+     * The copy Java makes of a type, with Java's own {@code ρ} and its voids
+     * typed by the brackets of the type, or filled by EO code when it has
+     * none.
      *
-     * @param option The option
+     * @param type The type
      * @return The copy
      */
-    int java(final Annotation option) {
-        return this.population.java(option);
+    int java(final Annotation type) {
+        return this.population.java(type);
     }
 
     /**
-     * The copy of one option of the type a void declares, born at a read of
-     * that void, its voids typed by the brackets of the option.
+     * The copy of the type a void declares, born at a read of that void,
+     * its voids typed by the brackets of the type.
      *
-     * @param option The option
+     * @param type The type
      * @param born Where it is born, with its tag
      * @return The copy
      */
-    int declared(final Annotation option, final Site born) {
-        return this.population.declared(option, born);
+    int declared(final Annotation type, final Site born) {
+        return this.population.declared(type, born);
     }
 
     /**

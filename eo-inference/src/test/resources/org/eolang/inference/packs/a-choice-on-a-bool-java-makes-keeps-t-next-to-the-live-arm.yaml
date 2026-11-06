@@ -2,15 +2,15 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# exists returns a true or a false, and Java makes a copy of each. So the if
-# in temp reads both arms, leaf "tmp" and T, and temp is a leaf or T, with no
-# unknown. So is the file of outer, which inner.temp fills, while the file of
-# inner is the leaf "a" alone.
+# exists is a bool Java makes, and its fork holds the forks true and false
+# put into a bool. So the if in temp reads both arms, leaf "tmp" and T, and
+# temp is a leaf or T, with no unknown. So is the file of outer, which
+# inner.temp fills, while the file of inner is the leaf "a" alone.
 sources:
   leaf.eo: |
     [path] > leaf
       path > @
-      [] > exists /Q.true|Q.false
+      [] > exists /Q.bool
         ? > ^
   dir.eo: |
     [file] > dir
@@ -55,7 +55,7 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.leaf.exists.λ' and ./is[@loc='Φ.true']]/is[@loc='Φ.false']
+  - /answers/o[@loc='Φ.leaf.exists.λ']/is[@loc='Φ.bool']
   - /answers/o[@loc='Φ.dir.temp.φ' and terminator]/is[@loc='Φ.leaf']
   - /answers/o[@loc='Φ.dir.temp']/reduced[terminator]/is[@loc='Φ.leaf']
   - /answers/o[@loc='Φ.app.outer.α0' and @lands='v🌵file' and terminator]/is[@loc='Φ.leaf']

@@ -2,7 +2,8 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# check returns one status Java types and one it does not, so the text read
+# check returns a status with no brackets. late puts "late" into its note,
+# and also its own void x, which only the walk could answer, so the text read
 # off what check returns is a string and an unknown only Java fills. d puts
 # both into the a of a copy of first, with b empty. app reads off d, so that
 # copy counts and reduces to what its @ gives: the string goes into the k of
@@ -10,10 +11,14 @@
 sources:
   os.eo: |
     [] > os
-      [] > check /Q.os.status(Q.number,Q.string)|Q.os.status
+      [] > check /Q.os.status
       [code note] > status
         code > @
         note > text
+  late.eo: |
+    [x] > late
+      os.status 0 "late" > one
+      os.status 1 x > two
   first.eo: |
     [a b] > first
       a > @

@@ -17,29 +17,9 @@ import org.junit.jupiter.api.Test;
 final class AnnotationTest {
 
     @Test
-    void splitsUnionIntoItsTwoOptions() {
+    void givesHeadOfTypeWithoutItsBrackets() {
         MatcherAssert.assertThat(
-            "a union must split into its two options, but it didnt",
-            new Annotation("Φ.qx-7|Φ.lo.w0").options().stream()
-                .map(Annotation::toString).collect(Collectors.toList()),
-            Matchers.contains("Φ.qx-7", "Φ.lo.w0")
-        );
-    }
-
-    @Test
-    void keepsUnionInsideBracketsWithinOneOption() {
-        MatcherAssert.assertThat(
-            "a union inside brackets must stay within its option, but it split the option",
-            new Annotation("Φ.ab(Φ.k|Φ.z9)|Φ.mm").options().stream()
-                .map(Annotation::toString).collect(Collectors.toList()),
-            Matchers.contains("Φ.ab(Φ.k|Φ.z9)", "Φ.mm")
-        );
-    }
-
-    @Test
-    void givesHeadOfOptionWithoutItsBrackets() {
-        MatcherAssert.assertThat(
-            "the head of an option must leave its brackets out, but it kept them",
+            "the head of a type must leave its brackets out, but it kept them",
             new Annotation("Φ.posix.status-return(Φ.number,Φ.string)").head(),
             Matchers.equalTo("Φ.posix.status-return")
         );
@@ -49,16 +29,16 @@ final class AnnotationTest {
     void splitsBracketsIntoMembersInOrder() {
         MatcherAssert.assertThat(
             "the brackets must split into their members in order, but they didnt",
-            new Annotation("Φ.a(Φ.b(Φ.c,Φ.d4),Φ.e|Φ.f-x,B)").members().stream()
+            new Annotation("Φ.a(Φ.b(Φ.c,Φ.d4),Φ.f-x,B)").members().stream()
                 .map(Annotation::toString).collect(Collectors.toList()),
-            Matchers.contains("Φ.b(Φ.c,Φ.d4)", "Φ.e|Φ.f-x", "B")
+            Matchers.contains("Φ.b(Φ.c,Φ.d4)", "Φ.f-x", "B")
         );
     }
 
     @Test
-    void givesNoMembersToOptionWithoutBrackets() {
+    void givesNoMembersToTypeWithoutBrackets() {
         MatcherAssert.assertThat(
-            "an option without brackets must have no members, but it had some",
+            "a type without brackets must have no members, but it had some",
             new Annotation("Φ.tw.ig").members(),
             Matchers.empty()
         );
@@ -68,9 +48,8 @@ final class AnnotationTest {
     void dropsMarkOfMaybeTermination() {
         MatcherAssert.assertThat(
             "the mark of a void that may hold a termination must be dropped, but it stayed",
-            new Annotation("Φ.number|Φ.string?").options().stream()
-                .map(Annotation::toString).collect(Collectors.toList()),
-            Matchers.contains("Φ.number", "Φ.string")
+            new Annotation("Φ.pair(Φ.number,Φ.string)?"),
+            Matchers.hasToString("Φ.pair(Φ.number,Φ.string)")
         );
     }
 

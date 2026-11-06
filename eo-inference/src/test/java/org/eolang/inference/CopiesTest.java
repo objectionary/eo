@@ -156,16 +156,59 @@ final class CopiesTest {
     }
 
     @Test
-    void putsCopyOfEachOptionOfMemberIntoItsVoid(@Mktmp final Path temp) throws IOException {
-        final State state = new State(CopiesTest.status(temp));
+    void fillsVoidOfTypeWithoutBracketsWithWhatCodePutsThere(@Mktmp final Path temp)
+        throws IOException {
+        final State state = new State(
+            CopiesTest.called(temp, "[] > report", "  os.status 4 \"fine\" > @")
+        );
         state.seed();
         MatcherAssert.assertThat(
-            "a union in brackets must put a copy of each option into its void, but it didnt",
-            state.row(state.java(new Annotation("Φ.os.status(Φ.bytes|Φ.string)")), "v🌵code")
-                .frozen(),
-            Matchers.hasToString(
-                new Ints(state.shared("Φ.bytes"), state.shared("Φ.string")).frozen().toString()
+            "a void of a type without brackets must hold what EO code puts into it, but it didnt",
+            state.row(state.java(new Annotation("Φ.os.status")), "v🌵note").frozen(),
+            Matchers.hasToString(new Ints(state.shared("Φ.string")).frozen().toString())
+        );
+    }
+
+    @Test
+    void leavesVoidNoCodeFillsUnbound(@Mktmp final Path temp) throws IOException {
+        final World world = CopiesTest.status(temp);
+        final State state = new State(world);
+        state.seed();
+        MatcherAssert.assertThat(
+            "a void of a type without brackets that no code fills must stay unbound, but it was bound",
+            world.opened(world.value(state.java(new Annotation("Φ.os.status")))),
+            Matchers.contains("v🌵code", "v🌵note")
+        );
+    }
+
+    @Test
+    void putsJavaUnknownForFillingOnlyWalkAnswers(@Mktmp final Path temp)
+        throws IOException {
+        final State state = new State(
+            CopiesTest.called(temp, "[x] > late", "  os.status 9 x > @")
+        );
+        state.seed();
+        MatcherAssert.assertThat(
+            "a filling only the walk answers must put the unknown only Java fills into its void, but it didnt",
+            state.row(state.java(new Annotation("Φ.os.status")), "v🌵note").frozen(),
+            Matchers.hasToString(new Ints(Values.JGAP).frozen().toString())
+        );
+    }
+
+    @Test
+    void givesFormationFillingCopyJavaMadeAsItsRho(@Mktmp final Path temp)
+        throws IOException {
+        final State state = new State(
+            CopiesTest.called(
+                temp, "[] > report", "  os.status > @", "    7", "    [^]", "      \"in\" > @"
             )
+        );
+        state.seed();
+        final int copy = state.java(new Annotation("Φ.os.status"));
+        MatcherAssert.assertThat(
+            "a formation EO code puts into a void must take the copy Java made as its ρ, but it didnt",
+            state.row(state.row(copy, "v🌵note").get(0), "ρ").frozen(),
+            Matchers.hasToString(new Ints(copy).frozen().toString())
         );
     }
 
@@ -191,6 +234,17 @@ final class CopiesTest {
             state.java(new Annotation("Φ.number(Φ.string)")),
             Matchers.equalTo(state.shared("Φ.number"))
         );
+    }
+
+    private static World called(final Path temp, final String... lines) throws IOException {
+        return new Sources(temp).with(
+            "os.eo",
+            "[] > os",
+            "  [] > check /Q.os.status",
+            "  [code note] > status",
+            "    code > @",
+            "    note > text"
+        ).with("report.eo", lines).world();
     }
 
     private static World status(final Path temp) throws IOException {

@@ -78,27 +78,6 @@ final class TellingTest {
         );
     }
 
-    @Test
-    void tellsEachOptionOfDeclaredUnion(@Mktmp final Path temp) throws IOException {
-        final World world = new Sources(temp).with(
-            "os.eo",
-            "[] > os",
-            "  [] > put /Q.number",
-            "    ? > item /Q.bytes|Q.string"
-        ).with(
-            "app.eo",
-            "[] > app",
-            "  os.put 7 > @"
-        ).world();
-        final State state = new Settled(world).state();
-        state.step();
-        MatcherAssert.assertThat(
-            "a void declared as a union must be told by each of its options, but it wasnt",
-            new Telling(state, world).told().sets().get("Φ.os.put.v🌵item"),
-            Matchers.hasKey("Φ.bytes\tΦ.number\tΦ.string")
-        );
-    }
-
     private static Told told(final Path temp) throws IOException {
         final World world = new Sources(temp).with(
             "five.eo",

@@ -5,6 +5,7 @@
 package org.eolang.inference;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,9 +17,9 @@ import java.util.Map;
  * <li>A <b>decorator</b> (4.2) has only voids, a {@code @} and hidden
  * {@code >>} helpers of its own, and reduces to what its {@code @}
  * gives.</li>
- * <li>An <b>atom</b> has no {@code @} and says what Java returns: a type
- * whose options are formations, or its own voids it names, which it gives
- * back.</li>
+ * <li>An <b>atom</b> has no {@code @} and says what Java returns: a
+ * formation, with the types of its voids in brackets or none, or its own
+ * voids it names, which it gives back.</li>
  * <li>A <b>test</b> is a formation named {@code p🌵…} or {@code n🌵…}.</li>
  * <li>An object whose {@code @} is one of its own voids (3.5, call then
  * narrow) passes that void on, and the call that fills the last of its
@@ -153,26 +154,18 @@ final class Roles {
         final List<String> known = new ArrayList<>(0);
         if (this.atom(form)) {
             final Formation shape = this.program.form(form);
+            List<String> locs = shape.gives();
+            if (locs.isEmpty()) {
+                locs = Collections.singletonList(new Annotation(shape.returns()).head());
+            }
             final String prefix = form.concat(".");
-            for (final String loc : this.locators(shape)) {
+            for (final String loc : locs) {
                 if (loc.startsWith(prefix) && shape.has(loc.substring(prefix.length()))) {
                     known.add(loc.substring(prefix.length()));
                 }
             }
         }
         return known;
-    }
-
-    private List<String> locators(final Formation shape) {
-        final List<String> locs = new ArrayList<>(shape.gives());
-        if (locs.isEmpty()) {
-            for (final Annotation option : new Annotation(shape.returns()).options()) {
-                if (!this.program.formation(option.head())) {
-                    locs.add(option.head());
-                }
-            }
-        }
-        return locs;
     }
 
     private String passed(final String form) {

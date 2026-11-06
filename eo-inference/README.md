@@ -22,9 +22,15 @@ grows, so that a real value can still come first, and then makes its copy
 with those unknowns in its voids, each of its own kind. So a void of code
 nobody calls stays that unknown down every call it goes through, and a read
 of it never gives T. What Java puts into an object an atom returns comes from
-the type of the atom. The engine makes one copy for each option of a union,
-its voids typed in order by the brackets, and a void the type leaves out
-holds the unknown only Java fills.
+the type of the atom. With brackets, the type gives each void its own type in
+order, as `Φ.posix.status-return(Φ.number,Φ.string)` does, and a void the
+brackets leave out holds the unknown only Java fills. With no brackets, as in
+`Φ.bool`, each void holds what EO code puts into that void of that object:
+the fork of a bool Java makes holds the formations `true` and `false` put
+there. The engine reads these from `facts.xml` before the walk, so the answer
+does not depend on the order of files or objects. A void that no EO code
+fills holds the unknown only Java fills, and so does a void where some code
+puts a thing only the walk could answer, next to whatever else goes in.
 
 ## What it writes
 
@@ -36,7 +42,7 @@ number. The first, `facts.xml`, has four parts:
   whether a type is declared (`holds`, from `? > code /Q.number`) and
   whether an atom calls it back (`args`, from `? > scope /{Q.chunk}`). For an
   atom it says what it returns, a type tree as the parser writes it, such as
-  `Φ.posix.status-return(Φ.number,Φ.string)` or `Φ.true|Φ.false`.
+  `Φ.posix.status-return(Φ.number,Φ.string)` or `Φ.bool`.
 - `reads`: every name read, and what it is read off.
 - `heads`: what each chain starts from: `Φ`, the formation around a bare
   `ξ`, a datum or a termination.

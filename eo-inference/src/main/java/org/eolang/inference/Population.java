@@ -90,26 +90,25 @@ final class Population {
     }
 
     /**
-     * The copy Java makes of one option of a type, its voids typed by the
-     * brackets of the option.
+     * The copy Java makes of a type, its voids typed by the brackets of the
+     * type, or filled by EO code when it has none.
      *
-     * @param option The option
+     * @param type The type
      * @return The copy
      */
-    int java(final Annotation option) {
-        return this.copies.java(option);
+    int java(final Annotation type) {
+        return this.copies.java(type);
     }
 
     /**
-     * The copy of one option of the type a void declares, born at a read of
-     * that void.
+     * The copy of the type a void declares, born at a read of that void.
      *
-     * @param option The option
+     * @param type The type
      * @param born Where it is born, with its tag
      * @return The copy
      */
-    int declared(final Annotation option, final Site born) {
-        return this.copies.declared(option, born);
+    int declared(final Annotation type, final Site born) {
+        return this.copies.declared(type, born);
     }
 
     /**

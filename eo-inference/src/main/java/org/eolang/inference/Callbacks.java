@@ -16,9 +16,8 @@ import java.util.Map;
  * void gets one more copy at the call, its first n empty voids filled with
  * Java's own T1 … Tn, and that copy is walked: {@code malloc.of 5 [m]}
  * gives {@code m} a {@code Φ.chunk}, as Java does. Each of T1 … Tn is a
- * type tree ({@link Annotation}), so its void gets one copy Java makes for
- * each option of a union, with the voids of that copy typed by its
- * brackets.</p>
+ * type tree ({@link Annotation}), so its void gets the copy Java makes of
+ * it, with the voids of that copy typed by its brackets.</p>
  *
  * @since 0.76.0
  */
@@ -62,13 +61,9 @@ final class Callbacks {
             }
             final int count = Math.min(holes.size(), types.size());
             for (int idx = 0; idx < count; ++idx) {
-                final Ints made = new Ints();
-                for (final Annotation option : new Annotation(types.get(idx)).options()) {
-                    final int copy = this.state.java(option);
-                    this.state.remember(copy);
-                    made.add(copy);
-                }
-                rows.put(holes.get(idx), made.array());
+                final int made = this.state.java(new Annotation(types.get(idx)));
+                this.state.remember(made);
+                rows.put(holes.get(idx), new int[] {made});
             }
             this.state.remember(
                 this.state.copy(
