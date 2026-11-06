@@ -15,6 +15,10 @@
 
   32.5.is-integer.not ++> can-tell-it-is-not-an-integer-when-a-float
 
+  not. ++> can-tell-it-is-not-an-integer-when-a-single-byte
+    is-integer.
+      number FF-
+
   nan.is-integer.not ++> can-tell-it-is-not-an-integer-when-nan
 
   ninf.is-integer.not ++> can-tell-it-is-not-an-integer-when-negative-infinity
