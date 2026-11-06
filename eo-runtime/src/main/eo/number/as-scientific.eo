@@ -9,6 +9,10 @@
 # A magnitude below the normal range of a `double` is brought up into that range
 # before the mantissa is taken, since the power of ten that would scale it in
 # one step is itself subnormal and carries too few bits to divide by.
+#
+# shortcut: when 6 - raw is outside 0..15 the quotient is still rounded after
+# the division, since `as-fixed` takes at most 15 places; upgrade if a tie
+# there is reported.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -30,14 +34,23 @@
         eq.
           as-fixed. >> mantissa!
             div.
-              if. >> scaled
-                as-bool.
-                  and. >> tiny!
-                    num.abs.lt (1.div boost)
-                    not. (num.eq 0)
-                num.times
-                  10.power 300 >> boost!
-                num
+              if.
+                and.
+                  lte. (number raw) 6
+                  gte. (number raw) -9
+                as-number.
+                  string
+                    as-fixed.
+                      if. >> scaled
+                        as-bool.
+                          and. >> tiny!
+                            num.abs.lt (1.div boost)
+                            not. (num.eq 0)
+                        num.times
+                          10.power 300 >> boost!
+                        num
+                      6.minus (number raw)
+                scaled
               10.power
                 number raw
             6
@@ -133,6 +146,22 @@
   eq. ++> can-name-positive-infinity
     "infinity"
     string pinf.as-scientific
+
+  eq. ++> can-round-a-negative-exact-tie-up
+    "-4.496438e3"
+    string -4496.4375.as-scientific
+
+  eq. ++> can-round-an-exact-tie-up
+    "4.496438e3"
+    string 4496.4375.as-scientific
+
+  eq. ++> can-round-an-exact-tie-up-with-a-power-of-three
+    "2.080438e3"
+    string 2080.4375.as-scientific
+
+  eq. ++> can-round-an-exact-tie-up-with-a-power-of-two
+    "6.515938e2"
+    string 651.59375.as-scientific
 
   eq. ++> can-write-zero-in-scientific-notation
     "0.000000e0"
