@@ -39,7 +39,7 @@ final class LoweringTest {
         final Path home = temp.resolve("home");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), home, LoweringTest.binary(temp),
-            "7.2.19", new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
+            "7.2.19", new GlobalCache.GcFresh(), temp.resolve("patched"),
             new Scope(".*", "(?!)"), 16, 2,
             Duration.ofMinutes(1L), false
         ).exec();
@@ -57,7 +57,7 @@ final class LoweringTest {
         final Path home = temp.resolve("home");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), home, LoweringTest.binary(temp),
-            "7.2.19", new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
+            "7.2.19", new GlobalCache.GcFresh(), temp.resolve("patched"),
             new Scope(".*", "(?!)"), 16, 2,
             Duration.ofMinutes(1L), false
         ).exec();
@@ -75,7 +75,7 @@ final class LoweringTest {
         final Path home = temp.resolve("home");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), home, LoweringTest.binary(temp),
-            "7.2.19", new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
+            "7.2.19", new GlobalCache.GcFresh(), temp.resolve("patched"),
             new Scope(".*", "(?!)"), 16, 2,
             Duration.ofMinutes(1L), false
         ).exec();
@@ -93,7 +93,7 @@ final class LoweringTest {
         final Path home = temp.resolve("home");
         new Lowering(
             new ListOf<>(), LoweringTest.tables(temp), home, LoweringTest.binary(temp),
-            "7.2.19", new GlobalCache.GcFresh(), temp.resolve("atoms"), temp.resolve("patched"),
+            "7.2.19", new GlobalCache.GcFresh(), temp.resolve("patched"),
             new Scope(".*", "(?!)"), 16, 2,
             Duration.ofMinutes(1L), false
         ).exec();
@@ -104,7 +104,7 @@ final class LoweringTest {
                 Matchers.containsInAnyOrder(
                     "entries.xmir", "voids.tsv", "entries.tsv", "rows.tsv",
                     "world.phi", "atoms.yaml", "rendered.tsv", "patched.tsv",
-                    "1-planting", "2-protocols", ".seqdir.lock"
+                    "1-planting", "2-protocols", "3-atoms", ".seqdir.lock"
                 )
             );
         }
@@ -126,7 +126,7 @@ final class LoweringTest {
                     temp.resolve("home"),
                     binary.toString(),
                     "4.5.61", new GlobalCache.GcFresh(),
-                    temp.resolve("atoms"), temp.resolve("patched"),
+                    temp.resolve("patched"),
                     new Scope(".*", "(?!)"), 16, 2,
                     Duration.ofMinutes(1L), false
                 ).exec(),
@@ -149,7 +149,7 @@ final class LoweringTest {
                     temp.resolve("home"),
                     binary.toString(),
                     "7.2.19", new GlobalCache.GcFresh(),
-                    temp.resolve("atoms"), temp.resolve("patched"),
+                    temp.resolve("patched"),
                     new Scope(".*", "(?!)"), 16, 2,
                     Duration.ofMinutes(1L), false
                 ).exec(),
@@ -169,7 +169,7 @@ final class LoweringTest {
                 temp.resolve("home"),
                 temp.resolve("absent").toString(),
                 "7.2.19", new GlobalCache.GcFresh(),
-                temp.resolve("atoms"), temp.resolve("patched"),
+                temp.resolve("patched"),
                 new Scope(".*", "(?!)"), 16, 2,
                 Duration.ofMinutes(1L), false
             ).available(),
@@ -188,7 +188,7 @@ final class LoweringTest {
                 temp.resolve("home"),
                 LoweringTest.binary(temp),
                 "7.2.19", new GlobalCache.GcFresh(),
-                temp.resolve("atoms"), temp.resolve("patched"),
+                temp.resolve("patched"),
                 new Scope(".*", "(?!)"), 16, 2,
                 Duration.ofMinutes(1L), false
             ).available(),
