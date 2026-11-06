@@ -139,22 +139,30 @@ final class TypeTree {
 
     private void checkSpaced() {
         int idx = 0;
-        while (idx < this.rest.length()
-            && (this.rest.charAt(idx) == ' ' || this.rest.charAt(idx) == '\t')) {
+        while (this.trailing(idx) == ' ' || this.trailing(idx) == '\t') {
             idx = idx + 1;
         }
-        if (idx > 0 && idx < this.rest.length() && this.rest.charAt(idx) == '|') {
+        if (idx > 0 && this.trailing(idx) == '|') {
             throw new ParseError(
                 this.span.line(), this.pos + this.word.length() + idx, TypeTree.UNION
             );
         }
-        if (idx > 0 && (this.open()
-            || idx < this.rest.length() && "(),".indexOf(this.rest.charAt(idx)) >= 0)) {
+        if (idx > 0 && (this.open() || "(),".indexOf(this.trailing(idx)) >= 0)) {
             throw new ParseError(
                 this.span.line(), this.pos + this.word.length(),
                 "a type must not contain spaces"
             );
         }
+    }
+
+    private char trailing(final int idx) {
+        final char glyph;
+        if (idx < this.rest.length()) {
+            glyph = this.rest.charAt(idx);
+        } else {
+            glyph = '\n';
+        }
+        return glyph;
     }
 
     private boolean open() {
