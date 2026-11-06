@@ -21,7 +21,7 @@
     read > get
       0
       size
-    ^.parent.id > id
+    ^.parent.id > [^] > id
     if. > [^ object] > put
       and.
         ^.size.gt 0
@@ -106,6 +106,16 @@
           part.size.eq 4
           part.id.eq mem.id
         mem.slot 2 4 > part
+
+  ++> can-create-nested-slots-with-root-id
+    malloc.of > @
+      16
+      [mem]
+        and. > @
+          outer.id.eq mem.id
+          inner.id.eq mem.id
+        outer.slot 1 4 > inner
+        mem.slot 2 8 > outer
 
   ++> can-have-a-zero-length-slot
     eq. > @
