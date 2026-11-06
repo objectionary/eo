@@ -311,14 +311,12 @@
     0
 
   --> stops-on-write-size-being-negative
-    os.is-windows.if > @
-      1.div 0
-      seq *
-        posix.write
-          fd
-          "ab"
-          -1
-        true
+    seq * > @
+      posix.write
+        fd
+        "ab"
+        -1
+      true
     code. > fd
       posix.open
         "/dev/null"
@@ -326,14 +324,12 @@
         0
 
   --> stops-on-write-size-exceeding-buffer-length
-    os.is-windows.if > @
-      1.div 0
-      seq *
-        posix.write
-          fd
-          "ab"
-          4096
-        true
+    seq * > @
+      posix.write
+        fd
+        "ab"
+        4096
+      true
     code. > fd
       posix.open
         "/dev/null"
