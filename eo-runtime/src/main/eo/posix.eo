@@ -320,7 +320,7 @@
 
   --> stops-on-write-size-being-negative
     os.is-windows.if > @
-      1.div 0
+      T "posix.write is not available on Windows"
       seq *
         posix.write
           fd
@@ -335,7 +335,7 @@
 
   --> stops-on-write-size-exceeding-buffer-length
     os.is-windows.if > @
-      1.div 0
+      T "posix.write is not available on Windows"
       seq *
         posix.write
           fd
