@@ -2,8 +2,7 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 2
-message: "[2:12] error: 'a type must not contain spaces'"
+line: 1
+message: "[1:18] error: 'a type must not contain |'"
 input: |
-  [] > atom /Q.bytes
-    ? > x /Q.a | Q.b
+  [] > atom /Q.x(Q.a|Q.b)

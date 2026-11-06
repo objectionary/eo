@@ -2,7 +2,8 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 1
-message: "[1:18] error: 'a union holds at most two types'"
+line: 2
+message: "[2:12] error: 'optional marker ? may stand only at the end of a void type'"
 input: |
-  [] > atom /Q.a|Q.b|Q.c
+  [] > atom /Q.bytes
+    ? > x /Q.a?(Q.b)

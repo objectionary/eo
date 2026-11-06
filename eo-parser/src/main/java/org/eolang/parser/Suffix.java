@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  * <li>R-3.10.3 — {@code > name!} cannot combine with {@code /sig}.</li>
  * <li>R-3.10.10 — {@code /sig} must be a {@link TypeTree}: dotted
  * names (optionally rooted at {@code Q}) and generic type variables
- * {@code A}–{@code F}, with brackets and unions; a bare {@code /},
+ * {@code A}–{@code F}, with brackets; a bare {@code /},
  * {@code /Q} alone, or a trailing {@code ?} optional marker (void-only)
  * is rejected.</li>
  * <li>R-6.3.5 — a {@code +>} test name must be a {@code NAME} token,

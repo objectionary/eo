@@ -5,4 +5,4 @@
 line: 1
 message: "[1:11] error: 'brackets in a type must follow a name'"
 input: |
-  [] > atom /(Q.a|Q.b)
+  [] > atom /(Q.a,Q.b)

@@ -15,14 +15,14 @@
   <!--
   Resolve every aliased name of a type: a return in "@atom", a void type
   in "@type" or a callback list in "@args". A type is a tree such as
-  "foo(A,bar)|baz", so the brackets, the commas, the "|", a trailing "?"
-  and the spaces between "@args" members stay as they are, and each name
-  between them that an alias declares becomes the alias target.
+  "foo(A,bar)", so the brackets, the commas, a trailing "?" and the
+  spaces between "@args" members stay as they are, and each name between
+  them that an alias declares becomes the alias target.
   -->
   <xsl:function name="eo:resolved" as="xs:string">
     <xsl:param name="type" as="xs:string"/>
     <xsl:variable name="parts" as="xs:string*">
-      <xsl:analyze-string select="$type" regex="[^(),|? ]+">
+      <xsl:analyze-string select="$type" regex="[^(),? ]+">
         <xsl:matching-substring>
           <xsl:variable name="name" select="."/>
           <xsl:sequence select="string(($aliases[part[1] = $name]/part[last()], $name)[1])"/>

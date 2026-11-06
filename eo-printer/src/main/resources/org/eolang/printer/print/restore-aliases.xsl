@@ -34,12 +34,11 @@
   <!--
   Every reference string, counted with multiplicity, across the five spots
   resolve-aliases rewrote. A type in "@atom", "@type" or "@args" is a tree
-  such as "Φ.pair(Φ.a.b,Φ.bytes)|Φ.number", so each name in it counts on
-  its own.
+  such as "Φ.pair(Φ.a.b,Φ.bytes)", so each name in it counts on its own.
   -->
   <xsl:variable name="refs" as="xs:string*">
     <xsl:sequence select="//o/@base/string()"/>
-    <xsl:sequence select="for $a in //o/(@atom, @args, @type), $t in tokenize($a, '[(),|? ]+')[. != ''] return $t"/>
+    <xsl:sequence select="for $a in //o/(@atom, @args, @type), $t in tokenize($a, '[(),? ]+')[. != ''] return $t"/>
     <xsl:sequence select="/object/metas/meta[head = 'also']/part/string()"/>
   </xsl:variable>
   <!--
@@ -61,14 +60,14 @@
     <xsl:sequence select="(for $m in $aliases[part[last()] = $value and part[last()] = $kept] return string($m/part[1]), $value)[1]"/>
   </xsl:function>
   <!--
-  A type with each of its names shortened: the brackets, the commas, the
-  "|", a trailing "?" and the spaces between callback members stay as
-  they are.
+  A type with each of its names shortened: the brackets, the commas, a
+  trailing "?" and the spaces between callback members stay as they
+  are.
   -->
   <xsl:function name="eo:shortened" as="xs:string">
     <xsl:param name="type" as="xs:string"/>
     <xsl:variable name="parts" as="xs:string*">
-      <xsl:analyze-string select="$type" regex="[^(),|? ]+">
+      <xsl:analyze-string select="$type" regex="[^(),? ]+">
         <xsl:matching-substring>
           <xsl:sequence select="eo:shorten(.)"/>
         </xsl:matching-substring>

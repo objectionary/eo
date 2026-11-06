@@ -3,7 +3,7 @@
 ---
 # yamllint disable rule:line-length
 line: 2
-message: "[2:17] error: 'a union holds at most two types'"
+message: "[2:13] error: 'a type must not contain |'"
 input: |
   [] > atom /Q.bytes
-    ? > x /{Q.a|Q.b|Q.c}
+    ? > x /{Q.a|Q.b Q.c}

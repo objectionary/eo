@@ -13,12 +13,12 @@ sheets:
   - /org/eolang/parser/parse/mandatory-as.xsl
 asserts:
   - /object[not(errors)]
-  - /object/o[@name='fopen']/o[@name='λ' and @atom='Φ.a.b.c(Φ.a.b.c,Φ.string)|Φ.bar']
+  - /object/o[@name='fopen']/o[@name='λ' and @atom='Φ.a.b.c(Φ.a.b.c,Φ.string,Φ.bar)']
   - /object/o[@name='fopen']/o[@name='x' and @base='∅' and @type='Φ.pair(Φ.a.b.c)?']
   - /object/o[@name='fopen']/o[@name='e' and @base='∅' and @args='Φ.a.b.c(A) Φ.a.b.c']
 input: |
   +alias foo a.b.c
 
-  [] > fopen /foo(foo,string)|bar
+  [] > fopen /foo(foo,string,bar)
     ? > x /Q.pair(foo)?
     ? > e /{foo(A) foo}

@@ -77,18 +77,18 @@
   <!--
   Home every bare name of a type: a return in "@atom", a void type in
   "@type" or a callback list in "@args". A type is a tree such as
-  "Φ.pair(A,number)|bytes", so the brackets, the commas, the "|", a
-  trailing "?" and the spaces between "@args" members stay as they are,
-  and each name between them is homed on its own. A type variable, a
-  dotted name, a special token and an alias name stay as they are. Any
-  other name goes to the current package when "local" is true and the
-  package has it, as "eo:homed" decides, and to the root "Φ" otherwise.
+  "Φ.pair(A,number)", so the brackets, the commas, a trailing "?" and
+  the spaces between "@args" members stay as they are, and each name
+  between them is homed on its own. A type variable, a dotted name, a
+  special token and an alias name stay as they are. Any other name goes
+  to the current package when "local" is true and the package has it, as
+  "eo:homed" decides, and to the root "Φ" otherwise.
   -->
   <xsl:function name="eo:typed" as="xs:string">
     <xsl:param name="type" as="xs:string"/>
     <xsl:param name="local" as="xs:boolean"/>
     <xsl:variable name="parts" as="xs:string*">
-      <xsl:analyze-string select="$type" regex="[^(),|? ]+">
+      <xsl:analyze-string select="$type" regex="[^(),? ]+">
         <xsl:matching-substring>
           <xsl:sequence select="if (matches(., '^[A-F]$') or contains(., '.') or .=$eo:phi or .=$eo:program or .=$eo:rho or .=$eo:empty or .=$eo:xi or .=$eo:bottom or .=$aliases) then string(.) else if ($local) then eo:homed(.) else concat('Φ.', .)"/>
         </xsl:matching-substring>

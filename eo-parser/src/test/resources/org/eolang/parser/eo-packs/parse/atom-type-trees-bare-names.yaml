@@ -13,12 +13,12 @@ sheets:
   - /org/eolang/parser/parse/mandatory-as.xsl
 asserts:
   - /object[not(errors)]
-  - /object/o[@name='status']/o[@name='λ' and @atom='Φ.status(Φ.number,io.text|A)']
-  - /object/o[@name='status']/o[@name='x' and @base='∅' and @type='Φ.number|A?']
+  - /object/o[@name='status']/o[@name='λ' and @atom='Φ.status(Φ.number,io.text,A)']
+  - /object/o[@name='status']/o[@name='x' and @base='∅' and @type='Φ.number(A)?']
   - /object/o[@name='status']/o[@name='y' and @base='∅' and @type='Φ.pair(Φ.bytes,Φ.x)']
   - /object/o[@name='status']/o[@name='cant' and @base='∅' and @args='Φ.pair(A,Φ.string) io.error(Φ.bytes)']
 input: |
-  [] > status /status(number,io.text|A)
-    ? > x /number|A?
+  [] > status /status(number,io.text,A)
+    ? > x /number(A)?
     ? > y /pair(bytes,Q.x)
     ? > cant /{pair(A,string) io.error(bytes)}

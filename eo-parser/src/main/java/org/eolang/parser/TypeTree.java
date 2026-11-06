@@ -15,17 +15,17 @@ import java.util.regex.Pattern;
  * list share one grammar:</p>
  *
  * <pre>
- * type ::= one ( '|' one )?
+ * type ::= one
  * one  ::= var | path ( '(' type ( ',' type )* ')' )?
  * path ::= NAME ( '.' NAME )* | 'Q' ( '.' NAME )+
  * var  ::= 'A' | 'B' | 'C' | 'D' | 'E' | 'F'
  * </pre>
  *
- * <p>The brackets belong to the name right before them, a union holds
- * two types at most and counts on its own at every bracket level, and a
- * trailing {@code ?} covers the whole type. Whether that {@code ?} may
- * stand there at all is the caller's question, so a return and a callback
- * list reject it before this type ever sees it.</p>
+ * <p>The brackets belong to the name right before them, and a trailing
+ * {@code ?} covers the whole type. Whether that {@code ?} may stand there
+ * at all is the caller's question, so a return and a callback list reject
+ * it before this type ever sees it. A type is never a union, so a
+ * {@code |} anywhere in it is rejected where it stands.</p>
  *
  * <p>A type is one word with no spaces. The caller cuts the word at the
  * first space, so this type also looks at the text that follows the word
@@ -45,7 +45,7 @@ final class TypeTree {
     /**
      * A {@code Q.} root at the head of a name inside the tree.
      */
-    private static final Pattern ROOT = Pattern.compile("(^|[(),|])Q\\.");
+    private static final Pattern ROOT = Pattern.compile("(^|[(),])Q\\.");
 
     /**
      * A generic type variable, which takes no brackets.
@@ -58,9 +58,9 @@ final class TypeTree {
     private static final String FOLLOW = "brackets in a type must follow a name";
 
     /**
-     * The message for a union that misses a side.
+     * The message for a {@code |} in a type, since no type is a union.
      */
-    private static final String SIDES = "a union needs a type on each side of |";
+    private static final String UNION = "a type must not contain |";
 
     /**
      * The message for a comma that separates nothing.
@@ -143,8 +143,13 @@ final class TypeTree {
             && (this.rest.charAt(idx) == ' ' || this.rest.charAt(idx) == '\t')) {
             idx = idx + 1;
         }
+        if (idx > 0 && idx < this.rest.length() && this.rest.charAt(idx) == '|') {
+            throw new ParseError(
+                this.span.line(), this.pos + this.word.length() + idx, TypeTree.UNION
+            );
+        }
         if (idx > 0 && (this.open()
-            || idx < this.rest.length() && "()|,".indexOf(this.rest.charAt(idx)) >= 0)) {
+            || idx < this.rest.length() && "(),".indexOf(this.rest.charAt(idx)) >= 0)) {
             throw new ParseError(
                 this.span.line(), this.pos + this.word.length(),
                 "a type must not contain spaces"
@@ -156,23 +161,21 @@ final class TypeTree {
         final String body = this.body();
         return body.chars().filter(glyph -> glyph == '(').count()
             > body.chars().filter(glyph -> glyph == ')').count()
-            || !body.isEmpty() && "(|,".indexOf(body.charAt(body.length() - 1)) >= 0;
+            || !body.isEmpty() && "(,".indexOf(body.charAt(body.length() - 1)) >= 0;
     }
 
     private void walk(final String body) {
         final Deque<Integer> opens = new ArrayDeque<>(0);
-        final Deque<Integer> bars = new ArrayDeque<>(1);
-        bars.push(0);
         int idx = 0;
         boolean more = true;
         while (more) {
             final int end = this.name(body, idx, opens.isEmpty());
-            final int next = this.closed(body, end, opens, bars);
+            final int next = this.closed(body, end, opens);
             more = next < body.length();
             if (more) {
                 this.checkFollowed(body, end, next);
                 this.checkVariable(body.substring(idx, end), body.charAt(next), next);
-                this.delimit(body.charAt(next), next, opens, bars);
+                this.delimit(body.charAt(next), next, opens);
             }
             idx = next + 1;
         }
@@ -219,9 +222,7 @@ final class TypeTree {
                 "brackets in a type must hold at least one type"
             );
         } else if (next == '|') {
-            error = new ParseError(this.span.line(), this.pos + idx, TypeTree.SIDES);
-        } else if (prev == '|') {
-            error = new ParseError(this.span.line(), this.pos + idx - 1, TypeTree.SIDES);
+            error = new ParseError(this.span.line(), this.pos + idx, TypeTree.UNION);
         } else if (next == ',') {
             error = new ParseError(this.span.line(), this.pos + idx, TypeTree.COMMA);
         } else if (prev == ',') {
@@ -245,16 +246,13 @@ final class TypeTree {
         return glyph;
     }
 
-    private int closed(
-        final String body, final int from, final Deque<Integer> opens, final Deque<Integer> bars
-    ) {
+    private int closed(final String body, final int from, final Deque<Integer> opens) {
         int idx = from;
         while (idx < body.length() && body.charAt(idx) == ')') {
             if (opens.isEmpty()) {
                 throw new ParseError(this.span.line(), this.pos + idx, TypeTree.UNMATCHED);
             }
             opens.pop();
-            bars.pop();
             idx = idx + 1;
         }
         return idx;
@@ -281,25 +279,15 @@ final class TypeTree {
         }
     }
 
-    private void delimit(
-        final char glyph, final int idx, final Deque<Integer> opens, final Deque<Integer> bars
-    ) {
-        if (glyph == '|' && bars.peek() > 0) {
-            throw new ParseError(
-                this.span.line(), this.pos + idx, "a union holds at most two types"
-            );
+    private void delimit(final char glyph, final int idx, final Deque<Integer> opens) {
+        if (glyph == '|') {
+            throw new ParseError(this.span.line(), this.pos + idx, TypeTree.UNION);
         }
         if (glyph == ',' && opens.isEmpty()) {
             throw new ParseError(this.span.line(), this.pos + idx, TypeTree.COMMA);
         }
         if (glyph == '(') {
             opens.push(idx);
-            bars.push(0);
-        } else if (glyph == '|') {
-            bars.push(bars.pop() + 1);
-        } else {
-            bars.pop();
-            bars.push(0);
         }
     }
 }

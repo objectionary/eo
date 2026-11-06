@@ -3,6 +3,6 @@
 ---
 # yamllint disable rule:line-length
 line: 1
-message: "[1:11] error: 'optional marker ? is allowed only on a void attribute'"
+message: "[1:14] error: 'a type must not contain |'"
 input: |
-  [] > atom /Q.a|Q.b?
+  [] > atom /Q.a|

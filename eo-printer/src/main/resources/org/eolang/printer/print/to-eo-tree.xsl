@@ -142,17 +142,17 @@
   </xsl:function>
   <!--
   Render a stored type (an atom's "/sig", a void type or a callback list)
-  as its EO surface form. A type is a tree such as
-  "Φ.pair(A,Φ.bytes)|Φ.number", so every name in it that has a "Φ." root
-  keeps an explicit "Q." root, wherever it stands: at the head, after a
-  bracket, a comma, a "|" or the space between two callback members. Every
-  rooted type reads uniformly and re-parses directly back to its "Φ." roots
-  instead of relying on a bare name being re-homed. Names with no "Φ."
-  root, type variables, the delimiters and a trailing "?" pass through.
+  as its EO surface form. A type is a tree such as "Φ.pair(A,Φ.bytes)",
+  so every name in it that has a "Φ." root keeps an explicit "Q." root,
+  wherever it stands: at the head, after a bracket, a comma or the space
+  between two callback members. Every rooted type reads uniformly and
+  re-parses directly back to its "Φ." roots instead of relying on a bare
+  name being re-homed. Names with no "Φ." root, type variables, the
+  delimiters and a trailing "?" pass through.
   -->
   <xsl:function name="eo:signature" as="xs:string">
     <xsl:param name="sig" as="xs:string"/>
-    <xsl:sequence select="replace($sig, concat('(^|[(),| ])', $eo:program, '\.'), '$1Q.')"/>
+    <xsl:sequence select="replace($sig, concat('(^|[(), ])', $eo:program, '\.'), '$1Q.')"/>
   </xsl:function>
   <!-- Count the leading run of consecutive ρ segments in a sequence. -->
   <xsl:function name="eo:rho-run" as="xs:integer">

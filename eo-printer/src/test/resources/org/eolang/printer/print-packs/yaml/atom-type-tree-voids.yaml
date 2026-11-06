@@ -12,7 +12,7 @@ penalties:
 origin: |
   +package org.eolang
 
-  [] > inner /Q.number(Q.x(Q.y)|Q.bytes)
-    ? > b /Q.number|Q.string?
-    ? > c /Q.pair(A,Q.bytes|B)
-    ? > cant /{Q.a(Q.b,A)|Q.c B}
+  [] > inner /Q.number(Q.x(Q.y),Q.bytes)
+    ? > b /Q.pair(Q.number,Q.string)?
+    ? > c /Q.pair(A,Q.bytes(B))
+    ? > cant /{Q.a(Q.b,A) Q.c B}

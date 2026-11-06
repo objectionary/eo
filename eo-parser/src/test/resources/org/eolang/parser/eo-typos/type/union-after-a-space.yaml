@@ -2,7 +2,8 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-line: 1
-message: "[1:14] error: 'a union needs a type on each side of |'"
+line: 2
+message: "[2:13] error: 'a type must not contain |'"
 input: |
-  [] > atom /Q.a|
+  [] > atom /Q.bytes
+    ? > x /Q.a | Q.b
