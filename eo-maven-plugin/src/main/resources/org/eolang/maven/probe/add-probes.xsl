@@ -115,14 +115,14 @@
   <!--
   Every name of a type annotation: the return of an atom in "@atom", the
   own type of a void in "@type", or the members of a callback list in
-  "@args". A type is a tree such as "Φ.pair(Φ.number,A)|Φ.bytes?", so the
-  text is cut at the brackets, the commas, the bar, the question mark and
-  the spaces between "@args" members, and each name between them is
-  probed with its dotted prefixes. Homed names start with "Φ"; a type
-  variable, A to F, does not and is skipped, since it names no object.
+  "@args". A type is a tree such as "Φ.pair(Φ.number,A)?", so the text is
+  cut at the brackets, the commas, the question mark and the spaces
+  between "@args" members, and each name between them is probed with its
+  dotted prefixes. Homed names start with "Φ"; a type variable, A to F,
+  does not and is skipped, since it names no object.
   -->
   <xsl:template match="@atom|@type|@args" mode="typed" as="element()*">
-    <xsl:for-each select="tokenize(., '[(),|? ]+')[starts-with(., 'Φ')]">
+    <xsl:for-each select="tokenize(., '[(),? ]+')[starts-with(., 'Φ')]">
       <xsl:call-template name="eo:dotted-prefixes">
         <xsl:with-param name="forma" select="."/>
       </xsl:call-template>

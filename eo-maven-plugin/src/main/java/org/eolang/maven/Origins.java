@@ -4,14 +4,11 @@
  */
 package org.eolang.maven;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * The formation a place of the program copies, when the code alone says
@@ -22,10 +19,7 @@ import java.util.stream.Collectors;
  * tells which formation it is. A read follows its name into the formation the
  * other place copies: a bound attribute copies what its body copies, and a
  * name the formation does not bind is looked up behind its {@code φ}, or
- * behind what an atom says it returns, since an atom decorates that. An atom
- * may return a union, such as {@code Φ.true|Φ.false}, and the name is then
- * looked up behind each side: it copies a formation only when every side
- * leads it to the same one.</p>
+ * behind what an atom says it returns, since an atom decorates that.</p>
  *
  * <p>A void says nothing, since whoever makes the copy fills it, and a caller
  * outside the program may fill it with anything at all. The one void that
@@ -42,8 +36,8 @@ final class Origins {
     /**
      * What each formation answers to a name, by the name: the place of a
      * bound attribute, the formation of a declared {@code ρ}, what an atom
-     * with no {@code φ} says it returns under {@code φ}, with the sides of a
-     * union joined by {@code |}, and an empty string for any other void.
+     * with no {@code φ} says it returns under {@code φ}, and an empty string
+     * for any other void.
      */
     private final Map<String, Map<String, String>> objects;
 
@@ -123,28 +117,15 @@ final class Origins {
                 if (attrs.containsKey(name)) {
                     found = this.target(attrs.get(name), seen);
                 } else if (attrs.containsKey("φ")) {
-                    found = this.agreed(attrs.get("φ"), name, seen);
+                    found = this.target(attrs.get("φ"), seen).flatMap(
+                        inner -> this.attribute(inner, name, seen)
+                    );
                 } else {
                     found = Optional.empty();
                 }
                 return found;
             }
         );
-    }
-
-    private Optional<String> agreed(
-        final String decoratee, final String name, final Map<String, Optional<String>> seen
-    ) {
-        final Set<Optional<String>> found = Arrays.stream(decoratee.split("\\|", -1)).map(
-            side -> this.target(side, seen).flatMap(inner -> this.attribute(inner, name, seen))
-        ).collect(Collectors.toSet());
-        final Optional<String> one;
-        if (found.size() == 1) {
-            one = found.iterator().next();
-        } else {
-            one = Optional.empty();
-        }
-        return one;
     }
 
     private Optional<String> target(final String place, final Map<String, Optional<String>> seen) {

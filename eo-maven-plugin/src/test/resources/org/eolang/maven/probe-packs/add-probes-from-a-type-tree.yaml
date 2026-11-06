@@ -4,15 +4,21 @@
 # yamllint disable rule:line-length
 # A type may be a tree, with the types of the voids in brackets after the
 # name, and every name in it must be probed: the object the atom returns,
-# and each type its brackets give, nested ones too.
+# each type its brackets give, nested ones too, the own type of a void with
+# its trailing question mark, and each member of a callback list.
 probes:
   - 'posix'
   - 'posix.status-return'
   - 'number'
   - 'string'
   - 'bytes'
+  - 'i64'
+  - 'chunk'
+  - 'tuple'
 eo: |
   +package custom
   +version 0.0.0
 
   [] > foo /Q.posix.status-return(Q.number,Q.string(Q.bytes))
+    ? > size /Q.i64?
+    ? > scope /{Q.chunk(Q.number) Q.tuple}
