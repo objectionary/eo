@@ -19,7 +19,7 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @since 0.77.0
  */
-final class EOwin32EOfindFirstFileTest {
+final class EOwin32EOfindfirstfileTest {
 
     @Test
     @EnabledOnOs(OS.WINDOWS)

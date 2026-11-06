@@ -135,13 +135,9 @@ final class Origins {
     private Optional<String> agreed(
         final String decoratee, final String name, final Map<String, Optional<String>> seen
     ) {
-        final Set<Optional<String>> found = Arrays.stream(decoratee.split("\\|", -1))
-            .map(
-                side -> this.target(side, seen).flatMap(
-                    inner -> this.attribute(inner, name, seen)
-                )
-            )
-            .collect(Collectors.toSet());
+        final Set<Optional<String>> found = Arrays.stream(decoratee.split("\\|", -1)).map(
+            side -> this.target(side, seen).flatMap(inner -> this.attribute(inner, name, seen))
+        ).collect(Collectors.toSet());
         final Optional<String> one;
         if (found.size() == 1) {
             one = found.iterator().next();
