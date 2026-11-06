@@ -4,8 +4,6 @@
  */
 package org.eolang.inference;
 
-import com.github.lombrozo.xnav.Filter;
-import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import java.io.IOException;
@@ -13,9 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -76,6 +73,25 @@ final class Xmirs {
     }
 
     /**
+     * The locator of every formation of the program.
+     *
+     * <p>Several clues ask whether a locator names a formation, and each
+     * needs the whole set before it asks, since an object can come later
+     * in the list than the attributes its package adds to it:
+     * {@code number/abs.eo} sorts before {@code number.eo}.</p>
+     *
+     * @return The locators of the formations
+     * @throws IOException If a file cannot be read
+     */
+    Collection<String> owners() throws IOException {
+        final Collection<String> found = new HashSet<>(0);
+        for (final XML formation : this.formations()) {
+            found.add(new Noted(formation).says("loc"));
+        }
+        return found;
+    }
+
+    /**
      * Every datum of the program.
      *
      * <p>A datum has no {@code @base}, like a formation, and carries its
@@ -107,20 +123,6 @@ final class Xmirs {
     }
 
     /**
-     * Every void of the program.
-     *
-     * <p>An object with nothing behind it, written as a base of its own in
-     * the text. It names no other object, since what it holds is not decided
-     * here but by whoever fills it.</p>
-     *
-     * @return The voids, file by file, in the order they appear in the code
-     * @throws IOException If a file cannot be read
-     */
-    Collection<XML> voids() throws IOException {
-        return this.matching("//o[@loc and @base='∅']");
-    }
-
-    /**
      * The object every file of the program is about.
      *
      * <p>A file carries one object at the top and the package it declares
@@ -148,61 +150,44 @@ final class Xmirs {
      *  the code
      * @throws IOException If a file cannot be read
      */
-    Collection<Site> dispatches() throws IOException {
-        return this.sites("//o[starts-with(@base, '.')]");
-    }
-
-    /**
-     * Every application of a name read off the object it is written in.
-     *
-     * <p>{@code if > not} inside {@code [if] > bool} takes the same name from
-     * the same object as {@code b.if} does from outside, only the object goes
-     * unwritten because it is the one the line is written in. The name is
-     * still taken from something, so the question a dispatch asks is worth
-     * asking here too — and when the name is a void, the arguments of this
-     * very application are what say what the void holds.</p>
-     *
-     * @return The applications, file by file, in the order they appear in
-     *  the code
-     * @throws IOException If a file cannot be read
-     */
-    Collection<Site> reads() throws IOException {
-        return this.sites(
-            "//o[starts-with(@base, 'ξ.') and o[starts-with(@as, 'α')]]"
-        );
+    Collection<XML> dispatches() throws IOException {
+        return this.matching("//o[starts-with(@base, '.')]");
     }
 
     /**
      * Every application of the program.
      *
      * <p>An application puts something into the voids of the object it
-     * copies, and the place of an argument is what says which void it goes
-     * into. That is the only place in the text where a void is answered, so
-     * it is where a name taken from one stops being a question.</p>
+     * copies, and the place of an argument, or the name it is bound by, is
+     * what says which void it goes into. A call may pass every argument by
+     * name and none by place, as {@code pick oak:m} or {@code run y:^} do,
+     * and it is an application all the same. That is the only place in the
+     * text where a void is answered, so it is where a name taken from one
+     * stops being a question.</p>
      *
      * @return The applications, file by file, in the order they appear in
      *  the code
      * @throws IOException If a file cannot be read
      */
     Collection<XML> applications() throws IOException {
-        return this.matching("//o[@loc][o[starts-with(@as, 'α')][@loc]]");
+        return this.matching("//o[@loc][o[@as][@loc]]");
     }
 
     /**
      * Every reference of the program.
      *
      * <p>A reference names an object instead of taking an attribute from
-     * one: {@code ξ.t} names something bound nearby, {@code Φ.number}
-     * names what the whole program knows. Both carry exactly one name,
-     * since a longer path was split into dispatches before any clue looked
-     * at the XMIR.</p>
+     * one: a bare {@code ξ} names the object it is written in, a bare
+     * {@code Φ} names the global object. Every name after them was split
+     * into a dispatch before any clue looked at the XMIR, so these two are
+     * what a chain starts from and the only references there are.</p>
      *
      * @return The references, file by file, in the order they appear in
      *  the code
      * @throws IOException If a file cannot be read
      */
     Collection<XML> references() throws IOException {
-        return this.matching("//o[starts-with(@base, 'ξ.') or starts-with(@base, 'Φ.')]");
+        return this.matching("//o[@base='ξ' or @base='Φ']");
     }
 
     /**
@@ -215,60 +200,6 @@ final class Xmirs {
         final Collection<String> found = new ArrayList<>(0);
         for (final XML xmir : this.documents()) {
             found.addAll(xmir.xpath("//o/@loc"));
-        }
-        return found;
-    }
-
-    /**
-     * What every dispatch takes its attribute from.
-     *
-     * <p>The receiver of a dispatch is the child that carries no {@code @as},
-     * the arguments being the ones that do, and the parser gives it the
-     * locator of the dispatch with {@code ρ} on the end. It is looked for by
-     * that locator rather than by the absence alone, because a formation
-     * bound inside a dispatch carries no {@code @as} either.</p>
-     *
-     * <p>A name written by itself dispatches as well and has nothing beside it
-     * to be found, so it is not here; {@link Taken} adds it.</p>
-     *
-     * <p>A caret is left out, though the parser writes a receiver beside it
-     * like any other dispatch. What {@code ^} takes is the receiver of the
-     * object below it, and the object below it is not what put it there: the
-     * {@code ^} of an {@code inc} comes from whoever dispatched into that
-     * {@code inc}, so it is the caller's caller and never the {@code inc}
-     * itself. Reading a receiver says nothing about what fills one
-     * (#8281).</p>
-     *
-     * @return The locator of the receiver, by the locator of the dispatch
-     * @throws IOException If a file cannot be read
-     */
-    Map<String, String> receivers() throws IOException {
-        final Map<String, String> found = new HashMap<>(0);
-        for (final XML xmir : this.documents()) {
-            for (final XML node
-                : xmir.nodes("//o[@loc][not(@base='.ρ')][o[@loc][not(@as)]]")) {
-                final Xnav owner = new Xnav(node.inner());
-                final String loc = new Noted(owner).says("loc");
-                Xmirs.bare(owner)
-                    .map(kid -> new Noted(kid).says("loc"))
-                    .filter(kid -> kid.equals(loc.concat(".ρ")))
-                    .findFirst()
-                    .ifPresent(kid -> found.put(loc, kid));
-            }
-        }
-        return found;
-    }
-
-    private static Stream<Xnav> bare(final Xnav owner) {
-        return owner.elements(
-            Filter.all(Filter.withName("o"), Filter.not(Filter.hasAttribute("as")))
-        );
-    }
-
-    private Collection<Site> sites(final String xpath) throws IOException {
-        final Collection<Site> found = new ArrayList<>(0);
-        for (final XML site : this.matching(xpath)) {
-            found.add(new Site(new Xnav(site.inner())));
         }
         return found;
     }

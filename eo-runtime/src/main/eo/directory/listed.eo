@@ -29,18 +29,25 @@
     opened.code.eq -1
     T
       "Can't list the directory '%s': %s".printf
-        * folder.path opened.message
+        *
+          folder.path
+          message.
+            called. >> opened
+              os.is-windows.if
+                win32.find-first-file
+                  folder.as-path.separator.joined
+                    * folder.path "*"
+                posix.opendir folder.path
     seq *
       entries.is-empty
-      closed
+      eq.
+        os.is-windows.if
+          win32.find-close opened.code
+          code.
+            posix.closedir opened.code
+        0
       entries
-  if. > [^ acc name] > added
-    or.
-      name.eq "."
-      name.eq ".."
-    acc
-    acc.with name
-  [^ left right index] > ahead
+  [^folder left right index] >> ahead
     if. > @
       index.eq left.size
       right.size.gt index
@@ -48,79 +55,71 @@
         index.eq right.size
         false
         if.
-          one.eq two
-          ^.ahead
+          eq.
+            left.slice index 1 >> one
+            right.slice index 1 >> two
+          folder.ahead
             left
             right
             index.plus 1
-          ^.smaller one two 7
-    left.slice > one
-      index
-      1
-    right.slice > two
-      index
-      1
-  eq. > closed
-    os.is-windows.if
-      win32.find-close opened.code
-      code.
-        posix.closedir opened.code
-    0
-  sorted > entries
-    gathered
-      os.is-windows.if
-        added
-          *
-          opened.name
-        *
-  [^ acc] > gathered
+          smaller one two 7
+  [^dir acc] > gathered
     if. > @
       read.code.eq -1
       acc
-      ^.gathered
-        ^.added acc read.name
-    called. > read
-      os.is-windows.if
-        win32.find-next-file ^.opened.code
-        posix.readdir ^.opened.code
-  if. > [^ rest item] > inserted
+      dir.gathered
+        added
+          acc
+          name.
+            called. >> read
+              os.is-windows.if
+                win32.find-next-file opened.code
+                posix.readdir opened.code
+  if. > [^folder rest item] >> inserted
     rest.length.eq 0
     * item
     if.
-      ^.ahead
+      ahead
         item.as-bytes
         rest.head.as-bytes
         0
       with.
-        ^.inserted rest.tail item
+        folder.inserted rest.tail item
         rest.head
       rest.with item
-  called. > opened
-    os.is-windows.if
-      win32.find-first-file
-        folder.as-path.separator.joined
-          * folder.path "*"
-      posix.opendir folder.path
-  [^ one two bit] > smaller
+  [^folder one two bit] >> smaller
     if. > @
-      lit.eq
+      eq.
+        and. >> lit
+          one.right bit
+          01-
         and.
           two.right bit
           01-
-      ^.smaller
+      folder.smaller
         one
         two
         bit.minus 1
       lit.eq 00-
-    and. > lit
-      one.right bit
-      01-
-  if. > [^ rest] > sorted
+  if. > [^folder rest] >> sorted
     rest.length.eq 0
     rest
-    ^.inserted
-      ^.sorted rest.tail
+    inserted
+      folder.sorted rest.tail
       rest.head
+  | >> entries
+    gathered
+      os.is-windows.if
+        if. > [^folder acc name] >> added
+          or.
+            name.eq "."
+            name.eq ".."
+          acc
+          acc.with name
+        |
+          *
+          opened.name
+        *
 
   ++> can-list-an-empty-directory
     d.as-dir.listed.length.eq 0 > @

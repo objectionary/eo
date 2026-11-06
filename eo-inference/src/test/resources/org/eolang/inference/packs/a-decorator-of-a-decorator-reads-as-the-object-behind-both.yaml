@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# alias is nothing but a @ that gives an oak, so it reduces to oak, and the @
+# of second, which reads alias, is an oak too.
+sources:
+  oak.eo: |
+    [] > oak
+      [] > leaf
+  alias.eo: |
+    [] > alias
+      oak > @
+  second.eo: |
+    [] > second
+      alias > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.alias.φ']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.alias']/reduced/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.second.φ']/is[@loc='Φ.oak']

@@ -10,12 +10,15 @@ import com.yegor256.MktmpResolver;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.apache.maven.project.MavenProject;
 import org.cactoos.text.TextOf;
 import org.eolang.cache.Saved;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -26,6 +29,46 @@ import org.xembly.Xembler;
  */
 @ExtendWith(MktmpResolver.class)
 final class JavaPlacedTest {
+
+    @ParameterizedTest
+    @CsvSource({
+        "target/generated, TestAtomEOmain",
+        "target/deep/generated, TestAtomEOmain",
+        "generated, TestAtomEOmain",
+        "target/deep/generated, TestEOmain"
+    })
+    void respectsConfiguredRoots(
+        final String output, final String name, @Mktmp final Path temp
+    ) throws Exception {
+        final MavenProject project = new MavenProject();
+        final Path root = temp.resolve("target/handwritten");
+        project.addTestCompileSourceRoot(root.toString());
+        if (name.contains("Atom")) {
+            new Saved(
+                "package org.eolang.EO_foo.EO_x; final class TestEOmain {}",
+                root.resolve("org/eolang/EO_foo/EO_x/TestEOmain.java")
+            ).value();
+        }
+        final Path generated = temp.resolve(output);
+        project.addTestCompileSourceRoot(
+            generated.getParent().resolve("generated-test-sources/.").toString()
+        );
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.format(
+                "+architect %s%n+package foo.x%n%n[] > main%n%n  ++> can-work%n    true > @",
+                "yegor256@gmail.com"
+            )
+        ).with("project", project).with("generated", generated.toFile());
+        maven.execute(new PpTranspile()).execute(MjTranspile.class);
+        MatcherAssert.assertThat(
+            "Configured handwritten tests must rename companions without counting generated tests",
+            new TextOf(
+                generated.getParent().resolve("generated-test-sources/org/eolang/EO_foo/EO_x")
+                    .resolve(String.format("%s.java", name))
+            ).asString(),
+            Matchers.containsString(String.format("class %s ", name))
+        );
+    }
 
     @Test
     void placesJavaGeneratedCode(@Mktmp final Path temp) throws Exception {
@@ -152,7 +195,8 @@ final class JavaPlacedTest {
         final Path generated = target.resolve("generated-sources");
         final Path utest = target.resolve("FooTest.java");
         final JavaPlaced placed = new JavaPlaced(
-            new FpJavaGenerated(this.clazz("@Test"), generated, utest), utest, generated
+            new FpJavaGenerated(this.clazz("@Test"), generated, utest), utest, generated,
+            temp.resolve("src/test/java")
         );
         Files.createDirectories(temp.resolve("src/test/java"));
         new Saved("", temp.resolve("src/test/java/TestFoo.java")).value();

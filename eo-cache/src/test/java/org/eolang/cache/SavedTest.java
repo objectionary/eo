@@ -54,6 +54,18 @@ final class SavedTest {
     }
 
     @Test
+    void savesContentToFileWithNameAtTheLimitOfTheFileSystem(@Mktmp final Path temp)
+        throws IOException {
+        final Path target = temp.resolve("a".repeat(245).concat(".xmir"));
+        new Saved("long", target).value();
+        MatcherAssert.assertThat(
+            "a name that fits the file system must be saved, not refused because the temporary sibling is longer",
+            Files.readString(target, StandardCharsets.UTF_8),
+            Matchers.equalTo("long")
+        );
+    }
+
+    @Test
     void savesContentToRelativeFilenameWithoutParentDirectory() throws IOException {
         final Path target = Path.of(String.format("saved-%s.tmp", UUID.randomUUID()));
         try {

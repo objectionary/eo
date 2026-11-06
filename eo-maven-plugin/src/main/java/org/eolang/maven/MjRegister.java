@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -150,11 +151,13 @@ public final class MjRegister extends MjSafe {
         return 1;
     }
 
-    private void removeOldFiles() {
+    private void removeOldFiles() throws IOException {
         final File[] files = {
             this.foreign,
-            new Subdir(this.target, "pull").found().toFile(),
-            new Subdir(this.target, "resolve").found().toFile(),
+            new Seqdir(this.target.toPath(), 2).dirs().find("pull")
+                .orElse(this.target.toPath().resolve("pull")).toFile(),
+            new Seqdir(this.target.toPath(), 2).dirs().find("resolve")
+                .orElse(this.target.toPath().resolve("resolve")).toFile(),
         };
         for (final File file : files) {
             if (file.exists() && !new Deleted(file).get() && file.exists()) {

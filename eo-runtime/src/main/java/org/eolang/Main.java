@@ -91,18 +91,13 @@ public final class Main {
                 arguments.add(arg);
             }
         }
-        for (final String opt : opts) {
-            if (Main.parse(opt)) {
-                return;
-            }
-        }
-        Main.LOGGER.log(Level.FINE, String.format("EOLANG Runtime %s", Main.ver()));
-        if (arguments.isEmpty()) {
-            throw new ExFailure(
-                "The name of an object is expected as a command line argument"
-            );
-        }
         try {
+            for (final String opt : opts) {
+                if (Main.parse(opt)) {
+                    return;
+                }
+            }
+            Main.LOGGER.log(Level.FINE, String.format("EOLANG Runtime %s", Main.ver()));
             Main.run(arguments);
         } catch (final ExAbstract ex) {
             Main.report(opts, ex);
@@ -123,10 +118,22 @@ public final class Main {
     }
 
     private static void print(final Throwable thr) {
-        Main.LOGGER.log(Level.SEVERE, thr.getMessage());
+        Main.print(thr, "");
+    }
+
+    private static void print(final Throwable thr, final String above) {
+        final String msg = String.valueOf(thr.getMessage());
+        final boolean fresh = above.isEmpty() || !above.contains(msg);
+        if (fresh) {
+            Main.LOGGER.log(Level.SEVERE, msg);
+        }
         final Throwable cause = thr.getCause();
         if (cause != null) {
-            Main.print(cause);
+            if (fresh) {
+                Main.print(cause, msg);
+            } else {
+                Main.print(cause, above);
+            }
         }
     }
 
@@ -173,8 +180,8 @@ public final class Main {
             Main.LOGGER.info(
                 String.join(
                     System.lineSeparator(),
-                    "Usage: java -cp target/classes org.eolang.Main [option...] class [argument...]",
-                    "  class: Name of EO class, e.g. \"org.eolang.io.stdio\"",
+                    "Usage: java -cp target/classes org.eolang.Main [option...] object [argument...]",
+                    "  object: Name of an EO object under the root, e.g. \"stdout\"",
                     "  argument: Value that will be wrapped as strings and passed to your EO object",
                     "  options:",
                     String.format("  %s     Print this documentation and exit", Main.HELP),
@@ -184,10 +191,18 @@ public final class Main {
             );
             exit = true;
         }
+        if (!exit && !Main.VERBOSE.equals(opt)) {
+            throw new ExFailure("The option '%s' is not known, see %s", opt, Main.HELP);
+        }
         return exit;
     }
 
     private static void run(final List<String> opts) {
+        if (opts.isEmpty()) {
+            throw new ExFailure(
+                "The name of an object is expected as a command line argument"
+            );
+        }
         final String obj = opts.get(0);
         if (obj.isEmpty()) {
             throw new ExFailure(

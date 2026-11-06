@@ -61,14 +61,16 @@ public final class Canonical implements UnaryOperator<XML> {
         "/org/eolang/parser/parse/resolve-aliases.xsl",
         "/org/eolang/parser/parse/add-default-package.xsl",
         "/org/eolang/parser/parse/roll-bases.xsl",
+        "/org/eolang/parser/parse/validate-root-base.xsl",
         "/org/eolang/parser/parse/mandatory-as.xsl",
+        "/org/eolang/parser/parse/hide-voids.xsl",
         "/org/eolang/parser/parse/set-locators.xsl"
     );
 
     /**
      * Classpath resources {@code xsl:import}-ed by one or more of
      * {@link #XSLS} (const-to-dataized, vars-float-up,
-     * build-fqns, add-default-package, roll-bases and set-locators,
+     * build-fqns, add-default-package, roll-bases, hide-voids and set-locators,
      * confirmed by grepping their {@code xsl:import}s), so
      * their content must also be folded into a fingerprint that means to
      * catch every change to the pipeline's actual output — editing one of

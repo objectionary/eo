@@ -8,6 +8,7 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.tojos.MnCsv;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -240,13 +241,16 @@ final class MjPullTest {
         return "stdout";
     }
 
-    private static boolean exists(final Path temp, final String source) {
+    private static boolean exists(final Path temp, final String source) throws IOException {
         return Files.exists(temp.resolve("target").resolve(MjPullTest.path(temp, source)));
     }
 
-    private static Path path(final Path temp, final String source) {
+    private static Path path(final Path temp, final String source) throws IOException {
         return new Place(source).make(
-            Paths.get(new Subdir(temp.resolve("target"), "pull").path().getFileName().toString()),
+            Paths.get(
+                new Seqdir(temp.resolve("target"), 2)
+                    .dirs().once("pull").getFileName().toString()
+            ),
             "eo"
         );
     }

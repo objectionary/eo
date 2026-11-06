@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.IntFunction;
+import org.eolang.sys.Buffer;
 
 /**
  * Dynamic memory.
@@ -78,7 +79,7 @@ final class Heaps {
         try {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
-                    "Block in memory by identifier '%d' is not allocated, can't resize",
+                    "Block in memory by identifier '%d' is not allocated, can't get size",
                     identifier
                 );
             }
@@ -105,12 +106,14 @@ final class Heaps {
         try {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
-                    "Block in memory by identifier '%d' is not allocated, can't get size",
+                    "Block in memory by identifier '%d' is not allocated, can't resize",
                     identifier
                 );
             }
             final byte[] bytes = this.blocks.get(identifier);
-            final byte[] resized = new byte[size];
+            final byte[] resized = new Buffer(
+                String.format("the new size of the block '%d'", identifier), size
+            ).it();
             System.arraycopy(bytes, 0, resized, 0, Math.min(bytes.length, size));
             this.blocks.put(identifier, resized);
         } finally {
@@ -224,7 +227,7 @@ final class Heaps {
         }
         this.lock.lock();
         try {
-            this.blocks.put(identifier, new byte[size]);
+            this.blocks.put(identifier, new Buffer("a new block in memory", size).it());
         } finally {
             this.lock.unlock();
         }

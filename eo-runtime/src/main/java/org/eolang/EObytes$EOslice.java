@@ -29,22 +29,22 @@ public final class EObytes$EOslice extends PhDefault implements Atom {
     public EObytes$EOslice() {
         super(new Attrs(
             new Attr(Phi.RHO, new AtRho()),
-            new Attr("start", new AtVoid("start")),
-            new Attr("len", new AtVoid("len")),
-            new Attr(EObytes$EOslice.FALLBACK, new AtVoid(EObytes$EOslice.FALLBACK))
+            new Attr("start"),
+            new Attr("len"),
+            new Attr(EObytes$EOslice.FALLBACK)
         ));
     }
 
     @Override
     public Phi lambda() {
         final byte[] bytes = new Dataized(this.take(Phi.RHO)).take();
-        final int start = new Natural(Expect.at(this, "start")).it();
-        final int len = new Natural(Expect.at(this, "len")).it();
+        final int start = new Natural(this.expected("start")).it();
+        final int len = new Natural(this.expected("len")).it();
         final Phi result;
         if ((long) start + len <= bytes.length) {
             result = new Data.ToPhi(Arrays.copyOfRange(bytes, start, start + len));
         } else {
-            result = this.take(EObytes$EOslice.FALLBACK);
+            result = this.free(EObytes$EOslice.FALLBACK);
             result.put(
                 0,
                 new Data.ToPhi(

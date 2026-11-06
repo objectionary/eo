@@ -27,6 +27,15 @@ final class LocatorTest {
     }
 
     @Test
+    void turnsTheLocatorIntoThePathOfItsText() {
+        MatcherAssert.assertThat(
+            "the text must be at the path the locator names, but it isnt",
+            new Locator("Φ.bytes.as-hex.a🌵16-3").text(),
+            Matchers.equalTo(Path.of("bytes", "as-hex", "a🌵16-3.txt"))
+        );
+    }
+
+    @Test
     void rejectsALocatorOutsideOfPhi() {
         Assertions.assertThrows(
             IllegalStateException.class,

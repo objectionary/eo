@@ -5,99 +5,98 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
-import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.yegor256.xsline.StClasspath;
-import com.yegor256.xsline.TrDefault;
-import com.yegor256.xsline.Xsline;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.eolang.inference.Clues;
-import org.eolang.inference.Demanded;
-import org.eolang.inference.Depth;
-import org.eolang.inference.Ladder;
-import org.eolang.inference.Named;
-import org.eolang.inference.Reduced;
-import org.eolang.inference.Resolved;
-import org.eolang.inference.Witnessed;
-import org.eolang.parser.TrFull;
-import org.xembly.Directives;
-import org.xembly.Xembler;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.Sorted;
+import org.eolang.inference.Answers;
+import org.eolang.inference.Facts;
+import org.eolang.inference.Names;
+import org.eolang.inference.Prepared;
+import org.eolang.inference.Walk;
 
 /**
- * Work out the types of the objects of a program and write down what is known.
+ * Read what a program says about its own objects and write it down.
  *
- * <p>The types of a whole program are worked out at once, because an object in
- * one file is used by objects in others and no single file can be typed on its
- * own. The XMIR of every file parsed so far is taken from the first directory,
- * prepared for the rules and left in the second, while the tables of what has
- * been worked out go to the third, a document each. {@link MjInference} names
- * all three.</p>
+ * <p>The facts of a whole program are read at once, because an object in
+ * one file is used by objects in others and no single file can be read on
+ * its own. The XMIR files are named by the caller, prepared and left in the
+ * second directory, while {@code facts.xml} goes to the third.
+ * {@link MjInference} names them from the registered tojos, and not from
+ * whatever the parse directory still holds: a source that was deleted
+ * leaves its XMIR behind, and reading that XMIR would put the facts of an
+ * object nobody wrote any more into the document (#9271).</p>
  *
- * <p>Every object keeps the type it was born with — nothing is ever renamed or
- * merged — and what we learn about those types goes into tables instead, one row
- * at a time. A type is named by the locator the parser gives every object,
- * {@code Φ.app.inc.φ.ρ}, which is unique across the whole program and needs no
- * dictionary to be read: a row saying that {@code Φ.app.t.next} has nothing
- * means something to a human as it stands. It also makes the tables of many
- * files one table, since no two files can name the same locator.</p>
+ * <p>Every object is named by the locator the parser gives it,
+ * {@code Φ.app.inc.φ.ρ}, which is unique across the whole program and needs
+ * no dictionary to be read. It also makes the facts of many files one
+ * document, since no two files can name the same locator.</p>
  *
- * <p>Two things happen to a file before any rule looks at it. First, every
- * composite base is split into one object per dispatch step: the parser rolls
- * {@code x.next.foo} into a single base, while a rule can only notice an
- * attribute being taken when the taking is an object of its own. Second, the
- * locators are set again, because the objects that the splitting has just
- * created have none. That is what the prepared files hold, and they are worth
- * keeping: every row of every table points into them.</p>
+ * <p>Each file is made ready by {@link Prepared} before {@link Facts} reads
+ * it: every chain of names is split into one object per name, and the
+ * locators are set again on the objects the split made. That is what the
+ * prepared files hold, and they are worth keeping, since every row of
+ * {@code facts.xml} points into them.</p>
  *
- * <p>How much of the program the rules turned out to say is measured when they
- * are done and written down in {@code ladder.txt}, beside the tables rather
- * than among them: it is a number about us and not about the program. Saying
- * it in the log is not enough, because the line scrolls past and a branch has
- * then nothing to be measured against — the file is what a workflow reads for
- * the base and for the branch, to say on the pull request which way we
- * moved.</p>
+ * <p>The engine then reads {@code facts.xml} alone and writes
+ * {@code answers.xml} beside it: for every place, which objects it can be
+ * when Java runs the program. It knows a few names of the program, the
+ * {@link Names}, and nothing else of it.</p>
  *
  * @since 0.67.0
  */
 final class Inferring implements Step {
 
     /**
-     * The directory with the XMIR files of the program.
+     * The XMIR files the facts are read from.
+     */
+    private final Iterable<Path> sources;
+
+    /**
+     * The directory the XMIR files come from, which says where under
+     * {@link #prepared} each of them lands.
      */
     private final Path input;
 
     /**
      * The directory for the prepared XMIR files, which keep the names they
-     * had. It is emptied first, because the clues read it back as the whole
-     * program: a file left there by an earlier run would put the types of a
-     * deleted source into the tables.
+     * had. It is emptied first, because {@link Facts} reads it back as the whole
+     * program: a file left there by an earlier run would put the facts of a
+     * deleted source into the document.
      */
     private final Path prepared;
 
     /**
-     * The directory for the tables, a document each.
+     * The directory for {@code facts.xml} and {@code answers.xml}.
      */
     private final Path tables;
 
     /**
+     * The names of the program the engine has to know.
+     */
+    private final Names names;
+
+    /**
      * Ctor.
      *
-     * @param parsed The directory with XMIR files, as the parser leaves them
-     *  after its canonical pipeline (see {@code org.eolang.parser.Canonical})
+     * @param xmirs The XMIR files the facts are read from
+     * @param parsed The directory those files come from
      * @param pre The directory for the prepared XMIR files
-     * @param rows The directory for the tables
+     * @param rows The directory for {@code facts.xml} and {@code answers.xml}
+     * @param known The names of the program the engine has to know
      */
-    Inferring(final Path parsed, final Path pre, final Path rows) {
+    Inferring(
+        final Iterable<Path> xmirs, final Path parsed, final Path pre, final Path rows,
+        final Names known
+    ) {
+        this.sources = xmirs;
         this.input = parsed;
         this.prepared = pre;
         this.tables = rows;
+        this.names = known;
     }
 
     @Override
@@ -112,15 +111,18 @@ final class Inferring implements Step {
                     )
                 );
             }
+            Files.createDirectories(this.prepared);
             this.ready();
-            new Named(new Witnessed(new Demanded(new Reduced(new Resolved(new Clues())))))
-                .follow(this.prepared, this.tables);
-            this.declared();
+            new Facts().follow(this.prepared, this.tables);
+            final long start = System.currentTimeMillis();
+            new Answers(new Walk(this.tables.resolve("facts.xml"), this.names))
+                .write(this.tables.resolve("answers.xml"));
             Logger.info(
-                this, "Inference tables are in %[file]s (%s)",
-                this.tables, new Tabled(this.tables).asString()
+                this,
+                "The facts and the answers of the program are in %[file]s (%s), the answers took %[ms]s",
+                this.tables, new Tabled(this.tables).asString(),
+                System.currentTimeMillis() - start
             );
-            this.measured();
         } else {
             Logger.info(
                 this, "The directory %[file]s is absent, nothing to infer from it",
@@ -129,72 +131,20 @@ final class Inferring implements Step {
         }
     }
 
-    private void measured() throws IOException {
-        final Ladder ladder = new Depth(this.prepared, this.tables).ladder();
-        final Path numbers = this.tables.resolveSibling("ladder.txt");
-        Files.write(numbers, ladder.lines(), StandardCharsets.UTF_8);
-        Logger.info(
-            this,
-            "%d objects: %.1f%% named, %.1f%% rooted at a void, %.1f%% nothing known; depth %.1f%%",
-            ladder.total(), ladder.named(), ladder.rooted(), ladder.blank(), ladder.percent()
-        );
-        for (final Map.Entry<String, Integer> rung : ladder.rungs().entrySet()) {
-            Logger.debug(this, "  %6d  %s", rung.getValue(), rung.getKey());
-        }
-        Logger.info(this, "The same numbers are written down in %[file]s", numbers);
-    }
-
-    private void declared() throws IOException {
-        final Directives dirs = new Directives().add("atoms");
-        try (Stream<Path> found = Files.walk(this.prepared)) {
-            for (final Path source : found
-                .filter(path -> path.toString().endsWith(".xmir"))
-                .filter(Files::isRegularFile)
-                .sorted()
-                .collect(Collectors.toList())) {
-                final XML xmir = new XMLDocument(source);
-                for (final XML lambda
-                    : xmir.nodes("//o[@name='λ' and string-length(@atom) > 0]")) {
-                    dirs.add("atom")
-                        .attr("loc", lambda.xpath("../@loc").get(0))
-                        .attr("forma", lambda.xpath("@atom").get(0))
-                        .up();
-                }
-            }
-        }
-        Files.createDirectories(this.tables);
-        Files.write(
-            this.tables.resolve("atoms.xml"),
-            new Xembler(dirs).xmlQuietly().getBytes(StandardCharsets.UTF_8)
-        );
-    }
-
     private void ready() throws IOException {
-        final Xsline train = new Xsline(
-            new TrFull(
-                new TrDefault<>(
-                    new StClasspath("/org/eolang/maven/inference/unroll-bases.xsl"),
-                    new StClasspath("/org/eolang/parser/parse/set-locators.xsl")
-                )
+        final Prepared train = new Prepared();
+        for (final Path source : new Sorted<>(
+            new Filtered<>(
+                path -> path.toString().endsWith(".xmir") && Files.isRegularFile(path),
+                this.sources
             )
-        );
-        for (final Path source : this.sources()) {
+        )) {
             final Path target = this.prepared.resolve(this.input.relativize(source));
             Files.createDirectories(target.getParent());
             Files.write(
                 target,
-                train.pass(new XMLDocument(source)).toString().getBytes(StandardCharsets.UTF_8)
+                train.apply(new XMLDocument(source)).toString().getBytes(StandardCharsets.UTF_8)
             );
-        }
-    }
-
-    private Collection<Path> sources() throws IOException {
-        try (Stream<Path> found = Files.walk(this.input)) {
-            return found
-                .filter(path -> path.toString().endsWith(".xmir"))
-                .filter(Files::isRegularFile)
-                .sorted()
-                .collect(Collectors.toList());
         }
     }
 }

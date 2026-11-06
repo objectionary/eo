@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Local handles name voids in diagnostics while their lookup keys stay private.
+sheets:
+  - /org/eolang/parser/parse/set-locators.xsl
+  - /org/eolang/maven/transpile/set-original-names.xsl
+  - /org/eolang/maven/transpile/classes.xsl
+  - /org/eolang/maven/transpile/anonymous-to-nested.xsl
+  - /org/eolang/maven/transpile/package.xsl
+  - /org/eolang/maven/transpile/attrs.xsl
+  - /org/eolang/maven/transpile/data.xsl
+  - /org/eolang/maven/transpile/to-java.xsl
+input: |
+  [^ ordinary] > app
+    bool > @
+      [^]
+        ? >> left
+        ? >> right
+        left > @
+asserts:
+  - /object[not(errors)]
+  - //java/text()[contains(., 'new AtVoid("left")')]
+  - //java/text()[contains(., 'new AtVoid("right")')]
+  - //java/text()[contains(., 'this.add("v🌵ordinary", new AtVoid("v🌵ordinary"));')]
+  - //java/text()[contains(., 'this.add("ρ", new AtRho());')]
+  - //java/text()[contains(., '.add("a🌵')]
+  - //java/text()[contains(., 'new PhDispatch(h, "a🌵')]

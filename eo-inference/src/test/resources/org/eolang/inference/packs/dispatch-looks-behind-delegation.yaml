@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# t has nothing but a @, which is base, so t reduces to base, and the next read
+# off t is base.next.
+sources:
+  app.eo: |
+    [] > app
+      t.next > @
+  t.eo: |
+    [] > t
+      base > @
+  base.eo: |
+    [] > base
+      [] > next
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.t.φ']/is[@loc='Φ.base']
+  - /answers/o[@loc='Φ.t']/reduced/is[@loc='Φ.base']
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.base']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.base.next']

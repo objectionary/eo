@@ -1,4 +1,4 @@
-# Positive square root of `num` as `org.eolang.number`, taken as `num` raised to
+# Positive square root of `num` as `number`, taken as `num` raised to
 # the one-half power. A negative argument, negative infinity included, is nan.
 #
 # The half power goes through a logarithm and an exponential, both of which
@@ -8,6 +8,10 @@
 # an error of `1e-14` squared is far below what a double can tell apart. A
 # seed that is zero, infinite or nan has nothing to polish and is the answer
 # already.
+#
+# `arg` says that the receiver is not a number itself, rather than letting
+# the comparison with zero blame its own `b`, which is an attribute the
+# caller never wrote (#9283).
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -18,9 +22,7 @@
 
 [^num] > sqrt
   if. > @
-    lt.
-      number num.as-bytes >> arg
-      0
+    arg.lt 0
     nan
     if.
       arg.as-bytes.eq 80-00-00-00-00-00-00-00
@@ -35,6 +37,10 @@
             arg.div seed
           2
         seed
+  if. > arg
+    num.as-bytes.size.eq 8
+    number num.as-bytes
+    T "the 'ρ' attribute must be a number"
 
   lt. ++> can-approximate-a-square-root-of-four
     abs.
@@ -82,3 +88,6 @@
     1.0e-9
 
   0.sqrt.eq 0 ++> can-take-a-square-root-of-zero
+
+  sqrt. --> stops-on-a-square-root-of-a-receiver-that-is-not-a-number
+    number "abc"

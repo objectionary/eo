@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import com.jcabi.log.Logger;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -45,19 +46,34 @@ import org.eolang.lowering.Scope;
  * and then plants the entries of the build. It hands the lowering the
  * XMIR of every standalone object, the directory where {@code eo:inference}
  * left its tables, because an entry is a formation applied to what the
- * tables say its voids hold, and one home directory, which {@link Subdir}
+ * tables say its voids hold, and one home directory, which {@code Seqdir}
  * numbers as {@code NN-lowering}. There the lowering keeps the world, the
  * sources with their tests cut out in {@code 1-planting}, and the protocol
  * of every object morphed in {@code 2-protocols}. The atoms the lowering
- * renders land in {@code 3-atoms}, which this goal hands to javac as a
- * source root, and every XMIR file with an atom in the place of a body
+ * renders land in {@code 3-atoms}, which this goal finds and hands to javac
+ * as a source root, and every XMIR file with an atom in the place of a body
  * lands in {@code 4-patched}, where this goal points the tojo of that
  * object, so the transpiler reads the patched copy and every other object
  * stays where it was. The copies stay
  * from build to build, so only a copy listed in {@code patched.tsv}, one
  * patched in this very build, is handed to the transpiler.</p>
  *
+ * <p>With {@code -Deo.saveTextProtocols=true} the lowering also keeps the
+ * protocol of every entry as indented text in {@code texts}, beside
+ * {@code 2-protocols}, so a person can read why an entry stopped where it
+ * did without any tool. phino writes one protocol per run, so this runs
+ * phino on every entry twice, unless the cache already holds the protocol
+ * and its text.</p>
+ *
  * @since 0.64.0
+ * @todo #9556:60min Number the directories of texts and patched sources
+ *  through seqdir, the way the lowering numbers atoms. Patching has to
+ *  reserve patched sources with once(), so Lowering and Patching stop
+ *  taking that directory and this goal finds it after the lowering instead
+ *  of resolving 4-patched. Morphing has to reserve texts with once() only
+ *  when it saves them, and still clean an unnumbered texts left by an older
+ *  build. Do both in one go, since a numbered texts alone would push atoms
+ *  to 4-atoms, next to the 4-patched this goal still resolves.
  */
 @Mojo(
     name = "lower",
@@ -83,6 +99,17 @@ public final class MjLower extends MjSafe {
     private String binary;
 
     /**
+     * The only version of phino that the goal accepts, which phino also
+     * gets through its {@code --pin} option.
+     */
+    @Parameter(
+        alias = "pinPhino",
+        property = "eo.pinPhino",
+        defaultValue = "0.0.161"
+    )
+    private String pin;
+
+    /**
      * Whether the goal skips, instead of failing the build, when phino
      * cannot be started on this computer.
      */
@@ -94,7 +121,10 @@ public final class MjLower extends MjSafe {
     private boolean optional;
 
     /**
-     * The seconds one run of phino may take on one entry before it is killed.
+     * The seconds one run of phino may take on one entry, after which it
+     * stops itself and closes the protocol with a {@code timeout} element.
+     * Nothing kills phino, so the protocol of an entry that ran out of
+     * time is whole and can be read.
      */
     @Parameter(
         alias = "loweringBudget",
@@ -113,6 +143,28 @@ public final class MjLower extends MjSafe {
         defaultValue = "32"
     )
     private int steps;
+
+    /**
+     * How many times one run of phino may enter the same formation again,
+     * with other data, before it decides that the run loops and cuts it.
+     */
+    @Parameter(
+        alias = "maxLoops",
+        property = "eo.maxLoops",
+        defaultValue = "2"
+    )
+    private int loops;
+
+    /**
+     * Whether the lowering keeps the protocol of every entry as indented text
+     * too, beside the XML one.
+     */
+    @Parameter(
+        alias = "saveTextProtocols",
+        property = "eo.saveTextProtocols",
+        defaultValue = "false"
+    )
+    private boolean texts;
 
     /**
      * The regular expression that the whole locator of an entry, such as
@@ -138,7 +190,7 @@ public final class MjLower extends MjSafe {
 
     /**
      * The directory with the tables of {@code eo:inference}. When it is not
-     * set, the goal uses the directory that {@link Subdir} gives to the name
+     * set, the goal uses the directory that {@code Seqdir} gives to the name
      * "inference", which is where {@code eo:inference} saves the tables.
      */
     @Parameter(alias = "inferenceDir", property = "eo.inferenceDir")
@@ -154,20 +206,28 @@ public final class MjLower extends MjSafe {
     @Override
     void exec() throws IOException {
         if (this.lowering) {
-            final Path home = new Subdir(this.target, "lowering").path().toAbsolutePath();
-            final Path atoms = home.resolve("3-atoms");
+            final Path home = new Seqdir(this.target.toPath(), 2)
+                .dirs().once("lowering").toAbsolutePath();
+            final Path inference;
+            if (this.tables == null) {
+                inference = new Seqdir(this.target.toPath(), 2).dirs().once("inference");
+            } else {
+                inference = this.tables.toPath();
+            }
             try (TjsForeign tojos = this.tojos()) {
                 final Lowering pipeline = new Lowering(
                     new ListOf<>(new Mapped<>(TjForeign::xmir, tojos.standalone())),
-                    new Subdir(this.target, "inference").orConfigured(this.tables),
+                    inference,
                     home,
                     this.binary,
+                    this.pin,
                     this.caching("lowered"),
-                    atoms,
                     home.resolve("4-patched"),
                     new Scope(this.only, this.never),
                     this.steps,
-                    Duration.ofSeconds(this.budget)
+                    this.loops,
+                    Duration.ofSeconds(this.budget),
+                    this.texts
                 );
                 if (this.optional && !pipeline.available()) {
                     Logger.warn(
@@ -177,6 +237,14 @@ public final class MjLower extends MjSafe {
                     );
                 } else {
                     pipeline.exec();
+                    final Path atoms = new Seqdir(home, 1).dirs().find("atoms").orElseThrow(
+                        () -> new IllegalStateException(
+                            String.format(
+                                "There are no atoms in '%s', while the lowering always makes them",
+                                home
+                            )
+                        )
+                    );
                     MjLower.repoint(tojos, home);
                     this.project.addCompileSourceRoot(atoms.toString());
                     Logger.info(

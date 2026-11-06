@@ -5,12 +5,15 @@
 package org.eolang.maven;
 
 import com.yegor256.Together;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
 import org.cactoos.map.MapOf;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -42,27 +45,50 @@ final class OyCachedTest {
     }
 
     @Test
-    void goesToOriginWhenCacheDoesNotHaveIt() throws IOException {
-        final Input expected = new InputOf("Hello from origin!");
+    void goesToOriginWhenCacheDoesNotHaveIt() throws Exception {
         MatcherAssert.assertThat(
             "The retrieved input does not match with expected",
-            new OyCached(
-                new Objectionary.Fake(nme -> expected), new MapOf<>()
-            ).get("foo"),
-            Matchers.equalTo(expected)
+            new TextOf(
+                new OyCached(
+                    new Objectionary.Fake(nme -> new InputOf("Hello from origin!")),
+                    new MapOf<>()
+                ).get("foo")
+            ).asString(),
+            Matchers.equalTo("Hello from origin!")
         );
     }
 
     @Test
-    void savesInCacheWhenCacheDoesNotHaveIt() throws IOException {
+    void savesInCacheWhenCacheDoesNotHaveIt() throws Exception {
         final String key = "jeff";
-        final Input value = new InputOf("[] > jeff");
         final Map<String, Input> cache = new MapOf<>();
-        new OyCached(new Objectionary.Fake(nme -> value), cache).get(key);
+        new OyCached(new Objectionary.Fake(nme -> new InputOf("[] > jeff")), cache).get(key);
         MatcherAssert.assertThat(
             "The retrieved content from origin should be saved in cache, but it was not",
-            cache,
-            Matchers.hasEntry(key, value)
+            new TextOf(cache.get(key)).asString(),
+            Matchers.equalTo("[] > jeff")
+        );
+    }
+
+    @Test
+    void downloadsCachedProgramOnlyOnce() throws Exception {
+        final AtomicInteger downloads = new AtomicInteger(0);
+        final Objectionary objectionary = new OyCached(
+            new Objectionary.Fake(
+                nme -> () -> {
+                    downloads.incrementAndGet();
+                    return new ByteArrayInputStream(
+                        "[] > remote".getBytes(StandardCharsets.UTF_8)
+                    );
+                }
+            )
+        );
+        new TextOf(objectionary.get("remote")).asString();
+        new TextOf(objectionary.get("remote")).asString();
+        MatcherAssert.assertThat(
+            "The cached program must be downloaded once, while every read goes to the origin",
+            downloads.get(),
+            Matchers.equalTo(1)
         );
     }
 

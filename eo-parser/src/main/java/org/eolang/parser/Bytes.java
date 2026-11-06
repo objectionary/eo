@@ -84,11 +84,18 @@ final class Bytes {
     int end() {
         final int end;
         if (this.empty()) {
-            end = this.from + 2;
+            end = this.blank();
         } else {
             end = this.pairs();
         }
         return end;
+    }
+
+    private int blank() {
+        if (!this.closes(this.from + 2)) {
+            throw this.malformed();
+        }
+        return this.from + 2;
     }
 
     private int pairs() {

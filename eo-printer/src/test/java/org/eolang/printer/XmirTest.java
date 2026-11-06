@@ -158,6 +158,25 @@ final class XmirTest {
         );
     }
 
+    @Test
+    void printsAFilledHiddenVoidAsAVoidWithANamedFill() {
+        MatcherAssert.assertThat(
+            "a formation that holds a filled hidden void must print with the void and a named fill of it, but it doesnt",
+            new Xmir(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<object><metas/><o name='main'><o name='bar'>",
+                        "<o base='Φ.number' name='v🌵left'>5</o>",
+                        "<o base='ξ.v🌵left' name='value'/>",
+                        "</o></o></object>"
+                    )
+                )
+            ).toEO().lines().toList(),
+            Matchers.contains("[] > main", "  [left] > bar", "    5:left", "    left > value")
+        );
+    }
+
     @RepeatedTest(3)
     void printsSameEoInManyThreads() {
         final XML xml = new XMLDocument(
@@ -199,6 +218,17 @@ final class XmirTest {
             XhtmlMatchers.hasXPaths(
                 "/*/*[local-name()='template' and @match=\"o[starts-with(@base, $eo:xi-dot)][exists(eo:hosted-binding(.))]\"]",
                 "/*/*[local-name()='template' and @match=\"o[starts-with(@base, $eo:xi-dot)][exists(o)][not(exists(@name))][exists(eo:applied-handle(.))]\"]"
+            )
+        );
+    }
+
+    @Test
+    void walksArgumentsOneByOne() {
+        MatcherAssert.assertThat(
+            "The canonical run of labels must be read one argument at a time, not against the whole tail of siblings",
+            this.sheet("unnecessary-as.xsl"),
+            XhtmlMatchers.hasXPath(
+                "/*/*[local-name()='function' and @name='eo:all-alphas']//*[local-name()='variable' and @name='next' and @select='$elem/following-sibling::o[1]']"
             )
         );
     }
@@ -392,11 +422,15 @@ final class XmirTest {
     }
 
     private XML mergeMonikers() {
+        return this.sheet("merge-monikers.xsl");
+    }
+
+    private XML sheet(final String name) {
         return new XMLDocument(
             new UncheckedText(
                 new TextOf(
                     new ResourceOf(
-                        "org/eolang/printer/print/merge-monikers.xsl",
+                        String.format("org/eolang/printer/print/%s", name),
                         XmirTest.class
                     )
                 )

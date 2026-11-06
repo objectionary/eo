@@ -6,6 +6,7 @@ package org.eolang.maven;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -90,7 +91,7 @@ final class MjResolveTest {
             ).execute(new PpResolve());
         MatcherAssert.assertThat(
             "The class file must exist, but it doesn't",
-            new Subdir(temp.resolve("target"), "resolve").path()
+            new Seqdir(temp.resolve("target"), 2).dirs().once("resolve")
                 .resolve("org.eolang/eo-runtime/-/0.7.0").resolve("eo-runtime-0.7.0.class")
                 .toFile(),
             FileMatchers.anExistingFile()
@@ -99,7 +100,7 @@ final class MjResolveTest {
 
     @Test
     void resolvesWhenPlaceDirectoryExistsButIsEmpty(@Mktmp final Path temp) throws IOException {
-        final Path place = new Subdir(temp.resolve("target"), "resolve").path()
+        final Path place = new Seqdir(temp.resolve("target"), 2).dirs().once("resolve")
             .resolve("org.eolang/eo-runtime/-/0.7.0");
         Files.createDirectories(place);
         new FakeMaven(temp).withProgram(
@@ -180,7 +181,7 @@ final class MjResolveTest {
             Matchers.hasKey(
                 String.format(
                     "target/%s/net.java.dev.jna/jna/-/5.14.0",
-                    new Subdir(temp.resolve("target"), "resolve").path().getFileName()
+                    new Seqdir(temp.resolve("target"), 2).dirs().once("resolve").getFileName()
                 )
             )
         );
@@ -199,7 +200,7 @@ final class MjResolveTest {
         maven.execute(new PpResolve());
         MatcherAssert.assertThat(
             "The class file must exist, but it doesn't",
-            new Subdir(temp.resolve("target"), "resolve").path()
+            new Seqdir(temp.resolve("target"), 2).dirs().once("resolve")
                 .resolve("org.eolang/eo-runtime/-/"),
             new ContainsFiles("**/eo-runtime-*.class")
         );

@@ -8,6 +8,8 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link Tokens}.
@@ -15,6 +17,36 @@ import org.junit.jupiter.api.Test;
  * @since 0.1
  */
 final class TokensTest {
+
+    @ParameterizedTest
+    @ValueSource(
+        strings = {
+            "f (g a\"b) > x",
+            "* a\"b > x",
+            "f (a\"b > []) > x",
+            "f (g \"a(b)\") > x"
+        }
+    )
+    void distinguishesNamesFromStringLiterals(final String expression) throws Exception {
+        MatcherAssert.assertThat(
+            "a quote inside a name must not start a string, while real strings keep their parentheses",
+            new EoSyntax(
+                String.format("+package foo%n%n[] > foo%n  %s%n  x > @%n", expression)
+            ).parsed().xpath("/object/errors/error/text()"),
+            Matchers.empty()
+        );
+    }
+
+    @Test
+    void reportsRedundantParentheses() throws Exception {
+        MatcherAssert.assertThat(
+            "a grouped name must report redundant parentheses instead of an unterminated string",
+            new EoSyntax(
+                String.format("+package foo%n%n[] > foo%n  f (a\"b) > x%n  x > @%n")
+            ).parsed().xpath("/object/errors/error/text()"),
+            Matchers.hasItem(Matchers.containsString("redundant parentheses"))
+        );
+    }
 
     @Test
     void readsIdentifierWithHyphen() {
@@ -58,6 +90,42 @@ final class TokensTest {
             ParseError.class,
             () -> new Tokens("+abc", new Span("+abc", 1)).readInt(),
             "readInt must reject a sign that is not followed by digits"
+        );
+    }
+
+    @Test
+    void rejectsUnsignedDigitRunGluedToALetter() {
+        MatcherAssert.assertThat(
+            "readInt must not take an unsigned digit run glued to a letter for a number",
+            Assertions.assertThrows(
+                ParseError.class,
+                new Tokens("1foo", new Span("1foo", 1))::readInt
+            ).getMessage(),
+            Matchers.containsString("invalid number literal")
+        );
+    }
+
+    @Test
+    void hintsAtADotWhenADigitRunIsGluedToAnExponent() {
+        MatcherAssert.assertThat(
+            "readInt must tell that a float needs a dot before its exponent",
+            Assertions.assertThrows(
+                ParseError.class,
+                new Tokens("1e5", new Span("1e5", 1))::readInt
+            ).getMessage(),
+            Matchers.containsString("a float needs a dot before the exponent, as in 1.0e5")
+        );
+    }
+
+    @Test
+    void rejectsAFloatWhoseExponentHasNoDigits() {
+        MatcherAssert.assertThat(
+            "readNumber must blame the number itself when the exponent is empty",
+            Assertions.assertThrows(
+                ParseError.class,
+                new Tokens("1.5e", new Span("1.5e", 1))::readNumber
+            ).getMessage(),
+            Matchers.containsString("invalid number literal")
         );
     }
 

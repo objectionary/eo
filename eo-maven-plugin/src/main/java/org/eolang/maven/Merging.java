@@ -8,6 +8,7 @@ import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,11 +39,21 @@ import org.w3c.dom.NodeList;
  * <p>Every package this build compiles an object for is merged, and no other:
  * a package whose name no object carries, as {@code examples} in a program
  * that declares {@code +package examples} and nothing called {@code examples},
- * keeps its members as objects of their own.</p>
+ * keeps its members as objects of their own. An ancestor object must not
+ * hide such a package: without a standalone immediate package object, its
+ * members cannot be reached, so the merge refuses them (#9756).</p>
  *
  * <p>A member arrives after the attributes the object already had, so the
  * places of the voids, and with them the meaning of applying the object to
  * arguments, stay as they were.</p>
+ *
+ * <p>A void can be read only in the file that declares it (#9788). The
+ * parser hides every void of the object behind {@code v🌵}, together with
+ * every read of it in the object's own file, and nothing renames a name
+ * after the parser. A member is a file of its own, outside its object, so
+ * it reads what the object holds through getters. A member that reads a
+ * void {@code x} of the object finds no attribute {@code x} there and fails
+ * at runtime, like any read from outside.</p>
  *
  * <p>Merging twice does nothing the second time: a member that has already
  * moved is marked as merged in the tojos and is not standalone any more, so
@@ -59,9 +70,24 @@ import org.w3c.dom.NodeList;
  * package that holds it, so a test written three files deep arrives at the top
  * one level at a time and nothing has to look for it.</p>
  *
+ * <p>A lifted test takes the name of the member it came from in front of its
+ * own, so {@code works} of {@code box/left.eo} arrives as
+ * {@code left-works}. Each file names its tests on its own, and two files of
+ * one package naming a test alike is as ordinary as two files naming an
+ * attribute alike, so the name a test arrives under has to say which member
+ * wrote it. Without the prefix the second {@code works} read as a name the
+ * object already held and stopped the build.</p>
+ *
  * @since 0.68.0
  */
 final class Merging implements Step {
+
+    /**
+     * The length of the mark the parser puts in front of a test: one letter,
+     * {@code p} for a test that must hold and {@code n} for one that must
+     * throw, and the cactus that follows it.
+     */
+    private static final int MARK = "p🌵".length();
 
     /**
      * The tojos of everything this build compiles.
@@ -87,6 +113,7 @@ final class Merging implements Step {
     @Override
     public void exec() throws IOException {
         final Map<String, TjForeign> all = this.indexed();
+        Merging.reachable(all);
         final Collection<String> found = Merging.deepest(all);
         int done = 0;
         for (final String pkg : found) {
@@ -102,8 +129,29 @@ final class Merging implements Step {
         }
     }
 
-    private Path dir() {
-        return new Subdir(this.target, "merge").path();
+    private static void reachable(final Map<String, TjForeign> all) {
+        for (final String member : all.keySet()) {
+            final int split = member.lastIndexOf('.');
+            if (split > 0 && !all.containsKey(member.substring(0, split))) {
+                final String pkg = member.substring(0, split);
+                String parent = pkg;
+                while (parent.contains(".")) {
+                    parent = parent.substring(0, parent.lastIndexOf('.'));
+                    if (all.containsKey(parent)) {
+                        throw new IllegalStateException(
+                            String.format(
+                                "The member '%s' is unreachable: package '%s' has no standalone object to merge into, while ancestor object '%s' hides its namespace",
+                                member, pkg, parent
+                            )
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    private Path dir() throws IOException {
+        return new Seqdir(this.target, 2).dirs().once("merge");
     }
 
     private static Collection<String> deepest(final Map<String, TjForeign> all) {
@@ -151,7 +199,9 @@ final class Merging implements Step {
             Merging.claimed(taken, name, member.getKey(), pkg);
             formation.appendChild(top);
             for (final Node test : Merging.tests(top)) {
-                Merging.claimed(taken, Merging.named(test), member.getKey(), pkg);
+                final String lifted = Merging.prefixed(Merging.named(test), name);
+                Merging.claimed(taken, lifted, member.getKey(), pkg);
+                test.getAttributes().getNamedItem("name").setNodeValue(lifted);
                 formation.appendChild(top.removeChild(test));
             }
         }
@@ -196,6 +246,15 @@ final class Merging implements Step {
             }
         }
         return found;
+    }
+
+    private static String prefixed(final String test, final String owner) {
+        return String.format(
+            "%s%s-%s",
+            test.substring(0, Merging.MARK),
+            owner,
+            test.substring(Merging.MARK)
+        );
     }
 
     private static String named(final Node object) {

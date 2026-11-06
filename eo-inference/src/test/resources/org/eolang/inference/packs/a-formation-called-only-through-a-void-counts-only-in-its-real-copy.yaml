@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls recv by its name: scoped hands it to as-input, and only read
+# calls it, through the void recv of as-input. Nobody calls read either, so
+# stop w gives both a study copy at one stop, and the study copy of read
+# makes the real copy of recv. A real copy counts wherever its call is made,
+# and a study copy counts only while its formation has no real copy, so only
+# that real copy of recv counts: its size is 5, and cant-receive is a void
+# nobody fills, with no study unknown next to it.
+sources:
+  app.eo: |
+    [] > app
+      scoped 1 > @
+  scoped.eo: |
+    [peer] > scoped
+      as-input recv > input
+      [size cant-receive] > recv
+        size > got
+        cant-receive > fallback
+  as-input.eo: |
+    [recv] > as-input
+      [^] > read
+        (^.recv 5).got > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.scoped.recv.v🌵cant-receive' and count(*)=1]/unknown[@kind='empty']
+  - /answers/o[@loc='Φ.scoped.recv.v🌵size' and count(*)=1]/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.scoped.recv.got' and count(*)=1]/is[@loc='Φ.number']
+  - /answers[not(o[starts-with(@loc, 'Φ.scoped.recv')]//unknown[@kind='study'])]
+  - /answers/o[@loc='Φ.as-input.read.φ']/is[@loc='Φ.number']

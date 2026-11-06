@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A name holding a quote, which §2.3 allows, standing on the left of an
+# inline-phi suffix. The scans that look for the "> [" of such a line used to
+# take every quote for the start of a string literal and skip the rest of the
+# line from the middle of the name, so the suffix was never found and the
+# line was read as a name suffix with nothing to name (#9378).
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@name='bar']/o[@name='φ' and @base='Φ.a"b']
+input: |
+  +package foo
+
+  a"b > [] > bar

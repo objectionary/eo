@@ -1,0 +1,42 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A kept ">> name" handle whose own value applies another handle
+# ("h 5 >> g" over "foo >> h"). The aliased "h" is not kept, so
+# "inline-cactoos" resolves the alias chain into "g" (#7297) and lands the real
+# value "Φ.foo" there. The arguments of "g" are its own, not the (empty) ones of
+# "h": landing the alias alone printed "foo >> g" and the "5" was gone (#9294),
+# the kept-handle flavour of the loss #5952 fixed on the reference path. The
+# "g.eq" dispatch keeps the "g" binding standing (#5782), which is what sends
+# the printer down this path at all.
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/resolve-before-stars.xsl
+  - /org/eolang/parser/parse/fragile-dispatch.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/stars-to-tuples.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/validate-objects-count.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/printer/print/restore-local-names.xsl
+  - /org/eolang/printer/print/inline-cactoos.xsl
+asserts:
+  # The kept handle carries the value of the alias and its own single argument.
+  - /object/o[@name='app']/o[@local='g' and @base='Φ.foo' and count(o)=1]
+  # That argument is still the "5" the handle was written with.
+  - /object/o[@name='app']/o[@local='g']/o[@base='Φ.number']/o[@base='Φ.bytes']/o[text()='40-14-00-00-00-00-00-00']
+  # The alias itself is gone and the dispatch still reaches the kept handle.
+  - /object[count(/object/o[@name='app']/o[@local='h'])=0]
+  - /object/o[@name='app']/o[@name='x' and contains(@base, '🌵') and contains(@base, '.eq')]
+input: |
+  [] > app
+    foo >> h
+    h 5 >> g
+    g.eq 1 > x

@@ -36,11 +36,9 @@ import org.xembly.Xembler;
  *   &lt;/type&gt;
  * &lt;/provides&gt;</pre>
  *
- * <p>Knowing no other column by name is what lets one view serve more
- * than one table: the needs table has the same shape as this one — an
- * owner, an attribute and its type — and will be rendered by the same
- * class, while a rule that starts recording something new about a type
- * gets it into the document for free.</p>
+ * <p>Knowing no other column by name is what lets a rule that starts
+ * recording something new about a type get it into the document for
+ * free.</p>
  *
  * @since 0.67.0
  */
@@ -73,6 +71,15 @@ final class Grouped {
      * @return The document
      */
     XML asXml() {
+        return new XMLDocument(new Xembler(this.directives()).domQuietly());
+    }
+
+    /**
+     * This table as directives, which leave the cursor where they found it.
+     *
+     * @return The directives
+     */
+    Directives directives() {
         final Map<String, List<Map<String, String>>> attrs = this.attributes();
         final Directives dirs = new Directives().add(this.root);
         for (final Tojo type : this.types()) {
@@ -86,7 +93,7 @@ final class Grouped {
             }
             dirs.up();
         }
-        return new XMLDocument(new Xembler(dirs).domQuietly());
+        return dirs.up();
     }
 
     private List<Tojo> types() {

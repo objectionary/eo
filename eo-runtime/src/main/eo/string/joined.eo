@@ -13,17 +13,17 @@
     if. >>!
       items.length.eq 0
       --
-      if. > [^ acc tup] >> with-delimiter
+      if. > [^text acc tup] >> with-delimiter
         tup.length.eq 0
         acc
-        ^.with-delimiter
+        text.with-delimiter
           concat.
             concat.
               dataized tup.head
               delimiter
             acc
           tup.tail
-      | items.head items.tail
+      | (dataized items.head) items.tail
   text >> delimiter!
 
   matches. ++> can-apply-regex-to-a-joined-string

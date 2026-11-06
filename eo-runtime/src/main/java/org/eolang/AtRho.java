@@ -78,6 +78,11 @@ public final class AtRho implements Attribute {
     }
 
     @Override
+    public boolean voided() {
+        return false;
+    }
+
+    @Override
     public String φTerm() {
         final Phi phi = this.rho.get();
         final String term;

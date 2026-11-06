@@ -28,12 +28,12 @@ public final class EOwin32$EOrmdir extends PhDefault implements Atom {
      * Ctor.
      */
     public EOwin32$EOrmdir() {
-        super(new Attrs(new Attr("path", new AtVoid("path"))));
+        super(new Attrs(new Attr("path")));
     }
 
     @Override
     public Phi lambda() {
-        final String path = new Cstring(Expect.at(this, "path")).it();
+        final String path = new Cstring(this.expected("path")).it();
         final Phi result = Phi.Φ.take("win32").take("status-return").copy();
         final int code = Msvcrt.INSTANCE._wrmdir(new WString(path));
         result.put(0, new Data.ToPhi(code));

@@ -9,6 +9,7 @@ import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLChain;
 import com.jcabi.xml.XSLDocument;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -87,7 +88,7 @@ final class Pruning implements Proc<Path> {
             )
         );
         final Collection<String> names = new HashSet<>(this.sources.size());
-        final Path planting = Files.createDirectories(home.resolve("1-planting"));
+        final Path planting = new Seqdir(home, 1).dirs().once("planting");
         for (final Path stale : new Copies(home)) {
             Files.delete(stale);
         }

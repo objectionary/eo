@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
-SPDX-License-Identifier: MIT
+* SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+* SPDX-License-Identifier: MIT
+-->
+<!--
+The index of the inference report: a bar per file with its objects in the
+colours of nine bands; a folder's bar adds up its files. A click on
+a colour in the tally keeps only the files and folders with objects of the
+chosen colours; the file pages share the choice and keep only the lines with
+such marks, plus five lines around each. Under the tally, a glossary says what the words of the report
+mean.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="index" version="3.0">
-  <xsl:output method="html" version="5.0" encoding="UTF-8" indent="no" omit-xml-declaration="yes"/>
+  <xsl:output method="html" version="5.0" encoding="UTF-8" indent="no" omit-xml-declaration="yes" include-content-type="no"/>
   <xsl:template match="/index">
     <html lang="en">
       <head>
@@ -14,35 +22,65 @@ SPDX-License-Identifier: MIT
       </head>
       <body>
         <h1>what every object was copied from</h1>
-        <p class="tally">
-          <span class="named">
+        <p class="tally" title="Click colours to show only their objects; click a chosen colour again to drop it">
+          <span class="named" data-band="named">
             <xsl:value-of select="@named"/>
             <xsl:text> named</xsl:text>
           </span>
-          <span class="rooted">
-            <xsl:value-of select="@rooted"/>
-            <xsl:text> rooted at a void</xsl:text>
+          <span class="gaps" data-band="gaps">
+            <xsl:value-of select="@gaps"/>
+            <xsl:text> one name, with gaps</xsl:text>
           </span>
-          <span class="atom">
+          <span class="pair" data-band="pair">
+            <xsl:value-of select="@pair"/>
+            <xsl:text> two names</xsl:text>
+          </span>
+          <span class="mixed" data-band="mixed">
+            <xsl:value-of select="@mixed"/>
+            <xsl:text> two or more names, maybe with gaps</xsl:text>
+          </span>
+          <span class="loop" data-band="loop">
+            <xsl:value-of select="@loop"/>
+            <xsl:text> unknown, nothing ever answers</xsl:text>
+          </span>
+          <span class="atom" data-band="atom">
             <xsl:value-of select="@atom"/>
-            <xsl:text> filled by an atom</xsl:text>
+            <xsl:text> unknown, filled by an atom</xsl:text>
           </span>
-          <span class="unfilled">
-            <xsl:value-of select="@unfilled"/>
-            <xsl:text> filled by nobody</xsl:text>
+          <span class="study" data-band="study">
+            <xsl:value-of select="@study"/>
+            <xsl:text> unknown, nobody calls this object</xsl:text>
           </span>
-          <span class="blank">
-            <xsl:value-of select="@blank"/>
-            <xsl:text> nothing known</xsl:text>
+          <span class="empty" data-band="empty">
+            <xsl:value-of select="@empty"/>
+            <xsl:text> unknown, filled by nobody</xsl:text>
+          </span>
+          <span class="error" data-band="error">
+            <xsl:value-of select="@error"/>
+            <xsl:text> only an error</xsl:text>
           </span>
         </p>
-        <p class="note">A mark is green where we can name the formation an object was copied from, amber where all we have is a name rooted in a void the callers fill several ways, violet where the void is one only an atom fills and no caller can be looked at, slate where nobody fills the void at all, and red where we have nothing. Hover a mark to see what we found.</p>
+        <dl class="terms">
+          <dt>copy</dt>
+          <dd>The engine answers an object once in every copy of the object around it, so a mark says what the object is in how many copies.</dd>
+          <dt>name</dt>
+          <dd>The object an answer is copied from, like Φ.number. A formation with no name of its own counts as one name per shape: its voids and what its @ gives, then a line per attribute it binds, with the attribute's own voids and what it gives, like [∅] → Φ.string.</dd>
+          <dt>→ and ↺</dt>
+          <dd>In a shape, → is what an @ gives, and ↺ is the object the shape is of: [^] → Φ.bytes with a line [^ ∅] &gt; read ↺ is an object of bytes whose read gives the object back.</dd>
+          <dt>error</dt>
+          <dd>The copy gives T.</dd>
+          <dt>unknown</dt>
+          <dd>The engine can't name what the copy gives, and says which of four kinds of unknown it is. Filled by nobody: a void of a copy a call made that left it empty; a read of it gives T. Nobody calls this object: a void of a copy that stands for a caller who is not there; what is read off it or handed on from it is that unknown too. Filled by an atom: a void of an object an atom returned, since Java fills that object; it carries on the same way. Nothing ever answers: a read in a loop where nothing ever answers, and what is read off it.</dd>
+          <dt>gap</dt>
+          <dd>An error or an unknown.</dd>
+        </dl>
         <xsl:apply-templates select="dir|file"/>
+        <xsl:call-template name="filter"/>
       </body>
     </html>
   </xsl:template>
   <xsl:template match="dir">
-    <details>
+    <details data-named="{@named}" data-gaps="{@gaps}" data-pair="{@pair}" data-mixed="{@mixed}" data-loop="{@loop}" data-atom="{@atom}" data-study="{@study}" data-empty="{@empty}" data-error="{@error}">
       <summary>
         <xsl:value-of select="@name"/>
         <xsl:call-template name="bar"/>
@@ -53,7 +91,7 @@ SPDX-License-Identifier: MIT
     </details>
   </xsl:template>
   <xsl:template match="file">
-    <div class="row">
+    <div class="row" data-named="{@named}" data-gaps="{@gaps}" data-pair="{@pair}" data-mixed="{@mixed}" data-loop="{@loop}" data-atom="{@atom}" data-study="{@study}" data-empty="{@empty}" data-error="{@error}">
       <a href="{@href}">
         <xsl:value-of select="@name"/>
       </a>
@@ -61,12 +99,16 @@ SPDX-License-Identifier: MIT
     </div>
   </xsl:template>
   <xsl:template name="bar">
-    <span class="bar" title="{@named} named, {@rooted} rooted at a void, {@atom} filled by an atom, {@unfilled} filled by nobody, {@blank} nothing known">
+    <span class="bar" title="{@named} named, {@gaps} one name with gaps, {@pair} two names, {@mixed} two or more names maybe with gaps, {@loop} unknown nothing ever answers, {@atom} unknown filled by an atom, {@study} unknown nobody calls this object, {@empty} unknown filled by nobody, {@error} only an error">
       <span class="named" style="flex: {@named}"/>
-      <span class="rooted" style="flex: {@rooted}"/>
+      <span class="gaps" style="flex: {@gaps}"/>
+      <span class="pair" style="flex: {@pair}"/>
+      <span class="mixed" style="flex: {@mixed}"/>
+      <span class="loop" style="flex: {@loop}"/>
       <span class="atom" style="flex: {@atom}"/>
-      <span class="unfilled" style="flex: {@unfilled}"/>
-      <span class="blank" style="flex: {@blank}"/>
+      <span class="study" style="flex: {@study}"/>
+      <span class="empty" style="flex: {@empty}"/>
+      <span class="error" style="flex: {@error}"/>
     </span>
   </xsl:template>
   <xsl:template name="style">
@@ -75,13 +117,22 @@ SPDX-License-Identifier: MIT
       h1 { font-size: 15px; font-weight: 600; margin: 0 0 .8em; }
       a { color: #0645ad; text-decoration: none; }
       a:hover { text-decoration: underline; }
-      .note { color: #555; margin: 0 0 1.6em; font-family: system-ui, sans-serif; }
-      .tally span { margin-right: 1.4em; padding: .1em .4em; border-radius: 3px; }
+      .tally span { margin-right: 1.4em; padding: .1em .4em; border-radius: 3px; display: inline-block; margin-bottom: .3em; }
       .tally .named { background: #d7f0d7; }
-      .tally .rooted { background: #fbeecc; }
+      .tally .gaps { background: #eef3c2; }
+      .tally .pair { background: #d3eff2; }
+      .tally .mixed { background: #d9e5fb; }
+      .tally .loop { background: #fadce9; }
       .tally .atom { background: #e6dcf5; }
-      .tally .unfilled { background: #dfe6e9; }
-      .tally .blank { background: #f7d4d4; }
+      .tally .study { background: #dfe6e9; }
+      .tally .empty { background: #fbeecc; }
+      .tally .error { background: #efe2dc; }
+      .terms { display: grid; grid-template-columns: max-content 1fr; gap: .3em 1.2em; margin: 0 0 1.6em; color: #555; font-family: system-ui, sans-serif; }
+      .terms dt { color: #1a1a1a; font-weight: 600; }
+      .terms dd { margin: 0; }
+      .tally span[data-band] { cursor: pointer; user-select: none; }
+      .tally span.on { box-shadow: 0 0 0 2px #1a1a1a; }
+      .row.hidden, details.hidden { display: none; }
       details { margin: 0; }
       summary { cursor: pointer; display: flex; align-items: center; gap: .8em; padding: .1em 0; font-weight: 600; }
       .in { margin-left: 1.4em; }
@@ -89,10 +140,37 @@ SPDX-License-Identifier: MIT
       .row a { flex: none; }
       .bar { display: flex; flex: 1; height: 8px; min-width: 8em; border-radius: 2px; overflow: hidden; background: #eee; }
       .bar .named { background: #6bbf6b; }
-      .bar .rooted { background: #e8b64c; }
+      .bar .gaps { background: #c3cf3e; }
+      .bar .pair { background: #3fb3c2; }
+      .bar .mixed { background: #5b8def; }
+      .bar .loop { background: #e88bb4; }
       .bar .atom { background: #9b7fd4; }
-      .bar .unfilled { background: #90a4ae; }
-      .bar .blank { background: #d76b6b; }
+      .bar .study { background: #90a4ae; }
+      .bar .empty { background: #e8b64c; }
+      .bar .error { background: #a1887f; }
     </style>
+  </xsl:template>
+  <xsl:template name="filter">
+    <script>
+      (function () {
+        var chips = Array.from(document.querySelectorAll('.tally span[data-band]'));
+        var rows = Array.from(document.querySelectorAll('.row, details'));
+        function shown() {
+          var picked = chips.filter(function (chip) { return chip.classList.contains('on'); }).map(function (chip) { return chip.dataset.band; });
+          rows.forEach(function (row) {
+            var some = picked.some(function (band) { return Number(row.dataset[band]) &gt; 0; });
+            row.classList.toggle('hidden', picked.length &gt; 0 ? !some : false);
+          });
+          try { localStorage.setItem('bands', picked.join(' ')); } catch (ignored) {}
+        }
+        var saved = '';
+        try { saved = localStorage.getItem('bands') || ''; } catch (ignored) {}
+        chips.forEach(function (chip) {
+          chip.classList.toggle('on', saved.split(' ').indexOf(chip.dataset.band) !== -1);
+          chip.addEventListener('click', function () { chip.classList.toggle('on'); shown(); });
+        });
+        shown();
+      })();
+    </script>
   </xsl:template>
 </xsl:stylesheet>

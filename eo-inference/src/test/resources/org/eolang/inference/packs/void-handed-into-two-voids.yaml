@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls shelf, so stuff is unknown, and shelf hands it on to book and to
+# scale. Each call waits for a stop (rule b) and then makes its copy, of book
+# and of scale, with that unknown in pages and in weight.
+sources:
+  book.eo: |
+    [pages] > book
+      pages.size > @
+  scale.eo: |
+    [weight] > scale
+      weight.mass > @
+  shelf.eo: |
+    [stuff] > shelf
+      book stuff > a
+      scale stuff > b
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers[not(o[@lands='v🌵stuff'])]
+  - /answers/o[@loc='Φ.shelf.v🌵stuff']/unknown
+  - /answers/o[@loc='Φ.shelf.a.α0' and @lands='v🌵pages']/unknown
+  - /answers/o[@loc='Φ.shelf.b.α0' and @lands='v🌵weight']/unknown
+  - /answers/o[@loc='Φ.shelf.a']/is[@loc='Φ.book']
+  - /answers/o[@loc='Φ.shelf.b']/is[@loc='Φ.scale']
+  - /answers/o[@loc='Φ.book.v🌵pages']/unknown
+  - /answers/o[@loc='Φ.scale.v🌵weight']/unknown

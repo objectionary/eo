@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls shelf, so stuff is unknown, and so is the weight read off it.
+# shelf hands stuff on to book, whose pages is unknown as well, and the call
+# answers book.
+sources:
+  book.eo: |
+    [pages] > book
+      pages.size > @
+  shelf.eo: |
+    [stuff] > shelf
+      stuff.weight > w
+      book stuff > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.shelf.v🌵stuff']/unknown
+  - /answers/o[@loc='Φ.shelf.w']/unknown
+  - /answers/o[@loc='Φ.shelf.φ.α0' and @lands='v🌵pages']/unknown
+  - /answers/o[@loc='Φ.book.v🌵pages']/unknown
+  - /answers/o[@loc='Φ.shelf.φ']/is[@loc='Φ.book']

@@ -15,16 +15,18 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint invalid-name-notation
 +unlint too-deep-object
 +version 0.0.0
 
-[if] > bool
+[fork] > bool
   if > @
     FF-
     00-
   flag.if > [^flag x] > and
     FF-.eq x
     false
+  fork > if
   if > not
     false
     true
@@ -102,7 +104,8 @@
     a.foo.eq 43 > @
     ^.return > [^] > a
       42.plus 1
-    [foo] > return
+    [bar] > return
+      bar > foo
 
   eq. ++> can-fork-on-a-false-condition
     if.

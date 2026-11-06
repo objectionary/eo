@@ -20,6 +20,35 @@ import org.xembly.Xembler;
 final class LnMethodTest {
 
     @Test
+    void rejectsAChainOfContinuationsDeeperThanTheLimit() {
+        final Stack stack = new Stack();
+        new LnApplication(new Span("foo > x", 1))
+            .into(stack, new Globals(), new Emit());
+        for (int line = 2; line <= Stack.DEEPEST + 1; line = line + 1) {
+            new LnMethod(new Span(".bar", line)).into(stack, new Globals(), new Emit());
+        }
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnMethod(new Span(".bar", Stack.DEEPEST + 2))
+                .into(stack, new Globals(), new Emit()),
+            "a chain spelled as `.method` continuation lines must stop at the depth limit of R-3.5.3c, the way one spelled on a single line does"
+        );
+    }
+
+    @Test
+    void rejectsAChainWhoseContinuationsFollowHorizontalHops() {
+        final Stack stack = new Stack();
+        new LnApplication(new Span(String.format("foo%s > x", ".bar".repeat(Stack.DEEPEST)), 1))
+            .into(stack, new Globals(), new Emit());
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> new LnMethod(new Span(".bar", 2))
+                .into(stack, new Globals(), new Emit()),
+            "the hops a line spells on itself and the ones its continuation lines bring must count toward one limit, since both become levels of the same tree"
+        );
+    }
+
+    @Test
     void rejectsAtTopLevel() {
         final Stack stack = new Stack();
         Assertions.assertThrows(

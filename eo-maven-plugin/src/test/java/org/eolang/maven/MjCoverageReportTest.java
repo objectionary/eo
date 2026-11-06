@@ -87,6 +87,40 @@ final class MjCoverageReportTest {
     }
 
     @Test
+    void failsWhenTheHitsFileIsMissingAndAMinimumIsSet(@Mktmp final Path temp)
+        throws Exception {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(System.lineSeparator(), "[] > x", "  42 > y")
+        ).execute(MjParse.class);
+        final Path hits = temp.resolve("nope.txt");
+        MatcherAssert.assertThat(
+            "a minimum above zero must fail the build when the hits file is absent, but it passed",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> maven.with("hits", hits.toFile())
+                    .with("lcov", temp.resolve("coverage.info").toFile())
+                    .with("minimum", 90.0d)
+                    .execute(MjCoverageReport.class),
+                "coverage-report must fail when the hits file it needs is missing, but it didnt"
+            ).getCause().getCause().getMessage(),
+            Matchers.containsString("nope.txt")
+        );
+    }
+
+    @Test
+    void failsWhenTheHitsFileIsNotSetAndAMinimumIsSet(@Mktmp final Path temp)
+        throws Exception {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(System.lineSeparator(), "[] > x", "  42 > y")
+        ).execute(MjParse.class);
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> maven.with("minimum", 90.0d).execute(MjCoverageReport.class),
+            "coverage-report must fail when eo.coverageFile is not set and a minimum is, but it didnt"
+        );
+    }
+
+    @Test
     void failsTheBuildWhenCoverageIsBelowTheMinimum(@Mktmp final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             String.join(System.lineSeparator(), "[] > x", "  42 > y")
@@ -120,6 +154,24 @@ final class MjCoverageReportTest {
                 "coverage-report must fail on a source that does not parse, but it didnt"
             ).getCause().getCause().getMessage(),
             Matchers.containsString("doesn't parse")
+        );
+    }
+
+    @Test
+    void reportsASourceThatOnlyWarns(@Mktmp final Path temp) throws Exception {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(System.lineSeparator(), "[] > main", "  x?.y.a > @")
+        ).execute(MjParse.class);
+        final Path hits = temp.resolve("coverage.txt");
+        Files.writeString(hits, "");
+        final Path lcov = temp.resolve("coverage.info");
+        maven.with("hits", hits.toFile())
+            .with("lcov", lcov.toFile())
+            .execute(MjCoverageReport.class);
+        MatcherAssert.assertThat(
+            "a source whose only defect is a warning must still be reported, but it wasnt",
+            Files.readString(lcov),
+            Matchers.containsString("SF:")
         );
     }
 

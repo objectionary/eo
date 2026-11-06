@@ -242,7 +242,7 @@ This makes every intermediate state inspectable with
 
 All transformations at both parse-time normalization
   and transpile-time code generation are implemented as
-  pipelines of [XSLT 2.0](https://www.w3.org/TR/xslt20/) stylesheets
+  pipelines of [XSLT 3.0](https://www.w3.org/TR/xslt-30/) stylesheets
   rather than visitor passes written in the host language.
 In most compilers transformations are encoded as Java/C++ AST visitors
   (e.g. [Eclipse JDT](https://eclipse.dev/jdt/),

@@ -14,10 +14,10 @@ import org.eolang.Phi;
  *
  * <p>Fills a {@code struct stat} for the file at the given path, through
  * {@code stat} or through {@code lstat} when a symbolic link has to be seen as
- * itself, and hands the code, the mode bits and the byte size to EO in one
- * object. Linux x86-64, Linux aarch64 and macOS lay that struct out
- * differently, so each keeps its own {@link FileStat}; the divergence is
- * spelled out rather than papered over.</p>
+ * itself, and hands the code, the reason the call failed, the mode bits and
+ * the byte size to EO in one object. Linux x86-64, Linux aarch64 and macOS
+ * lay that struct out differently, so each keeps its own {@link FileStat};
+ * the divergence is spelled out rather than papered over.</p>
  *
  * @since 0.57.0
  */
@@ -53,9 +53,11 @@ public final class Stat {
     public Phi it() {
         final FileStat info = new StatLayout().stat(this.path);
         final Phi result = Phi.Φ.take("posix").take("stat-return").copy();
-        result.put(0, new Data.ToPhi(this.call.applyAsInt(this.path, (Structure) info)));
-        result.put(1, new Data.ToPhi(info.mode()));
-        result.put(2, new Data.ToPhi(info.length()));
+        final int code = this.call.applyAsInt(this.path, (Structure) info);
+        result.put(0, new Data.ToPhi(code));
+        result.put(1, new Errno(code).get());
+        result.put(2, new Data.ToPhi(info.mode()));
+        result.put(3, new Data.ToPhi(info.length()));
         return result;
     }
 

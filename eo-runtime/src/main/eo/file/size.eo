@@ -1,5 +1,9 @@
 # Size of a file in bytes, or `cant-measure` if the file does not exist. It is
 # a method of `file`, taken off the file it measures.
+#
+# The fallback is applied to the reason, which names the file and what the
+# operating system said about it, so a caller that leaves the fallback unbound
+# terminates with that reason instead of with the name of the void.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -11,21 +15,25 @@
 [^entry cant-measure] > size
   if. > @
     info.code.eq 0
-    info.size
+    size.
+      called. >> info
+        os.is-windows.if
+          win32.stat64 entry.path
+          posix.stat entry.path
     cant-measure
-  called. > info
-    os.is-windows.if
-      win32.stat64 entry.path
-      posix.stat entry.path
+      "Can't measure the file '%s': %s".printf
+        * entry.path info.message
 
   eq. ++> can-ignore-the-fallback-when-a-file-exists
     0
-    mktemp.tmpfile.touched.size -1
+    mktemp.tmpfile.touched.size
+      -1 > [message]
 
   ++> can-measure-a-directory-without-falling-back
     not. > @
       eq.
-        d.as-file.size -1
+        d.as-file.size
+          -1 > [message]
         -1
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
 
@@ -37,8 +45,7 @@
           "w"
           f.write "Hello" > [^ f]
         "a"
-        f.write > [^ f]
-          ", world"
+        f.write ", world" > [^ f]
 
   eq. ++> can-measure-a-file-after-truncating-it
     0
@@ -55,8 +62,7 @@
     size.
       mktemp.tmpfile.open
         "w"
-        f.write > [^ f]
-          "Hello, world"
+        f.write "Hello, world" > [^ f]
 
   ++> can-measure-a-symbolic-link-by-its-target-size
     os.is-windows.or > @
@@ -71,8 +77,16 @@
   mktemp.tmpfile.deleted.touched.size.eq ++> can-measure-an-empty-file-after-touching
     0
 
+  ++> can-name-the-file-it-cannot-measure
+    starts-with. > @
+      f.size I
+      "Can't measure the file '%s': ".printf
+        * f.path
+    mktemp.tmpfile.deleted > f
+
   eq. ++> can-recover-from-sizing-an-absent-file
     -1
-    mktemp.tmpfile.deleted.size -1
+    mktemp.tmpfile.deleted.size
+      -1 > [message]
 
   mktemp.tmpfile.deleted.size --> stops-on-sizing-an-absent-file

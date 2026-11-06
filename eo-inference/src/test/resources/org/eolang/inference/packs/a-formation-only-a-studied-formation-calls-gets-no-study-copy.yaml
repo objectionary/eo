@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody calls caller or callee, and each has a void no copy fills, but caller
+# calls callee with "oak". A stop studies caller first, inside the one copy of
+# box, and its walk makes a copy of callee whose y is that string. So callee
+# gets no study copy, and its y and its @ are a string, with nothing unknown.
+sources:
+  box.eo: |
+    [k] > box
+      [^ x] > caller
+        ^.callee "oak" > @
+      [^ y] > callee
+        y > @
+  app.eo: |
+    [] > app
+      box 5 > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.box.caller' and @copies='1']
+  - /answers/o[@loc='Φ.box.caller.v🌵x']/unknown
+  - /answers/o[@loc='Φ.box.callee' and @copies='1']
+  - /answers/o[@loc='Φ.box.callee.v🌵y']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.box.callee.φ']/is[@loc='Φ.string']
+  - /answers[not(o[starts-with(@loc, 'Φ.box.callee')]//unknown)]

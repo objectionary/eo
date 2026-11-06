@@ -5,7 +5,7 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@name='and' and o[@name='φ' and @base='.eq' and o[@base='Φ.bytes'] and o[@as='α0' and @base='ξ.x']]]
+  - //o[@name='and' and o[@name='φ' and @base='.eq' and o[@base='Φ.bytes'] and o[@as='α0' and @base='ξ.v🌵x']]]
 input: |
   [] > true
     01-.eq x > [x] > and

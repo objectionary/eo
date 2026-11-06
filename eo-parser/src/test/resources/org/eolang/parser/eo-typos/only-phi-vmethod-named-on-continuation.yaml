@@ -4,11 +4,11 @@
 # yamllint disable rule:line-length
 line: 4
 message: |-
-  [4:4] error: 'foo cannot be a named attribute of only-phi formation bar, which binds only its φ decoratee'
-      .c > foo
+  [4:4] error: 'z cannot be a named attribute of only-phi formation f, which binds only its φ decoratee'
+      .baz > z
       ^
 input: |
-  [] > obj
-    a > [] > bar
-      b
-      .c > foo
+  [] > main
+    foo > [x] > f
+      bar
+      .baz > z

@@ -6,17 +6,18 @@ package org.eolang.inference;
 
 import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
-import com.jcabi.xml.XML;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.xembly.Directives;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * One source file, ready to be shown to somebody.
@@ -24,27 +25,18 @@ import org.xembly.Directives;
  * <p>The parser keeps the whole text of a file in the XMIR, beside the objects
  * it read out of it, so a page can show the program as its author wrote it
  * rather than as a machine printed it back. Every object carries the line and
- * column it was written at, and the tables carry what we found out about it,
- * and this puts the two together: the source, line by line, with a mark on
- * every stretch of text we can say something about.</p>
+ * column it was written at, and the table carries what its copies answer, and
+ * this puts the two together: the source, line by line, with a mark on every
+ * stretch of text the table says something about.</p>
  *
- * <p>The bytes of a literal get no mark of their own. There is nothing to find
- * out about {@code 42} beyond that it is what it is, so the only thing a mark
- * over it could say is where the parser filed those bytes away, and a reader
- * hovering over a number was told {@code Φ.cup.lid.α0} where the object above
- * it had already said something worth reading (#8538).</p>
- *
- * <p>The objects are walked rather than asked for. Asking a document for the
- * nodes that match something costs what the whole document costs and hands
- * back a document per node, and a file of the runtime has six hundred of
- * them (#8575).</p>
+ * <p>The bytes of a literal get no mark of their own: there is nothing to find
+ * out about {@code 42} beyond that it is what it is (#8538).</p>
  *
  * <p>The tally at the top is counted here too, from the same answers as the
- * marks. A page that says nine tenths green and then draws half the file red
- * would be worse than no page, and counting in one place is what stops that.
- * The bytes stay counted: they are known as deeply as anything ever is, and
- * dropping them from the tally would leave the page claiming less than it
- * knows.</p>
+ * marks, over every object with a locator, whether the source spells it or
+ * not. A page that says nine tenths green and then draws half the file red
+ * would be worse than no page, and counting in one place is what stops
+ * that.</p>
  *
  * @since 0.70.0
  */
@@ -52,104 +44,119 @@ final class Page {
 
     /**
      * Where one line of the listing ends and the next begins.
+     *
+     * <p>Only the breaks the parser counts, and not {@code \R}, which also
+     * matches {@code U+2028} and its kin. The parser lets those stand inside
+     * a string literal and counts no line for them, so a page that broke on
+     * one would put every mark below the literal on the wrong line
+     * (#9270).</p>
      */
-    private static final Pattern BREAK = Pattern.compile("\\R");
+    private static final Pattern BREAK = Pattern.compile("\\r?\\n");
 
     /**
-     * The XMIR of the file.
+     * The XMIR of the file, as {@code pre-inference} left it.
      */
-    private final XML xmir;
+    private final Xnav xmir;
 
     /**
-     * What the tables answered, by the locator of the object.
+     * The path of the source file, relative to the program.
      */
-    private final Map<String, Answer> answers;
+    private final String name;
+
+    /**
+     * What the table says of each place.
+     */
+    private final Table table;
+
+    /**
+     * The formations of the program.
+     */
+    private final Shapes shapes;
 
     /**
      * Ctor.
      *
      * @param file The XMIR of the file, as {@code pre-inference} left it
-     * @param told What the tables answered, by the locator of the object
+     * @param path The path of the source file, relative to the program
+     * @param answers What the table says of each place
+     * @param formations The formations of the program
      */
-    Page(final XML file, final Map<String, Answer> told) {
+    Page(final Xnav file, final String path, final Table answers, final Shapes formations) {
         this.xmir = file;
-        this.answers = told;
+        this.name = path;
+        this.table = answers;
+        this.shapes = formations;
     }
 
     /**
-     * The page.
+     * The page, with a {@code line} per line of the source and the tally of
+     * its objects by band.
      *
-     * @param name The path of the source file, relative to the program
-     * @return The directives
+     * @param page The document the page is made in
+     * @return The page
      */
-    Directives directives(final String name) {
-        final List<String> lines = this.lines();
-        final Map<Integer, Collection<Written>> written = this.written();
+    Element drawn(final Document page) {
+        final Element found = page.createElement("page");
+        found.setAttribute("file", this.name);
+        found.setAttribute(
+            "root", "../".repeat((int) this.name.chars().filter(glyph -> glyph == '/').count())
+        );
         final Map<String, Integer> counted = this.counted();
-        final Directives dirs = new Directives()
-            .add("page")
-            .attr("file", name)
-            .attr("named", Integer.toString(counted.getOrDefault("named", 0)))
-            .attr("rooted", Integer.toString(counted.getOrDefault("rooted", 0)))
-            .attr("atom", Integer.toString(counted.getOrDefault("atom", 0)))
-            .attr("unfilled", Integer.toString(counted.getOrDefault("unfilled", 0)))
-            .attr("blank", Integer.toString(counted.getOrDefault("blank", 0)));
-        for (int index = 0; index < lines.size(); index = index + 1) {
-            dirs.add("line").attr("n", Integer.toString(index + 1));
-            dirs.append(
-                new Pieces(
-                    lines.get(index),
-                    written.getOrDefault(index + 1, new ArrayList<>(0))
-                ).directives()
-            );
-            dirs.up();
+        for (final String band : Band.ORDER) {
+            found.setAttribute(band, Integer.toString(counted.getOrDefault(band, 0)));
         }
-        return dirs.up();
+        final List<String> lines = this.lines();
+        final Map<Integer, List<Written>> written = this.written();
+        final Entries entries = new Entries(this.table, this.shapes, this.name);
+        for (int index = 0; index < lines.size(); index = index + 1) {
+            final Element row = page.createElement("line");
+            row.setAttribute("n", Integer.toString(index + 1));
+            new Pieces(
+                lines.get(index), written.getOrDefault(index + 1, Collections.emptyList())
+            ).drawn(row, entries);
+            found.appendChild(row);
+        }
+        return found;
     }
 
     private List<String> lines() {
         final List<String> found = new ArrayList<>(0);
-        for (final String text : this.xmir.xpath("/object/listing/text()")) {
-            for (final String line : Page.BREAK.split(text, -1)) {
-                found.add(line);
-            }
-        }
+        this.root().elements(Filter.withName("listing")).findFirst().ifPresent(
+            listing -> found.addAll(
+                Arrays.asList(Page.BREAK.split(listing.text().orElse(""), -1))
+            )
+        );
         if (!found.isEmpty() && found.get(found.size() - 1).isEmpty()) {
             found.remove(found.size() - 1);
         }
         return found;
     }
 
-    private Map<Integer, Collection<Written>> written() {
-        final Map<Integer, Collection<Written>> found = new LinkedHashMap<>(0);
-        for (final Xnav object : this.marked()) {
+    private Map<Integer, List<Written>> written() {
+        final Map<Integer, List<Written>> found = new HashMap<>(0);
+        final List<Xnav> objects = this.deeper(this.root())
+            .filter(Page::placed)
+            .filter(object -> !Page.datum(object))
+            .collect(Collectors.toList());
+        for (final Xnav object : objects) {
             final Noted noted = new Noted(object);
-            final String loc = noted.says("loc");
-            final Answer answer = this.answers.get(loc);
-            if (answer != null) {
-                found.computeIfAbsent(
-                    Integer.parseInt(noted.says("line")),
-                    key -> new ArrayList<>(1)
-                ).add(
-                    new Written(
-                        loc, Integer.parseInt(noted.says("pos")), noted.says("name"), answer
-                    )
-                );
-            }
+            found.computeIfAbsent(
+                Integer.parseInt(noted.says("line")), key -> new ArrayList<>(1)
+            ).add(
+                new Written(
+                    noted.says("loc"),
+                    Integer.parseInt(noted.says("pos")),
+                    noted.says("name"),
+                    noted.says("base")
+                )
+            );
         }
         return found;
     }
 
-    private Collection<Xnav> marked() {
-        return Page.deeper(new Xnav(this.xmir.inner()).element("object"))
-            .filter(Page::placed)
-            .filter(object -> !Page.datum(object))
-            .collect(Collectors.toList());
-    }
-
-    private static Stream<Xnav> deeper(final Xnav object) {
+    private Stream<Xnav> deeper(final Xnav object) {
         return object.elements(Filter.withName("o"))
-            .flatMap(kid -> Stream.concat(Stream.of(kid), Page.deeper(kid)));
+            .flatMap(kid -> Stream.concat(Stream.of(kid), this.deeper(kid)));
     }
 
     private static boolean placed(final Xnav object) {
@@ -161,17 +168,26 @@ final class Page {
 
     private static boolean datum(final Xnav object) {
         return object.elements(Filter.withName("o")).findAny().isEmpty()
-            && !object.text().orElse("").trim().isEmpty();
+            && !object.text().orElse("").strip().isEmpty();
     }
 
     private Map<String, Integer> counted() {
-        final Map<String, Integer> found = new HashMap<>(5);
-        for (final String loc : this.xmir.xpath("//o[@loc]/@loc")) {
-            final Answer answer = this.answers.get(loc);
-            if (answer != null) {
-                found.merge(new Band(answer).name(), 1, Integer::sum);
-            }
-        }
+        final Map<String, Integer> found = new HashMap<>(Band.ORDER.size());
+        this.deeper(this.root())
+            .map(object -> new Noted(object).says("loc"))
+            .filter(loc -> !loc.isEmpty())
+            .map(loc -> new Band(this.shapes.folded(loc)).name())
+            .forEach(band -> found.merge(band, 1, Integer::sum));
         return found;
+    }
+
+    private Xnav root() {
+        return this.xmir.elements()
+            .filter(node -> node.node().getNodeType() == Node.ELEMENT_NODE)
+            .findFirst().orElseThrow(
+                () -> new IllegalStateException(
+                    String.format("The XMIR of %s has no root element", this.name)
+                )
+            );
     }
 }
