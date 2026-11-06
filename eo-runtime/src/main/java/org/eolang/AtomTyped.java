@@ -10,8 +10,7 @@ package org.eolang;
  * <p>It dispatches the wrapped atom's lambda safely (through {@link AtomSafe})
  * and then checks that the {@code forma} of the computed object fits the type
  * declared for the atom in EO (the {@code /Q.foo} return-type suffix), as
- * {@link AtomType} decides: either side of a union fits, and a tree fits by
- * the forma before its brackets. A mismatch means the atom broke its declared
+ * {@link AtomType} decides: a tree fits by the forma before its brackets. A mismatch means the atom broke its declared
  * contract, so an {@link ExFailure} is raised. An empty type or a type
  * variable, {@code A} to {@code F}, leaves the computed object unchecked.</p>
  *

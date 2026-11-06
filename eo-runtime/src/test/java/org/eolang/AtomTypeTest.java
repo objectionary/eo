@@ -35,24 +35,6 @@ final class AtomTypeTest {
     }
 
     @Test
-    void admitsTheRightSideOfUnion() {
-        MatcherAssert.assertThat(
-            "a union must admit the forma on its right side, but it didnt",
-            new AtomType("Φ.true|Φ.false").admits("Φ.false"),
-            Matchers.is(true)
-        );
-    }
-
-    @Test
-    void rejectsFormaOutsideUnion() {
-        MatcherAssert.assertThat(
-            "a union must not admit a forma neither of its sides names, but it did",
-            new AtomType("Φ.true|Φ.false").admits("Φ.bool"),
-            Matchers.is(false)
-        );
-    }
-
-    @Test
     void admitsTheHeadOfTree() {
         MatcherAssert.assertThat(
             "a tree must admit the forma before its brackets, but it didnt",
@@ -68,15 +50,6 @@ final class AtomTypeTest {
             "a tree must not admit a forma that only its brackets name, but it did",
             new AtomType("Φ.posix.status-return(Φ.number,Φ.string)").admits("Φ.number"),
             Matchers.is(false)
-        );
-    }
-
-    @Test
-    void admitsTheHeadOfTreeInsideUnion() {
-        MatcherAssert.assertThat(
-            "a union of two trees must admit the head of the second one, but it didnt",
-            new AtomType("Φ.number(Φ.bytes)|Φ.text(Φ.string(Φ.bytes))").admits("Φ.text"),
-            Matchers.is(true)
         );
     }
 
