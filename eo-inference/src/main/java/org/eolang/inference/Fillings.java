@@ -161,12 +161,12 @@ final class Fillings {
     private Filling value(final String place) {
         final Filling head = this.head(place);
         final Filling found;
-        if (!this.program.calls(place)) {
-            found = head;
-        } else if (head.kind() == 'O') {
+        if (this.program.calls(place) && head.kind() == 'O') {
             found = new Filling('C', head.loc());
-        } else {
+        } else if (this.program.calls(place)) {
             found = new Filling('W', place);
+        } else {
+            found = head;
         }
         return found;
     }
@@ -229,17 +229,39 @@ final class Fillings {
 
     private Filling attribute(final String form, final String name) {
         final Formation shape = this.program.form(form);
+        final Filling found;
+        if ("ρ".equals(name)) {
+            found = this.parent(form);
+        } else if (shape.open(name)) {
+            found = new Filling('W', String.join(".", form, name));
+        } else if (shape.has(name)) {
+            found = this.value(String.join(".", form, name));
+        } else {
+            found = this.behind(form, name);
+        }
+        return found;
+    }
+
+    private Filling parent(final String form) {
+        final String rho = this.program.form(form).parent();
+        final Filling found;
+        if ("Φ".equals(rho)) {
+            found = new Filling('Φ', "Φ");
+        } else if (rho.isEmpty()) {
+            found = new Filling('W', String.join(".", form, "ρ"));
+        } else {
+            found = new Filling('X', rho);
+        }
+        return found;
+    }
+
+    private Filling behind(final String form, final String name) {
+        final Formation shape = this.program.form(form);
         final String back = new Annotation(shape.returns()).head();
         final Filling found;
-        if ("ρ".equals(name) && "Φ".equals(shape.parent())) {
-            found = new Filling('Φ', "Φ");
-        } else if ("ρ".equals(name) && !shape.parent().isEmpty()) {
-            found = new Filling('X', shape.parent());
-        } else if (shape.has(name) && !shape.open(name)) {
-            found = this.value(String.join(".", form, name));
-        } else if (!shape.has(name) && shape.has("φ") && !shape.open("φ")) {
+        if (shape.has("φ") && !shape.open("φ")) {
             found = this.member(this.value(String.join(".", form, "φ")), name);
-        } else if (!shape.has(name) && this.program.formation(back)) {
+        } else if (this.program.formation(back)) {
             found = this.member(new Filling('X', back), name);
         } else {
             found = new Filling('W', String.join(".", form, name));
