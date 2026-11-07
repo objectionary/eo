@@ -273,6 +273,17 @@ final class Population {
     }
 
     /**
+     * Note the copy containing a new copy, independently of its receiver.
+     *
+     * @param copy The new copy
+     * @param outer The containing copy
+     * @return The new copy
+     */
+    int enclose(final int copy, final int outer) {
+        return this.counting.enclose(copy, outer);
+    }
+
+    /**
      * Whether a count told before has turned since.
      *
      * @param told The count, with what it was
