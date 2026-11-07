@@ -45,3 +45,4 @@ answers:
   - /answers/o[@loc='Φ.bool.and.φ.α1' and @lands='a🌵5-6']/is[@loc='Φ.bool']
   - /answers/o[@loc='Φ.bool.and.φ']/is[@loc='Φ.bool']
   - /answers/o[@loc='Φ.bool.and']/reduced/is[@loc='Φ.bool']
+  - /answers[not(o[starts-with(@loc, 'Φ.bool.and')]//unknown[@kind='java'])]

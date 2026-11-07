@@ -2,14 +2,12 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# Nothing calls status at first, so a stop decides Java alone fills its note,
-# and a later stop keeps late as written, whose call of status puts "late"
-# into the pool. So the text read off what check returns is an unknown and a
-# string, and d puts both into the a of a copy of first, with b empty. app
-# reads off d, so that copy counts and reduces to what its @ gives: the string
-# goes into the k of keep, and the unknown next to it is left out (rule e).
-# Before the string comes, the call waits on the unknown alone (rule b) and
-# then makes that copy with the unknown in a, so d and k hold the string alone.
+# check returns a status with no brackets. late puts "late" into its note,
+# and also its own void x, which only the walk could answer, so the text read
+# off what check returns is a string and an unknown only Java fills. d puts
+# both into the a of a copy of first, with b empty. app reads off d, so that
+# copy counts and reduces to what its @ gives: the string goes into the k of
+# keep, and the unknown next to it is left out (rule e).
 sources:
   os.eo: |
     [] > os
@@ -19,7 +17,8 @@ sources:
         note > text
   late.eo: |
     [x] > late
-      os.status 0 "late" > @
+      os.status 0 "late" > one
+      os.status 1 x > two
   first.eo: |
     [a b] > first
       a > @

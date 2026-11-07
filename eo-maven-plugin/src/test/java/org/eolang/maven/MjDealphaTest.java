@@ -11,6 +11,7 @@ import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.SecureRandom;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -171,6 +172,212 @@ final class MjDealphaTest {
                 )
             ),
             XhtmlMatchers.hasXPath("/object/o/o[@name='leaf']/o[@name='φ']/o[@as='v🌵kit']")
+        );
+    }
+
+    @Test
+    void namesArgumentOfCallOnVoidAtomSaysJavaFills(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > app",
+                "  os.check.code.plus 5 > @"
+            )
+        ).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > os",
+                "  [] > check /Q.os.status(Q.string,Q.number)",
+                "  [msg cde] > status",
+                "    cde > code"
+            ),
+            "os",
+            "os.eo"
+        ).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[@] > number",
+                "  [y] > plus",
+                "    y > @"
+            ),
+            "number",
+            "number.eo"
+        ).withProgram("[@] > bytes", "bytes", "bytes.eo")
+            .withProgram("[@] > string", "string", "string.eo");
+        MatcherAssert.assertThat(
+            "an argument of a call on a void an atom types must carry the name of its void, but it doesnt",
+            new XMLDocument(
+                maven.execute(new PpDealpha()).result().get(
+                    String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha"))
+                )
+            ),
+            XhtmlMatchers.hasXPath("/object/o/o[@name='φ']/o[@as='v🌵y']")
+        );
+    }
+
+    @Test
+    void namesArgumentOfCallOnVoidOfCopyRebuiltFromWhatAtomReturns(@Mktmp final Path temp)
+        throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > app",
+                "  os.check.called.code.plus 5 > @"
+            )
+        ).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > os",
+                "  [] > check /Q.os.status(Q.number)",
+                "  [cde] > status",
+                "    os.status > called",
+                "      code",
+                "    cde > code"
+            ),
+            "os",
+            "os.eo"
+        ).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[@] > number",
+                "  [y] > plus",
+                "    y > @"
+            ),
+            "number",
+            "number.eo"
+        ).withProgram("[@] > bytes", "bytes", "bytes.eo");
+        MatcherAssert.assertThat(
+            "an argument of a call on a void of a copy rebuilt from what an atom returns must carry the name of its void, but it doesnt",
+            new XMLDocument(
+                maven.execute(new PpDealpha()).result().get(
+                    String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha"))
+                )
+            ),
+            XhtmlMatchers.hasXPath("/object/o/o[@name='φ']/o[@as='v🌵y']")
+        );
+    }
+
+    @Test
+    void namesArgumentOfCallOnVoidOfCopyMadeInEo(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > app",
+                "  box.code.eq 5 > @",
+                String.format("  os.status %d > box", new SecureRandom().nextInt(10_000))
+            )
+        ).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > os",
+                "  [cde] > status",
+                "    cde > code"
+            ),
+            "os",
+            "os.eo"
+        ).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[@] > number",
+                "  [x] > eq",
+                "    x > @"
+            ),
+            "number",
+            "number.eo"
+        ).withProgram("[@] > bytes", "bytes", "bytes.eo");
+        MatcherAssert.assertThat(
+            "an argument of a call on a void of a copy made in EO must carry the name of its void, but it doesnt",
+            new XMLDocument(
+                maven.execute(new PpDealpha()).result().get(
+                    String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha"))
+                )
+            ),
+            XhtmlMatchers.hasXPath("/object/o/o[@name='φ']/o[@as='v🌵x']")
+        );
+    }
+
+    @Test
+    void keepsAlphaOfCallOnVoidOfCopyThatIfPicks(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > app",
+                "  pick > yes",
+                "    bool",
+                "      [left right]",
+                "        left > @",
+                "  pick > @",
+                "    bool",
+                "      [left right]",
+                "        right > @",
+                "  [flag] > pick",
+                "    box.code.eq 5 > @",
+                "    flag.if > box",
+                "      os.status 7",
+                "      os.state 8"
+            )
+        ).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > os",
+                "  [cde] > status",
+                "    cde > code",
+                "  [cd] > state",
+                "    cd > code"
+            ),
+            "os",
+            "os.eo"
+        ).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[fork] > bool",
+                "  fork > if"
+            ),
+            "bool",
+            "bool.eo"
+        ).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[@] > number",
+                "  [x] > eq",
+                "    x > @"
+            ),
+            "number",
+            "number.eo"
+        ).withProgram("[@] > bytes", "bytes", "bytes.eo");
+        MatcherAssert.assertThat(
+            "an argument of a call on a void of a copy an if picks must keep its place, but it was renamed",
+            new XMLDocument(
+                maven.execute(new PpDealpha()).result().get(
+                    String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha"))
+                )
+            ),
+            XhtmlMatchers.hasXPath("/object/o/o[@name='pick']/o[@name='φ']/o[@as='α0']")
+        );
+    }
+
+    @Test
+    void keepsAlphaOfArgumentThatLandsInVoidCompilerNamed(@Mktmp final Path temp)
+        throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > app",
+                "  pick 5 > @",
+                "  [] > pick",
+                "    ? >> left",
+                "    left > @"
+            )
+        ).withProgram("[@] > bytes", "bytes", "bytes.eo")
+            .withProgram("[@] > number", "number", "number.eo");
+        MatcherAssert.assertThat(
+            "an argument that lands in a void the compiler named must keep its place, but it was renamed",
+            new XMLDocument(
+                maven.execute(new PpDealpha()).result().get(
+                    String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha"))
+                )
+            ),
+            XhtmlMatchers.hasXPath("/object/o/o[@name='φ']/o[@as='α0']")
         );
     }
 

@@ -36,6 +36,15 @@ import java.util.stream.Collectors;
  * formation from {@code facts.xml} alone, since then no caller can change the
  * void it lands in.</p>
  *
+ * <p>What an atom returns is a type, such as
+ * {@code Φ.posix.status-return(Φ.number,Φ.string)}. The formation it fixes is
+ * the name before the brackets, and the brackets fix what Java puts into the
+ * voids of that formation. A call written in the program fixes the voids of
+ * the copy it makes in the same way, with the arguments written there. So
+ * {@link Origins} gets the type whole, the voids of every formation in the
+ * order they are written, and the arguments of every call, by position or by
+ * name.</p>
+ *
  * @since 0.76.0
  */
 final class Grounded {
@@ -76,6 +85,34 @@ final class Grounded {
                     type -> type.attribute("id").text().get(),
                     Grounded::targets,
                     (first, second) -> first
+                )
+            ),
+            new Calls(
+                table.element("objects").elements(Filter.withName("type")).collect(
+                    Collectors.toMap(
+                        type -> type.attribute("id").text().get(),
+                        type -> type.elements(Filter.withName("attr")).filter(
+                            attr -> "true".equals(attr.attribute("void").text().orElse(""))
+                        ).map(attr -> attr.attribute("name").text().get()).filter(
+                            name -> !"ρ".equals(name)
+                        ).collect(Collectors.toList()),
+                        (first, second) -> first
+                    )
+                ),
+                table.element("calls").elements(Filter.withName("call")).collect(
+                    Collectors.toMap(
+                        call -> call.attribute("loc").text().get(),
+                        call -> call.elements(Filter.withName("arg")).collect(
+                            Collectors.toMap(
+                                arg -> arg.attribute("n").text().map(
+                                    pos -> String.format("α%s", pos)
+                                ).orElseGet(() -> arg.attribute("name").text().get()),
+                                arg -> arg.attribute("loc").text().get(),
+                                (first, second) -> first
+                            )
+                        ),
+                        (first, second) -> first
+                    )
                 )
             ),
             table.element("reads").elements(Filter.withName("read")).collect(

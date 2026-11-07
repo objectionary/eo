@@ -18,8 +18,9 @@ import org.eolang.sys.win32.WinFindData;
  * <p>The code is the number under which {@link Handles} keeps the handle it
  * got back, and the name is the first entry the search found: on Windows the
  * search opens and reads at once, unlike {@code opendir}, so the first entry
- * has nowhere else to go. A failure is a code of {@code -1}, with no name and
- * with the number the kernel left behind in the message.</p>
+ * has nowhere else to go. The message is then an empty string. A failure is
+ * a code of {@code -1}, with an empty name and with the number the kernel
+ * left behind in the message.</p>
  *
  * @since 0.77.0
  * @checkstyle IllegalIdentifierNameCheck (6 lines)
@@ -44,7 +45,7 @@ public final class EOwin32$EOfind_first_file extends PhDefault implements Atom {
         final Pointer search = Kernel32.INSTANCE.FindFirstFileW(new WString(pattern), data);
         if (search == null || Pointer.nativeValue(search) == -1L) {
             result.put(0, new Data.ToPhi(-1));
-            result.put(1, new PhDefault());
+            result.put(1, new Data.ToPhi(""));
             result.put(
                 2,
                 new Data.ToPhi(String.format("Win32 error %d", Native.getLastError()))
@@ -52,7 +53,7 @@ public final class EOwin32$EOfind_first_file extends PhDefault implements Atom {
         } else {
             result.put(0, new Data.ToPhi(Handles.INSTANCE.add(search)));
             result.put(1, new Data.ToPhi(data.filename()));
-            result.put(2, new PhDefault());
+            result.put(2, new Data.ToPhi(""));
         }
         return result;
     }

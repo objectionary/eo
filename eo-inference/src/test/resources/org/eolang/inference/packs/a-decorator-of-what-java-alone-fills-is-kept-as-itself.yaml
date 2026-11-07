@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# Java makes wrapper, and nothing in EO puts anything into its v, so a stop
-# decides Java alone fills it. The @ of wrapper then gives nothing typed, so
-# it waits for one more stop (rule e) and is kept as itself.
+# Java makes wrapper, and the annotation of wrap does not type its v, so v
+# reads the unknown only Java fills. The @ of wrapper then gives nothing typed,
+# so it waits for a stop (rule e) and is kept as itself.
 sources:
   os.eo: |
     [] > os

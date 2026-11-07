@@ -2,9 +2,12 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# Java makes status from the atom check. EO code elsewhere calls status with
-# a string, which goes into the pool of its note. The text read off what check
-# returns gives that note, so it is a string.
+# Java makes status from the atom check, whose type has no brackets. EO code
+# elsewhere calls status with a string, so the note of the status Java makes
+# holds a string. The text read off what check returns gives that note, so it
+# is a string, with no unknown next to it. report.eo, where the string goes
+# in, is walked after app.eo, where the text is read, and that changes
+# nothing, since what goes into the note is worked out before the walk.
 sources:
   os.eo: |
     [] > os
@@ -28,4 +31,5 @@ answers:
   - /answers/o[@loc='Φ.os.check.λ']/is[@loc='Φ.os.status']
   - /answers/o[@loc='Φ.report.φ.α1' and @lands='v🌵note']/is[@loc='Φ.string']
   - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.os.status']
-  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.φ' and count(*)=1]/is[@loc='Φ.string']
+  - /answers[not(o[@loc='Φ.app.φ' or @loc='Φ.os.status.v🌵note']//unknown)]

@@ -139,7 +139,7 @@ final class Places {
                 if (value.kind() == 'O' && value.form().equals(loc)) {
                     out.add(here);
                 } else if (value.kind() == 'O' && (value.bound() & Formation.RHO) != 0
-                    && !Values.JBORN.equals(value.birth())) {
+                    && !value.java()) {
                     for (final int outer : this.state.cell(here, "ρ")) {
                         todo.push(outer);
                     }

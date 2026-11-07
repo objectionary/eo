@@ -16,6 +16,7 @@ import java.util.List;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Sticky;
 import org.cactoos.scalar.Unchecked;
+import org.eolang.inference.Annotation;
 
 /**
  * The types that go into an object and the type that comes out of it.
@@ -30,7 +31,10 @@ import org.cactoos.scalar.Unchecked;
  * body names in {@code answers.xml}, each counted as the type an atom
  * returns in {@code facts.xml}, as what a formation reduces to other than
  * itself, or as itself, in that order. A row says a termination or an
- * unknown next to the objects, and those are left out.</p>
+ * unknown next to the objects, and those are left out. The type an atom
+ * returns counts as the name before its brackets, so
+ * {@code Φ.posix.status-return(Φ.number,Φ.string)} is shown as
+ * {@code Φ.posix.status-return}.</p>
  *
  * <p>This is used only to tell the reader of the log what the atoms take
  * and give: the name of the object, the types of its voids in brackets,
@@ -131,11 +135,12 @@ final class Signatures {
     }
 
     private Collection<String> behaves(final String name) {
-        final Collection<String> found = new LinkedHashSet<>(
-            this.facts.value().xpath(
-                String.format("/facts/objects/type[@id='%s'][1]/@returns", name)
-            )
-        );
+        final Collection<String> found = new LinkedHashSet<>(0);
+        for (final String type : this.facts.value().xpath(
+            String.format("/facts/objects/type[@id='%s'][1]/@returns", name)
+        )) {
+            found.add(new Annotation(type).head());
+        }
         if (found.isEmpty()) {
             for (final String other : this.names(name, "/reduced")) {
                 if (!other.equals(name)) {
