@@ -129,8 +129,8 @@ such line, and the bands and the tally ignore it. The goal logs how many objects
 fall in each band. An object that `answers.xml` says nothing of stops the
 report with an error that names its locator.
 
-`Report` draws the same bytes as `report.py`, the Python report it is ported
-from, with the same `page.xsl` and `index.xsl`. `ReportTest` compares the two
+`Report` draws the same bytes as the Python report it is ported from, with the
+same `page.xsl` and `index.xsl`. `ReportTest` compares the two
 on a whole run when given its files:
 
 ```bash
