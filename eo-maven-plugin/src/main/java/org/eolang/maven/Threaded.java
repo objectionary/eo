@@ -88,6 +88,9 @@ final class Threaded<T> {
                                     tojo, tojo.getClass().getCanonicalName()
                                 );
                                 this.logger.accept(message);
+                                if (ex.getMessage() != null) {
+                                    this.logger.accept(ex.getMessage());
+                                }
                                 throw new IllegalStateException(message, ex);
                             }
                         )
