@@ -215,6 +215,31 @@ final class MjDealphaTest {
     }
 
     @Test
+    void keepsAlphaOfArgumentThatLandsInVoidCompilerNamed(@Mktmp final Path temp)
+        throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > app",
+                "  pick 5 > @",
+                "  [] > pick",
+                "    ? >> left",
+                "    left > @"
+            )
+        ).withProgram("[@] > bytes", "bytes", "bytes.eo")
+            .withProgram("[@] > number", "number", "number.eo");
+        MatcherAssert.assertThat(
+            "an argument that lands in a void the compiler named must keep its place, but it was renamed",
+            new XMLDocument(
+                maven.execute(new PpDealpha()).result().get(
+                    String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha"))
+                )
+            ),
+            XhtmlMatchers.hasXPath("/object/o/o[@name='φ']/o[@as='α0']")
+        );
+    }
+
+    @Test
     void failsOnAlphaLeftWhenAsked(@Mktmp final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,

@@ -43,6 +43,12 @@ import java.util.stream.Collectors;
  * the ones an atom types in its brackets. Any other argument keeps its
  * place.</p>
  *
+ * <p>A void with a name the compiler made, such as the {@code a🌵14-6} of a
+ * {@code ? >> left} void, is out of reach by name. The parser leaves such a
+ * name as it is, while a binding by name looks for the void under its hidden
+ * name, with {@code v🌵} in front. So an argument that lands in such a void
+ * keeps its place too.</p>
+ *
  * @since 0.69.0
  */
 final class Landings {
@@ -97,8 +103,11 @@ final class Landings {
         final Collection<String> sure = this.grounded.arguments();
         return new Xnav(new XMLDocument(this.answers).inner())
             .element("answers")
-            .elements(Filter.withName("o"))
-            .filter(row -> row.attribute("lands").text().isPresent())
+            .elements(Filter.withName("o")).filter(
+                row -> row.attribute("lands").text().filter(
+                    name -> name.startsWith("v🌵") || !name.contains("🌵")
+                ).isPresent()
+            )
             .filter(row -> sure.contains(row.attribute("loc").text().get())).collect(
                 Collectors.toMap(
                     row -> row.attribute("loc").text().get(),
