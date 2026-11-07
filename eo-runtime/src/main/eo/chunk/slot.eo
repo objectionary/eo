@@ -5,6 +5,7 @@
 +package chunk
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint missed-obfuscation
 +version 0.0.0
 
 [^ start length] > slot
@@ -21,7 +22,7 @@
     read > get
       0
       size
-    ^.parent.id > id
+    parent.id > id
     if. > [^ object] > put
       and.
         ^.size.gt 0
