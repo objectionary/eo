@@ -472,6 +472,18 @@ final class State {
     }
 
     /**
+     * Mark a value, keeping the copy whose voids a call must fill.
+     *
+     * @param base The reduced value
+     * @param count The number of empty voids
+     * @param origin The source copy, or -1
+     * @return The marked value
+     */
+    int mark(final int base, final int count, final int origin) {
+        return this.course.mark(base, count, origin);
+    }
+
+    /**
      * Rule b's head, kept as is.
      *
      * @param head The head
