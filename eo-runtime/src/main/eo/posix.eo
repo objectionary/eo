@@ -41,8 +41,8 @@
     posix.dir-return > called
       code
       name
-    number cde! > code
-    string nme! > name
+    cde > code
+    nme > name
   17 > eexist
   22 > einval
   2 > enoent
@@ -57,7 +57,7 @@
       cde
       value
     1.eq cde! > code
-    string vle! > value
+    vle > value
   [] > getpid /Q.number
   [] > gettimeofday /Q.posix.time-return(Q.number,Q.number,Q.number)
   2 > inet
@@ -91,8 +91,8 @@
     posix.read-return > called
       code
       data
-    number cde! > code
-    bytes dta! > data
+    cde > code
+    dta > data
   [] > readdir /Q.posix.dir-return(Q.number,Q.string)
     ? > dirp /Q.number
   [] > recv /Q.posix.read-return(Q.number,Q.bytes)
@@ -131,16 +131,16 @@
       message
       mode
       size
-    number cde! > code
-    string msg! > message
-    number mde! > mode
-    number sze! > size
+    cde > code
+    msg > message
+    mde > mode
+    sze > size
   [cde msg] > status-return
     posix.status-return > called
       code
       message
-    number cde! > code
-    string msg! > message
+    cde > code
+    msg > message
   2 > stderr
   0 > stdin
   1 > stdout
@@ -156,9 +156,9 @@
       code
       seconds
       micros
-    number cde! > code
-    number mcrs! > micros
-    number scnds! > seconds
+    cde > code
+    mcrs > micros
+    scnds > seconds
   os.is-macos.if > trunc
     1024
     512
@@ -304,6 +304,78 @@
     os.is-windows.or > @
       info.size.eq 0
     posix.stat "/dev/null" > info
+
+  eq. ++> can-store-a-code-in-a-dir-return
+    code.
+      posix.dir-return -1 ""
+    -1
+
+  eq. ++> can-store-a-code-in-a-read-return
+    code.
+      posix.read-return 2 D0-B6
+    2
+
+  eq. ++> can-store-a-code-in-a-stat-return
+    code.
+      posix.stat-return
+        -1
+        "Нет такого файла"
+        0
+        0
+    -1
+
+  eq. ++> can-store-a-code-in-a-time-return
+    code.
+      posix.time-return
+        -1
+        0
+        0
+    -1
+
+  eq. ++> can-store-a-message-in-a-stat-return
+    length.
+      message.
+        posix.stat-return
+          -1
+          "Нет такого файла"
+          0
+          0
+    16
+
+  eq. ++> can-store-a-message-in-a-status-return
+    length.
+      message.
+        posix.status-return -1 "Отказано в доступе"
+    18
+
+  eq. ++> can-store-a-mode-in-a-stat-return
+    mode.
+      posix.stat-return
+        0
+        ""
+        33188
+        0
+    33188
+
+  eq. ++> can-store-a-name-in-a-dir-return
+    length.
+      name.
+        posix.dir-return 0 "жук.txt"
+    7
+
+  eq. ++> can-store-a-value-in-a-getenv-return
+    length.
+      value.
+        posix.getenv-return 1 "/opt/жук:/bin"
+    13
+
+  eq. ++> can-store-micros-in-a-time-return
+    micros.
+      posix.time-return
+        0
+        1762500000
+        999999
+    999999
 
   ++> can-store-seconds-in-a-time-return
     tv.seconds.eq 5 > @

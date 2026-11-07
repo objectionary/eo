@@ -43,8 +43,8 @@
     win32.dir-return > called
       code
       name
-    number cde! > code
-    string nme! > name
+    cde > code
+    nme > name
   17 > eexist
   10022 > einval
   [] > errno /Q.number
@@ -66,7 +66,7 @@
       cde
       value
     1.eq cde! > code
-    string vle! > value
+    vle > value
   [] > getpid /Q.number
   2 > inet
   [] > inet-addr /Q.number
@@ -93,8 +93,8 @@
     win32.read-return > called
       code
       data
-    number cde! > code
-    bytes dta! > data
+    cde > code
+    dta > data
   [] > recv /Q.win32.read-return(Q.number,Q.bytes)
     ? > descriptor /Q.number
     ? > size /Q.number
@@ -110,9 +110,9 @@
       code
       name
       message
-    number cde! > code
-    string msg! > message
-    string nme! > name
+    cde > code
+    msg > message
+    nme > name
   [] > send /Q.number
     ? > descriptor /Q.number
     ? > buffer
@@ -138,18 +138,18 @@
       message
       mode
       size
-    number cde! > code
-    string msg! > message
-    number mde! > mode
-    number sze! > size
+    cde > code
+    msg > message
+    mde > mode
+    sze > size
   [] > stat64 /Q.win32.stat-return(Q.number,Q.string,Q.number,Q.number)
     ? > path /Q.string
   [cde msg] > status-return
     win32.status-return > called
       code
       message
-    number cde! > code
-    string msg! > message
+    cde > code
+    msg > message
   2 > stderr
   0 > stdin
   1 > stdout
@@ -160,9 +160,9 @@
       code
       seconds
       micros
-    number cde! > code
-    number mcrs! > micros
-    number scnds! > seconds
+    cde > code
+    mcrs > micros
+    scnds > seconds
   512 > trunc
   [] > unlink /Q.win32.status-return(Q.number,Q.string)
     ? > path /Q.string
@@ -297,6 +297,112 @@
     os.is-windows.not.or > @
       info.size.eq 0
     win32.stat64 "NUL" > info
+
+  eq. ++> can-store-a-code-in-a-dir-return
+    code.
+      win32.dir-return -1 ""
+    -1
+
+  eq. ++> can-store-a-code-in-a-read-return
+    code.
+      win32.read-return 2 D0-B6
+    2
+
+  eq. ++> can-store-a-code-in-a-search-return
+    code.
+      win32.search-return
+        -1
+        ""
+        "Win32 error 3"
+    -1
+
+  eq. ++> can-store-a-code-in-a-stat-return
+    code.
+      win32.stat-return
+        -1
+        "Нет такого файла"
+        0
+        0
+    -1
+
+  eq. ++> can-store-a-code-in-a-time-return
+    code.
+      win32.time-return
+        -1
+        0
+        0
+    -1
+
+  eq. ++> can-store-a-message-in-a-search-return
+    length.
+      message.
+        win32.search-return
+          -1
+          ""
+          "Ошибка Win32 №3"
+    15
+
+  eq. ++> can-store-a-message-in-a-stat-return
+    length.
+      message.
+        win32.stat-return
+          -1
+          "Нет такого файла"
+          0
+          0
+    16
+
+  eq. ++> can-store-a-message-in-a-status-return
+    length.
+      message.
+        win32.status-return -1 "Отказано в доступе"
+    18
+
+  eq. ++> can-store-a-mode-in-a-stat-return
+    mode.
+      win32.stat-return
+        0
+        ""
+        33206
+        0
+    33206
+
+  eq. ++> can-store-a-name-in-a-dir-return
+    length.
+      name.
+        win32.dir-return 0 "жук.txt"
+    7
+
+  eq. ++> can-store-a-name-in-a-search-return
+    length.
+      name.
+        win32.search-return
+          4
+          "плюшка.eo"
+          ""
+    9
+
+  eq. ++> can-store-a-value-in-a-getenv-return
+    length.
+      value.
+        win32.getenv-return 1 "C:\\жук;C:\\bin"
+    13
+
+  eq. ++> can-store-micros-in-a-time-return
+    micros.
+      win32.time-return
+        0
+        1762500000
+        997000
+    997000
+
+  eq. ++> can-store-seconds-in-a-time-return
+    seconds.
+      win32.time-return
+        0
+        1762500000
+        997000
+    1762500000
 
   win32.find-close -1 --> stops-on-a-handle-nobody-opened
 
