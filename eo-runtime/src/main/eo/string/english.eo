@@ -32,7 +32,8 @@
                     string byte
                   number "Z".as-ascii!
                 code.gte mincode
-              (code.plus ("a".as-ascii.minus mincode)).as-i64.as-bytes.slice
+              slice.
+                as-bytes. (code.plus ("a".as-ascii.minus mincode)).as-i64
                 7
                 1
               byte

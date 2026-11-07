@@ -8,19 +8,14 @@
 +version 0.0.0
 
 [^ start length] > slot
-  window > @
-    ^
-    start
-    length
+  window ^ start length > @
   [^ parent start length] > window
     get > @
     [^ source target count] > copy
       seq * > @
         ^.read source count >> data!
         ^.write target data
-    read > get
-      0
-      size
+    read 0 size > get
     ^.parent.id > id
     if. > [^ object] > put
       and.

@@ -25,10 +25,7 @@
 [^source output] > tee
   [^tee size] > read
     read. > @
-      input-block
-        tee.source
-        tee.output
-        --
+      input-block tee.source tee.output --
       size
     [^op input output buffer] > input-block
       buffer > @
