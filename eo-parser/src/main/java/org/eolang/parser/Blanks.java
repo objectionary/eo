@@ -28,7 +28,6 @@ final class Blanks {
      * Utility class.
      */
     private Blanks() {
-        // never called
     }
 
     /**
