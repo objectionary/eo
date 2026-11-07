@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.eolang.inference.Annotation;
 
 /**
  * The arguments of the calls whose head the code alone fixes.
@@ -38,8 +37,10 @@ import org.eolang.inference.Annotation;
  * void it lands in.</p>
  *
  * <p>What an atom returns is a type, such as
- * {@code Φ.posix.status-return(Φ.number,Φ.string)}, and the formation it
- * fixes is the name before the brackets.</p>
+ * {@code Φ.posix.status-return(Φ.number,Φ.string)}. The formation it fixes is
+ * the name before the brackets, and the brackets fix what Java puts into the
+ * voids of that formation, so {@link Origins} gets the type whole, together
+ * with the voids of every formation in the order they are written.</p>
  *
  * @since 0.76.0
  */
@@ -83,6 +84,17 @@ final class Grounded {
                     (first, second) -> first
                 )
             ),
+            table.element("objects").elements(Filter.withName("type")).collect(
+                Collectors.toMap(
+                    type -> type.attribute("id").text().get(),
+                    type -> type.elements(Filter.withName("attr")).filter(
+                        attr -> "true".equals(attr.attribute("void").text().orElse(""))
+                    ).map(attr -> attr.attribute("name").text().get()).filter(
+                        name -> !"ρ".equals(name)
+                    ).collect(Collectors.toList()),
+                    (first, second) -> first
+                )
+            ),
             table.element("reads").elements(Filter.withName("read")).collect(
                 Collectors.toMap(
                     read -> read.attribute("id").text().get(),
@@ -112,9 +124,7 @@ final class Grounded {
 
     private static Map<String, String> targets(final Xnav type) {
         final Map<String, String> attrs = new HashMap<>(0);
-        type.attribute("returns").text().ifPresent(
-            back -> attrs.put("φ", new Annotation(back).head())
-        );
+        type.attribute("returns").text().ifPresent(back -> attrs.put("φ", back));
         type.elements(Filter.withName("attr")).forEach(
             attr -> attrs.put(attr.attribute("name").text().get(), Grounded.target(attr))
         );

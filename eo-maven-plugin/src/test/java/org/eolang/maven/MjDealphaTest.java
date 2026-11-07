@@ -175,6 +175,46 @@ final class MjDealphaTest {
     }
 
     @Test
+    void namesArgumentOfCallOnVoidAtomSaysJavaFills(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > app",
+                "  os.check.code.plus 5 > @"
+            )
+        ).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[] > os",
+                "  [] > check /Q.os.status(Q.string,Q.number)",
+                "  [msg cde] > status",
+                "    cde > code"
+            ),
+            "os",
+            "os.eo"
+        ).withProgram(
+            String.join(
+                System.lineSeparator(),
+                "[@] > number",
+                "  [y] > plus",
+                "    y > @"
+            ),
+            "number",
+            "number.eo"
+        ).withProgram("[@] > bytes", "bytes", "bytes.eo")
+            .withProgram("[@] > string", "string", "string.eo");
+        MatcherAssert.assertThat(
+            "an argument of a call on a void an atom types must carry the name of its void, but it doesnt",
+            new XMLDocument(
+                maven.execute(new PpDealpha()).result().get(
+                    String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha"))
+                )
+            ),
+            XhtmlMatchers.hasXPath("/object/o/o[@name='φ']/o[@as='v🌵y']")
+        );
+    }
+
+    @Test
     void failsOnAlphaLeftWhenAsked(@Mktmp final Path temp) {
         Assertions.assertThrows(
             IllegalStateException.class,

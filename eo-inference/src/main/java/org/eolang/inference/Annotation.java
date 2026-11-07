@@ -70,7 +70,7 @@ public final class Annotation {
      *
      * @return The types, none when it has no brackets
      */
-    List<Annotation> members() {
+    public List<Annotation> members() {
         final String bare = this.bare();
         final int open = bare.indexOf('(');
         final List<Annotation> found;
