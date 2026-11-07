@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A star tuple carries a method chain in argument position, the same way
+# it does as a line head (R-3.6), so `*.with 1` is parsable where the
+# specification says it is.
+sheets: []
+asserts:
+  - /object[not(errors)]
+  - //o[@name='first' and @base='Φ.foo']/o[@as='α0' and @base='Φ.tuple.empty.bar']
+  - //o[@name='second' and @base='Φ.tuple.empty.bar']
+input: |
+  [] > app
+    foo *.bar > first
+    *.bar > second
