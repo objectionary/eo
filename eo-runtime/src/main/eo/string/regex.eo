@@ -2101,7 +2101,10 @@
                   1
         breaks c unix
       true
-  [at caps rest] >> stop
+  [position captures remainder] >> stop
+    position > at
+    captures > caps
+    remainder > rest
   [^regex child least most] >> stride
     false > fixed
     [^node s at caps k] > run
