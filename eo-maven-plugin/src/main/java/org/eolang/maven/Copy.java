@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import org.eolang.inference.Annotation;
 
@@ -33,18 +34,13 @@ final class Copy {
      * The type: the formation, and the types an atom gives its voids in
      * brackets.
      */
-    private final String type;
+    private final Annotation type;
 
     /**
-     * The place of the call that made the copy, or an empty string when the
-     * code does not show one.
+     * The call that made the copy, when the code shows one: its place, and
+     * the type of the copy it is written in.
      */
-    private final String call;
-
-    /**
-     * The type of the copy the call is written in.
-     */
-    private final String host;
+    private final Optional<Map.Entry<String, Annotation>> call;
 
     /**
      * Ctor.
@@ -52,8 +48,8 @@ final class Copy {
      * @param kind The type: the formation, and the types an atom gives its
      *  voids in brackets
      */
-    Copy(final String kind) {
-        this(kind, "", "Φ");
+    Copy(final Annotation kind) {
+        this(kind, Optional.empty());
     }
 
     /**
@@ -61,25 +57,30 @@ final class Copy {
      *
      * @param kind The type: the formation, and the types an atom gives its
      *  voids in brackets
-     * @param place The place of the call that made the copy, or an empty
-     *  string
-     * @param outer The type of the copy the call is written in
+     * @param maker The call that made the copy, when the code shows one
      */
-    Copy(final String kind, final String place, final String outer) {
+    Copy(final Annotation kind, final Optional<Map.Entry<String, Annotation>> maker) {
         this.type = kind;
-        this.call = place;
-        this.host = outer;
+        this.call = maker;
     }
 
     @Override
-    public String toString() {
-        final String text;
-        if (this.call.isEmpty()) {
-            text = this.type;
+    public boolean equals(final Object other) {
+        final boolean result;
+        if (this == other) {
+            result = true;
+        } else if (other == null || this.getClass() != other.getClass()) {
+            result = false;
         } else {
-            text = String.join(" ", this.type, this.call, this.host);
+            result = this.type.equals(((Copy) other).type)
+                && this.call.equals(((Copy) other).call);
         }
-        return text;
+        return result;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.type, this.call);
     }
 
     /**
@@ -88,7 +89,7 @@ final class Copy {
      * @return The locator of the formation
      */
     String formation() {
-        return new Annotation(this.type).head();
+        return this.type.head();
     }
 
     /**
@@ -100,29 +101,36 @@ final class Copy {
      * @return The copy the call makes
      */
     Copy applied(final String place, final Copy outer) {
-        return new Copy(this.formation(), place, outer.type);
+        return new Copy(
+            new Annotation(this.formation()), Optional.of(Map.entry(place, outer.type))
+        );
     }
 
     /**
-     * Where the object in a void comes from: its place, and the copy that
-     * place is read in.
+     * The type that Java puts into a void, as the brackets of the type say.
      *
      * @param name The name of the void
      * @param calls What the calls put into the voids
-     * @return The place and the copy, or nothing when the code does not
-     *  show them
+     * @return The type, or nothing when the type has no brackets for the void
      */
-    Optional<Map.Entry<String, Copy>> filler(final String name, final Calls calls) {
-        final Optional<Map.Entry<String, Copy>> found;
-        if (this.call.isEmpty()) {
-            found = calls.member(new Annotation(this.type), name).map(
-                member -> Map.entry(member, this)
-            );
-        } else {
-            found = calls.argument(this.call, this.formation(), name).map(
-                arg -> Map.entry(arg, new Copy(this.host))
-            );
-        }
-        return found;
+    Optional<Annotation> member(final String name, final Calls calls) {
+        return calls.member(this.type, name);
+    }
+
+    /**
+     * The argument that the call which made the copy puts into a void: its
+     * place, and the copy that place is read in.
+     *
+     * @param name The name of the void
+     * @param calls What the calls put into the voids
+     * @return The place and the copy, or nothing when no call in the program
+     *  made the copy or the call does not show the argument
+     */
+    Optional<Map.Entry<String, Copy>> argument(final String name, final Calls calls) {
+        return this.call.flatMap(
+            made -> calls.argument(made.getKey(), this.formation(), name).map(
+                arg -> Map.entry(arg, new Copy(made.getValue()))
+            )
+        );
     }
 }

@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 import org.eolang.inference.Annotation;
 
 /**
@@ -26,8 +25,9 @@ import org.eolang.inference.Annotation;
  * many arguments, so such a call fails before anyone reads its voids.</p>
  *
  * <p>An atom is a call that Java makes. The type it says it returns, such as
- * {@code Φ.posix.status-return(Φ.number,Φ.string)}, lists in brackets what
- * Java puts into each void, in the same order.</p>
+ * {@code Φ.posix.status-return(Φ.number,Φ.string)}, names the formation Java
+ * copies and lists in brackets what Java puts into each void, in the same
+ * order.</p>
  *
  * @since 0.76.0
  */
@@ -40,39 +40,50 @@ final class Calls {
     private final Map<String, List<String>> voids;
 
     /**
-     * The arguments of each call, by the place of the call: the place of each
-     * argument, by its position, such as {@code α0}, or by the name of the
-     * void it is bound to.
+     * The arguments each call passes by position: the place of each
+     * argument, by its position, by the place of the call.
      */
-    private final Map<String, Map<String, String>> args;
+    private final Map<String, Map<Integer, String>> slots;
+
+    /**
+     * The arguments each call binds by name: the place of each argument, by
+     * the name of the void it is bound to, by the place of the call.
+     */
+    private final Map<String, Map<String, String>> names;
+
+    /**
+     * The type each atom says it returns, by the atom.
+     */
+    private final Map<String, Annotation> returns;
 
     /**
      * Ctor.
      *
      * @param holes The voids of each formation other than {@code ρ}, in order
-     * @param bindings The arguments of each call, by the place of the call
+     * @param positional The arguments each call passes by position
+     * @param named The arguments each call binds by name
+     * @param types The type each atom says it returns
      */
-    Calls(final Map<String, List<String>> holes, final Map<String, Map<String, String>> bindings) {
+    Calls(
+        final Map<String, List<String>> holes,
+        final Map<String, Map<Integer, String>> positional,
+        final Map<String, Map<String, String>> named,
+        final Map<String, Annotation> types
+    ) {
         this.voids = holes;
-        this.args = bindings;
+        this.slots = positional;
+        this.names = named;
+        this.returns = types;
     }
 
     /**
-     * The copy that a place makes of what its head copies.
+     * Whether a call is written at the place.
      *
      * @param place The place
-     * @param head What the head of the place copies
-     * @param host The copy the place is written in
-     * @return A new copy when the place is a call, or the head itself
+     * @return TRUE if it is
      */
-    Copy copy(final String place, final Copy head, final Copy host) {
-        final Copy found;
-        if (this.args.containsKey(place)) {
-            found = head.applied(place, host);
-        } else {
-            found = head;
-        }
-        return found;
+    boolean contains(final String place) {
+        return this.slots.containsKey(place) || this.names.containsKey(place);
     }
 
     /**
@@ -86,18 +97,28 @@ final class Calls {
      */
     Optional<String> argument(final String call, final String formation, final String name) {
         final List<String> holes = this.voids.getOrDefault(formation, Collections.emptyList());
-        final Map<String, String> bound = this.args.getOrDefault(call, Collections.emptyMap());
+        final Map<Integer, String> placed = this.slots.getOrDefault(call, Collections.emptyMap());
+        final Map<String, String> bound = this.names.getOrDefault(call, Collections.emptyMap());
         final int pos = holes.indexOf(name);
         final Optional<String> found;
-        if (pos < 0 || holes.size() != bound.size()) {
+        if (pos < 0 || holes.size() != placed.size() + bound.size()) {
             found = Optional.empty();
         } else {
-            found = Stream.of(String.format("α%d", pos), name)
-                .filter(bound::containsKey)
-                .map(bound::get)
-                .findFirst();
+            found = Optional.ofNullable(placed.get(pos)).or(
+                () -> Optional.ofNullable(bound.get(name))
+            );
         }
         return found;
+    }
+
+    /**
+     * The type an atom says it returns.
+     *
+     * @param atom The formation of the atom
+     * @return The type, or nothing when the formation is no atom
+     */
+    Optional<Annotation> returned(final String atom) {
+        return Optional.ofNullable(this.returns.get(atom));
     }
 
     /**
@@ -108,14 +129,14 @@ final class Calls {
      * @return The type in the brackets, or nothing when they leave the void
      *  out
      */
-    Optional<String> member(final Annotation type, final String name) {
+    Optional<Annotation> member(final Annotation type, final String name) {
         final List<Annotation> members = type.members();
         final int pos = this.voids.getOrDefault(
             type.head(), Collections.emptyList()
         ).indexOf(name);
-        final Optional<String> found;
+        final Optional<Annotation> found;
         if (pos >= 0 && pos < members.size()) {
-            found = Optional.of(members.get(pos).toString());
+            found = Optional.of(members.get(pos));
         } else {
             found = Optional.empty();
         }
