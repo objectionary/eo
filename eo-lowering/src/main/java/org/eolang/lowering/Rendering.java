@@ -19,12 +19,11 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.cactoos.Proc;
 import org.cactoos.Text;
-import org.cactoos.io.Directory;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.iterable.Sorted;
 import org.cactoos.list.ListOf;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
@@ -45,7 +44,7 @@ import org.cactoos.text.TextOf;
  * now a taint, or whose object was renamed or deleted, would otherwise be
  * compiled again and again (#9267).</p>
  *
- * <p>The Java files are written into the directory of atoms, next to the
+ * <p>The Java files are written into a numbered {@code atoms}, next to the
  * directory of protocols, so that a reader of the build can compare every
  * atom with the protocol it was made from. The Maven goal gives this
  * directory to javac as one more directory of sources. The file name of
@@ -137,11 +136,6 @@ import org.cactoos.text.TextOf;
 final class Rendering implements Proc<Path> {
 
     /**
-     * The directory where the Java atoms are written.
-     */
-    private final Path atoms;
-
-    /**
      * The directory with the tables of {@code eo:inference},
      * {@code facts.xml} and {@code answers.xml}, which say what the body of
      * an entry gives.
@@ -151,11 +145,9 @@ final class Rendering implements Proc<Path> {
     /**
      * Ctor.
      *
-     * @param dir The directory where the Java atoms are written
      * @param tbls The directory with the tables of {@code eo:inference}
      */
-    Rendering(final Path dir, final Path tbls) {
-        this.atoms = dir;
+    Rendering(final Path tbls) {
         this.tables = tbls;
     }
 
@@ -199,7 +191,8 @@ final class Rendering implements Proc<Path> {
             .with("voids", home.resolve("voids.tsv").toUri().toString())
             .with("rows", home.resolve("rows.tsv").toUri().toString())
             .with("inference", this.tables.toUri().toString());
-        this.clean();
+        final Path atoms = new Seqdir(home, 1).dirs().once("atoms");
+        Rendering.clean(atoms);
         final Collection<String> rendered = new ArrayList<>(0);
         final Map<String, Collection<String>> claims = new HashMap<>(0);
         final Collection<String> tainted = new ArrayList<>(0);
@@ -225,7 +218,7 @@ final class Rendering implements Proc<Path> {
                         cells[0], cells[1], out.xpath("/rendered/taint/text()").get(0)
                     );
                 } else {
-                    final Path file = this.atoms.resolve(
+                    final Path file = atoms.resolve(
                         out.xpath("/rendered/atom/@file").get(0)
                     );
                     Files.createDirectories(file.getParent());
@@ -254,47 +247,54 @@ final class Rendering implements Proc<Path> {
                 );
             }
         }
-        tainted.addAll(this.unshared(claims, rendered));
+        tainted.addAll(this.unshared(atoms, claims, rendered));
         Files.write(
             home.resolve("rendered.tsv"),
             String.join("", rendered).getBytes(StandardCharsets.UTF_8)
         );
-        this.summarize(rendered, tainted);
+        this.summarize(atoms, rendered, tainted);
     }
 
-    private void summarize(final Collection<String> rendered, final Collection<String> tainted) {
+    private void summarize(
+        final Path atoms, final Collection<String> rendered,
+        final Collection<String> tainted
+    ) {
         if (tainted.isEmpty()) {
             Logger.info(
                 this,
                 "Rendered %d atoms into %[file]s, while no entries were taints",
-                rendered.size(), this.atoms
+                rendered.size(), atoms
             );
         } else {
             Logger.info(
                 this,
                 "Rendered %d atoms into %[file]s, while %d entries were taints: %s",
-                rendered.size(), this.atoms, tainted.size(), new Shortlist(tainted, 6).asString()
+                rendered.size(), atoms, tainted.size(), new Shortlist(tainted, 6).asString()
             );
         }
     }
 
-    private void clean() throws IOException {
-        if (Files.exists(this.atoms)) {
-            for (final Path stale
-                : new Sorted<>(Comparator.reverseOrder(), new Directory(this.atoms))) {
+    private static void clean(final Path atoms) throws IOException {
+        try (Stream<Path> inside = Files.walk(atoms)) {
+            for (final Path stale : new ListOf<>(
+                inside.filter(path -> !path.equals(atoms))
+                    .sorted(Comparator.reverseOrder())
+                    .iterator()
+            )) {
                 Files.delete(stale);
             }
         }
     }
 
     private Collection<String> unshared(
-        final Map<String, Collection<String>> claims, final Collection<String> rendered
+        final Path atoms, final Map<String, Collection<String>> claims,
+        final Collection<String> rendered
     ) throws IOException {
         final Collection<String> dropped = new ArrayList<>(0);
         for (final Map.Entry<String, Collection<String>> claim : claims.entrySet()) {
             if (claim.getValue().size() > 1) {
                 rendered.removeAll(claim.getValue());
-                Files.delete(this.atoms.resolve(claim.getKey()));
+                Files.delete(atoms.resolve(claim.getKey()));
                 for (final String row : claim.getValue()) {
                     dropped.add(row.split("\t", -1)[1].trim().replaceFirst("^Φ\\.", ""));
                 }
