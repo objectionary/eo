@@ -1,0 +1,41 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Canonical voidless booleans must not become entries: Data.ToPhi(boolean)
+# rebuilds the same root and dataizes it forever. The two negative XPath
+# checks select the wrapper node, so they fail when either old entry shape is
+# present: direct for an unrowed formation or through `body🌵` for a row.
+# A same-named formation in another package still returns a bool and must keep
+# its ordinary row.
+eo:
+  true.eo: |
+    [] > true
+      bool > @
+        [^]
+          ? >> left
+          ? >> right
+          left > @
+  false.eo: |
+    [] > false
+      bool > @
+        [^]
+          ? >> left
+          ? >> right
+          right > @
+  sample-true.eo: |
+    +package sample
+
+    [] > true
+      false > @
+xmir:
+  - >-
+    /object/o[@name='l🌵'][not(o[@base='Φ.true'] or
+    o/o[@base='.body🌵' and @name='φ']/o[@base='Φ.true'])]
+  - >-
+    /object/o[@name='l🌵'][not(o[@base='Φ.false'] or
+    o/o[@base='.body🌵' and @name='φ']/o[@base='Φ.false'])]
+  - "//o[@name='l🌵']/o/o[@base='.body🌵' and @name='φ']/o[@base='Φ.sample.true']"
+copies:
+  - "//o[@loc='Φ.sample.true']/o[@name='λ' and text()='L_sample_true']"
+rows:
+  - "L_sample_true\tΦ.sample.true\tΦ.sample.true"
