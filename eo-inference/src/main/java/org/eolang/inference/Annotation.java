@@ -21,8 +21,9 @@ import java.util.List;
  * declared. So {@code Φ.posix.status-return(Φ.number,Φ.string)} is a
  * {@code status-return} with a number in its first void and a string in its
  * second. A {@code ?} that ends the own type of a void says the void may
- * hold a terminator, and is dropped here. The parser has already checked the
- * grammar, so nothing is checked again.</p>
+ * hold a terminator. It is dropped here, so two types that differ only in it
+ * are equal. The parser has already checked the grammar, so nothing is
+ * checked again.</p>
  *
  * @since 0.76.0
  */
@@ -40,6 +41,24 @@ public final class Annotation {
      */
     public Annotation(final String type) {
         this.text = type;
+    }
+
+    @Override
+    public boolean equals(final Object other) {
+        final boolean result;
+        if (this == other) {
+            result = true;
+        } else if (other == null || this.getClass() != other.getClass()) {
+            result = false;
+        } else {
+            result = this.bare().equals(((Annotation) other).bare());
+        }
+        return result;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.bare().hashCode();
     }
 
     @Override

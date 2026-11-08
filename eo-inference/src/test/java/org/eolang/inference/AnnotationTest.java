@@ -4,6 +4,7 @@
  */
 package org.eolang.inference;
 
+import java.security.SecureRandom;
 import java.util.stream.Collectors;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -68,6 +69,18 @@ final class AnnotationTest {
             "a path must not be a type variable, but it was",
             new Annotation("Φ.C").variable(),
             Matchers.is(false)
+        );
+    }
+
+    @Test
+    void equalsTypeWrittenTheSameWay() {
+        final String type = String.format(
+            "Φ.st%d(Φ.number,Φ.string)", new SecureRandom().nextInt(10_000)
+        );
+        MatcherAssert.assertThat(
+            "two types written the same way must be equal, but they werent",
+            new Annotation(type),
+            Matchers.equalTo(new Annotation(type))
         );
     }
 }
