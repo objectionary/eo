@@ -30,15 +30,11 @@
     false
 
   eq. ++> can-pick-the-left-argument-among-different-types
-    true.if
-      "left"
-      8
+    true.if "left" 8
     "left"
 
   eq. ++> can-pick-the-left-argument-of-if
-    true.if
-      42
-      8
+    true.if 42 8
     42
 
   eq. ++> can-pick-the-left-branch-when-nested
