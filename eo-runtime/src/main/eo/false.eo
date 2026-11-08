@@ -10,10 +10,7 @@
 
 [^flag] > false
   bool > @
-    [^state]
-      ? > left
-      ? > right
-      right > @
+    right > [^state left right]
 
   eq. ++> can-avoid-evaluating-the-left-argument
     false.if
