@@ -13,14 +13,6 @@ package org.eolang.parser;
  * emits the same empty-set-based void child named {@code name}
  * (§9.4).</p>
  *
- * <p>The {@code >>} auto-name form is also accepted: {@code ? >> name}
- * declares a void whose external {@code @name} is an auto-generated
- * cactus name (unreachable from outside), while {@code name} is a
- * file-local handle (§3.10 / R-3.10.12) usable within the same
- * {@code .eo} file. A bare {@code ? >>} is a void with an auto-generated
- * name and no handle. Filling stays positional, so the auto-generated
- * external name does not affect how callers bind the void.</p>
- *
  * <p>Inside an atom (a formation whose head carries {@code /sig}) the
  * void may carry exactly one type annotation (R-3.4.8):</p>
  *
@@ -52,12 +44,14 @@ package org.eolang.parser;
  * it maps to {@code φ} per R-3.4.2 / R-9.3, the same way {@code ^} maps
  * to {@code ρ}.</p>
  *
- * <p>{@code ? > name}, {@code ? >> name}, {@code ? > ^} and {@code ? > @}
- * — each optionally followed by one type annotation — are the only shapes the
- * {@code ?} marker may take, never an argument, a method receiver, or
- * anywhere else a value is expected. The marker is therefore <em>not</em> a {@link Value}
- * kind; this line is its sole producer. Cross-line behaviour: a closed
- * leaf ({@link Openness#VCOMPLETED}), so a void has no children.</p>
+ * <p>{@code ? > name}, {@code ? > ^} and {@code ? > @} — each optionally
+ * followed by one type annotation — are the only shapes the {@code ?}
+ * marker may take, never an argument, a method receiver, or anywhere else
+ * a value is expected. The {@code >>} auto-name is refused, with or without
+ * a handle: a caller fills a void by its name, and no caller could name a
+ * void the compiler named (R-3.4.7). The marker is therefore <em>not</em> a
+ * {@link Value} kind; this line is its sole producer. Cross-line behaviour:
+ * a closed leaf ({@link Openness#VCOMPLETED}), so a void has no children.</p>
  *
  * @since 0.1
  */
@@ -94,10 +88,11 @@ final class LnVoid implements Line {
         final Stack stack, final Globals globals, final Emit emit,
         final Suffix suffix, final int slash
     ) {
-        if (suffix.form() == Suffix.Form.NONE || suffix.test() || suffix.constant()) {
+        if (suffix.form() == Suffix.Form.NONE || suffix.auto() || suffix.test()
+            || suffix.constant()) {
             throw new ParseError(
                 this.span.line(), this.span.indent(),
-                "a void attribute must be written as `? > name` or `? >> name`"
+                "a void attribute must be written as `? > name`"
             );
         }
         globals.seal(emit, this.span);
@@ -109,9 +104,6 @@ final class LnVoid implements Line {
         globals.clearBlanks();
         globals.markEmitted();
         emit.object(this.name(suffix), "∅", this.span.line(), this.span.indent());
-        if (!suffix.handle().isEmpty()) {
-            emit.local(suffix.handle());
-        }
     }
 
     private String name(final Suffix suffix) {
