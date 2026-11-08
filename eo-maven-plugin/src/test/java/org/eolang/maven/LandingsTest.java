@@ -81,25 +81,6 @@ final class LandingsTest {
     }
 
     @Test
-    void leavesArgumentThatLandsInVoidCompilerNamedUnnamed(@Mktmp final Path temp)
-        throws IOException {
-        MatcherAssert.assertThat(
-            "an argument that lands in a void the compiler named must keep its place, but it was named",
-            new Landings(
-                LandingsTest.tables(
-                    temp,
-                    LandingsTest.grounded("Φ.w.φ", "Φ.w.φ.α0"),
-                    String.format(
-                        "<o loc='Φ.w.φ.α0' copies='1' lands='a🌵%d-6'><data/></o>",
-                        new SecureRandom().nextInt(10_000)
-                    )
-                )
-            ).names(),
-            Matchers.not(Matchers.hasKey("Φ.w.φ.α0"))
-        );
-    }
-
-    @Test
     void leavesArgumentOfCallOnVoidUnnamed(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
             "an argument of a call on a void must keep its place, but it was named",

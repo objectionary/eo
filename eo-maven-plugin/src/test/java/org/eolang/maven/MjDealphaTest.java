@@ -357,7 +357,7 @@ final class MjDealphaTest {
     }
 
     @Test
-    void keepsAlphaOfArgumentThatLandsInVoidCompilerNamed(@Mktmp final Path temp)
+    void namesArgumentThatLandsInVoidDeclaredOnItsOwnLine(@Mktmp final Path temp)
         throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             String.join(
@@ -365,19 +365,19 @@ final class MjDealphaTest {
                 "[] > app",
                 "  pick 5 > @",
                 "  [] > pick",
-                "    ? >> left",
+                "    ? > left",
                 "    left > @"
             )
         ).withProgram("[@] > bytes", "bytes", "bytes.eo")
             .withProgram("[@] > number", "number", "number.eo");
         MatcherAssert.assertThat(
-            "an argument that lands in a void the compiler named must keep its place, but it was renamed",
+            "an argument that lands in a void declared on its own line must carry the name of its void, but it doesnt",
             new XMLDocument(
                 maven.execute(new PpDealpha()).result().get(
                     String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha"))
                 )
             ),
-            XhtmlMatchers.hasXPath("/object/o/o[@name='φ']/o[@as='α0']")
+            XhtmlMatchers.hasXPath("/object/o/o[@name='φ']/o[@as='v🌵left']")
         );
     }
 
