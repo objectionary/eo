@@ -20,15 +20,15 @@ sources:
     [^] > yes
       choice > @
         [^]
-          ? >> left
-          ? >> right
+          ? > left
+          ? > right
           left > @
   no.eo: |
     [^] > no
       choice > @
         [^]
-          ? >> left
-          ? >> right
+          ? > left
+          ? > right
           right > @
   dial.eo: |
     [^ sys] > dial
@@ -56,7 +56,7 @@ answers:
   - /answers/o[@loc='Φ.knob.λ']/is[@loc='Φ.reply']
   - /answers[not(o[@lands='v🌵kind'])]
   - /answers/o[@loc='Φ.reply.v🌵kind']/unknown[@kind='java']
-  - /answers/o[@loc='Φ.app.pick.φ.α1' and @lands='a🌵5-6']/unknown[@kind='java']
+  - /answers/o[@loc='Φ.app.pick.φ.α1' and @lands='v🌵right']/unknown[@kind='java']
   - /answers/o[@loc='Φ.app.first']/is[@loc='Φ.dial']
   - /answers/o[@loc='Φ.app.pick.φ']/set/unknown[@kind='java']
   - /answers/o[@loc='Φ.app.second']/is[@loc='Φ.app.pick']

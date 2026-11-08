@@ -38,15 +38,15 @@ sources:
     [^] > true
       bool > @
         [^]
-          ? >> left
-          ? >> right
+          ? > left
+          ? > right
           left > @
   false.eo: |
     [^] > false
       bool > @
         [^]
-          ? >> left
-          ? >> right
+          ? > left
+          ? > right
           right > @
   bytes.eo: |
     [@] > bytes

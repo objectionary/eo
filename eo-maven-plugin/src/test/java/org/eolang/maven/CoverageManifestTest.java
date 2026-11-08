@@ -74,8 +74,8 @@ final class CoverageManifestTest {
                         "[] > x",
                         "  bool > @",
                         "    []",
-                        "      ? >> left",
-                        "      ? >> right",
+                        "      ? > left",
+                        "      ? > right",
                         "      right > @",
                         ""
                     )

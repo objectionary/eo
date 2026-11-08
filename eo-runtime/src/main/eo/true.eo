@@ -11,8 +11,8 @@
 [^flag] > true
   bool > @
     [^pick]
-      ? >> left
-      ? >> right
+      ? > left
+      ? > right
       left > @
 
   true.and true ++> can-conjoin-true-with-true

@@ -11,8 +11,8 @@
 [^flag] > false
   bool > @
     [^state]
-      ? >> left
-      ? >> right
+      ? > left
+      ? > right
       right > @
 
   eq. ++> can-avoid-evaluating-the-left-argument

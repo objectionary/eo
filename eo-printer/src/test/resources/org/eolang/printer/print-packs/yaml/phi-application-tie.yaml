@@ -11,12 +11,12 @@ penalties:
   SPACE: 7
 origin: |
   [] > foo
-    ? >> list
-    ? >> f
+    ? > list
+    ? > f
     f > @
       list
+    42 > x
 printed: |
-  [] > foo
-    ? >> list
-    ? >> f
+  [list f] > foo
     f list > @
+    42 > x

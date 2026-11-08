@@ -18,15 +18,15 @@ sources:
     [^] > yes
       choice > @
         [^]
-          ? >> left
-          ? >> right
+          ? > left
+          ? > right
           left > @
   no.eo: |
     [^] > no
       choice > @
         [^]
-          ? >> left
-          ? >> right
+          ? > left
+          ? > right
           right > @
   dial.eo: |
     [^ sys] > dial
