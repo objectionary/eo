@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Two objects of one name may live in two packages, so the patched copy of
+# gap goes under the directory of its package, not next to every other copy.
+eo:
+  gap.eo: |
+    +package foo
+
+    [a b] > gap
+      a.plus b > @
+rendered:
+  - "1\tΦ.foo.gap"
+patched:
+  foo/gap.xmir:
+    - "/object/o[@name='gap']/o[3][@name='φ' and not(@base)]/o[@name='λ']"
