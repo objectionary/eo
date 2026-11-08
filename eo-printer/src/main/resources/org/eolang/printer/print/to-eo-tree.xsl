@@ -213,7 +213,7 @@
   -->
   <xsl:function name="eo:identity" as="xs:boolean">
     <xsl:param name="o" as="element()"/>
-    <xsl:sequence select="eo:abstract($o) and not(eo:has-data($o)) and count($o/o) = 2 and eo:void($o/o[1]) and $o/o[1]/@name != $eo:rho and empty($o/o[1]/(@local, @type, @args)) and $o/o[2]/@name = $eo:phi and empty($o/o[2]/o) and empty($o/o[2]/@const) and $o/o[2]/@base = concat($eo:xi-prefix, $o/o[1]/@name)"/>
+    <xsl:sequence select="eo:abstract($o) and not(eo:has-data($o)) and count($o/o) = 2 and eo:void($o/o[1]) and $o/o[1]/@name != $eo:rho and empty($o/o[1]/(@type, @args)) and $o/o[2]/@name = $eo:phi and empty($o/o[2]/o) and empty($o/o[2]/@const) and $o/o[2]/@base = concat($eo:xi-prefix, $o/o[1]/@name)"/>
   </xsl:function>
   <!-- PROGRAM -->
   <xsl:template match="object">
