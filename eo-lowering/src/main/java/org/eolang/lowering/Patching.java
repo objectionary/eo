@@ -9,6 +9,7 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -70,19 +71,13 @@ final class Patching implements Proc<Path> {
     private final Signatures signatures;
 
     /**
-     * The directory where the patched XMIR files are written.
-     */
-    private final Path patched;
-
-    /**
      * Ctor.
      *
      * @param srcs The XMIR files of the build
      * @param tables The directory with the tables of {@code eo:inference}
-     * @param dir The directory where the patched XMIR files are written
      */
-    Patching(final Collection<Path> srcs, final Path tables, final Path dir) {
-        this(srcs, new Signatures(tables), dir);
+    Patching(final Collection<Path> srcs, final Path tables) {
+        this(srcs, new Signatures(tables));
     }
 
     /**
@@ -90,12 +85,10 @@ final class Patching implements Proc<Path> {
      *
      * @param srcs The XMIR files of the build
      * @param types The types that go into the objects and come out of them
-     * @param dir The directory where the patched XMIR files are written
      */
-    Patching(final Collection<Path> srcs, final Signatures types, final Path dir) {
+    Patching(final Collection<Path> srcs, final Signatures types) {
         this.sources = srcs;
         this.signatures = types;
-        this.patched = dir;
     }
 
     @Override
@@ -109,6 +102,7 @@ final class Patching implements Proc<Path> {
                 )
             );
         }
+        final Path patched = new Seqdir(home, 1).dirs().once("patched");
         final XSL sheet = new XSLDocument(
             Patching.class.getResource("/org/eolang/lowering/patching.xsl"),
             "/org/eolang/lowering/patching.xsl"
@@ -122,8 +116,7 @@ final class Patching implements Proc<Path> {
                 "//o[@name='φ'][o[@name='λ' and not(@atom)]]/../@loc"
             );
             if (!locs.isEmpty()) {
-                final Path file = Files.createDirectories(this.patched)
-                    .resolve(source.getFileName().toString());
+                final Path file = patched.resolve(source.getFileName().toString());
                 Files.write(file, out.toString().getBytes(StandardCharsets.UTF_8));
                 files.add(String.format("%s%n", file.getFileName()));
                 atoms += locs.size();
@@ -140,7 +133,7 @@ final class Patching implements Proc<Path> {
         Logger.info(
             this,
             "Put %d atom(s) into %d of %d XMIR files, patched into %[file]s",
-            atoms, files.size(), this.sources.size(), this.patched
+            atoms, files.size(), this.sources.size(), patched
         );
     }
 }
