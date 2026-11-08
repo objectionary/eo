@@ -21,10 +21,8 @@
   gets. Nobody can write "v🌵x" by hand, since the parser refuses the cactus
   in a name.
 
-  The "φ" void, the "ρ" receiver and any name the compiler made itself
-  (one with a cactus inside, such as the "a🌵" name of a "? >> h" void) are
-  never renamed: reads go through "φ" on purpose, the receiver is looked up
-  by its name, and a cactus name is out of reach already.
+  The "φ" void and the "ρ" receiver are never renamed: reads go through "φ"
+  on purpose, and the receiver is looked up by its name.
 
   The locators are set after this step, so they hold the hidden names: a
   locator is the φ path to an object, and in φ the void is called "v🌵x".
@@ -38,7 +36,7 @@
   <!-- Whether the name may take the "v🌵" mark. -->
   <xsl:function name="eo:hideable" as="xs:boolean">
     <xsl:param name="name" as="xs:string"/>
-    <xsl:sequence select="$name != $eo:phi and $name != $eo:rho and not(contains($name, $eo:cactoos)) and not(matches($name, concat('^', $eo:alpha, '[0-9]+$')))"/>
+    <xsl:sequence select="$name != $eo:phi and $name != $eo:rho and not(matches($name, concat('^', $eo:alpha, '[0-9]+$')))"/>
   </xsl:function>
   <xsl:template match="o[@base=$eo:empty and parent::o[not(@base)]]/@name[eo:hideable(string(.))]">
     <xsl:attribute name="name" select="concat($eo:veiled, .)"/>
