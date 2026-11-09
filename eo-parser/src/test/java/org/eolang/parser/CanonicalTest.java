@@ -31,7 +31,6 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -71,16 +70,7 @@ final class CanonicalTest {
         );
     }
 
-    /**
-     * Refuses a tuple nested deeper than 256 levels.
-     *
-     * @todo #9858:30min Enable refusesTupleOverTheLargestSize again. It is off
-     *  because the stars-to-tuples.xsl on master loses the error for a tuple
-     *  nested deeper than 256 levels (#9858). Remove the Disabled annotation
-     *  once #9859 is merged.
-     */
     @Test
-    @Disabled
     void refusesTupleOverTheLargestSize() throws Exception {
         MatcherAssert.assertThat(
             "A tuple of 1000 elements must be refused once, at its line, but it wasnt",
@@ -88,6 +78,39 @@ final class CanonicalTest {
                 "/object/errors/error[contains(text(),'nested deeper than 256 levels')]/@line"
             ),
             Matchers.contains("2")
+        );
+    }
+
+    @Test
+    void reportsDepthAndBindingTogether() {
+        final int size = 257;
+        final StringBuilder xml = new StringBuilder(size * 24)
+            .append("<object><errors><error check='existing'>prior</error></errors>")
+            .append("<o star='' line='2' pos='4'>");
+        for (int idx = 0; idx < size; idx = idx + 1) {
+            if (idx == 0) {
+                xml.append("<o base='Φ.e' as='a' line='3' pos='5'/>");
+            } else {
+                xml.append("<o base='Φ.e'/>");
+            }
+        }
+        final XML out = new Xsline(
+            new StClasspath("/org/eolang/parser/parse/stars-to-tuples.xsl")
+        ).pass(new XMLDocument(xml.append("</o></object>").toString()));
+        MatcherAssert.assertThat(
+            "the depth diagnostic, the binding diagnostic and the error already there must all survive one pass, and the tuple still collapses",
+            out,
+            XhtmlMatchers.hasXPaths(
+                "/object/errors/error[@check='existing'][text()='prior']",
+                "/object/errors/error[@check='stars-to-tuples' and @severity='critical' and @line='2' and @pos='4' and text()='object nested deeper than 256 levels']",
+                "/object/errors/error[@check='stars-to-tuples' and @severity='error' and @lossy and @line='3' and @pos='5' and text()='star tuple elements cannot carry argument bindings']",
+                "/object/o[@base='Φ.tuple.empty' and @line='2' and @pos='4']"
+            )
+        );
+        MatcherAssert.assertThat(
+            "the prior error must neither vanish nor be duplicated, so exactly three errors come out",
+            out.nodes("/object/errors/error"),
+            Matchers.hasSize(3)
         );
     }
 
