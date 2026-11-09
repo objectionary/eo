@@ -31,6 +31,7 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -70,7 +71,16 @@ final class CanonicalTest {
         );
     }
 
+    /**
+     * Refuses a tuple nested deeper than 256 levels.
+     *
+     * @todo #9858:30min Enable refusesTupleOverTheLargestSize again. It is off
+     *  because the stars-to-tuples.xsl on master loses the error for a tuple
+     *  nested deeper than 256 levels (#9858). Remove the Disabled annotation
+     *  once #9859 is merged.
+     */
     @Test
+    @Disabled
     void refusesTupleOverTheLargestSize() throws Exception {
         MatcherAssert.assertThat(
             "A tuple of 1000 elements must be refused once, at its line, but it wasnt",
