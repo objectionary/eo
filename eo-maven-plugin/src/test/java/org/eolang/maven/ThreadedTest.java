@@ -49,7 +49,10 @@ final class ThreadedTest {
             Matchers.hasItems(
                 Matchers.containsString("Failed to process \"1\""),
                 Matchers.containsString("Failed to process \"2\""),
-                Matchers.containsString("Failed to process \"3\"")
+                Matchers.containsString("Failed to process \"3\""),
+                Matchers.containsString("Failure on: 1"),
+                Matchers.containsString("Failure on: 2"),
+                Matchers.containsString("Failure on: 3")
             )
         );
     }
@@ -88,7 +91,7 @@ final class ThreadedTest {
                     )
                 )
             ).value(),
-            Matchers.<Object>contains(
+            Matchers.<Object>hasItems(
                 "Failed to process \"b.eo\" (java.lang.String)", true
             )
         );

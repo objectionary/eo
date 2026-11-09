@@ -104,15 +104,16 @@
           if.
             exponent.gt 0
             if. > [^fmt value power] >> raised
-              and.
+              scalable value
+              if.
                 power.gt 200
-                scalable value
-              fmt.raised
+                fmt.raised
+                  value.times
+                    10.power 200
+                  power.minus 200
                 value.times
-                  10.power 200
-                power.minus 200
-              value.times
-                10.power power
+                  10.power power
+              value
             | magnitude exponent
             if. > [^fmt value power] >> lowered
               and.
@@ -357,6 +358,11 @@
     0.24
     head.
       "%f".scanf "0.24"
+
+  eq. ++> can-scan-a-zero-mantissa-with-an-out-of-range-exponent
+    0
+    head.
+      "%f".scanf "0e309"
 
   eq. ++> can-scan-an-integer
     33

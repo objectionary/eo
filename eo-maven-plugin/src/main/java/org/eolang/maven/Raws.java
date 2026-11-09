@@ -16,9 +16,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.cactoos.io.InputOf;
-import org.cactoos.text.TextOf;
 import org.eolang.cache.GlobalCache;
 import org.eolang.parser.EoSyntax;
+import org.eolang.parser.Utf8;
 
 /**
  * The tree the EO parser makes of a source, before any XSL touches it.
@@ -78,7 +78,8 @@ final class Raws {
                 writer.transform(
                     new DOMSource(
                         new EoSyntax(
-                            new InputOf(new TextOf(src).asString()), UnaryOperator.identity()
+                            new InputOf(new Utf8(new InputOf(src), src.toString()).asString()),
+                            UnaryOperator.identity()
                         ).parsed().inner()
                     ),
                     new StreamResult(text)

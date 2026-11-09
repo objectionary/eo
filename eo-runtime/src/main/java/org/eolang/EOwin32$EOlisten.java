@@ -34,7 +34,7 @@ public final class EOwin32$EOlisten extends PhDefault implements Atom {
     public Phi lambda() {
         return new Data.ToPhi(
             Winsock.INSTANCE.listen(
-                new Pointer(new Dataized(this.free("descriptor")).asNumber().longValue()),
+                new Pointer(new Handle("the socket of listen", this.free("descriptor")).it()),
                 new Int(this.expected("backlog")).it()
             )
         );

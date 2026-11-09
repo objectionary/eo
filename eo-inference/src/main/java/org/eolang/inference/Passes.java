@@ -205,7 +205,7 @@ final class Passes {
         }
         int rho = Values.ROOT;
         for (final String step : chain) {
-            rho = this.state.fresh(step, new Site(step, ""), rho);
+            rho = this.state.enclose(this.state.fresh(step, new Site(step, ""), rho), rho);
         }
         return rho;
     }

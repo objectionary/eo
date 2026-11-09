@@ -41,7 +41,7 @@ public final class EOwin32$EOaccept extends PhDefault implements Atom {
         return new Data.ToPhi(
             Pointer.nativeValue(
                 Winsock.INSTANCE.accept(
-                    new Pointer(new Dataized(this.free("descriptor")).asNumber().longValue()),
+                    new Pointer(new Handle("the socket of accept", this.free("descriptor")).it()),
                     new Sockaddr(this.free("sockaddr")).it(),
                     new IntByReference(new Int(this.expected("length")).it())
                 )

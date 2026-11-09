@@ -138,7 +138,7 @@
   -->
   <xsl:function name="eo:reason" as="xs:string">
     <xsl:param name="o" as="element(o)"/>
-    <xsl:sequence select="if (exists($o/o[@name = 'λ'])) then 'atom' else if (empty($o/o[@name = 'φ'][not(@base = '∅')])) then 'bodiless' else if (not(eo:walkable(eo:path($o)))) then 'placed' else if (some $v in eo:voids($o) satisfies eo:carrier(eo:holds(string($o/@loc), string($v/@name))) = '') then 'opaque' else ''"/>
+    <xsl:sequence select="if (eo:path($o) = ('Φ.true', 'Φ.false')) then 'canonical' else if (exists($o/o[@name = 'λ'])) then 'atom' else if (empty($o/o[@name = 'φ'][not(@base = '∅')])) then 'bodiless' else if (not(eo:walkable(eo:path($o)))) then 'placed' else if (some $v in eo:voids($o) satisfies eo:carrier(eo:holds(string($o/@loc), string($v/@name))) = '') then 'opaque' else ''"/>
   </xsl:function>
   <!--
   The voids of a formation that its entry fills: all of them but the "ρ"
