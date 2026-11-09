@@ -22,19 +22,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class EndStepTest {
 
     @Test
-    void marksReadWithNoAnswer(@Mktmp final Path temp) throws IOException {
+    void namesReadWithNoAnswerAsLoop(@Mktmp final Path temp) throws IOException {
         final World world = new Sources(temp)
             .with("loop.eo", "[^] > loop", "  ^.loop.value > value", "  value > @")
             .world();
         final State state = new Settled(world).state();
         state.step();
         MatcherAssert.assertThat(
-            "a read with no answer must be marked at the end, but it wasnt",
-            state.token(
-                "Φ.loop.value",
-                world.intern(new Value('O', "Φ.loop", "Φ.loop", Formation.RHO, "", -1, 0))
-            ),
-            Matchers.equalTo(EndStep.CANT)
+            "a read with no answer must be told as a loop at the end, but it wasnt",
+            new Telling(state, world).told().sets().get("Φ.loop.value"),
+            Matchers.hasKey("?unknown-loop")
         );
     }
 

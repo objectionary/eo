@@ -579,22 +579,10 @@ final class State {
     }
 
     /**
-     * Tell which study copies no longer count, and mark the reads with no
-     * answer.
+     * Tell which study copies no longer count.
      */
     void step() {
         this.course.step();
-    }
-
-    /**
-     * The mark of a read with no answer.
-     *
-     * @param place The place
-     * @param ctx The copy
-     * @return The mark, empty when there is none
-     */
-    String token(final String place, final int ctx) {
-        return this.course.token(place, ctx);
     }
 
     /**
