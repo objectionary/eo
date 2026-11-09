@@ -77,8 +77,8 @@
   handle in the chain. Each hop follows a `@base` that resolves to another
   auto-named handle, the current handle carrying no arguments of its own, and
   stops at the first handle whose `@base` is not such a reference (the one that
-  holds the real value), or at one carrying its own children, an abstract
-  formation or a void — none of which is a transparent alias. A target that is
+  holds the real value), or at one carrying its own children or an abstract
+  formation, since neither is a transparent alias. A target that is
   not an alias resolves to itself. Without this the alias's own `@base` is copied
   to the use site verbatim while the drop template removes the handle it names,
   stranding a dangling `Φ.v..` (#6004). The chain travelled so far comes along in
@@ -91,15 +91,14 @@
     <xsl:param name="target" as="element()"/>
     <xsl:param name="seen" as="element()*"/>
     <xsl:variable name="inner" select="$target/ancestor::o/o[@name=eo:resolved-name($target/@base)][1]"/>
-    <xsl:sequence select="if (contains($target/@base, $auto-dot) and not($target/o) and exists($inner) and not(eo:void($inner)) and not(eo:abstract($inner)) and (every $node in $seen satisfies not($inner is $node))) then eo:alias-target($inner, ($seen, $target)) else $target"/>
+    <xsl:sequence select="if (contains($target/@base, $auto-dot) and not($target/o) and exists($inner) and not(eo:abstract($inner)) and (every $node in $seen satisfies not($inner is $node))) then eo:alias-target($inner, ($seen, $target)) else $target"/>
   </xsl:function>
   <!--
-  Inline a reference to an auto-named abstract. A `? >> name` void
-  (R-3.4.7 / R-3.10.12) also has a cactus name, so a reference that
-  resolves to a void (or to nothing) is left untouched. A recursive
-  helper (`? >> rec` whose body calls `rec` again) compiles to an
-  auto-named abstract that references its own name; inlining it would
-  copy that self-reference back in and fire this template forever, so
+  Inline a reference to an auto-named abstract. A reference that resolves
+  to nothing is left untouched. A recursive helper (`[x] >> rec` whose
+  body calls `rec` again) compiles to an auto-named abstract that
+  references its own name; inlining it would copy that self-reference
+  back in and fire this template forever, so
   such a target is also left untouched (both the reference and the
   abstraction stay in place). A target that is rebuilt at every site it lands
   in (see `eo:rebuilt`) and reached from more than one site is likewise left
@@ -141,7 +140,7 @@
     <xsl:variable name="target" select="ancestor::o/o[@name=$name][1]"/>
     <xsl:variable name="keep-name" as="xs:boolean" select="exists($target) and (eo:abstract($target) or ($target/@base = '.as-bytes' and $target/o[1]/@base = 'Φ.dataized' and eo:abstract($target/o[1]/o[1])))"/>
     <xsl:choose>
-      <xsl:when test="exists($target) and not(eo:void($target)) and not(eo:recursive($target, $name)) and not(eo:vertical-const($target)) and not(eo:nested-const($target, $name)) and not(eo:multi-referenced($target, $name) and eo:rebuilt($target)) and not(eo:reapplied($target, $name))">
+      <xsl:when test="exists($target) and not(eo:recursive($target, $name)) and not(eo:vertical-const($target)) and not(eo:nested-const($target, $name)) and not(eo:multi-referenced($target, $name) and eo:rebuilt($target)) and not(eo:reapplied($target, $name))">
         <xsl:choose>
           <!--
           The reference is the base of an application — it carries its own
@@ -376,9 +375,9 @@
     </xsl:choose>
   </xsl:template>
   <!--
-  Drop an inlined auto-named abstract; keep cactus-named voids, keep
-  self-referential (recursive) abstracts, which are never inlined, keep a
-  binding no reference reaches at all (#5914), keep a multi-referenced binding
+  Drop an inlined auto-named abstract; keep self-referential (recursive)
+  abstracts, which are never inlined, keep a binding no reference reaches
+  at all (#5914), keep a multi-referenced binding
   that is rebuilt at every site — a dataized-const handle (#5828), an abstract
   formation (#5876) or an application (#5956) — which is never
   inlined, keep a const that only a vertical layout can spell,
@@ -415,7 +414,7 @@
   the whole sheet. The match pattern requires `@name`, so the string is always
   the name the ten were asked about before.
   -->
-  <xsl:template match="o[starts-with(@name, $auto) and not(eo:void(.))]" priority="1">
+  <xsl:template match="o[starts-with(@name, $auto)]" priority="1">
     <xsl:variable name="name" as="xs:string" select="string(@name)"/>
     <xsl:if test="eo:kept-binding(., $name)">
       <!--
@@ -429,14 +428,14 @@
       wins — so its binding vanishes and a naive verbatim copy would
       leave this node's `@base` pointing at nothing, printed as an
       orphaned synthetic name (#7297). Resolve the alias chain here too,
-      landing the real value directly, and skip this for an abstract or
-      void alias target, whose own name (or const layout) still matters
+      landing the real value directly, and skip this for an abstract
+      alias target, whose own name (or const layout) still matters
       and is handled by the ordinary reference path instead.
       -->
       <xsl:variable name="ref-name" select="if (contains(@base, $auto-dot)) then eo:resolved-name(@base) else ()"/>
       <xsl:variable name="ref-target" select="if (exists($ref-name)) then ancestor::o/o[@name=$ref-name][1] else ()"/>
       <xsl:choose>
-        <xsl:when test="exists($ref-target) and not(eo:void($ref-target)) and not(eo:abstract($ref-target)) and not(eo:kept-binding($ref-target, $ref-name))">
+        <xsl:when test="exists($ref-target) and not(eo:abstract($ref-target)) and not(eo:kept-binding($ref-target, $ref-name))">
           <xsl:variable name="alias" select="eo:alias-target($ref-target, ())"/>
           <xsl:copy>
             <xsl:apply-templates select="@*[name() != 'base']"/>

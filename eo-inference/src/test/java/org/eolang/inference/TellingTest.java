@@ -58,6 +58,26 @@ final class TellingTest {
         );
     }
 
+    @Test
+    void tellsVoidOfJavaCopyByTheTypeItsAtomGives(@Mktmp final Path temp)
+        throws IOException {
+        MatcherAssert.assertThat(
+            "a void of a copy Java made must be told by the type its atom gives, but it wasnt",
+            TellingTest.status(temp).sets().get("Φ.os.status.v🌵code"),
+            Matchers.equalTo(Map.of("Φ.number", 2))
+        );
+    }
+
+    @Test
+    void tellsVoidTypeLeavesOutAsUnknownOnlyJavaFills(@Mktmp final Path temp)
+        throws IOException {
+        MatcherAssert.assertThat(
+            "a void of a copy Java made that its type leaves out must be told as the unknown only Java fills, but it wasnt",
+            TellingTest.status(temp).sets().get("Φ.os.status.v🌵note"),
+            Matchers.hasEntry("?unknown-java", 1)
+        );
+    }
+
     private static Told told(final Path temp) throws IOException {
         final World world = new Sources(temp).with(
             "five.eo",
@@ -74,6 +94,28 @@ final class TellingTest {
             "  five > @",
             "  (box 1).other > one",
             "  (box \"a\").other > word"
+        ).world();
+        final State state = new Settled(world).state();
+        state.step();
+        return new Telling(state, world).told();
+    }
+
+    private static Told status(final Path temp) throws IOException {
+        final World world = new Sources(temp).with(
+            "os.eo",
+            "[] > os",
+            "  [] > check /Q.os.status(Q.number)",
+            "  [code note] > status",
+            "    code > @",
+            "    note > text"
+        ).with(
+            "app.eo",
+            "[] > app",
+            "  os.check.text > @"
+        ).with(
+            "report.eo",
+            "[] > report",
+            "  os.status 0 \"ok\" > @"
         ).world();
         final State state = new Settled(world).state();
         state.step();

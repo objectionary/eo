@@ -159,6 +159,15 @@ final class Program {
     }
 
     /**
+     * The places of the calls, in the order of the facts.
+     *
+     * @return The places
+     */
+    Collection<String> calls() {
+        return this.calls.keySet();
+    }
+
+    /**
      * Whether a place is a call.
      *
      * @param place The place

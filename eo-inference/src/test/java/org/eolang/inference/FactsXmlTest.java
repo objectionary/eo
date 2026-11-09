@@ -35,9 +35,9 @@ final class FactsXmlTest {
     @Test
     void readsTypesAtomCallsVoidBackWith(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
-            "the types an atom calls a void back with must be read apart, but they werent",
+            "the types an atom calls a void back with must be read apart, each tree whole, but they werent",
             new FactsXml(FactsXmlTest.facts(temp)).program().form("Φ.lamp").args("bulb"),
-            Matchers.contains("Φ.glass", "Φ.wire")
+            Matchers.contains("Φ.glass(Φ.sand,Φ.ash)", "Φ.wire")
         );
     }
 
@@ -82,7 +82,7 @@ final class FactsXmlTest {
                 "    <type bare=\"true\" complete=\"false\" id=\"Φ.lamp\" returns=\"Φ.room\">",
                 "      <attr name=\"wire\" type=\"Φ.lamp.wire\" void=\"true\"/>",
                 "      <attr name=\"ρ\" rho=\"Φ.room\" type=\"Φ.lamp.ρ\" void=\"true\"/>",
-                "      <attr args=\"Φ.glass,Φ.wire\" name=\"bulb\" type=\"Φ.lamp.bulb\" void=\"true\"/>",
+                "      <attr args=\"Φ.glass(Φ.sand,Φ.ash) Φ.wire\" name=\"bulb\" type=\"Φ.lamp.bulb\" void=\"true\"/>",
                 "    </type>",
                 "  </objects>",
                 "  <reads>",

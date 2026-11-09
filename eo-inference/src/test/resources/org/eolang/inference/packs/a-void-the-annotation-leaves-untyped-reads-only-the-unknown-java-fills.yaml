@@ -1,0 +1,34 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# check types the code of the status it returns and leaves its note untyped.
+# report puts "ok" into the note of a copy of its own, which the copy Java
+# makes does not see. So the text read off what check returns is the unknown
+# only Java fills and nothing else, the row of note in the copy Java makes
+# says the same, and code is a number there.
+sources:
+  os.eo: |
+    [] > os
+      [] > check /Q.os.status(Q.number)
+      [code note] > status
+        code > @
+        note > text
+  app.eo: |
+    [] > app
+      os.check.text > @
+  report.eo: |
+    [] > report
+      os.status 0 "ok" > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ' and count(*)=1]/unknown[@kind='java']
+  - /answers/o[@loc='Φ.os.status.v🌵note']/set[@copies='1' and count(*)=1]/unknown[@kind='java']
+  - /answers/o[@loc='Φ.os.status.v🌵note']/set[@copies='1' and count(*)=1]/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.os.status.v🌵code' and count(*)=1]/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.report.φ.α1' and @lands='v🌵note']/is[@loc='Φ.string']
