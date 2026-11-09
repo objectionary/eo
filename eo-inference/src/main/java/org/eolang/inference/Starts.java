@@ -34,8 +34,10 @@ import org.xembly.Directives;
  *
  * <p>Every row here is stated by the text, so the rows are facts and go into
  * the {@code heads} section of {@code facts.xml}, in the order they are
- * found. {@code Resolved} copies them into {@code links.xml}, because the
- * compiler reads them there.</p>
+ * found. {@link FactsStream} reads each row back as a {@link Head}, and
+ * every chain the walk follows starts from one: {@link Places} answers a
+ * head in each copy, and {@link Fillings} and {@link Roles} read the heads
+ * too, from the facts alone.</p>
  *
  * @since 0.68.0
  */
