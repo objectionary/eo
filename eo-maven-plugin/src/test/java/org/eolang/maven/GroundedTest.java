@@ -99,6 +99,120 @@ final class GroundedTest {
         );
     }
 
+    @Test
+    void groundsArgumentOfCallOnTheHeadOfTreeAtomReturns(@Mktmp final Path temp)
+        throws IOException {
+        final String name = String.format("rt%d", new SecureRandom().nextInt(10_000));
+        MatcherAssert.assertThat(
+            "an argument of a call on the head of a tree an atom returns must be grounded, but it isnt",
+            new Grounded(
+                GroundedTest.facts(
+                    temp,
+                    "<objects><type id='Φ'>",
+                    "<attr name='check' type='Φ.check'/>",
+                    String.format("<attr name='%1$s' type='Φ.%1$s'/>", name),
+                    String.format(
+                        "</type><type id='Φ.check' returns='Φ.%s(Φ.number,Φ.string)'>", name
+                    ),
+                    "</type>",
+                    String.format("<type id='Φ.%s'>", name),
+                    String.format("<attr name='code' type='Φ.%s.code' void='true'/>", name),
+                    String.format("<attr name='retry' type='Φ.%s.retry'/>", name),
+                    String.format("</type><type id='Φ.%s.retry'>", name),
+                    String.format("<attr name='times' type='Φ.%s.retry.times' void='true'/>", name),
+                    "</type></objects><reads>",
+                    "<read id='Φ.app.φ' name='retry' of='Φ.app.φ.ρ'/>",
+                    "<read id='Φ.app.φ.ρ' name='check' of='Φ.app.φ.ρ.ρ'/>",
+                    "</reads>",
+                    "<heads><type id='Φ.app.φ.ρ.ρ'><ref loc='Φ'/></type></heads>",
+                    "<calls><call loc='Φ.app.φ'><arg loc='Φ.app.φ.α0' n='0'/></call></calls>"
+                )
+            ).arguments(),
+            Matchers.hasItem("Φ.app.φ.α0")
+        );
+    }
+
+    @Test
+    void groundsArgumentOfCallOnVoidAtomSaysJavaFills(@Mktmp final Path temp)
+        throws IOException {
+        final String name = String.format("st%d", new SecureRandom().nextInt(10_000));
+        MatcherAssert.assertThat(
+            "an argument of a call on a void an atom types with its brackets must be grounded, but it isnt",
+            new Grounded(
+                GroundedTest.facts(
+                    temp,
+                    "<objects><type id='Φ'>",
+                    "<attr name='check' type='Φ.check'/>",
+                    String.format("<attr name='%1$s' type='Φ.%1$s'/>", name),
+                    "<attr name='number' type='Φ.number'/>",
+                    String.format(
+                        "</type><type id='Φ.check' returns='Φ.%s(Φ.string,Φ.number)'>", name
+                    ),
+                    String.format("</type><type id='Φ.%s'>", name),
+                    String.format("<attr name='ρ' rho='Φ' type='Φ.%s.ρ' void='true'/>", name),
+                    String.format("<attr name='msg' type='Φ.%s.msg' void='true'/>", name),
+                    String.format("<attr name='cde' type='Φ.%s.cde' void='true'/>", name),
+                    String.format("<attr name='code' type='Φ.%s.code'/>", name),
+                    "</type><type id='Φ.number'><attr name='plus' type='Φ.number.plus'/></type>",
+                    "<type id='Φ.number.plus'><attr name='y' type='Φ.number.plus.y' void='true'/>",
+                    "</type></objects><reads>",
+                    String.format("<read id='Φ.%1$s.code' name='cde' of='Φ.%1$s.code.ρ'/>", name),
+                    "<read id='Φ.app.φ' name='plus' of='Φ.app.φ.ρ'/>",
+                    "<read id='Φ.app.φ.ρ' name='code' of='Φ.app.φ.ρ.ρ'/>",
+                    "<read id='Φ.app.φ.ρ.ρ' name='check' of='Φ.app.φ.ρ.ρ.ρ'/>",
+                    "</reads><heads>",
+                    String.format("<type id='Φ.%1$s.code.ρ'><ref loc='Φ.%1$s'/></type>", name),
+                    "<type id='Φ.app.φ.ρ.ρ.ρ'><ref loc='Φ'/></type>",
+                    "</heads>",
+                    "<calls><call loc='Φ.app.φ'><arg loc='Φ.app.φ.α0' n='0'/></call></calls>"
+                )
+            ).arguments(),
+            Matchers.hasItem("Φ.app.φ.α0")
+        );
+    }
+
+    @Test
+    void groundsArgumentOfCallOnVoidThatCallInEoFillsByName(@Mktmp final Path temp)
+        throws IOException {
+        final String name = String.format("st%d", new SecureRandom().nextInt(10_000));
+        MatcherAssert.assertThat(
+            "an argument of a call on a void a call in EO fills by name must be grounded, but it isnt",
+            new Grounded(
+                GroundedTest.facts(
+                    temp,
+                    "<objects><type id='Φ'>",
+                    String.format("<attr name='%1$s' type='Φ.%1$s'/>", name),
+                    "<attr name='number' type='Φ.number'/>",
+                    "<attr name='string' type='Φ.string'/>",
+                    String.format("</type><type id='Φ.%s'>", name),
+                    String.format("<attr name='ρ' rho='Φ' type='Φ.%s.ρ' void='true'/>", name),
+                    String.format("<attr name='msg' type='Φ.%s.msg' void='true'/>", name),
+                    String.format("<attr name='cde' type='Φ.%s.cde' void='true'/>", name),
+                    String.format("<attr name='code' type='Φ.%s.code'/>", name),
+                    "</type><type id='Φ.number'><attr name='plus' type='Φ.number.plus'/></type>",
+                    "<type id='Φ.number.plus'><attr name='y' type='Φ.number.plus.y' void='true'/>",
+                    "</type><type id='Φ.string'/></objects><reads>",
+                    String.format("<read id='Φ.%1$s.code' name='cde' of='Φ.%1$s.code.ρ'/>", name),
+                    "<read id='Φ.app.φ' name='plus' of='Φ.app.φ.ρ'/>",
+                    "<read id='Φ.app.φ.ρ' name='code' of='Φ.app.φ.ρ.ρ'/>",
+                    String.format("<read id='Φ.app.φ.ρ.ρ' name='%s' of='Φ.app.φ.ρ.ρ.ρ'/>", name),
+                    "<read id='Φ.app.φ.ρ.ρ.cde' name='number' of='Φ.app.φ.ρ.ρ.cde.ρ'/>",
+                    "<read id='Φ.app.φ.ρ.ρ.msg' name='string' of='Φ.app.φ.ρ.ρ.msg.ρ'/>",
+                    "</reads><heads>",
+                    String.format("<type id='Φ.%1$s.code.ρ'><ref loc='Φ.%1$s'/></type>", name),
+                    "<type id='Φ.app.φ.ρ.ρ.ρ'><ref loc='Φ'/></type>",
+                    "<type id='Φ.app.φ.ρ.ρ.cde.ρ'><ref loc='Φ'/></type>",
+                    "<type id='Φ.app.φ.ρ.ρ.msg.ρ'><ref loc='Φ'/></type>",
+                    "</heads><calls><call loc='Φ.app.φ.ρ.ρ'>",
+                    "<arg loc='Φ.app.φ.ρ.ρ.cde' name='cde'/>",
+                    "<arg loc='Φ.app.φ.ρ.ρ.msg' name='msg'/>",
+                    "</call><call loc='Φ.app.φ'><arg loc='Φ.app.φ.α0' n='0'/></call></calls>"
+                )
+            ).arguments(),
+            Matchers.hasItem("Φ.app.φ.α0")
+        );
+    }
+
     private static Path facts(final Path dir, final String... parts) throws IOException {
         final Path table = dir.resolve("facts.xml");
         Files.write(

@@ -243,8 +243,7 @@ final class Study {
             final Value value = this.world.value(all.get(idx));
             if (value.kind() == 'O' && value.placed()) {
                 filled.merge(value.form(), value.bound(), (left, right) -> left | right);
-            } else if (value.kind() == 'O' && Values.JBORN.equals(value.birth())
-                && this.world.returned(value.form())) {
+            } else if (value.kind() == 'O' && value.java()) {
                 filled.merge(
                     value.form(), this.state.mask(value.form()),
                     (left, right) -> left | right

@@ -16,7 +16,7 @@ import java.util.Map;
  * born at the same place, with the same tag and the same voids bound, are
  * one copy, and are one number. The first six numbers are the root, a datum,
  * a termination, Java's mark, the unknown of a void nobody fills, and the
- * unknown of a void a stop decided Java alone fills.</p>
+ * unknown of a void only Java fills.</p>
  *
  * @since 0.76.0
  */
@@ -50,12 +50,14 @@ final class Values {
     static final int GAP = 4;
 
     /**
-     * The unknown of a void a stop decided Java alone fills (4.4).
+     * The unknown of a void only Java fills: what a void of a copy Java made
+     * reads when the annotation of the atom gives it no type (4.5).
      */
     static final int JGAP = 5;
 
     /**
-     * The birthplace of every copy Java makes.
+     * The birthplace of every copy Java makes, with the bracket list of its
+     * type right after it when the type has one.
      */
     static final String JBORN = "java";
 

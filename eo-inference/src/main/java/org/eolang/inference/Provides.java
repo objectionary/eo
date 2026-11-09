@@ -64,6 +64,13 @@ import org.xembly.Directives;
  * the row keeps it and whoever reads the table can ask a {@code number} what
  * the atom itself cannot answer.</p>
  *
+ * <p>An annotation is a type tree ({@link Annotation}):
+ * {@code /Q.posix.status-return(Q.number,Q.string)} gives a
+ * {@code status-return} with a number and a string in its voids. The
+ * {@code returns} cell keeps the tree as the XMIR writes it, and the
+ * {@code holds} cell of a void keeps its own type when it names an object,
+ * without the mark of termination.</p>
+ *
  * <p>An annotation may name a variable rather than an object, and then it
  * names the voids that carry the same letter. {@code [] > recovered /A} over
  * {@code ? > value /A?} and {@code ? > alternative /A} says that what comes
@@ -208,8 +215,8 @@ final class Provides implements Section {
                 .set("type", attr.says("loc"));
             if ("∅".equals(attr.says("base"))) {
                 row.set("void", "true");
-                final String held = attr.says("type");
-                if (held.startsWith("Φ.")) {
+                final String held = Provides.held(attr.says("type"));
+                if (!held.isEmpty()) {
                     row.set("holds", held);
                 }
                 final String args = attr.says("args");
@@ -303,6 +310,15 @@ final class Provides implements Section {
                 && letter.equals(attr.says("type").replace("?", ""))) {
                 found.add(attr.says("loc"));
             }
+        }
+        return found;
+    }
+
+    private static String held(final String type) {
+        final String bare = new Annotation(type).toString();
+        String found = "";
+        if (bare.startsWith("Φ.")) {
+            found = bare;
         }
         return found;
     }

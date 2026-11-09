@@ -14,15 +14,15 @@ sources:
     [^] > yes
       choice > @
         [^]
-          ? >> left
-          ? >> right
+          ? > left
+          ? > right
           left > @
   no.eo: |
     [^] > no
       choice > @
         [^]
-          ? >> left
-          ? >> right
+          ? > left
+          ? > right
           right > @
   bytes.eo: |
     [@] > bytes
@@ -33,8 +33,8 @@ sources:
 answers:
   - /answers/o[@loc='Φ.yes.φ']/is[@loc='Φ.yes.φ.α0']
   - /answers/o[@loc='Φ.no.φ']/is[@loc='Φ.no.φ.α0']
-  - /answers/o[@loc='Φ.yes.φ.α0.a🌵4-6']/unknown
-  - /answers/o[@loc='Φ.no.φ.α0.a🌵5-6']/unknown
+  - /answers/o[@loc='Φ.yes.φ.α0.v🌵left']/unknown
+  - /answers/o[@loc='Φ.no.φ.α0.v🌵right']/unknown
   - /answers/o[@loc='Φ.choice']/reduced/set/is[@loc='Φ.yes.φ.α0']
   - /answers/o[@loc='Φ.choice']/reduced/set/is[@loc='Φ.no.φ.α0']
   - /answers/o[@loc='Φ.yes.φ.α0.φ']/unknown

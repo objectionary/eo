@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Java makes status from the atom check, whose type has no brackets, and no
+# EO code calls status, so nothing goes into its note but what Java puts
+# there. The text read off what check returns is the unknown only Java fills.
+sources:
+  os.eo: |
+    [] > os
+      [] > check /Q.os.status
+      [code note] > status
+        code > @
+        note > text
+  app.eo: |
+    [] > app
+      os.check.text > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ' and count(*)=1]/unknown[@kind='java']
+  - /answers/o[@loc='Φ.os.status.v🌵note' and count(*)=1]/unknown[@kind='java']

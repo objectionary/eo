@@ -2,9 +2,10 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# exists is a bool Java makes, so the if in temp reads both arms, leaf "tmp"
-# and T, and temp is a leaf or T. So is the file of outer, which inner.temp
-# fills, while the file of inner is the leaf "a" alone.
+# exists is a bool Java makes, and its fork holds the forks true and false
+# put into a bool. So the if in temp reads both arms, leaf "tmp" and T, and
+# temp is a leaf or T, with no unknown. So is the file of outer, which
+# inner.temp fills, while the file of inner is the leaf "a" alone.
 sources:
   leaf.eo: |
     [path] > leaf
@@ -37,15 +38,15 @@ sources:
     [^] > true
       bool > @
         [^]
-          ? >> left
-          ? >> right
+          ? > left
+          ? > right
           left > @
   false.eo: |
     [^] > false
       bool > @
         [^]
-          ? >> left
-          ? >> right
+          ? > left
+          ? > right
           right > @
   bytes.eo: |
     [@] > bytes
@@ -54,9 +55,10 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.bool.v🌵fork']/set/unknown[@kind='java']
+  - /answers/o[@loc='Φ.leaf.exists.λ']/is[@loc='Φ.bool']
   - /answers/o[@loc='Φ.dir.temp.φ' and terminator]/is[@loc='Φ.leaf']
   - /answers/o[@loc='Φ.dir.temp']/reduced[terminator]/is[@loc='Φ.leaf']
   - /answers/o[@loc='Φ.app.outer.α0' and @lands='v🌵file' and terminator]/is[@loc='Φ.leaf']
   - /answers/o[@loc='Φ.app.inner.α0' and @lands='v🌵file']/is[@loc='Φ.leaf']
   - /answers[not(o[@loc='Φ.app.inner.α0']/terminator)]
+  - /answers[not(o[starts-with(@loc, 'Φ.dir') or starts-with(@loc, 'Φ.app')]//unknown)]

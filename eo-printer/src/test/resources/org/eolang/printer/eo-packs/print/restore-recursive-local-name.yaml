@@ -2,15 +2,14 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# A recursive helper declared with a file-local handle ("? >> rec", whose
-# body calls "rec" again) compiles to an auto-named abstract that references
-# its own name. Since #5677 the "inline-cactoos" pass keeps it in place, so
-# it reaches the printer and its name must survive. "restore-local-names"
-# treats such a self-referential formation like a handled void (#5681): it
-# promotes the "@local" handle to the visible "@name", rewrites the
-# self-references back to the handle, and keeps the "@local" marker so
-# "to-eo-tree" can print "&gt;&gt; name" instead of an anonymous
-# "&gt;&gt;" bound to synthetic "vL_P" references.
+# A recursive helper declared with a file-local handle ("[tup] >> reclast",
+# whose body calls "reclast" again) compiles to an auto-named abstract that
+# references its own name. Since #5677 the "inline-cactoos" pass keeps it in
+# place, so it reaches the printer and its name must survive.
+# "restore-local-names" promotes its "@local" handle to the visible "@name"
+# (#5681), rewrites the self-references back to the handle, and keeps the
+# "@local" marker so "to-eo-tree" can print "&gt;&gt; name" instead of an
+# anonymous "&gt;&gt;" bound to synthetic "vL_P" references.
 sheets:
   - /org/eolang/parser/parse/wrap-applications.xsl
   - /org/eolang/parser/parse/resolve-local-names.xsl

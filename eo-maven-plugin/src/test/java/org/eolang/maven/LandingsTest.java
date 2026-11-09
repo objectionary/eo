@@ -73,10 +73,10 @@ final class LandingsTest {
                     LandingsTest.grounded("Φ.z.φ", "Φ.z.φ.α0", "Φ.z.φ.α1"),
                     "<o loc='Φ.z.φ' copies='1'><is loc='Φ.z.pair'/></o>",
                     "<o loc='Φ.z.φ.α0' copies='1' lands='left'><data/></o>",
-                    "<o loc='Φ.z.φ.α1' copies='1' lands='a🌵14-6'><data/></o>"
+                    "<o loc='Φ.z.φ.α1' copies='1' lands='v🌵right'><data/></o>"
                 )
             ).names(),
-            Matchers.hasEntry("Φ.z.φ.α1", "a🌵14-6")
+            Matchers.hasEntry("Φ.z.φ.α1", "v🌵right")
         );
     }
 

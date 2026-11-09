@@ -12,6 +12,4 @@ penalties:
 origin: |
   +package org.eolang
 
-  [] > as-bool
-    ? >> bts
-    bts.eq 01- > @
+  [] > status /Q.posix.status-return(Q.number,Q.string)

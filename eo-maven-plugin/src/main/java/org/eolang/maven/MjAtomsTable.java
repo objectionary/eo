@@ -23,6 +23,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.inference.Annotation;
 
 /**
  * Generate the atom return types table from XMIR sources.
@@ -31,7 +32,10 @@ import org.cactoos.text.UncheckedText;
  * {@code forma} of every lambda atom together with its declared return
  * type, and writes the result as a CSV file at {@link #csv}.
  * Each output line has the form {@code <forma>,<return-type>}; entries
- * are sorted by {@code forma} to make the file stable across builds.</p>
+ * are sorted by {@code forma} to make the file stable across builds.
+ * A return type that is a tree, such as
+ * {@code Φ.posix.status-return(Φ.number,Φ.string)}, is written as the
+ * name before its brackets, since the runtime checks only that name.</p>
  *
  * @since 0.57
  */
@@ -101,11 +105,13 @@ public final class MjAtomsTable extends MjSafe {
                             "atom element must carry 'forma' attribute"
                         )
                     ),
-                    atom.attribute("returns").text().orElseThrow(
-                        () -> new IllegalStateException(
-                            "atom element must carry 'returns' attribute"
+                    new Annotation(
+                        atom.attribute("returns").text().orElseThrow(
+                            () -> new IllegalStateException(
+                                "atom element must carry 'returns' attribute"
+                            )
                         )
-                    )
+                    ).head()
                 )
             );
         }

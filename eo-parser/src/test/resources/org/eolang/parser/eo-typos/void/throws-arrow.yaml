@@ -3,7 +3,10 @@
 ---
 # yamllint disable rule:line-length
 line: 2
-message: "a void attribute must be written as `? > name` or `? >> name`"
+message: |-
+  [2:2] error: 'a void attribute must be written as `? > name`'
+    ? -> name
+    ^
 input: |
   [] > app
     ? -> name

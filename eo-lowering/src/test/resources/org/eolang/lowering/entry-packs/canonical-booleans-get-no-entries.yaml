@@ -11,17 +11,11 @@ eo:
   true.eo: |
     [] > true
       bool > @
-        [^]
-          ? >> left
-          ? >> right
-          left > @
+        left > [^pick left right]
   false.eo: |
     [] > false
       bool > @
-        [^]
-          ? >> left
-          ? >> right
-          right > @
+        right > [^state left right]
   sample-true.eo: |
     +package sample
 
