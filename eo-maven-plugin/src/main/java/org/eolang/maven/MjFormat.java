@@ -16,11 +16,12 @@ import java.util.Optional;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.text.TextOf;
+import org.cactoos.io.InputOf;
 import org.cactoos.text.UncheckedText;
 import org.eolang.cache.Saved;
 import org.eolang.parser.Canonical;
 import org.eolang.parser.EoSyntax;
+import org.eolang.parser.Utf8;
 import org.eolang.printer.Xmir;
 
 /**
@@ -43,6 +44,10 @@ import org.eolang.printer.Xmir;
  * through {@link Threaded}, the way every other goal walks them, and each
  * settling pass keeps the tree it parsed instead of parsing the same text
  * again to lay it out.</p>
+ *
+ * <p>Every source is decoded strictly before {@link Raws} is asked for a tree,
+ * so a file that is not UTF-8 fails with its own name and line instead of being
+ * formatted from a tree the raw cache holds for an earlier text of the path.</p>
  *
  * @since 0.57.0
  */
@@ -91,7 +96,9 @@ public final class MjFormat extends MjPenalties {
 
     private int reformat(final TjForeign tojo, final Raws raws) throws IOException {
         final Path source = tojo.source();
-        final String actual = new UncheckedText(new TextOf(source)).asString();
+        final String actual = new UncheckedText(
+            new Utf8(new InputOf(source), source.toString())
+        ).asString();
         final String canonical = this.canonical(tojo, actual, raws);
         final Diff diff = new Diff(actual, canonical);
         final int diverged;

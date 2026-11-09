@@ -1154,6 +1154,7 @@ R-6.6.2. **One binding kind per group.** Within a same-indent group of applicati
 R-6.6.3. **Receiver exclusion.** The receiver of a reversed dispatch is the dispatch target, not an argument, and cannot carry a binding. The remaining args of the dispatch form a normal application-arg group governed by R-6.6.2 and R-6.6.5.
 R-6.6.4. Inline binding on a method dispatch is legal only when that method is the **last** in its chain.
 R-6.6.5. **No label twice.** Within a same-indent group of application arguments, each binding label appears at most once, whether it is a name (`foo 1:a 2:a`) or a slot number (`foo 1:0 2:1 3:0`). The error points at the second occurrence.
+R-6.6.6. **Star tuple elements have no bindings.** An element of a `*` tuple cannot carry `:name` or `:N`; its position is determined by its order. `stars-to-tuples` reports `star tuple elements cannot carry argument bindings` at the element's source line. A binding on the tuple itself when passed as an argument, or on an argument of an application inside an element, remains legal.
 
 Examples:
 
@@ -1470,6 +1471,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Bound and unbound args mixed in arg group (R-6.6.2) | `argument bindings must be all-or-nothing` |
 | Slot numbers and names mixed in arg group (R-6.6.2) | `argument bindings must not mix slot numbers and names` |
 | Binding label repeated in arg group (R-6.6.5) | `duplicate argument binding '<label>'` (label substituted) |
+| Binding on a star tuple element (R-6.6.6) | `star tuple elements cannot carry argument bindings` |
 | Binding on a plain child of a formation or top level (R-3.12.3) | `binding allowed only in argument position` |
 | Receiver carrying binding | `reversed-dispatch receiver cannot carry a binding` |
 | Inline binding on non-last method in chain | `inline binding allowed only on the last method in a chain` |

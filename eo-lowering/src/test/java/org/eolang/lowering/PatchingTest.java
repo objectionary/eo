@@ -7,6 +7,7 @@ package org.eolang.lowering;
 import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -66,7 +67,7 @@ final class PatchingTest {
             Assertions.assertThrows(
                 IllegalStateException.class,
                 () -> new Patching(
-                    new ListOf<>(), temp.resolve("tables"), temp.resolve("patched")
+                    new ListOf<>(), temp.resolve("tables")
                 ).exec(temp),
                 "a patching with no list of the rendered entries must fail"
             ).getMessage(),
@@ -92,8 +93,7 @@ final class PatchingTest {
                         .toString().getBytes(StandardCharsets.UTF_8)
                 )
             ),
-            temp.resolve("tables"),
-            temp.resolve("patched")
+            temp.resolve("tables")
         ).exec(temp);
         MatcherAssert.assertThat(
             "a copy an earlier build patched must not be listed as patched now, but it is",
@@ -210,10 +210,8 @@ final class PatchingTest {
                     )
                 );
             }
-            new Patching(
-                xmirs, this.temp.resolve("tables"), this.temp.resolve("patched")
-            ).exec(this.temp);
-            return this.temp.resolve("patched");
+            new Patching(xmirs, this.temp.resolve("tables")).exec(this.temp);
+            return new Seqdir(this.temp, 1).dirs().find("patched").orElseThrow();
         }
 
         private List<Path> files(final Path patched) throws IOException {

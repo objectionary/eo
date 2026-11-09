@@ -50,30 +50,22 @@ import org.eolang.lowering.Scope;
  * numbers as {@code NN-lowering}. There the lowering keeps the world, the
  * sources with their tests cut out in {@code 1-planting}, and the protocol
  * of every object morphed in {@code 2-protocols}. The atoms the lowering
- * renders land in {@code 3-atoms}, which this goal finds and hands to javac
+ * renders land in the numbered {@code atoms} directory, which this goal finds and hands to javac
  * as a source root, and every XMIR file with an atom in the place of a body
- * lands in {@code 4-patched}, where this goal points the tojo of that
- * object, so the transpiler reads the patched copy and every other object
+ * lands in the numbered {@code patched} directory, where this goal points
+ * the tojo of that object, so the transpiler reads the patched copy and every other object
  * stays where it was. The copies stay
  * from build to build, so only a copy listed in {@code patched.tsv}, one
  * patched in this very build, is handed to the transpiler.</p>
  *
  * <p>With {@code -Deo.saveTextProtocols=true} the lowering also keeps the
- * protocol of every entry as indented text in {@code texts}, beside
+ * protocol of every entry as indented text in the numbered {@code texts} directory, beside
  * {@code 2-protocols}, so a person can read why an entry stopped where it
  * did without any tool. phino writes one protocol per run, so this runs
  * phino on every entry twice, unless the cache already holds the protocol
  * and its text.</p>
  *
  * @since 0.64.0
- * @todo #9556:60min Number the directories of texts and patched sources
- *  through seqdir, the way the lowering numbers atoms. Patching has to
- *  reserve patched sources with once(), so Lowering and Patching stop
- *  taking that directory and this goal finds it after the lowering instead
- *  of resolving 4-patched. Morphing has to reserve texts with once() only
- *  when it saves them, and still clean an unnumbered texts left by an older
- *  build. Do both in one go, since a numbered texts alone would push atoms
- *  to 4-atoms, next to the 4-patched this goal still resolves.
  */
 @Mojo(
     name = "lower",
@@ -222,7 +214,6 @@ public final class MjLower extends MjSafe {
                     this.binary,
                     this.pin,
                     this.caching("lowered"),
-                    home.resolve("4-patched"),
                     new Scope(this.only, this.never),
                     this.steps,
                     this.loops,
@@ -260,7 +251,8 @@ public final class MjLower extends MjSafe {
         }
     }
 
-    private static void repoint(final TjsForeign tojos, final Path home) {
+    private static void repoint(final TjsForeign tojos, final Path home) throws IOException {
+        final Path patched = new Seqdir(home, 1).dirs().find("patched").orElseThrow();
         final Collection<String> fresh = new ListOf<>(
             new Mapped<>(
                 Text::asString,
@@ -270,7 +262,7 @@ public final class MjLower extends MjSafe {
         for (final TjForeign tojo : tojos.standalone()) {
             final String name = tojo.xmir().getFileName().toString();
             if (fresh.contains(name)) {
-                tojo.withXmir(home.resolve("4-patched").resolve(name));
+                tojo.withXmir(patched.resolve(name));
             }
         }
     }

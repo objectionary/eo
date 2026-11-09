@@ -77,6 +77,7 @@ final class Places {
             this.world.born(new Site(place, this.world.carried(ctx)), place),
             Copies.NO_RHO
         );
+        this.state.enclose(copy, ctx);
         this.state.remember(copy);
         return copy;
     }

@@ -5,7 +5,9 @@
 package org.eolang.inference;
 
 import java.util.BitSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -21,28 +23,18 @@ import java.util.concurrent.atomic.AtomicLong;
  * <li>A test counts as dataized.</li>
  * <li>A copy whose {@code ^} does not count does not count either: its
  * {@code ρ} row has values and every one is a copy that does not count,
- * followed up the chain, where a copy met again counts. A copy whose
- * formation declares no {@code ^} has no {@code ρ} row, so nothing around
- * it stops it from counting (#9785).</li>
+ * followed up the chain, where a copy met again counts.</li>
+ * <li>The copies it was made in are tracked separately and must also count.</li>
  * <li>Once the walk is over, a study copy whose formation got a real copy,
  * or whose real copy around does not count, does not count either; nothing
  * else changes (#9655).</li>
  * </ul>
  *
  * <p>What it worked out is kept until the count of changes, the tally,
- * moves: a new value in a {@code ρ} row, a copy that began to count, a
- * study copy.</p>
+ * moves: a new containing copy or value in a {@code ρ} row, a copy that
+ * began to count, a study copy.</p>
  *
  * @since 0.76.0
- * @todo #9785:60min Keep a copy from counting when the copy it was made in
- *  does not count. A copy of a formation that declares no {@code ^} has no
- *  {@code ρ} row, so {@code upheld()} counts it even when the copy it was
- *  made in does not count. So {@code [] > next} inside the copy as written
- *  of {@code y} in the test {@code can-build-an-empty-range-from-wrong-items}
- *  of {@code range.eo} counts, though that {@code y} has an empty void and
- *  does not. The walk has to keep its own link from a copy to the copy it
- *  was made in, apart from {@code ρ}, and {@code upheld()} has to follow
- *  that link.
  */
 final class Counting {
 
@@ -77,6 +69,11 @@ final class Counting {
     private final BitSet used;
 
     /**
+     * The copies each copy was made in, apart from its receiver.
+     */
+    private final Map<Integer, Ints> hosts;
+
+    /**
      * Whether each value has an empty void of its own: zero for not worked
      * out, one for no, two for yes.
      */
@@ -104,6 +101,7 @@ final class Counting {
         this.state = walk;
         this.world = world;
         this.used = new BitSet();
+        this.hosts = new HashMap<>(0);
         this.bares = new Marks();
         this.counted = new Marks();
         this.tally = new AtomicLong();
@@ -123,6 +121,22 @@ final class Counting {
      */
     void grow() {
         this.tally.incrementAndGet();
+    }
+
+    /**
+     * Note where a copy was made, without giving it a receiver.
+     *
+     * @param copy The copy
+     * @param outer The containing copy
+     * @return The copy
+     */
+    int enclose(final int copy, final int outer) {
+        if (!this.state.canon(this.world.value(copy).form())
+            && this.hosts.computeIfAbsent(copy, key -> new Ints()).add(outer)) {
+            this.grow();
+            this.state.change();
+        }
+        return copy;
     }
 
     /**
@@ -213,14 +227,18 @@ final class Counting {
     }
 
     /**
-     * Whether a copy's {@code ^} counts, up the chain.
+     * Whether a copy's containing copies and {@code ^} count, up the chain.
      *
      * @param num The copy
      * @param chain The copies met on the chain so far
      * @return TRUE if it does
      */
     boolean upheld(final int num, final Ints chain) {
-        final Ints row = this.state.row(num, "ρ");
+        return this.upholds(this.hosts.getOrDefault(num, new Ints()), chain)
+            && this.upholds(this.state.row(num, "ρ"), chain);
+    }
+
+    private boolean upholds(final Ints row, final Ints chain) {
         boolean result = row.isEmpty();
         for (int idx = 0; idx < row.size() && !result; ++idx) {
             result = this.world.value(row.get(idx)).kind() != 'O';

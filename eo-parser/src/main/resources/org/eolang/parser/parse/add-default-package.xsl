@@ -10,19 +10,8 @@
   Here we go through all objects that are not:
   1. methods (starts with .)
   2. @, Q, ^ or $
-  3. mentioned in aliases
 
   and add default package to them.
-
-  We ignore objects that are present in aliases with their exact
-  names. For example, this object 'hello' won't be touched, we
-  won't think that it belongs to org.eolang package:
-
-  +alias hello
-
-  # No comment.
-  [] > app
-  hello > @
 
   The default package is the root "Φ", unless the program has a
   "+package" meta AND the bare name belongs to an object of the
@@ -72,17 +61,15 @@
     <xsl:variable name="local" select="concat($package, '.', $name)"/>
     <xsl:sequence select="concat('Φ.', if ($package != '' and $local = $known) then $local else $name)"/>
   </xsl:function>
-  <!-- The short names the "+alias" metas declare. -->
-  <xsl:variable name="aliases" select="/object/metas/meta[head='alias']/part[1]"/>
   <!--
   Home every bare name of a type: a return in "@atom", a void type in
   "@type" or a callback list in "@args". A type is a tree such as
   "Φ.pair(A,number)", so the brackets, the commas, a trailing "?" and
   the spaces between "@args" members stay as they are, and each name
-  between them is homed on its own. A type variable, a dotted name, a
-  special token and an alias name stay as they are. Any other name goes
-  to the current package when "local" is true and the package has it, as
-  "eo:homed" decides, and to the root "Φ" otherwise.
+  between them is homed on its own. A type variable, a dotted name and a
+  special token stay as they are. Any other name goes to the current
+  package when "local" is true and the package has it, as "eo:homed"
+  decides, and to the root "Φ" otherwise.
   -->
   <xsl:function name="eo:typed" as="xs:string">
     <xsl:param name="type" as="xs:string"/>
@@ -90,7 +77,7 @@
     <xsl:variable name="parts" as="xs:string*">
       <xsl:analyze-string select="$type" regex="[^(),? ]+">
         <xsl:matching-substring>
-          <xsl:sequence select="if (matches(., '^[A-F]$') or contains(., '.') or .=$eo:phi or .=$eo:program or .=$eo:rho or .=$eo:empty or .=$eo:xi or .=$eo:bottom or .=$aliases) then string(.) else if ($local) then eo:homed(.) else concat('Φ.', .)"/>
+          <xsl:sequence select="if (matches(., '^[A-F]$') or contains(., '.') or .=$eo:phi or .=$eo:program or .=$eo:rho or .=$eo:empty or .=$eo:xi or .=$eo:bottom) then string(.) else if ($local) then eo:homed(.) else concat('Φ.', .)"/>
         </xsl:matching-substring>
         <xsl:non-matching-substring>
           <xsl:sequence select="string(.)"/>
@@ -130,7 +117,7 @@
   <xsl:template match="o[@base!=$eo:phi and @base!=$eo:program and @base!=$eo:rho and @base!=$eo:empty and @base!=$eo:xi and @base!=$eo:bottom]" mode="no-dots">
     <xsl:apply-templates select="." mode="no-specials"/>
   </xsl:template>
-  <xsl:template match="o[not(@base=/object/metas/meta[head='alias']/part[1])]" mode="no-specials">
+  <xsl:template match="o" mode="no-specials">
     <xsl:copy>
       <xsl:attribute name="base" select="eo:homed(@base)"/>
       <xsl:apply-templates select="node()|@* except @base"/>
