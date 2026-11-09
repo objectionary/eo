@@ -70,11 +70,18 @@
       dir.gathered
         added
           acc
-          name.
-            called. >> read
-              os.is-windows.if
-                win32.find-next-file opened.code
-                posix.readdir opened.code
+          if.
+            read.code.eq -2
+            T
+              "Can't read the directory '%s': %s".printf
+                *
+                  dir.folder.path
+                  name.
+                    called. >> read
+                      os.is-windows.if
+                        win32.find-next-file opened.code
+                        posix.readdir opened.code
+            read.name
   if. > [^folder rest item] >> inserted
     rest.length.eq 0
     * item
