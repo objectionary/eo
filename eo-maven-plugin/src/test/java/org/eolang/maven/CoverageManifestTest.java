@@ -74,8 +74,8 @@ final class CoverageManifestTest {
                         "[] > x",
                         "  bool > @",
                         "    []",
-                        "      ? >> left",
-                        "      ? >> right",
+                        "      ? > left",
+                        "      ? > right",
                         "      right > @",
                         ""
                     )
@@ -202,17 +202,17 @@ final class CoverageManifestTest {
     }
 
     @Test
-    void excludesLocationsOfVoidAttributesDeclaredWithTheShorthand() throws Exception {
+    void excludesLocationsOfVoidAttributesDeclaredOnTheirOwnLines() throws Exception {
         MatcherAssert.assertThat(
-            "a `? >> name` void attribute has no dataizable body, so its declaration line must not be counted",
+            "a `? > name` void attribute has no dataizable body, so its declaration line must not be counted",
             new CoverageManifest().locations(
                 new EoSyntax(
                     String.join(
                         System.lineSeparator(),
                         "bool > x",
                         "  []",
-                        "    ? >> left",
-                        "    ? >> right",
+                        "    ? > left",
+                        "    ? > right",
                         "    right > @",
                         ""
                     )

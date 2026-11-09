@@ -15,8 +15,8 @@ package org.eolang.inference;
  *   <li>{@code Φ}, the root; {@code D}, a datum; {@code T}, a termination;
  *   {@code J}, what only Java puts into a {@code ρ};</li>
  *   <li>{@code U}, an unknown, with its reason in {@code form}, and
- *   "decided" in {@code birth} for the unknown of a void a stop decided
- *   Java alone fills (4.4);</li>
+ *   "decided" in {@code birth} for the unknown of a void only Java fills
+ *   (4.5);</li>
  *   <li>{@code B}, rule b's head as is (4.3), the value in {@code base};</li>
  *   <li>{@code A}, rule A's mark (4.2), the value in {@code base} and its
  *   number of empty voids in {@code count}.</li>
@@ -52,6 +52,17 @@ record Value(
      * @return TRUE if it is
      */
     boolean placed() {
-        return !Values.JBORN.equals(this.birth) && !"canon".equals(this.birth);
+        return !this.java() && !"canon".equals(this.birth);
+    }
+
+    /**
+     * Whether it is a copy Java made: born {@code java}, with the bracket
+     * list of its type right after that when the type has one.
+     *
+     * @return TRUE if it is
+     */
+    boolean java() {
+        return Values.JBORN.equals(this.birth)
+            || this.birth.startsWith(Values.JBORN.concat("("));
     }
 }

@@ -10,10 +10,7 @@
 
 [] > true
   bool > @
-    [^pick]
-      ? >> left
-      ? >> right
-      left > @
+    left > [^pick left right]
 
   true.and true ++> can-conjoin-true-with-true
 

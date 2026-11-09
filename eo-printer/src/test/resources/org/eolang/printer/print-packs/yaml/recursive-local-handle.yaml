@@ -29,24 +29,22 @@ origin: |
   +package tuple
 
   [] > last-index-of
-    ? >> list
-    ? >> wanted
+    ? > list
+    ? > wanted
     reclast list > @
     [tup] >> reclast
       if. > @
         tup.length.eq 0
         -1
         if.
-          tup.head.eq wanted
+          tup.head.eq ^.wanted
           tup.tail.length
           reclast tup.tail
 
 printed: |
   +package tuple
 
-  [] > last-index-of
-    ? >> list
-    ? >> wanted
+  [list wanted] > last-index-of
     if. > [tup] >> reclast
       tup.length.eq 0
       -1

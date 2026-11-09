@@ -317,7 +317,7 @@ final class Counting {
     private void read(final int inside, final Usage usage, final Ints met) {
         final Value value = this.world.value(inside);
         final Formation shape = this.world.form(value.form());
-        if (!"ρ".equals(usage.name()) && !Values.JBORN.equals(value.birth())
+        if (!"ρ".equals(usage.name()) && !value.java()
             && !shape.has(usage.name()) && met.add(inside)) {
             final List<String> behind;
             if (shape.has("φ")) {

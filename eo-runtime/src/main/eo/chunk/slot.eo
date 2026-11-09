@@ -21,7 +21,7 @@
     read > get
       0
       size
-    ^.parent.id > id
+    parent.id > id
     if. > [^ object] > put
       and.
         ^.size.gt 0
