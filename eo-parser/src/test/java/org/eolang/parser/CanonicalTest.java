@@ -144,7 +144,7 @@ final class CanonicalTest {
                 "  [] > fopen /file",
                 "    ? > e /{foo}",
                 "  [] > boxed /bar",
-                "    ? >> h /bar?",
+                "    ? > h /bar?",
                 ""
             ),
             CanonicalTest.text(repo.resolve("eo-runtime/src/main/eo/seq.eo")),
@@ -211,17 +211,14 @@ final class CanonicalTest {
         final String body;
         if (guarded) {
             body = text.replace(
-                ") then $t else",
-                " or $t=/object/metas/meta[head='alias']/part[1]) then $t else"
+                "<xsl:function name=\"eo:typed\"",
+                "<xsl:variable name=\"aliases\" select=\"/object/metas/meta[head='alias']/part[1]\"/><xsl:function name=\"eo:typed\""
             ).replace(
-                ") then $type else",
-                " or $type=/object/metas/meta[head='alias']/part[1]) then $type else"
+                " or .=$eo:bottom) then string(.)",
+                " or .=$eo:bottom or .=$aliases) then string(.)"
             ).replace(
                 "match=\"o\" mode=\"no-specials\"",
                 "match=\"o[not(@base=/object/metas/meta[head='alias']/part[1])]\" mode=\"no-specials\""
-            ).replace(
-                "match=\"o\" mode=\"atom-no-specials\"",
-                "match=\"o[not(@atom=/object/metas/meta[head='alias']/part[1])]\" mode=\"atom-no-specials\""
             );
         } else {
             body = text;
