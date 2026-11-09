@@ -270,6 +270,7 @@ final class Calls {
                 ),
                 this.rows(head, value, voids, call.sets())
             );
+            this.state.enclose(copy, call.ctx());
             this.applied(copy, call);
             this.bind(value, voids, call);
             this.state.remember(copy);

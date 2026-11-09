@@ -39,7 +39,7 @@ public final class EOwin32$EOsend extends PhDefault implements Atom {
         final byte[] chunk = new Portion(this.free("buffer"), this.expected("size")).it();
         return new Data.ToPhi(
             Winsock.INSTANCE.send(
-                new Pointer(new Dataized(this.free("descriptor")).asNumber().longValue()),
+                new Pointer(new Handle("the socket of send", this.free("descriptor")).it()),
                 chunk,
                 chunk.length,
                 new Int(this.expected("flags")).it()
