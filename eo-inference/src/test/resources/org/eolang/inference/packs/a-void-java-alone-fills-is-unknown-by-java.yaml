@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# Nothing in EO calls status, so the pool of its code stays empty and a stop
-# decides Java alone fills it: the code read off what check returns is
-# unknown, filled by Java, and no place answers open.
+# The annotation of check does not type the code of status, so Java alone
+# fills it: the code read off what check returns is unknown, filled by Java,
+# and no place answers open.
 sources:
   os.eo: |
     [] > os

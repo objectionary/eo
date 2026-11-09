@@ -13,8 +13,8 @@ origin: |
   +package tuple
 
   [] > concat
-    ? >> list
-    ? >> passed
+    ? > list
+    ? > passed
     withouti > list3
       Q.tuple.concat
         * 0 1
@@ -24,9 +24,7 @@ origin: |
 printed: |
   +package tuple
 
-  [] > concat
-    ? >> list
-    ? >> passed
+  [list passed] > concat
     withouti > list3
       concat *1
         * 0 1

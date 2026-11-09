@@ -57,6 +57,35 @@ final class MjAtomsTableTest {
     }
 
     @Test
+    void writesOnlyTheNameBeforeTheBracketsOfTypeTree(@Mktmp final Path temp) throws Exception {
+        new Saved(
+            new EoSyntax(
+                new InputOf(
+                    String.join(
+                        System.lineSeparator(),
+                        "+package bar",
+                        "",
+                        "[] > os",
+                        "  [] > check /Q.os.status(Q.number,Q.string(Q.bytes))",
+                        "  [code text] > status",
+                        "    code > @"
+                    )
+                )
+            ).parsed().toString(),
+            temp.resolve("xmir/bar/os.xmir")
+        ).value();
+        new FakeMaven(temp)
+            .with("sources", temp.resolve("xmir").toFile())
+            .with("csv", temp.resolve("classes/org/eolang/atoms.csv").toFile())
+            .execute(MjAtomsTable.class);
+        MatcherAssert.assertThat(
+            "a type tree must be written as the name before its brackets, but it wasnt",
+            Files.readAllLines(temp.resolve("classes/org/eolang/atoms.csv")),
+            Matchers.hasItem("Φ.bar.os.check,Φ.os.status")
+        );
+    }
+
+    @Test
     void writesTableWhenOutputHasNoParentDirectory(@Mktmp final Path temp) throws Exception {
         final Path output = Path.of("mjatomstable-6447-test.csv");
         try {

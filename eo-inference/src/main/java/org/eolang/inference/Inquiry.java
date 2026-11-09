@@ -87,16 +87,6 @@ final class Inquiry {
     }
 
     /**
-     * Put another answer in place of a stored one, after the passes.
-     *
-     * @param key The question
-     * @param answer The answer
-     */
-    void replace(final Key key, final Ints answer) {
-        this.memo.replace(key, answer);
-    }
-
-    /**
      * Note that whoever is being asked now reads a thing watched.
      *
      * @param key The thing watched

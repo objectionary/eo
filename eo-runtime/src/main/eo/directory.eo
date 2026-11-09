@@ -43,7 +43,7 @@
         seq *
           retry.closed descriptor
           path
-      number status.code > descriptor
+      status.code > descriptor
       os.is-windows.if win32.errno posix.errno > errno
       retry.candidate index > path!
       called. > status

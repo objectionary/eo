@@ -2,8 +2,9 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# knob is an atom that gives a reply, and no EO code fills the kind behind its
-# mode, so ^.got.mode, the second arm of pick, is a void only Java fills.
+# knob is an atom that gives a reply, and its annotation does not type the
+# kind behind its mode, so ^.got.mode, the second arm of pick, is a void only
+# Java fills.
 # choice has a not besides its pick, as bool does, so first, with yes, picks
 # dial 03-. second, with no, picks that void, which stays a void only Java
 # fills once it goes into the arm, so the @ of its pick is that unknown too, and
@@ -19,15 +20,15 @@ sources:
     [^] > yes
       choice > @
         [^]
-          ? >> left
-          ? >> right
+          ? > left
+          ? > right
           left > @
   no.eo: |
     [^] > no
       choice > @
         [^]
-          ? >> left
-          ? >> right
+          ? > left
+          ? > right
           right > @
   dial.eo: |
     [^ sys] > dial
@@ -55,7 +56,7 @@ answers:
   - /answers/o[@loc='Φ.knob.λ']/is[@loc='Φ.reply']
   - /answers[not(o[@lands='v🌵kind'])]
   - /answers/o[@loc='Φ.reply.v🌵kind']/unknown[@kind='java']
-  - /answers/o[@loc='Φ.app.pick.φ.α1' and @lands='a🌵5-6']/unknown[@kind='java']
+  - /answers/o[@loc='Φ.app.pick.φ.α1' and @lands='v🌵right']/unknown[@kind='java']
   - /answers/o[@loc='Φ.app.first']/is[@loc='Φ.dial']
   - /answers/o[@loc='Φ.app.pick.φ']/set/unknown[@kind='java']
   - /answers/o[@loc='Φ.app.second']/is[@loc='Φ.app.pick']

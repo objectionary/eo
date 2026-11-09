@@ -5,8 +5,8 @@
 line: 2
 message: |-
   [2:7] error: 'name must start with a lowercase letter'
-    ? >> H
+    5 >> H
          ^
 input: |
   [] > f
-    ? >> H
+    5 >> H

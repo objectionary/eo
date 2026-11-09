@@ -19,25 +19,25 @@ sources:
     [^] > yes
       choice > @
         [^]
-          ? >> left
-          ? >> middle
-          ? >> right
+          ? > left
+          ? > middle
+          ? > right
           left > @
   mid.eo: |
     [^] > mid
       choice > @
         [^]
-          ? >> left
-          ? >> middle
-          ? >> right
+          ? > left
+          ? > middle
+          ? > right
           middle > @
   no.eo: |
     [^] > no
       choice > @
         [^]
-          ? >> left
-          ? >> middle
-          ? >> right
+          ? > left
+          ? > middle
+          ? > right
           right > @
   dial.eo: |
     [^ sys] > dial

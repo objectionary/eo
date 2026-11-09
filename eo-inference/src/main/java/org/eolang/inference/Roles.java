@@ -7,10 +7,8 @@ package org.eolang.inference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * What the facts say of the role each formation plays, before any walk.
@@ -20,13 +18,12 @@ import java.util.Set;
  * {@code >>} helpers of its own, and reduces to what its {@code @}
  * gives.</li>
  * <li>An <b>atom</b> has no {@code @} and says what Java returns: a
- * formation, or its own voids it names, which it gives back.</li>
+ * formation, with the types of its voids in brackets or none, or its own
+ * voids it names, which it gives back.</li>
  * <li>A <b>test</b> is a formation named {@code p🌵…} or {@code n🌵…}.</li>
  * <li>An object whose {@code @} is one of its own voids (3.5, call then
  * narrow) passes that void on, and the call that fills the last of its
  * empty voids answers what that void holds.</li>
- * <li>A formation an atom <b>returns</b> is made by Java, and its voids
- * with no declared type are read from the pool (4.5).</li>
  * <li>A read is <b>inner</b> when it reads through {@code ξ}, {@code ^}
  * or {@code ^.^} into the copy's own formations, which is the copy's own
  * code and does not make it count (3.3).</li>
@@ -62,17 +59,6 @@ final class Roles {
     private final Map<String, Boolean> inners;
 
     /**
-     * The formations atoms return, worked out once.
-     */
-    private final Map<Boolean, Set<String>> returned;
-
-    /**
-     * The voids of the formations atoms return with no declared type,
-     * worked out once.
-     */
-    private final Map<Boolean, List<List<String>>> voids;
-
-    /**
      * Whether each formation is a test, worked out once.
      */
     private final Map<String, Boolean> tests;
@@ -88,8 +74,6 @@ final class Roles {
         this.pass = new HashMap<>(0);
         this.owns = new HashMap<>(0);
         this.inners = new HashMap<>(0);
-        this.returned = new HashMap<>(1);
-        this.voids = new HashMap<>(1);
         this.tests = new HashMap<>(0);
     }
 
@@ -148,26 +132,6 @@ final class Roles {
     }
 
     /**
-     * Whether a formation is one an atom returns.
-     *
-     * @param form The formation
-     * @return TRUE if it is
-     */
-    boolean returned(final String form) {
-        return this.returns().contains(form);
-    }
-
-    /**
-     * The voids of the formations atoms return that have no declared type,
-     * as formation and void, in order.
-     *
-     * @return The pairs
-     */
-    List<List<String>> javaVoids() {
-        return this.voids.computeIfAbsent(true, key -> this.collected());
-    }
-
-    /**
      * Whether a read is inner: it reads through {@code ξ}, {@code ^} or
      * {@code ^.^} into a formation of the copy's own (3.3).
      *
@@ -192,7 +156,7 @@ final class Roles {
             final Formation shape = this.program.form(form);
             List<String> locs = shape.gives();
             if (locs.isEmpty()) {
-                locs = Collections.singletonList(shape.returns());
+                locs = Collections.singletonList(new Annotation(shape.returns()).head());
             }
             final String prefix = form.concat(".");
             for (final String loc : locs) {
@@ -236,29 +200,6 @@ final class Roles {
             && "ref".equals(heads.get(0).tag()) && form.equals(heads.get(0).loc());
     }
 
-    private List<List<String>> collected() {
-        final List<List<String>> pairs = new ArrayList<>(0);
-        for (final String form : this.returns()) {
-            final Formation shape = this.program.form(form);
-            for (final String name : shape.names()) {
-                if (shape.open(name) && shape.holds(name).isEmpty()) {
-                    pairs.add(List.of(form, name));
-                }
-            }
-        }
-        final CodeOrder order = new CodeOrder();
-        pairs.sort(
-            (left, right) -> {
-                int cmp = order.compare(left.get(0), right.get(0));
-                if (cmp == 0) {
-                    cmp = order.compare(left.get(1), right.get(1));
-                }
-                return cmp;
-            }
-        );
-        return pairs;
-    }
-
     private boolean through(final String place) {
         String from = this.program.read(place).of();
         while (!this.program.calls(from) && !this.program.starts(from) && this.upward(from)) {
@@ -276,22 +217,6 @@ final class Roles {
         return !heads.isEmpty() && heads.stream().allMatch(
             head -> "ref".equals(head.tag()) && !"Φ".equals(head.loc())
                 && this.program.formation(head.loc())
-        );
-    }
-
-    private Set<String> returns() {
-        return this.returned.computeIfAbsent(
-            true,
-            key -> {
-                final Set<String> found = new LinkedHashSet<>(0);
-                for (final String form : this.program.formations()) {
-                    final String ret = this.program.form(form).returns();
-                    if (this.program.formation(ret)) {
-                        found.add(ret);
-                    }
-                }
-                return found;
-            }
         );
     }
 
