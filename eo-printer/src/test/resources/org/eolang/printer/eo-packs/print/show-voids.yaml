@@ -1,0 +1,39 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The parser hides every void behind "v🌵" (#9788), and the printer takes the
+# mark off again: from the void, from every own read of it, and from every
+# named binding, so the source reads the way it was written.
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/mandatory-as.xsl
+  - /org/eolang/parser/parse/hide-voids.xsl
+  - /org/eolang/parser/parse/set-locators.xsl
+  - /org/eolang/printer/print/show-voids.xsl
+asserts:
+  - /object[not(errors)]
+  - /object[not(//o[contains(@name, 'v🌵') or contains(@base, 'v🌵') or contains(@as, 'v🌵')])]
+  - /object/o[@name='foo']/o[@base='∅' and @name='x']
+  - /object/o[@name='foo']/o[@name='inner']/o[@base='∅' and @name='z']
+  - //o[@name='value' and @base='ξ.x']
+  - //o[@name='parent' and @base='ξ.ρ.x.plus']/o[@as='α0' and @base='ξ.z']
+  - //o[@name='f' and @base='ξ.ρ.z']
+  - //o[@name='g' and @base='Φ.bar']/o[@as='x']
+  - //o[@name='h' and @base='Φ.bar.x']
+input: |
+  [x] > foo
+    x > value
+    [z] > inner
+      ^.x.plus z > parent
+      [^me w] >> deep
+        me.z > f
+    bar 5:x > g
+    bar.x > h

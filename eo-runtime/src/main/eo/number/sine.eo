@@ -89,19 +89,19 @@
       div.
         small.times small
         2
-      if. > [^ depth] >> cosine
+      if. > [^num depth] >> cosine
         depth.gt 15
         1
         1.minus
           times.
             div.
-              ^.small.times ^.small
+              num.small.times num.small
               times.
                 minus.
                   depth.times 2
                   1
                 depth.times 2
-            ^.cosine
+            num.cosine
               depth.plus 1
       | 2
   foot.times crown > cross
@@ -135,19 +135,19 @@
     steps.times speck
   wide.minus turns > shed
   small.times > sined
-    if. > [^ depth] >> factor
+    if. > [^num depth] >> factor
       depth.gt 15
       1
       1.minus
         times.
           div.
-            ^.small.times ^.small
+            num.small.times num.small
             times.
               depth.times 2
               plus.
                 depth.times 2
                 1
-          ^.factor
+          num.factor
             depth.plus 1
     | 1
   plus. > slip

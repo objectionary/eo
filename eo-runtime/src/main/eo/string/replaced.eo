@@ -13,15 +13,15 @@
 [^text target replacement] > replaced
   matched.exists.not.if > @
     string text! >> reinit
-    block.exists.if > [^ block accum start] >> rec-replaced
-      ^.rec-replaced
+    block.exists.if > [^text block accum start] >> rec-replaced
+      text.rec-replaced
         block.next
         concat.
           accum.concat
             reinit.slice
               start
               block.from.minus start
-          ^.replacement
+          text.replacement
         block.to
       string
         accum.concat

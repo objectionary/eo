@@ -13,7 +13,7 @@ eo:
             z > @
           inner y > @
 voids:
-  - "𝜎4\t12\tz\tobject"
+  - "𝜎4\t12\tv🌵z\tobject"
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e12">
@@ -44,6 +44,6 @@ java: |
 
       @Override
       public Phi lambda() {
-          return this.take("ρ").take("z");
+          return this.take("ρ").take("v🌵z");
       }
   }

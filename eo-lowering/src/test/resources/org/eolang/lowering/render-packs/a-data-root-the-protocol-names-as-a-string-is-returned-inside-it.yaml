@@ -15,7 +15,7 @@ eo:
     [text] > joined
       string (dataized text).as-bytes > @
 voids:
-  - "𝜎1\t1\ttext\tobject"
+  - "𝜎1\t1\tv🌵text\tobject"
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e1">
@@ -66,7 +66,7 @@ java: |
       }
 
       private byte[] 𝜎1() {
-          return new Dataized(this.take("ρ").take("text")).take();
+          return new Dataized(this.take("ρ").take("v🌵text")).take();
       }
 
       private byte[] 𝜎2() {

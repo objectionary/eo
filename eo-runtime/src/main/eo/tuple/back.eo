@@ -16,7 +16,7 @@
       list
       list.reducedi
         *
-        if. > [^ accum item idx] >>
+        if. > [^list accum item idx] >>
           idx.gte start
           accum.with item
           accum

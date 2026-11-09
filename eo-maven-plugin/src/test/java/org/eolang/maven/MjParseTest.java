@@ -68,6 +68,35 @@ final class MjParseTest {
     }
 
     @Test
+    void failsOnInvalidUnicodeWithFileAndLine(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram("[] > a");
+        Files.write(
+            temp.resolve("foo/x/main.eo"),
+            new byte[] {
+                '[', ']', ' ', '>', ' ', 'a', '\n',
+                ' ', ' ', '"', (byte) 0xE9, '"', ' ', '>', ' ', 'x', '\n',
+            }
+        );
+        final Throwable thrown = Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> maven.execute(new PpParse())
+        );
+        final StringBuilder chain = new StringBuilder();
+        for (Throwable cause = thrown; cause != null; cause = cause.getCause()) {
+            chain.append(cause.getMessage()).append('\n');
+        }
+        MatcherAssert.assertThat(
+            "a source that is not UTF-8 must fail with its file and line, not parse as U+FFFD",
+            chain.toString(),
+            Matchers.allOf(
+                Matchers.containsString("main.eo"),
+                Matchers.containsString(":2:"),
+                Matchers.containsString("not valid UTF-8")
+            )
+        );
+    }
+
+    @Test
     void parsesSuccessfullyAndSavesToForeign(@Mktmp final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp);
         maven.withHelloWorld().execute(new PpParse()).result();
@@ -288,7 +317,7 @@ final class MjParseTest {
         MatcherAssert.assertThat(
             "the XMIR stayed as it was, while the source it came from had changed",
             new XMLDocument(parsed),
-            XhtmlMatchers.hasXPaths("//o[@name='greeting']")
+            XhtmlMatchers.hasXPaths("//o[@name='v🌵greeting']")
         );
     }
 

@@ -9,8 +9,9 @@
 # clock, which other picks, never reaches ready.
 sources:
   choice.eo: |
-    [pick] > choice
+    [fork] > choice
       pick > @
+      fork > pick
       [] > not
         ^.pick no yes > @
   yes.eo: |

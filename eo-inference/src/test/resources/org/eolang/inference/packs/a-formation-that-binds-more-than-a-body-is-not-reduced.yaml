@@ -28,6 +28,6 @@ answers:
   - /answers/o[@loc='Φ.trunk.bark']/is[@loc='Φ.trunk.bark']
   - /answers/o[@loc='Φ.trunk.φ']/is[@loc='Φ.oak']
   - /answers[not(o[@loc='Φ.trunk']/reduced/is[@loc='Φ.oak'])]
-  - /answers/o[@loc='Φ.app.φ.α0' and @lands='item']/is[@loc='Φ.trunk']
-  - /answers/o[@loc='Φ.box.item']/is[@loc='Φ.trunk']
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵item']/is[@loc='Φ.trunk']
+  - /answers/o[@loc='Φ.box.v🌵item']/is[@loc='Φ.trunk']
   - /answers/o[@loc='Φ.trunk']/reduced/is[@loc='Φ.trunk']

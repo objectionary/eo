@@ -3,7 +3,7 @@
 ---
 # yamllint disable rule:line-length
 # half says it gives a number, so its λ is a number. Nobody calls it and x
-# declares nothing, so x stays an open void.
+# declares nothing, so x is unknown.
 sources:
   half.eo: |
     [] > half /Q.number
@@ -16,5 +16,5 @@ sources:
     [@] > string
 answers:
   - /answers/o[@loc='Φ.half.λ']/is[@loc='Φ.number']
-  - /answers[not(o[@lands='x'])]
-  - /answers/o[@loc='Φ.half.x']/open
+  - /answers[not(o[@lands='v🌵x'])]
+  - /answers/o[@loc='Φ.half.v🌵x']/unknown

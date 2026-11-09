@@ -17,11 +17,11 @@ public final class EOdataized extends PhDefault implements Atom {
      * Ctor.
      */
     public EOdataized() {
-        super(new Attrs(new Attr("target", new AtVoid("target"))));
+        super(new Attrs(new Attr("target")));
     }
 
     @Override
     public Phi lambda() {
-        return new Data.ToPhi(new Dataized(this.take("target")).take());
+        return new Data.ToPhi(new Dataized(this.free("target")).take());
     }
 }

@@ -4,7 +4,7 @@
 # yamllint disable rule:line-length
 # The chain x.seconds.times written down the page, with a dot at the end of each
 # step, gives the same facts and answers as written along one line: nobody calls
-# clock, so x and every step read off it are open voids.
+# clock, so x and every step read off it are unknown.
 sources:
   clock.eo: |
     [x] > clock
@@ -18,12 +18,12 @@ sources:
   string.eo: |
     [@] > string
 facts:
-  - /facts/reads/read[@id='Φ.clock.φ.ρ.ρ' and @name='x' and @of='Φ.clock.φ.ρ.ρ.ρ']
+  - /facts/reads/read[@id='Φ.clock.φ.ρ.ρ' and @name='v🌵x' and @of='Φ.clock.φ.ρ.ρ.ρ']
   - /facts/reads/read[@id='Φ.clock.φ.ρ' and @name='seconds' and @of='Φ.clock.φ.ρ.ρ']
   - /facts/reads/read[@id='Φ.clock.φ' and @name='times' and @of='Φ.clock.φ.ρ']
   - /facts/calls[not(*)]
 answers:
-  - /answers/o[@loc='Φ.clock.x']/open
-  - /answers/o[@loc='Φ.clock.φ.ρ.ρ']/open
-  - /answers/o[@loc='Φ.clock.φ.ρ']/open
-  - /answers/o[@loc='Φ.clock.φ']/open
+  - /answers/o[@loc='Φ.clock.v🌵x']/unknown
+  - /answers/o[@loc='Φ.clock.φ.ρ.ρ']/unknown
+  - /answers/o[@loc='Φ.clock.φ.ρ']/unknown
+  - /answers/o[@loc='Φ.clock.φ']/unknown

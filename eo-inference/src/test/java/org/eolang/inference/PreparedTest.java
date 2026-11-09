@@ -26,7 +26,7 @@ final class PreparedTest {
                     String.join(System.lineSeparator(), "[x] > box", "  x.lid > @", "")
                 ).parsed()
             ),
-            XhtmlMatchers.hasXPath("//o[@base='.lid']/o[@base='.x']/o[@base='ξ']")
+            XhtmlMatchers.hasXPath("//o[@base='.lid']/o[@base='.v🌵x']/o[@base='ξ']")
         );
     }
 

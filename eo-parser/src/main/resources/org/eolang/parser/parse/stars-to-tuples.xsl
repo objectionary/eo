@@ -36,12 +36,75 @@
   </o>
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
+  <!-- Pipe predecessors travel before the element that applies them. -->
+  <xsl:key name="pipe-predecessor" match="o[@float-up]" use="generate-id(following-sibling::o[not(@float-up)][1])"/>
+  <!--
+  A tuple of N elements is a chain N levels deep, and every sheet after this
+  one walks it once per level, so a long one overflows the stack with no line
+  to report (#9549). It gets the limit R-5.2.7a puts on nesting: the elements
+  of a tuple over the limit are left out, so that the sheets after this one
+  survive to let the error out.
+  -->
+  <xsl:template match="/object">
+    <xsl:variable name="errors" as="element()*">
+      <xsl:for-each select=".//o[@star and count(o[not(@float-up)]) &gt; 256]">
+        <error>
+          <xsl:attribute name="check" select="'stars-to-tuples'"/>
+          <xsl:attribute name="line" select="if (@line) then @line else 0"/>
+          <xsl:attribute name="severity" select="'critical'"/>
+          <xsl:if test="@pos">
+            <xsl:attribute name="pos" select="@pos"/>
+          </xsl:if>
+          <xsl:text>object nested deeper than 256 levels</xsl:text>
+        </error>
+      </xsl:for-each>
+    </xsl:variable>
+    <xsl:copy>
+      <xsl:apply-templates select="(node() except errors)|@*"/>
+      <xsl:if test="exists($errors) or exists(errors)">
+        <errors>
+          <xsl:apply-templates select="errors/error"/>
+          <xsl:copy-of select="$errors"/>
+        </errors>
+      </xsl:if>
+    </xsl:copy>
+  </xsl:template>
+  <xsl:template match="o[@star and count(o[not(@float-up)]) &gt; 256]" priority="1">
+    <o>
+      <xsl:attribute name="base" select="'Φ.tuple.empty'"/>
+      <xsl:apply-templates select="@* except (@star | @base)"/>
+    </o>
+  </xsl:template>
+  <!--
+  R-6.6.6: tuple elements have positions, not argument bindings. Such a
+  binding cannot round-trip through the tuple encoding, so "lossy" keeps
+  the formatter from rewriting the source from this erroneous tree.
+  -->
+  <xsl:template match="/object">
+    <xsl:variable name="bound" select=".//o[@star]/o[@as and not(@float-up)]"/>
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node() except errors"/>
+      <xsl:if test="errors or exists($bound)">
+        <errors>
+          <xsl:apply-templates select="errors/error"/>
+          <xsl:for-each select="$bound">
+            <error check="stars-to-tuples" severity="error" line="{@line}" pos="{@pos}" lossy="">
+              <xsl:text>star tuple elements cannot carry argument bindings</xsl:text>
+            </error>
+          </xsl:for-each>
+        </errors>
+      </xsl:if>
+    </xsl:copy>
+  </xsl:template>
   <!--
   A pipe predecessor floated up out of a star tuple (@float-up, set by
   "wrap-applications" for #5848) is not one of the tuple's own elements — the
   "| args" pipe that follows it is. It is excluded from the "Φ.tuple" layers
   and the length count, but still emitted as a passenger child so the next
   sheet "vars-float-up" can hoist its definition and drop the in-place node.
+  Keep each passenger before its pipe: appending all passengers at the end
+  makes the floated pipe precede its const formation, leaving the printer
+  with no adjacent predecessor from which to restore the "|" head (#9721).
   Counting it would leave a spurious extra layer with a stray "Φ.number" once
   it is dropped (the parse-side mirror of #5858).
 
@@ -73,7 +136,7 @@
                   <xsl:attribute name="base" select="'Φ.tuple'"/>
                   <xsl:apply-templates select="$star/(@line | @pos)"/>
                   <xsl:sequence select="$layer"/>
-                  <xsl:apply-templates select="."/>
+                  <xsl:apply-templates select="key('pipe-predecessor', generate-id(.)) | ."/>
                   <xsl:call-template name="length">
                     <xsl:with-param name="star" select="$star"/>
                     <xsl:with-param name="value" select="$index + 1"/>
@@ -88,12 +151,11 @@
           <xsl:attribute name="base" select="'Φ.tuple'"/>
           <xsl:apply-templates select="@* except (@star | @base)"/>
           <xsl:sequence select="$nested"/>
-          <xsl:apply-templates select="$elems[last()]"/>
+          <xsl:apply-templates select="key('pipe-predecessor', generate-id($elems[last()])) | $elems[last()]"/>
           <xsl:call-template name="length">
             <xsl:with-param name="star" select="$star"/>
             <xsl:with-param name="value" select="count($elems)"/>
           </xsl:call-template>
-          <xsl:apply-templates select="o[@float-up]"/>
         </o>
       </xsl:when>
       <xsl:otherwise>

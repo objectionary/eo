@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The program has no nope, so nope read off Φ is T. times read off T is T
+# too, and so is the @ of app (#9654).
+sources:
+  app.eo: |
+    [] > app
+      nope.times > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.ρ.ρ']/is[@loc='Φ']
+  - /answers/o[@loc='Φ.app.φ.ρ' and count(*)=1]/terminator
+  - /answers/o[@loc='Φ.app.φ' and count(*)=1]/terminator

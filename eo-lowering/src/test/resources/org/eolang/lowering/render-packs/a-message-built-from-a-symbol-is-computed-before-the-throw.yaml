@@ -13,7 +13,7 @@ eo:
     [b] > mix
       T (string b.concat b) > @
 voids:
-  - "𝜎1\t4\tb\tbytes"
+  - "𝜎1\t4\tv🌵b\tbytes"
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e4">
@@ -65,11 +65,11 @@ java: |
 
       @Override
       public Phi lambda() {
-          throw new ExFailure("%s", new Dataized(new PhApplication(Phi.Φ.take("string"), "φ", new Data.ToPhi(this.𝜎2()))).asString());
+          throw new ExFailure("%s", new Dataized(new PhApplication(Phi.Φ.take("string"), "φ", new PhLazy(() -> new Data.ToPhi(this.𝜎2())))).asString());
       }
 
       private byte[] 𝜎1() {
-          return new Dataized(this.take("ρ").take("b")).take();
+          return new Dataized(this.take("ρ").take("v🌵b")).take();
       }
 
       private byte[] 𝜎2() {

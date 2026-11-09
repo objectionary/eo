@@ -14,7 +14,7 @@ eo:
     [b] > blob
       T (string b) > @
 voids:
-  - "𝜎1\t3\tb\tbytes"
+  - "𝜎1\t3\tv🌵b\tbytes"
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e3">
@@ -57,6 +57,6 @@ java: |
 
       @Override
       public Phi lambda() {
-          throw new ExFailure("%s", new Dataized(new PhApplication(Phi.Φ.take("string"), "φ", this.take("ρ").take("b"))).asString());
+          throw new ExFailure("%s", new Dataized(new PhApplication(Phi.Φ.take("string"), "φ", this.take("ρ").take("v🌵b"))).asString());
       }
   }

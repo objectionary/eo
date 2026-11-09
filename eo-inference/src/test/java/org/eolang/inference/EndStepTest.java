@@ -24,7 +24,7 @@ final class EndStepTest {
     @Test
     void marksReadWithNoAnswer(@Mktmp final Path temp) throws IOException {
         final World world = new Sources(temp)
-            .with("loop.eo", "[] > loop", "  ^.loop.value > value", "  value > @")
+            .with("loop.eo", "[^] > loop", "  ^.loop.value > value", "  value > @")
             .world();
         final State state = new Settled(world).state();
         state.step();
@@ -67,7 +67,7 @@ final class EndStepTest {
     private static Key read(final World world) {
         return new Key(
             'e',
-            world.intern(new Value('O', "Φ.app", "Φ.app", Formation.RHO, "", -1, 0)),
+            world.intern(new Value('O', "Φ.app", "Φ.app", 0L, "", -1, 0)),
             "", "Φ.app.φ", "", 0
         );
     }

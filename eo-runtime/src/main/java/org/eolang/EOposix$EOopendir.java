@@ -31,12 +31,12 @@ public final class EOposix$EOopendir extends PhDefault implements Atom {
      * Ctor.
      */
     public EOposix$EOopendir() {
-        super(new Attrs(new Attr("path", new AtVoid("path"))));
+        super(new Attrs(new Attr("path")));
     }
 
     @Override
     public Phi lambda() {
-        final String path = new Cstring(Expect.at(this, "path")).it();
+        final String path = new Cstring(this.expected("path")).it();
         final Phi result = Phi.Φ.take("posix").take("status-return").copy();
         final Pointer stream = CStdLib.INSTANCE.opendir(path);
         final int code;

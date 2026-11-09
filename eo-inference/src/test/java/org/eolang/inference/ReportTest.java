@@ -40,6 +40,32 @@ final class ReportTest {
     }
 
     @Test
+    void keepsFilesItDidNotWrite(@Mktmp final Path temp) throws IOException {
+        final Path out = temp.resolve("out");
+        Files.createDirectories(out);
+        Files.write(out.resolve("notes.txt"), new byte[] {1});
+        new Report(ReportTest.program(temp), ReportTest.answers(temp)).written(out);
+        MatcherAssert.assertThat(
+            "A file the report did not write must stay in its directory, but it was deleted",
+            Files.exists(out.resolve("notes.txt")),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void removesPageOfSourceThatIsGone(@Mktmp final Path temp) throws IOException {
+        final Path out = temp.resolve("out");
+        Files.createDirectories(out);
+        Files.write(out.resolve("gone.eo.html"), new byte[] {1});
+        new Report(ReportTest.program(temp), ReportTest.answers(temp)).written(out);
+        MatcherAssert.assertThat(
+            "A page of an earlier run must go, but it stayed",
+            Files.exists(out.resolve("gone.eo.html")),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void writesAPageAnyBrowserCanOpen(@Mktmp final Path temp) throws IOException {
         new Report(ReportTest.program(temp), ReportTest.answers(temp)).written(temp.resolve("out"));
         MatcherAssert.assertThat(
@@ -76,6 +102,62 @@ final class ReportTest {
             "the name the author wrote must be marked green, but it wasnt",
             Files.readString(temp.resolve("out/cup.eo.html")),
             Matchers.containsString("<span class=\"mark named\" data-band=\"named\">lid<span")
+        );
+    }
+
+    @Test
+    void saysUnderTheNameOfAFormationOnlyStudiedThatNobodyCallsIt(@Mktmp final Path temp)
+        throws IOException {
+        Files.writeString(
+            temp.resolve("answers.xml"),
+            String.join(
+                "",
+                "<answers><o loc='Φ.cup' copies='1'><is loc='Φ.cup'/></o>",
+                "<o loc='Φ.cup.lid' copies='1' study='1'><is loc='Φ.cup.lid'/></o></answers>"
+            )
+        );
+        new Report(ReportTest.program(temp), temp.resolve("answers.xml"))
+            .written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "the name of a formation only studied must say that nobody calls it, but it didnt",
+            Files.readString(temp.resolve("out/cup.eo.html")),
+            Matchers.containsString(
+                String.join(
+                    "",
+                    "<code>Φ.cup.lid</code></span>",
+                    "<span class=\"said\">studied: nobody calls this object</span></span>"
+                )
+            )
+        );
+    }
+
+    @Test
+    void saysHowManyCopiesOfAFormationAreStudyCopiesWhenNotAll(@Mktmp final Path temp)
+        throws IOException {
+        Files.writeString(
+            temp.resolve("answers.xml"),
+            String.join(
+                "",
+                "<answers><o loc='Φ.cup' copies='4'><is loc='Φ.cup'/></o>",
+                "<o loc='Φ.cup.lid' copies='7' study='3'><is loc='Φ.cup.lid'/></o></answers>"
+            )
+        );
+        new Report(ReportTest.program(temp), temp.resolve("answers.xml"))
+            .written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "the note on a formation partly studied must count its study copies, but it didnt",
+            Files.readString(temp.resolve("out/cup.eo.html")),
+            Matchers.containsString("studied: nobody calls this object (3 of 7 copies)</span>")
+        );
+    }
+
+    @Test
+    void keepsFiveLinesAroundEveryMarkOfAPickedColour(@Mktmp final Path temp) throws IOException {
+        new Report(ReportTest.program(temp), ReportTest.answers(temp)).written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "a page must keep five lines around every mark of a picked colour, but it didnt",
+            Files.readString(temp.resolve("out/cup.eo.html")),
+            Matchers.containsString("var around = 5;")
         );
     }
 
@@ -146,7 +228,7 @@ final class ReportTest {
             "the tally must count both objects of the program as named, but it didnt",
             new Report(ReportTest.program(temp), ReportTest.answers(temp))
                 .written(temp.resolve("out")),
-            Matchers.allOf(Matchers.hasEntry("named", 2), Matchers.hasEntry("unreached", 0))
+            Matchers.hasEntry("named", 2)
         );
     }
 

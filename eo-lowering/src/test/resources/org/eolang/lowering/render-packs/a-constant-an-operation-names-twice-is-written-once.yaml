@@ -19,7 +19,7 @@ eo:
     [] > app
       glue 0F- > used
 voids:
-  - "𝜎1\t10\tx\tbytes"
+  - "𝜎1\t10\tv🌵x\tbytes"
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e10">
@@ -68,7 +68,7 @@ java: |
       }
 
       private byte[] 𝜎1() {
-          return new Dataized(this.take("ρ").take("x")).take();
+          return new Dataized(this.take("ρ").take("v🌵x")).take();
       }
 
       private byte[] 𝜎2() {

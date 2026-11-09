@@ -273,6 +273,17 @@ final class Population {
     }
 
     /**
+     * Note the copy containing a new copy, independently of its receiver.
+     *
+     * @param copy The new copy
+     * @param outer The containing copy
+     * @return The new copy
+     */
+    int enclose(final int copy, final int outer) {
+        return this.counting.enclose(copy, outer);
+    }
+
+    /**
      * Whether a count told before has turned since.
      *
      * @param told The count, with what it was
@@ -314,7 +325,25 @@ final class Population {
     }
 
     /**
-     * Stop w: pick the formations no copy calls with a void no copy fills.
+     * Whether a study copy does not count once the walk is over.
+     *
+     * @param num The copy
+     * @return TRUE if it does not
+     */
+    boolean retired(final int num) {
+        return this.study.retired(num);
+    }
+
+    /**
+     * Decide, once the walk is over, which study copies still count.
+     */
+    void conclude() {
+        this.study.conclude();
+    }
+
+    /**
+     * Stop w: pick, for this round, the formations no copy calls whose
+     * copy as written does not count.
      *
      * @return TRUE if it picked any
      */
@@ -340,24 +369,5 @@ final class Population {
      */
     void called(final int num, final List<String> types, final Site site) {
         this.callbacks.called(num, types, site);
-    }
-
-    /**
-     * Note a value handed to an atom.
-     *
-     * @param num The value
-     */
-    void handed(final int num) {
-        this.callbacks.handed(num);
-    }
-
-    /**
-     * Whether only Java fills the {@code ρ} of a copy handed to an atom.
-     *
-     * @param num The copy
-     * @return TRUE if only Java does
-     */
-    boolean handedToJava(final int num) {
-        return this.callbacks.handedToJava(num);
     }
 }

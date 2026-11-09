@@ -8,6 +8,7 @@ import com.jcabi.xml.XMLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -87,6 +88,40 @@ final class MjCoverageReportTest {
     }
 
     @Test
+    void failsWhenTheHitsFileIsMissingAndAMinimumIsSet(@Mktmp final Path temp)
+        throws Exception {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(System.lineSeparator(), "[] > x", "  42 > y")
+        ).execute(MjParse.class);
+        final Path hits = temp.resolve("nope.txt");
+        MatcherAssert.assertThat(
+            "a minimum above zero must fail the build when the hits file is absent, but it passed",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> maven.with("hits", hits.toFile())
+                    .with("lcov", temp.resolve("coverage.info").toFile())
+                    .with("minimum", 90.0d)
+                    .execute(MjCoverageReport.class),
+                "coverage-report must fail when the hits file it needs is missing, but it didnt"
+            ).getCause().getCause().getMessage(),
+            Matchers.containsString("nope.txt")
+        );
+    }
+
+    @Test
+    void failsWhenTheHitsFileIsNotSetAndAMinimumIsSet(@Mktmp final Path temp)
+        throws Exception {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(System.lineSeparator(), "[] > x", "  42 > y")
+        ).execute(MjParse.class);
+        Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> maven.with("minimum", 90.0d).execute(MjCoverageReport.class),
+            "coverage-report must fail when eo.coverageFile is not set and a minimum is, but it didnt"
+        );
+    }
+
+    @Test
     void failsTheBuildWhenCoverageIsBelowTheMinimum(@Mktmp final Path temp) throws Exception {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             String.join(System.lineSeparator(), "[] > x", "  42 > y")
@@ -120,6 +155,44 @@ final class MjCoverageReportTest {
                 "coverage-report must fail on a source that does not parse, but it didnt"
             ).getCause().getCause().getMessage(),
             Matchers.containsString("doesn't parse")
+        );
+    }
+
+    @Test
+    void namesTheSourceAndLineWhenItIsNotUnicode(@Mktmp final Path temp) throws Exception {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(System.lineSeparator(), "[] > x", "  42 > y")
+        ).execute(MjParse.class);
+        Files.write(
+            temp.resolve("foo/x/main.eo"),
+            String.join(
+                System.lineSeparator(),
+                "[] > x",
+                String.format("  \"%c\" > y", 0xE9),
+                ""
+            ).getBytes(StandardCharsets.ISO_8859_1)
+        );
+        final Path hits = temp.resolve("coverage.txt");
+        Files.writeString(hits, "");
+        MatcherAssert.assertThat(
+            "a source that is not UTF-8 must be named with its line, but it wasnt",
+            String.join(
+                System.lineSeparator(),
+                new Causes(
+                    Assertions.assertThrows(
+                        IllegalStateException.class,
+                        () -> maven.with("hits", hits.toFile())
+                            .with("lcov", temp.resolve("coverage.info").toFile())
+                            .execute(MjCoverageReport.class),
+                        "coverage-report must fail on a source that is not UTF-8, but it didnt"
+                    )
+                )
+            ),
+            Matchers.allOf(
+                Matchers.containsString("main.eo"),
+                Matchers.containsString(":2:"),
+                Matchers.containsString("not valid UTF-8")
+            )
         );
     }
 

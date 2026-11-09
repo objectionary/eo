@@ -13,7 +13,7 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^ fun a b n] > integral
+[^num fun a b n] > integral
   if. > @
     and.
       n.is-finite.and
@@ -23,38 +23,38 @@
     as-number.
       malloc.of
         8
-        [^ sum] >>
+        [^mem sum] >>
           seq * > @
             while
-              if. > [^ i] >>
-                i.lt ^.^.n
+              if. > [^iter i] >>
+                i.lt iter.mem.n
                 seq *
-                  ^.sum.put
-                    ^.sum.as-number.plus
+                  iter.sum.put
+                    iter.sum.as-number.plus
                       subsection
-                        ^.^.a.plus (i.times step)
-                        ^.^.a.plus ((i.plus 1).times step)
+                        iter.mem.a.plus (i.times step)
+                        iter.mem.a.plus ((i.plus 1).times step)
                   true
                 false
               true > [i]
             sum
           as-number. >> step!
             div.
-              ^.b.minus ^.a
-              ^.n
+              mem.b.minus mem.a
+              mem.n
     T "the number of partitions must be a finite positive integer smaller than 2^53"
-  times. > [^ a b] >> subsection
+  times. > [^calc a b] >> subsection
     div.
       b.minus a
       6
     plus.
-      ^.fun a
+      calc.fun a
       plus.
         4.times
-          ^.fun
+          calc.fun
             0.5.times
               a.plus b
-        ^.fun b
+        calc.fun b
 
   ++> can-integrate-a-cubic-function
     close-to > @

@@ -8,21 +8,22 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Which of ten bands a place falls in, by what it answers over all its copies.
+ * Which of nine bands a place falls in, by what it answers over all its copies.
  *
  * <p>A place is green when it answers one name and nothing else in any copy,
  * lime when that name comes with a gap in other copies, teal when it answers
  * exactly two names and nothing else, and blue when it answers two or more
- * names any other way. A gap is an error ({@code T}), "can't tell", or an
- * open void. With no name at all, a place is brown when it answers only
- * errors, violet when it answers only voids an atom fills, slate when some of
- * its voids nobody fills, and amber when it cannot tell. A read that fails in
- * any copy, or a {@code ^} that only Java fills, makes it red whatever else it
- * answers, and a place no copy reached is grey.</p>
+ * names any other way. A gap is an error ({@code T}) or an unknown. With no
+ * name at all, a place is brown when it answers only errors, and otherwise
+ * takes the colour of the kind of unknown it answers: pink for a read
+ * nothing ever answers, purple for a void only Java fills, slate for a void
+ * of an object nobody calls, and amber for a void nobody fills. A place that
+ * answers several kinds takes the first of them in that order.</p>
  *
  * <p>The labels are the ones the place answers, with the formations of one
  * shape folded into one name first, so two copies of one lambda count as one
@@ -37,7 +38,25 @@ final class Band {
      * The bands, in the order a tally lists them.
      */
     static final List<String> ORDER = Arrays.asList(
-        "named", "gaps", "pair", "mixed", "lost", "atom", "unfilled", "error", "unreached", "fails"
+        "named", "gaps", "pair", "mixed", "loop", "atom", "study", "empty", "error"
+    );
+
+    /**
+     * The kinds of an unknown, the one a place is coloured by first.
+     */
+    private static final List<String> KINDS = Arrays.asList(
+        "?unknown-loop", "?unknown-java", "?unknown-study", "?unknown-empty"
+    );
+
+    /**
+     * The band of a place whose only gaps are unknowns, by the kind it is
+     * coloured by.
+     */
+    private static final Map<String, String> UNKNOWNS = Map.of(
+        "?unknown-loop", "loop",
+        "?unknown-java", "atom",
+        "?unknown-study", "study",
+        "?unknown-empty", "empty"
     );
 
     /**
@@ -62,14 +81,10 @@ final class Band {
     String name() {
         final Set<String> all = new HashSet<>(this.labels);
         final Set<String> names = all.stream()
-            .filter(label -> !label.startsWith("?") && !label.startsWith("!") && !"T".equals(label))
+            .filter(label -> !label.startsWith("?") && !"T".equals(label))
             .collect(Collectors.toSet());
         final String found;
-        if (all.stream().anyMatch(label -> label.startsWith("!"))) {
-            found = "fails";
-        } else if (all.stream().allMatch(label -> label.startsWith("?skipped"))) {
-            found = "unreached";
-        } else if (all.equals(names)) {
+        if (all.equals(names)) {
             found = Band.named(names.size());
         } else if (names.isEmpty()) {
             found = this.unnamed();
@@ -100,12 +115,17 @@ final class Band {
         final String found;
         if (unknown.isEmpty()) {
             found = "error";
-        } else if (unknown.equals(Set.of("?open-void-atom"))) {
-            found = "atom";
-        } else if (Set.of("?open-void", "?open-void-atom").containsAll(unknown)) {
-            found = "unfilled";
         } else {
-            found = "lost";
+            found = Band.UNKNOWNS.get(
+                Band.KINDS.stream().filter(unknown::contains).findFirst().orElseThrow(
+                    () -> new IllegalStateException(
+                        String.format(
+                            "The place answers %s, and no unknown of a kind the report colours",
+                            unknown
+                        )
+                    )
+                )
+            );
         }
         return found;
     }

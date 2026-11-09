@@ -6,8 +6,9 @@
 # @ of app is a string, not the number on the right.
 sources:
   bool.eo: |
-    [if] > bool
+    [fork] > bool
       if > @
+      fork > if
       if > self
   yes.eo: |
     [] > yes
@@ -24,7 +25,7 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.yes.φ.α0' and @lands='if']/is[@loc='Φ.yes.φ.α0']
+  - /answers/o[@loc='Φ.yes.φ.α0' and @lands='v🌵fork']/is[@loc='Φ.yes.φ.α0']
   - /answers/o[@loc='Φ.yes.φ.α0.φ']/is[@loc='Φ.string']
   - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.string']
   - /answers[not(o[@loc='Φ.app.φ']//is[@loc='Φ.number'])]

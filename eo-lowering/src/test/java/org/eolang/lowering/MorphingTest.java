@@ -6,6 +6,7 @@ package org.eolang.lowering;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
@@ -226,10 +227,11 @@ final class MorphingTest {
             MorphingTest.recording(temp), new GlobalCache.GcFresh(),
             new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), true
         ).exec(temp);
+        final Path texts = MorphingTest.texts(temp);
         MatcherAssert.assertThat(
             "the text of an entry must be written by phino into the texts, but it isnt",
-            MorphingTest.text(temp.resolve("texts/e8.txt")),
-            Matchers.containsString("--protocol=".concat(temp.resolve("texts/e8.txt").toString()))
+            MorphingTest.text(texts.resolve("e8.txt")),
+            Matchers.containsString("--protocol=".concat(texts.resolve("e8.txt").toString()))
         );
     }
 
@@ -241,10 +243,15 @@ final class MorphingTest {
             MorphingTest.recording(temp), new GlobalCache.GcFresh(),
             new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
         ).exec(temp);
+        final boolean disabled = new Seqdir(temp, 1).dirs().find("texts").isEmpty();
+        new Morphing(
+            new Phino("absent", "1.3.8"), new GlobalCache.GcFresh(),
+            new Scope("Φ\\.missing", "(?!)"), 16, 2, Duration.ofMinutes(1L), true
+        ).exec(temp);
         MatcherAssert.assertThat(
-            "no text must be written unless asked, but the texts are there",
-            temp.resolve("texts").toFile(),
-            Matchers.not(FileMatchers.anExistingFileOrDirectory())
+            "texts must not be written unless asked or reserved with covered entries",
+            new ListOf<>(disabled, new Seqdir(temp, 1).dirs().find("texts").isEmpty()),
+            Matchers.contains(true, true)
         );
     }
 
@@ -253,10 +260,9 @@ final class MorphingTest {
     void takesTheTextFromTheCacheWhenTheWorldIsTheSame(@Mktmp final Path temp)
         throws IOException {
         MorphingTest.merged(temp, 4);
-        final Phino phino = MorphingTest.counting(temp);
         for (int build = 0; build < 2; ++build) {
             new Morphing(
-                phino, new GcShared(temp.resolve("cache"), "0.2.7"),
+                MorphingTest.counting(temp), new GcShared(temp.resolve("cache"), "0.2.7"),
                 new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), true
             ).exec(temp);
         }
@@ -283,7 +289,7 @@ final class MorphingTest {
         ).exec(temp);
         MatcherAssert.assertThat(
             "the text must be written even when the cache answers the protocol, but it isnt",
-            temp.resolve("texts/e9.txt").toFile(),
+            MorphingTest.texts(temp).resolve("e9.txt").toFile(),
             FileMatchers.anExistingFile()
         );
     }
@@ -307,7 +313,7 @@ final class MorphingTest {
         ).exec(temp);
         MatcherAssert.assertThat(
             "a text out of its budget must stay for study, but it doesnt",
-            temp.resolve("texts/e7.txt").toFile(),
+            MorphingTest.texts(temp).resolve("e7.txt").toFile(),
             FileMatchers.anExistingFile()
         );
     }
@@ -346,14 +352,21 @@ final class MorphingTest {
             Files.createDirectories(temp.resolve("texts/gone")).resolve("x.txt"),
             "𝕄(Φ.gone.x)".getBytes(StandardCharsets.UTF_8)
         );
+        final Path numbered = Files.createDirectories(temp.resolve("7-texts"));
+        final Path other = Files.write(
+            numbered.resolve("gone.txt"), "𝕄(Φ.gone.x)".getBytes(StandardCharsets.UTF_8)
+        );
         new Morphing(
             MorphingTest.recording(temp), new GlobalCache.GcFresh(),
             new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
         ).exec(temp);
         MatcherAssert.assertThat(
-            "the text of an earlier build must be gone, but it stays",
-            stale.toFile(),
-            Matchers.not(FileMatchers.anExistingFile())
+            "old texts must be removed while the existing numbered directory is reused",
+            new ListOf<>(
+                stale.toFile().exists(), temp.resolve("texts").toFile().exists(),
+                other.toFile().exists(), MorphingTest.texts(temp)
+            ),
+            Matchers.contains(false, false, false, numbered)
         );
     }
 
@@ -572,7 +585,7 @@ final class MorphingTest {
 
     @Test
     void morphsTheWorldThePinnedPhinoFolds(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.160");
+        final Phino phino = new Phino("phino", "0.0.161");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -591,7 +604,7 @@ final class MorphingTest {
 
     @Test
     void writesTheTextThePinnedPhinoFolds(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.160");
+        final Phino phino = new Phino("phino", "0.0.161");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -603,7 +616,9 @@ final class MorphingTest {
         ).exec(temp);
         MatcherAssert.assertThat(
             "the text must record the firing of the atom the body reached, but it doesnt",
-            MorphingTest.text(temp.resolve("texts/gap.txt")),
+            MorphingTest.text(
+                MorphingTest.texts(temp).resolve("gap.txt")
+            ),
             Matchers.stringContainsInOrder("𝔻(Φ.l🌵.e", "𝔼(L_number_plus)")
         );
     }
@@ -611,7 +626,7 @@ final class MorphingTest {
     @Test
     void stopsAtTheThrowWithTheWholeMessageThePinnedPhinoKeeps(@Mktmp final Path temp)
         throws IOException {
-        final Phino phino = new Phino("phino", "0.0.160");
+        final Phino phino = new Phino("phino", "0.0.161");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -662,7 +677,7 @@ final class MorphingTest {
 
     @Test
     void answersTheAtomOfBytesThePinnedPhinoReaches(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.160");
+        final Phino phino = new Phino("phino", "0.0.161");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -707,7 +722,7 @@ final class MorphingTest {
     @Test
     void firesTheRowOfAFormationThePinnedPhinoReaches(@Mktmp final Path temp)
         throws IOException {
-        final Phino phino = new Phino("phino", "0.0.160");
+        final Phino phino = new Phino("phino", "0.0.161");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -824,7 +839,7 @@ final class MorphingTest {
             "number",
             "<o name=\"φ\" base=\"∅\" loc=\"Φ.number.φ\"/>",
             "<o name=\"plus\" loc=\"Φ.number.plus\">",
-            "<o name=\"b\" base=\"∅\" loc=\"Φ.number.plus.b\"/>",
+            "<o name=\"v🌵b\" base=\"∅\" loc=\"Φ.number.plus.v🌵b\"/>",
             "<o name=\"λ\" loc=\"Φ.number.plus.λ\"/>",
             "</o>"
         );
@@ -872,5 +887,9 @@ final class MorphingTest {
         );
         Files.setPosixFilePermissions(binary, PosixFilePermissions.fromString("rwxr-xr-x"));
         return new Phino(binary.toString(), "2.6.4");
+    }
+
+    private static Path texts(final Path temp) throws IOException {
+        return new Seqdir(temp, 1).dirs().find("texts").orElseThrow();
     }
 }

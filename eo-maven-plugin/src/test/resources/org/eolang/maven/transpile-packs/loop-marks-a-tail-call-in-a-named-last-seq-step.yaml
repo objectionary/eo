@@ -13,7 +13,7 @@ sheets:
 asserts:
   - /object[not(errors)]
   - //abstract[@name='rec' and @loop='true']
-  - //o[@base='Φ.seq']/o[@as='steps' and @base='Φ.tuple']/o[@as='head' and @base='ξ.ρ.rec' and @again='true']
+  - //o[@base='Φ.seq']/o[@as='v🌵steps' and @base='Φ.tuple']/o[@as='v🌵head' and @base='ξ.ρ.rec' and @again='true']
   - /object[count(//o[@again])=1]
 input: |
   [] > main

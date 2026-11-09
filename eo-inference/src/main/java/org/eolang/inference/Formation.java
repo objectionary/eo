@@ -163,6 +163,17 @@ final class Formation {
     }
 
     /**
+     * Whether its declared {@code ^} is the object it goes into: it has no
+     * name of its own, so no formation around it holds it, and where it is
+     * written has nothing to do with its {@code ^}.
+     *
+     * @return TRUE if it declares {@code ^} and nothing around holds it
+     */
+    boolean applied() {
+        return this.open("ρ") && this.parent().isEmpty();
+    }
+
+    /**
      * The formation Java returns for it, if it is an atom.
      *
      * @return The formation, empty when it is not an atom

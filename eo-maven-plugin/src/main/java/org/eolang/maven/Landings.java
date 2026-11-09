@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  * the name only when the call puts the argument into one void and nowhere
  * else. An argument has no {@code lands}, and keeps its place, when it lands
  * in two voids, when a head of its call is something the engine cannot follow
- * to a formation, such as an open void or an object made in Java, or when
+ * to a formation, such as an unknown or an object made in Java, or when
  * every head of its call fails.</p>
  *
  * <p>The engine finds that void from what the program was seen to put into

@@ -6,15 +6,17 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint invalid-name-notation
 +version 0.0.0
 
-[as-bytes] > i8
+[bts] > i8
   if. > @
     as-bytes.size.eq 1
     as-bytes
     T
       "An i8 needs exactly 1 byte, got %d".printf
         * as-bytes.size
+  bts > as-bytes
   i16 > [^num] > as-i16
     concat.
       if.
@@ -33,12 +35,17 @@
       cant-divide
         "Can't divide %d by i8 zero".printf
           * num.as-number
-      i8
-        slice.
-          as-bytes.
-            num.as-i16.div other.as-i16
-          1
-          1
+      if.
+        and.
+          num.as-bytes.eq 80-
+          other.as-bytes.eq FF-
+        cant-divide "the smallest i8 divided by minus one is past the largest i8"
+        i8
+          slice.
+            as-bytes.
+              num.as-i16.div other.as-i16
+            1
+            1
   num.as-i16.gt b.as-i8.as-i16 > [^num b] > gt
   num.as-i16.gte b.as-i8.as-i16 > [^num b] > gte
   num.as-i16.lt b.as-i8.as-i16 > [^num b] > lt
@@ -82,8 +89,8 @@
   C8-.as-i8.lt 0A-.as-i8 ++> can-be-less-when-negative-than-positive
 
   eq. ++> can-divide-by-one
-    C8-.as-i8.div 01-.as-i8
-    C8-.as-i8
+    80-.as-i8.div 01-.as-i8
+    80-.as-i8
 
   eq. ++> can-divide-with-a-remainder
     0D-.as-i8.div FB-.as-i8
@@ -117,6 +124,13 @@
       00-.as-i8
       i8 2A- > [message]
 
+  eq. ++> can-recover-from-min-divided-by-minus-one
+    i8 2A-
+    div.
+      i8 80-
+      i8 FF-
+      i8 2A- > [message]
+
   eq. ++> can-subtract-one-from-one
     01-.as-i8.minus 01-.as-i8
     00-.as-i8
@@ -142,3 +156,7 @@
   i8 01-02-03 --> stops-on-bytes-of-the-wrong-width
 
   02-.as-i8.div 00-.as-i8 --> stops-on-division-by-zero
+
+  div. --> stops-on-min-divided-by-minus-one
+    i8 80-
+    i8 FF-

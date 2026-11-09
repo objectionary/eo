@@ -54,7 +54,7 @@ final class RolesTest {
             new Roles(
                 new Sources(temp).with("echo.eo", "[sound] > echo", "  sound > @").program()
             ).passes("Φ.echo"),
-            Matchers.equalTo("sound")
+            Matchers.equalTo("v🌵sound")
         );
     }
 
@@ -67,7 +67,7 @@ final class RolesTest {
                     .with("either.eo", "[] > either /A", "  ? > left /A", "  ? > right /A")
                     .program()
             ).own("Φ.either"),
-            Matchers.contains("left", "right")
+            Matchers.contains("v🌵left", "v🌵right")
         );
     }
 

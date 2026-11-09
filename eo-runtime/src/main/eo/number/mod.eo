@@ -54,22 +54,22 @@
             gte.
               number num.as-bytes >> dividend
               0
-            [^] >> abs-mod
+            [^num] >> abs-mod
               shrink > @
                 grow divisor.abs
                 dividend.abs
-              [^ chunk] > grow
+              [^num chunk] > grow
                 if. > @
                   or. (chunk.gte dividend.abs) next.is-finite.not
                   chunk
-                  ^.grow next
+                  num.grow next
                 chunk.plus chunk > doubled!
                 number doubled > next
-              [^ chunk rest] > shrink
+              [^num chunk rest] > shrink
                 if. > @
                   chunk.lt divisor.abs
                   rest
-                  ^.shrink half kept
+                  num.shrink half kept
                 number halved > half
                 chunk.div 2 > halved!
                 number taken > kept

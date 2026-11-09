@@ -50,30 +50,22 @@ import org.eolang.lowering.Scope;
  * numbers as {@code NN-lowering}. There the lowering keeps the world, the
  * sources with their tests cut out in {@code 1-planting}, and the protocol
  * of every object morphed in {@code 2-protocols}. The atoms the lowering
- * renders land in {@code 3-atoms}, which this goal hands to javac as a
- * source root, and every XMIR file with an atom in the place of a body
- * lands in {@code 4-patched}, where this goal points the tojo of that
- * object, so the transpiler reads the patched copy and every other object
+ * renders land in the numbered {@code atoms} directory, which this goal finds and hands to javac
+ * as a source root, and every XMIR file with an atom in the place of a body
+ * lands in the numbered {@code patched} directory, where this goal points
+ * the tojo of that object, so the transpiler reads the patched copy and every other object
  * stays where it was. The copies stay
  * from build to build, so only a copy listed in {@code patched.tsv}, one
  * patched in this very build, is handed to the transpiler.</p>
  *
  * <p>With {@code -Deo.saveTextProtocols=true} the lowering also keeps the
- * protocol of every entry as indented text in {@code texts}, beside
+ * protocol of every entry as indented text in the numbered {@code texts} directory, beside
  * {@code 2-protocols}, so a person can read why an entry stopped where it
  * did without any tool. phino writes one protocol per run, so this runs
  * phino on every entry twice, unless the cache already holds the protocol
  * and its text.</p>
  *
  * @since 0.64.0
- * @todo #9510:60min Number the directories of texts, atoms and patched
- *  sources through seqdir, the way the lowering numbers planting and
- *  protocols. Morphing has to reserve texts with once() only when it saves
- *  them, and still clean an unnumbered texts left by an older build.
- *  Rendering and Patching have to reserve atoms and patched sources with
- *  once(), so Lowering, Rendering and Patching stop taking these two
- *  directories in their constructors, and this goal finds them after the
- *  lowering instead of resolving 3-atoms and 4-patched.
  */
 @Mojo(
     name = "lower",
@@ -105,7 +97,7 @@ public final class MjLower extends MjSafe {
     @Parameter(
         alias = "pinPhino",
         property = "eo.pinPhino",
-        defaultValue = "0.0.160"
+        defaultValue = "0.0.161"
     )
     private String pin;
 
@@ -208,7 +200,6 @@ public final class MjLower extends MjSafe {
         if (this.lowering) {
             final Path home = new Seqdir(this.target.toPath(), 2)
                 .dirs().once("lowering").toAbsolutePath();
-            final Path atoms = home.resolve("3-atoms");
             final Path inference;
             if (this.tables == null) {
                 inference = new Seqdir(this.target.toPath(), 2).dirs().once("inference");
@@ -223,8 +214,6 @@ public final class MjLower extends MjSafe {
                     this.binary,
                     this.pin,
                     this.caching("lowered"),
-                    atoms,
-                    home.resolve("4-patched"),
                     new Scope(this.only, this.never),
                     this.steps,
                     this.loops,
@@ -239,6 +228,14 @@ public final class MjLower extends MjSafe {
                     );
                 } else {
                     pipeline.exec();
+                    final Path atoms = new Seqdir(home, 1).dirs().find("atoms").orElseThrow(
+                        () -> new IllegalStateException(
+                            String.format(
+                                "There are no atoms in '%s', while the lowering always makes them",
+                                home
+                            )
+                        )
+                    );
                     MjLower.repoint(tojos, home);
                     this.project.addCompileSourceRoot(atoms.toString());
                     Logger.info(
@@ -254,7 +251,8 @@ public final class MjLower extends MjSafe {
         }
     }
 
-    private static void repoint(final TjsForeign tojos, final Path home) {
+    private static void repoint(final TjsForeign tojos, final Path home) throws IOException {
+        final Path patched = new Seqdir(home, 1).dirs().find("patched").orElseThrow();
         final Collection<String> fresh = new ListOf<>(
             new Mapped<>(
                 Text::asString,
@@ -264,7 +262,7 @@ public final class MjLower extends MjSafe {
         for (final TjForeign tojo : tojos.standalone()) {
             final String name = tojo.xmir().getFileName().toString();
             if (fresh.contains(name)) {
-                tojo.withXmir(home.resolve("4-patched").resolve(name));
+                tojo.withXmir(patched.resolve(name));
             }
         }
     }
