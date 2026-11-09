@@ -6,6 +6,7 @@ package org.eolang.lowering;
 
 import com.jcabi.log.Logger;
 import io.github.sekator778.seqdir.Seqdir;
+import io.github.sekator778.seqdir.Sequence;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -100,8 +101,8 @@ import org.eolang.cache.GlobalCache;
  * tool. phino picks the format of a protocol by the name of its file, and
  * it writes one protocol per run, so every entry gets a second run of its
  * own, into a file whose name ends with {@code .txt}. These texts land in
- * {@code texts}, beside {@code 2-protocols}, so the text of
- * {@code Φ.bytes.as-hex} is {@code texts/bytes/as-hex.txt}. Nothing in
+ * a numbered {@code texts} directory beside {@code 2-protocols}, so the
+ * text of {@code Φ.bytes.as-hex} is {@code texts/bytes/as-hex.txt}. Nothing in
  * the build reads them. The cache keeps them the same way as the
  * protocols, so a later build with the same four things does not run
  * phino for them either. The text of a run that was stopped stays on the
@@ -202,21 +203,14 @@ final class Morphing implements Proc<Path> {
                 )
             );
         }
-        final Path protocols = new Seqdir(home, 1).dirs().once("protocols");
-        final Path texts = home.resolve("texts");
-        for (final Path dir : new ListOf<>(protocols, texts)) {
-            if (Files.exists(dir)) {
-                try (Stream<Path> inside = Files.walk(dir)) {
-                    for (final Path stale : new ListOf<>(
-                        inside.filter(path -> !path.equals(dir))
-                            .sorted(Comparator.reverseOrder())
-                            .iterator()
-                    )) {
-                        Files.delete(stale);
-                    }
-                }
-            }
+        final Sequence dirs = new Seqdir(home, 1).dirs();
+        final Path legacy = home.resolve("texts");
+        final Path numbered = dirs.find("texts").orElse(legacy);
+        final Path protocols = dirs.once("protocols");
+        for (final Path dir : new ListOf<>(protocols, legacy, numbered)) {
+            Morphing.clean(dir);
         }
+        Files.deleteIfExists(legacy);
         Files.createDirectories(protocols);
         final GlobalCache store = this.cache
             .with(this.phino.pin())
@@ -231,6 +225,12 @@ final class Morphing implements Proc<Path> {
                 new Mapped<>(Text::asString, new Split(new TextOf(entries), "\\R"))
             )
         );
+        final Path texts;
+        if (this.text && !rows.isEmpty()) {
+            texts = dirs.once("texts");
+        } else {
+            texts = numbered;
+        }
         final Progress progress = new Progress(rows.size());
         final Timer ticker = new Timer("morphing-progress", true);
         ticker.scheduleAtFixedRate(
@@ -274,6 +274,20 @@ final class Morphing implements Proc<Path> {
             );
         } finally {
             ticker.cancel();
+        }
+    }
+
+    private static void clean(final Path dir) throws IOException {
+        if (Files.exists(dir)) {
+            try (Stream<Path> inside = Files.walk(dir)) {
+                for (final Path stale : new ListOf<>(
+                    inside.filter(path -> !path.equals(dir))
+                        .sorted(Comparator.reverseOrder())
+                        .iterator()
+                )) {
+                    Files.delete(stale);
+                }
+            }
         }
     }
 

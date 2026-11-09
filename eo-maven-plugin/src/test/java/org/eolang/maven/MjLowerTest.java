@@ -141,6 +141,8 @@ final class MjLowerTest {
     @Test
     @DisabledOnOs(OS.WINDOWS)
     void pointsTheTranspilerAtTheSourceItPatched(@Mktmp final Path temp) throws IOException {
+        final Path home = new Seqdir(temp.resolve("target"), 2).dirs().once("lowering");
+        Files.createDirectories(home.resolve("9-patched"));
         MatcherAssert.assertThat(
             "the goal must hand the transpiler the source with the atom in it, but it didnt",
             MjLowerTest.inferred(temp)
@@ -151,9 +153,7 @@ final class MjLowerTest {
                 .find("foo.x.main")
                 .xmir(),
             Matchers.equalTo(
-                new Seqdir(temp.resolve("target"), 2).dirs().once("lowering")
-                    .resolve("4-patched/main.xmir")
-                    .toAbsolutePath()
+                home.resolve("9-patched/main.xmir").toAbsolutePath()
             )
         );
     }
@@ -215,8 +215,10 @@ final class MjLowerTest {
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "the goal must save the text of an entry when asked, but it didnt",
-            new Seqdir(temp.resolve("target"), 2).dirs().once("lowering")
-                .resolve("texts/gap.txt")
+            new Seqdir(
+                new Seqdir(temp.resolve("target"), 2).dirs().find("lowering").orElseThrow(), 1
+            ).dirs().find("texts").orElseThrow()
+                .resolve("gap.txt")
                 .toFile(),
             FileMatchers.anExistingFile()
         );

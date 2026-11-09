@@ -206,7 +206,9 @@ final class Reads {
         if (this.world.formation(target)) {
             out.add(
                 this.made(
-                    this.state.fresh(target, this.world.born(site, target), num)
+                    this.state.enclose(
+                        this.state.fresh(target, this.world.born(site, target), num), num
+                    )
                 )
             );
         } else {
