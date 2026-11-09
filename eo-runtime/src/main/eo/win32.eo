@@ -59,13 +59,13 @@
   [] > ftime64-s /Q.win32.time-return(Q.number,Q.number,Q.number)
   [] > get-file-attributes /Q.number
     ? > path /Q.string
-  [] > getenv /Q.win32.getenv-return(Q.number,Q.string)
+  [] > getenv /Q.win32.getenv-return(Q.bool,Q.string)
     ? > name /Q.string
   [cde vle] > getenv-return
     win32.getenv-return > called
       cde
       value
-    1.eq cde! > code
+    cde > code
     vle > value
   [] > getpid /Q.number
   2 > inet
@@ -277,15 +277,6 @@
     eq.
       win32.inet-addr "127.0.0.1"
       16777343
-
-  code. ++> can-say-a-variable-is-set-when-its-code-is-one
-    win32.getenv-return
-      1
-      "C:\\жук;C:\\bin"
-
-  not. ++> can-say-a-variable-is-unset-when-its-code-is-zero
-    code.
-      win32.getenv-return 0 ""
 
   eq. ++> can-stand-for-the-bytes-a-read-returned
     win32.read-return

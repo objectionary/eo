@@ -10,9 +10,9 @@ import org.eolang.sys.Cstring;
 /**
  * Tells the value of an environment variable, as POSIX `getenv` does.
  *
- * <p>The code is 1 when the variable is set and 0 when it is not, since an
- * empty value and a missing variable are not the same thing; the value of a
- * missing one is an empty text.</p>
+ * <p>The code says whether the variable is set at all, since an empty value
+ * and a missing variable are not the same thing; the value of a missing one is
+ * an empty text.</p>
  *
  * @since 0.77.0
  * @checkstyle IllegalIdentifierNameCheck (6 lines)
@@ -34,11 +34,10 @@ public final class EOposix$EOgetenv extends PhDefault implements Atom {
         final String name = new Cstring(this.expected("name")).it();
         final Phi result = Phi.Φ.take("posix").take("getenv-return").copy();
         final String env = CStdLib.INSTANCE.getenv(name);
+        result.put(0, new Data.ToPhi(env != null));
         if (env == null) {
-            result.put(0, new Data.ToPhi(0));
             result.put(1, new Data.ToPhi(""));
         } else {
-            result.put(0, new Data.ToPhi(1));
             result.put(1, new Data.ToPhi(env));
         }
         return result;

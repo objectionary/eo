@@ -43,23 +43,23 @@ final class EOwin32EOgetenvTest {
 
     @Test
     @EnabledOnOs(OS.WINDOWS)
-    void putsOneIntoTheCodeOfVariableItFinds() {
+    void putsTrueIntoTheCodeOfVariableItFinds() {
         MatcherAssert.assertThat(
-            "a variable that is set must put the number one into the code, but it didnt",
+            "a variable that is set must put true into the code, but it didnt",
             new Dataized(
                 new PhApplication(
                     new EOwin32$EOgetenv(), "name", new Data.ToPhi("PATH")
                 ).take("v🌵cde")
-            ).asNumber(),
-            Matchers.equalTo(1.0)
+            ).asBool(),
+            Matchers.is(true)
         );
     }
 
     @Test
     @EnabledOnOs(OS.WINDOWS)
-    void putsZeroIntoTheCodeOfVariableItMisses() {
+    void putsFalseIntoTheCodeOfVariableItMisses() {
         MatcherAssert.assertThat(
-            "a variable that is not set must put the number zero into the code, but it didnt",
+            "a variable that is not set must put false into the code, but it didnt",
             new Dataized(
                 new PhApplication(
                     new EOwin32$EOgetenv(),
@@ -68,8 +68,8 @@ final class EOwin32EOgetenvTest {
                         String.format("EO_UNSET_%d", new SecureRandom().nextInt(1_000_000))
                     )
                 ).take("v🌵cde")
-            ).asNumber(),
-            Matchers.equalTo(0.0)
+            ).asBool(),
+            Matchers.is(false)
         );
     }
 }

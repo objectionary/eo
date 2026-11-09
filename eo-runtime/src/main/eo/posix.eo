@@ -50,13 +50,13 @@
   os.is-macos.if > exclusive
     2048
     128
-  [] > getenv /Q.posix.getenv-return(Q.number,Q.string)
+  [] > getenv /Q.posix.getenv-return(Q.bool,Q.string)
     ? > name /Q.string
   [cde vle] > getenv-return
     posix.getenv-return > called
       cde
       value
-    1.eq cde! > code
+    cde > code
     vle > value
   [] > getpid /Q.number
   [] > gettimeofday /Q.posix.time-return(Q.number,Q.number,Q.number)
@@ -284,15 +284,6 @@
     eq.
       posix.inet-addr "255.255.255.255"
       posix.unresolved
-
-  code. ++> can-say-a-variable-is-set-when-its-code-is-one
-    posix.getenv-return
-      1
-      "/opt/жук:/bin"
-
-  not. ++> can-say-a-variable-is-unset-when-its-code-is-zero
-    code.
-      posix.getenv-return 0 ""
 
   eq. ++> can-stand-for-the-bytes-a-read-returned
     posix.read-return
