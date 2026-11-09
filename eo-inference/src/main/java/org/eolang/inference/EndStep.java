@@ -6,7 +6,6 @@ package org.eolang.inference;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.IntUnaryOperator;
 
 /**
  * The end step (design doc 4.6): what is decided once after the passes,
@@ -15,14 +14,17 @@ import java.util.function.IntUnaryOperator;
  * <p>First it tells which study copies no longer count (3.4): a study
  * copy counts only if its formation never got a real copy and the copy it
  * was made inside counts. Then a read with no answer in a copy that counts
- * is marked {@code ?end-can't-tell}, told as {@code ?unknown-loop}, or
- * {@code ?end-nobody-fills-it}, told as {@code ?unknown-java}, when it reads
- * a void of a Java object nobody fills. Then the answers and rows that hold
- * the unknown of a void a stop decided Java alone fills are kept aside as
- * they are, and everywhere else that unknown becomes a plain one: the
- * answers name a void only Java fills from what was kept aside.</p>
+ * is marked {@code ?end-can't-tell}, told as {@code ?unknown-loop}. A read
+ * of a void of a copy Java made always has an answer, what the type of its
+ * atom puts there or the unknown only Java fills (4.5), so no such read is
+ * marked.</p>
  *
  * @since 0.76.0
+ * @todo #9657:30min Remove the mark {@code ?end-can't-tell}, or let telling
+ *  name a read with no answer from it. A read of a void Java fills always
+ *  has an answer now, so telling names every read with no answer
+ *  {@code ?unknown-loop} without a look at its mark, and nothing but
+ *  {@code EndStepTest} reads {@code mark()} any more.
  */
 final class EndStep {
 
@@ -32,19 +34,9 @@ final class EndStep {
     static final String CANT = "?end-can't-tell";
 
     /**
-     * A read of a void of a Java object nobody fills.
-     */
-    static final String NOBODY = "?end-nobody-fills-it";
-
-    /**
      * The state of the walk.
      */
     private final State state;
-
-    /**
-     * The world the walk goes over.
-     */
-    private final World world;
 
     /**
      * The mark of each read with no answer, by place and copy.
@@ -52,39 +44,27 @@ final class EndStep {
     private final Map<Slot, String> marks;
 
     /**
-     * The answers kept aside with a decided unknown, by question.
-     */
-    private final Map<Key, Ints> answers;
-
-    /**
-     * The rows kept aside with a decided unknown, by copy and void.
-     */
-    private final Map<Slot, Ints> rows;
-
-    /**
      * Ctor.
      *
      * @param walk The state of the walk
-     * @param world The world the walk goes over
      */
-    EndStep(final State walk, final World world) {
+    EndStep(final State walk) {
         this.state = walk;
-        this.world = world;
         this.marks = new HashMap<>(0);
-        this.answers = new HashMap<>(0);
-        this.rows = new HashMap<>(0);
     }
 
     /**
-     * Tell which study copies no longer count, mark the reads with no
-     * answer, keep aside what holds a decided unknown, and make it a plain
-     * one everywhere else.
+     * Tell which study copies no longer count, and mark the reads with no
+     * answer.
      */
     void step() {
         this.state.conclude();
-        this.marked();
-        this.keep();
-        this.tidied();
+        for (final Key key : this.state.questions()) {
+            if (key.kind() == 'e' && this.state.stored(key).isEmpty()
+                && this.state.counts(key.value())) {
+                this.marks.put(new Slot(key.value(), key.place()), EndStep.CANT);
+            }
+        }
     }
 
     /**
@@ -96,110 +76,5 @@ final class EndStep {
      */
     String mark(final String place, final int ctx) {
         return this.marks.getOrDefault(new Slot(ctx, place), "");
-    }
-
-    /**
-     * An answer as it was before the end step.
-     *
-     * @param key The question
-     * @param answer The answer now
-     * @return The answer it had
-     */
-    Ints untidy(final Key key, final Ids answer) {
-        final Ints out = new Ints();
-        if (this.answers.containsKey(key)) {
-            out.addAll(this.answers.get(key));
-        } else {
-            out.addAll(answer);
-        }
-        return out;
-    }
-
-    /**
-     * A row as it was before the end step.
-     *
-     * @param copy The copy
-     * @param name The void
-     * @return The row it was
-     */
-    Ints untidy(final int copy, final String name) {
-        final Slot slot = new Slot(copy, name);
-        final Ints out;
-        if (this.rows.containsKey(slot)) {
-            out = this.rows.get(slot);
-        } else {
-            out = this.state.row(copy, name);
-        }
-        return out;
-    }
-
-    private void marked() {
-        for (final Key key : this.state.questions()) {
-            if (key.kind() != 'e' || !this.state.stored(key).isEmpty()
-                || !this.state.counts(key.value())) {
-                continue;
-            }
-            String token = EndStep.CANT;
-            if (this.world.reads(key.place())) {
-                final Read read = this.world.read(key.place());
-                final Ids got = this.state.stored(
-                    new Key('e', key.value(), "", read.of(), "", 0)
-                );
-                for (int idx = 0; idx < got.size(); ++idx) {
-                    final Value value = this.world.value(
-                        this.world.bare(got.get(idx))
-                    );
-                    if (value.kind() == 'O' && Values.JBORN.equals(value.birth())
-                        && this.state.unfilled(value.form(), read.name())) {
-                        token = EndStep.NOBODY;
-                    }
-                }
-            }
-            this.marks.put(new Slot(key.value(), key.place()), token);
-        }
-    }
-
-    private void keep() {
-        for (final Key key : this.state.questions()) {
-            if (key.kind() == 'e' && this.state.stored(key).contains(Values.JGAP)) {
-                final Ints got = new Ints();
-                got.addAll(this.state.stored(key));
-                this.answers.put(key, got);
-            }
-        }
-        for (final Map.Entry<Slot, Ints> row : this.state.table().entrySet()) {
-            if (row.getValue().contains(Values.JGAP)) {
-                this.rows.put(row.getKey(), row.getValue());
-            }
-        }
-    }
-
-    private void tidied() {
-        for (final Key key : this.state.questions()) {
-            final Ids got = this.state.stored(key);
-            if (key.kind() == 'e' && got.contains(Values.JGAP)) {
-                this.state.replace(key, EndStep.tidy(got.size(), got::get));
-            }
-        }
-        for (final Map.Entry<Slot, Ints> row : this.state.table().entrySet()) {
-            final Ints got = row.getValue();
-            if (got.contains(Values.JGAP)) {
-                row.setValue(EndStep.tidy(got.size(), got::get));
-            }
-        }
-        this.state.grow();
-    }
-
-    private static Ints tidy(final int size, final IntUnaryOperator values) {
-        final Ints out = new Ints();
-        for (int idx = 0; idx < size; ++idx) {
-            final int val = values.applyAsInt(idx);
-            if (val == Values.JGAP) {
-                out.add(Values.GAP);
-            } else {
-                out.add(val);
-            }
-        }
-        return out;
     }
 }

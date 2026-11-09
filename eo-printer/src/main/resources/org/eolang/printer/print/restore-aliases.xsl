@@ -31,12 +31,14 @@
   <xsl:variable name="aliases" select="/object/metas/meta[head = 'alias']"/>
   <!-- Every name already bound in the file, so an alias short name that clashes with one is left alone. -->
   <xsl:variable name="bound" select="distinct-values((//o/@name, //o/@local))"/>
-  <!-- Every reference string, counted with multiplicity, across the five spots resolve-aliases rewrote. -->
+  <!--
+  Every reference string, counted with multiplicity, across the five spots
+  resolve-aliases rewrote. A type in "@atom", "@type" or "@args" is a tree
+  such as "Φ.pair(Φ.a.b,Φ.bytes)", so each name in it counts on its own.
+  -->
   <xsl:variable name="refs" as="xs:string*">
     <xsl:sequence select="//o/@base/string()"/>
-    <xsl:sequence select="//o/@atom/string()"/>
-    <xsl:sequence select="for $a in //o/@args, $t in tokenize($a, ' ')[. != ''] return $t"/>
-    <xsl:sequence select="for $t in //o/@type return replace($t, '\?$', '')"/>
+    <xsl:sequence select="for $a in //o/(@atom, @args, @type), $t in tokenize($a, '[(),? ]+')[. != ''] return $t"/>
     <xsl:sequence select="/object/metas/meta[head = 'also']/part/string()"/>
   </xsl:variable>
   <!--
@@ -57,18 +59,30 @@
     <xsl:param name="value" as="xs:string"/>
     <xsl:sequence select="(for $m in $aliases[part[last()] = $value and part[last()] = $kept] return string($m/part[1]), $value)[1]"/>
   </xsl:function>
+  <!--
+  A type with each of its names shortened: the brackets, the commas, a
+  trailing "?" and the spaces between callback members stay as they
+  are.
+  -->
+  <xsl:function name="eo:shortened" as="xs:string">
+    <xsl:param name="type" as="xs:string"/>
+    <xsl:variable name="parts" as="xs:string*">
+      <xsl:analyze-string select="$type" regex="[^(),? ]+">
+        <xsl:matching-substring>
+          <xsl:sequence select="eo:shorten(.)"/>
+        </xsl:matching-substring>
+        <xsl:non-matching-substring>
+          <xsl:sequence select="string(.)"/>
+        </xsl:non-matching-substring>
+      </xsl:analyze-string>
+    </xsl:variable>
+    <xsl:sequence select="string-join($parts, '')"/>
+  </xsl:function>
   <xsl:template match="o/@base">
     <xsl:attribute name="base" select="eo:shorten(.)"/>
   </xsl:template>
-  <xsl:template match="o/@atom">
-    <xsl:attribute name="atom" select="eo:shorten(.)"/>
-  </xsl:template>
-  <xsl:template match="o/@args">
-    <xsl:attribute name="args" select="string-join(for $t in tokenize(., ' ')[. != ''] return eo:shorten($t), ' ')"/>
-  </xsl:template>
-  <xsl:template match="o/@type">
-    <xsl:variable name="opt" select="ends-with(., '?')"/>
-    <xsl:attribute name="type" select="concat(eo:shorten(replace(., '\?$', '')), if ($opt) then '?' else '')"/>
+  <xsl:template match="o/@atom|o/@args|o/@type">
+    <xsl:attribute name="{name()}" select="eo:shortened(.)"/>
   </xsl:template>
   <xsl:template match="metas/meta[head = 'also']/part/text()">
     <xsl:value-of select="eo:shorten(.)"/>

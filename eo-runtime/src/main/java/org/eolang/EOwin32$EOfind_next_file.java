@@ -14,8 +14,8 @@ import org.eolang.sys.win32.WinFindData;
  * `FindNextFileW` does.
  *
  * <p>The name comes with the code {@code 0}. The search running out is a
- * false coming back, and then the code is {@code -1} and there is no name,
- * which is what tells EO to stop reading.</p>
+ * false coming back, and then the code is {@code -1} and the name is an
+ * empty string, which is what tells EO to stop reading.</p>
  *
  * @since 0.77.0
  * @checkstyle IllegalIdentifierNameCheck (6 lines)
@@ -46,7 +46,7 @@ public final class EOwin32$EOfind_next_file extends PhDefault implements Atom {
             result.put(1, new Data.ToPhi(data.filename()));
         } else {
             result.put(0, new Data.ToPhi(-1));
-            result.put(1, new PhDefault());
+            result.put(1, new Data.ToPhi(""));
         }
         return result;
     }

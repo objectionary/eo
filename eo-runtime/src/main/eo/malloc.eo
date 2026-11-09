@@ -74,7 +74,7 @@
   [] > of /Q.bytes
     ? > ^
     ? > size /Q.number
-    ? > scope /{Q.chunk}
+    ? > scope /{Q.chunk(Q.number)}
 
   ++> can-allocate-a-block-of-the-right-size
     malloc.of > @

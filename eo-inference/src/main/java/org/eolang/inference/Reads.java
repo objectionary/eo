@@ -17,13 +17,17 @@ package org.eolang.inference;
  * (#9785). Off any other copy it is its {@code ρ} row, or a fresh copy of
  * the formation the declared {@code ^} sits in when nobody bound it or Java
  * made the copy. A bound void is its row, every value stamped onto the
- * copy, next to the declared type. A void the copy's name says is unbound
- * reads T, an unknown in a copy a stop kept, its declared type, or its
- * pool if Java made the copy (4.1, 4.5). A nested formation is a fresh copy,
- * with the copy as its {@code ρ} if it declares {@code ^}, and any other
- * attribute is its answer in the copy, stamped onto it.</li>
+ * copy, next to a copy of the declared type. In a copy Java made, the voids
+ * the type of the atom types are bound, and so are the voids EO code fills
+ * when the type has no brackets ({@link Fillings}). A void the copy's name
+ * says is unbound reads T, an unknown in a copy a stop kept, its declared
+ * type, or the unknown only Java fills, alone, if Java made the copy (4.1,
+ * 4.5). A nested formation is a fresh copy, with the copy as its {@code ρ}
+ * if it declares {@code ^}, and any other attribute is its answer in the
+ * copy, stamped onto it.</li>
  * <li>A name the copy lacks is read off what its {@code @} gives, or off
- * what its atom returns, or is T when the formation is complete.</li>
+ * the copy Java makes of what its atom returns, or off the own voids it
+ * gives back, or is T when the formation is complete.</li>
  * </ul>
  *
  * @since 0.76.0
@@ -138,7 +142,7 @@ final class Reads {
         final Formation shape = this.world.form(value.form());
         final Ints out = new Ints();
         if (shape.open("ρ")
-            && ((value.bound() & Formation.RHO) == 0 || Values.JBORN.equals(value.birth()))) {
+            && ((value.bound() & Formation.RHO) == 0 || value.java())) {
             final String rho = shape.parent();
             if (rho.isEmpty()) {
                 throw new IllegalStateException(
@@ -168,18 +172,17 @@ final class Reads {
         final String holds = this.world.form(this.world.value(num).form()).holds(name);
         final Ints out;
         if (holds.isEmpty()) {
-            out = this.vacant(num, name, site);
+            out = this.vacant(num);
         } else {
             out = new Ints(this.declared(holds, site));
         }
         return out;
     }
 
-    private Ints vacant(final int num, final String name, final Site site) {
-        final Value value = this.world.value(num);
+    private Ints vacant(final int num) {
         final Ints out;
-        if (Values.JBORN.equals(value.birth()) && this.world.returned(value.form())) {
-            out = this.state.read(num, name, site);
+        if (this.world.value(num).java()) {
+            out = new Ints(Values.JGAP);
         } else if (this.state.kept(num)) {
             out = new Ints(Values.GAP);
         } else {
@@ -241,15 +244,18 @@ final class Reads {
 
     private Ints returned(final int num, final String name, final Site site) {
         final String form = this.world.value(num).form();
-        final String ret = this.world.form(form).returns();
-        if (!this.world.formation(ret) && this.world.own(form).isEmpty()) {
+        final Annotation type = new Annotation(this.world.form(form).returns());
+        if (!this.world.formation(type.head()) && this.world.own(form).isEmpty()) {
             throw new IllegalStateException(
-                String.format("atom %s returns %s, which it lacks, at %s", form, ret, site.place())
+                String.format(
+                    "atom %s returns %s, which it lacks, at %s",
+                    form, this.world.form(form).returns(), site.place()
+                )
             );
         }
         final Ints out = new Ints();
-        if (this.world.formation(ret)) {
-            out.addAll(this.attr(this.made(this.state.java(ret)), name, site));
+        if (this.world.formation(type.head())) {
+            out.addAll(this.attr(this.made(this.state.java(type)), name, site));
         } else {
             for (final String own : this.world.own(form)) {
                 out.addAll(this.through(num, own, name, site));
@@ -259,9 +265,8 @@ final class Reads {
     }
 
     private int declared(final String holds, final Site site) {
-        return this.made(
-            this.state.fresh(holds, this.world.born(site, holds), Copies.NO_RHO)
-        );
+        final Annotation type = new Annotation(holds);
+        return this.made(this.state.declared(type, this.world.born(site, type.head())));
     }
 
     private int made(final int copy) {

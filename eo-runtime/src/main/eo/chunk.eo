@@ -45,7 +45,7 @@
   read > get
     0
     size
-  number identifier! > id
+  identifier > id
   if. > [^block object] > put
     and.
       block.size.gt 0
@@ -69,7 +69,7 @@
     ? > offset /Q.number
     ? > length /Q.number
     ? > cant-read /{Q.string}
-  [] > resized /Q.chunk
+  [] > resized /Q.chunk(Q.number)
     ? > ^
     ? > capacity /Q.number
   [] > size /Q.number
