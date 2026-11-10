@@ -140,9 +140,7 @@ final class Rows {
     int stamp(final int item, final int holder, final Site site) {
         final Value value = this.world.value(item);
         final int result;
-        if (value.kind() == 'B') {
-            result = this.state.await(this.stamp(value.base(), holder, site));
-        } else if (value.kind() == 'A') {
+        if (value.kind() == 'A') {
             result = this.state.mark(
                 this.stamp(value.base(), holder, site), value.count()
             );

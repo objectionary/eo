@@ -317,7 +317,7 @@ final class World {
     }
 
     /**
-     * The value with the rule b and rule A wrappers taken off.
+     * The value with the rule A wrapper taken off.
      *
      * @param num The number
      * @return The number of what is inside

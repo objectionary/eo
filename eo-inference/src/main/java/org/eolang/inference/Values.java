@@ -140,14 +140,14 @@ final class Values {
     }
 
     /**
-     * The value with the rule b and rule A wrappers taken off.
+     * The value with the rule A wrapper taken off.
      *
      * @param num The number
      * @return The number of what is inside
      */
     int bare(final int num) {
         int inside = num;
-        while (this.get(inside).kind() == 'A' || this.get(inside).kind() == 'B') {
+        while (this.get(inside).kind() == 'A') {
             inside = this.get(inside).base();
         }
         return inside;
@@ -238,8 +238,6 @@ final class Values {
             }
             name = text.append('{').append(String.join(",", this.bound(value)))
                 .append('}').toString();
-        } else if (value.kind() == 'B') {
-            name = String.format("%s~", this.full(value.base()));
         } else if (value.kind() == 'A') {
             name = String.format("%s/%d", this.full(value.base()), value.count());
         } else if (value.kind() == 'U') {
