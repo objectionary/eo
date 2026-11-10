@@ -25,16 +25,15 @@ import org.junit.jupiter.params.provider.ValueSource;
  *
  * @since 0.75.0
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
-final class EOprintfDiagnosticTest {
+final class EOprintfTest {
 
     @Test
     void reportsAStringAsNotANumber() {
         MatcherAssert.assertThat(
             "printf must identify a short datum as not a number",
-            EOprintfDiagnosticTest.failure(new Data.ToPhi("x")),
+            EOprintfTest.failure(new Data.ToPhi("x")),
             Matchers.allOf(
-                Matchers.endsWith(EOprintfDiagnosticTest.notNumber("78")),
+                Matchers.endsWith(EOprintfTest.notNumber("78")),
                 Matchers.not(Matchers.containsString("non-finite"))
             )
         );
@@ -44,8 +43,8 @@ final class EOprintfDiagnosticTest {
     void reportsAnEmptyDatumAsNotANumber() {
         MatcherAssert.assertThat(
             "printf must identify an empty datum as not a number",
-            EOprintfDiagnosticTest.failure(new Data.ToPhi("")),
-            Matchers.endsWith(EOprintfDiagnosticTest.notNumber(""))
+            EOprintfTest.failure(new Data.ToPhi("")),
+            Matchers.endsWith(EOprintfTest.notNumber(""))
         );
     }
 
@@ -53,9 +52,9 @@ final class EOprintfDiagnosticTest {
     void reportsANineByteDatumAsNotANumber() {
         MatcherAssert.assertThat(
             "printf must identify a nine-byte datum as not a number",
-            EOprintfDiagnosticTest.failure(new Data.ToPhi("xxxxxxxxx")),
+            EOprintfTest.failure(new Data.ToPhi("xxxxxxxxx")),
             Matchers.endsWith(
-                EOprintfDiagnosticTest.notNumber(
+                EOprintfTest.notNumber(
                     "78-78-78-78-78-78-78-78-78"
                 )
             )
@@ -67,7 +66,7 @@ final class EOprintfDiagnosticTest {
         MatcherAssert.assertThat(
             "printf must keep formatting an eight-byte finite number",
             new Dataized(
-                EOprintfDiagnosticTest.formatted(new Data.ToPhi(1.25))
+                EOprintfTest.formatted(new Data.ToPhi(1.25))
             ).take(String.class),
             Matchers.equalTo("1.250000")
         );
@@ -84,7 +83,7 @@ final class EOprintfDiagnosticTest {
     void keepsTheNonFiniteReason(final double number) {
         MatcherAssert.assertThat(
             "printf must preserve the reason for a non-finite number",
-            EOprintfDiagnosticTest.failure(new Data.ToPhi(number)),
+            EOprintfTest.failure(new Data.ToPhi(number)),
             Matchers.endsWith(
                 "Can't write a non-finite number as a fixed-point decimal"
             )
@@ -101,7 +100,7 @@ final class EOprintfDiagnosticTest {
     private static String failure(final Phi argument) {
         return Assertions.assertThrows(
             ExAbstract.class,
-            new Dataized(EOprintfDiagnosticTest.formatted(argument))::take
+            new Dataized(EOprintfTest.formatted(argument))::take
         ).getMessage();
     }
 
