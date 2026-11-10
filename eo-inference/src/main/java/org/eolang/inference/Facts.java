@@ -31,16 +31,9 @@ import org.xembly.Xembler;
  *
  * <p>The document is written once and never written over. Nothing that runs
  * later adds to it, since a fact does not change as the answers do, and a
- * new kind of fact is a new section here rather than another file beside
- * it. The rows {@link Starts} reads off the heads were such a file once, the
- * first version of {@code links.xml}, which the passes then wrote over with
- * their answers; they are the {@code heads} section now, and
- * {@code links.xml} is written by the middle alone, first by
- * {@code Resolved}, from those rows and what it works out of them. So was
- * {@code provides.xml}, with the rows {@link Provides} reads off the
- * formations, which the passes then wrote their answers into; those rows
- * are the {@code objects} section now, and {@code provides.xml} starts in
- * {@code Resolved} as a copy of them.</p>
+ * new kind of fact goes in as a new section here. {@link Walk} reads the
+ * whole document through {@link FactsXml}, and {@link Answers} writes what
+ * the walk works out into {@code answers.xml}, a file of its own.</p>
  *
  * <p>Every section reads the program as text, writing a row for an object
  * because it is <em>there</em>, not because something reaches it. The
