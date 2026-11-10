@@ -3,6 +3,11 @@
 # with every product carried in two doubles, `wide` being the power so far:
 # `halved` splits a factor by Dekker's method, as `sine` does, so that
 # `joined` keeps what each product drops, and the answer is rounded once.
+# A factor above about 1.3e300 overflows when `halved` multiplies it by
+# 134217729. Such a factor is divided by two to the 28th and split there,
+# and the high half is multiplied back: subtracting it from the factor
+# restores the low half, so the split stays exact and the pair is kept.
+# `10.power 305` is then the double nearest to the true power.
 # A negative exponent takes the `reciprocal` of the pair. Where the `answer`
 # overflows, comes to nan or to zero, the squaring is done in single doubles.
 # A fractional exponent of a positive base is taken as e raised to `b` times
@@ -13,12 +18,6 @@
 # first atom it reaches say it of its own attribute: the exponent of a
 # string is eight bytes short, and the comparison that met it blamed its
 # own receiver, which is an attribute the caller never wrote (#9283).
-#
-# @todo #9030:30min Keep the pair for powers above about 1.3e300. There
-#  `halved` overflows multiplying a factor by 134217729, and the power falls
-#  back to single doubles: `10.power 305` is 9.999999999999995E304. Splitting
-#  such a factor after dividing it by two to the 28th, and multiplying the
-#  halves back, keeps the split exact.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -158,10 +157,16 @@
                 nan
                 pinf
   [^num a] >> halved
+    shrunk.times 134217729 >> broad
+    broad.minus >> crown
+      broad.minus shrunk
     a.minus top > foot
-    minus. > top
-      a.times 134217729 >> spread
-      spread.minus a
+    a.div 268435456 >> shrunk
+    a.times 134217729 >> spread
+    spread.is-finite.if > top
+      spread.minus
+        spread.minus a
+      crown.times 268435456
   [^num x y] >> joined
     paired > @
       hi
@@ -324,6 +329,10 @@
     4.power -3
     0.015625
 
+  eq. ++> can-raise-minus-ten-to-three-hundred-five
+    -10.power 305
+    -1.0e305
+
   eq. ++> can-raise-negative-infinity-to-a-negative-odd-integer
     as-bytes.
       ninf.power -3
@@ -405,6 +414,14 @@
   eq. ++> can-raise-ten-to-minus-five
     10.power -5
     1.0e-5
+
+  eq. ++> can-raise-ten-to-minus-three-hundred-five
+    10.power -305
+    1.0e-305
+
+  eq. ++> can-raise-ten-to-three-hundred-five
+    10.power 305
+    1.0e305
 
   eq. ++> can-raise-three-to-two
     3.power 2
