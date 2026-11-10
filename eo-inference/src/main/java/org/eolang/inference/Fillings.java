@@ -38,21 +38,23 @@ import java.util.Set;
  * depend on the order in which the walk meets the files or the
  * objects.</p>
  *
- * <p>A filling only the walk can answer, such as the {@code cde} that
- * {@code getenv-return} in {@code posix.eo} hands on, still leaves the void
- * that holds the unknown only Java fills, next to the fillings the facts
- * fix, and that is the decision of #9864. A void of an object Java makes
- * from a type with no brackets may hold that unknown: the copy Java makes
- * is one copy per type, interned by its type name and worked out from
- * {@code facts.xml} alone, and the same type serves every caller, so a
- * walk-found value in it would make the copy depend on the order the walk
- * meets the files, the defect #9657 removed. Walking twice pays for that
- * with a second full walk and still cannot help, since the copy is interned
- * once. An atom that must say what lands in the voids of its result writes
- * the brackets, as {@code getenv /Q.posix.getenv-return(Q.bool,Q.string)}
- * does in {@code posix.eo}; asking the engine to demand brackets would turn
- * an open type into a hard error for programs that do not need the value,
- * so the engine keeps the union, which never claims less than the truth.</p>
+ * <p>A void of an object Java makes from a type with no brackets may hold
+ * the unknown only Java fills, and that is the decision of #9864, where the
+ * puzzle stood. A filling only the walk can answer, as the {@code cde}
+ * {@code getenv-return} in {@code posix.eo} hands on, cannot enter such a
+ * copy: one copy per type, from {@code facts.xml} alone, serves every
+ * caller, so a value found for one caller would make it depend on the order
+ * the walk meets the files, the defect #9657 removed, and a second walk
+ * would still tell it to callers that never put it there. So such a void
+ * holds the unknown next to the fillings {@link Copies} can name, a fresh
+ * formation, a call on a kind of the canon, {@code Φ}, a datum and a
+ * termination, and drops none of them; a call on any other formation it
+ * cannot name, even where the facts fix it, stands as the unknown instead.
+ * An atom that needs the voids of its result typed writes the brackets, as
+ * {@code getenv /Q.posix.getenv-return(Q.bool,Q.string)} does in
+ * {@code posix.eo}; demanding them would make an open type a hard error for
+ * programs that do not need the value. A place only the walk answers, an
+ * error among them, reads as that unknown as well.</p>
  *
  * @since 0.76.0
  */
