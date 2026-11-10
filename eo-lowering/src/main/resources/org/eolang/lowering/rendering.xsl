@@ -104,7 +104,9 @@
   "L_bytes_slice" returns the "cant-slice" its caller binds, which the
   protocol does not hold. No object of eo-runtime binds it, so reading it
   fails, and "Slice" fails the same way. A caller that binds it loses its
-  fallback, and this is accepted.
+  fallback, and this is accepted. The atom of "L_chunk_read" does the same
+  with its "cant-read" out of the bounds of its block, and its statement fails
+  there in the same way.
   -->
   <xsl:variable name="eo:operations" as="element()*">
     <op λ="L_number_plus" type="double" args="double double">⟨1⟩ + ⟨2⟩</op>
@@ -122,6 +124,10 @@
     <op λ="L_bytes_slice" type="byte[]" args="byte[] double double">new Slice(⟨1⟩, ⟨2⟩, ⟨3⟩).delta()</op>
     <op λ="L_dataized" type="byte[]" args="byte[]">⟨1⟩</op>
     <op λ="L_os_name" type="byte[]" args="">System.getProperty("os.name").getBytes(java.nio.charset.StandardCharsets.UTF_8)</op>
+    <op λ="L_posix_close" type="double" args="double">org.eolang.posix.CStdLib.INSTANCE.close(new Int("descriptor", new Data.ToPhi(⟨1⟩)).it())</op>
+    <op λ="L_win32_close" type="double" args="double">org.eolang.sys.win32.Msvcrt.INSTANCE._close(new Int("descriptor", new Data.ToPhi(⟨1⟩)).it())</op>
+    <op λ="L_chunk_size" type="double" args="double">Heaps.INSTANCE.size(new Natural(new Expect&lt;&gt;("id", () -&gt; new Data.ToPhi(⟨1⟩))).it())</op>
+    <op λ="L_chunk_read" type="byte[]" args="double double double">Heaps.INSTANCE.fetched(new Natural(new Expect&lt;&gt;("id", () -&gt; new Data.ToPhi(⟨1⟩))).it(), new Natural(new Expect&lt;&gt;("offset", () -&gt; new Data.ToPhi(⟨2⟩))).it(), new Natural(new Expect&lt;&gt;("length", () -&gt; new Data.ToPhi(⟨3⟩))).it()).bytes().get()</op>
   </xsl:variable>
   <xsl:key name="eo:minted" match="minted" use="@symbol"/>
   <xsl:key name="eo:joined" match="joined" use="@symbol"/>
