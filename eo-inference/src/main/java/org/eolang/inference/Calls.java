@@ -144,10 +144,6 @@ final class Calls {
     private Ints head(final int num, final Call call, final Set<Landing> landed) {
         int head = num;
         Value value = this.world.value(head);
-        if (value.kind() == 'B') {
-            head = value.base();
-            value = this.world.value(head);
-        }
         if (value.kind() == 'A' && value.origin() >= 0) {
             head = value.origin();
             value = this.world.value(head);
