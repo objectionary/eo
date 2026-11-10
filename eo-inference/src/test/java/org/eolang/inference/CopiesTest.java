@@ -215,6 +215,23 @@ final class CopiesTest {
     }
 
     @Test
+    void putsJavaUnknownForCallOnFormationOutsideCanon(@Mktmp final Path temp)
+        throws IOException {
+        final State state = new State(
+            CopiesTest.sources(temp)
+                .with("foo.eo", "[x] > foo", "  x > @")
+                .with("report.eo", "[] > report", "  os.status 1 (foo 5) > @")
+                .world()
+        );
+        state.seed();
+        MatcherAssert.assertThat(
+            "a call on a formation outside the canon must put the unknown only Java fills into its void, but it didnt",
+            state.row(state.java(new Annotation("Φ.os.status")), "v🌵note").frozen(),
+            Matchers.hasToString(new Ints(Values.JGAP).frozen().toString())
+        );
+    }
+
+    @Test
     void givesFormationFillingCopyJavaMadeAsItsRho(@Mktmp final Path temp)
         throws IOException {
         final State state = new State(
