@@ -417,6 +417,9 @@ final class Copies {
         } else if (filling.kind() == 'T') {
             made = Values.TERM;
         } else {
+            // @checkstyle MethodBodyCommentsCheck (2 lines)
+            // A walk-only filling stays JGAP: the walk's answer may not enter
+            // a copy interned by its type, and Fillings says why (#9864).
             made = Values.JGAP;
         }
         return made;
