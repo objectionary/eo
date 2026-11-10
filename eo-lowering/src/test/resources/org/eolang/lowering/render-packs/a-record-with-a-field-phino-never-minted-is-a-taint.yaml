@@ -1,0 +1,34 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The posix gettimeofday answers a record of three fields, while its firing
+# minted two symbols only. The atom cannot tell which field each of them
+# reads, so the entry is a taint.
+locator: Φ.later
+number: 5
+taint: mints 𝜎1 and 𝜎2 for the record of 3 fields
+eo:
+  later.eo: |
+    [] > later
+      posix.gettimeofday.seconds > @
+  posix.eo: |
+    [] > posix
+      [] > gettimeofday /Q.posix.time-return(Q.number,Q.number,Q.number)
+      [cde scnds mcrs] > time-return
+        cde > code
+        mcrs > micros
+        scnds > seconds
+voids: []
+protocol: |
+  <protocol>
+    <dataize at="Φ.l🌵.e5">
+      <evaluate λ="L_posix_gettimeofday" by="evaluate" at="Φ.posix.gettimeofday">
+        <minted symbol="𝜎1"/>
+        <minted symbol="𝜎2"/>
+      </evaluate>
+      <manufactured meta="𝛿·2·1">𝜎2</manufactured>
+    </dataize>
+    <msec>9</msec>
+    <firings>1</firings>
+    <fps>111</fps>
+  </protocol>
