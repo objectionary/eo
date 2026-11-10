@@ -260,11 +260,12 @@
   </xsl:function>
   <!--
   Stop the rendering of an entry whose protocol is no tree of ifs: one that
-  ran out of time, reached the limit of rewriting cycles, holds no run, defines a symbol twice, forks on two
-  conditions at one place, forks afresh on a condition the flow decided
-  before, forks on a side phino never ran, as it does when "max-paths" cuts
-  the run, or takes a side of a condition no fork above decided, or the
-  other side of one a fork above did.
+  ran out of time, reached the limit of rewriting cycles or of nodes, holds
+  no run, defines a symbol twice, forks on two conditions at one place,
+  forks afresh on a condition the flow decided before, forks on a side
+  phino never ran, as it does when "max-paths" cuts the run, or takes a
+  side of a condition no fork above decided, or the other side of one a
+  fork above did.
   -->
   <xsl:function name="eo:checked">
     <xsl:variable name="timeout" select="($eo:doc//timeout)[1]"/>
@@ -274,6 +275,10 @@
     <xsl:variable name="exceeded" select="($eo:doc//exceeded)[1]"/>
     <xsl:if test="exists($exceeded)">
       <xsl:sequence select="eo:taint(concat('The entry ', $number, ' reached the limit of ', $exceeded/@limit, ' rewriting cycles at ', $exceeded/@at))"/>
+    </xsl:if>
+    <xsl:variable name="oversized" select="($eo:doc//oversized)[1]"/>
+    <xsl:if test="exists($oversized)">
+      <xsl:sequence select="eo:taint(concat('The entry ', $number, ' grew over the limit of ', $oversized/@limit, ' nodes at ', $oversized/@at))"/>
     </xsl:if>
     <xsl:if test="empty($eo:run)">
       <xsl:sequence select="eo:taint(concat('The protocol of the entry ', $number, ' holds no run, while phino writes the dataization of every run'))"/>
