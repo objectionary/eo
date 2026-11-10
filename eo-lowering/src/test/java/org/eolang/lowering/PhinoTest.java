@@ -75,6 +75,38 @@ final class PhinoTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void handsPhinoTheLimitOfMemoryItWasGiven(@Mktmp final Path temp) throws IOException {
+        new Phino(
+            PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\""), "1.9.27", "3G"
+        ).dataize(
+            temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 5,
+            temp.resolve("5.xml"), 32, 2, Duration.ofSeconds(3L)
+        );
+        MatcherAssert.assertThat(
+            "phino must be told the limit of memory it was given, but it isnt",
+            new String(Files.readAllBytes(temp.resolve("args.txt")), StandardCharsets.UTF_8),
+            Matchers.containsString("--max-memory=3G")
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void handsPhinoNoLimitOfMemoryWhenTheLimitIsZero(@Mktmp final Path temp) throws IOException {
+        new Phino(
+            PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\""), "1.9.27", "0"
+        ).dataize(
+            temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 6,
+            temp.resolve("6.xml"), 32, 2, Duration.ofSeconds(3L)
+        );
+        MatcherAssert.assertThat(
+            "phino must not be told any limit of memory when it is zero, but it is",
+            new String(Files.readAllBytes(temp.resolve("args.txt")), StandardCharsets.UTF_8),
+            Matchers.not(Matchers.containsString("--max-memory"))
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void handsPhinoTheLoopsItWasGiven(@Mktmp final Path temp) throws IOException {
         new Phino(PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\""), "1.9.27").dataize(
             temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 8,

@@ -289,6 +289,22 @@ final class MjLowerTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void handsPhinoTheLimitOfMemoryItWasGiven(@Mktmp final Path temp) throws IOException {
+        final String memory = String.format("%dM", new SecureRandom().nextInt(900) + 100);
+        MjLowerTest.inferred(temp)
+            .with("lowering", true)
+            .with("memory", memory)
+            .with("binary", MjLowerTest.binary(temp))
+            .execute(MjLower.class);
+        MatcherAssert.assertThat(
+            "the goal must hand phino the limit of memory it was given, but it didnt",
+            Files.readString(temp.resolve("dataize.txt"), StandardCharsets.UTF_8),
+            Matchers.containsString(String.format("--max-memory=%s", memory))
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void handsPhinoTheNumberOfLoopsItWasGiven(@Mktmp final Path temp) throws IOException {
         final int loops = new SecureRandom().nextInt(50) + 1;
         MjLowerTest.inferred(temp)

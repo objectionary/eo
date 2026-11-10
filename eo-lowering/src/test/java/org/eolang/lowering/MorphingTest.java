@@ -460,6 +460,28 @@ final class MorphingTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void morphsAgainWhenTheLimitOfMemoryChanges(@Mktmp final Path temp) throws IOException {
+        MorphingTest.merged(temp, 2);
+        final Phino phino = MorphingTest.counting(temp);
+        new Morphing(
+            new Phino(phino.toString(), "2.6.4", "1G"),
+            new GcShared(temp.resolve("cache"), "0.3.5"),
+            new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
+        ).exec(temp);
+        new Morphing(
+            new Phino(phino.toString(), "2.6.4", "7G"),
+            new GcShared(temp.resolve("cache"), "0.3.5"),
+            new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
+        ).exec(temp);
+        MatcherAssert.assertThat(
+            "a build with another limit of memory must not take the protocol from the cache, but it does",
+            Files.readAllLines(temp.resolve("runs.txt")),
+            Matchers.hasSize(2)
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void printsEveryProtocolSweetAndWithoutRho(@Mktmp final Path temp) throws IOException {
         MorphingTest.merged(temp, 1);
         final Path protocols = temp.resolve("2-protocols");

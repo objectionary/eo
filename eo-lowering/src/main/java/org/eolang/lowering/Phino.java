@@ -12,10 +12,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.stream.Stream;
+import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.list.ListOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.Trimmed;
 import org.cactoos.text.UncheckedText;
+import org.eolang.cache.GlobalCache;
 
 /**
  * The phino program installed on this computer.
@@ -34,6 +37,13 @@ import org.cactoos.text.UncheckedText;
  * away, and its error output is shown only when phino fails. A reader of
  * the log should not be worried by lines that do not matter.</p>
  *
+ * <p>One run of phino may grow its memory until the whole computer has no
+ * memory left, which no limit of time can stop in time. So, this class may
+ * be given a limit of memory, such as "4G", which every run hands to
+ * phino. Then phino stops by itself when its memory grows over the limit,
+ * and closes the protocol with a {@code blown} element. A limit of "0"
+ * means no limit at all.</p>
+ *
  * @since 0.64.0
  */
 final class Phino {
@@ -49,14 +59,33 @@ final class Phino {
     private final String version;
 
     /**
+     * The largest memory one run of phino may take, such as "4G", or "0"
+     * when there is no limit.
+     */
+    private final String memory;
+
+    /**
      * Ctor.
      *
      * @param exe The name of the phino program, or the path to it
      * @param pin The only version of phino that this module accepts
      */
     Phino(final String exe, final String pin) {
+        this(exe, pin, "0");
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param exe The name of the phino program, or the path to it
+     * @param pin The only version of phino that this module accepts
+     * @param limit The largest memory one run of phino may take, such as
+     *  "4G", or "0" when there is no limit
+     */
+    Phino(final String exe, final String pin, final String limit) {
         this.binary = exe;
         this.version = pin;
+        this.memory = limit;
     }
 
     @Override
@@ -184,9 +213,15 @@ final class Phino {
                     String.format(
                         "--max-seconds=%d",
                         Math.max(1L, budget.plusNanos(999_999_999L).toSeconds())
-                    ),
-                    world.toString()
-                ),
+                    )
+                ).with(
+                    new ListOf<>(
+                        new Mapped<>(
+                            limit -> String.format("--max-memory=%s", limit),
+                            new Filtered<>(limit -> !"0".equals(limit), new ListOf<>(this.memory))
+                        )
+                    )
+                ).with(world.toString()),
                 task
             );
         } catch (final IllegalStateException ex) {
@@ -217,6 +252,20 @@ final class Phino {
      */
     String pin() {
         return this.version;
+    }
+
+    /**
+     * The cache of protocols, narrowed to the runs of this phino.
+     *
+     * <p>Two runs on the same entry may give different protocols when the
+     * version of phino or its limit of memory differ. So, the cache keeps
+     * the protocols of each pair apart.</p>
+     *
+     * @param cache The cache of protocols
+     * @return The same cache, narrowed to this version and limit of memory
+     */
+    GlobalCache narrowed(final GlobalCache cache) {
+        return cache.with(this.version).with(this.memory);
     }
 
     private void run(final Jaxec command, final String task) throws IOException {

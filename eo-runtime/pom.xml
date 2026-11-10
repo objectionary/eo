@@ -285,6 +285,8 @@
           <trackLocations>true</trackLocations>
           <!-- The seconds one run of phino may take on one entry of 'eo:lower'. -->
           <loweringBudget>180</loweringBudget>
+          <!-- The largest memory one run of phino may take in 'eo:lower'. -->
+          <loweringMemory>1G</loweringMemory>
           <!-- The largest number of nested steps one run of phino may take in 'eo:lower'. -->
           <maxMorphingSteps>1000</maxMorphingSteps>
           <!-- Save every phino protocol of 'eo:lower' as indented text too, for a reader to study. -->
