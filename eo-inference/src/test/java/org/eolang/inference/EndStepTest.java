@@ -8,6 +8,7 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -29,9 +30,12 @@ final class EndStepTest {
         final State state = new Settled(world).state();
         state.step();
         MatcherAssert.assertThat(
-            "a read with no answer must be told as a loop at the end, but it wasnt",
-            new Telling(state, world).told().sets().get("Φ.loop.value"),
-            Matchers.hasKey("?unknown-loop")
+            "a read with no answer must be told as a loop by both copies that say it, but it wasnt",
+            new Telling(state, world).told().sets(),
+            Matchers.hasEntry(
+                Matchers.equalTo("Φ.loop.value"),
+                Matchers.equalTo(Map.of("?unknown-loop", 2))
+            )
         );
     }
 

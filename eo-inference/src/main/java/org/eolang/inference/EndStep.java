@@ -10,9 +10,7 @@ package org.eolang.inference;
  *
  * <p>It tells which study copies no longer count (3.4): a study copy counts
  * only if its formation never got a real copy and the copy it was made
- * inside counts. Every read with no answer in a copy that counts is told as
- * {@code ?unknown-loop}, and that {@link Telling} decides on its own from
- * the answer the read got, so the end step keeps nothing of it.</p>
+ * inside counts.</p>
  *
  * @since 0.76.0
  */
