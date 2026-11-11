@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
+# yamllint disable rule:line-length
 # The posix gettimeofday answers a record of three fields, while its firing
 # minted two symbols only. The atom cannot tell which field each of them
 # reads, so the entry is a taint.

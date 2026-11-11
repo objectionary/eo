@@ -1447,7 +1447,7 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    <xsl:sequence select="concat('    private ', $type, ' ', eo:name($symbol), '(', string-join(eo:params($symbol) ! concat('final Phi ', .), ', '), ') {&#10;', $body, '    }&#10;')"/>
+    <xsl:sequence select="concat('    private ', $type, ' ', eo:name($symbol), '(', string-join(eo:params($symbol) ! ('final Phi ' || .), ', '), ') {&#10;', $body, '    }&#10;')"/>
   </xsl:function>
   <!--
   The Java types the operation of a minted symbol reads its operands as,
