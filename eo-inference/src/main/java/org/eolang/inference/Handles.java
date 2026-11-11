@@ -42,7 +42,7 @@ final class Handles {
      * A name as a page tells it, a locator with no spaces, brackets or
      * quotes in it.
      */
-    private static final Pattern NAME = Pattern.compile("Φ(?:\\.[^\\s.<>&\"',()\\[\\]{}]+)+");
+    private static final Pattern NAME = Pattern.compile("Φ(?:\\.[^\\s.<>&\"',()\\[\\]{}]++)++");
 
     /**
      * The start of a segment the parser made for a {@code >>}.
