@@ -45,11 +45,6 @@ final class Handles {
     private static final Pattern NAME = Pattern.compile("Φ(?:\\.[^\\s.<>&\"',()\\[\\]{}]++)++");
 
     /**
-     * The start of a segment the parser made for a {@code >>}.
-     */
-    private static final String MADE = "a🌵";
-
-    /**
      * The names the author gave, by the locator of their object.
      */
     private final Map<String, String> names;
@@ -89,7 +84,7 @@ final class Handles {
         final DocumentFragment pieces = text.getOwnerDocument().createDocumentFragment();
         int cursor = 0;
         while (matcher.find()) {
-            if (this.locators(matcher.group()).anyMatch(this::handled)) {
+            if (Handles.locators(matcher.group()).anyMatch(this::handled)) {
                 Handles.appended(pieces, words.substring(cursor, matcher.start()));
                 pieces.appendChild(this.name(text.getOwnerDocument(), matcher.group()));
                 cursor = matcher.end();
@@ -105,7 +100,7 @@ final class Handles {
         final Element name = page.createElement("name");
         name.setAttribute("loc", full);
         final StringBuilder plain = new StringBuilder(full.length());
-        this.locators(full).forEach(
+        Handles.locators(full).forEach(
             loc -> {
                 if (this.handled(loc)) {
                     Handles.appended(name, plain.toString());
@@ -131,10 +126,10 @@ final class Handles {
     }
 
     private boolean handled(final String loc) {
-        return Handles.segment(loc).startsWith(Handles.MADE) && this.names.containsKey(loc);
+        return Handles.segment(loc).startsWith("a🌵") && this.names.containsKey(loc);
     }
 
-    private Stream<String> locators(final String full) {
+    private static Stream<String> locators(final String full) {
         return IntStream.rangeClosed(1, full.length())
             .filter(end -> end == full.length() || full.charAt(end) == '.')
             .mapToObj(end -> full.substring(0, end));
