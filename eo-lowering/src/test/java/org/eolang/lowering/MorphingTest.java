@@ -231,7 +231,7 @@ final class MorphingTest {
         MatcherAssert.assertThat(
             "the text of an entry must be written by phino into the texts, but it isnt",
             MorphingTest.text(texts.resolve("e8.txt")),
-            Matchers.containsString("--protocol=".concat(texts.resolve("e8.txt").toString()))
+            Matchers.containsString("--minutes=".concat(texts.resolve("e8.txt").toString()))
         );
     }
 
@@ -269,7 +269,7 @@ final class MorphingTest {
         MatcherAssert.assertThat(
             "the second build over the same world must not run the binary for a text, but it does",
             Files.readAllLines(temp.resolve("runs.txt")),
-            Matchers.hasSize(2)
+            Matchers.hasSize(1)
         );
     }
 
@@ -303,9 +303,10 @@ final class MorphingTest {
                 temp,
                 String.join(
                     " ",
-                    "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
-                    "case $p in *.xml) echo '<protocol><timeout limit=\"1\"/></protocol>' > \"$p\";;",
-                    "*) echo '  timeout 1' > \"$p\";; esac; exit 1"
+                    "for a; do case $a in --protocol=*) p=${a#--protocol=};;",
+                    "--minutes=*) m=${a#--minutes=};; esac; done;",
+                    "echo '<protocol><timeout limit=\"1\"/></protocol>' > \"$p\";",
+                    "echo '  timeout 1' > \"$m\"; exit 1"
                 )
             ),
             new GlobalCache.GcFresh(),
@@ -585,7 +586,7 @@ final class MorphingTest {
 
     @Test
     void morphsTheWorldThePinnedPhinoFolds(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.162");
+        final Phino phino = new Phino("phino", "0.0.163");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -604,7 +605,7 @@ final class MorphingTest {
 
     @Test
     void writesTheTextThePinnedPhinoFolds(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.162");
+        final Phino phino = new Phino("phino", "0.0.163");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -626,7 +627,7 @@ final class MorphingTest {
     @Test
     void stopsAtTheThrowWithTheWholeMessageThePinnedPhinoKeeps(@Mktmp final Path temp)
         throws IOException {
-        final Phino phino = new Phino("phino", "0.0.162");
+        final Phino phino = new Phino("phino", "0.0.163");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -677,7 +678,7 @@ final class MorphingTest {
 
     @Test
     void answersTheAtomOfBytesThePinnedPhinoReaches(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.162");
+        final Phino phino = new Phino("phino", "0.0.163");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -722,7 +723,7 @@ final class MorphingTest {
     @Test
     void firesTheRowOfAFormationThePinnedPhinoReaches(@Mktmp final Path temp)
         throws IOException {
-        final Phino phino = new Phino("phino", "0.0.162");
+        final Phino phino = new Phino("phino", "0.0.163");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -864,8 +865,10 @@ final class MorphingTest {
             String.join(
                 " ",
                 "echo run >> \"${0%/*}/runs.txt\";",
-                "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
-                "echo \"$@\" > \"$p\""
+                "for a; do case $a in --protocol=*) p=${a#--protocol=};;",
+                "--minutes=*) m=${a#--minutes=};; esac; done;",
+                "if [ -n \"$p\" ]; then echo \"$@\" > \"$p\"; fi;",
+                "if [ -n \"$m\" ]; then echo \"$@\" > \"$m\"; fi"
             )
         );
     }
@@ -875,8 +878,10 @@ final class MorphingTest {
             temp,
             String.join(
                 " ",
-                "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
-                "echo \"$@\" > \"$p\""
+                "for a; do case $a in --protocol=*) p=${a#--protocol=};;",
+                "--minutes=*) m=${a#--minutes=};; esac; done;",
+                "if [ -n \"$p\" ]; then echo \"$@\" > \"$p\"; fi;",
+                "if [ -n \"$m\" ]; then echo \"$@\" > \"$m\"; fi"
             )
         );
     }

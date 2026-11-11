@@ -59,7 +59,7 @@ final class MjLowerTest {
                     .execute(MjLower.class),
                 "a binary that is not there must fail the build"
             ).getCause().getCause().getMessage(),
-            Matchers.containsString("0.0.162")
+            Matchers.containsString("0.0.163")
         );
     }
 
@@ -373,7 +373,7 @@ final class MjLowerTest {
                     .execute(MjLower.class),
                 "a binary of another version must fail the build"
             ).getCause().getCause().getMessage(),
-            Matchers.stringContainsInOrder("0.0.1", "0.0.162")
+            Matchers.stringContainsInOrder("0.0.1", "0.0.163")
         );
     }
 
@@ -393,7 +393,7 @@ final class MjLowerTest {
 
     private static String binary(final Path temp, final int code, final String protocol)
         throws IOException {
-        return MjLowerTest.binary(temp, code, protocol, "0.0.162");
+        return MjLowerTest.binary(temp, code, protocol, "0.0.163");
     }
 
     private static String binary(
@@ -409,7 +409,13 @@ final class MjLowerTest {
                 String.format("--version) echo %s;;", version),
                 "merge) while [ $# -gt 0 ]; do [ \"$1\" = --target ] && : > \"$2\"; shift; done;;",
                 String.format(
-                    "dataize) echo \"$p $@\" >> '%s'; for a; do case $a in --protocol=*) cp '%s' \"${a#--protocol=}\";; esac; done; exit %d;;",
+                    String.join(
+                        " ",
+                        "dataize) echo \"$p $@\" >> '%1$s'; for a; do case $a in",
+                        "--protocol=*) cp '%2$s' \"${a#--protocol=}\";;",
+                        "--minutes=*) cp '%2$s' \"${a#--minutes=}\";;",
+                        "esac; done; exit %3$d;;"
+                    ),
                     temp.resolve("dataize.txt"),
                     Files.write(
                         temp.resolve("protocol.xml"), protocol.getBytes(StandardCharsets.UTF_8)

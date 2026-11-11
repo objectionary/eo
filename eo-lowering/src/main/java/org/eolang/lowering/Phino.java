@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.List;
 import java.util.stream.Stream;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
@@ -170,16 +171,13 @@ final class Phino {
      * nothing else. One entry that never ends must not stop the whole build,
      * so phino is told how many seconds it may work, and it stops by itself
      * when they are over. Then it closes the protocol with a {@code timeout}
-     * element, or with a {@code timeout …} line when the protocol is
-     * indented text, and fails. This class never kills phino, because a
-     * killed phino leaves a protocol cut in the middle, which nobody can
-     * read.</p>
+     * element and fails. This class never kills phino, because a killed
+     * phino leaves a protocol cut in the middle, which nobody can read.</p>
      *
      * @param world The world, which {@link Merging} wrote
      * @param atoms The table of operations phino may write down
      * @param entry The number of the entry to work on
-     * @param protocol The file for the steps, in XML when its name ends with
-     *  .xml and in indented text otherwise
+     * @param protocol The file for the steps, always in XML
      * @param steps The largest number of steps phino may take inside one another
      * @param loops How many times phino may enter the same formation again
      *  before it decides that the run loops and cuts it
@@ -192,57 +190,78 @@ final class Phino {
         final Path world, final Path atoms, final int entry, final Path protocol,
         final int steps, final int loops, final Duration budget
     ) throws IOException {
-        final String task = String.format("dataizing the entry %d of '%s'", entry, world);
-        try {
-            this.run(
-                new Jaxec(
-                    this.binary,
-                    String.format("--pin=%s", this.version),
-                    "dataize",
-                    "--acyclic=plausible",
-                    String.format("--max-loops=%d", loops),
-                    "--partial",
-                    "--quiet",
-                    "--sweet",
-                    "--hide-rho",
-                    "--abridged",
-                    String.format("--symbolic=%s", atoms),
-                    String.format("--locator=Q.l🌵.e%d", entry),
-                    String.format("--protocol=%s", protocol),
-                    String.format("--max-steps=%d", steps),
-                    String.format(
-                        "--max-seconds=%d",
-                        Math.max(1L, budget.plusNanos(999_999_999L).toSeconds())
-                    )
-                ).with(
-                    new ListOf<>(
-                        new Mapped<>(
-                            limit -> String.format("--max-memory=%s", limit),
-                            new Filtered<>(limit -> !"0".equals(limit), new ListOf<>(this.memory))
-                        )
-                    )
-                ).with(world.toString()),
-                task
-            );
-        } catch (final IllegalStateException ex) {
-            if (Files.notExists(protocol)) {
-                throw ex;
-            }
-            try (Stream<String> lines = Files.lines(protocol)) {
-                if (lines.noneMatch(
-                    line -> line.contains("<timeout ") || line.trim().startsWith("timeout ")
-                )) {
-                    throw ex;
-                }
-            }
-            throw new KilledException(
-                Logger.format(
-                    "The binary '%s' ran out of its budget of %[ms]s while %s",
-                    this.binary, budget.toMillis(), task
-                ),
-                ex
-            );
-        }
+        this.record(
+            world, atoms, entry, protocol,
+            new ListOf<>(String.format("--protocol=%s", protocol)),
+            steps, loops, budget
+        );
+    }
+
+    /**
+     * Ask phino to compute one entry of the world, and to write its steps
+     * both in XML and as indented text, in one run.
+     *
+     * <p>The indented text is what a person reads without any tool. phino
+     * writes it beside the XML protocol while it works, so the entry is not
+     * computed twice. When the time runs out, the text ends with a
+     * {@code timeout …} line, the same way the protocol ends with its
+     * {@code timeout} element.</p>
+     *
+     * @param world The world, which {@link Merging} wrote
+     * @param atoms The table of operations phino may write down
+     * @param entry The number of the entry to work on
+     * @param protocol The file for the steps, always in XML
+     * @param minutes The file for the same steps as indented text
+     * @param steps The largest number of steps phino may take inside one another
+     * @param loops How many times phino may enter the same formation again
+     *  before it decides that the run loops and cuts it
+     * @param budget The time phino may work, rounded up to whole seconds
+     * @throws IOException If phino cannot be started, or a
+     *  {@link KilledException} if phino stopped because its time was over
+     * @checkstyle ParameterNumberCheck (10 lines)
+     */
+    void dataize(
+        final Path world, final Path atoms, final int entry, final Path protocol,
+        final Path minutes, final int steps, final int loops, final Duration budget
+    ) throws IOException {
+        this.record(
+            world, atoms, entry, protocol,
+            new ListOf<>(
+                String.format("--protocol=%s", protocol),
+                String.format("--minutes=%s", minutes)
+            ),
+            steps, loops, budget
+        );
+    }
+
+    /**
+     * Ask phino to compute one entry of the world, and to write its steps
+     * only as indented text.
+     *
+     * <p>This is for an entry whose XML protocol is already known, so only
+     * its text is missing.</p>
+     *
+     * @param world The world, which {@link Merging} wrote
+     * @param atoms The table of operations phino may write down
+     * @param entry The number of the entry to work on
+     * @param minutes The file for the steps as indented text
+     * @param steps The largest number of steps phino may take inside one another
+     * @param loops How many times phino may enter the same formation again
+     *  before it decides that the run loops and cuts it
+     * @param budget The time phino may work, rounded up to whole seconds
+     * @throws IOException If phino cannot be started, or a
+     *  {@link KilledException} if phino stopped because its time was over
+     * @checkstyle ParameterNumberCheck (10 lines)
+     */
+    void transcribe(
+        final Path world, final Path atoms, final int entry, final Path minutes,
+        final int steps, final int loops, final Duration budget
+    ) throws IOException {
+        this.record(
+            world, atoms, entry, minutes,
+            new ListOf<>(String.format("--minutes=%s", minutes)),
+            steps, loops, budget
+        );
     }
 
     /**
@@ -266,6 +285,63 @@ final class Phino {
      */
     GlobalCache narrowed(final GlobalCache cache) {
         return cache.with(this.version).with(this.memory);
+    }
+
+    private void record(
+        final Path world, final Path atoms, final int entry, final Path written,
+        final List<String> records, final int steps, final int loops, final Duration budget
+    ) throws IOException {
+        final String task = String.format("dataizing the entry %d of '%s'", entry, world);
+        try {
+            this.run(
+                new Jaxec(
+                    this.binary,
+                    String.format("--pin=%s", this.version),
+                    "dataize",
+                    "--acyclic=plausible",
+                    String.format("--max-loops=%d", loops),
+                    "--partial",
+                    "--quiet",
+                    "--sweet",
+                    "--hide-rho",
+                    "--abridged",
+                    String.format("--symbolic=%s", atoms),
+                    String.format("--locator=Q.l🌵.e%d", entry)
+                ).with(records).with(
+                    String.format("--max-steps=%d", steps),
+                    String.format(
+                        "--max-seconds=%d",
+                        Math.max(1L, budget.plusNanos(999_999_999L).toSeconds())
+                    )
+                ).with(
+                    new ListOf<>(
+                        new Mapped<>(
+                            limit -> String.format("--max-memory=%s", limit),
+                            new Filtered<>(limit -> !"0".equals(limit), new ListOf<>(this.memory))
+                        )
+                    )
+                ).with(world.toString()),
+                task
+            );
+        } catch (final IllegalStateException ex) {
+            if (Files.notExists(written)) {
+                throw ex;
+            }
+            try (Stream<String> lines = Files.lines(written)) {
+                if (lines.noneMatch(
+                    line -> line.contains("<timeout ") || line.trim().startsWith("timeout ")
+                )) {
+                    throw ex;
+                }
+            }
+            throw new KilledException(
+                Logger.format(
+                    "The binary '%s' ran out of its budget of %[ms]s while %s",
+                    this.binary, budget.toMillis(), task
+                ),
+                ex
+            );
+        }
     }
 
     private void run(final Jaxec command, final String task) throws IOException {
