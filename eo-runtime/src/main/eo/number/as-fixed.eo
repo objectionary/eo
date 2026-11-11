@@ -83,13 +83,13 @@
     if. > @
       gte.
         value.minus
-          number whole
+          number
+            value.floor >> whole!
         0.5
       plus.
         number whole
         1
       number whole
-    value.floor > whole!
   if. > [^num p] >> pow10
     p.eq 0
     1
