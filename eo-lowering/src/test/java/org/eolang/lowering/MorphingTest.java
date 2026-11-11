@@ -220,44 +220,44 @@ final class MorphingTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void writesTheTextOfAnEntryBesideItsProtocolWhenAsked(@Mktmp final Path temp)
+    void writesTheMinutesOfAnEntryBesideItsProtocolWhenAsked(@Mktmp final Path temp)
         throws IOException {
         MorphingTest.merged(temp, 8);
         new Morphing(
             MorphingTest.recording(temp), new GlobalCache.GcFresh(),
             new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), true
         ).exec(temp);
-        final Path texts = MorphingTest.texts(temp);
+        final Path minutes = MorphingTest.minutes(temp);
         MatcherAssert.assertThat(
-            "the text of an entry must be written by phino into the texts, but it isnt",
-            MorphingTest.text(texts.resolve("e8.txt")),
-            Matchers.containsString("--protocol=".concat(texts.resolve("e8.txt").toString()))
+            "the minutes of an entry must be written by phino into the minutes, but they arent",
+            MorphingTest.text(minutes.resolve("e8.txt")),
+            Matchers.containsString("--minutes=".concat(minutes.resolve("e8.txt").toString()))
         );
     }
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void writesNoTextsUnlessAsked(@Mktmp final Path temp) throws IOException {
+    void writesNoMinutesUnlessAsked(@Mktmp final Path temp) throws IOException {
         MorphingTest.merged(temp, 6);
         new Morphing(
             MorphingTest.recording(temp), new GlobalCache.GcFresh(),
             new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
         ).exec(temp);
-        final boolean disabled = new Seqdir(temp, 1).dirs().find("texts").isEmpty();
+        final boolean disabled = new Seqdir(temp, 1).dirs().find("minutes").isEmpty();
         new Morphing(
             new Phino("absent", "1.3.8"), new GlobalCache.GcFresh(),
             new Scope("Φ\\.missing", "(?!)"), 16, 2, Duration.ofMinutes(1L), true
         ).exec(temp);
         MatcherAssert.assertThat(
-            "texts must not be written unless asked or reserved with covered entries",
-            new ListOf<>(disabled, new Seqdir(temp, 1).dirs().find("texts").isEmpty()),
+            "minutes must not be written unless asked or reserved with covered entries",
+            new ListOf<>(disabled, new Seqdir(temp, 1).dirs().find("minutes").isEmpty()),
             Matchers.contains(true, true)
         );
     }
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void takesTheTextFromTheCacheWhenTheWorldIsTheSame(@Mktmp final Path temp)
+    void takesTheMinutesFromTheCacheWhenTheWorldIsTheSame(@Mktmp final Path temp)
         throws IOException {
         MorphingTest.merged(temp, 4);
         for (int build = 0; build < 2; ++build) {
@@ -267,17 +267,18 @@ final class MorphingTest {
             ).exec(temp);
         }
         MatcherAssert.assertThat(
-            "the second build over the same world must not run the binary for a text, but it does",
+            "the second build over the same world must not run the binary for the minutes, but it does",
             Files.readAllLines(temp.resolve("runs.txt")),
-            Matchers.hasSize(2)
+            Matchers.hasSize(1)
         );
     }
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void writesTheTextOfAnEntryWhoseProtocolTheCacheAnswers(@Mktmp final Path temp)
-        throws IOException {
-        MorphingTest.merged(temp, 9);
+    void writesTheMinutesInTheSameRunAsTheProtocolAfterABuildWithoutThem(
+        @Mktmp final Path temp
+    ) throws IOException {
+        MorphingTest.merged(temp, 6);
         final Phino phino = MorphingTest.counting(temp);
         new Morphing(
             phino, new GcShared(temp.resolve("cache"), "0.3.1"),
@@ -288,32 +289,33 @@ final class MorphingTest {
             new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), true
         ).exec(temp);
         MatcherAssert.assertThat(
-            "the text must be written even when the cache answers the protocol, but it isnt",
-            MorphingTest.texts(temp).resolve("e9.txt").toFile(),
-            FileMatchers.anExistingFile()
+            "the minutes must come from the run that writes the protocol too, but they dont",
+            MorphingTest.text(MorphingTest.minutes(temp).resolve("e6.txt")),
+            Matchers.containsString("--protocol=")
         );
     }
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void keepsTheTextOfARunOutOfItsBudget(@Mktmp final Path temp) throws IOException {
+    void keepsTheMinutesOfARunOutOfItsBudget(@Mktmp final Path temp) throws IOException {
         MorphingTest.merged(temp, 7);
         new Morphing(
             MorphingTest.phino(
                 temp,
                 String.join(
                     " ",
-                    "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
-                    "case $p in *.xml) echo '<protocol><timeout limit=\"1\"/></protocol>' > \"$p\";;",
-                    "*) echo '  timeout 1' > \"$p\";; esac; exit 1"
+                    "for a; do case $a in --protocol=*) p=${a#--protocol=};;",
+                    "--minutes=*) m=${a#--minutes=};; esac; done;",
+                    "echo '<protocol><timeout limit=\"1\"/></protocol>' > \"$p\";",
+                    "echo '  timeout 1' > \"$m\"; exit 1"
                 )
             ),
             new GlobalCache.GcFresh(),
             new Scope(".*", "(?!)"), 32, 2, Duration.ofMillis(900L), true
         ).exec(temp);
         MatcherAssert.assertThat(
-            "a text out of its budget must stay for study, but it doesnt",
-            MorphingTest.texts(temp).resolve("e7.txt").toFile(),
+            "the minutes of a run out of its budget must stay for study, but they dont",
+            MorphingTest.minutes(temp).resolve("e7.txt").toFile(),
             FileMatchers.anExistingFile()
         );
     }
@@ -346,13 +348,13 @@ final class MorphingTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void dropsTheTextsOfAnEarlierBuild(@Mktmp final Path temp) throws IOException {
+    void dropsTheMinutesOfAnEarlierBuild(@Mktmp final Path temp) throws IOException {
         MorphingTest.merged(temp, 2);
         final Path stale = Files.write(
-            Files.createDirectories(temp.resolve("texts/gone")).resolve("x.txt"),
+            Files.createDirectories(temp.resolve("minutes/gone")).resolve("x.txt"),
             "𝕄(Φ.gone.x)".getBytes(StandardCharsets.UTF_8)
         );
-        final Path numbered = Files.createDirectories(temp.resolve("7-texts"));
+        final Path numbered = Files.createDirectories(temp.resolve("7-minutes"));
         final Path other = Files.write(
             numbered.resolve("gone.txt"), "𝕄(Φ.gone.x)".getBytes(StandardCharsets.UTF_8)
         );
@@ -361,10 +363,10 @@ final class MorphingTest {
             new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), false
         ).exec(temp);
         MatcherAssert.assertThat(
-            "old texts must be removed while the existing numbered directory is reused",
+            "old minutes must be removed while the existing numbered directory is reused",
             new ListOf<>(
-                stale.toFile().exists(), temp.resolve("texts").toFile().exists(),
-                other.toFile().exists(), MorphingTest.texts(temp)
+                stale.toFile().exists(), temp.resolve("minutes").toFile().exists(),
+                other.toFile().exists(), MorphingTest.minutes(temp)
             ),
             Matchers.contains(false, false, false, numbered)
         );
@@ -585,7 +587,7 @@ final class MorphingTest {
 
     @Test
     void morphsTheWorldThePinnedPhinoFolds(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.162");
+        final Phino phino = new Phino("phino", "0.0.163");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -603,8 +605,8 @@ final class MorphingTest {
     }
 
     @Test
-    void writesTheTextThePinnedPhinoFolds(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.162");
+    void writesTheMinutesThePinnedPhinoFolds(@Mktmp final Path temp) throws IOException {
+        final Phino phino = new Phino("phino", "0.0.163");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -615,9 +617,9 @@ final class MorphingTest {
             Duration.ofMinutes(1L), true
         ).exec(temp);
         MatcherAssert.assertThat(
-            "the text must record the firing of the atom the body reached, but it doesnt",
+            "the minutes must record the firing of the atom the body reached, but they dont",
             MorphingTest.text(
-                MorphingTest.texts(temp).resolve("gap.txt")
+                MorphingTest.minutes(temp).resolve("gap.txt")
             ),
             Matchers.stringContainsInOrder("𝔻(Φ.l🌵.e", "𝔼(L_number_plus)")
         );
@@ -626,7 +628,7 @@ final class MorphingTest {
     @Test
     void stopsAtTheThrowWithTheWholeMessageThePinnedPhinoKeeps(@Mktmp final Path temp)
         throws IOException {
-        final Phino phino = new Phino("phino", "0.0.162");
+        final Phino phino = new Phino("phino", "0.0.163");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -677,7 +679,7 @@ final class MorphingTest {
 
     @Test
     void answersTheAtomOfBytesThePinnedPhinoReaches(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.162");
+        final Phino phino = new Phino("phino", "0.0.163");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -722,7 +724,7 @@ final class MorphingTest {
     @Test
     void firesTheRowOfAFormationThePinnedPhinoReaches(@Mktmp final Path temp)
         throws IOException {
-        final Phino phino = new Phino("phino", "0.0.162");
+        final Phino phino = new Phino("phino", "0.0.163");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -864,8 +866,10 @@ final class MorphingTest {
             String.join(
                 " ",
                 "echo run >> \"${0%/*}/runs.txt\";",
-                "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
-                "echo \"$@\" > \"$p\""
+                "for a; do case $a in --protocol=*) p=${a#--protocol=};;",
+                "--minutes=*) m=${a#--minutes=};; esac; done;",
+                "if [ -n \"$p\" ]; then echo \"$@\" > \"$p\"; fi;",
+                "if [ -n \"$m\" ]; then echo \"$@\" > \"$m\"; fi"
             )
         );
     }
@@ -875,8 +879,10 @@ final class MorphingTest {
             temp,
             String.join(
                 " ",
-                "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
-                "echo \"$@\" > \"$p\""
+                "for a; do case $a in --protocol=*) p=${a#--protocol=};;",
+                "--minutes=*) m=${a#--minutes=};; esac; done;",
+                "if [ -n \"$p\" ]; then echo \"$@\" > \"$p\"; fi;",
+                "if [ -n \"$m\" ]; then echo \"$@\" > \"$m\"; fi"
             )
         );
     }
@@ -889,7 +895,7 @@ final class MorphingTest {
         return new Phino(binary.toString(), "2.6.4");
     }
 
-    private static Path texts(final Path temp) throws IOException {
-        return new Seqdir(temp, 1).dirs().find("texts").orElseThrow();
+    private static Path minutes(final Path temp) throws IOException {
+        return new Seqdir(temp, 1).dirs().find("minutes").orElseThrow();
     }
 }

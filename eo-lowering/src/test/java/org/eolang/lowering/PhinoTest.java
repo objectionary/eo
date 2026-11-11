@@ -190,6 +190,21 @@ final class PhinoTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void handsPhinoTheFileForTheMinutesBesideTheProtocol(@Mktmp final Path temp)
+        throws IOException {
+        new Phino(PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\""), "1.9.27").dataize(
+            temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 7,
+            temp.resolve("7.xml"), temp.resolve("7.txt"), 16, 2, Duration.ofSeconds(5L)
+        );
+        MatcherAssert.assertThat(
+            "phino must be told where to write the minutes in the same run, but it isnt",
+            new String(Files.readAllBytes(temp.resolve("args.txt")), StandardCharsets.UTF_8),
+            Matchers.containsString("--minutes=".concat(temp.resolve("7.txt").toString()))
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void roundsABudgetShorterThanASecondUpToOne(@Mktmp final Path temp) throws IOException {
         new Phino(PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\""), "1.9.27").dataize(
             temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 9,
@@ -237,28 +252,6 @@ final class PhinoTest {
                 "a run that phino stopped on time must be reported as one"
             ).getMessage(),
             Matchers.containsString("2s")
-        );
-    }
-
-    @Test
-    @DisabledOnOs(OS.WINDOWS)
-    void reportsADataizationThatRanOutOfItsBudgetIntoAText(@Mktmp final Path temp)
-        throws IOException {
-        final Phino phino = new Phino(
-            PhinoTest.binary(
-                temp,
-                "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
-                "printf '𝕄(Φ.l🌵.e4)\\n  timeout 3  # 𝕄(Φ.a🌵7)\\nmsec 3000\\n' > \"$p\"; exit 1"
-            ),
-            "3.3.16"
-        );
-        Assertions.assertThrows(
-            KilledException.class,
-            () -> phino.dataize(
-                temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 4,
-                temp.resolve("4.txt"), 32, 2, Duration.ofSeconds(3L)
-            ),
-            "a run that phino stopped on time must be reported as one, even in a text"
         );
     }
 
