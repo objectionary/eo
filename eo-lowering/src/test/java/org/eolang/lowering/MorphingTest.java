@@ -275,9 +275,10 @@ final class MorphingTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void writesTheMinutesOfAnEntryWhoseProtocolTheCacheAnswers(@Mktmp final Path temp)
-        throws IOException {
-        MorphingTest.merged(temp, 9);
+    void writesTheMinutesInTheSameRunAsTheProtocolAfterABuildWithoutThem(
+        @Mktmp final Path temp
+    ) throws IOException {
+        MorphingTest.merged(temp, 6);
         final Phino phino = MorphingTest.counting(temp);
         new Morphing(
             phino, new GcShared(temp.resolve("cache"), "0.3.1"),
@@ -288,9 +289,9 @@ final class MorphingTest {
             new Scope(".*", "(?!)"), 16, 2, Duration.ofMinutes(1L), true
         ).exec(temp);
         MatcherAssert.assertThat(
-            "the minutes must be written even when the cache answers the protocol, but they arent",
-            MorphingTest.minutes(temp).resolve("e9.txt").toFile(),
-            FileMatchers.anExistingFile()
+            "the minutes must come from the run that writes the protocol too, but they dont",
+            MorphingTest.text(MorphingTest.minutes(temp).resolve("e6.txt")),
+            Matchers.containsString("--protocol=")
         );
     }
 

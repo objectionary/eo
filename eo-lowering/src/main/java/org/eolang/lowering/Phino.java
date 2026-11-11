@@ -190,11 +190,7 @@ final class Phino {
         final Path world, final Path atoms, final int entry, final Path protocol,
         final int steps, final int loops, final Duration budget
     ) throws IOException {
-        this.record(
-            world, atoms, entry, protocol,
-            new ListOf<>(String.format("--protocol=%s", protocol)),
-            steps, loops, budget
-        );
+        this.record(world, atoms, entry, protocol, new ListOf<>(), steps, loops, budget);
     }
 
     /**
@@ -227,39 +223,6 @@ final class Phino {
     ) throws IOException {
         this.record(
             world, atoms, entry, protocol,
-            new ListOf<>(
-                String.format("--protocol=%s", protocol),
-                String.format("--minutes=%s", minutes)
-            ),
-            steps, loops, budget
-        );
-    }
-
-    /**
-     * Ask phino to compute one entry of the world, and to write its steps
-     * only as its minutes, in indented text.
-     *
-     * <p>This is for an entry whose XML protocol is already known, so only
-     * its minutes are missing.</p>
-     *
-     * @param world The world, which {@link Merging} wrote
-     * @param atoms The table of operations phino may write down
-     * @param entry The number of the entry to work on
-     * @param minutes The file for the minutes
-     * @param steps The largest number of steps phino may take inside one another
-     * @param loops How many times phino may enter the same formation again
-     *  before it decides that the run loops and cuts it
-     * @param budget The time phino may work, rounded up to whole seconds
-     * @throws IOException If phino cannot be started, or a
-     *  {@link KilledException} if phino stopped because its time was over
-     * @checkstyle ParameterNumberCheck (10 lines)
-     */
-    void transcribe(
-        final Path world, final Path atoms, final int entry, final Path minutes,
-        final int steps, final int loops, final Duration budget
-    ) throws IOException {
-        this.record(
-            world, atoms, entry, minutes,
             new ListOf<>(String.format("--minutes=%s", minutes)),
             steps, loops, budget
         );
@@ -289,8 +252,8 @@ final class Phino {
     }
 
     private void record(
-        final Path world, final Path atoms, final int entry, final Path written,
-        final List<String> records, final int steps, final int loops, final Duration budget
+        final Path world, final Path atoms, final int entry, final Path protocol,
+        final List<String> extra, final int steps, final int loops, final Duration budget
     ) throws IOException {
         final String task = String.format("dataizing the entry %d of '%s'", entry, world);
         try {
@@ -307,8 +270,9 @@ final class Phino {
                     "--hide-rho",
                     "--abridged",
                     String.format("--symbolic=%s", atoms),
-                    String.format("--locator=Q.l🌵.e%d", entry)
-                ).with(records).with(
+                    String.format("--locator=Q.l🌵.e%d", entry),
+                    String.format("--protocol=%s", protocol)
+                ).with(extra).with(
                     String.format("--max-steps=%d", steps),
                     String.format(
                         "--max-seconds=%d",
@@ -325,13 +289,11 @@ final class Phino {
                 task
             );
         } catch (final IllegalStateException ex) {
-            if (Files.notExists(written)) {
+            if (Files.notExists(protocol)) {
                 throw ex;
             }
-            try (Stream<String> lines = Files.lines(written)) {
-                if (lines.noneMatch(
-                    line -> line.contains("<timeout ") || line.trim().startsWith("timeout ")
-                )) {
+            try (Stream<String> lines = Files.lines(protocol)) {
+                if (lines.noneMatch(line -> line.contains("<timeout "))) {
                     throw ex;
                 }
             }

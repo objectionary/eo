@@ -101,9 +101,10 @@ import org.eolang.cache.GlobalCache;
  * of every entry as indented text, which a person can read without any
  * tool, called the "minutes" of the entry. The same run of phino that
  * writes the XML protocol of an entry writes its minutes too, into a file
- * whose name ends with {@code .txt}, so no entry is computed twice. Only
- * when the cache answers the protocol and has no minutes for it does
- * phino run again, for the minutes alone. The minutes land in a numbered
+ * whose name ends with {@code .txt}, so no entry is computed twice. The
+ * cache keeps the protocols of builds with minutes apart from those
+ * without, so a protocol kept without its minutes never answers a build
+ * that asks for them, and phino runs once for both. The minutes land in a numbered
  * {@code minutes} directory beside {@code 2-protocols}, so the minutes of
  * {@code Φ.bytes.as-hex} are {@code minutes/bytes/as-hex.txt}. Nothing in
  * the build reads them. The cache keeps them the same way as the
@@ -218,7 +219,8 @@ final class Morphing implements Proc<Path> {
         final GlobalCache store = this.phino.narrowed(this.cache)
             .with(new UncheckedText(new HexOf(new Sha256DigestOf(new InputOf(atoms)))).asString())
             .with(String.valueOf(this.steps))
-            .with(String.valueOf(this.loops));
+            .with(String.valueOf(this.loops))
+            .with(String.valueOf(this.minutes));
         final Uses uses = new Uses(home);
         final Collection<String> rows = new ListOf<>(
             new Filtered<>(
@@ -333,13 +335,15 @@ final class Morphing implements Proc<Path> {
                     () -> hash,
                     (src, tgt) -> false,
                     (src, tgt) -> {
-                        if (fresh.get()) {
-                            Files.move(draft, tgt, StandardCopyOption.REPLACE_EXISTING);
-                        } else {
-                            this.phino.transcribe(
-                                src, atoms, number, tgt, this.steps, this.loops, this.budget
+                        if (!fresh.get()) {
+                            throw new IllegalStateException(
+                                String.format(
+                                    "The cache holds the protocol of the entry %d at %s, but not its minutes",
+                                    number, cells[1]
+                                )
                             );
                         }
+                        Files.move(draft, tgt, StandardCopyOption.REPLACE_EXISTING);
                         return tgt;
                     }
                 ).apply(world, note);
