@@ -59,7 +59,7 @@ final class MjLowerTest {
                     .execute(MjLower.class),
                 "a binary that is not there must fail the build"
             ).getCause().getCause().getMessage(),
-            Matchers.containsString("0.0.161")
+            Matchers.containsString("0.0.162")
         );
     }
 
@@ -373,7 +373,7 @@ final class MjLowerTest {
                     .execute(MjLower.class),
                 "a binary of another version must fail the build"
             ).getCause().getCause().getMessage(),
-            Matchers.stringContainsInOrder("0.0.1", "0.0.161")
+            Matchers.stringContainsInOrder("0.0.1", "0.0.162")
         );
     }
 
@@ -393,7 +393,7 @@ final class MjLowerTest {
 
     private static String binary(final Path temp, final int code, final String protocol)
         throws IOException {
-        return MjLowerTest.binary(temp, code, protocol, "0.0.161");
+        return MjLowerTest.binary(temp, code, protocol, "0.0.162");
     }
 
     private static String binary(
