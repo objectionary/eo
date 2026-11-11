@@ -153,6 +153,7 @@ final class Rendering implements Proc<Path> {
 
     @Override
     public void exec(final Path home) throws IOException {
+        final long start = System.currentTimeMillis();
         for (final String table : new ListOf<>("facts.xml", "answers.xml")) {
             if (!Files.exists(this.tables.resolve(table))) {
                 throw new IllegalStateException(
@@ -252,24 +253,24 @@ final class Rendering implements Proc<Path> {
             home.resolve("rendered.tsv"),
             String.join("", rendered).getBytes(StandardCharsets.UTF_8)
         );
-        this.summarize(atoms, rendered, tainted);
+        this.summarize(atoms, rendered, tainted, System.currentTimeMillis() - start);
     }
 
     private void summarize(
         final Path atoms, final Collection<String> rendered,
-        final Collection<String> tainted
+        final Collection<String> tainted, final long msec
     ) {
         if (tainted.isEmpty()) {
             Logger.info(
                 this,
-                "Rendered %d atoms into %[file]s, while no entries were taints",
-                rendered.size(), atoms
+                "Rendered %d atoms into %[file]s in %[ms]s, while no entries were taints",
+                rendered.size(), atoms, msec
             );
         } else {
             Logger.info(
                 this,
-                "Rendered %d atoms into %[file]s, while %d entries were taints: %s",
-                rendered.size(), atoms, tainted.size(), new Shortlist(tainted, 6).asString()
+                "Rendered %d atoms into %[file]s in %[ms]s, while %d entries were taints: %s",
+                rendered.size(), atoms, msec, tainted.size(), new Shortlist(tainted, 6).asString()
             );
         }
     }
