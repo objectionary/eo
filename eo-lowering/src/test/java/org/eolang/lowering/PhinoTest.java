@@ -10,9 +10,13 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.time.Duration;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.cactoos.list.ListOf;
+import org.eolang.cache.GcShared;
+import org.eolang.cache.GlobalCache;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -70,6 +74,65 @@ final class PhinoTest {
             "phino must be told the budget in seconds, but it isnt",
             new String(Files.readAllBytes(temp.resolve("args.txt")), StandardCharsets.UTF_8),
             Matchers.containsString("--max-seconds=7")
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void handsPhinoTheLimitOfMemoryItWasGiven(@Mktmp final Path temp) throws IOException {
+        new Phino(
+            PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\""), "1.9.27", "3G"
+        ).dataize(
+            temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 5,
+            temp.resolve("5.xml"), 32, 2, Duration.ofSeconds(3L)
+        );
+        MatcherAssert.assertThat(
+            "phino must be told the limit of memory it was given, but it isnt",
+            new String(Files.readAllBytes(temp.resolve("args.txt")), StandardCharsets.UTF_8),
+            Matchers.containsString("--max-memory=3G")
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void handsPhinoNoLimitOfMemoryWhenTheLimitIsZero(@Mktmp final Path temp) throws IOException {
+        new Phino(
+            PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\""), "1.9.27", "0"
+        ).dataize(
+            temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 6,
+            temp.resolve("6.xml"), 32, 2, Duration.ofSeconds(3L)
+        );
+        MatcherAssert.assertThat(
+            "phino must not be told any limit of memory when it is zero, but it is",
+            new String(Files.readAllBytes(temp.resolve("args.txt")), StandardCharsets.UTF_8),
+            Matchers.not(Matchers.containsString("--max-memory"))
+        );
+    }
+
+    @Test
+    void keepsTheRunsOfAnotherLimitOfMemoryApartInTheCache(@Mktmp final Path temp)
+        throws IOException {
+        final GlobalCache cache = new GcShared(temp.resolve("cache"), "0.3.5");
+        final Path world = Files.write(
+            temp.resolve("world.phi"), "⟦ φ ↦ ⟦⟧ ⟧".getBytes(StandardCharsets.UTF_8)
+        );
+        final AtomicInteger runs = new AtomicInteger();
+        for (final String limit : new ListOf<>("1G", "7G")) {
+            final Path target = Files.createDirectories(temp.resolve(limit)).resolve("e4.xml");
+            new Phino("phino", "2.6.4", limit).narrowed(cache).kept(
+                Paths.get("e4.xml"),
+                () -> "c0ffee",
+                (src, tgt) -> false,
+                (src, tgt) -> {
+                    runs.incrementAndGet();
+                    return Files.write(tgt, "<protocol/>".getBytes(StandardCharsets.UTF_8));
+                }
+            ).apply(world, target);
+        }
+        MatcherAssert.assertThat(
+            "a run with another limit of memory must not take its protocol from the cache, but it does",
+            runs.get(),
+            Matchers.equalTo(2)
         );
     }
 

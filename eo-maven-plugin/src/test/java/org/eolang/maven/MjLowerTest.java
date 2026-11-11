@@ -59,7 +59,7 @@ final class MjLowerTest {
                     .execute(MjLower.class),
                 "a binary that is not there must fail the build"
             ).getCause().getCause().getMessage(),
-            Matchers.containsString("0.0.161")
+            Matchers.containsString("0.0.162")
         );
     }
 
@@ -289,6 +289,22 @@ final class MjLowerTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void handsPhinoTheLimitOfMemoryItWasGiven(@Mktmp final Path temp) throws IOException {
+        final String memory = String.format("%dM", new SecureRandom().nextInt(900) + 100);
+        MjLowerTest.inferred(temp)
+            .with("lowering", true)
+            .with("memory", memory)
+            .with("binary", MjLowerTest.binary(temp))
+            .execute(MjLower.class);
+        MatcherAssert.assertThat(
+            "the goal must hand phino the limit of memory it was given, but it didnt",
+            Files.readString(temp.resolve("dataize.txt"), StandardCharsets.UTF_8),
+            Matchers.containsString(String.format("--max-memory=%s", memory))
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void handsPhinoTheNumberOfLoopsItWasGiven(@Mktmp final Path temp) throws IOException {
         final int loops = new SecureRandom().nextInt(50) + 1;
         MjLowerTest.inferred(temp)
@@ -357,7 +373,7 @@ final class MjLowerTest {
                     .execute(MjLower.class),
                 "a binary of another version must fail the build"
             ).getCause().getCause().getMessage(),
-            Matchers.stringContainsInOrder("0.0.1", "0.0.161")
+            Matchers.stringContainsInOrder("0.0.1", "0.0.162")
         );
     }
 
@@ -377,7 +393,7 @@ final class MjLowerTest {
 
     private static String binary(final Path temp, final int code, final String protocol)
         throws IOException {
-        return MjLowerTest.binary(temp, code, protocol, "0.0.161");
+        return MjLowerTest.binary(temp, code, protocol, "0.0.162");
     }
 
     private static String binary(

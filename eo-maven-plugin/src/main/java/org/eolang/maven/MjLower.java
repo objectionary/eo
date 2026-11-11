@@ -97,7 +97,7 @@ public final class MjLower extends MjSafe {
     @Parameter(
         alias = "pinPhino",
         property = "eo.pinPhino",
-        defaultValue = "0.0.161"
+        defaultValue = "0.0.162"
     )
     private String pin;
 
@@ -146,6 +146,20 @@ public final class MjLower extends MjSafe {
         defaultValue = "2"
     )
     private int loops;
+
+    /**
+     * The largest memory one run of phino may take, such as {@code 4G} or
+     * {@code 512M}, after which phino stops itself and closes the protocol
+     * with a {@code blown} element. The default {@code 0} means no limit,
+     * because a run of phino on a computer with plenty of memory needs
+     * none.
+     */
+    @Parameter(
+        alias = "loweringMemory",
+        property = "eo.loweringMemory",
+        defaultValue = "0"
+    )
+    private String memory;
 
     /**
      * Whether the lowering keeps the protocol of every entry as indented text
@@ -213,6 +227,7 @@ public final class MjLower extends MjSafe {
                     home,
                     this.binary,
                     this.pin,
+                    this.memory,
                     this.caching("lowered"),
                     new Scope(this.only, this.never),
                     this.steps,

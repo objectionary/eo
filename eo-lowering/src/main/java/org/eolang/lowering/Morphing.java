@@ -84,17 +84,17 @@ import org.eolang.cache.GlobalCache;
  * one entry away from phino. The other entries get no protocol, and they
  * stay in EO.</p>
  *
- * <p>A protocol stays the same as long as five things stay the same: the
+ * <p>A protocol stays the same as long as six things stay the same: the
  * part of the world that its entry uses, as {@link Uses} says, the table of
- * operations, the version of phino, the limit of steps, and the limit of
- * loops. So, every protocol is saved in the cache, together with these five
- * things. When a later build has the same five things, it takes the
- * protocol from the cache and does not run phino at all. An object that
- * changed makes phino run again only on the entries that use it. A run that
- * was stopped saves nothing in the cache, so the next build tries it again.
- * The protocols of an earlier build are deleted before the runs, so that
- * an entry that is not in the world any more leaves no protocol
- * behind.</p>
+ * operations, the version of phino, its limit of memory, the limit of
+ * steps, and the limit of loops. So, every protocol is saved in the cache,
+ * together with these six things. When a later build has the same six
+ * things, it takes the protocol from the cache and does not run phino at
+ * all. An object that changed makes phino run again only on the entries
+ * that use it. A run that was stopped saves nothing in the cache, so the
+ * next build tries it again. The protocols of an earlier build are deleted
+ * before the runs, so that an entry that is not in the world any more
+ * leaves no protocol behind.</p>
  *
  * <p>When the constructor asks for it, this stage also keeps the protocol
  * of every entry as indented text, which a person can read without any
@@ -212,8 +212,7 @@ final class Morphing implements Proc<Path> {
         }
         Files.deleteIfExists(legacy);
         Files.createDirectories(protocols);
-        final GlobalCache store = this.cache
-            .with(this.phino.pin())
+        final GlobalCache store = this.phino.narrowed(this.cache)
             .with(new UncheckedText(new HexOf(new Sha256DigestOf(new InputOf(atoms)))).asString())
             .with(String.valueOf(this.steps))
             .with(String.valueOf(this.loops));

@@ -73,6 +73,24 @@
   𝑛: Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )
 - λ: L_os_name
   𝑛: Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )
+- λ: L_posix_close
+  dataize:
+    𝛿1: $.v🌵descriptor
+  𝑛: Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )
+- λ: L_win32_close
+  dataize:
+    𝛿1: $.v🌵descriptor
+  𝑛: Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )
+- λ: L_chunk_size
+  dataize:
+    𝛿1: $.ρ.id
+  𝑛: Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )
+- λ: L_chunk_read
+  dataize:
+    𝛿1: $.ρ.id
+    𝛿2: $.v🌵offset
+    𝛿3: $.v🌵length
+  𝑛: Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )
 # A system call that answers a record mints one bare 𝜎 for every field of
 # the record, all in one firing, so that the rendering calls the system
 # once and reads every field off the one record it answered.
