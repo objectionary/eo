@@ -91,6 +91,79 @@
     𝛿2: $.v🌵offset
     𝛿3: $.v🌵length
   𝑛: Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )
+# A system call that answers a record mints one bare 𝜎 for every field of
+# the record, all in one firing, so that the rendering calls the system
+# once and reads every field off the one record it answered.
+- λ: L_posix_gettimeofday
+  𝑛: >-
+    Φ.posix.time-return(
+      Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) ),
+      Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) ),
+      Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )
+    )
+- λ: L_win32_ftime64_s
+  𝑛: >-
+    Φ.win32.time-return(
+      Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) ),
+      Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) ),
+      Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )
+    )
+- λ: L_posix_getenv
+  dataize:
+    𝛿1: $.v🌵name
+  𝑛: >-
+    Φ.posix.getenv-return(
+      ⟦ φ ↦ Φ.bool( v🌵fork ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
+      on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧,
+      Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )
+    )
+- λ: L_win32_getenv
+  dataize:
+    𝛿1: $.v🌵name
+  𝑛: >-
+    Φ.win32.getenv-return(
+      ⟦ φ ↦ Φ.bool( v🌵fork ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
+      on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧,
+      Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )
+    )
+- λ: L_posix_open
+  dataize:
+    𝛿1: $.v🌵path
+    𝛿2: $.v🌵flags
+    𝛿3: $.v🌵mode
+  𝑛: >-
+    Φ.posix.status-return(
+      Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) ),
+      Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )
+    )
+- λ: L_win32_open
+  dataize:
+    𝛿1: $.v🌵path
+    𝛿2: $.v🌵flags
+    𝛿3: $.v🌵mode
+  𝑛: >-
+    Φ.win32.status-return(
+      Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) ),
+      Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )
+    )
+- λ: L_posix_read
+  dataize:
+    𝛿1: $.v🌵descriptor
+    𝛿2: $.v🌵size
+  𝑛: >-
+    Φ.posix.read-return(
+      Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) ),
+      Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )
+    )
+- λ: L_win32_read
+  dataize:
+    𝛿1: $.v🌵descriptor
+    𝛿2: $.v🌵size
+  𝑛: >-
+    Φ.win32.read-return(
+      Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) ),
+      Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )
+    )
 - λ: L_fork
   terminators: [L_throw]
   dataize:
