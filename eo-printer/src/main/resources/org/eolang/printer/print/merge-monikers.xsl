@@ -68,9 +68,8 @@
   <!--
   The same bindings indexed by name alone, for the two "kept reference"
   lookups, which climb the ancestor formations looking for whichever one
-  declares a segment of the reference's base. Handled cactus names can repeat
-  in different formations, so an own read selects the binding in the formation
-  reached by its ξ/ρ path rather than the nearest same-named ancestor.
+  declares a segment of the reference's base. The ξ/ρ path selects the owner
+  when a handled cactus name repeats in different formations.
   A handle floated into a pipe is indexed here too, even though it is not a
   merge candidate itself: "inline-cactoos" mints a pipe for a handle whose
   value applies a formation it relocates (#7863), and the readers of such a

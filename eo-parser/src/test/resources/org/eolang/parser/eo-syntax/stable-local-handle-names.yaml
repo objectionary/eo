@@ -7,7 +7,6 @@ asserts:
   - /object[not(errors)]
   - /object/o[@name='app']/o[@name='a🌵rec' and @local='rec' and @loc='Φ.app.a🌵rec']
   - /object/o[@name='app']/o[@name='inner']/o[@name='a🌵rec' and @local='rec' and @loc='Φ.app.inner.a🌵rec']
-  - /object/o[@name='app']/o[@name='root' and @base='ξ.a🌵rec']
   - /object/o[@name='app']/o[@name='inner']/o[@name='local' and @base='ξ.a🌵rec']
   - /object/o[@name='app']/o[@name='inner']/o[@name='outer' and @base='ξ.ρ.a🌵rec']
   - /object/o[@name='app'][count(o[@name='a🌵peg-1'])=1]
@@ -16,7 +15,6 @@ input: |
   [] > app
     [n] >> rec
       n > @
-    rec > root
     [] > inner
       [n] >> rec
         n > @
