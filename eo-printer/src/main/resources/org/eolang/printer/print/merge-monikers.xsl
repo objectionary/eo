@@ -290,6 +290,18 @@
     <xsl:variable name="owner" select="$attr/.."/>
     <xsl:sequence select="if (empty($attr)) then () else key('applied-ref', concat(generate-id($owner), ' ', $attr/@name), root($attr))[not(ancestor::o[. is $attr])]"/>
   </xsl:function>
+  <!--
+  The single-segment receiver a pipe names after `ξ.`, or the empty string
+  when `$node` is missing or its base is not `ξ.&lt;name&gt;`.
+  `eo:pipe-chain-terminal`, `eo:pipe-chain-from-binding` and
+  `eo:pipe-chain-from-ref` all ask for this name before they call `key(...)`,
+  so the admission test lives here and the three cannot drift apart (#9298).
+  -->
+  <xsl:function name="eo:pipe-receiver-name" as="xs:string">
+    <xsl:param name="node" as="element()?"/>
+    <xsl:variable name="name" select="substring-after($node/@base, $eo:xi-dot)"/>
+    <xsl:sequence select="if (exists($node) and starts-with($node/@base, $eo:xi-dot) and $name != '' and not(contains($name, '.'))) then $name else ''"/>
+  </xsl:function>
   <xsl:function name="eo:pipe-chain-terminal" as="xs:boolean">
     <xsl:param name="binding" as="element()?"/>
     <xsl:param name="seen" as="element()*"/>
@@ -300,8 +312,8 @@
       <xsl:otherwise>
         <xsl:variable name="refs" select="eo:applied-refs($binding)"/>
         <xsl:variable name="ref" select="$refs[1]"/>
-        <xsl:variable name="name" select="substring-after($ref/@base, $eo:xi-dot)"/>
-        <xsl:sequence select="if (count($refs) != 1 or exists(eo:moniker-refs($binding)) or empty($ref) or not($ref/ancestor::o[eo:abstract(.)][1] is $binding/..)) then false() else if (not(exists($ref/@name))) then starts-with($ref/@base, $eo:xi-dot) and exists($ref/o) and $name != '' and not(contains($name, '.')) else eo:pipe-chain-terminal($ref, ($seen, $binding))"/>
+        <xsl:variable name="name" select="eo:pipe-receiver-name($ref)"/>
+        <xsl:sequence select="if (count($refs) != 1 or exists(eo:moniker-refs($binding)) or empty($ref) or not($ref/ancestor::o[eo:abstract(.)][1] is $binding/..)) then false() else if (not(exists($ref/@name))) then exists($ref/o) and $name != '' else eo:pipe-chain-terminal($ref, ($seen, $binding))"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -312,9 +324,9 @@
       <xsl:when test="empty($binding) or not(eo:anonymous-pipe($binding)) or (some $node in $seen satisfies $binding is $node)"/>
       <xsl:otherwise>
         <xsl:variable name="owner" select="$binding/.."/>
-        <xsl:variable name="name" select="substring-after($binding/@base, $eo:xi-dot)"/>
+        <xsl:variable name="name" select="eo:pipe-receiver-name($binding)"/>
         <xsl:variable name="predecessor" as="element()?">
-          <xsl:sequence select="if (starts-with($binding/@base, $eo:xi-dot) and $name != '' and not(contains($name, '.'))) then (let $lookup := concat(generate-id($owner), ' ', $name) return (key('moniker-binding', $lookup, root($binding)), key('anonymous-pipe-binding', $lookup, root($binding))))[1] else ()"/>
+          <xsl:sequence select="if ($name != '') then (let $lookup := concat(generate-id($owner), ' ', $name) return (key('moniker-binding', $lookup, root($binding)), key('anonymous-pipe-binding', $lookup, root($binding))))[1] else ()"/>
         </xsl:variable>
         <xsl:choose>
           <xsl:when test="empty($predecessor) or not(eo:pipe-chain-terminal($binding, ()))"/>
@@ -331,10 +343,10 @@
   </xsl:function>
   <xsl:function name="eo:pipe-chain-from-ref" as="element()*">
     <xsl:param name="ref" as="element()"/>
-    <xsl:variable name="name" select="substring-after($ref/@base, $eo:xi-dot)"/>
+    <xsl:variable name="name" select="eo:pipe-receiver-name($ref)"/>
     <xsl:variable name="owner" select="$ref/ancestor::o[eo:abstract(.)][1]"/>
     <xsl:variable name="binding" as="element()?">
-      <xsl:sequence select="if (starts-with($ref/@base, $eo:xi-dot) and not(exists($ref/@name)) and exists($ref/o) and $name != '' and not(contains($name, '.'))) then key('anonymous-pipe-binding', concat(generate-id($owner), ' ', $name), root($ref))[1] else ()"/>
+      <xsl:sequence select="if ($name != '' and not(exists($ref/@name)) and exists($ref/o)) then key('anonymous-pipe-binding', concat(generate-id($owner), ' ', $name), root($ref))[1] else ()"/>
     </xsl:variable>
     <xsl:sequence select="eo:pipe-chain-from-binding($binding, ())"/>
   </xsl:function>

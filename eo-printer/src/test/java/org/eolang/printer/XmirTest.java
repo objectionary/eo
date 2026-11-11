@@ -138,77 +138,172 @@ final class XmirTest {
     }
 
     @Test
-    void keepsTwoAndThreeAnonymousPipesInsideAnArgumentBlock() throws IOException {
-        this.assertChainedPipe(
-            String.join(
-                System.lineSeparator(),
-                "[] > app",
-                "  foo > @",
-                "    [a] >>",
-                "      a > @",
-                "    | 2 >>",
-                "    |",
-                "      3"
-            ),
-            String.join(
-                System.lineSeparator(),
-                "[] > app",
-                "  foo > @",
-                "    I >>",
-                "    | 2 >>",
-                "    | 3"
-            ),
-            2
-        );
+    void printsTwoAnonymousPipesInsideAnArgumentBlock() throws IOException {
         MatcherAssert.assertThat(
-            "the three-link chain passes its semantic round-trip assertions",
-            this.assertChainedPipe(
-            String.join(
-                System.lineSeparator(),
-                "[] > app",
-                "  foo > @",
-                "    [a] >>",
-                "      a > @",
-                "    | 2 >>",
-                "    | 3 >>",
-                "    | 4"
-            ),
-            String.join(
-                System.lineSeparator(),
-                "[] > app",
-                "  foo > @",
-                "    I >>",
-                "    | 2 >>",
-                "    | 3 >>",
-                "    | 4"
-            ),
-            3
-            ),
-            Matchers.is(true)
+            "two anonymous pipes inside an argument block must print as one chain",
+            this.printedChain(this.twoPipes()),
+            Matchers.equalTo(this.twoPipesPrinted())
         );
     }
 
-    @SuppressWarnings("PMD.UnnecessaryLocalRule")
+    @Test
+    void printsThreeAnonymousPipesInsideAnArgumentBlock() throws IOException {
+        MatcherAssert.assertThat(
+            "three anonymous pipes inside an argument block must print as one chain",
+            this.printedChain(this.threePipes()),
+            Matchers.equalTo(this.threePipesPrinted())
+        );
+    }
+
+    @Test
+    void reparsesTwoAnonymousPipesWithoutErrors() throws IOException {
+        MatcherAssert.assertThat(
+            "a printed two-link pipe chain must parse again without errors",
+            this.reparsedChain(this.twoPipes()),
+            XhtmlMatchers.hasXPath("/object[not(errors)]")
+        );
+    }
+
+    @Test
+    void reparsesThreeAnonymousPipesWithoutErrors() throws IOException {
+        MatcherAssert.assertThat(
+            "a printed three-link pipe chain must parse again without errors",
+            this.reparsedChain(this.threePipes()),
+            XhtmlMatchers.hasXPath("/object[not(errors)]")
+        );
+    }
+
+    @Test
+    void keepsTwoAnonymousPipesUnderFoo() throws IOException {
+        MatcherAssert.assertThat(
+            "the two-link chain must stay the single argument of foo",
+            this.reparsedChain(this.twoPipes()),
+            XhtmlMatchers.hasXPath(this.fooArgument())
+        );
+    }
+
+    @Test
+    void keepsThreeAnonymousPipesUnderFoo() throws IOException {
+        MatcherAssert.assertThat(
+            "the three-link chain must stay the single argument of foo",
+            this.reparsedChain(this.threePipes()),
+            XhtmlMatchers.hasXPath(this.fooArgument())
+        );
+    }
+
+    @Test
+    void pointsTwoAnonymousPipesAtTheLastNamedPipe() throws IOException {
+        MatcherAssert.assertThat(
+            "the argument of a two-link chain must point at its last named pipe",
+            this.reparsedChain(this.twoPipes()),
+            XhtmlMatchers.hasXPath(this.argumentPipe())
+        );
+    }
+
+    @Test
+    void pointsThreeAnonymousPipesAtTheLastNamedPipe() throws IOException {
+        MatcherAssert.assertThat(
+            "the argument of a three-link chain must point at its last named pipe",
+            this.reparsedChain(this.threePipes()),
+            XhtmlMatchers.hasXPath(this.argumentPipe())
+        );
+    }
+
+    @Test
+    void countsNamedPipesInTwoAnonymousPipes() throws IOException {
+        MatcherAssert.assertThat(
+            "a two-link chain must keep one named anonymous pipe",
+            this.reparsedChain(this.twoPipes()).nodes(this.namedPipes()).size(),
+            Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    void countsNamedPipesInThreeAnonymousPipes() throws IOException {
+        MatcherAssert.assertThat(
+            "a three-link chain must keep two named anonymous pipes",
+            this.reparsedChain(this.threePipes()).nodes(this.namedPipes()).size(),
+            Matchers.equalTo(2)
+        );
+    }
+
+    @Test
+    void countsNumberedPipesInTwoAnonymousPipes() throws IOException {
+        MatcherAssert.assertThat(
+            "a two-link chain must keep two numbered pipe links",
+            this.reparsedChain(this.twoPipes()).nodes(this.numberedPipes()).size(),
+            Matchers.equalTo(2)
+        );
+    }
+
+    @Test
+    void countsNumberedPipesInThreeAnonymousPipes() throws IOException {
+        MatcherAssert.assertThat(
+            "a three-link chain must keep three numbered pipe links",
+            this.reparsedChain(this.threePipes()).nodes(this.numberedPipes()).size(),
+            Matchers.equalTo(3)
+        );
+    }
+
+    @Test
+    void countsBackLinksInTwoAnonymousPipes() throws IOException {
+        MatcherAssert.assertThat(
+            "each named pipe of a two-link chain must point at the previous one",
+            this.reparsedChain(this.twoPipes()).nodes(this.backLinks()).size(),
+            Matchers.equalTo(1)
+        );
+    }
+
+    @Test
+    void countsBackLinksInThreeAnonymousPipes() throws IOException {
+        MatcherAssert.assertThat(
+            "each named pipe of a three-link chain must point at the previous one",
+            this.reparsedChain(this.threePipes()).nodes(this.backLinks()).size(),
+            Matchers.equalTo(2)
+        );
+    }
+
+    @Test
+    void reprintsTwoAnonymousPipesAtAFixedPoint() throws IOException {
+        final String printed = this.printedChain(this.twoPipes());
+        MatcherAssert.assertThat(
+            "printing a two-link pipe chain again must leave the text unchanged",
+            this.printedChain(printed),
+            Matchers.equalTo(printed)
+        );
+    }
+
+    @Test
+    void reprintsThreeAnonymousPipesAtAFixedPoint() throws IOException {
+        final String printed = this.printedChain(this.threePipes());
+        MatcherAssert.assertThat(
+            "printing a three-link pipe chain again must leave the text unchanged",
+            this.printedChain(printed),
+            Matchers.equalTo(printed)
+        );
+    }
+
     @Test
     void keepsHeadWhenPipeChainHasNoTerminalHost() {
-        final XML merged = new Xsline(
-            new StClasspath("/org/eolang/printer/print/merge-monikers.xsl")
-        ).pass(
-            new XMLDocument(
-                String.join(
-                    "", "<object><o name='app'><o base='Φ.foo' name='φ'/>",
-                    "<o name='a🌵1'><o name='φ'/><o name='q'/></o>",
-                    "<o base='ξ.a🌵1' name='a🌵2' pipe=''><o base='Φ.number'>40-00-00-00-00-00-00-00</o></o>",
-                    "<o base='ξ.a🌵2' name='a🌵3' pipe=''><o base='Φ.number'>40-08-00-00-00-00-00-00</o></o>",
-                    "<o base='Φ.number' name='a🌵4' const='' local='root'>42</o>",
-                    "<o base='ξ.a🌵4' name='a🌵5' pipe=''><o base='Φ.number'>40-10-00-00-00-00-00-00</o></o>",
-                    "<o base='Φ.foo' name='ρ'><o as='α0' base='ξ.a🌵5' pipe=''><o base='Φ.number'>40-18-00-00-00-00-00-00</o></o></o>",
-                    "</o></object>"
-                )
-            )
-        );
         MatcherAssert.assertThat(
-            "the head remains in the incomplete chain", merged,
+            "the head remains in the incomplete chain",
+            new Xsline(
+                new StClasspath("/org/eolang/printer/print/merge-monikers.xsl")
+            ).pass(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<object><o name='app'><o base='Φ.foo' name='φ'/>",
+                        "<o name='a🌵1'><o name='φ'/><o name='q'/></o>",
+                        "<o base='ξ.a🌵1' name='a🌵2' pipe=''><o base='Φ.number'>40-00-00-00-00-00-00-00</o></o>",
+                        "<o base='ξ.a🌵2' name='a🌵3' pipe=''><o base='Φ.number'>40-08-00-00-00-00-00-00</o></o>",
+                        "<o base='Φ.number' name='a🌵4' const='' local='root'>42</o>",
+                        "<o base='ξ.a🌵4' name='a🌵5' pipe=''><o base='Φ.number'>40-10-00-00-00-00-00-00</o></o>",
+                        "<o base='Φ.foo' name='ρ'><o as='α0' base='ξ.a🌵5' pipe=''><o base='Φ.number'>40-18-00-00-00-00-00-00</o></o></o>",
+                        "</o></object>"
+                    )
+                )
+            ),
             XhtmlMatchers.hasXPaths(
                 "/object/o[@name='app']/o[@name='a🌵1']",
                 "/object/o[@name='app']/o[@name='a🌵5' and @pipe]"
@@ -489,52 +584,95 @@ final class XmirTest {
         return expected;
     }
 
-    private boolean assertChainedPipe(
-        final String source, final String expected, final int links
-    ) throws IOException {
-        final String printed = String.join(
-            System.lineSeparator(), new Xmir(
+    private String printedChain(final String source) throws IOException {
+        return String.join(
+            System.lineSeparator(),
+            new Xmir(
                 new EoSyntax(new InputOf(source)).parsed()
             ).toEO().lines().toList()
         );
-        MatcherAssert.assertThat(printed, Matchers.equalTo(expected));
-        final XML reparsed = new EoSyntax(new InputOf(printed)).parsed();
-        MatcherAssert.assertThat(
-            reparsed,
-            XhtmlMatchers.hasXPaths(
-                "/object[not(errors)]",
-                "/object/o[@name='app']/o[@name='φ' and @base='Φ.foo' and count(o)=1]",
-                String.join(
-                    "",
-                    "/object/o[@name='app']/o[@name='φ' and @base='Φ.foo']/o[",
-                    "@pipe and @as='α0' and not(@name) and count(o)=1 and ",
-                    "@base=concat('ξ.', /object/o[@name='app']/o[@pipe and @name and not(@local)][last()]/@name)]"
-                )
-            )
+    }
+
+    private XML reparsedChain(final String source) throws IOException {
+        return new EoSyntax(new InputOf(this.printedChain(source))).parsed();
+    }
+
+    private String twoPipes() {
+        return String.join(
+            System.lineSeparator(),
+            "[] > app",
+            "  foo > @",
+            "    [a] >>",
+            "      a > @",
+            "    | 2 >>",
+            "    |",
+            "      3"
         );
-        MatcherAssert.assertThat(
-            reparsed.nodes("/object/o[@name='app']/o[@pipe and @name and not(@local)]").size(),
-            Matchers.equalTo(links - 1)
+    }
+
+    private String twoPipesPrinted() {
+        return String.join(
+            System.lineSeparator(),
+            "[] > app",
+            "  foo > @",
+            "    I >>",
+            "    | 2 >>",
+            "    | 3"
         );
-        MatcherAssert.assertThat(
-            reparsed.nodes("//o[@pipe]/o[@base='Φ.number']").size(),
-            Matchers.equalTo(links)
+    }
+
+    private String threePipes() {
+        return String.join(
+            System.lineSeparator(),
+            "[] > app",
+            "  foo > @",
+            "    [a] >>",
+            "      a > @",
+            "    | 2 >>",
+            "    | 3 >>",
+            "    | 4"
         );
-        MatcherAssert.assertThat(
-            reparsed.nodes(
-                String.join(
-                    "",
-                    "/object/o[@name='app']/o[@pipe and @name and not(@local)]",
-                    "[@base=concat('ξ.', preceding-sibling::o[1]/@name)]"
-                )
-            ).size(),
-            Matchers.equalTo(links - 1)
+    }
+
+    private String threePipesPrinted() {
+        return String.join(
+            System.lineSeparator(),
+            "[] > app",
+            "  foo > @",
+            "    I >>",
+            "    | 2 >>",
+            "    | 3 >>",
+            "    | 4"
         );
-        MatcherAssert.assertThat(
-            String.join(System.lineSeparator(), new Xmir(reparsed).toEO().lines().toList()),
-            Matchers.equalTo(printed)
+    }
+
+    private String fooArgument() {
+        return "/object/o[@name='app']/o[@name='φ' and @base='Φ.foo' and count(o)=1]";
+    }
+
+    private String argumentPipe() {
+        return String.join(
+            "",
+            "/object/o[@name='app']/o[@name='φ' and @base='Φ.foo']/o[",
+            "@pipe and @as='α0' and not(@name) and count(o)=1 and ",
+            "@base=concat('ξ.', /object/o[@name='app']/o[@pipe and @name and not(@local)][last()]/@name)]"
         );
-        return true;
+    }
+
+    private String namedPipes() {
+        return "/object/o[@name='app']/o[@pipe and @name and not(@local)]";
+    }
+
+    private String numberedPipes() {
+        return "//o[@pipe]/o[@base='Φ.number']";
+    }
+
+    private String backLinks() {
+        return String.join(
+            "",
+            "/object/o[@name='app']/o[@pipe and @name and not(@local)]",
+            "[@base=concat('ξ.', preceding-sibling::o[1]/@name)]"
+        );
     }
 
     private Xmir asXmir(final String program, final Map<PenaltyKey, Integer> config)
