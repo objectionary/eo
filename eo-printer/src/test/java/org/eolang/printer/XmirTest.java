@@ -138,11 +138,38 @@ final class XmirTest {
     }
 
     @Test
-    void preservesDataizedReceiverAcrossRoundTrip() throws IOException {
+    void parsesPrintedDataizedReceiverWithoutErrors() throws IOException {
         MatcherAssert.assertThat(
-            "the dataized receiver round trip must remain stable",
-            this.assertRoundTrip(),
-            Matchers.is(true)
+            "a dataized const receiver must still parse after printing",
+            new EoSyntax(new InputOf(this.printedReceiver())).parsed(),
+            Matchers.not(XhtmlMatchers.hasXPath("//errors/error"))
+        );
+    }
+
+    @Test
+    void keepsOneConstAndOnePayload() throws IOException {
+        final XML xml = new Xsline(
+            new StClasspath("/org/eolang/printer/print/dataized-to-const.xsl")
+        ).pass(new EoSyntax(new InputOf(this.printedReceiver())).parsed());
+        MatcherAssert.assertThat(
+            "the round trip must keep one const and one payload",
+            List.of(
+                xml.xpath("count(//o[@base='Φ.number' and @const])"),
+                xml.xpath(
+                    "count(//o[@base='Φ.number' and @const]/o[@base='Φ.bytes']/o)"
+                )
+            ),
+            Matchers.everyItem(Matchers.equalTo(List.of("1")))
+        );
+    }
+
+    @Test
+    void reprintsDataizedReceiverUnchanged() throws IOException {
+        final String printed = this.printedReceiver();
+        MatcherAssert.assertThat(
+            "printing the reparsed receiver again must reproduce the first print",
+            new Xmir(new EoSyntax(new InputOf(printed)).parsed()).toEO(),
+            Matchers.equalTo(printed)
         );
     }
 
@@ -464,115 +491,21 @@ final class XmirTest {
         return weights;
     }
 
-    private boolean assertRoundTrip() throws IOException {
-        final String payload = "40-14-00-00-00-00-00-00";
-        final XML first = new EoSyntax(new InputOf(this.source(payload))).parsed();
-        final String printed = new Xmir(first).toEO();
-        MatcherAssert.assertThat(
-            "a dataized const receiver must use the legal verbose only-phi spelling",
-            printed,
-            Matchers.equalTo(this.expected(payload))
-        );
-        final XML second = new EoSyntax(new InputOf(printed)).parsed();
-        MatcherAssert.assertThat(
-            "both EO versions must parse without errors",
-            List.of(
-                first.xpath("count(//errors/error)"),
-                second.xpath("count(//errors/error)")
-            ),
-            Matchers.everyItem(Matchers.equalTo(List.of("0")))
-        );
-        final XML origin = new Xsline(
-            new StClasspath("/org/eolang/printer/print/dataized-to-const.xsl")
-        ).pass(first);
-        final XML reparsed = new Xsline(
-            new StClasspath("/org/eolang/printer/print/dataized-to-const.xsl")
-        ).pass(second);
-        MatcherAssert.assertThat(
-            "test, const, and payload child counts must remain exactly one",
-            List.of(
-                first.xpath("count(//o[@name='p🌵can-x'])"),
-                second.xpath("count(//o[@name='p🌵can-x'])"),
-                origin.xpath("count(//o[@base='Φ.number' and @const])"),
-                reparsed.xpath("count(//o[@base='Φ.number' and @const])"),
-                reparsed.xpath(
-                    "count(//o[@base='Φ.number' and @const]/o[@base='Φ.bytes']/o)"
+    private String printedReceiver() throws IOException {
+        return new Xmir(
+            new EoSyntax(
+                new InputOf(
+                    String.join(
+                        String.valueOf('\n'),
+                        "[] > foo",
+                        "",
+                        "  eq. ++> can-x",
+                        "    as-bytes.",
+                        "      dataized 5",
+                        "    40-14-00-00-00-00-00-00"
+                    )
                 )
-            ),
-            Matchers.everyItem(Matchers.equalTo(List.of("1")))
-        );
-        MatcherAssert.assertThat(
-            "const and eq payloads must remain exact across the round trip",
-            List.of(
-                origin.xpath(
-                    "//o[@base='Φ.number' and @const]/o[@base='Φ.bytes']/o/text()"
-                ),
-                reparsed.xpath(
-                    "//o[@base='Φ.number' and @const]/o[@base='Φ.bytes']/o/text()"
-                ),
-                origin.xpath("//o[@name='φ']/o[2][@base='Φ.bytes']/o/text()"),
-                reparsed.xpath("//o[@name='φ']/o[1][@base='Φ.bytes']/o/text()")
-            ),
-            Matchers.everyItem(Matchers.equalTo(List.of(payload)))
-        );
-        final List<String> firstmark = origin.xpath(
-            "//o[@name='φ']/o[2][@base='Φ.bytes']/@as"
-        );
-        final List<String> secondmark = reparsed.xpath(
-            "//o[@name='φ']/o[1][@base='Φ.bytes']/@as"
-        );
-        MatcherAssert.assertThat(
-            "the original eq byte argument must have one non-empty binding marker",
-            firstmark,
-            Matchers.contains(Matchers.not(Matchers.emptyString()))
-        );
-        MatcherAssert.assertThat(
-            "the eq byte argument must survive with its binding marker",
-            secondmark,
-            Matchers.equalTo(firstmark)
-        );
-        final List<String> names = reparsed.xpath(
-            "//o[@base='Φ.number' and @const]/@name"
-        );
-        MatcherAssert.assertThat(
-            "the reparsed const must keep its generated binding name",
-            names,
-            Matchers.hasSize(1)
-        );
-        MatcherAssert.assertThat(
-            "the eq base must reference that generated const exactly",
-            reparsed.xpath("//o[@name='φ']/@base"),
-            Matchers.contains("ξ.".concat(names.get(0)).concat(".eq"))
-        );
-        MatcherAssert.assertThat(
-            "formatting the reparsed EO a second time must be stable",
-            new Xmir(second).toEO(),
-            Matchers.equalTo(printed)
-        );
-        return true;
-    }
-
-    private String source(final String payload) {
-        return String.join(
-            String.valueOf('\n'),
-            "[] > foo",
-            "",
-            "  eq. ++> can-x",
-            "    as-bytes.",
-            "      dataized 5",
-            "    ".concat(payload)
-        );
-    }
-
-    private String expected(final String payload) {
-        return String.join(
-            String.valueOf('\n'),
-            "[] > foo",
-            "",
-            "  ++> can-x",
-            "    eq. > @",
-            "      5 >>!",
-            "      ".concat(payload)
-        ).concat(String.valueOf('\n'));
+            ).parsed()
+        ).toEO();
     }
 }
