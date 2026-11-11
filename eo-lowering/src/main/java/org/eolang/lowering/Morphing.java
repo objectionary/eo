@@ -99,18 +99,19 @@ import org.eolang.cache.GlobalCache;
  *
  * <p>When the constructor asks for it, this stage also keeps the protocol
  * of every entry as indented text, which a person can read without any
- * tool. The same run of phino that writes the XML protocol of an entry
- * writes its text too, into a file whose name ends with {@code .txt}, so
- * no entry is computed twice. Only when the cache answers the protocol
- * and has no text for it does phino run again, for the text alone. These texts land in
- * a numbered {@code texts} directory beside {@code 2-protocols}, so the
- * text of {@code Φ.bytes.as-hex} is {@code texts/bytes/as-hex.txt}. Nothing in
+ * tool, called the "minutes" of the entry. The same run of phino that
+ * writes the XML protocol of an entry writes its minutes too, into a file
+ * whose name ends with {@code .txt}, so no entry is computed twice. Only
+ * when the cache answers the protocol and has no minutes for it does
+ * phino run again, for the minutes alone. The minutes land in a numbered
+ * {@code minutes} directory beside {@code 2-protocols}, so the minutes of
+ * {@code Φ.bytes.as-hex} are {@code minutes/bytes/as-hex.txt}. Nothing in
  * the build reads them. The cache keeps them the same way as the
  * protocols, so a later build with the same four things does not run
- * phino for them either. The text of a run that was stopped stays on the
+ * phino for them either. The minutes of a run that was stopped stay on the
  * disk for study, with a {@code timeout …} line where the time ran out.
- * The texts of an earlier build are deleted before the runs, even when
- * this build does not ask for them, so that no text outlives its
+ * The minutes of an earlier build are deleted before the runs, even when
+ * this build does not ask for them, so that no minutes outlive their
  * protocol.</p>
  *
  * @since 0.64.0
@@ -148,9 +149,9 @@ final class Morphing implements Proc<Path> {
     private final Duration budget;
 
     /**
-     * Whether every entry gets its protocol as indented text too.
+     * Whether every entry gets its minutes too.
      */
-    private final boolean text;
+    private final boolean minutes;
 
     /**
      * Ctor.
@@ -161,11 +162,11 @@ final class Morphing implements Proc<Path> {
      * @param ceiling The largest number of steps inside one another
      * @param again How many times one run may enter the same formation again
      * @param span The time that one run may take before it is stopped
-     * @param texts Whether every entry gets its protocol as indented text too
+     * @param mins Whether every entry gets its minutes too
      */
     Morphing(
         final Phino exe, final GlobalCache store, final Scope range, final int ceiling,
-        final int again, final Duration span, final boolean texts
+        final int again, final Duration span, final boolean mins
     ) {
         this.phino = exe;
         this.cache = store;
@@ -173,7 +174,7 @@ final class Morphing implements Proc<Path> {
         this.steps = ceiling;
         this.loops = again;
         this.budget = span;
-        this.text = texts;
+        this.minutes = mins;
     }
 
     @Override
@@ -206,8 +207,8 @@ final class Morphing implements Proc<Path> {
             );
         }
         final Sequence dirs = new Seqdir(home, 1).dirs();
-        final Path legacy = home.resolve("texts");
-        final Path numbered = dirs.find("texts").orElse(legacy);
+        final Path legacy = home.resolve("minutes");
+        final Path numbered = dirs.find("minutes").orElse(legacy);
         final Path protocols = dirs.once("protocols");
         for (final Path dir : new ListOf<>(protocols, legacy, numbered)) {
             Morphing.clean(dir);
@@ -226,11 +227,11 @@ final class Morphing implements Proc<Path> {
                 new Mapped<>(Text::asString, new Split(new TextOf(entries), "\\R"))
             )
         );
-        final Path texts;
-        if (this.text && !rows.isEmpty()) {
-            texts = dirs.once("texts");
+        final Path notes;
+        if (this.minutes && !rows.isEmpty()) {
+            notes = dirs.once("minutes");
         } else {
-            texts = numbered;
+            notes = numbered;
         }
         final Progress progress = new Progress(rows.size());
         final Timer ticker = new Timer("morphing-progress", true);
@@ -254,7 +255,7 @@ final class Morphing implements Proc<Path> {
                             Runtime.getRuntime().availableProcessors(),
                             new Mapped<Scalar<Path>>(
                                 row -> () -> this.morph(
-                                    world, atoms, protocols, texts, row, progress, store, uses
+                                    world, atoms, protocols, notes, row, progress, store, uses
                                 ),
                                 rows
                             )
@@ -287,7 +288,7 @@ final class Morphing implements Proc<Path> {
     }
 
     private Path morph(
-        final Path world, final Path atoms, final Path protocols, final Path texts,
+        final Path world, final Path atoms, final Path protocols, final Path notes,
         final String row, final Progress progress, final GlobalCache store, final Uses uses
     ) throws IOException {
         final long start = System.currentTimeMillis();
@@ -296,13 +297,13 @@ final class Morphing implements Proc<Path> {
         final Locator locator = new Locator(cells[1]);
         final Path tail = locator.protocol();
         final Path protocol = protocols.resolve(tail);
-        final Path minutes = texts.resolve(locator.text());
-        final Path draft = minutes.resolveSibling(
-            String.format("%s.draft", minutes.getFileName())
+        final Path note = notes.resolve(locator.minutes());
+        final Path draft = note.resolveSibling(
+            String.format("%s.draft", note.getFileName())
         );
         Files.createDirectories(protocol.getParent());
-        if (this.text) {
-            Files.createDirectories(minutes.getParent());
+        if (this.minutes) {
+            Files.createDirectories(note.getParent());
         }
         final String hash = uses.hash(number, cells[1]);
         final AtomicBoolean fresh = new AtomicBoolean();
@@ -314,7 +315,7 @@ final class Morphing implements Proc<Path> {
                 (src, tgt) -> false,
                 (src, tgt) -> {
                     fresh.set(true);
-                    if (this.text) {
+                    if (this.minutes) {
                         this.phino.dataize(
                             src, atoms, number, tgt, draft, this.steps, this.loops, this.budget
                         );
@@ -326,9 +327,9 @@ final class Morphing implements Proc<Path> {
                     return tgt;
                 }
             ).apply(world, protocol);
-            if (this.text) {
+            if (this.minutes) {
                 store.kept(
-                    locator.text(),
+                    locator.minutes(),
                     () -> hash,
                     (src, tgt) -> false,
                     (src, tgt) -> {
@@ -341,7 +342,7 @@ final class Morphing implements Proc<Path> {
                         }
                         return tgt;
                     }
-                ).apply(world, minutes);
+                ).apply(world, note);
             }
             if (fresh.get()) {
                 Logger.debug(
@@ -360,7 +361,7 @@ final class Morphing implements Proc<Path> {
             }
         } catch (final KilledException ex) {
             if (Files.exists(draft)) {
-                Files.move(draft, minutes, StandardCopyOption.REPLACE_EXISTING);
+                Files.move(draft, note, StandardCopyOption.REPLACE_EXISTING);
             }
             Logger.warn(
                 this,

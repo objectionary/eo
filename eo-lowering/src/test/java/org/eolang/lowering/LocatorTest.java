@@ -27,10 +27,10 @@ final class LocatorTest {
     }
 
     @Test
-    void turnsTheLocatorIntoThePathOfItsText() {
+    void turnsTheLocatorIntoThePathOfItsMinutes() {
         MatcherAssert.assertThat(
-            "the text must be at the path the locator names, but it isnt",
-            new Locator("Φ.bytes.as-hex.a🌵16-3").text(),
+            "the minutes must be at the path the locator names, but they arent",
+            new Locator("Φ.bytes.as-hex.a🌵16-3").minutes(),
             Matchers.equalTo(Path.of("bytes", "as-hex", "a🌵16-3.txt"))
         );
     }

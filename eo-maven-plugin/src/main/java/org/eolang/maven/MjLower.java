@@ -58,12 +58,11 @@ import org.eolang.lowering.Scope;
  * from build to build, so only a copy listed in {@code patched.tsv}, one
  * patched in this very build, is handed to the transpiler.</p>
  *
- * <p>With {@code -Deo.saveTextProtocols=true} the lowering also keeps the
- * protocol of every entry as indented text in the numbered {@code texts} directory, beside
- * {@code 2-protocols}, so a person can read why an entry stopped where it
- * did without any tool. phino writes one protocol per run, so this runs
- * phino on every entry twice, unless the cache already holds the protocol
- * and its text.</p>
+ * <p>With {@code -Deo.saveMinutes=true} the lowering also keeps the
+ * protocol of every entry as indented text, called its "minutes", in the
+ * numbered {@code minutes} directory, beside {@code 2-protocols}, so a person
+ * can read why an entry stopped where it did without any tool. The same run
+ * of phino writes both, so no entry is computed twice.</p>
  *
  * @since 0.64.0
  */
@@ -162,15 +161,15 @@ public final class MjLower extends MjSafe {
     private String memory;
 
     /**
-     * Whether the lowering keeps the protocol of every entry as indented text
-     * too, beside the XML one.
+     * Whether the lowering keeps the minutes of every entry too, which are
+     * its protocol as indented text, beside the XML one.
      */
     @Parameter(
-        alias = "saveTextProtocols",
-        property = "eo.saveTextProtocols",
+        alias = "saveMinutes",
+        property = "eo.saveMinutes",
         defaultValue = "false"
     )
-    private boolean texts;
+    private boolean minutes;
 
     /**
      * The regular expression that the whole locator of an entry, such as
@@ -233,7 +232,7 @@ public final class MjLower extends MjSafe {
                     this.steps,
                     this.loops,
                     Duration.ofSeconds(this.budget),
-                    this.texts
+                    this.minutes
                 );
                 if (this.optional && !pipeline.available()) {
                     Logger.warn(

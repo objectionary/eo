@@ -207,17 +207,17 @@ final class MjLowerTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void savesTheTextOfEveryEntryWhenAsked(@Mktmp final Path temp) throws IOException {
+    void savesTheMinutesOfEveryEntryWhenAsked(@Mktmp final Path temp) throws IOException {
         MjLowerTest.inferred(temp)
             .with("lowering", true)
-            .with("texts", true)
+            .with("minutes", true)
             .with("binary", MjLowerTest.binary(temp))
             .execute(MjLower.class);
         MatcherAssert.assertThat(
-            "the goal must save the text of an entry when asked, but it didnt",
+            "the goal must save the minutes of an entry when asked, but it didnt",
             new Seqdir(
                 new Seqdir(temp.resolve("target"), 2).dirs().find("lowering").orElseThrow(), 1
-            ).dirs().find("texts").orElseThrow()
+            ).dirs().find("minutes").orElseThrow()
                 .resolve("gap.txt")
                 .toFile(),
             FileMatchers.anExistingFile()

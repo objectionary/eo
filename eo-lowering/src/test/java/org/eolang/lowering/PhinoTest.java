@@ -190,14 +190,14 @@ final class PhinoTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void handsPhinoTheFileForTheTextBesideTheProtocol(@Mktmp final Path temp)
+    void handsPhinoTheFileForTheMinutesBesideTheProtocol(@Mktmp final Path temp)
         throws IOException {
         new Phino(PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\""), "1.9.27").dataize(
             temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 7,
             temp.resolve("7.xml"), temp.resolve("7.txt"), 16, 2, Duration.ofSeconds(5L)
         );
         MatcherAssert.assertThat(
-            "phino must be told where to write the text in the same run, but it isnt",
+            "phino must be told where to write the minutes in the same run, but it isnt",
             new String(Files.readAllBytes(temp.resolve("args.txt")), StandardCharsets.UTF_8),
             Matchers.containsString("--minutes=".concat(temp.resolve("7.txt").toString()))
         );
@@ -205,7 +205,7 @@ final class PhinoTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void handsPhinoNoProtocolWhenOnlyTheTextIsAsked(@Mktmp final Path temp)
+    void handsPhinoNoProtocolWhenOnlyTheMinutesAreAsked(@Mktmp final Path temp)
         throws IOException {
         new Phino(
             PhinoTest.binary(temp, "echo \"$@\" > \"${0%/*}/args.txt\""), "1.9.27"
@@ -274,7 +274,7 @@ final class PhinoTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void reportsADataizationThatRanOutOfItsBudgetIntoAText(@Mktmp final Path temp)
+    void reportsADataizationThatRanOutOfItsBudgetIntoTheMinutes(@Mktmp final Path temp)
         throws IOException {
         final Phino phino = new Phino(
             PhinoTest.binary(
@@ -290,7 +290,7 @@ final class PhinoTest {
                 temp.resolve("world.phi"), temp.resolve("atoms.yaml"), 4,
                 temp.resolve("4.txt"), 32, 2, Duration.ofSeconds(3L)
             ),
-            "a run that phino stopped on time must be reported as one, even in a text"
+            "a run that phino stopped on time must be reported as one, even in the minutes"
         );
     }
 

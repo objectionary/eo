@@ -290,7 +290,7 @@
           <!-- The largest number of nested steps one run of phino may take in 'eo:lower'. -->
           <maxMorphingSteps>1000</maxMorphingSteps>
           <!-- Save every phino protocol of 'eo:lower' as indented text too, for a reader to study. -->
-          <saveTextProtocols>true</saveTextProtocols>
+          <saveMinutes>true</saveMinutes>
           <!--
           The names of eo-runtime that the engine of 'eo:inference' has to
           know. Each kind of the canon is one shared copy, the first of them

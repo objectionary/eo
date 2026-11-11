@@ -199,11 +199,12 @@ final class Phino {
 
     /**
      * Ask phino to compute one entry of the world, and to write its steps
-     * both in XML and as indented text, in one run.
+     * both in XML and as indented text, which are called its "minutes", in
+     * one run.
      *
-     * <p>The indented text is what a person reads without any tool. phino
-     * writes it beside the XML protocol while it works, so the entry is not
-     * computed twice. When the time runs out, the text ends with a
+     * <p>The minutes are what a person reads without any tool. phino
+     * writes them beside the XML protocol while it works, so the entry is not
+     * computed twice. When the time runs out, the minutes end with a
      * {@code timeout …} line, the same way the protocol ends with its
      * {@code timeout} element.</p>
      *
@@ -211,7 +212,7 @@ final class Phino {
      * @param atoms The table of operations phino may write down
      * @param entry The number of the entry to work on
      * @param protocol The file for the steps, always in XML
-     * @param minutes The file for the same steps as indented text
+     * @param minutes The file for the minutes, the same steps as indented text
      * @param steps The largest number of steps phino may take inside one another
      * @param loops How many times phino may enter the same formation again
      *  before it decides that the run loops and cuts it
@@ -236,15 +237,15 @@ final class Phino {
 
     /**
      * Ask phino to compute one entry of the world, and to write its steps
-     * only as indented text.
+     * only as its minutes, in indented text.
      *
      * <p>This is for an entry whose XML protocol is already known, so only
-     * its text is missing.</p>
+     * its minutes are missing.</p>
      *
      * @param world The world, which {@link Merging} wrote
      * @param atoms The table of operations phino may write down
      * @param entry The number of the entry to work on
-     * @param minutes The file for the steps as indented text
+     * @param minutes The file for the minutes
      * @param steps The largest number of steps phino may take inside one another
      * @param loops How many times phino may enter the same formation again
      *  before it decides that the run loops and cuts it
