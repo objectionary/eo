@@ -19,6 +19,7 @@
     <xsl:param name="name"/>
     <xsl:param name="scope"/>
     <xsl:param name="counter"/>
+    <xsl:variable name="owner" select="$scope/ancestor-or-self::o[eo:abstract(.)][1]"/>
     <xsl:variable name="unique">
       <xsl:choose>
         <xsl:when test="$counter=0">
@@ -30,7 +31,7 @@
       </xsl:choose>
     </xsl:variable>
     <xsl:choose>
-      <xsl:when test="$scope[o[@name=$unique]]">
+      <xsl:when test="$scope/o[@name=$unique] or $owner/descendant::o[@name=$unique][ancestor::o[eo:abstract(.)][1] is $owner]">
         <xsl:value-of select="eo:unique-name($name, $scope, $counter + 1)"/>
       </xsl:when>
       <xsl:otherwise>

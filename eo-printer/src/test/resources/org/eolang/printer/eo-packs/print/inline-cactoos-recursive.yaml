@@ -27,13 +27,13 @@ sheets:
 asserts:
   # The self-referential abstraction is not dropped: it keeps its cactus
   # name and its file-local handle.
-  - /object/o[@name='foo']/o[@name='a🌵4-2' and @local='reclast' and not(@base)]
+  - /object/o[@name='foo']/o[@name='a🌵reclast' and @local='reclast' and not(@base)]
   # The self-reference inside its body is left intact (the recursion stays).
-  - /object/o[@name='foo']/o[@name='a🌵4-2']//o[contains(@base, 'a🌵4-2')]
+  - /object/o[@name='foo']/o[@name='a🌵reclast']//o[contains(@base, 'a🌵reclast')]
   # The outer reference to it is not inlined: it is still a reference (carries
   # a cactus @base) and still holds its own `list` argument, rather than being
   # replaced by a copy of the abstraction's body.
-  - /object/o[@name='foo']/o[contains(@base, 'a🌵4-2')]/o[contains(@base, 'list')]
+  - /object/o[@name='foo']/o[contains(@base, 'a🌵reclast')]/o[contains(@base, 'list')]
 input: |
   [] > foo
     reclast > @

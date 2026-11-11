@@ -47,6 +47,41 @@ import org.junit.jupiter.params.ParameterizedTest;
  */
 final class XmirTest {
 
+    @Test
+    void preservesNestedHandleOwnersOnRoundTrip() throws IOException {
+        final String source = String.join(
+            "\n",
+            "[] > app",
+            "  [n] >> rec",
+            "    rec n > @",
+            "  [] > inner",
+            "    [n] >> rec",
+            "      rec n > @",
+            "    rec 1 > local",
+            "    ^.rec 2 > outer",
+            "  [] > constants",
+            "    42 >>! value",
+            "    [] > deeper",
+            "      43 >>! value",
+            "      value > own",
+            "      ^.value > other"
+        );
+        final String printed = new Xmir(new EoSyntax(new InputOf(source)).parsed()).toEO();
+        final XML reparsed = new EoSyntax(new InputOf(printed)).parsed();
+        MatcherAssert.assertThat(
+            "printing must preserve nested recursive and const handle owners",
+            reparsed,
+            XhtmlMatchers.hasXPaths(
+                "/object[not(errors)]",
+                "/object/o[@name='app']/o[@name='inner']/o[@name='a🌵rec' and @local='rec']",
+                "/object/o[@name='app']/o[@name='inner']/o[@name='local' and @base='ξ.a🌵rec']",
+                "/object/o[@name='app']/o[@name='inner']/o[@name='outer' and @base='ξ.ρ.a🌵rec']",
+                "/object/o[@name='app']/o[@name='constants']/o[@name='deeper']/o[@name='own' and @base='ξ.a🌵value']",
+                "/object/o[@name='app']/o[@name='constants']/o[@name='deeper']/o[@name='other' and @base='ξ.ρ.a🌵value']"
+            )
+        );
+    }
+
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/printer/print-packs/yaml", glob = "**.yaml")
     void printsToEo(final String pack) throws IOException {

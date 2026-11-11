@@ -191,14 +191,8 @@
 
   A reference captured through an explicit receiver ("^.foo" via
   "eo:scope") keeps that receiver as the author wrote it, so only its
-  trailing name is rewritten; so does one captured in its own declaring
-  formation (zero hops), which "build-fqns.xsl" already resolves correctly
-  on its own, the same way it does for a bare public-attribute name found
-  in the current scope. Only a bare reference captured one or more
-  formations further out carries no receiver at all, so one is built here
-  from the hop count, with the handle's path arriving already resolved
-  instead of left for "build-fqns.xsl" to re-derive through its cactus
-  exception.
+  trailing name is rewritten. A bare handle reference gets a receiver even
+  at zero hops, preserving its owner when cactus names repeat across scopes.
   -->
   <xsl:template match="o[@base]">
     <xsl:variable name="captor" as="element()?" select="eo:captor(.)"/>
@@ -207,7 +201,7 @@
     <xsl:variable name="holder" as="element()?" select="($captor, $anonymous)[1]"/>
     <xsl:variable name="hops" as="xs:integer?" select="if (exists($holder) and empty(@method)) then eo:hops(., $holder/ancestor::o[not(@base)][1]) else ()"/>
     <xsl:choose>
-      <xsl:when test="exists($hops) and $hops gt 0">
+      <xsl:when test="exists($hops) and $hops ge 0">
         <xsl:copy>
           <xsl:attribute name="base" select="concat('.', $holder/@name)"/>
           <xsl:apply-templates select="@* except @base"/>

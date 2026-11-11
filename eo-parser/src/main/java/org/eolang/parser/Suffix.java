@@ -220,7 +220,8 @@ final class Suffix {
         } else if (this.form == Form.THROWS) {
             name = "n🌵".concat(this.label);
         } else if (this.form == Form.AUTO) {
-            name = new AutoName(line, indent).asString();
+            name = this.handle().isEmpty() ? new AutoName(line, indent).asString()
+                : "a🌵".concat(this.handle());
         } else {
             name = null;
         }

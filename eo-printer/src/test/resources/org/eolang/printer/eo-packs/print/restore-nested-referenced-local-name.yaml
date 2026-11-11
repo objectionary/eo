@@ -41,7 +41,7 @@ asserts:
   # "merge-monikers".
   - /object/o[@name='foo']/o[@name='factor']//o[contains(@base, '🌵') and ends-with(@base, '.div')]
   # No reference was rewritten to a readable "squared" base.
-  - /object[not(.//o[contains(@base, 'squared')])]
+  - /object[not(.//o[@base='squared' or @base='.squared' or @base='ξ.squared'])]
 input: |
   [num] > foo
     [depth] > factor

@@ -90,7 +90,8 @@
   <xsl:function name="eo:alias-target" as="element()">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="seen" as="element()*"/>
-    <xsl:variable name="inner" select="$target/ancestor::o/o[@name=eo:resolved-name($target/@base)][1]"/>
+    <xsl:variable name="owner" select="eo:own-formation($target)"/>
+    <xsl:variable name="inner" select="(if (exists($owner)) then $owner/o[@name=eo:resolved-name($target/@base)] else $target/ancestor::o/o[@name=eo:resolved-name($target/@base)])[1]"/>
     <xsl:sequence select="if (contains($target/@base, $auto-dot) and not($target/o) and exists($inner) and not(eo:abstract($inner)) and (every $node in $seen satisfies not($inner is $node))) then eo:alias-target($inner, ($seen, $target)) else $target"/>
   </xsl:function>
   <!--
@@ -137,7 +138,8 @@
   -->
   <xsl:template match="o[contains(@base, $auto-dot)]" priority="0">
     <xsl:variable name="name" select="eo:resolved-name(@base)"/>
-    <xsl:variable name="target" select="ancestor::o/o[@name=$name][1]"/>
+    <xsl:variable name="owner" select="eo:own-formation(.)"/>
+    <xsl:variable name="target" select="(if (exists($owner)) then $owner/o[@name=$name] else ancestor::o/o[@name=$name])[1]"/>
     <xsl:variable name="keep-name" as="xs:boolean" select="exists($target) and (eo:abstract($target) or ($target/@base = '.as-bytes' and $target/o[1]/@base = 'Φ.dataized' and eo:abstract($target/o[1]/o[1])))"/>
     <xsl:choose>
       <xsl:when test="exists($target) and not(eo:recursive($target, $name)) and not(eo:vertical-const($target)) and not(eo:nested-const($target, $name)) and not(eo:multi-referenced($target, $name) and eo:rebuilt($target)) and not(eo:reapplied($target, $name))">
@@ -433,7 +435,8 @@
       and is handled by the ordinary reference path instead.
       -->
       <xsl:variable name="ref-name" select="if (contains(@base, $auto-dot)) then eo:resolved-name(@base) else ()"/>
-      <xsl:variable name="ref-target" select="if (exists($ref-name)) then ancestor::o/o[@name=$ref-name][1] else ()"/>
+      <xsl:variable name="owner" select="eo:own-formation(.)"/>
+      <xsl:variable name="ref-target" select="if (empty($ref-name)) then () else (if (exists($owner)) then $owner/o[@name=$ref-name] else ancestor::o/o[@name=$ref-name])[1]"/>
       <xsl:choose>
         <xsl:when test="exists($ref-target) and not(eo:abstract($ref-target)) and not(eo:kept-binding($ref-target, $ref-name))">
           <xsl:variable name="alias" select="eo:alias-target($ref-target, ())"/>

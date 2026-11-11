@@ -15,7 +15,7 @@ asserts:
   # the nested handle keeps its "@local" marker and gets a cactus name
   - /object/o[@name='foo']/o[@base='.plus']/o[@local='b' and @name]
   # both sibling references bind to the handle's cactus name
-  - /object[count(//o[@base=//o[@local='b']/@name])=2]
+  - /object[count(//o[@base=concat('.', //o[@local='b']/@name)])=2]
   # no reference is left resolving to the bare, un-scoped `b`
   - /object[count(//o[@base='b'])=0]
 input: |
