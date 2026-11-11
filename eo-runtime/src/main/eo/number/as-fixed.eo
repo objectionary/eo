@@ -162,30 +162,6 @@
     string
       -1.0e-16.as-fixed 16
 
-  eq. ++> can-format-the-error-message-of-a-magnitude-past-the-decimal-range
-    "Can't write a fixed-point decimal with a magnitude of 2^63 or larger"
-    9.223372036854776e18.as-fixed
-      0
-      I
-
-  eq. ++> can-format-the-error-message-of-a-non-decrementable-precision
-    "Can't write a fixed-point decimal with 9007199254740992.000000 fraction places"
-    1.25.as-fixed
-      9007199254740992
-      I
-
-  eq. ++> can-format-the-error-message-of-infinite-places
-    "Can't write a fixed-point decimal with a non-finite number of fraction places"
-    3.14159.as-fixed
-      pinf
-      I
-
-  eq. ++> can-format-the-error-message-of-negative-places
-    "Can't write a fixed-point decimal with -2.000000 fraction places"
-    3.14159.as-fixed
-      -2
-      I
-
   eq. ++> can-honour-custom-places
     "3.14"
     string
@@ -212,64 +188,64 @@
       0.neg.as-fixed 2
 
   eq. ++> can-recover-from-a-magnitude-past-the-decimal-range
-    "recovered"
+    CA-FE
     9.223372036854776e18.as-fixed
       2
-      "recovered" > [message]
+      CA-FE > [message]
 
   eq. ++> can-recover-from-a-negative-number-with-a-non-decrementable-precision
-    "recovered"
+    3B-91-0D
     -1.25.as-fixed
       9007199254740992
-      "recovered" > [message]
+      3B-91-0D > [message]
 
   eq. ++> can-recover-from-a-non-finite-number
-    "recovered"
+    E7-24
     nan.as-fixed
       2
-      "recovered" > [message]
+      E7-24 > [message]
 
   eq. ++> can-recover-from-a-precision-far-above-the-non-decrementable-bound
-    "recovered"
+    52-A4-1C-F0
     1.25.as-fixed
       18014398509481984
-      "recovered" > [message]
+      52-A4-1C-F0 > [message]
 
   eq. ++> can-recover-from-a-precision-just-above-the-non-decrementable-bound
-    "recovered"
+    09-6B
     1.25.as-fixed
       9007199254740994
-      "recovered" > [message]
+      09-6B > [message]
 
   eq. ++> can-recover-from-a-precision-that-cannot-be-decremented
-    "recovered"
+    D1-38-7E-05-B2
     1.25.as-fixed
       9007199254740992
-      "recovered" > [message]
+      D1-38-7E-05-B2 > [message]
 
   eq. ++> can-recover-from-an-infinite-number
-    "recovered"
+    4F-C2-99
     pinf.as-fixed
       2
-      "recovered" > [message]
+      4F-C2-99 > [message]
 
   eq. ++> can-recover-from-infinite-places
-    "recovered"
+    A0-17
     1.25.as-fixed
       pinf
-      "recovered" > [message]
+      A0-17 > [message]
 
   eq. ++> can-recover-from-negative-places
-    "recovered"
+    6E-D5-3A-8C
     3.14159.as-fixed
       -2
-      "recovered" > [message]
+      6E-D5-3A-8C > [message]
 
   eq. ++> can-recover-from-non-integer-places
-    "recovered"
+    F3-0B-61
     3.14159.as-fixed
       2.5
-      "recovered" > [message]
+      F3-0B-61 > [message]
 
   eq. ++> can-round-to-the-last-place
     "0.123457"

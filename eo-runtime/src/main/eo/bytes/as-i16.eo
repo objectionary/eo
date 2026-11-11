@@ -20,4 +20,9 @@
 
   00-33.as-i16.as-bytes.eq 00-33 ++> can-convert-bytes-to-i16-and-back
 
+  eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-i16
+    i16 7F-3C
+    C8-.as-i16
+      i16 7F-3C > [message]
+
   01-01-01.as-i16 --> stops-on-bytes-of-wrong-size-when-converting-to-i16
