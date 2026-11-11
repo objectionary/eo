@@ -5,7 +5,7 @@ sheets: []
 asserts:
   - /object[not(errors)]
   - //o[@base='Φ.foo.bar' and @local='saved' and o[@base='Φ.tuple']]
-  - /object/o[@name='app']/o[@name='φ' and @base='ξ.a🌵2-2']
+  - /object/o[@name='app']/o[@name='φ' and @base='ξ.a🌵saved']
 input: |
   [] > app
     foo.bar * >> saved
