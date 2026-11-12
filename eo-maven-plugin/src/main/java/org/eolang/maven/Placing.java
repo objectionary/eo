@@ -211,6 +211,12 @@ final class Placing implements Step {
             }
         }
 
+        /**
+         * Log replacement details after the caller has enabled debug logging.
+         *
+         * @param file Incoming binary
+         * @param target Destination of the placed binary
+         */
         private void logBinary(final Path file, final Path target) {
             final Optional<TjPlaced> tojo = Placing.this.placed.find(target);
             if (tojo.isPresent()) {
