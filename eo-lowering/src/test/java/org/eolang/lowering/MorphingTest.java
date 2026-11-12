@@ -112,7 +112,7 @@ final class MorphingTest {
                 String.join(
                     " ",
                     "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
-                    "echo '<protocol><dataize><timeout limit=\"1\"/></dataize><msec>1000</msec></protocol>' > \"$p\"; exit 1"
+                    "echo '<protocol><dataize><timeout limit=\"1\"/></dataize><msec>1000</msec></protocol>' > \"$p\""
                 )
             ),
             new GlobalCache.GcFresh(),
@@ -181,7 +181,7 @@ final class MorphingTest {
                 String.join(
                     " ",
                     "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
-                    "echo '<protocol><dataize><timeout limit=\"1\"/></dataize><msec>1000</msec></protocol>' > \"$p\"; exit 1"
+                    "echo '<protocol><dataize><timeout limit=\"1\"/></dataize><msec>1000</msec></protocol>' > \"$p\""
                 )
             ),
             new GcShared(temp.resolve("cache"), "0.5.6"),
@@ -307,7 +307,7 @@ final class MorphingTest {
                     "for a; do case $a in --protocol=*) p=${a#--protocol=};;",
                     "--minutes=*) m=${a#--minutes=};; esac; done;",
                     "echo '<protocol><timeout limit=\"1\"/></protocol>' > \"$p\";",
-                    "echo '  timeout 1' > \"$m\"; exit 1"
+                    "echo '  timeout 1' > \"$m\""
                 )
             ),
             new GlobalCache.GcFresh(),
@@ -587,7 +587,7 @@ final class MorphingTest {
 
     @Test
     void morphsTheWorldThePinnedPhinoFolds(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.163");
+        final Phino phino = new Phino("phino", "0.0.164");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -606,7 +606,7 @@ final class MorphingTest {
 
     @Test
     void writesTheMinutesThePinnedPhinoFolds(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.163");
+        final Phino phino = new Phino("phino", "0.0.164");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -628,7 +628,7 @@ final class MorphingTest {
     @Test
     void stopsAtTheThrowWithTheWholeMessageThePinnedPhinoKeeps(@Mktmp final Path temp)
         throws IOException {
-        final Phino phino = new Phino("phino", "0.0.163");
+        final Phino phino = new Phino("phino", "0.0.164");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -679,7 +679,7 @@ final class MorphingTest {
 
     @Test
     void answersTheAtomOfBytesThePinnedPhinoReaches(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.163");
+        final Phino phino = new Phino("phino", "0.0.164");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -724,7 +724,7 @@ final class MorphingTest {
     @Test
     void firesTheRowOfAFormationThePinnedPhinoReaches(@Mktmp final Path temp)
         throws IOException {
-        final Phino phino = new Phino("phino", "0.0.163");
+        final Phino phino = new Phino("phino", "0.0.164");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
