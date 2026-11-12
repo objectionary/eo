@@ -12,20 +12,29 @@
     if. > @
       or.
         not.
-          index.floor.eq index
+          eq.
+            floor.
+              number ((0.gt idx).if (list.length.plus idx) idx)! >> index
+            index
         or.
-          0.gt
-            number >> index
-              if. >>!
-                0.gt
-                  number i! >> idx
-                list.length.plus idx
-                idx
+          0.gt index
           list.length.lte index
-      fallback failure
+      fallback
+        printf. >> failure
+          if.
+            index.floor.eq index
+            "Given index %s is out of tuple bounds"
+            "Index must be an integer, but was %s"
+          *
+            idx.is-finite.if
+              "%f".printf
+                * idx
+              string
+                as-scientific.
+                  number i! >> idx
       if. > [^list tup] >> at-fast
         0.eq tup.length
-        list.fallback list.failure
+        list.fallback failure
         if.
           eq.
             tup.length.plus -1
@@ -33,16 +42,6 @@
           tup.head
           list.at-fast tup.tail
       | list
-    printf. >> failure
-      if.
-        index.floor.eq index
-        "Given index %s is out of tuple bounds"
-        "Index must be an integer, but was %s"
-      *
-        i.is-finite.if
-          "%f".printf
-            * i
-          string i.as-scientific
   tuple > empty
     T "Can't get tail from the empty tuple"
     T "Can't get head from the empty tuple"
@@ -238,6 +237,64 @@
       20
       "recovered" > [message]
 
+  ++> can-reject-a-fractional-index-without-reading-the-tail
+    "Index must be an integer, but was 1.500000".eq > @
+      tup.at 1.5 I
+    tuple > tup
+      T "The tail must not be inspected"
+      "last"
+      3
+
+  eq. ++> can-report-a-fractional-index-coerced-from-bytes
+    "Index must be an integer, but was 1.500000"
+    at.
+      *
+        1
+        2
+        3
+      3F-F8-00-00-00-00-00-00
+      I
+
+  eq. ++> can-report-a-nan-index
+    "Index must be an integer, but was nan"
+    at.
+      *
+        1
+        2
+        3
+      nan
+      I
+
+  eq. ++> can-report-a-negative-fractional-index
+    "Index must be an integer, but was -1.500000"
+    at.
+      *
+        1
+        2
+        3
+      -1.5
+      I
+
+  eq. ++> can-report-a-negatively-infinite-index
+    "Given index -infinity is out of tuple bounds"
+    at.
+      *
+        1
+        2
+        3
+      ninf
+      I
+
+  eq. ++> can-report-an-out-of-bounds-negative-index
+    "Given index -4.000000 is out of tuple bounds"
+    at.
+      *
+        1
+        2
+        3
+      -4
+      I
+
   ++> can-report-the-length-of-a-non-empty-tuple
     eq. > @
       length.
@@ -315,40 +372,3 @@
   tuple.empty.head --> stops-on-taking-the-head-of-an-empty-tuple
 
   tuple.empty.tail --> stops-on-taking-the-tail-of-an-empty-tuple
-
-  ++> can-reject-a-fractional-index-without-reading-the-tail
-    eq. > @
-      "Index must be an integer, but was 1.500000"
-      tup.at 1.5 I
-    tuple > tup
-      T "The tail must not be inspected"
-      "last"
-      3
-
-  eq. ++> can-report-a-negative-fractional-index
-    "Index must be an integer, but was -1.500000"
-    at.
-      * 1 2 3
-      -1.5
-      I
-
-  eq. ++> can-report-a-nan-index
-    "Index must be an integer, but was nan"
-    at.
-      * 1 2 3
-      nan
-      I
-
-  eq. ++> can-report-an-infinite-index
-    "Given index infinity is out of tuple bounds"
-    at.
-      * 1 2 3
-      pinf
-      I
-
-  eq. ++> can-report-an-out-of-bounds-negative-index
-    "Given index -4.000000 is out of tuple bounds"
-    at.
-      * 1 2 3
-      -4
-      I
