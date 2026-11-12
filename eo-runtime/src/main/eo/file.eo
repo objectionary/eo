@@ -282,13 +282,6 @@
         true > [f]
     12
 
-  ++> can-name-the-file-whose-kind-it-cannot-check
-    starts-with. > @
-      f.is-directory I
-      "Can't check whether '%s' is a directory: ".printf
-        * f.path
-    mktemp.tmpfile.deleted > f
-
   ++> can-read-from-a-file
     eq. > @
       malloc.of

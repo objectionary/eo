@@ -13,11 +13,30 @@
   if. > @
     spelled.eq --
     "0".as-bytes
-    spelled
-  floor. > borrow
-    div.
-      low.plus 4294967295
-      4294967296
+    if. >> spelled!
+      high.as-number.lt 0 >> negative
+      "-".as-bytes.concat
+        digits >> written
+          negative.if
+            minus.
+              0.minus
+                as-number.
+                  as-i32. >> high
+                    num.as-bytes.slice 0 4
+              floor.
+                div.
+                  plus.
+                    as-number. (num.as-bytes.slice 4 4).as-u32 >> low
+                    4294967295
+                  4294967296
+            high.as-number
+          negative.if
+            mod.
+              4294967296.minus low
+              4294967296
+            low
+          --
+      written
   [^num upper lower acc] >> digits
     if. > @
       and.
@@ -25,54 +44,29 @@
         lower.eq 0
       acc
       num.digits
-        number upperq
-        number lowerq
+        number
+          floor. >> upperq!
+            upper.div 10
+        number
+          floor. >> lowerq!
+            div.
+              number rem
+              10
         concat.
           as-char.
             plus.
               minus.
-                number rem
+                number
+                  plus. >> rem!
+                    times.
+                      upper.minus ((number upperq).times 10)
+                      4294967296
+                    lower
                 times.
                   number lowerq
                   10
               48
           acc
-    floor. > lowerq!
-      div.
-        number rem
-        10
-    plus. > rem!
-      times.
-        upper.minus
-          times.
-            number upperq
-            10
-        4294967296
-      lower
-    floor. > upperq!
-      upper.div 10
-  as-number. > low
-    as-u32.
-      num.as-bytes.slice 4 4
-  if. > spelled!
-    high.as-number.lt 0 >> negative
-    "-".as-bytes.concat
-      digits >> written
-        negative.if
-          minus.
-            0.minus
-              as-number.
-                as-i32. >> high
-                  num.as-bytes.slice 0 4
-            borrow
-          high.as-number
-        negative.if
-          mod.
-            4294967296.minus low
-            4294967296
-          low
-        --
-    written
 
   eq. ++> can-write-a-negative-past-i32-min
     "-2147483649"

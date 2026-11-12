@@ -20,4 +20,9 @@
 
   00-33.as-u16.as-bytes.eq 00-33 ++> can-convert-bytes-to-u16-and-back
 
+  eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-u16
+    u16 B2-07
+    5F-.as-u16
+      u16 B2-07 > [message]
+
   01-01-01.as-u16 --> stops-on-bytes-of-wrong-size-when-converting-to-u16

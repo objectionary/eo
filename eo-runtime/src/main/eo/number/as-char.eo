@@ -26,7 +26,12 @@
   if. > @
     or.
       or.
-        arg.lt 0
+        lt.
+          if. >> arg
+            num.as-bytes.size.eq 8
+            number num.as-bytes
+            T "the 'ρ' attribute must be a number"
+          0
         arg.gt 127
       arg.is-integer.not
     T "The receiver of as-char must be an integer within the range [0, 127]"
@@ -35,10 +40,6 @@
         arg.plus 4503599627370496
       7
       1
-  if. > arg
-    num.as-bytes.size.eq 8
-    number num.as-bytes
-    T "the 'ρ' attribute must be a number"
 
   eq. ++> can-round-trip-through-as-ascii
     "!"
