@@ -59,7 +59,7 @@ final class MjLowerTest {
                     .execute(MjLower.class),
                 "a binary that is not there must fail the build"
             ).getCause().getCause().getMessage(),
-            Matchers.containsString("0.0.163")
+            Matchers.containsString("0.0.164")
         );
     }
 
@@ -194,7 +194,7 @@ final class MjLowerTest {
         MjLowerTest.inferred(temp)
             .with("lowering", true)
             .with("budget", 1)
-            .with("binary", MjLowerTest.binary(temp, 1, MjLowerTest.expired()))
+            .with("binary", MjLowerTest.binary(temp, 0, MjLowerTest.expired()))
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "a run out of its budget must keep its protocol for study, but it doesnt",
@@ -373,7 +373,7 @@ final class MjLowerTest {
                     .execute(MjLower.class),
                 "a binary of another version must fail the build"
             ).getCause().getCause().getMessage(),
-            Matchers.stringContainsInOrder("0.0.1", "0.0.163")
+            Matchers.stringContainsInOrder("0.0.1", "0.0.164")
         );
     }
 
@@ -393,7 +393,7 @@ final class MjLowerTest {
 
     private static String binary(final Path temp, final int code, final String protocol)
         throws IOException {
-        return MjLowerTest.binary(temp, code, protocol, "0.0.163");
+        return MjLowerTest.binary(temp, code, protocol, "0.0.164");
     }
 
     private static String binary(
