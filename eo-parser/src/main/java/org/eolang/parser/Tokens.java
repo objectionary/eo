@@ -674,6 +674,17 @@ final class Tokens {
         return " \t,.|':;!?*/[]{}()".indexOf(glyph) >= 0;
     }
 
+    /**
+     * Whether a fragile dispatch starts at the given position.
+     *
+     * @param body Source text
+     * @param idx Position in the text
+     * @return True if the next two characters are {@code ?.}
+     */
+    static boolean fragileAhead(final String body, final int idx) {
+        return idx + 1 < body.length() && body.charAt(idx) == '?' && body.charAt(idx + 1) == '.';
+    }
+
     private ParseError malformed(final int start) {
         return new ParseError(
             this.span.line(), this.span.indent() + start, "invalid number literal"
@@ -758,17 +769,6 @@ final class Tokens {
             idx = idx + 1;
         }
         return single;
-    }
-
-    /**
-     * Whether a fragile dispatch starts at the given position.
-     *
-     * @param body Source text
-     * @param idx Position in the text
-     * @return True if the next two characters are {@code ?.}
-     */
-    static boolean fragileAhead(final String body, final int idx) {
-        return idx + 1 < body.length() && body.charAt(idx) == '?' && body.charAt(idx + 1) == '.';
     }
 
     private static boolean hexDigit(final char glyph) {
