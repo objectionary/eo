@@ -20,9 +20,10 @@
     <!--
     How many seconds a single test may run before Deadline skips it. Raise
     it on a box that has all the time in the world, so that a slow test
-    runs to its end instead of being skipped. The "transpile" goal reads the
-    same property and writes it into the @Timeout of every test it makes out
-    of an .eo file, while the hand-written tests get it from surefire below.
+    runs to its end instead of being skipped. The "transpile" goal gets the
+    same value through its "transpile.deadline" parameter below and writes
+    it into the @Timeout of every test it makes out of an .eo file, while
+    the hand-written tests get it from surefire below.
     -->
     <eo.deadline>1</eo.deadline>
     <!--
@@ -36,8 +37,9 @@
     rather than on the population (#8341). It binds one test, while tests
     run as wide as the box has cores, so a job raising it from the command
     line must keep the value times the workers under -Xmx. The "transpile"
-    goal reads the same property and writes it into the @Budget of every
-    test it makes out of an .eo file, which wins over the system property.
+    goal gets the same value through its "transpile.memory" parameter below
+    and writes it into the @Budget of every test it makes out of an .eo
+    file, which wins over the system property.
     -->
     <eo.maxmem>1G</eo.maxmem>
   </properties>
@@ -282,15 +284,18 @@
           -->
           <cacheEnabled>false</cacheEnabled>
           <!-- Tests assert on precise .eo locations in panics (off by default). -->
-          <trackLocations>true</trackLocations>
+          <transpile.located>true</transpile.located>
+          <!-- The same limits that surefire gives the hand-written tests above. -->
+          <transpile.deadline>${eo.deadline}</transpile.deadline>
+          <transpile.memory>${eo.maxmem}</transpile.memory>
           <!-- The seconds one run of phino may take on one entry of 'eo:lower'. -->
-          <loweringBudget>180</loweringBudget>
+          <lower.budget>180</lower.budget>
           <!-- The largest memory one run of phino may take in 'eo:lower'. -->
-          <loweringMemory>1G</loweringMemory>
+          <lower.memory>1G</lower.memory>
           <!-- The largest number of nested steps one run of phino may take in 'eo:lower'. -->
-          <maxMorphingSteps>1000</maxMorphingSteps>
+          <lower.steps>1000</lower.steps>
           <!-- Save every phino protocol of 'eo:lower' as indented text too, for a reader to study. -->
-          <saveMinutes>true</saveMinutes>
+          <lower.minutes>true</lower.minutes>
           <!--
           The names of eo-runtime that the engine of 'eo:inference' has to
           know. Each kind of the canon is one shared copy, the first of them
@@ -299,17 +304,17 @@
           of different callers. A formation in one of the scalar packages
           gives back new data and takes no tag.
           -->
-          <inferenceCanon>
+          <inference.canon>
             <kind>Φ.bytes</kind>
             <kind>Φ.number</kind>
             <kind>Φ.string</kind>
-          </inferenceCanon>
-          <inferenceRoots>
+          </inference.canon>
+          <inference.roots>
             <root>Φ.tuple</root>
             <root>Φ.map</root>
             <root>Φ.set</root>
-          </inferenceRoots>
-          <inferenceScalars>
+          </inference.roots>
+          <inference.scalars>
             <scalar>Φ.number</scalar>
             <scalar>Φ.bytes</scalar>
             <scalar>Φ.string</scalar>
@@ -325,7 +330,7 @@
             <scalar>Φ.u32</scalar>
             <scalar>Φ.u64</scalar>
             <scalar>Φ.dataized</scalar>
-          </inferenceScalars>
+          </inference.scalars>
         </configuration>
         <executions>
           <execution>
@@ -524,7 +529,7 @@
       -->
       <activation>
         <property>
-          <name>eo.coverageTracking</name>
+          <name>eo.transpile.coverage</name>
           <value>true</value>
         </property>
       </activation>
@@ -541,8 +546,8 @@
                   <goal>coverage-report</goal>
                 </goals>
                 <configuration>
-                  <coverageFile>${project.build.directory}/coverage.txt</coverageFile>
-                  <minCoverage>55</minCoverage>
+                  <coverage-report.hits>${project.build.directory}/coverage.txt</coverage-report.hits>
+                  <coverage-report.minimum>55</coverage-report.minimum>
                 </configuration>
               </execution>
             </executions>

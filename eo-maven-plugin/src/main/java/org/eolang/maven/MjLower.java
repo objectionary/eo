@@ -37,10 +37,10 @@ import org.eolang.lowering.Scope;
  * the lowering needs to hear about it, and before {@code transpile}, the
  * last moment at which the Java of a program can still be changed.</p>
  *
- * <p>The goal folds by default; {@code -Deo.lowering=false} turns it off.
+ * <p>The goal folds by default; {@code -Deo.lower.bypass=true} turns it off.
  * When phino cannot be started on this computer, the goal prints a warning
  * and does nothing, so the build goes on without atoms. With
- * {@code -Deo.skipWithoutPhino=false} the goal fails the build instead.
+ * {@code -Deo.lower.optional=false} the goal fails the build instead.
  * When it runs it makes sure that the binary on this machine is the one
  * the pin names, since an answer of another version cannot be trusted,
  * and then plants the entries of the build. It hands the lowering the
@@ -58,7 +58,7 @@ import org.eolang.lowering.Scope;
  * from build to build, so only a copy listed in {@code patched.tsv}, one
  * patched in this very build, is handed to the transpiler.</p>
  *
- * <p>With {@code -Deo.saveMinutes=true} the lowering also keeps the
+ * <p>With {@code -Deo.lower.minutes=true} the lowering also keeps the
  * protocol of every entry as indented text, called its "minutes", in the
  * numbered {@code minutes} directory, beside {@code 2-protocols}, so a person
  * can read why an entry stopped where it did without any tool. The same run
@@ -74,17 +74,21 @@ import org.eolang.lowering.Scope;
 public final class MjLower extends MjSafe {
 
     /**
-     * Whether formations are lowered at all.
+     * Whether the goal is bypassed, lowering no formation at all.
      */
-    @Parameter(property = "eo.lowering", defaultValue = "true")
-    private boolean lowering;
+    @Parameter(
+        alias = "lower.bypass",
+        property = "eo.lower.bypass",
+        defaultValue = "false"
+    )
+    private boolean bypass;
 
     /**
      * The name or path of the phino executable.
      */
     @Parameter(
-        alias = "phinoBinary",
-        property = "eo.phinoBinary",
+        alias = "lower.binary",
+        property = "eo.lower.binary",
         defaultValue = "phino"
     )
     private String binary;
@@ -94,8 +98,8 @@ public final class MjLower extends MjSafe {
      * gets through its {@code --pin} option.
      */
     @Parameter(
-        alias = "pinPhino",
-        property = "eo.pinPhino",
+        alias = "lower.pin",
+        property = "eo.lower.pin",
         defaultValue = "0.0.163"
     )
     private String pin;
@@ -105,8 +109,8 @@ public final class MjLower extends MjSafe {
      * cannot be started on this computer.
      */
     @Parameter(
-        alias = "skipWithoutPhino",
-        property = "eo.skipWithoutPhino",
+        alias = "lower.optional",
+        property = "eo.lower.optional",
         defaultValue = "true"
     )
     private boolean optional;
@@ -118,8 +122,8 @@ public final class MjLower extends MjSafe {
      * time is whole and can be read.
      */
     @Parameter(
-        alias = "loweringBudget",
-        property = "eo.loweringBudget",
+        alias = "lower.budget",
+        property = "eo.lower.budget",
         defaultValue = "10"
     )
     private int budget;
@@ -129,8 +133,8 @@ public final class MjLower extends MjSafe {
      * on one entry may take.
      */
     @Parameter(
-        alias = "maxMorphingSteps",
-        property = "eo.maxMorphingSteps",
+        alias = "lower.steps",
+        property = "eo.lower.steps",
         defaultValue = "32"
     )
     private int steps;
@@ -140,8 +144,8 @@ public final class MjLower extends MjSafe {
      * with other data, before it decides that the run loops and cuts it.
      */
     @Parameter(
-        alias = "maxLoops",
-        property = "eo.maxLoops",
+        alias = "lower.loops",
+        property = "eo.lower.loops",
         defaultValue = "2"
     )
     private int loops;
@@ -154,8 +158,8 @@ public final class MjLower extends MjSafe {
      * none.
      */
     @Parameter(
-        alias = "loweringMemory",
-        property = "eo.loweringMemory",
+        alias = "lower.memory",
+        property = "eo.lower.memory",
         defaultValue = "0"
     )
     private String memory;
@@ -165,8 +169,8 @@ public final class MjLower extends MjSafe {
      * its protocol as indented text, beside the XML one.
      */
     @Parameter(
-        alias = "saveMinutes",
-        property = "eo.saveMinutes",
+        alias = "lower.minutes",
+        property = "eo.lower.minutes",
         defaultValue = "false"
     )
     private boolean minutes;
@@ -176,8 +180,8 @@ public final class MjLower extends MjSafe {
      * {@code Φ.string.printf}, must match for phino to run on it.
      */
     @Parameter(
-        alias = "lowerOnly",
-        property = "eo.lowerOnly",
+        alias = "lower.only",
+        property = "eo.lower.only",
         defaultValue = ".*"
     )
     private String only;
@@ -187,8 +191,8 @@ public final class MjLower extends MjSafe {
      * match for phino to run on it. By default it matches nothing.
      */
     @Parameter(
-        alias = "lowerNever",
-        property = "eo.lowerNever",
+        alias = "lower.never",
+        property = "eo.lower.never",
         defaultValue = "(?!)"
     )
     private String never;
@@ -198,7 +202,7 @@ public final class MjLower extends MjSafe {
      * set, the goal uses the directory that {@code Seqdir} gives to the name
      * "inference", which is where {@code eo:inference} saves the tables.
      */
-    @Parameter(alias = "inferenceDir", property = "eo.inferenceDir")
+    @Parameter(alias = "lower.tables", property = "eo.lower.tables")
     private File tables;
 
     /**
@@ -210,7 +214,12 @@ public final class MjLower extends MjSafe {
 
     @Override
     void exec() throws IOException {
-        if (this.lowering) {
+        if (this.bypass) {
+            Logger.info(
+                this,
+                "Lowering is bypassed with -Deo.lower.bypass=true"
+            );
+        } else {
             final Path home = new Seqdir(this.target.toPath(), 2)
                 .dirs().once("lowering").toAbsolutePath();
             final Path inference;
@@ -237,7 +246,7 @@ public final class MjLower extends MjSafe {
                 if (this.optional && !pipeline.available()) {
                     Logger.warn(
                         this,
-                        "Lowering is skipped, since phino '%s' cannot be started, set -Deo.skipWithoutPhino=false to fail instead",
+                        "Lowering is skipped, since phino '%s' cannot be started, set -Deo.lower.optional=false to fail instead",
                         this.binary
                     );
                 } else {
@@ -257,11 +266,6 @@ public final class MjLower extends MjSafe {
                     );
                 }
             }
-        } else {
-            Logger.info(
-                this,
-                "Lowering is disabled with -Deo.lowering=false"
-            );
         }
     }
 

@@ -5,7 +5,8 @@
 
 /**
  * The goal of the test is to check that the parameters passed to java are named
- * consistently. For example, "eo.outputDir".
+ * consistently. For example, "eo.outputDir" for a parameter shared by all goals,
+ * or "eo.lower.budget" for a parameter that only the "lower" goal declares.
  */
 
 import groovy.xml.XmlSlurper
@@ -20,8 +21,8 @@ Path plugin = basedir.toPath()
     .resolve('maven')
     .resolve('plugin.xml')
 GPathResult content = new XmlSlurper().parseText(new File(plugin.toString()).text)
-// For example, "${eo.foreignFormat}":
-String pattern = "\\\$\\{eo\\.[a-z]+([A-Z][a-z]+)*}"
+// For example, "${eo.foreignFormat}" or "${eo.atoms-table.csv}":
+String pattern = "\\\$\\{eo\\.([a-z]+(-[a-z]+)*\\.)?[a-z]+([A-Z][a-z]+)*}"
 List<String> failures = []
 List<String> toBeExcluded = ['help']
 

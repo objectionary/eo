@@ -42,7 +42,7 @@
           </execution>
         </executions>
         <configuration>
-          <transpileTests>false</transpileTests>
+          <transpile.tests>false</transpile.tests>
           <ignoreRuntime>true</ignoreRuntime>
           <failOnWarning>false</failOnWarning>
           <skipLinting>true</skipLinting>

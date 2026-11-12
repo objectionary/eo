@@ -4,7 +4,7 @@
 # A formation written as a named argument, whose body is only its `@`. The
 # compact `> [c]` head has no place for the `:z` binding (R-3.10.8), so the
 # vertical form is the only one that parses, and printing the compact one
-# made `eo:format -Deo.autoFix` write a file that no longer compiles and then
+# made `eo:format -Deo.format.autofix` write a file that no longer compiles and then
 # drop the argument on the next pass (#9168).
 penalties:
   INDENT: 3

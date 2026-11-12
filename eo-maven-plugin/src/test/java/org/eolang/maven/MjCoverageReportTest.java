@@ -32,7 +32,7 @@ final class MjCoverageReportTest {
             String.join(System.lineSeparator(), "[] > x", "  42 > y")
         ).execute(MjParse.class).execute(MjCoverageReport.class);
         MatcherAssert.assertThat(
-            "no LCOV report must be written when eo.coverageFile is unset, but one was",
+            "no LCOV report must be written when eo.coverage-report.hits is unset, but one was",
             Files.exists(temp.resolve("target/coverage.info")),
             Matchers.is(false)
         );
@@ -117,7 +117,7 @@ final class MjCoverageReportTest {
         Assertions.assertThrows(
             IllegalStateException.class,
             () -> maven.with("minimum", 90.0d).execute(MjCoverageReport.class),
-            "coverage-report must fail when eo.coverageFile is not set and a minimum is, but it didnt"
+            "coverage-report must fail when eo.coverage-report.hits is not set and a minimum is, but it didnt"
         );
     }
 

@@ -45,7 +45,7 @@ public final class MjDealpha extends MjSafe {
      * that {@link MjInference} writes, falling back to a directory
      * {@code Seqdir} numbers "inference" when unset.
      */
-    @Parameter(alias = "inferenceDir", property = "eo.inferenceDir")
+    @Parameter(alias = "dealpha.tables", property = "eo.dealpha.tables")
     private File tables;
 
     /**
@@ -53,8 +53,8 @@ public final class MjDealpha extends MjSafe {
      * the name of its void.
      */
     @Parameter(
-        alias = "failOnAlpha",
-        property = "eo.failOnAlpha",
+        alias = "dealpha.rigid",
+        property = "eo.dealpha.rigid",
         defaultValue = "false"
     )
     private boolean rigid;

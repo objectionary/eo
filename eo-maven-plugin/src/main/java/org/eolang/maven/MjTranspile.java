@@ -67,8 +67,8 @@ public final class MjTranspile extends MjSafe {
      * Add to source root.
      */
     @Parameter(
-        alias = "addSourcesRoot",
-        property = "eo.addSourcesRoot",
+        alias = "transpile.attach",
+        property = "eo.transpile.attach",
         defaultValue = "true"
     )
     private boolean attach;
@@ -77,8 +77,8 @@ public final class MjTranspile extends MjSafe {
      * Whether to transpile tests.
      */
     @Parameter(
-        alias = "transpileTests",
-        property = "eo.transpileTests",
+        alias = "transpile.tests",
+        property = "eo.transpile.tests",
         defaultValue = "true"
     )
     private boolean tests;
@@ -90,7 +90,7 @@ public final class MjTranspile extends MjSafe {
      * {@code eo-runtime} does for its tests) to keep precise {@code .eo}
      * locations in panics.
      */
-    @Parameter(alias = "trackLocations", property = "eo.trackLocations")
+    @Parameter(alias = "transpile.located", property = "eo.transpile.located")
     private boolean located;
 
     /**
@@ -106,17 +106,17 @@ public final class MjTranspile extends MjSafe {
      * Maven goal ({@link MjCoverageReport}) turns the raw hits into an
      * LCOV tracefile, bound to the {@code verify} phase since the hits
      * only exist after tests actually run. {@code eo-runtime} pairs it
-     * with {@code minCoverage} on that same goal, failing the build when
+     * with {@code coverage-report.minimum} on that same goal, failing the build when
      * the covered percentage of dataized {@code .eo} objects drops below
      * a threshold, mirroring how the {@code jacoco} profile binds a
      * {@code check} goal with its own per-metric thresholds.
      */
-    @Parameter(alias = "coverageTracking", property = "eo.coverageTracking")
+    @Parameter(alias = "transpile.coverage", property = "eo.transpile.coverage")
     private boolean coverage;
 
     /**
      * The class that a generated class extends instead of {@code PhDefault},
-     * set through {@code eo.phiDefaultClass}. A tool that needs control over
+     * set through {@code eo.transpile.superclass}. A tool that needs control over
      * the objects of a program can name its own subclass of
      * {@code PhDefault} here and see every {@code add()} and {@code take()}
      * the program makes. The name is written into the generated Java
@@ -141,8 +141,8 @@ public final class MjTranspile extends MjSafe {
      * generated sources.</p>
      */
     @Parameter(
-        alias = "phiDefaultClass",
-        property = "eo.phiDefaultClass",
+        alias = "transpile.superclass",
+        property = "eo.transpile.superclass",
         defaultValue = "PhDefault"
     )
     private String superclass;
@@ -159,7 +159,11 @@ public final class MjTranspile extends MjSafe {
      * has the same name as the one {@code eo-runtime} gives its own tests, so
      * one setting covers both.
      */
-    @Parameter(property = "eo.deadline", defaultValue = "1")
+    @Parameter(
+        alias = "transpile.deadline",
+        property = "eo.transpile.deadline",
+        defaultValue = "1"
+    )
     private long deadline;
 
     /**
@@ -170,7 +174,11 @@ public final class MjTranspile extends MjSafe {
      * value goes into the {@code @Budget} of every test, which
      * {@code org.eolang.Maxmem} reads while the test runs.
      */
-    @Parameter(alias = "maxmem", property = "eo.maxmem", defaultValue = "1G")
+    @Parameter(
+        alias = "transpile.memory",
+        property = "eo.transpile.memory",
+        defaultValue = "1G"
+    )
     private String memory;
 
     /**
@@ -182,7 +190,7 @@ public final class MjTranspile extends MjSafe {
      * nothing is marked. Falls back to a directory {@code Seqdir} numbers
      * "inference" when unset.
      */
-    @Parameter(alias = "inferenceDir", property = "eo.inferenceDir")
+    @Parameter(alias = "transpile.tables", property = "eo.transpile.tables")
     private File tables;
 
     /**
@@ -254,7 +262,7 @@ public final class MjTranspile extends MjSafe {
         if (this.deadline < 0L) {
             throw new IllegalArgumentException(
                 String.format(
-                    "The value of eo.deadline is %d, while zero or a positive number of seconds is expected",
+                    "The value of eo.transpile.deadline is %d, while zero or a positive number of seconds is expected",
                     this.deadline
                 )
             );
@@ -266,7 +274,7 @@ public final class MjTranspile extends MjSafe {
         if (!MjTranspile.CLASS.matcher(this.superclass).matches()) {
             throw new IllegalArgumentException(
                 String.format(
-                    "The value of eo.phiDefaultClass is '%s', while a Java class name matching '%s' is expected",
+                    "The value of eo.transpile.superclass is '%s', while a Java class name matching '%s' is expected",
                     this.superclass,
                     MjTranspile.CLASS
                 )

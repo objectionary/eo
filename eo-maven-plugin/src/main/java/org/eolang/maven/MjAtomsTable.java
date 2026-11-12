@@ -50,15 +50,15 @@ public final class MjAtomsTable extends MjSafe {
      * Directory with XMIR sources to scan for atoms, falling back to the
      * "parse" directory {@code Seqdir} already found when unset.
      */
-    @Parameter(alias = "atomsInputDir", property = "eo.atomsInputDir")
+    @Parameter(alias = "atoms-table.sources", property = "eo.atoms-table.sources")
     private File sources;
 
     /**
      * Output CSV file with the atoms table.
      */
     @Parameter(
-        alias = "atomsOutput",
-        property = "eo.atomsOutput",
+        alias = "atoms-table.csv",
+        property = "eo.atoms-table.csv",
         required = true,
         defaultValue = "${project.build.outputDirectory}/org/eolang/atoms.csv"
     )

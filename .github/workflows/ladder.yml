@@ -60,7 +60,7 @@ jobs:
           measure() {
             git checkout --quiet --force "$1"
             mvn clean install -ntp --batch-mode --errors -DskipTests -Dinvoker.skip -pl eo-maven-plugin -am
-            mvn clean process-sources -ntp --batch-mode --errors -DskipTests -Deo.transpileTests=false -pl eo-runtime
+            mvn clean process-sources -ntp --batch-mode --errors -DskipTests -Deo.transpile.tests=false -pl eo-runtime
             # A base older than the goal that writes the file leaves the
             # numbers empty, and every one of them then reads as new.
             cp eo-runtime/target/eo/ladder.txt "$2" 2>/dev/null || : > "$2"

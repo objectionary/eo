@@ -41,8 +41,8 @@ public final class MjInferenceReport extends MjSafe {
      * The directory where the pages are written.
      */
     @Parameter(
-        alias = "inferenceReportDir",
-        property = "eo.inferenceReportDir",
+        alias = "inference-report.pages",
+        property = "eo.inference-report.pages",
         required = true,
         defaultValue = "${project.build.directory}/site/inference"
     )
@@ -53,14 +53,17 @@ public final class MjInferenceReport extends MjSafe {
      * back to the "pre-inference" directory {@code Seqdir} already found
      * when unset.
      */
-    @Parameter(alias = "preInferenceDir", property = "eo.preInferenceDir")
+    @Parameter(
+        alias = "inference-report.prepared",
+        property = "eo.inference-report.prepared"
+    )
     private File prepared;
 
     /**
      * The directory where {@code answers.xml} was saved, falling back to the
      * "inference" directory {@code Seqdir} already found when unset.
      */
-    @Parameter(alias = "inferenceDir", property = "eo.inferenceDir")
+    @Parameter(alias = "inference-report.tables", property = "eo.inference-report.tables")
     private File tables;
 
     /**

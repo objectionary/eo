@@ -75,7 +75,7 @@ public final class MjInference extends MjSafe {
      * The directory where the prepared XMIR is saved, falling back to a
      * directory {@code Seqdir} numbers "pre-inference" when unset.
      */
-    @Parameter(alias = "preInferenceDir", property = "eo.preInferenceDir")
+    @Parameter(alias = "inference.prepared", property = "eo.inference.prepared")
     private File prepared;
 
     /**
@@ -83,7 +83,7 @@ public final class MjInference extends MjSafe {
      * saved, falling back to a directory {@code Seqdir} numbers "inference"
      * when unset.
      */
-    @Parameter(alias = "inferenceDir", property = "eo.inferenceDir")
+    @Parameter(alias = "inference.tables", property = "eo.inference.tables")
     private File tables;
 
     /**
@@ -91,7 +91,7 @@ public final class MjInference extends MjSafe {
      * holds the data, and every other one holds the first. Each must have
      * one void, {@code @}.
      */
-    @Parameter(alias = "inferenceCanon", property = "eo.inferenceCanon")
+    @Parameter(alias = "inference.canon", property = "eo.inference.canon")
     private List<String> canon;
 
     /**
@@ -99,14 +99,14 @@ public final class MjInference extends MjSafe {
      * formation under one of them starts a tag, which keeps apart what list
      * code does for different places of user code.
      */
-    @Parameter(alias = "inferenceRoots", property = "eo.inferenceRoots")
+    @Parameter(alias = "inference.roots", property = "eo.inference.roots")
     private List<String> roots;
 
     /**
      * The packages whose formations give back new data, so that a copy of
      * one of them takes no tag.
      */
-    @Parameter(alias = "inferenceScalars", property = "eo.inferenceScalars")
+    @Parameter(alias = "inference.scalars", property = "eo.inference.scalars")
     private List<String> scalars;
 
     /**

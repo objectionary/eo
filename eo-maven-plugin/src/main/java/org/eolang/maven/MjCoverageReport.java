@@ -31,9 +31,9 @@ import org.eolang.parser.Utf8;
  * populate the raw hits file have run (unlike {@code transpile}, which
  * only decides whether locations get wrapped in {@code PhCoverage} in
  * the first place, long before any test executes). Does nothing when
- * {@code eo.coverageFile} is not set or the file does not exist yet, the
+ * {@code eo.coverage-report.hits} is not set or the file does not exist yet, the
  * same "no-op when disabled" contract {@code PhCoverage} itself follows,
- * unless {@code eo.minCoverage} is above zero: then the build fails,
+ * unless {@code eo.coverage-report.minimum} is above zero: then the build fails,
  * because a gate that measured nothing must not pass.</p>
  *
  * <p>Every {@code .eo} file is re-parsed from its own source instead of
@@ -76,15 +76,15 @@ public final class MjCoverageReport extends MjSafe {
     /**
      * The raw {@code loc:line:pos} hits file {@code PhCoverage} appended to.
      */
-    @Parameter(alias = "coverageFile", property = "eo.coverageFile")
+    @Parameter(alias = "coverage-report.hits", property = "eo.coverage-report.hits")
     private File hits;
 
     /**
      * Where to write the LCOV tracefile.
      */
     @Parameter(
-        alias = "lcovFile",
-        property = "eo.lcovFile",
+        alias = "coverage-report.lcov",
+        property = "eo.coverage-report.lcov",
         defaultValue = "${project.build.directory}/coverage.info"
     )
     private File lcov;
@@ -92,13 +92,17 @@ public final class MjCoverageReport extends MjSafe {
     /**
      * The minimum percentage of dataized {@code .eo} objects that must be
      * covered, or the build fails. Zero by default, so a build with
-     * coverage tracking off (the common case, see {@code coverageTracking}
+     * coverage tracking off (the common case, see {@code transpile.coverage}
      * on {@link MjTranspile}) never fails on a threshold it never opted
      * into; {@code eo-runtime} raises it once tracking is on, mirroring
      * how the {@code jacoco} profile binds a {@code check} goal with its
      * own per-metric thresholds.
      */
-    @Parameter(alias = "minCoverage", property = "eo.minCoverage", defaultValue = "0")
+    @Parameter(
+        alias = "coverage-report.minimum",
+        property = "eo.coverage-report.minimum",
+        defaultValue = "0"
+    )
     private double minimum;
 
     /**
@@ -124,7 +128,7 @@ public final class MjCoverageReport extends MjSafe {
                     "Can't check the %.1f%% coverage minimum, no hits file at %s",
                     this.minimum,
                     Objects.toString(
-                        this.hits, "eo.coverageFile (unset)"
+                        this.hits, "eo.coverage-report.hits (unset)"
                     )
                 )
             );
