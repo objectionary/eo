@@ -11,18 +11,21 @@
   [^list i fallback] > at
     if. > @
       or.
-        0.gt
-          number >> index
-            if. >>!
-              0.gt
-                number i! >> idx
-              list.length.plus idx
-              idx
-        list.length.lte index
-      fallback "Given index is out of tuple bounds"
+        not.
+          index.floor.eq index
+        or.
+          0.gt
+            number >> index
+              if. >>!
+                0.gt
+                  number i! >> idx
+                list.length.plus idx
+                idx
+          list.length.lte index
+      fallback failure
       if. > [^list tup] >> at-fast
         0.eq tup.length
-        list.fallback "Given index is out of tuple bounds"
+        list.fallback list.failure
         if.
           eq.
             tup.length.plus -1
@@ -30,6 +33,16 @@
           tup.head
           list.at-fast tup.tail
       | list
+    printf. >> failure
+      if.
+        index.floor.eq index
+        "Given index %s is out of tuple bounds"
+        "Index must be an integer, but was %s"
+      *
+        i.is-finite.if
+          "%f".printf
+            * i
+          string i.as-scientific
   tuple > empty
     T "Can't get tail from the empty tuple"
     T "Can't get head from the empty tuple"
