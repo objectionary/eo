@@ -61,7 +61,7 @@ public final class MjCompile extends MjSafe {
                     compile,
                     this.target.toPath(),
                     this.cache.toPath(),
-                    this.cacheEnabled,
+                    !this.uncached,
                     this.plugin.getVersion(),
                     this.skipSourceLints,
                     this.skipProgramLints,
@@ -91,7 +91,7 @@ public final class MjCompile extends MjSafe {
                     this.classes.toPath(),
                     this.placeBinaries,
                     this.skipBinaries,
-                    this.rewrite
+                    !this.preserved
                 )
             ).exec();
         }

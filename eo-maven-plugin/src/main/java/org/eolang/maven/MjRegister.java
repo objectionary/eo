@@ -19,7 +19,7 @@ import org.cactoos.set.SetOf;
 /**
  * Find and register all {@code .eo} sources in the "foreign" catalog.
  *
- * <p>This goal scans the {@code <sourcesDir>} directory for all {@code .eo} files
+ * <p>This goal scans the {@code <sources>} directory for all {@code .eo} files
  * matching the inclusion and exclusion GLOB filters specified in the
  * {@code <register.included>} and {@code <register.excluded>} parameters respectively.
  * By default, it includes all {@code .eo} files found recursively.
@@ -86,7 +86,7 @@ public final class MjRegister extends MjSafe {
     public void exec() throws IOException {
         if (this.sourcesDir == null) {
             throw new IllegalArgumentException(
-                String.format("sourcesDir is null. Please specify a valid sourcesDir for %s", this)
+                String.format("eo.sources is null, please specify a valid directory for %s", this)
             );
         }
         try (TjsForeign tojos = this.tojos()) {

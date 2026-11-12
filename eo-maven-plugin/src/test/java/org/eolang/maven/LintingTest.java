@@ -53,7 +53,7 @@ final class LintingTest {
                 false,
                 true
             ).exec(),
-            "Linting must be fully skipped when skipLinting is TRUE"
+            "Linting must be fully skipped when eo.lint.bypass is TRUE"
         );
     }
 }

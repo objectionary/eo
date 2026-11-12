@@ -442,7 +442,7 @@ final class FakeMaven {
         this.params.putIfAbsent("project", stub);
         this.params.putIfAbsent("transpiledFormat", "csv");
         this.params.putIfAbsent("zeros", true);
-        this.params.putIfAbsent("cacheEnabled", true);
+        this.params.putIfAbsent("uncached", false);
         this.params.putIfAbsent("budget", 10);
         this.params.putIfAbsent("steps", 32);
         this.params.putIfAbsent("pin", "0.0.164");
@@ -473,7 +473,7 @@ final class FakeMaven {
             "objectionary",
             new Synced<>(new ScalarOf<>(Objectionary.Fake::new))
         );
-        this.params.putIfAbsent("rewrite", true);
+        this.params.putIfAbsent("preserved", false);
         this.params.putIfAbsent("offline", false);
         this.params.putIfAbsent("classes", this.classesPath().toFile());
         this.params.putIfAbsent("superclass", "PhDefault");

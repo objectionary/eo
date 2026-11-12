@@ -43,9 +43,9 @@
         </executions>
         <configuration>
           <transpile.tests>false</transpile.tests>
-          <ignoreRuntime>true</ignoreRuntime>
-          <failOnWarning>false</failOnWarning>
-          <skipLinting>true</skipLinting>
+          <runtime.bypass>true</runtime.bypass>
+          <lint.strict>false</lint.strict>
+          <lint.bypass>true</lint.bypass>
         </configuration>
       </plugin>
       <plugin>

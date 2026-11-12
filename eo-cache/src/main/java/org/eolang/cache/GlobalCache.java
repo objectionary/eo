@@ -15,7 +15,7 @@ import org.cactoos.io.InputOf;
  *
  * <p>A step asks it how one file is to be written and gets a {@link Footprint}
  * back. Whether that footprint goes through the cache or straight past it is
- * decided once, where the {@code eo.cacheEnabled} option is read, so no step
+ * decided once, where the {@code eo.cache.bypass} option is read, so no step
  * has to know that the option exists.</p>
  *
  * @since 0.74
@@ -64,7 +64,7 @@ public interface GlobalCache {
      *
      * <p>Every file is produced and written to its target, and the cache
      * directory is neither read nor written. This is what the build gets when
-     * {@code eo.cacheEnabled} is false.</p>
+     * {@code eo.cache.bypass} is true.</p>
      *
      * @since 0.74
      */
