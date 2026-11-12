@@ -121,15 +121,16 @@ final class Placing implements Step {
         final Path dir = this.home.resolve(dep);
         final long copied = new Placing.PlacedDependency(dir, dep, this.rewrite).get();
         if (Logger.isDebugEnabled(this)) {
+            final int total = new WkDefault(dir).size();
             if (copied > 0) {
                 Logger.debug(
                     this, "Placed %d binary file(s) out of %d, found in %s, to %[file]s",
-                    copied, new WkDefault(dir).size(), dep, this.classes
+                    copied, total, dep, this.classes
                 );
             } else {
                 Logger.debug(
                     this, "No binary file(s) out of %d were placed from %s, to %[file]s",
-                    new WkDefault(dir).size(), dep, this.classes
+                    total, dep, this.classes
                 );
             }
         }
@@ -207,16 +208,13 @@ final class Placing implements Step {
 
         private void printLogInfoAboutBinary(final Path file) {
             if (Logger.isDebugEnabled(this)) {
-                this.logBinary(file, Placing.this.classes.resolve(this.dir.relativize(file)));
+                final Path target = Placing.this.classes.resolve(
+                    this.dir.relativize(file)
+                );
+                this.logBinary(file, target);
             }
         }
 
-        /**
-         * Log replacement details after the caller has enabled debug logging.
-         *
-         * @param file Incoming binary
-         * @param target Destination of the placed binary
-         */
         private void logBinary(final Path file, final Path target) {
             final Optional<TjPlaced> tojo = Placing.this.placed.find(target);
             if (tojo.isPresent()) {
