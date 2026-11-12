@@ -149,6 +149,8 @@
   <xsl:key name="eo:symbolized" match="symbolized" use="@symbol"/>
   <xsl:key name="eo:number" match="dataized[@number] | symbolized[@number]" use="upper-case(normalize-space(.))"/>
   <xsl:key name="eo:deferred" match="deferred | looped[@symbol]" use="@symbol"/>
+  <xsl:key name="eo:recorded" match="applied | formed" use="@meta"/>
+  <xsl:key name="eo:aliased" match="answered | morphed | bound" use="@meta"/>
   <!-- The voids of this entry, by symbol, each as its path and its carrier. -->
   <xsl:variable name="eo:voids" as="map(xs:string, xs:string+)">
     <xsl:map>
@@ -656,7 +658,7 @@
   -->
   <xsl:function name="eo:record" as="element()?">
     <xsl:param name="meta" as="xs:string"/>
-    <xsl:variable name="record" select="($eo:doc//(applied | formed)[@meta = $meta])[1]"/>
+    <xsl:variable name="record" select="key('eo:recorded', $meta, $eo:doc)[1]"/>
     <xsl:variable name="alias" select="eo:alias($meta)"/>
     <xsl:sequence select="if (exists($record) or $alias = '' or contains($alias, '.')) then $record else eo:record($alias)"/>
   </xsl:function>
@@ -668,12 +670,12 @@
   <xsl:function name="eo:path" as="xs:string">
     <xsl:param name="meta" as="xs:string"/>
     <xsl:variable name="alias" select="eo:alias($meta)"/>
-    <xsl:sequence select="if (exists(($eo:doc//(applied | formed)[@meta = $meta])[1]) or $alias = '') then '' else if (contains($alias, '.')) then $alias else eo:path($alias)"/>
+    <xsl:sequence select="if (exists(key('eo:recorded', $meta, $eo:doc)) or $alias = '') then '' else if (contains($alias, '.')) then $alias else eo:path($alias)"/>
   </xsl:function>
   <!-- The meta or path an answer, a morph or a binding gives another meta, or nothing. -->
   <xsl:function name="eo:alias" as="xs:string">
     <xsl:param name="meta" as="xs:string"/>
-    <xsl:sequence select="normalize-space(($eo:doc//(answered | morphed | bound)[@meta = $meta])[1])"/>
+    <xsl:sequence select="normalize-space(key('eo:aliased', $meta, $eo:doc)[1])"/>
   </xsl:function>
   <!--
   Every symbol a record names, down to the bottom, so that the atom
