@@ -14,12 +14,6 @@
 # `0.gt arg` for the same reason: what `arg` says of itself reaches the
 # caller only while `arg` stands as a receiver, since an atom that is handed
 # it as an argument answers for its own attribute instead.
-#
-# @todo #9899:30min Hide `arg` behind `>>`, so that `as-char` reduces to the
-#  bytes it returns in the inference report. Today a hidden `arg` lets
-#  `eo:lower` turn `number.as-decimal` into a Java atom, which throws on a
-#  five-digit port because `eo:lower` renders the recursion phino cut as a
-#  terminator. Do it once `eo:lower` keeps such an entry in EO.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -32,7 +26,12 @@
   if. > @
     or.
       or.
-        arg.lt 0
+        lt.
+          if. >> arg
+            num.as-bytes.size.eq 8
+            number num.as-bytes
+            T "the 'ρ' attribute must be a number"
+          0
         arg.gt 127
       arg.is-integer.not
     T "The receiver of as-char must be an integer within the range [0, 127]"
@@ -41,10 +40,6 @@
         arg.plus 4503599627370496
       7
       1
-  if. > arg
-    num.as-bytes.size.eq 8
-    number num.as-bytes
-    T "the 'ρ' attribute must be a number"
 
   eq. ++> can-round-trip-through-as-ascii
     "!"
