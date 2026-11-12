@@ -182,13 +182,7 @@ final class Placing implements Step {
                 .excludes(Placing.this.exclude)
                 .stream()
                 .filter(this::isNotAlreadyPlaced)
-                .peek(
-                    file -> {
-                        if (Logger.isDebugEnabled(this)) {
-                            this.printLogInfoAboutBinary(file);
-                        }
-                    }
-                )
+                .peek(this::printLogInfoAboutBinary)
                 .peek(this::placeBinary)
                 .count();
         }
@@ -212,9 +206,12 @@ final class Placing implements Step {
         }
 
         private void printLogInfoAboutBinary(final Path file) {
-            final Path target = Placing.this.classes.resolve(
-                this.dir.relativize(file)
-            );
+            if (Logger.isDebugEnabled(this)) {
+                this.logBinary(file, Placing.this.classes.resolve(this.dir.relativize(file)));
+            }
+        }
+
+        private void logBinary(final Path file, final Path target) {
             final Optional<TjPlaced> tojo = Placing.this.placed.find(target);
             if (tojo.isPresent()) {
                 if (!Files.exists(target)) {
