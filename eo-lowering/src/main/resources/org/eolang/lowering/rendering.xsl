@@ -505,16 +505,23 @@
   throws the message of that copy. One that raised none came to a bare ⊥,
   which has no message, so it throws a failure that names where the atom
   came to it, and every failure of the runtime, such as an unset void,
-  extends that failure.
+  extends that failure. A terminator whose side holds a loop phino cut is
+  no ⊥ of the object at all, since phino reduces the part it cut to ⊥ only
+  to mark where it stopped looking, while the object goes on through the
+  loop, so its entry is a taint.
   -->
   <xsl:function name="eo:side" as="xs:string">
     <xsl:param name="joined" as="element()"/>
     <xsl:param name="side" as="xs:string"/>
     <xsl:param name="type" as="xs:string"/>
     <xsl:variable name="symbol" select="eo:branch($joined, $side)"/>
+    <xsl:variable name="looped" select="($joined/../morph[@at = concat('ξ.', $side, $eo:cactoos)]//looped)[1]"/>
     <xsl:choose>
       <xsl:when test="not($symbol = $joined/@terminator)">
         <xsl:sequence select="concat('return ', eo:value($symbol, $type), ';')"/>
+      </xsl:when>
+      <xsl:when test="exists($looped)">
+        <xsl:sequence select="eo:taint(concat('The entry ', $number, ' came to ⊥ on the ', $side, ' side of ', $joined/@symbol, ', because phino cut a loop at ', $looped/@of, ' there'))"/>
       </xsl:when>
       <xsl:when test="empty($joined/@raised)">
         <xsl:sequence select="concat('throw new ExFailure(&quot;', eo:literal('The object ' || $locator || ' came to ⊥ on the ' || $side || ' side of ' || $joined/@symbol), '&quot;);')"/>
