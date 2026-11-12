@@ -120,16 +120,18 @@ final class Placing implements Step {
         }
         final Path dir = this.home.resolve(dep);
         final long copied = new Placing.PlacedDependency(dir, dep, this.rewrite).get();
-        if (copied > 0) {
-            Logger.debug(
-                this, "Placed %d binary file(s) out of %d, found in %s, to %[file]s",
-                copied, new WkDefault(dir).size(), dep, this.classes
-            );
-        } else {
-            Logger.debug(
-                this, "No binary file(s) out of %d were placed from %s, to %[file]s",
-                new WkDefault(dir).size(), dep, this.classes
-            );
+        if (Logger.isDebugEnabled(this)) {
+            if (copied > 0) {
+                Logger.debug(
+                    this, "Placed %d binary file(s) out of %d, found in %s, to %[file]s",
+                    copied, new WkDefault(dir).size(), dep, this.classes
+                );
+            } else {
+                Logger.debug(
+                    this, "No binary file(s) out of %d were placed from %s, to %[file]s",
+                    new WkDefault(dir).size(), dep, this.classes
+                );
+            }
         }
         return copied;
     }
@@ -204,31 +206,33 @@ final class Placing implements Step {
         }
 
         private void printLogInfoAboutBinary(final Path file) {
-            final Path target = Placing.this.classes.resolve(
-                this.dir.relativize(file)
-            );
-            final Optional<TjPlaced> tojo = Placing.this.placed.find(target);
-            if (tojo.isPresent()) {
-                if (!Files.exists(target)) {
-                    Logger.debug(
-                        this,
-                        "The file %[file]s has been placed to %[file]s, but now it's gone, replacing",
-                        file, target
-                    );
-                }
-                if (
-                    Files.exists(target)
-                        && new Unchecked<>(
-                            () -> Files.size(target) != Files.size(file)
-                        ).value()
-                ) {
-                    Logger.debug(
-                        this,
-                        "File %[file]s (%[size]s) was already placed at %[file]s (%[size]s!) by %s, replacing",
-                        file, file.toFile().length(),
-                        target, target.toFile().length(),
-                        tojo.get().dependency()
-                    );
+            if (Logger.isDebugEnabled(this)) {
+                final Path target = Placing.this.classes.resolve(
+                    this.dir.relativize(file)
+                );
+                final Optional<TjPlaced> tojo = Placing.this.placed.find(target);
+                if (tojo.isPresent()) {
+                    if (!Files.exists(target)) {
+                        Logger.debug(
+                            this,
+                            "The file %[file]s has been placed to %[file]s, but now it's gone, replacing",
+                            file, target
+                        );
+                    }
+                    if (
+                        Files.exists(target)
+                            && new Unchecked<>(
+                                () -> Files.size(target) != Files.size(file)
+                            ).value()
+                    ) {
+                        Logger.debug(
+                            this,
+                            "File %[file]s (%[size]s) was already placed at %[file]s (%[size]s!) by %s, replacing",
+                            file, file.toFile().length(),
+                            target, target.toFile().length(),
+                            tojo.get().dependency()
+                        );
+                    }
                 }
             }
         }

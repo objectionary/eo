@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -68,7 +69,7 @@ final class Unplacing implements Step {
         if (binaries.isEmpty()) {
             Logger.warn(this, "No classes found in %[file]s", this.classes);
         } else {
-            final Collection<Path> available = binaries.excludes(this.keep);
+            final Collection<Path> available = new HashSet<>(binaries.excludes(this.keep));
             final int total = new Threaded<>(
                 this.placed.classes(),
                 tojo -> this.unplace(tojo, available)
@@ -101,7 +102,7 @@ final class Unplacing implements Step {
         final Path path = Paths.get(tojo.identifier());
         final String hash = new FileHash(path).toString();
         final int total;
-        final boolean inside = available.stream().anyMatch(path::equals);
+        final boolean inside = available.contains(path);
         if (tojo.sameHash(hash)) {
             if (inside) {
                 Logger.debug(
