@@ -82,12 +82,7 @@ final class ChainEmission {
             this.emit, this.span.line(), this.head, this.chain,
             this.suffix.attribute(this.span.line(), this.span.indent())
         );
-        if (!this.suffix.handle().isEmpty()) {
-            this.emit.local(this.suffix.handle());
-        }
-        if (this.suffix.constant()) {
-            this.emit.constant();
-        }
+        new Marked(this.emit, this.suffix).apply();
     }
 
     /**
@@ -104,12 +99,26 @@ final class ChainEmission {
         final Emit sink, final int line, final Value head,
         final List<MethodChain> links, final String label
     ) {
-        final int last = links.size() - 1;
         if (links.isEmpty()) {
             Emissions.openValue(sink, label, head, line);
         } else {
             Emissions.openValue(sink, null, head, line);
         }
+        ChainEmission.append(sink, line, links, label);
+    }
+
+    /**
+     * Append dispatch links after the currently open head object.
+     *
+     * @param sink The directives sink
+     * @param line Source line
+     * @param links The dispatch chain (may be empty)
+     * @param label Name for the last link, or {@code null}
+     */
+    static void append(
+        final Emit sink, final int line, final List<MethodChain> links, final String label
+    ) {
+        final int last = links.size() - 1;
         for (int idx = 0; idx <= last; idx = idx + 1) {
             final MethodChain chained = links.get(idx);
             sink.close();
