@@ -3,14 +3,14 @@
 # four places becomes `2.5000` and `0.9999999` with six places becomes `1.000000`.
 # If `places` is not a finite non-negative integer below 2^53 (negative,
 # fractional, nan, infinite, or too large to reach zero by repeated
-# subtraction of one), the `cant-print` fallback is returned, or the
-# terminator when unbound.
+# subtraction of one), `cant-print` takes an error message.
+# When unbound, it terminates with that message.
 #
 # The value is split into its integer and fraction parts before scaling, so
 # only the fraction is multiplied by a power of ten and every magnitude that
 # `as-decimal` writes exactly is written exactly here too. A magnitude of
-# 2^63 or larger is past what `as-decimal` can write, so it returns the
-# `cant-print` fallback as well, instead of terminating.
+# 2^63 or larger is past what `as-decimal` can write, so `cant-print`
+# takes an error message for that case as well.
 #
 # The fraction is scaled by at most 10^15, the largest power of ten that
 # keeps the scaled value an exact integer below 2^53, and never by 10^places

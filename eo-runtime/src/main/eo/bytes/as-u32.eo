@@ -1,6 +1,6 @@
 # Bytes as an unsigned 32-bit integer `u32`: a 4-byte chain reinterpreted
 # without a sign. For any other length the `cant-convert` fallback
-# is returned.
+# takes an error message. When unbound, it terminates with that message.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo

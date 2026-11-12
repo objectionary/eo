@@ -1,6 +1,6 @@
 # Returns the original string as `number`.
-# If the text is not numeric, the `cant-parse` fallback is returned,
-# or the terminator when unbound.
+# If the text is not numeric, `cant-parse` takes an error message.
+# When unbound, it terminates with that message.
 # The whole string must be the number: `scanf` matches its `%f` pattern
 # unanchored (via `find`), so on its own it would accept any text that
 # merely contains a number-shaped substring, e.g. `"$100"` or `"12.34.56"`.

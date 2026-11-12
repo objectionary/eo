@@ -1,6 +1,7 @@
 # Bytes as a floating-point `number`: an 8-byte chain reinterpreted as an
 # IEEE 754 double, mapping the special chains to `nan`, `pinf`, and `ninf`.
-# For any other length the `cant-convert` fallback is returned.
+# For any other length, `cant-convert` takes an error message.
+# When unbound, it terminates with that message.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
