@@ -209,14 +209,15 @@
       mem.slot 2 4
       8
 
-  malloc.of --> stops-on-taking-the-size-of-a-stale-slot
-    8
-    [mem]
-      seq * > @
-        part
-        mem.resized 2
-        part.size
-      mem.slot 4 2 > part
+  --> stops-on-taking-the-size-of-a-stale-slot
+    malloc.of > @
+      8
+      [mem]
+        seq * > @
+          part
+          mem.resized 2
+          part.size
+        mem.slot 4 2 > part
 
   malloc.of --> stops-on-writing-past-the-slot-end
     8
