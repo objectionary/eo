@@ -78,10 +78,7 @@
         data
       T
         "Can't write %f bytes at slot offset %f, because the slot has length %f".printf
-          *
-            data.size
-            offset
-            ^.length
+          * data.size offset ^.length
 
   ++> can-compose-offsets-through-three-nested-slots
     eq. > @
