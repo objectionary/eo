@@ -4,6 +4,8 @@
 
 # eo-inference
 
+Full report is [available in HTML](https://www.eolang.org/inference/index.html).
+
 Reads what an EO program says about its own objects and writes it down in
 `facts.xml`, then works out from it which objects each place of the program
 can be when Java runs it, writes that down in `answers.xml`, and draws a
