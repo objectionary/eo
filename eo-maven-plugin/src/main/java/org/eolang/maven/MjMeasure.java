@@ -31,9 +31,9 @@ import org.eolang.parser.Utf8;
  * populate the raw hits file have run (unlike {@code transpile}, which
  * only decides whether locations get wrapped in {@code PhCoverage} in
  * the first place, long before any test executes). Does nothing when
- * {@code eo.coverage-report.hits} is not set or the file does not exist yet, the
+ * {@code eo.measure.hits} is not set or the file does not exist yet, the
  * same "no-op when disabled" contract {@code PhCoverage} itself follows,
- * unless {@code eo.coverage-report.minimum} is above zero: then the build fails,
+ * unless {@code eo.measure.minimum} is above zero: then the build fails,
  * because a gate that measured nothing must not pass.</p>
  *
  * <p>Every {@code .eo} file is re-parsed from its own source instead of
@@ -67,24 +67,24 @@ import org.eolang.parser.Utf8;
  * @since 0.75.0
  */
 @Mojo(
-    name = "coverage-report",
+    name = "measure",
     defaultPhase = LifecyclePhase.VERIFY,
     threadSafe = true
 )
-public final class MjCoverageReport extends MjSafe {
+public final class MjMeasure extends MjSafe {
 
     /**
      * The raw {@code loc:line:pos} hits file {@code PhCoverage} appended to.
      */
-    @Parameter(alias = "coverage-report.hits", property = "eo.coverage-report.hits")
+    @Parameter(alias = "measure.hits", property = "eo.measure.hits")
     private File hits;
 
     /**
      * Where to write the LCOV tracefile.
      */
     @Parameter(
-        alias = "coverage-report.lcov",
-        property = "eo.coverage-report.lcov",
+        alias = "measure.lcov",
+        property = "eo.measure.lcov",
         defaultValue = "${project.build.directory}/coverage.info"
     )
     private File lcov;
@@ -99,8 +99,8 @@ public final class MjCoverageReport extends MjSafe {
      * own per-metric thresholds.
      */
     @Parameter(
-        alias = "coverage-report.minimum",
-        property = "eo.coverage-report.minimum",
+        alias = "measure.minimum",
+        property = "eo.measure.minimum",
         defaultValue = "0"
     )
     private double minimum;
@@ -108,7 +108,7 @@ public final class MjCoverageReport extends MjSafe {
     /**
      * Ctor.
      */
-    public MjCoverageReport() {
+    public MjMeasure() {
         // nothing
     }
 
@@ -128,7 +128,7 @@ public final class MjCoverageReport extends MjSafe {
                     "Can't check the %.1f%% coverage minimum, no hits file at %s",
                     this.minimum,
                     Objects.toString(
-                        this.hits, "eo.coverage-report.hits (unset)"
+                        this.hits, "eo.measure.hits (unset)"
                     )
                 )
             );

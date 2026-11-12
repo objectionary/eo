@@ -58,7 +58,7 @@ final class Rows {
     /**
      * Ctor.
      *
-     * @param tables The directory with the tables of {@link MjInference}
+     * @param tables The directory with the tables of {@link MjInfer}
      */
     Rows(final Path tables) {
         this.index = new Synced<>(

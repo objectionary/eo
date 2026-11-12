@@ -33,7 +33,7 @@ import org.eolang.lowering.Scope;
  * graph is never built while the program runs.</p>
  *
  * <p>This goal is the entry point of that pipeline. It runs after
- * {@code inference-report}, by which time a program has said everything
+ * {@code render}, by which time a program has said everything
  * the lowering needs to hear about it, and before {@code transpile}, the
  * last moment at which the Java of a program can still be changed.</p>
  *
@@ -44,7 +44,7 @@ import org.eolang.lowering.Scope;
  * When it runs it makes sure that the binary on this machine is the one
  * the pin names, since an answer of another version cannot be trusted,
  * and then plants the entries of the build. It hands the lowering the
- * XMIR of every standalone object, the directory where {@code eo:inference}
+ * XMIR of every standalone object, the directory where {@code eo:infer}
  * left its tables, because an entry is a formation applied to what the
  * tables say its voids hold, and one home directory, which {@code Seqdir}
  * numbers as {@code NN-lowering}. There the lowering keeps the world, the
@@ -198,9 +198,9 @@ public final class MjLower extends MjSafe {
     private String never;
 
     /**
-     * The directory with the tables of {@code eo:inference}. When it is not
+     * The directory with the tables of {@code eo:infer}. When it is not
      * set, the goal uses the directory that {@code Seqdir} gives to the name
-     * "inference", which is where {@code eo:inference} saves the tables.
+     * "inference", which is where {@code eo:infer} saves the tables.
      */
     @Parameter(alias = "lower.tables", property = "eo.lower.tables")
     private File tables;

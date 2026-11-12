@@ -107,9 +107,9 @@ copy is a study copy:
 
 The engine knows three lists of names of the program, which are parameters of
 the goal with no defaults, and the `pom.xml` of eo-runtime sets them:
-`inference.canon` (the kinds that are one shared copy each, `Φ.bytes`,
-`Φ.number` and `Φ.string`), `inference.roots` (the packages of list code,
-`Φ.tuple`, `Φ.map` and `Φ.set`) and `inference.scalars` (the packages whose
+`infer.canon` (the kinds that are one shared copy each, `Φ.bytes`,
+`Φ.number` and `Φ.string`), `infer.roots` (the packages of list code,
+`Φ.tuple`, `Φ.map` and `Φ.set`) and `infer.scalars` (the packages whose
 objects give back new data). A list left unset is empty.
 
 Before the facts are read, each file is made ready by `Prepared`: every chain
@@ -121,7 +121,7 @@ into them.
 
 ## The report
 
-The `inference-report` goal reads the prepared files and the `answers.xml` in
+The `render` goal reads the prepared files and the `answers.xml` in
 `target/eo/NN-inference`, and writes a page per source file into
 `target/site/inference`, with an index. A page shows the source with a mark
 on every object, coloured by one of nine bands of what the engine answers

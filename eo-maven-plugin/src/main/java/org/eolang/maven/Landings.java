@@ -89,7 +89,7 @@ final class Landings {
         if (!Files.exists(this.answers)) {
             throw new IOException(
                 Logger.format(
-                    "The table %[file]s is absent, while the arguments can be named only after the 'inference' goal has written it",
+                    "The table %[file]s is absent, while the arguments can be named only after the 'infer' goal has written it",
                     this.answers
                 )
             );

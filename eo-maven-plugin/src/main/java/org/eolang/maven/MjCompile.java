@@ -25,7 +25,7 @@ import org.apache.maven.plugins.annotations.Mojo;
  * never has to name {@code merge} between them, and naming it changes
  * nothing: a member already inside its object is not moved again.</p>
  *
- * <p>{@link MjInference} reads the files the parser wrote, one per source,
+ * <p>{@link MjInfer} reads the files the parser wrote, one per source,
  * and not the merged ones, for the reasons its own documentation gives. Its
  * tables still fit the merged objects: the parser gives every object the
  * locator it will carry once it is inside its package object, and the merge

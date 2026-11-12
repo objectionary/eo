@@ -162,7 +162,7 @@ final class MjTranspileTest {
                 "    42 > @"
             )
         ).with("tracking", true);
-        maven.execute(MjParse.class).execute(MjInference.class).execute(MjTranspile.class);
+        maven.execute(MjParse.class).execute(MjInfer.class).execute(MjTranspile.class);
         MatcherAssert.assertThat(
             "a formation that takes nothing and copies nothing but a literal must be marked as safe to cache, but it wasnt",
             new XMLDocument(
@@ -181,7 +181,7 @@ final class MjTranspileTest {
         MatcherAssert.assertThat(
             "a formation marked as safe to cache must be wrapped in PhSticky in the generated Java, but it wasnt",
             new TextOf(
-                MjTranspileTest.pure(temp).execute(MjParse.class).execute(MjInference.class)
+                MjTranspileTest.pure(temp).execute(MjParse.class).execute(MjInfer.class)
                     .execute(MjTranspile.class).result()
                     .get("target/generated/org/eolang/EO_examples/EOx.java")
             ).asString(),
@@ -194,7 +194,7 @@ final class MjTranspileTest {
         MatcherAssert.assertThat(
             "a top-level formation marked as safe to cache must implement Pure in the generated Java, so PhPackage can wrap it in PhSticky, but it didnt",
             new TextOf(
-                MjTranspileTest.pure(temp).execute(MjParse.class).execute(MjInference.class)
+                MjTranspileTest.pure(temp).execute(MjParse.class).execute(MjInfer.class)
                     .execute(MjTranspile.class).result()
                     .get("target/generated/org/eolang/EO_examples/EOx.java")
             ).asString(),
@@ -220,7 +220,7 @@ final class MjTranspileTest {
                     )
                 )
                 .execute(MjParse.class)
-                .execute(MjInference.class)
+                .execute(MjInfer.class)
                 .execute(MjTranspile.class)
                 .result()
                 .get("target/generated/org/eolang/EO_examples/EOx.java")

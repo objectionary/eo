@@ -102,11 +102,11 @@ public final class MjTranspile extends MjSafe {
      * compiled program; when that property is absent, every hit is a
      * silent no-op. In {@code eo-runtime} the {@code coverage}
      * profile turns this on and forwards that property to surefire in
-     * one step (see its {@code pom.xml}). The {@code coverage-report}
-     * Maven goal ({@link MjCoverageReport}) turns the raw hits into an
+     * one step (see its {@code pom.xml}). The {@code measure}
+     * Maven goal ({@link MjMeasure}) turns the raw hits into an
      * LCOV tracefile, bound to the {@code verify} phase since the hits
      * only exist after tests actually run. {@code eo-runtime} pairs it
-     * with {@code coverage-report.minimum} on that same goal, failing the build when
+     * with {@code measure.minimum} on that same goal, failing the build when
      * the covered percentage of dataized {@code .eo} objects drops below
      * a threshold, mirroring how the {@code jacoco} profile binds a
      * {@code check} goal with its own per-metric thresholds.
@@ -182,11 +182,11 @@ public final class MjTranspile extends MjSafe {
     private String memory;
 
     /**
-     * The directory with the tables that {@link MjInference} writes, read by
+     * The directory with the tables that {@link MjInfer} writes, read by
      * {@code purify.xsl} to find out which formations are safe to cache. The
-     * default is the one {@link MjInference} saves them to, so a build that
+     * default is the one {@link MjInfer} saves them to, so a build that
      * runs the goals in their usual order needs to say nothing here. A build
-     * that skips {@code eo:inference} leaves the directory absent, and then
+     * that skips {@code eo:infer} leaves the directory absent, and then
      * nothing is marked. Falls back to a directory {@code Seqdir} numbers
      * "inference" when unset.
      */

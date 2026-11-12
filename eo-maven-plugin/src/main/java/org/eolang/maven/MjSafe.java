@@ -36,7 +36,7 @@ import org.slf4j.impl.StaticLoggerBinder;
  *  and {@code placed} each hold the word their {@code Format} sibling
  *  wants; {@code cache} holds the one {@code cacheEnabled} wants;
  *  {@code sourcesDir} wants the {@code sources} that {@code MjPrint} and
- *  {@code MjAtomsTable} both declare; the three binary filters
+ *  {@code MjTabulate} both declare; the three binary filters
  *  ({@code placeBinaries}, {@code skipBinaries}, {@code keepBinaries})
  *  want one word between them, as do the three lint flags
  *  ({@code skipSourceLints}, {@code skipProgramLints},

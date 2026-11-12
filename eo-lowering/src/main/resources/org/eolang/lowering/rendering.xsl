@@ -53,7 +53,7 @@
   Otherwise the root is returned as the object it is when it is a void or
   a copy, and bare when it is data the atom computed or a constant the flow
   came down to. Bare data loses the object around it, so then the tables of
-  "eo:inference" are asked what the body returns, and an entry whose body is
+  "eo:infer" are asked what the body returns, and an entry whose body is
   not a number, a bool or bytes is a taint: a string would lose every
   attribute of its own, and so would an "i16". Nothing is computed before a
   reader asks for it, so what one flow alone needs is computed on that flow
@@ -84,7 +84,7 @@
   <!-- The table of rows the planting wrote, as a URI. -->
   <xsl:param name="rows" as="xs:string" select="''"/>
   <!--
-  The directory with the tables of "eo:inference", as a URI, which holds
+  The directory with the tables of "eo:infer", as a URI, which holds
   "facts.xml" and "answers.xml". The tables are opened only when the root
   of a flow is data, since the tables of eo-runtime are large and nothing
   else asks about the body.
@@ -803,7 +803,7 @@
   <!--
   Stop the rendering of a flow whose root is data the atom would return
   bare, while the protocol does not name the object around it, unless the
-  tables of "eo:inference" say that the body is a number, a bool or bytes,
+  tables of "eo:infer" say that the body is a number, a bool or bytes,
   which is what "Data.ToPhi" makes of the data anyway. Bare data loses the
   object around it, so the atom of a body of any other type, a string or
   an "i16" for example, would lose every attribute of its own. A body the
@@ -825,7 +825,7 @@
   </xsl:function>
   <!--
   The Java type of the data a flow came down to, as the tables of
-  "eo:inference" say what the body returns, which is the only place that
+  "eo:infer" say what the body returns, which is the only place that
   says what bytes alone are: a bool, a number, or bytes.
   -->
   <xsl:function name="eo:carrier" as="xs:string">
@@ -875,7 +875,7 @@
   The Java of the root of a flow as the object the atom returns: inside the
   object the protocol names around it, or, when the protocol names none, a
   void and a copy as they are, and data wrapped into the carrier the tables
-  of "eo:inference" give the body, since bytes alone do not say what they
+  of "eo:infer" give the body, since bytes alone do not say what they
   are.
   -->
   <xsl:function name="eo:returned" as="xs:string">
@@ -898,7 +898,7 @@
   <!--
   The Java of the bytes a flow came down to as the object the atom returns:
   inside the object the protocol names around them, or, when the protocol
-  names none, wrapped into the carrier the tables of "eo:inference" give
+  names none, wrapped into the carrier the tables of "eo:infer" give
   the body.
   -->
   <xsl:function name="eo:constant-returned" as="xs:string">

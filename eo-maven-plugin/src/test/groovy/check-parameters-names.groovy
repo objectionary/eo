@@ -21,7 +21,7 @@ Path plugin = basedir.toPath()
     .resolve('maven')
     .resolve('plugin.xml')
 GPathResult content = new XmlSlurper().parseText(new File(plugin.toString()).text)
-// For example, "${eo.foreignFormat}" or "${eo.atoms-table.csv}":
+// For example, "${eo.foreignFormat}" or "${eo.tabulate.csv}":
 String pattern = "\\\$\\{eo\\.([a-z]+(-[a-z]+)*\\.)?[a-z]+([A-Z][a-z]+)*}"
 List<String> failures = []
 List<String> toBeExcluded = ['help']

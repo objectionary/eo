@@ -40,25 +40,25 @@ import org.eolang.inference.Annotation;
  * @since 0.57
  */
 @Mojo(
-    name = "atoms-table",
+    name = "tabulate",
     defaultPhase = LifecyclePhase.PROCESS_CLASSES,
     threadSafe = true
 )
-public final class MjAtomsTable extends MjSafe {
+public final class MjTabulate extends MjSafe {
 
     /**
      * Directory with XMIR sources to scan for atoms, falling back to the
      * "parse" directory {@code Seqdir} already found when unset.
      */
-    @Parameter(alias = "atoms-table.sources", property = "eo.atoms-table.sources")
+    @Parameter(alias = "tabulate.sources", property = "eo.tabulate.sources")
     private File sources;
 
     /**
      * Output CSV file with the atoms table.
      */
     @Parameter(
-        alias = "atoms-table.csv",
-        property = "eo.atoms-table.csv",
+        alias = "tabulate.csv",
+        property = "eo.tabulate.csv",
         required = true,
         defaultValue = "${project.build.outputDirectory}/org/eolang/atoms.csv"
     )
@@ -67,7 +67,7 @@ public final class MjAtomsTable extends MjSafe {
     /**
      * Ctor.
      */
-    public MjAtomsTable() {
+    public MjTabulate() {
         // nothing
     }
 

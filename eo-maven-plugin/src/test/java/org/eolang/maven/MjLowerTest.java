@@ -453,7 +453,7 @@ final class MjLowerTest {
             .withProgram(String.format("[@] > bytes%n"))
             .withProgram(MjLowerTest.number())
             .execute(MjParse.class)
-            .execute(MjInference.class);
+            .execute(MjInfer.class);
     }
 
     private static String number() {

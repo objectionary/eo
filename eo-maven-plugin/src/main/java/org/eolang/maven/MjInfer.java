@@ -65,17 +65,17 @@ import org.eolang.inference.Names;
  * @since 0.67.0
  */
 @Mojo(
-    name = "inference",
+    name = "infer",
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class MjInference extends MjSafe {
+public final class MjInfer extends MjSafe {
 
     /**
      * The directory where the prepared XMIR is saved, falling back to a
      * directory {@code Seqdir} numbers "pre-inference" when unset.
      */
-    @Parameter(alias = "inference.prepared", property = "eo.inference.prepared")
+    @Parameter(alias = "infer.prepared", property = "eo.infer.prepared")
     private File prepared;
 
     /**
@@ -83,7 +83,7 @@ public final class MjInference extends MjSafe {
      * saved, falling back to a directory {@code Seqdir} numbers "inference"
      * when unset.
      */
-    @Parameter(alias = "inference.tables", property = "eo.inference.tables")
+    @Parameter(alias = "infer.tables", property = "eo.infer.tables")
     private File tables;
 
     /**
@@ -91,7 +91,7 @@ public final class MjInference extends MjSafe {
      * holds the data, and every other one holds the first. Each must have
      * one void, {@code @}.
      */
-    @Parameter(alias = "inference.canon", property = "eo.inference.canon")
+    @Parameter(alias = "infer.canon", property = "eo.infer.canon")
     private List<String> canon;
 
     /**
@@ -99,20 +99,20 @@ public final class MjInference extends MjSafe {
      * formation under one of them starts a tag, which keeps apart what list
      * code does for different places of user code.
      */
-    @Parameter(alias = "inference.roots", property = "eo.inference.roots")
+    @Parameter(alias = "infer.roots", property = "eo.infer.roots")
     private List<String> roots;
 
     /**
      * The packages whose formations give back new data, so that a copy of
      * one of them takes no tag.
      */
-    @Parameter(alias = "inference.scalars", property = "eo.inference.scalars")
+    @Parameter(alias = "infer.scalars", property = "eo.infer.scalars")
     private List<String> scalars;
 
     /**
      * Ctor.
      */
-    public MjInference() {
+    public MjInfer() {
         // nothing
     }
 

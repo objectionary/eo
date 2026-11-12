@@ -68,7 +68,7 @@ public final class Lowering {
     private final Collection<Path> sources;
 
     /**
-     * The directory with the tables of {@code eo:inference},
+     * The directory with the tables of {@code eo:infer},
      * {@code facts.xml} and {@code answers.xml}, which say what the voids
      * hold and what the bodies give.
      */
@@ -121,7 +121,7 @@ public final class Lowering {
      * Ctor.
      *
      * @param srcs The XMIR files of the build
-     * @param tbls The directory with the tables of {@code eo:inference}
+     * @param tbls The directory with the tables of {@code eo:infer}
      * @param dir The home directory of the lowering, usually {@code target/eo/NN-lowering}
      * @param exe The name of the phino program, or the path to it
      * @param pin The only version of phino that the lowering accepts
@@ -149,7 +149,7 @@ public final class Lowering {
      * Ctor.
      *
      * @param srcs The XMIR files of the build
-     * @param tbls The directory with the tables of {@code eo:inference}
+     * @param tbls The directory with the tables of {@code eo:infer}
      * @param dir The home directory of the lowering, usually {@code target/eo/NN-lowering}
      * @param exe The name of the phino program, or the path to it
      * @param pin The only version of phino that the lowering accepts
@@ -180,7 +180,7 @@ public final class Lowering {
      * Ctor.
      *
      * @param srcs The XMIR files of the build
-     * @param tbls The directory with the tables of {@code eo:inference}
+     * @param tbls The directory with the tables of {@code eo:infer}
      * @param dir The home directory of the lowering, usually {@code target/eo/NN-lowering}
      * @param exe The phino program on this computer
      * @param store The cache, where the protocols are kept between builds
