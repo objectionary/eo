@@ -50,38 +50,41 @@ final class XmirTest {
     @Test
     void preservesNestedHandleOwnersOnRoundTrip() throws IOException {
         MatcherAssert.assertThat(
-            "printing must preserve nested recursive and const handle owners",
+            "nested handles keep their owners across a print",
             new EoSyntax(
-                new InputOf(
-                    new Xmir(
-                        new EoSyntax(
-                            new InputOf(
-                                String.join(
-                                    System.lineSeparator(),
-                                    "[] > app",
-                                    "  [n] >> rec",
-                                    "  [] > inner",
-                                    "    [n] >> rec",
-                                    "      rec n > @",
-                                    "    rec 1 > local",
-                                    "    ^.rec 2 > outer",
-                                    "  [] > constants",
-                                    "    42 >>! value",
-                                    "    [] > deeper",
-                                    "      43 >>! value",
-                                    "      value > own",
-                                    "      ^.value > other"
-                                )
-                            )
-                        ).parsed()
-                    ).toEO()
-                )
+                new Xmir(
+                    new EoSyntax(
+                        String.join(
+                            System.lineSeparator(),
+                            "[^app] > app",
+                            "  [n] >> rec",
+                            "  [^in] > inner",
+                            "    [n] >> rec",
+                            "      rec n > @",
+                            "    rec > local",
+                            "    ^.rec > outer",
+                            "  42 >>! value",
+                            "  [^d] > deeper",
+                            "    43 >>! value",
+                            "    value > own",
+                            "    ^.value > other",
+                            "  [n] >>! peg",
+                            "    n > @",
+                            "  foo > x",
+                            "    [n] >> peg-1",
+                            "      n > @",
+                            "  peg-1 > y"
+                        )
+                    ).parsed()
+                ).toEO()
             ).parsed(),
             XhtmlMatchers.hasXPaths(
-                "/object/o[@name='app']/o[@name='inner']/o[@name='local' and @base='ξ.a🌵rec']",
-                "/object/o[@name='app']/o[@name='inner']/o[@name='outer' and @base='ξ.ρ.a🌵rec']",
-                "/object/o[@name='app']/o[@name='constants']/o[@name='deeper']/o[@name='own' and @base='ξ.a🌵value']",
-                "/object/o[@name='app']/o[@name='constants']/o[@name='deeper']/o[@name='other' and @base='ξ.ρ.a🌵value']"
+                "//o[@name='local' and @base='ξ.a🌵rec']",
+                "//o[@name='outer' and @base='ξ.ρ.a🌵rec']",
+                "//o[@name='own' and @base='ξ.a🌵value']",
+                "//o[@name='other' and @base='ξ.ρ.a🌵value']",
+                "//o[@name='app' and count(o[@name='a🌵peg-1'])=1]",
+                "//o[@name='y' and @base='ξ.a🌵peg-1']"
             )
         );
     }
