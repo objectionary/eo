@@ -312,7 +312,7 @@ final class RenderingTest {
      *
      * <p>The file has EO sources, one entry, its protocol, and the whole
      * text of the Java atom of that entry, which the rendering must write
-     * exactly. The tables of {@code eo:inference} are what the engine writes
+     * exactly. The tables of {@code eo:infer} are what the engine writes
      * for the sources, unless the keys {@code facts} and {@code answers}
      * hold them, see {@link Tables}. So the sources hold what the engine
      * needs to tell what the body gives, the atoms it calls and a caller

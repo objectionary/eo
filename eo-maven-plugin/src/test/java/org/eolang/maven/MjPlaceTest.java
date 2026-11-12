@@ -57,7 +57,7 @@ final class MjPlaceTest {
         ).toFile().lastModified();
         MatcherAssert.assertThat(
             "PlaceMojo must skip already placed binaries, but it doesn't",
-            new FakeMaven(temp).with("rewrite", false).withPlacedBinary(
+            new FakeMaven(temp).with("preserved", true).withPlacedBinary(
                 temp.resolve(this.targetClasses()).resolve(binary)
                 )
             .execute(MjPlace.class)
@@ -207,7 +207,7 @@ final class MjPlaceTest {
     @Test
     void doesNotPlaceAgainIfNotUnplacedAndRewriteBinariesIsOff(@Mktmp final Path temp)
         throws Exception {
-        final FakeMaven maven = new FakeMaven(temp).with("rewrite", false);
+        final FakeMaven maven = new FakeMaven(temp).with("preserved", true);
         final String binary = "some.class";
         final String old = "some old content";
         MjPlaceTest.saveBinary(temp, old, binary);

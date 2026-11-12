@@ -33,7 +33,7 @@ jobs:
       - uses: objectionary/phino@32dc77d9a8129e4257f0b46b0f54b2ae709690b9  # master
         with:
           version: 0.0.164
-      - run: mvn install '-Deo.coverageTracking=true' '-Deo.lowering=true'
+      - run: mvn install '-Deo.transpile.coverage=true' '-Deo.lower.bypass=false'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # The goal must have run, and a missing folder is how a silently

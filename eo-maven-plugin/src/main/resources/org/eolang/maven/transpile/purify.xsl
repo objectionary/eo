@@ -8,11 +8,11 @@
   Here we mark every formation that is safe to cache with @pure="true", so
   that a later step of #5165 can let "PhSticky" keep the result of dataizing
   it instead of working it out again.
-  Nothing is worked out here: the two tables that "eo:inference" leaves in
+  Nothing is worked out here: the two tables that "eo:infer" leaves in
   its directory already say what a program knows about itself, and this
   stylesheet only reads them. The "inference" parameter names that
   directory, and when it names nothing, or the tables are not there - a
-  build that skips the "inference" goal - every question below is
+  build that skips the "infer" goal - every question below is
   unanswerable and the stylesheet is an identity transform.
   "facts.xml" says what the text of the program states, and among it, in
   its "objects", the voids every formation declares:
@@ -89,7 +89,7 @@
   <xsl:key name="eo:object" match="objects/type" use="@id"/>
   <xsl:key name="eo:answer" match="answers/o" use="@loc"/>
   <!--
-  The directory with the tables of "eo:inference", as a URI. Empty when
+  The directory with the tables of "eo:infer", as a URI. Empty when
   nothing was worked out, and then nothing is labeled.
   -->
   <xsl:param name="inference" as="xs:string" select="''"/>

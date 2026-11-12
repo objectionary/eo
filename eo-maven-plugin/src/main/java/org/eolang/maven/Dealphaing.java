@@ -127,7 +127,7 @@ final class Dealphaing implements Step {
             if (this.strict && !lost.isEmpty()) {
                 throw new IllegalStateException(
                     String.format(
-                        "%d positional argument(s) found no void to be named after, such as '%s', while eo.failOnAlpha demands a name for every one",
+                        "%d positional argument(s) found no void to be named after, such as '%s', while eo.dealpha.rigid demands a name for every one",
                         lost.size(), lost.iterator().next()
                     )
                 );

@@ -90,7 +90,7 @@ import org.cactoos.text.TextOf;
  * Plain data has no object around it, so a string or an {@code i16}, for
  * example, would lose every attribute of its own. This is why, when the
  * result is plain data the protocol names no object around, this stage
- * asks the tables of {@code eo:inference} what the body gives, and an
+ * asks the tables of {@code eo:infer} what the body gives, and an
  * entry whose body is not a number, a bool or bytes is a taint. The tables
  * must be there before the stage starts, even though most entries never
  * ask them.</p>
@@ -136,7 +136,7 @@ import org.cactoos.text.TextOf;
 final class Rendering implements Proc<Path> {
 
     /**
-     * The directory with the tables of {@code eo:inference},
+     * The directory with the tables of {@code eo:infer},
      * {@code facts.xml} and {@code answers.xml}, which say what the body of
      * an entry gives.
      */
@@ -145,7 +145,7 @@ final class Rendering implements Proc<Path> {
     /**
      * Ctor.
      *
-     * @param tbls The directory with the tables of {@code eo:inference}
+     * @param tbls The directory with the tables of {@code eo:infer}
      */
     Rendering(final Path tbls) {
         this.tables = tbls;
@@ -158,7 +158,7 @@ final class Rendering implements Proc<Path> {
             if (!Files.exists(this.tables.resolve(table))) {
                 throw new IllegalStateException(
                     String.format(
-                        "There is no '%s' in '%s', while rendering needs the tables of eo:inference to say what a body gives",
+                        "There is no '%s' in '%s', while rendering needs the tables of eo:infer to say what a body gives",
                         table, this.tables
                     )
                 );

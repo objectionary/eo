@@ -43,7 +43,7 @@ import org.xembly.Xembler;
  * <p>Most of the checks are in the YAML files of the directory
  * {@code entry-packs}. They say which objects get an entry, what their
  * voids get, and which objects become rows of the table of operations.
- * Every file has an EO program, which the engine of {@code eo:inference}
+ * Every file has an EO program, which the engine of {@code eo:infer}
  * reads to write the tables the planting reads, see {@link Tables}, the
  * XPath queries that the XMIR of the entries and the copies must match,
  * and the rows that {@code entries.tsv}, {@code voids.tsv},

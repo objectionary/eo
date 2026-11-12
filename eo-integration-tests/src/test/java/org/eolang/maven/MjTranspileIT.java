@@ -99,8 +99,8 @@ final class MjTranspileIT {
                 new AppendedPlugin(f).value()
                     .goals("register", "parse", "transpile")
                     .configuration()
-                    .set("trackTransformationSteps", "true")
-                    .set("cacheEnabled", "false");
+                    .set("track", "true")
+                    .set("cache.bypass", "true");
                 f.exec("process-sources");
             }
         );
