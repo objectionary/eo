@@ -11,8 +11,8 @@ import java.io.IOException;
  *
  * <p>Every run of phino is given a limit of time. When a run is still
  * working after that time, phino stops by itself, writes a {@code timeout}
- * element at the end of its protocol, and fails. Then this error is
- * thrown.</p>
+ * element at the end of its protocol, and exits normally. Then this error
+ * is thrown.</p>
  *
  * <p>This error is an {@link IOException} for two reasons. First, the cache
  * that stores the results of phino lets only an {@link IOException} pass
@@ -33,9 +33,8 @@ final class KilledException extends IOException {
      * Ctor.
      *
      * @param message Which run was stopped, and after how much time
-     * @param cause The error that reported that the run was stopped
      */
-    KilledException(final String message, final Throwable cause) {
-        super(message, cause);
+    KilledException(final String message) {
+        super(message);
     }
 }

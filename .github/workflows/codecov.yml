@@ -32,7 +32,7 @@ jobs:
       # and this job is the one that always builds with lowering on.
       - uses: objectionary/phino@32dc77d9a8129e4257f0b46b0f54b2ae709690b9  # master
         with:
-          version: 0.0.163
+          version: 0.0.164
       - run: mvn install '-Deo.transpile.coverage=true' '-Deo.lower.bypass=false'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

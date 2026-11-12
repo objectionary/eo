@@ -171,7 +171,8 @@ final class Phino {
      * nothing else. One entry that never ends must not stop the whole build,
      * so phino is told how many seconds it may work, and it stops by itself
      * when they are over. Then it closes the protocol with a {@code timeout}
-     * element and fails. This class never kills phino, because a killed
+     * element and exits normally, and this class reports the run as one that
+     * ran out of time. This class never kills phino, because a killed
      * phino leaves a protocol cut in the middle, which nobody can read.</p>
      *
      * @param world The world, which {@link Merging} wrote
@@ -256,54 +257,48 @@ final class Phino {
         final List<String> extra, final int steps, final int loops, final Duration budget
     ) throws IOException {
         final String task = String.format("dataizing the entry %d of '%s'", entry, world);
-        try {
-            this.run(
-                new Jaxec(
-                    this.binary,
-                    String.format("--pin=%s", this.version),
-                    "dataize",
-                    "--acyclic=plausible",
-                    String.format("--max-loops=%d", loops),
-                    "--partial",
-                    "--quiet",
-                    "--sweet",
-                    "--hide-rho",
-                    "--abridged",
-                    String.format("--symbolic=%s", atoms),
-                    String.format("--locator=Q.l🌵.e%d", entry),
-                    String.format("--protocol=%s", protocol)
-                ).with(extra).with(
-                    String.format("--max-steps=%d", steps),
-                    String.format(
-                        "--max-seconds=%d",
-                        Math.max(1L, budget.plusNanos(999_999_999L).toSeconds())
+        this.run(
+            new Jaxec(
+                this.binary,
+                String.format("--pin=%s", this.version),
+                "dataize",
+                "--acyclic=plausible",
+                String.format("--max-loops=%d", loops),
+                "--partial",
+                "--quiet",
+                "--sweet",
+                "--hide-rho",
+                "--abridged",
+                String.format("--symbolic=%s", atoms),
+                String.format("--locator=Q.l🌵.e%d", entry),
+                String.format("--protocol=%s", protocol)
+            ).with(extra).with(
+                String.format("--max-steps=%d", steps),
+                String.format(
+                    "--max-seconds=%d",
+                    Math.max(1L, budget.plusNanos(999_999_999L).toSeconds())
+                )
+            ).with(
+                new ListOf<>(
+                    new Mapped<>(
+                        limit -> String.format("--max-memory=%s", limit),
+                        new Filtered<>(limit -> !"0".equals(limit), new ListOf<>(this.memory))
                     )
-                ).with(
-                    new ListOf<>(
-                        new Mapped<>(
-                            limit -> String.format("--max-memory=%s", limit),
-                            new Filtered<>(limit -> !"0".equals(limit), new ListOf<>(this.memory))
-                        )
-                    )
-                ).with(world.toString()),
-                task
-            );
-        } catch (final IllegalStateException ex) {
-            if (Files.notExists(protocol)) {
-                throw ex;
-            }
+                )
+            ).with(world.toString()),
+            task
+        );
+        if (Files.exists(protocol)) {
             try (Stream<String> lines = Files.lines(protocol)) {
-                if (lines.noneMatch(line -> line.contains("<timeout "))) {
-                    throw ex;
+                if (lines.anyMatch(line -> line.contains("<timeout "))) {
+                    throw new KilledException(
+                        Logger.format(
+                            "The binary '%s' ran out of its budget of %[ms]s while %s",
+                            this.binary, budget.toMillis(), task
+                        )
+                    );
                 }
             }
-            throw new KilledException(
-                Logger.format(
-                    "The binary '%s' ran out of its budget of %[ms]s while %s",
-                    this.binary, budget.toMillis(), task
-                ),
-                ex
-            );
         }
     }
 

@@ -237,7 +237,7 @@ final class PhinoTest {
             PhinoTest.binary(
                 temp,
                 "for a; do case $a in --protocol=*) p=${a#--protocol=};; esac; done;",
-                "echo '<protocol><dataize><timeout limit=\"2\"/></dataize><msec>2000</msec></protocol>' > \"$p\"; exit 1"
+                "echo '<protocol><dataize><timeout limit=\"2\"/></dataize><msec>2000</msec></protocol>' > \"$p\""
             ),
             "3.3.15"
         );
