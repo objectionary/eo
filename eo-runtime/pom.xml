@@ -289,7 +289,7 @@
           <transpile.deadline>${eo.deadline}</transpile.deadline>
           <transpile.memory>${eo.maxmem}</transpile.memory>
           <!-- The seconds one run of phino may take on one entry of 'eo:lower'. -->
-          <lower.budget>180</lower.budget>
+          <lower.budget>10</lower.budget>
           <!-- The largest memory one run of phino may take in 'eo:lower'. -->
           <lower.memory>1G</lower.memory>
           <!-- The largest number of nested steps one run of phino may take in 'eo:lower'. -->
