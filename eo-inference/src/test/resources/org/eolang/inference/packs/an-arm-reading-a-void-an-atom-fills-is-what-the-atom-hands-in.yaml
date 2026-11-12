@@ -53,5 +53,5 @@ answers:
   - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵scope']/is[@loc='Φ.app.hold']
   - /answers/o[@loc='Φ.app.hold.v🌵m']/is[@loc='Φ.oak']
   - /answers/o[@loc='Φ.app.hold.pick.φ.α1']/is[@loc='Φ.oak']
-  - /answers/o[@loc='Φ.app.hold.first' and not(is[@loc='Φ.oak'])]/is[@loc='Φ.dial']
-  - /answers/o[@loc='Φ.app.hold.second' and not(is[@loc='Φ.dial'])]/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.hold.first' and not(./is[@loc='Φ.oak'])]/is[@loc='Φ.dial']
+  - /answers/o[@loc='Φ.app.hold.second' and not(./is[@loc='Φ.dial'])]/is[@loc='Φ.oak']
