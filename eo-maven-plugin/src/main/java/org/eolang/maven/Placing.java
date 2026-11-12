@@ -208,10 +208,10 @@ final class Placing implements Step {
 
         private void printLogInfoAboutBinary(final Path file) {
             if (Logger.isDebugEnabled(this)) {
-                final Path target = Placing.this.classes.resolve(
-                    this.dir.relativize(file)
+                this.logBinary(
+                    file,
+                    Placing.this.classes.resolve(this.dir.relativize(file))
                 );
-                this.logBinary(file, target);
             }
         }
 
