@@ -209,8 +209,7 @@ final class Placing implements Step {
         private void printLogInfoAboutBinary(final Path file) {
             if (Logger.isDebugEnabled(this)) {
                 this.logBinary(
-                    file,
-                    Placing.this.classes.resolve(this.dir.relativize(file))
+                    file, Placing.this.classes.resolve(this.dir.relativize(file))
                 );
             }
         }
