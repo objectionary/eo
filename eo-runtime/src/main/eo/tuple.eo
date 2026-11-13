@@ -26,7 +26,8 @@
             "Given index %s is out of tuple bounds"
             "Index must be an integer, but was %s"
           *
-            idx.is-finite.if
+            if.
+              idx.abs.lt 9.223372036854776e18
               "%f".printf
                 * idx
               string
