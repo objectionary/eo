@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
@@ -348,11 +347,12 @@ final class RenderingTest {
     }
 
     private static void compile(final Path source) {
-        final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        Assertions.assertNotNull(compiler, "a JDK compiler is required");
+        Assertions.assertNotNull(
+            ToolProvider.getSystemJavaCompiler(), "a JDK compiler is required"
+        );
         Assertions.assertEquals(
             0,
-            compiler.run(
+            ToolProvider.getSystemJavaCompiler().run(
                 null, null, null, "--release", "17", "-encoding", "UTF-8", source.toString()
             ),
             source.toString()
