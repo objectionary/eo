@@ -110,10 +110,10 @@ final class LnTextBlock implements Line {
         } else {
             emit.unnamedObject("Φ.string", this.span.line(), this.span.indent());
             Emissions.bytesCarrier(emit, this.span.line(), this.span.indent(), hex);
-            ChainEmission.append(
+            new ChainEmission(
                 emit, this.span.line(), chain,
                 suffix.attribute(this.span.line(), this.span.indent())
-            );
+            ).append();
             new Marked(emit, suffix).apply();
         }
     }
