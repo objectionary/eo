@@ -103,7 +103,7 @@ final class Emissions {
         if (head.identity() && !args.isEmpty()) {
             throw new ParseError(line, head.pos(), Emissions.NO_IDENTITY_ARGS);
         }
-        ChainEmission.link(emit, line, head, chain, name);
+        new ChainEmission(emit, line, chain, name).run(head);
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, line);
         }
@@ -179,7 +179,7 @@ final class Emissions {
             }
             emit.close();
         } else {
-            ChainEmission.link(emit, line, value, tail, null);
+            new ChainEmission(emit, line, tail, null).run(value);
             if (value.bound()) {
                 emit.slot(Emissions.bindingTag(value.binding()));
             }

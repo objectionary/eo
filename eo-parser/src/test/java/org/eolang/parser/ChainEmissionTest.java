@@ -24,12 +24,8 @@ final class ChainEmissionTest {
         final Emit emit = new Emit();
         emit.object("foo", null, 1, 0);
         new ChainEmission(
-            emit,
-            new Span("bar > foo", 1),
-            new Value(Value.Kind.IDENTIFIER, "bar", 0),
-            Collections.emptyList(),
-            new Suffix("> foo", new Span("bar > foo", 1), 4)
-        ).run();
+            emit, 1, Collections.emptyList(), "foo"
+        ).run(new Value(Value.Kind.IDENTIFIER, "bar", 0));
         emit.close();
         emit.close();
         MatcherAssert.assertThat(
@@ -47,12 +43,8 @@ final class ChainEmissionTest {
         final Emit emit = new Emit();
         emit.object("wrap", null, 1, 0);
         new ChainEmission(
-            emit,
-            new Span("foo.bar > wrap", 1),
-            new Value(Value.Kind.IDENTIFIER, "foo", 0),
-            Collections.singletonList(new MethodChain("bar", 3, false)),
-            new Suffix("> wrap", new Span("foo.bar > wrap", 1), 8)
-        ).run();
+            emit, 1, Collections.singletonList(new MethodChain("bar", 3, false)), "wrap"
+        ).run(new Value(Value.Kind.IDENTIFIER, "foo", 0));
         emit.close();
         emit.close();
         MatcherAssert.assertThat(
@@ -66,16 +58,14 @@ final class ChainEmissionTest {
     }
 
     @Test
-    void emitsConstantMarkerWhenSuffixCarriesBang() {
+    void appliesSuffixMarksToTheEmittedHead() {
         final Emit emit = new Emit();
         emit.object("wrap", null, 1, 0);
+        final Suffix suffix = new Suffix("> foo!", new Span("bar > foo!", 1), 4);
         new ChainEmission(
-            emit,
-            new Span("bar > foo!", 1),
-            new Value(Value.Kind.IDENTIFIER, "bar", 0),
-            Collections.emptyList(),
-            new Suffix("> foo!", new Span("bar > foo!", 1), 4)
-        ).run();
+            emit, 1, Collections.emptyList(), suffix.attribute(1, 0)
+        ).run(new Value(Value.Kind.IDENTIFIER, "bar", 0));
+        new Marked(emit, suffix).apply();
         emit.close();
         emit.close();
         MatcherAssert.assertThat(
@@ -92,15 +82,13 @@ final class ChainEmissionTest {
         final Emit emit = new Emit();
         emit.object("wrap", null, 1, 0);
         new ChainEmission(
-            emit,
-            new Span("foo.bar.baz > q", 1),
-            new Value(Value.Kind.IDENTIFIER, "foo", 0),
+            emit, 1,
             Arrays.asList(
                 new MethodChain("bar", 3, false),
                 new MethodChain("baz", 7, false)
             ),
-            new Suffix("> q", new Span("foo.bar.baz > q", 1), 12)
-        ).run();
+            "q"
+        ).run(new Value(Value.Kind.IDENTIFIER, "foo", 0));
         emit.close();
         emit.close();
         MatcherAssert.assertThat(
