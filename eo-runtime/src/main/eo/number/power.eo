@@ -9,10 +9,10 @@
 # the natural logarithm of the base. Zeros, infinities and nan follow the
 # same IEEE rules that Math.pow obeys.
 #
-# `expo` says that `b` is not a number itself, rather than letting the
-# first atom it reaches say it of its own attribute: the exponent of a
-# string is eight bytes short, and the comparison that met it blamed its
-# own receiver, which is an attribute the caller never wrote (#9283).
+# `b.checked` says that `b` is not a number before the first atom it
+# reaches says it of its own attribute: the exponent of a string is eight
+# bytes short, and the comparison that met it blamed its own receiver, which
+# is an attribute the caller never wrote (#9283).
 #
 # @todo #9030:30min Keep the pair for powers above about 1.3e300. There
 #  `halved` overflows multiplying a factor by 134217729, and the power falls
@@ -30,10 +30,7 @@
 [^num b] > power
   if. > @
     eq.
-      if. >> expo
-        b.as-bytes.size.eq 8
-        number b.as-bytes
-        T "the 'b' attribute must be a number"
+      b.checked >> expo
       0
     1
     base.is-nan.if

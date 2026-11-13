@@ -21,8 +21,9 @@
 # a `!` attribute keeps is the bytes and not the object they came from.
 #
 # When the dividend is `nan` or infinite, the result is
-# `nan`, regardless of the divisor. Both the number and `b` have to be eight
-# bytes wide, as `plus` and `div` ask of theirs; anything else terminates.
+# `nan`, regardless of the divisor. Both sides are read through `checked`,
+# so anything that is not eight bytes wide terminates before the question
+# what it is finite has an answer.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -34,25 +35,19 @@
 [^num b cant-mod] > mod
   if. > @
     eq.
-      number b.as-bytes >> divisor
+      b.checked >> divisor
       0
     cant-mod "cannot calculate mod by zero"
     dividend.is-finite.not.if
-      if.
-        num.as-bytes.size.eq 8
-        nan
-        T "the 'ρ' attribute must be a number"
+      nan
       divisor.is-finite.not.if
-        if.
-          b.as-bytes.size.eq 8
-          divisor.is-nan.if nan num
-          T "the 'b' attribute must be a number"
+        divisor.is-nan.if nan num
         if.
           num.as-bytes.eq 80-00-00-00-00-00-00-00
           num
           if.
             gte.
-              number num.as-bytes >> dividend
+              num.checked >> dividend
               0
             [^num] >> abs-mod
               [^num chunk rest] >> shrink
