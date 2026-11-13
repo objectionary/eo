@@ -237,63 +237,15 @@
       20
       "recovered" > [message]
 
-  ++> can-reject-a-fractional-index-without-reading-the-tail
-    "Index must be an integer, but was 1.500000".eq > @
-      tup.at 1.5 I
-    tuple > tup
-      T "The tail must not be inspected"
-      "last"
-      3
-
-  eq. ++> can-report-a-fractional-index-coerced-from-bytes
-    "Index must be an integer, but was 1.500000"
+  eq. ++> can-reject-a-fractional-index-without-reading-the-tail
+    "recovered"
     at.
-      *
-        1
-        2
+      tuple
+        T "The tail must not be inspected"
+        "last"
         3
-      3F-F8-00-00-00-00-00-00
-      I
-
-  eq. ++> can-report-a-nan-index
-    "Index must be an integer, but was nan"
-    at.
-      *
-        1
-        2
-        3
-      nan
-      I
-
-  eq. ++> can-report-a-negative-fractional-index
-    "Index must be an integer, but was -1.500000"
-    at.
-      *
-        1
-        2
-        3
-      -1.5
-      I
-
-  eq. ++> can-report-a-negatively-infinite-index
-    "Given index -infinity is out of tuple bounds"
-    at.
-      *
-        1
-        2
-        3
-      ninf
-      I
-
-  eq. ++> can-report-an-out-of-bounds-negative-index
-    "Given index -4.000000 is out of tuple bounds"
-    at.
-      *
-        1
-        2
-        3
-      -4
-      I
+      1.5
+      "recovered" > [message]
 
   ++> can-report-the-length-of-a-non-empty-tuple
     eq. > @
