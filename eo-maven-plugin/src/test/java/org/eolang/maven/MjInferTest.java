@@ -18,12 +18,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Test cases for {@link MjInference}.
+ * Test cases for {@link MjInfer}.
  *
  * @since 0.67.0
  */
 @ExtendWith(MktmpResolver.class)
-final class MjInferenceTest {
+final class MjInferTest {
 
     @Test
     void writesTableOfWholeProgram(@Mktmp final Path temp) throws IOException {
@@ -36,7 +36,7 @@ final class MjInferenceTest {
                 ""
             )
         );
-        maven.execute(MjParse.class).execute(MjInference.class);
+        maven.execute(MjParse.class).execute(MjInfer.class);
         MatcherAssert.assertThat(
             "the facts must say what the innermost formation has, but they dont",
             new XMLDocument(
@@ -59,7 +59,7 @@ final class MjInferenceTest {
                 ""
             )
         );
-        maven.execute(MjParse.class).execute(MjInference.class);
+        maven.execute(MjParse.class).execute(MjInfer.class);
         MatcherAssert.assertThat(
             "the answers must name what each place is, but they dont",
             new XMLDocument(
@@ -83,7 +83,7 @@ final class MjInferenceTest {
                 String.join(System.lineSeparator(), "[] > bee", "")
             ).parsed().toString()
         );
-        maven.execute(MjInference.class);
+        maven.execute(MjInfer.class);
         MatcherAssert.assertThat(
             "an XMIR that no tojo names must stay out of the facts, but it didnt",
             new XMLDocument(
@@ -98,7 +98,7 @@ final class MjInferenceTest {
     @Test
     void writesFactsForModuleWithoutSources(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp);
-        maven.execute(MjParse.class).execute(MjInference.class);
+        maven.execute(MjParse.class).execute(MjInfer.class);
         MatcherAssert.assertThat(
             "the facts must be written for a module with no sources, but they werent",
             new XMLDocument(
@@ -120,7 +120,7 @@ final class MjInferenceTest {
                 ""
             )
         );
-        maven.execute(MjParse.class).execute(MjInference.class);
+        maven.execute(MjParse.class).execute(MjInfer.class);
         MatcherAssert.assertThat(
             "the prepared XMIR must have one object per name of a chain, but it doesnt",
             new XMLDocument(

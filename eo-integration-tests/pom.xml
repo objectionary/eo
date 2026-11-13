@@ -255,7 +255,7 @@
             <artifactId>eo-maven-plugin</artifactId>
             <version>${project.version}</version>
             <configuration>
-              <skipLinting>false</skipLinting>
+              <lint.bypass>false</lint.bypass>
             </configuration>
           </plugin>
           <plugin>

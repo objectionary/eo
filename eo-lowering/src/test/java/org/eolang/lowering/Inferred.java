@@ -29,13 +29,13 @@ import org.eolang.parser.Canonical;
 import org.eolang.parser.EoSyntax;
 
 /**
- * The tables of {@code eo:inference} for a small program, as the engine
+ * The tables of {@code eo:infer} for a small program, as the engine
  * itself writes them.
  *
  * <p>Every source is parsed and made ready by {@link Prepared}, and
  * {@link Facts} reads them all into {@code facts.xml}, which the engine,
  * {@link Walk}, reads to write {@code answers.xml} beside it, the way the
- * goal {@code eo:inference} does in a build, with the names the
+ * goal {@code eo:infer} does in a build, with the names the
  * {@code pom.xml} of eo-runtime gives it. So a test of the lowering
  * reads what the engine says of its program, and not what somebody once
  * thought the engine would say.</p>

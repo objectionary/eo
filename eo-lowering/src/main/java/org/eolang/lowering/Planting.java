@@ -38,13 +38,13 @@ import org.xembly.Xembler;
  * what a Java method needs to know.</p>
  *
  * <p>A symbol is never given alone. It is wrapped into the type that the
- * stage {@code eo:inference} found for that void, such as a number or a
+ * stage {@code eo:infer} found for that void, such as a number or a
  * bool, because the body of the object needs the attributes of that type.
  * The type is the annotation of the void in {@code facts.xml}, when the
  * source wrote one, and otherwise the only object {@code answers.xml} names
  * for the void. So an object gets an entry only when every void of it
  * holds a number, a string, a bool, bytes or a tuple. When a void holds
- * any other object, or when {@code eo:inference} does not know what it
+ * any other object, or when {@code eo:infer} does not know what it
  * holds, the object gets no entry at all and stays in EO as it was
  * written. A void left empty would not stop phino: it drops the part of
  * the body that reads that void, and the Java atom would quietly lose that
@@ -53,11 +53,11 @@ import org.xembly.Xembler;
  * <p>An object gets an entry whatever its body gives, because the Java
  * atom may give back the result of the body as the object it is, for
  * example a copy of another object. Only {@link Rendering} asks
- * {@code eo:inference} about the body when the result turns out to be
+ * {@code eo:infer} about the body when the result turns out to be
  * plain data, which the atom would give back without the object around
  * it.</p>
  *
- * <p>This stage asks {@code eo:inference} about the body for one thing
+ * <p>This stage asks {@code eo:infer} about the body for one thing
  * only: whether the object becomes a "row" of the table of operations,
  * {@code atoms.yaml}. Without rows, phino folds the whole tree of calls
  * under a body into one atom, and the atom of {@code floor} computes
@@ -88,7 +88,7 @@ import org.xembly.Xembler;
 final class Planting implements Proc<Path> {
 
     /**
-     * The directory with the tables of {@code eo:inference},
+     * The directory with the tables of {@code eo:infer},
      * {@code facts.xml} and {@code answers.xml}, which say what the voids
      * hold and what the bodies give.
      */
@@ -97,7 +97,7 @@ final class Planting implements Proc<Path> {
     /**
      * Ctor.
      *
-     * @param tbls The directory with the tables of {@code eo:inference}
+     * @param tbls The directory with the tables of {@code eo:infer}
      */
     Planting(final Path tbls) {
         this.tables = tbls;
@@ -109,7 +109,7 @@ final class Planting implements Proc<Path> {
             if (!Files.exists(this.tables.resolve(table))) {
                 throw new IllegalStateException(
                     String.format(
-                        "There is no '%s' in '%s', while planting needs the tables of eo:inference to say what a void holds and what a body gives",
+                        "There is no '%s' in '%s', while planting needs the tables of eo:infer to say what a void holds and what a body gives",
                         table, this.tables
                     )
                 );

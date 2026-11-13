@@ -10,7 +10,7 @@ import java.io.File;
  * The caching decision configured by the user.
  *
  * <p>This is the only place that turns {@code eo.cache} and
- * {@code eo.cacheEnabled} into a {@link GlobalCache} for one step, so
+ * {@code eo.cache.bypass} into a {@link GlobalCache} for one step, so
  * {@code MjSafe} itself no longer has to name {@link GlobalCache},
  * {@link GcShared} and {@link GlobalCache.GcFresh} directly.</p>
  *

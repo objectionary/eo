@@ -42,10 +42,10 @@
           </execution>
         </executions>
         <configuration>
-          <transpileTests>false</transpileTests>
-          <ignoreRuntime>true</ignoreRuntime>
-          <failOnWarning>false</failOnWarning>
-          <skipLinting>true</skipLinting>
+          <transpile.tests>false</transpile.tests>
+          <runtime.bypass>true</runtime.bypass>
+          <lint.strict>false</lint.strict>
+          <lint.bypass>true</lint.bypass>
         </configuration>
       </plugin>
       <plugin>

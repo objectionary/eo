@@ -30,7 +30,7 @@ import org.cactoos.io.ResourceOf;
  * the cache even when the plugin version does not change (see #5578).</p>
  *
  * <p>A directory of files is hashed the same way, its files taken in the
- * order of their names, which is how the tables of {@link MjInference}
+ * order of their names, which is how the tables of {@link MjInfer}
  * join the same key (see #7627). Every file is framed by its relative path
  * and the amount of bytes it holds, both closed by a NUL, so that a tree
  * differing in file names or in file boundaries never lands on the same

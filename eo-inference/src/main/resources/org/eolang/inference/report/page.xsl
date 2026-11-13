@@ -18,7 +18,10 @@ answers of the same shape are one answer, with a link to each line where one
 is written and its locator as hover text on the link; the line a link leads to
 stays lit until the next scroll, click or key press. The list under the name
 of a formation with study copies ends with a line that says nobody calls it,
-and how many of its copies are study copies when not all of them are.
+and how many of its copies are study copies when not all of them are. A
+segment of a name the parser made for an object written with ">> stream" is
+shown as "stream", grey and in italics, with the made name as hover text, and
+the whole name has its locator as hover text.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="page" version="3.0">
   <xsl:output method="html" version="5.0" encoding="UTF-8" indent="no" omit-xml-declaration="yes" include-content-type="no"/>
@@ -151,20 +154,20 @@ and how many of its copies are study copies when not all of them are.
     <xsl:choose>
       <xsl:when test="@kind = 'name'">
         <code>
-          <xsl:value-of select="."/>
+          <xsl:apply-templates/>
         </code>
       </xsl:when>
       <xsl:when test="@kind = 'object'">
         <xsl:choose>
-          <xsl:when test="contains(text(), '&#10;')">
+          <xsl:when test="contains(string-join(text(), ''), '&#10;')">
             <code class="tree">
-              <xsl:value-of select="text()"/>
+              <xsl:apply-templates select="text() | name"/>
             </code>
             <xsl:text>written at </xsl:text>
           </xsl:when>
           <xsl:otherwise>
             <code>
-              <xsl:value-of select="text()"/>
+              <xsl:apply-templates select="text() | name"/>
             </code>
             <xsl:text>, written at </xsl:text>
           </xsl:otherwise>
@@ -210,6 +213,16 @@ and how many of its copies are study copies when not all of them are.
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+  <xsl:template match="name">
+    <span class="nm" title="{@loc}">
+      <xsl:apply-templates/>
+    </span>
+  </xsl:template>
+  <xsl:template match="handle">
+    <span class="hid" title="{@hidden}">
+      <xsl:value-of select="."/>
+    </span>
+  </xsl:template>
   <xsl:template name="style">
     <style>
       body { font: 13px/1.5 ui-monospace, Menlo, Consolas, monospace; margin: 2em; color: #1a1a1a; background: #fff; }
@@ -253,6 +266,7 @@ and how many of its copies are study copies when not all of them are.
       .said code.tree { display: block; white-space: pre-wrap; }
       .item { display: list-item; list-style: disc; margin-left: 1.2em; }
       code { background: #f2f2f2; padding: 0 .2em; }
+      .hid { color: #888; font-style: italic; }
     </style>
   </xsl:template>
   <xsl:template name="filter">

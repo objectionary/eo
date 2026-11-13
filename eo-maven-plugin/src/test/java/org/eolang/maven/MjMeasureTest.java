@@ -19,20 +19,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Test case for {@link MjCoverageReport}.
+ * Test case for {@link MjMeasure}.
  *
  * @since 0.75.0
  */
 @ExtendWith(MktmpResolver.class)
-final class MjCoverageReportTest {
+final class MjMeasureTest {
 
     @Test
     void doesNothingWhenNoCoverageFileIsSet(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp).withProgram(
             String.join(System.lineSeparator(), "[] > x", "  42 > y")
-        ).execute(MjParse.class).execute(MjCoverageReport.class);
+        ).execute(MjParse.class).execute(MjMeasure.class);
         MatcherAssert.assertThat(
-            "no LCOV report must be written when eo.coverageFile is unset, but one was",
+            "no LCOV report must be written when eo.measure.hits is unset, but one was",
             Files.exists(temp.resolve("target/coverage.info")),
             Matchers.is(false)
         );
@@ -51,7 +51,7 @@ final class MjCoverageReportTest {
         final Path lcov = temp.resolve("coverage.info");
         maven.with("hits", hits.toFile())
             .with("lcov", lcov.toFile())
-            .execute(MjCoverageReport.class);
+            .execute(MjMeasure.class);
         MatcherAssert.assertThat(
             "the LCOV report must record at least one hit line, but LH:0 everywhere",
             Files.readString(lcov),
@@ -77,7 +77,7 @@ final class MjCoverageReportTest {
         final Path lcov = temp.resolve("coverage.info");
         maven.with("hits", hits.toFile())
             .with("lcov", lcov.toFile())
-            .execute(MjCoverageReport.class);
+            .execute(MjMeasure.class);
         MatcherAssert.assertThat(
             "every repeat of a location must be counted, however many of them the raw hits file holds, but they werent",
             Files.readString(lcov),
@@ -101,8 +101,8 @@ final class MjCoverageReportTest {
                 () -> maven.with("hits", hits.toFile())
                     .with("lcov", temp.resolve("coverage.info").toFile())
                     .with("minimum", 90.0d)
-                    .execute(MjCoverageReport.class),
-                "coverage-report must fail when the hits file it needs is missing, but it didnt"
+                    .execute(MjMeasure.class),
+                "measure must fail when the hits file it needs is missing, but it didnt"
             ).getCause().getCause().getMessage(),
             Matchers.containsString("nope.txt")
         );
@@ -116,8 +116,8 @@ final class MjCoverageReportTest {
         ).execute(MjParse.class);
         Assertions.assertThrows(
             IllegalStateException.class,
-            () -> maven.with("minimum", 90.0d).execute(MjCoverageReport.class),
-            "coverage-report must fail when eo.coverageFile is not set and a minimum is, but it didnt"
+            () -> maven.with("minimum", 90.0d).execute(MjMeasure.class),
+            "measure must fail when eo.measure.hits is not set and a minimum is, but it didnt"
         );
     }
 
@@ -133,8 +133,8 @@ final class MjCoverageReportTest {
             () -> maven.with("hits", hits.toFile())
                 .with("lcov", temp.resolve("coverage.info").toFile())
                 .with("minimum", 1.0d)
-                .execute(MjCoverageReport.class),
-            "coverage-report must fail the build when coverage is below the minimum, but it didnt"
+                .execute(MjMeasure.class),
+            "measure must fail the build when coverage is below the minimum, but it didnt"
         );
     }
 
@@ -151,8 +151,8 @@ final class MjCoverageReportTest {
                 IllegalStateException.class,
                 () -> maven.with("hits", hits.toFile())
                     .with("lcov", temp.resolve("coverage.info").toFile())
-                    .execute(MjCoverageReport.class),
-                "coverage-report must fail on a source that does not parse, but it didnt"
+                    .execute(MjMeasure.class),
+                "measure must fail on a source that does not parse, but it didnt"
             ).getCause().getCause().getMessage(),
             Matchers.containsString("doesn't parse")
         );
@@ -183,8 +183,8 @@ final class MjCoverageReportTest {
                         IllegalStateException.class,
                         () -> maven.with("hits", hits.toFile())
                             .with("lcov", temp.resolve("coverage.info").toFile())
-                            .execute(MjCoverageReport.class),
-                        "coverage-report must fail on a source that is not UTF-8, but it didnt"
+                            .execute(MjMeasure.class),
+                        "measure must fail on a source that is not UTF-8, but it didnt"
                     )
                 )
             ),
@@ -206,7 +206,7 @@ final class MjCoverageReportTest {
         final Path lcov = temp.resolve("coverage.info");
         maven.with("hits", hits.toFile())
             .with("lcov", lcov.toFile())
-            .execute(MjCoverageReport.class);
+            .execute(MjMeasure.class);
         MatcherAssert.assertThat(
             "a source whose only defect is a warning must still be reported, but it wasnt",
             Files.readString(lcov),
@@ -230,7 +230,7 @@ final class MjCoverageReportTest {
         final Path lcov = temp.resolve("coverage.info");
         maven.with("hits", hits.toFile())
             .with("lcov", lcov.toFile())
-            .execute(MjCoverageReport.class);
+            .execute(MjMeasure.class);
         MatcherAssert.assertThat(
             "a file the manifest names no location in must still get a record of its own, so that the report knows the file exists, but it got none",
             Files.readString(lcov),
@@ -268,7 +268,7 @@ final class MjCoverageReportTest {
         final Path lcov = temp.resolve("coverage.info");
         maven.with("hits", hits.toFile())
             .with("lcov", lcov.toFile())
-            .execute(MjCoverageReport.class);
+            .execute(MjMeasure.class);
         MatcherAssert.assertThat(
             "the meta directives of the package file must not be reported as DA misses, while its merged member must get a coverage block of its own",
             Files.readString(lcov),

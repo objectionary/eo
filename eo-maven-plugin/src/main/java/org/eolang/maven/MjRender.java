@@ -13,7 +13,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 /**
- * Draw a page per source file from what {@link MjInference} wrote.
+ * Draw a page per source file from what {@link MjInfer} wrote.
  *
  * <p>A page shows the author's own source with a mark on every object,
  * coloured by one of nine bands of what the engine answers there in
@@ -24,25 +24,25 @@ import org.apache.maven.plugins.annotations.Parameter;
  * and writes the same numbers down in {@code ladder.txt}, beside the
  * directory of the tables.</p>
  *
- * <p>A goal of its own rather than a flag on {@link MjInference}: a build
+ * <p>A goal of its own rather than a flag on {@link MjInfer}: a build
  * that wants the pages asks for this goal, one that does not never runs
  * it.</p>
  *
  * @since 0.71.0
  */
 @Mojo(
-    name = "inference-report",
+    name = "render",
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class MjInferenceReport extends MjSafe {
+public final class MjRender extends MjSafe {
 
     /**
      * The directory where the pages are written.
      */
     @Parameter(
-        alias = "inferenceReportDir",
-        property = "eo.inferenceReportDir",
+        alias = "render.pages",
+        property = "eo.render.pages",
         required = true,
         defaultValue = "${project.build.directory}/site/inference"
     )
@@ -53,20 +53,23 @@ public final class MjInferenceReport extends MjSafe {
      * back to the "pre-inference" directory {@code Seqdir} already found
      * when unset.
      */
-    @Parameter(alias = "preInferenceDir", property = "eo.preInferenceDir")
+    @Parameter(
+        alias = "render.prepared",
+        property = "eo.render.prepared"
+    )
     private File prepared;
 
     /**
      * The directory where {@code answers.xml} was saved, falling back to the
      * "inference" directory {@code Seqdir} already found when unset.
      */
-    @Parameter(alias = "inferenceDir", property = "eo.inferenceDir")
+    @Parameter(alias = "render.tables", property = "eo.render.tables")
     private File tables;
 
     /**
      * Ctor.
      */
-    public MjInferenceReport() {
+    public MjRender() {
         // nothing
     }
 

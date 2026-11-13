@@ -102,7 +102,7 @@ one after another:
     the cache. The result of parsing every source,
     the ones of the project included, is also kept in `~/.eo/parsed`, or
     under the directory `eo.cache` names, keyed by the version of the plugin
-    and by the hash of the source. Set `eo.cacheEnabled` to `false` to turn
+    and by the hash of the source. Set `eo.cache.bypass` to `true` to turn
     that off.
 
 * **Optimization**.
@@ -141,13 +141,13 @@ required objects
 and only download (and cache) them in case they are not found locally.
 
 This behaviour can be changed to always download objects from remote by
-setting `eo.overWrite`:
+setting `eo.overwrite`:
 
 ```shell
-mvn clean install -Deo.overWrite=true
+mvn clean install -Deo.overwrite=true
 ```
 
-Setting `eo.cacheEnabled=false` does the same, by taking the cache out of
+Setting `eo.cache.bypass=true` does the same, by taking the cache out of
 the picture altogether.
 
 If you want to run the tests of this repository with another stack size,

@@ -26,61 +26,61 @@ abstract class MjPenalties extends MjSafe {
     /**
      * Points charged for each level of indentation on a line.
      */
-    @Parameter(alias = "penaltyIndent", property = "eo.penaltyIndent")
+    @Parameter(alias = "penalty.indent", property = "eo.penalty.indent")
     private Integer indent;
 
     /**
      * Points charged for each opening parenthesis.
      */
-    @Parameter(alias = "penaltyBracket", property = "eo.penaltyBracket")
+    @Parameter(alias = "penalty.bracket", property = "eo.penalty.bracket")
     private Integer bracket;
 
     /**
      * The factor by which a parenthesis that opens a line is charged more.
      */
-    @Parameter(alias = "penaltyLeading", property = "eo.penaltyLeading")
+    @Parameter(alias = "penalty.leading", property = "eo.penalty.leading")
     private Integer leading;
 
     /**
      * Points charged for each explicit phi attribute on a line.
      */
-    @Parameter(alias = "penaltyPhi", property = "eo.penaltyPhi")
+    @Parameter(alias = "penalty.phi", property = "eo.penalty.phi")
     private Integer phi;
 
     /**
      * Points charged for each {@code if} emitted as a suffix attribute.
      */
-    @Parameter(alias = "penaltyIf", property = "eo.penaltyIf")
+    @Parameter(alias = "penalty.if", property = "eo.penalty.if")
     private Integer conditional;
 
     /**
      * Points charged for each character past the allowed width.
      */
-    @Parameter(alias = "penaltyExcess", property = "eo.penaltyExcess")
+    @Parameter(alias = "penalty.excess", property = "eo.penalty.excess")
     private Integer excess;
 
     /**
      * Points charged for every symbol in the block.
      */
-    @Parameter(alias = "penaltySymbol", property = "eo.penaltySymbol")
+    @Parameter(alias = "penalty.symbol", property = "eo.penalty.symbol")
     private Integer symbol;
 
     /**
      * Points charged for each space beyond the leading indentation.
      */
-    @Parameter(alias = "penaltySpace", property = "eo.penaltySpace")
+    @Parameter(alias = "penalty.space", property = "eo.penalty.space")
     private Integer space;
 
     /**
      * The column after which characters start being charged.
      */
-    @Parameter(alias = "penaltyWidth", property = "eo.penaltyWidth")
+    @Parameter(alias = "penalty.width", property = "eo.penalty.width")
     private Integer width;
 
     /**
      * The width of a single indentation level, in spaces.
      */
-    @Parameter(alias = "penaltyStep", property = "eo.penaltyStep")
+    @Parameter(alias = "penalty.step", property = "eo.penalty.step")
     private Integer step;
 
     /**

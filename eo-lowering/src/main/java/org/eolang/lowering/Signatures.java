@@ -21,7 +21,7 @@ import org.eolang.inference.Annotation;
 /**
  * The types that go into an object and the type that comes out of it.
  *
- * <p>The types are read from the tables of {@code eo:inference},
+ * <p>The types are read from the tables of {@code eo:infer},
  * {@code facts.xml} and {@code answers.xml}. A type that goes in is what
  * one void of the object holds, found where {@link Planting} finds it, in
  * {@code entries.xsl}: the annotation of the void in {@code facts.xml}, the
@@ -60,7 +60,7 @@ final class Signatures {
     /**
      * Ctor.
      *
-     * @param tables The directory with the tables of {@code eo:inference}
+     * @param tables The directory with the tables of {@code eo:infer}
      */
     Signatures(final Path tables) {
         this(

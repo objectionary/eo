@@ -46,8 +46,8 @@ public final class MjPrint extends MjPenalties {
      * Directory with XMIR sources to print.
      */
     @Parameter(
-        alias = "printSourcesDir",
-        property = "eo.printSourcesDir",
+        alias = "print.sources",
+        property = "eo.print.sources",
         required = true,
         defaultValue = "${project.basedir}/src/main/xmir"
     )
@@ -57,8 +57,8 @@ public final class MjPrint extends MjPenalties {
      * Directory where printed EO files are placed.
      */
     @Parameter(
-        alias = "printOutputDir",
-        property = "eo.printOutputDir",
+        alias = "print.output",
+        property = "eo.print.output",
         required = true,
         defaultValue = "${project.build.directory}/generated-sources/eo"
     )
