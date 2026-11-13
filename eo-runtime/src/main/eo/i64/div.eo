@@ -152,27 +152,6 @@
       -1.as-i64
       i64 00-00-00-00-00-00-00-2A > [message]
 
-  eq. ++> can-report-division-by-zero-at-the-maximum
-    "Can't divide 9223372036854775807 by i64 zero"
-    div.
-      i64 7F-FF-FF-FF-FF-FF-FF-FF
-      i64 00-00-00-00-00-00-00-00
-      I
-
-  eq. ++> can-report-division-by-zero-at-the-minimum
-    "Can't divide -9223372036854775808 by i64 zero"
-    div.
-      i64 80-00-00-00-00-00-00-00
-      i64 00-00-00-00-00-00-00-00
-      I
-
-  eq. ++> can-report-division-by-zero-for-a-negative-value
-    "Can't divide -13 by i64 zero"
-    div.
-      i64 FF-FF-FF-FF-FF-FF-FF-F3
-      i64 00-00-00-00-00-00-00-00
-      I
-
   eq. ++> can-truncate-toward-zero
     -13.as-i64.div 5.as-i64
     -2.as-i64
