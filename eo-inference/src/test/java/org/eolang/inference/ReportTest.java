@@ -232,6 +232,47 @@ final class ReportTest {
         );
     }
 
+    @Test
+    void printsAHiddenFormationByTheNameItsAuthorGaveIt(@Mktmp final Path temp)
+        throws IOException {
+        new Report(ReportTest.helper(temp, " local='spout'"), ReportTest.poured(temp))
+            .written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "a hidden formation must be printed by the name its author gave it, but it wasnt",
+            Files.readString(temp.resolve("out/jug.eo.html")),
+            Matchers.containsString(
+                String.join(
+                    "",
+                    "<code><span class=\"nm\" title=\"Φ.jug.a🌵2-2.lip\">Φ.jug.",
+                    "<span class=\"hid\" title=\"a🌵2-2\">spout</span>.lip</span></code>"
+                )
+            )
+        );
+    }
+
+    @Test
+    void drawsTheNameAnAuthorGaveInGreyItalics(@Mktmp final Path temp) throws IOException {
+        new Report(ReportTest.helper(temp, " local='spout'"), ReportTest.poured(temp))
+            .written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "a name the author gave a hidden formation must be grey and italic, but it wasnt",
+            Files.readString(temp.resolve("out/jug.eo.html")),
+            Matchers.containsString(".hid { color: #888; font-style: italic; }")
+        );
+    }
+
+    @Test
+    void keepsTheMadeNameOfAFormationItsAuthorDidntName(@Mktmp final Path temp)
+        throws IOException {
+        new Report(ReportTest.helper(temp, ""), ReportTest.poured(temp))
+            .written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "a formation its author didnt name must keep the name the parser made, but it didnt",
+            Files.readString(temp.resolve("out/jug.eo.html")),
+            Matchers.containsString("<code>Φ.jug.a🌵2-2.lip</code>")
+        );
+    }
+
     /**
      * Draws the pages of a whole run, the prepared XMIR in the folder that the
      * system property {@code report.xmirs} names and the table in the file
@@ -280,6 +321,33 @@ final class ReportTest {
                 "",
                 "<answers><o loc='Φ.cup' copies='1'><is loc='Φ.cup'/></o>",
                 "<o loc='Φ.cup.lid' copies='1'><is loc='Φ.cup.lid'/></o></answers>"
+            )
+        );
+        return temp.resolve("answers.xml");
+    }
+
+    private static Path helper(final Path temp, final String local) throws IOException {
+        Files.writeString(
+            Files.createDirectories(temp.resolve("xmirs")).resolve("jug.xmir"),
+            String.join(
+                "",
+                "<object><listing>[] &gt; jug&#10;  [] &gt;&gt; spout&#10;    [] &gt; lip&#10;",
+                "</listing><o line='1' loc='Φ.jug' name='jug' pos='0'>",
+                "<o line='2' loc='Φ.jug.a🌵2-2'", local, " name='a🌵2-2' pos='2'>",
+                "<o line='3' loc='Φ.jug.a🌵2-2.lip' name='lip' pos='4'/></o></o></object>"
+            )
+        );
+        return temp.resolve("xmirs");
+    }
+
+    private static Path poured(final Path temp) throws IOException {
+        Files.writeString(
+            temp.resolve("answers.xml"),
+            String.join(
+                "",
+                "<answers><o loc='Φ.jug' copies='1'><is loc='Φ.jug'/></o>",
+                "<o loc='Φ.jug.a🌵2-2' copies='1'><is loc='Φ.jug.a🌵2-2'/></o>",
+                "<o loc='Φ.jug.a🌵2-2.lip' copies='1'><is loc='Φ.jug.a🌵2-2.lip'/></o></answers>"
             )
         );
         return temp.resolve("answers.xml");

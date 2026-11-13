@@ -331,9 +331,18 @@
   <build>
     <plugins>
       <plugin>
+        <!--
+        @todo #9906:30min Remove '-Dorg.aspectj.weaver.Dump.exception=false'
+        from '.mvn/jvm.config' once jcabi/jcabi-maven-plugin#294 and
+        jcabi/jcabi-maven-plugin#295 are fixed. On JDK 25, a build without
+        'clean' makes AspectJ weave 'ObjectsIndex' a second time, and AspectJ
+        crashes and leaves an 'ajcore.*.txt' crash report behind, while the
+        plugin ignores the crash and passes the build. The flag only hides
+        those reports, so bump this plugin and drop the flag together.
+        -->
         <groupId>com.jcabi</groupId>
         <artifactId>jcabi-maven-plugin</artifactId>
-        <version>0.17.1</version>
+        <version>0.17.2</version>
         <executions>
           <execution>
             <goals>

@@ -33,7 +33,7 @@ jobs:
       - uses: JesseTG/rm@v1.0.3
         with:
           path: ~/.m2/repository/org/eolang
-      # One pass over the whole reactor, so the `inference-report` goal that
+      # One pass over the whole reactor, so the `render` goal that
       # eo-runtime's own pom asks for writes the pages while eo-runtime is
       # being built, rather than inferring the same program twice.
       - run: mvn install -ntp --errors --batch-mode -DskipTests -Dinvoker.skip

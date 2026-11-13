@@ -40,7 +40,7 @@ sources:
 answers:
   - /answers/o[@loc='Φ.one.φ.α0' and @lands='v🌵stuff']/is[@loc='Φ.cat']
   - /answers/o[@loc='Φ.two.φ.α0' and @lands='v🌵stuff']/is[@loc='Φ.bag']
-  - /answers/o[@loc='Φ.app.φ.α0.ρ' and is[@loc='Φ.cat'] and is[@loc='Φ.bag']]
+  - /answers/o[@loc='Φ.app.φ.α0.ρ' and ./is[@loc='Φ.cat'] and ./is[@loc='Φ.bag']]
   - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵item' and terminator and count(*)=2]/is[@loc='Φ.bag.size']
   - /answers[not(o//fails)]
   - /answers/o[@loc='Φ.box.v🌵item' and terminator and count(*)=2]/is[@loc='Φ.bag.size']

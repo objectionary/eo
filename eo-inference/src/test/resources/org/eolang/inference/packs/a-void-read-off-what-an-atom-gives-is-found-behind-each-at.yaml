@@ -40,8 +40,8 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.hold.λ' and is[@loc='Φ.hold.v🌵value']]/is[@loc='Φ.hold.v🌵alternative']
-  - /answers/o[@loc='Φ.app.held' and is[@loc='Φ.step']]/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.hold.λ' and ./is[@loc='Φ.hold.v🌵value']]/is[@loc='Φ.hold.v🌵alternative']
+  - /answers/o[@loc='Φ.app.held' and ./is[@loc='Φ.step']]/is[@loc='Φ.number']
   - /answers[not(o[@loc='Φ.pick']/reduced/is[@loc='Φ.number'])]
   - /answers/o[@loc='Φ.maker.pass']/is[@loc='Φ.pick']
   - /answers/o[@loc='Φ.maker.pass.α0' and @lands='v🌵val']/is[@loc='Φ.number']

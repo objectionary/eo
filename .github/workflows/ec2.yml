@@ -62,7 +62,7 @@ jobs:
       # `eo.maxmem` binds one test, while this box runs as many at once as
       # it has cores: sixteen budgets of 4G on a 24G heap can never hold, so
       # every test stayed inside its own and the heap died under all of them.
-      - run: mvn -ntp --errors --batch-mode '-Deo.coverageTracking=true' '-Deo.deadline=120' '-Deo.maxmem=1G' '-Dheap-size=24G' -Psite -Pjacoco clean install site
+      - run: mvn -ntp --errors --batch-mode '-Deo.transpile.coverage=true' '-Deo.deadline=120' '-Deo.maxmem=1G' '-Dheap-size=24G' -Psite -Pjacoco clean install site
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   terminate-instance:

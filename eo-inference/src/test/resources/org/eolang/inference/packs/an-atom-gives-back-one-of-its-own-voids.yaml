@@ -19,6 +19,6 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.choose.λ' and is[@loc='Φ.choose.v🌵first']]/is[@loc='Φ.choose.v🌵second']
+  - /answers/o[@loc='Φ.choose.λ' and ./is[@loc='Φ.choose.v🌵first']]/is[@loc='Φ.choose.v🌵second']
   - /answers/o[@loc='Φ.choose']/reduced/is[@loc='Φ.number']
   - /answers/o[@loc='Φ.choose']/reduced/is[@loc='Φ.string']

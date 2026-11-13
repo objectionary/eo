@@ -17,12 +17,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Test cases for {@link MjAtomsTable}.
+ * Test cases for {@link MjTabulate}.
  *
  * @since 0.57
  */
 @ExtendWith(MktmpResolver.class)
-final class MjAtomsTableTest {
+final class MjTabulateTest {
 
     @Test
     void generatesAtomsTableFromXmir(@Mktmp final Path temp) throws Exception {
@@ -45,7 +45,7 @@ final class MjAtomsTableTest {
         new FakeMaven(temp)
             .with("sources", temp.resolve("xmir").toFile())
             .with("csv", temp.resolve("classes/org/eolang/atoms.csv").toFile())
-            .execute(MjAtomsTable.class);
+            .execute(MjTabulate.class);
         MatcherAssert.assertThat(
             "Generated CSV must contain entries for every declared atom",
             Files.readString(temp.resolve("classes/org/eolang/atoms.csv")),
@@ -77,7 +77,7 @@ final class MjAtomsTableTest {
         new FakeMaven(temp)
             .with("sources", temp.resolve("xmir").toFile())
             .with("csv", temp.resolve("classes/org/eolang/atoms.csv").toFile())
-            .execute(MjAtomsTable.class);
+            .execute(MjTabulate.class);
         MatcherAssert.assertThat(
             "a type tree must be written as the name before its brackets, but it wasnt",
             Files.readAllLines(temp.resolve("classes/org/eolang/atoms.csv")),
@@ -92,7 +92,7 @@ final class MjAtomsTableTest {
             new FakeMaven(temp)
                 .with("sources", temp.resolve("nothing").toFile())
                 .with("csv", output.toFile())
-                .execute(MjAtomsTable.class);
+                .execute(MjTabulate.class);
             MatcherAssert.assertThat(
                 "A parentless csv must not throw and must produce the file",
                 Files.exists(output),
@@ -107,7 +107,7 @@ final class MjAtomsTableTest {
     void createsNoStageDirectoryWhenNothingWasParsed(@Mktmp final Path temp) throws Exception {
         new FakeMaven(temp)
             .with("csv", temp.resolve("classes/org/eolang/atoms.csv").toFile())
-            .execute(MjAtomsTable.class);
+            .execute(MjTabulate.class);
         MatcherAssert.assertThat(
             "A goal that only reads must leave the target untouched, but it didnt",
             Files.exists(temp.resolve("target")),
@@ -120,7 +120,7 @@ final class MjAtomsTableTest {
         new FakeMaven(temp)
             .with("sources", temp.resolve("nothing").toFile())
             .with("csv", temp.resolve("classes/org/eolang/atoms.csv").toFile())
-            .execute(MjAtomsTable.class);
+            .execute(MjTabulate.class);
         MatcherAssert.assertThat(
             "Output CSV should be empty when there are no XMIR sources",
             Files.readString(temp.resolve("classes/org/eolang/atoms.csv")),

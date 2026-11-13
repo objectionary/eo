@@ -74,7 +74,7 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.held.φ' and not(is[@loc='Φ.clock'])]/is[@loc='Φ.dial']
+  - /answers/o[@loc='Φ.held.φ' and not(./is[@loc='Φ.clock'])]/is[@loc='Φ.dial']
   - /answers/o[@loc='Φ.gauge.ready.φ.ρ']/is[@loc='Φ.bell']
   - /answers/o[@loc='Φ.gauge.ready.φ']/is[@loc='Φ.bell.ring']
   - /answers/o[@loc='Φ.gauge.ready']/reduced/is[@loc='Φ.bell.ring']

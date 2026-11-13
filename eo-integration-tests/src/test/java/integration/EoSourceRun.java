@@ -133,9 +133,9 @@ final class EoSourceRun implements Proc<Object> {
             .phase("generate-sources")
             .goals("register", "compile", "merge", "transpile")
             .configuration()
-            .set("failOnWarning", "false")
+            .set("lint.strict", "false")
             .set("offline", "true")
-            .set("skipLinting", "true");
+            .set("lint.bypass", "true");
         if (this.input.isEmpty()) {
             this.farea.build()
                 .plugins()

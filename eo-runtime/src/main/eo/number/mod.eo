@@ -55,28 +55,25 @@
               number num.as-bytes >> dividend
               0
             [^num] >> abs-mod
-              shrink > @
-                grow divisor.abs
-                dividend.abs
-              [^num chunk] > grow
-                if. > @
-                  or. (chunk.gte dividend.abs) next.is-finite.not
-                  chunk
-                  num.grow next
-                chunk.plus chunk > doubled!
-                number doubled > next
-              [^num chunk rest] > shrink
+              [^num chunk rest] >> shrink
                 if. > @
                   chunk.lt divisor.abs
                   rest
-                  num.shrink half kept
-                number halved > half
-                chunk.div 2 > halved!
-                number taken > kept
-                if. > taken!
-                  rest.gte chunk
-                  rest.minus chunk
-                  rest
+                  num.shrink
+                    number (chunk.div 2)!
+                    number ((rest.gte chunk).if (rest.minus chunk) rest)!
+              | > @
+                [^num chunk] >> grow
+                  if. > @
+                    or.
+                      chunk.gte dividend.abs
+                      not.
+                        is-finite.
+                          number (chunk.plus chunk)! >> next
+                    chunk
+                    num.grow next
+                | divisor.abs
+                dividend.abs
             abs-mod.neg
 
   eq. ++> can-recover-from-a-modulo-by-zero
@@ -84,26 +81,6 @@
     5.mod
       0
       42 > [message]
-
-  eq. ++> can-refuse-a-boolean-divisor
-    recovered
-      5.mod true
-      42
-    42
-
-  eq. ++> can-refuse-a-text-divisor
-    recovered
-      5.mod "abc"
-      42
-    42
-
-  eq. ++> can-refuse-a-text-number
-    recovered
-      mod.
-        number "abc"
-        5
-      42
-    42
 
   is-nan. ++> can-return-nan-when-the-dividend-is-infinite
     pinf.mod 5

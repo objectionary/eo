@@ -20,9 +20,10 @@
     <!--
     How many seconds a single test may run before Deadline skips it. Raise
     it on a box that has all the time in the world, so that a slow test
-    runs to its end instead of being skipped. The "transpile" goal reads the
-    same property and writes it into the @Timeout of every test it makes out
-    of an .eo file, while the hand-written tests get it from surefire below.
+    runs to its end instead of being skipped. The "transpile" goal gets the
+    same value through its "transpile.deadline" parameter below and writes
+    it into the @Timeout of every test it makes out of an .eo file, while
+    the hand-written tests get it from surefire below.
     -->
     <eo.deadline>1</eo.deadline>
     <!--
@@ -36,8 +37,9 @@
     rather than on the population (#8341). It binds one test, while tests
     run as wide as the box has cores, so a job raising it from the command
     line must keep the value times the workers under -Xmx. The "transpile"
-    goal reads the same property and writes it into the @Budget of every
-    test it makes out of an .eo file, which wins over the system property.
+    goal gets the same value through its "transpile.memory" parameter below
+    and writes it into the @Budget of every test it makes out of an .eo
+    file, which wins over the system property.
     -->
     <eo.maxmem>1G</eo.maxmem>
   </properties>
@@ -270,44 +272,49 @@
         <version>${project.version}</version>
         <configuration>
           <foreign>${project.build.directory}/eo-foreign.csv</foreign>
-          <foreignFormat>csv</foreignFormat>
+          <foreign.format>csv</foreign.format>
           <!-- Every lint warning is an error here; nothing may be tolerated. -->
-          <failOnWarning>true</failOnWarning>
+          <lint.strict>true</lint.strict>
           <offline>true</offline>
-          <ignoreRuntime>true</ignoreRuntime>
+          <runtime.bypass>true</runtime.bypass>
           <!--
           Cache is disabled because it is keyed on the plugin version
           (1.0-SNAPSHOT during development), so any plugin or configuration
           change would be silently ignored until the cache is cleared manually.
           -->
-          <cacheEnabled>false</cacheEnabled>
+          <cache.bypass>true</cache.bypass>
           <!-- Tests assert on precise .eo locations in panics (off by default). -->
-          <trackLocations>true</trackLocations>
+          <transpile.located>true</transpile.located>
+          <!-- The same limits that surefire gives the hand-written tests above. -->
+          <transpile.deadline>${eo.deadline}</transpile.deadline>
+          <transpile.memory>${eo.maxmem}</transpile.memory>
           <!-- The seconds one run of phino may take on one entry of 'eo:lower'. -->
-          <loweringBudget>30</loweringBudget>
+          <lower.budget>10</lower.budget>
+          <!-- The largest memory one run of phino may take in 'eo:lower'. -->
+          <lower.memory>1G</lower.memory>
           <!-- The largest number of nested steps one run of phino may take in 'eo:lower'. -->
-          <maxMorphingSteps>1000</maxMorphingSteps>
+          <lower.steps>1000</lower.steps>
           <!-- Save every phino protocol of 'eo:lower' as indented text too, for a reader to study. -->
-          <saveTextProtocols>true</saveTextProtocols>
+          <lower.minutes>true</lower.minutes>
           <!--
-          The names of eo-runtime that the engine of 'eo:inference' has to
+          The names of eo-runtime that the engine of 'eo:infer' has to
           know. Each kind of the canon is one shared copy, the first of them
           holding the data and the others holding the first. A copy of list
           code that other code makes starts a tag, which keeps apart the lists
           of different callers. A formation in one of the scalar packages
           gives back new data and takes no tag.
           -->
-          <inferenceCanon>
+          <infer.canon>
             <kind>Φ.bytes</kind>
             <kind>Φ.number</kind>
             <kind>Φ.string</kind>
-          </inferenceCanon>
-          <inferenceRoots>
+          </infer.canon>
+          <infer.roots>
             <root>Φ.tuple</root>
             <root>Φ.map</root>
             <root>Φ.set</root>
-          </inferenceRoots>
-          <inferenceScalars>
+          </infer.roots>
+          <infer.scalars>
             <scalar>Φ.number</scalar>
             <scalar>Φ.bytes</scalar>
             <scalar>Φ.string</scalar>
@@ -323,7 +330,7 @@
             <scalar>Φ.u32</scalar>
             <scalar>Φ.u64</scalar>
             <scalar>Φ.dataized</scalar>
-          </inferenceScalars>
+          </infer.scalars>
         </configuration>
         <executions>
           <execution>
@@ -332,12 +339,12 @@
               <goal>register</goal>
               <goal>format</goal>
               <goal>compile</goal>
-              <goal>inference</goal>
+              <goal>infer</goal>
               <goal>dealpha</goal>
-              <goal>inference-report</goal>
+              <goal>render</goal>
               <goal>lower</goal>
               <goal>transpile</goal>
-              <goal>atoms-table</goal>
+              <goal>tabulate</goal>
               <goal>unplace</goal>
               <goal>unspile</goal>
             </goals>
@@ -522,7 +529,7 @@
       -->
       <activation>
         <property>
-          <name>eo.coverageTracking</name>
+          <name>eo.transpile.coverage</name>
           <value>true</value>
         </property>
       </activation>
@@ -533,14 +540,14 @@
             <artifactId>eo-maven-plugin</artifactId>
             <executions>
               <execution>
-                <id>coverage-report</id>
+                <id>measure</id>
                 <phase>verify</phase>
                 <goals>
-                  <goal>coverage-report</goal>
+                  <goal>measure</goal>
                 </goals>
                 <configuration>
-                  <coverageFile>${project.build.directory}/coverage.txt</coverageFile>
-                  <minCoverage>55</minCoverage>
+                  <measure.hits>${project.build.directory}/coverage.txt</measure.hits>
+                  <measure.minimum>55</measure.minimum>
                 </configuration>
               </execution>
             </executions>
@@ -622,7 +629,7 @@
             <groupId>org.eolang</groupId>
             <artifactId>eo-maven-plugin</artifactId>
             <configuration>
-              <skipLinting>false</skipLinting>
+              <lint.bypass>false</lint.bypass>
             </configuration>
           </plugin>
           <plugin>

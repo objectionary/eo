@@ -73,7 +73,7 @@ final class Grounded {
         if (!Files.exists(this.facts)) {
             throw new IOException(
                 Logger.format(
-                    "The table %[file]s is absent, while the heads of calls can be followed only after the 'inference' goal has written it",
+                    "The table %[file]s is absent, while the heads of calls can be followed only after the 'infer' goal has written it",
                     this.facts
                 )
             );

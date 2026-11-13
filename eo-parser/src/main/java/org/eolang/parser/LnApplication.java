@@ -84,7 +84,7 @@ final class LnApplication implements Line {
         } else {
             openness = Openness.OPEN;
         }
-        this.transition(stack, suffix, kind, openness);
+        this.transition(stack, suffix, kind, openness, emit);
         stack.hop(chain.size(), this.span.line(), this.span.indent());
         Bindings.observeChild(stack, outer, this.span);
         globals.clearBlanks();
@@ -182,9 +182,10 @@ final class LnApplication implements Line {
     }
 
     private void transition(
-        final Stack stack, final Suffix suffix, final Kind kind, final Openness openness
+        final Stack stack, final Suffix suffix, final Kind kind, final Openness openness,
+        final Emit emit
     ) {
-        new Transition(stack, this.span).apply(
+        new Transition(stack, this.span, emit).apply(
             kind, openness, new Admission(suffix.named(), suffix.test(), suffix.test())
         );
     }

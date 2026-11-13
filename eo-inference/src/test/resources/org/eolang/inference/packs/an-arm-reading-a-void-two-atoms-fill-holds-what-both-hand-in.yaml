@@ -59,8 +59,8 @@ sources:
     [@] > string
 answers:
   - /answers/o[@loc='Φ.app.hold' and @copies='2']
-  - /answers/o[@loc='Φ.app.hold.v🌵m']/set[not(is[@loc='Φ.elm'])]/is[@loc='Φ.oak']
-  - /answers/o[@loc='Φ.app.hold.v🌵m']/set[not(is[@loc='Φ.oak'])]/is[@loc='Φ.elm']
+  - /answers/o[@loc='Φ.app.hold.v🌵m']/set[not(./is[@loc='Φ.elm'])]/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.hold.v🌵m']/set[not(./is[@loc='Φ.oak'])]/is[@loc='Φ.elm']
   - /answers/o[@loc='Φ.app.hold.first']/is[@loc='Φ.dial']
   - /answers/o[@loc='Φ.app.hold.pick' and @copies='2']
-  - /answers/o[@loc='Φ.app.hold.second'][is[@loc='Φ.oak'] and is[@loc='Φ.elm']]
+  - /answers/o[@loc='Φ.app.hold.second'][./is[@loc='Φ.oak'] and ./is[@loc='Φ.elm']]
