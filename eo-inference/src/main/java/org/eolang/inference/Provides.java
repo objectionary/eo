@@ -44,25 +44,33 @@ import org.xembly.Directives;
  * also a type in its own right, and the two rows would collide.</p>
  *
  * <p>"Complete" means that we have seen the whole formation, so there is
- * nothing in it besides the attributes listed. It is the flag that keeps
- * the checker honest later: a missing attribute is a mistake only when
- * the object that misses it is complete. An atom is not complete, since
- * its {@code λ} attribute stands for a body written in Java, which this
- * module cannot read. Neither is a formation that binds {@code φ}: what
- * it delegates to answers for every name it does not bind itself, and
- * that object is the business of the links table, not of this one.</p>
+ * nothing in it besides the attributes listed. {@link Reads} reads a name a
+ * formation lacks off its {@code φ}, or off what its atom returns, and
+ * answers it with a termination only when the formation is complete. An
+ * atom is not complete, since its {@code λ} attribute stands for a body
+ * written in Java, which this module cannot read. Neither is a formation
+ * that binds {@code φ}: what it delegates to answers for every name it does
+ * not bind itself.</p>
  *
  * <p>Two kinds of objects are deliberately absent from this table.
  * Applications and references (anything with a {@code @base}) provide
- * nothing on their own — what they have is what the object they copy
- * has, which is the business of the links table. And a void attribute
- * provides nothing either, until something is put into it.</p>
+ * nothing on their own: what they have is what the object they copy has,
+ * which the walk works out from the heads, the reads and the calls. And a
+ * void attribute provides nothing either, until something is put into
+ * it.</p>
  *
  * <p>What an atom comes back with is written down, though its body is not.
  * {@code [] > div /Q.number} says that a {@code div} is a {@code Φ.number}
  * once it has run, and the parser carries that annotation into the XMIR, so
  * the row keeps it and whoever reads the table can ask a {@code number} what
  * the atom itself cannot answer.</p>
+ *
+ * <p>An annotation is a type tree ({@link Annotation}):
+ * {@code /Q.posix.status-return(Q.number,Q.string)} gives a
+ * {@code status-return} with a number and a string in its voids. The
+ * {@code returns} cell keeps the tree as the XMIR writes it, and the
+ * {@code holds} cell of a void keeps its own type when it names an object,
+ * without the mark of termination.</p>
  *
  * <p>An annotation may name a variable rather than an object, and then it
  * names the voids that carry the same letter. {@code [] > recovered /A} over
@@ -72,19 +80,19 @@ import org.xembly.Directives;
  * than with nothing (#8348). The letter stands on both voids, so what comes
  * back is the {@code value} or the {@code alternative}, and the facts name
  * every void that carries it, a {@code return} element each under the row of
- * the atom. The {@code returns} cell keeps the first alone, since the passes
- * read it as one name and {@code Objects} leaves the elements out of the table
- * they write into. A mark of termination is dropped as {@code Held} drops it,
- * since a termination answers to every name.</p>
+ * the atom. The {@code returns} cell keeps the first alone, which is enough
+ * for {@link Roles} to tell an atom, and {@link Roles} and {@link Telling}
+ * read the {@code return} elements for the whole list. A mark of termination
+ * is dropped, since a termination answers to every name.</p>
  *
  * <p>What a void says it will hold is written down for the same reason as an
  * atom's annotation, and only when it names an object. {@code ? > code
  * /Q.number} is how a formation that only Java ever copies says what goes into
  * its voids, since it has no caller in the program to say it for it, while a
  * letter says nothing about what goes in and is read only by the atom above
- * it. {@code Provided} walks through a void that says what it holds the way it
- * walks behind a delegation, so a name asked of it is answered once and for
- * all rather than left to a caller.</p>
+ * it. {@link Reads} answers a read of such a void with a copy of what it
+ * holds, next to whatever the calls put there, so a name asked of it has an
+ * answer in every copy.</p>
  *
  * <p>A void may also say what will be handed to whatever goes into it.
  * {@code ? > scope /{Q.chunk}} in {@code malloc.of} says that the atom calls
@@ -92,7 +100,8 @@ import org.xembly.Directives;
  * does, and the row keeps that list as it stands. Nobody else in the program
  * says it: the formation {@code malloc.for} hands in is copied by Java alone,
  * so without the annotation its void is filled by nobody and looks empty to
- * every reader (#8380). {@code Handed} is where the list is spent.</p>
+ * every reader (#8380). {@link Calls} spends the list: whatever a call puts
+ * into such a void is called back with copies of those types.</p>
  *
  * <p>Not every attribute is written inside the formation it belongs to:
  * {@code minus} in the package {@code number} is {@code Φ.number.minus} and
@@ -102,36 +111,17 @@ import org.xembly.Directives;
  * arguments of an application and this is not one of them.</p>
  *
  * <p>A type is "bare" when it has nothing public of its own besides its
- * {@code @}: then every name it answers to it answers through what stands
- * behind that {@code @}, and {@code Behaved} names it after that. Public
- * means readable from outside the object, which is why the exclusions are not
- * a matter of taste: a {@code 🌵} name is kept out of the {@code NAME} token
- * by R-9.2.2 of the parser spec and no source file can write one down, which
- * covers an auto-name and a test attribute alike, the latter under its
- * {@code p🌵} or {@code n🌵} marker. One more public attribute, though, is
- * one more thing a reader loses by being told something else, so an
- * {@code english} that hands back its receiver and binds {@code lower} and
- * {@code upper} besides is not bare.</p>
- *
- * <p>A void is ignored as well, and that clause has an expiry on it. A void is
- * public today, so the rule as it is meant to read — nothing public but
- * {@code @} — would leave almost nothing bare; voids are on their way to being
- * named by the parser and unreadable from outside, like a moniker and a test,
- * and the day they get there this clause is deleted and the rule reads as it
- * was written. What it costs meanwhile was measured: of the 1,680 reads that
- * land on a type {@code Behaved} reduces, 104 ask for a void the new name has
- * no answer for. Eighty-eight of those are inside a test and eight more ask for
- * {@code ρ}, which leaves eight on the library proper — {@code printf} wanting
- * its {@code args}, {@code with} its {@code key} and its {@code value}, and
- * three besides.</p>
- *
- * <p>The flag is decided last, once {@link Packages} has written what the
- * packages hand to their objects, since a member is as public as an attribute
- * written inside the formation: {@code [@] > number} binds nothing but a body
- * in its own file, and is not bare for all that, because {@code abs} and
- * {@code plus} sit in its package. Only the text of the program is read here;
- * what stands behind the {@code @} is the business of the links table, which is
- * why the walk itself stays with {@code Behaved}.</p>
+ * {@code @}: no attribute other than {@code φ} that is not a void and has no
+ * {@code 🌵} in its name. A {@code 🌵} name is kept out of the {@code NAME}
+ * token by R-9.2.2 of the parser spec and no source file can write one down,
+ * which covers an auto-name and a test attribute alike, the latter under its
+ * {@code p🌵} or {@code n🌵} marker. The flag is decided last, once
+ * {@link Packages} has written what the packages hand to their objects, since
+ * a member is as public as an attribute written inside the formation:
+ * {@code [@] > number} binds nothing but a body in its own file, and is not
+ * bare for all that, because {@code abs} and {@code plus} sit in its package.
+ * The engine does not read the flag: {@link Roles} tells a decorator from the
+ * attributes {@link Formation} keeps.</p>
  *
  * <p>A package is an object as well, though no file forms it: the runtime
  * hands out a package object for a folder that has no object of its own.
@@ -152,16 +142,13 @@ import org.xembly.Directives;
  * one. Only a formation that asked for a receiver is told what it gets, and
  * the row was already there for the asking. It goes in as the {@code rho}
  * of the void, the formation a declared {@code ^} sits in, rather than as
- * what it {@code holds}, since nobody wrote it down, and {@code Objects}
- * writes it back as {@code holds} for the passes that read the two
- * alike.</p>
+ * what it {@code holds}, since nobody wrote it down.</p>
  *
  * <p>Every row here is stated by the text, so the rows are facts and go into
- * the {@code objects} section of {@code facts.xml}, in exactly the shape and
- * order they once had in a table of their own. This section writes no table:
- * {@code provides.xml} is written first by {@code Resolved}, as a copy of these
- * rows, and the passes after it add their answers to that copy, so the facts
- * stay as the text stated them.</p>
+ * the {@code objects} section of {@code facts.xml}. {@link FactsStream} reads
+ * each {@code type} row back as a {@link Formation}, which the walk asks what
+ * an object has. The walk writes its answers into {@code answers.xml} and
+ * adds nothing to these rows.</p>
  *
  * @since 0.67.0
  */
@@ -208,8 +195,8 @@ final class Provides implements Section {
                 .set("type", attr.says("loc"));
             if ("∅".equals(attr.says("base"))) {
                 row.set("void", "true");
-                final String held = attr.says("type");
-                if (held.startsWith("Φ.")) {
+                final String held = Provides.held(attr.says("type"));
+                if (!held.isEmpty()) {
                     row.set("holds", held);
                 }
                 final String args = attr.says("args");
@@ -303,6 +290,15 @@ final class Provides implements Section {
                 && letter.equals(attr.says("type").replace("?", ""))) {
                 found.add(attr.says("loc"));
             }
+        }
+        return found;
+    }
+
+    private static String held(final String type) {
+        final String bare = new Annotation(type).toString();
+        String found = "";
+        if (bare.startsWith("Φ.")) {
+            found = bare;
         }
         return found;
     }

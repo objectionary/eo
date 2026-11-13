@@ -48,7 +48,7 @@ public final class MjLint extends MjSafe {
                 compile,
                 this.target.toPath(),
                 this.cache.toPath(),
-                this.cacheEnabled,
+                !this.uncached,
                 this.plugin.getVersion(),
                 this.skipSourceLints,
                 this.skipProgramLints,

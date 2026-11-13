@@ -29,7 +29,12 @@
 
 [^num b] > power
   if. > @
-    expo.eq 0
+    eq.
+      if. >> expo
+        b.as-bytes.size.eq 8
+        number b.as-bytes
+        T "the 'b' attribute must be a number"
+      0
     1
     base.is-nan.if
       nan
@@ -55,7 +60,27 @@
                   pinf
               expo.is-integer.if
                 if.
-                  answer.is-finite.and (answer.eq 0).not
+                  answer.is-finite.and
+                    not.
+                      eq.
+                        if. >> answer
+                          expo.lt 0
+                          plus.
+                            1.div high >> rough
+                            div.
+                              minus.
+                                1.minus
+                                  number
+                                    slice.
+                                      joined >> check
+                                        paired rough 0
+                                        wide base expo.abs >> exact!
+                                      0
+                                      8
+                                number (check.slice 8 8)
+                              number (exact.slice 0 8) >> high
+                          high
+                        0
                   answer
                   if.
                     expo.lt 0
@@ -132,87 +157,60 @@
                 base.abs.eq 1
                 nan
                 pinf
-  if. > answer
-    expo.lt 0
-    reciprocal
-    high
-  joined > check
-    paired
-      rough
-      0
-    exact
-  wide > exact!
-    base
-    expo.abs
-  if. > expo
-    b.as-bytes.size.eq 8
-    number b.as-bytes
-    T "the 'b' attribute must be a number"
-  [^num a] > halved
+  [^num a] >> halved
     a.minus top > foot
-    a.times 134217729 > spread
-    spread.minus > top
+    minus. > top
+      a.times 134217729 >> spread
       spread.minus a
-  number > high
-    exact.slice
-      0
-      8
-  [^num x y] > joined
-    num.paired > @
+  [^num x y] >> joined
+    paired > @
       hi
-      lo
-    product.plus slip > hi
-    num.halved xh > left
-    slip.minus > lo
-      hi.minus product
-    xh.times yh > product
-    num.halved yh > right
-    plus. > slip
-      plus.
-        plus.
-          plus.
-            minus.
-              left.top.times right.top
-              product
-            left.top.times right.foot
-          left.foot.times right.top
-        left.foot.times right.foot
-      plus.
-        xh.times yl
-        xl.times yh
-    number > xh
-      x.slice 0 8
-    number > xl
-      x.slice 8 8
-    number > yh
-      y.slice 0 8
-    number > yl
-      y.slice 8 8
-  hi.as-bytes.concat lo.as-bytes > [hi lo] > paired
-  rough.plus > reciprocal
-    div.
       minus.
-        1.minus check.hi
-        check.lo
-      high
-  1.div high > rough
-  [^num factor n] > wide
+        plus. >> slip
+          plus.
+            plus.
+              plus.
+                minus.
+                  times.
+                    top.
+                      halved xh >> left
+                    top.
+                      halved yh >> right
+                  product
+                left.top.times right.foot
+              left.foot.times right.top
+            left.foot.times right.foot
+          plus.
+            xh.times
+              number
+                y.slice 8 8
+            times.
+              number
+                x.slice 8 8
+              yh
+        minus.
+          plus. >> hi
+            times. >> product
+              number >> xh
+                x.slice 0 8
+              number >> yh
+                y.slice 0 8
+            slip
+          product
+  hi.as-bytes.concat lo.as-bytes > [hi lo] >> paired
+  [^num factor n] >> wide
     if. > @
       n.eq 0
-      num.paired 1 0
+      paired 1 0
       if.
         is-integer.
           n.div 2
-        num.joined half half
-        num.joined
-          num.paired factor 0
-          rest
-    num.wide > half!
-      factor
-      n.div 2
-    num.wide > rest!
-      factor
-      n.minus 1
+        joined
+          num.wide >> half!
+            factor
+            n.div 2
+          half
+        joined (paired factor 0) (num.wide factor (n.minus 1))!
 
   gt. ++> can-avoid-underflow-for-a-negative-exponent-that-overflows-positive
     10.power -315
@@ -511,5 +509,3 @@
         2.power 0.5
         1.4142135623730951
     1.0e-9
-
-  2.power "abc" --> stops-on-an-exponent-that-is-not-a-number

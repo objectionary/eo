@@ -21,8 +21,9 @@ import org.xembly.Directives;
  * {@code oak}, and one that goes through a decorator arrives no differently,
  * since the lookup is handed down and the decoratee is the {@code oak}. So the
  * void a formation declares for its receiver holds the object the formation is
- * an attribute of, which is what {@code Held} reads back and {@code Provided}
- * walks through.</p>
+ * an attribute of. {@link FactsStream} reads it back as the parent of the
+ * {@link Formation}, and {@link Reads} answers a {@code ρ} nobody bound with
+ * a fresh copy of that parent.</p>
  *
  * <p>This is not the old rule of reading a receiver off a locator, which was
  * taken out again in #6657 and should stay out. That one gave every object a
@@ -45,9 +46,8 @@ import org.xembly.Directives;
  * {@code ^} sits in, and never what it {@code holds}: the latter is what the
  * source says a void will hold, the former is worked out from where the
  * formation sits, and the two are kept apart so that a reader can tell them
- * apart. A void that says both keeps
- * both, and whoever reads them takes what the void says first, an atom that
- * annotates its own {@code ^} knowing better than a locator does.</p>
+ * apart. A void that says both keeps both in the facts, and the walk reads
+ * a {@code ρ} through the {@code rho} alone.</p>
  *
  * @since 0.71.0
  */

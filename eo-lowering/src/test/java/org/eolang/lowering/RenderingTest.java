@@ -41,6 +41,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Isolated;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -196,6 +197,49 @@ final class RenderingTest {
             "two entries whose atoms ask for one class must both be taints, but some were rendered",
             Files.readString(temp.resolve("rendered.tsv"), StandardCharsets.UTF_8),
             Matchers.emptyString()
+        );
+    }
+
+    @Test
+    @Timeout(value = 20L, threadMode = Timeout.ThreadMode.SEPARATE_THREAD)
+    void rendersAnEntryWithManyAliasedMetasInTime(@Mktmp final Path temp) throws IOException {
+        final int count = new SecureRandom().nextInt(500) + 2000;
+        final StringBuilder records = new StringBuilder();
+        final StringBuilder binds = new StringBuilder();
+        for (int idx = 1; idx <= count; ++idx) {
+            records.append(
+                String.format(
+                    "<applied meta=\"𝑒·0·%1$d\" of=\"Φ.bytes\"><symbol attr=\"φ\">𝜎1</symbol></applied><morphed meta=\"𝑛·%1$d·1\">𝑒·0·%1$d</morphed><answered meta=\"𝑛·%1$d·2\">𝑛·%1$d·1</answered><bound meta=\"𝛿%1$d·1\">𝑛·%1$d·2</bound>",
+                    idx
+                )
+            );
+            binds.append(String.format("<meta attr=\"a%1$d\">𝛿%1$d·1</meta>", idx));
+        }
+        Files.write(
+            temp.resolve("entries.tsv"),
+            String.format("4\tΦ.mix%n").getBytes(StandardCharsets.UTF_8)
+        );
+        Files.write(
+            temp.resolve("voids.tsv"),
+            String.format("𝜎1\t4\tv🌵b\tbytes%n").getBytes(StandardCharsets.UTF_8)
+        );
+        final Path tables = RenderingTest.planted(
+            temp, "mix", String.format("[b] > mix%n  T b > @%n")
+        );
+        final Path protocol = temp.resolve("2-protocols").resolve(new Locator("Φ.mix").protocol());
+        Files.createDirectories(protocol.getParent());
+        Files.write(
+            protocol,
+            String.format(
+                "<protocol><dataize at=\"Φ.l🌵.e4\"><boxed meta=\"𝑛·0·1\">Φ.l🌵.e4.φ</boxed><morph at=\"𝑛·0·1\">%s<applied meta=\"𝑛·0·2\" of=\"Φ.tuple\">%s</applied><applied meta=\"𝑛·0·3\" of=\"Φ.l🌵.throw\"><meta attr=\"message\">𝑛·0·2</meta></applied><morphed meta=\"𝑛·0·4\">𝑛·0·3</morphed></morph><unanswered λ=\"L_throw\" by=\"dataize\">𝑛·0·3</unanswered><stuck λ=\"L_throw\"/></dataize></protocol>",
+                records, binds
+            ).getBytes(StandardCharsets.UTF_8)
+        );
+        new Rendering(tables).exec(temp);
+        MatcherAssert.assertThat(
+            "an entry that throws a message of many aliased metas must not stay in EO, but it did",
+            Files.readString(temp.resolve("rendered.tsv"), StandardCharsets.UTF_8),
+            Matchers.equalTo(String.format("4\tΦ.mix%n"))
         );
     }
 
@@ -377,7 +421,7 @@ final class RenderingTest {
      *
      * <p>The file has EO sources, one entry, its protocol, and the whole
      * text of the Java atom of that entry, which the rendering must write
-     * exactly. The tables of {@code eo:inference} are what the engine writes
+     * exactly. The tables of {@code eo:infer} are what the engine writes
      * for the sources, unless the keys {@code facts} and {@code answers}
      * hold them, see {@link Tables}. So the sources hold what the engine
      * needs to tell what the body gives, the atoms it calls and a caller

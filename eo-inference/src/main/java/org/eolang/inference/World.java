@@ -46,6 +46,11 @@ final class World {
     private final Tags tags;
 
     /**
+     * What EO code puts into each void, before any walk.
+     */
+    private final Fillings fillings;
+
+    /**
      * Ctor.
      *
      * @param prog The program
@@ -57,6 +62,7 @@ final class World {
         this.roles = new Roles(prog);
         this.values = new Values(prog);
         this.tags = new Tags(this);
+        this.fillings = new Fillings(prog, this.values);
     }
 
     /**
@@ -209,6 +215,18 @@ final class World {
     }
 
     /**
+     * What EO code puts into a void of a formation, as the facts say it
+     * before any walk.
+     *
+     * @param form The formation
+     * @param name The void
+     * @return The fillings, none when no call fills it
+     */
+    List<Filling> fillings(final String form, final String name) {
+        return this.fillings.of(form, name);
+    }
+
+    /**
      * Whether a formation is a decorator.
      *
      * @param form The formation
@@ -257,26 +275,6 @@ final class World {
      */
     String passes(final String form) {
         return this.roles.passes(form);
-    }
-
-    /**
-     * Whether a formation is one an atom returns.
-     *
-     * @param form The formation
-     * @return TRUE if it is
-     */
-    boolean returned(final String form) {
-        return this.roles.returned(form);
-    }
-
-    /**
-     * The voids of the formations atoms return that have no declared type,
-     * as formation and void, in order.
-     *
-     * @return The pairs
-     */
-    List<List<String>> javaVoids() {
-        return this.roles.javaVoids();
     }
 
     /**

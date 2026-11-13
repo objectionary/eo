@@ -4,8 +4,6 @@
  */
 package org.eolang.inference;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -13,20 +11,20 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Stops (design doc 4.4): what is decided when a pass grows nothing.
  *
  * <p>Decisions come in tiers, and a lower tier is decided only at a stop
- * where every tier above it decides nothing:</p>
+ * where the tier above it decides nothing:</p>
  *
  * <ol>
  * <li>rules b, e and 3 decide everything that waits, at once;</li>
- * <li>change a: each void of an object an atom returned that was read
- * with nothing in its pool is decided "Java alone fills it";</li>
  * <li>stop w: the formations nobody calls whose copies as written do not
  * count get their study copies, or their copies as written, a round at a
  * time, and every real copy that has appeared since the last such stop
  * gets its study copies.</li>
  * </ol>
  *
- * <p>A decision is never taken back, and the run ends at a stop that
- * decides nothing.</p>
+ * <p>A void of an object an atom returned waits for no stop: the type of
+ * the atom says what it holds, or it holds the unknown only Java fills, from
+ * its first read (4.5). A decision is never taken back, and the run ends at
+ * a stop that decides nothing.</p>
  *
  * @since 0.76.0
  */
@@ -60,14 +58,6 @@ final class Stops {
     boolean decide() {
         this.count.incrementAndGet();
         final Set<Wish> fresh = this.state.wishes();
-        final List<List<String>> java;
-        if (fresh.isEmpty()) {
-            java = this.state.waiting();
-        } else {
-            java = Collections.emptyList();
-        }
-        final boolean quiet = fresh.isEmpty() && java.isEmpty();
-        this.state.decide(java);
         this.state.take(fresh);
         for (final Wish wish : fresh) {
             if (wish.rule() == 'e') {
@@ -78,11 +68,11 @@ final class Stops {
         }
         boolean picked = false;
         int kept = 0;
-        if (quiet) {
+        if (fresh.isEmpty()) {
             picked = this.state.pick();
             kept = this.state.studied();
         }
-        return !fresh.isEmpty() || !java.isEmpty() || picked || kept > 0;
+        return !fresh.isEmpty() || picked || kept > 0;
     }
 
     /**
@@ -91,7 +81,7 @@ final class Stops {
      * @return TRUE if something does
      */
     boolean pending() {
-        return !this.state.wishes().isEmpty() || !this.state.waiting().isEmpty();
+        return !this.state.wishes().isEmpty();
     }
 
     /**

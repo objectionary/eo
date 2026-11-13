@@ -60,7 +60,7 @@ final class LnTextBlock implements Line {
             Blanks.checkPlain(this.span, globals, emit);
         }
         final byte[] joined = this.decoded(globals.tbody());
-        this.transition(stack, suffix);
+        this.transition(stack, suffix, emit);
         stack.hop(chain.size(), this.span.line(), this.span.indent());
         Bindings.observeChild(stack, outer, this.span);
         this.emit(emit, suffix, chain, joined);
@@ -87,8 +87,8 @@ final class LnTextBlock implements Line {
         return out.toByteArray();
     }
 
-    private void transition(final Stack stack, final Suffix suffix) {
-        new Transition(stack, this.span).apply(
+    private void transition(final Stack stack, final Suffix suffix, final Emit emit) {
+        new Transition(stack, this.span, emit).apply(
             Kind.TEXT_BLOCK,
             Openness.VCOMPLETED,
             new Admission(suffix.named(), suffix.test(), suffix.test())

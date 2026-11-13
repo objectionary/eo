@@ -182,7 +182,7 @@ final class Linting implements Step {
     @Override
     public void exec() throws IOException {
         if (this.skip) {
-            Logger.info(this, "Linting is skipped because eo:skipLinting is TRUE");
+            Logger.info(this, "Linting is skipped because eo.lint.bypass is TRUE");
         } else {
             this.linting();
         }
@@ -254,7 +254,7 @@ final class Linting implements Step {
         } else {
             Logger.info(
                 this,
-                "Skipping linting as package (use -Deo.lintAsPackage=true to enable)"
+                "Skipping linting as package (use -Deo.lint.package=true to enable)"
             );
         }
         final String sum = Linting.summary(counts);
@@ -281,14 +281,14 @@ final class Linting implements Step {
             if (this.warning) {
                 throw new IllegalStateException(
                     String.format(
-                        "In %d XMIR files, we found %s (use -Deo.failOnWarning=false to ignore):%n%s",
+                        "In %d XMIR files, we found %s (use -Deo.lint.strict=false to ignore):%n%s",
                         programs.size(), sum, details
                     )
                 );
             }
             Logger.info(
                 this,
-                "Use -Deo.failOnWarning=true to fail the build on warnings, currently it's set to false"
+                "Use -Deo.lint.strict=true to fail the build on warnings, currently it's set to false"
             );
         }
     }

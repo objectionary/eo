@@ -130,15 +130,6 @@ final class Rows {
     }
 
     /**
-     * Every row, by copy and void.
-     *
-     * @return The rows
-     */
-    Map<Slot, Ints> all() {
-        return this.table;
-    }
-
-    /**
      * Put a value read out of a row onto its holder.
      *
      * @param item The value

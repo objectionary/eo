@@ -4,6 +4,8 @@
 
 # eo-inference
 
+Full report is [available in HTML](https://www.eolang.org/inference/index.html).
+
 Reads what an EO program says about its own objects and writes it down in
 `facts.xml`, then works out from it which objects each place of the program
 can be when Java runs it, writes that down in `answers.xml`, and draws a
@@ -21,7 +23,16 @@ call or the read was. A call handed only unknowns waits until nothing else
 grows, so that a real value can still come first, and then makes its copy
 with those unknowns in its voids, each of its own kind. So a void of code
 nobody calls stays that unknown down every call it goes through, and a read
-of it never gives T.
+of it never gives T. What Java puts into an object an atom returns comes from
+the type of the atom. With brackets, the type gives each void its own type in
+order, as `Φ.posix.status-return(Φ.number,Φ.string)` does, and a void the
+brackets leave out holds the unknown only Java fills. With no brackets, as in
+`Φ.bool`, each void holds what EO code puts into that void of that object:
+the fork of a bool Java makes holds the formations `true` and `false` put
+there. The engine reads these from `facts.xml` before the walk, so the answer
+does not depend on the order of files or objects. A void that no EO code
+fills holds the unknown only Java fills, and so does a void where some code
+puts a thing only the walk could answer, next to whatever else goes in.
 
 ## What it writes
 
@@ -32,7 +43,8 @@ number. The first, `facts.xml`, has four parts:
 - `objects`: every formation with its attributes. For each void it says
   whether a type is declared (`holds`, from `? > code /Q.number`) and
   whether an atom calls it back (`args`, from `? > scope /{Q.chunk}`). For an
-  atom it says what it returns.
+  atom it says what it returns, a type tree as the parser writes it, such as
+  `Φ.posix.status-return(Φ.number,Φ.string)` or `Φ.bool`.
 - `reads`: every name read, and what it is read off.
 - `heads`: what each chain starts from: `Φ`, the formation around a bare
   `ξ`, a datum or a termination.
@@ -97,9 +109,9 @@ copy is a study copy:
 
 The engine knows three lists of names of the program, which are parameters of
 the goal with no defaults, and the `pom.xml` of eo-runtime sets them:
-`inferenceCanon` (the kinds that are one shared copy each, `Φ.bytes`,
-`Φ.number` and `Φ.string`), `inferenceRoots` (the packages of list code,
-`Φ.tuple`, `Φ.map` and `Φ.set`) and `inferenceScalars` (the packages whose
+`infer.canon` (the kinds that are one shared copy each, `Φ.bytes`,
+`Φ.number` and `Φ.string`), `infer.roots` (the packages of list code,
+`Φ.tuple`, `Φ.map` and `Φ.set`) and `infer.scalars` (the packages whose
 objects give back new data). A list left unset is empty.
 
 Before the facts are read, each file is made ready by `Prepared`: every chain
@@ -111,7 +123,7 @@ into them.
 
 ## The report
 
-The `inference-report` goal reads the prepared files and the `answers.xml` in
+The `render` goal reads the prepared files and the `answers.xml` in
 `target/eo/NN-inference`, and writes a page per source file into
 `target/site/inference`, with an index. A page shows the source with a mark
 on every object, coloured by one of nine bands of what the engine answers

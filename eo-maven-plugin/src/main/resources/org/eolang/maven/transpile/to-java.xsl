@@ -394,7 +394,7 @@
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>new AtVoid("</xsl:text>
-        <xsl:value-of select="eo:literal((o/@local[. != ''], $name)[1])"/>
+        <xsl:value-of select="eo:literal($name)"/>
         <xsl:text>")</xsl:text>
       </xsl:otherwise>
     </xsl:choose>

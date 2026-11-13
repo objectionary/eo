@@ -18,15 +18,15 @@ sources:
     [^] > yes
       choice > @
         [^]
-          ? >> left
-          ? >> right
+          ? > left
+          ? > right
           left > @
   no.eo: |
     [^] > no
       choice > @
         [^]
-          ? >> left
-          ? >> right
+          ? > left
+          ? > right
           right > @
   sock.eo: |
     [^ flag] > sock
@@ -57,8 +57,8 @@ answers:
   - /answers/o[@loc='Φ.sock.v🌵flag']/is[@loc='Φ.choice']
   - /answers/o[@loc='Φ.yes.φ.α0.φ']/is[@loc='Φ.sock.impl']
   - /answers/o[@loc='Φ.no.φ.α0.φ']/is[@loc='Φ.sock.impl']
-  - /answers/o[@loc='Φ.sock.φ.α0' and @lands='a🌵4-6']/is[@loc='Φ.sock.impl']
-  - /answers/o[@loc='Φ.sock.φ.α1' and @lands='a🌵5-6']/is[@loc='Φ.sock.impl']
+  - /answers/o[@loc='Φ.sock.φ.α0' and @lands='v🌵left']/is[@loc='Φ.sock.impl']
+  - /answers/o[@loc='Φ.sock.φ.α1' and @lands='v🌵right']/is[@loc='Φ.sock.impl']
   - /answers/o[@loc='Φ.sock.φ' and @copies='2']/is[@loc='Φ.sock.impl']
   - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵size']/is[@loc='Φ.bytes']
   - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.bytes']

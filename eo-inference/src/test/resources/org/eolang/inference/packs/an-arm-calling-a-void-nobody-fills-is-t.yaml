@@ -18,15 +18,15 @@ sources:
     [^] > yes
       choice > @
         [^]
-          ? >> left
-          ? >> right
+          ? > left
+          ? > right
           left > @
   no.eo: |
     [^] > no
       choice > @
         [^]
-          ? >> left
-          ? >> right
+          ? > left
+          ? > right
           right > @
   dial.eo: |
     [^ sys] > dial
@@ -60,6 +60,6 @@ answers:
   - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.dial']
   - /answers[not(o[@lands='v🌵cant-read'])]
   - /answers/o[@loc='Φ.gauge.v🌵cant-read' and count(*)=1]/unknown[@kind='empty']
-  - /answers/o[@loc='Φ.gauge.φ.α1' and @lands='a🌵5-6']/terminator
+  - /answers/o[@loc='Φ.gauge.φ.α1' and @lands='v🌵right']/terminator
   - /answers/o[@loc='Φ.held.φ']/is[@loc='Φ.dial']
   - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.bytes']

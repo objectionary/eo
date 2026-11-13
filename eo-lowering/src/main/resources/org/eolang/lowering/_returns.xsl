@@ -6,7 +6,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="_returns" version="3.0">
   <!--
   Here we say what the body of an object returns, as the tables of
-  "eo:inference" say it. The rendering asks this once, when the root of an
+  "eo:infer" say it. The rendering asks this once, when the root of an
   entry is data the atom would return bare, and the planting asks it when it
   decides on a row, and the question is kept apart from the rest of both,
   since it is all about how the tables are laid out. A stylesheet that
@@ -35,7 +35,7 @@
   </xsl:function>
   <!--
   The types the body of the object with this locator may be, as the tables
-  of "eo:inference" say, or none where they say nothing. They are the
+  of "eo:infer" say, or none where they say nothing. They are the
   objects the row of the "φ" of the object names, while a datum and an
   unknown name no object. An atom among them counts as the type it
   "returns" in "facts.xml", and a formation counts as what the "reduced" of
@@ -48,12 +48,24 @@
   <!--
   What the object with this locator counts as when a body is it: the type
   an atom returns, what a formation reduces to other than itself, or the
-  object itself.
+  object itself. The type an atom returns counts as its head, so a tree
+  such as "Φ.posix.status-return(Φ.number,Φ.string)" is the name before
+  its brackets.
   -->
   <xsl:function name="eo:behaves" as="xs:string+">
     <xsl:param name="name" as="xs:string"/>
     <xsl:variable name="atom" as="attribute()?" select="key('eo:type', $name, $eo:facts)[1]/@returns"/>
     <xsl:variable name="reduced" as="xs:string*" select="eo:labels(key('eo:row', $name, $eo:answers)/reduced)/self::is/@loc[. != $name] ! string(.)"/>
-    <xsl:sequence select="if (exists($atom)) then string($atom) else if (exists($reduced)) then $reduced else $name"/>
+    <xsl:sequence select="if (exists($atom)) then eo:head(string($atom)) else if (exists($reduced)) then $reduced else $name"/>
+  </xsl:function>
+  <!--
+  The name a type spells outside every bracket, with the trailing "?" of a
+  maybe-⊥ annotation dropped: "Φ.posix.status-return(Φ.number,Φ.string)"
+  gives "Φ.posix.status-return". The innermost brackets go first, until
+  none is left.
+  -->
+  <xsl:function name="eo:head" as="xs:string">
+    <xsl:param name="type" as="xs:string"/>
+    <xsl:sequence select="if (contains($type, '(')) then eo:head(replace($type, '\([^()]*\)', '')) else replace($type, '\?$', '')"/>
   </xsl:function>
 </xsl:stylesheet>
