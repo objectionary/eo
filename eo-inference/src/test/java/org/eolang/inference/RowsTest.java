@@ -8,6 +8,7 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -73,6 +74,27 @@ final class RowsTest {
             "a copy that has its ρ must stay as it is when read out of a row, but it didnt",
             RowsTest.state(world).stamp(cup, Values.ROOT, new Site("Φ.tray.ρ", "")),
             Matchers.equalTo(cup)
+        );
+    }
+
+    @Test
+    void stampsSourceCopyOfMarkedValue(@Mktmp final Path temp) throws IOException {
+        final World world = RowsTest.world(temp);
+        final State state = RowsTest.state(world);
+        final int holder = RowsTest.cup(world, Formation.RHO);
+        final Value stamped = world.value(
+            state.stamp(
+                state.mark(Values.DATA, 1, RowsTest.cup(world, 0L)),
+                holder, new Site("Φ.tray.ρ", "")
+            )
+        );
+        MatcherAssert.assertThat(
+            "a marked value must keep its reduced value and its source copy on the holder",
+            Map.of(
+                "value", stamped.base(),
+                "receiver", state.row(stamped.origin(), "ρ").frozen().toString()
+            ),
+            Matchers.equalTo(Map.of("value", Values.DATA, "receiver", new Ids(holder).toString()))
         );
     }
 

@@ -97,13 +97,25 @@ final class Reduction {
      * @return The marked value
      */
     int mark(final int base, final int count) {
+        return this.mark(base, count, this.world.value(base).origin());
+    }
+
+    /**
+     * A marked value that keeps the copy whose voids a call must fill.
+     *
+     * @param base The reduced value
+     * @param count The number of empty voids
+     * @param origin The source copy, or -1
+     * @return The marked value
+     */
+    int mark(final int base, final int count, final int origin) {
         final Value value = this.world.value(base);
         int inside = base;
         if (value.kind() == 'A') {
             inside = value.base();
         }
         this.state.remember(inside);
-        return this.world.intern(new Value('A', "", "", 0L, "", inside, count));
+        return this.world.intern(new Value('A', "", "", 0L, "", inside, count, origin));
     }
 
     /**
@@ -200,7 +212,7 @@ final class Reduction {
             result = new Ints(num);
             final Ints got = this.typed(out);
             if (!got.isEmpty()) {
-                result.addAll(this.marked(got, holes));
+                result.addAll(this.marked(got, holes, num));
             }
         } else {
             result = this.inherited(num, holes);
@@ -229,7 +241,7 @@ final class Reduction {
         } else if (got.isEmpty()) {
             this.state.wish(wish);
         } else {
-            result.addAll(this.marked(got, holes));
+            result.addAll(this.marked(got, holes, -1));
             if (this.state.taken(wish)) {
                 result.add(num);
             }
@@ -284,10 +296,10 @@ final class Reduction {
         return got;
     }
 
-    private Ints marked(final Ints got, final int holes) {
+    private Ints marked(final Ints got, final int holes, final int origin) {
         final Ints out = new Ints();
         for (int idx = 0; idx < got.size(); ++idx) {
-            out.add(this.mark(got.get(idx), holes));
+            out.add(this.mark(got.get(idx), holes, origin));
         }
         return out;
     }
