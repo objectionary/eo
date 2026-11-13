@@ -6,7 +6,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="_returns" version="3.0">
   <!--
   Here we say what the body of an object returns, as the tables of
-  "eo:inference" say it. The rendering asks this once, when the root of an
+  "eo:infer" say it. The rendering asks this once, when the root of an
   entry is data the atom would return bare, and the planting asks it when it
   decides on a row, and the question is kept apart from the rest of both,
   since it is all about how the tables are laid out. A stylesheet that
@@ -35,7 +35,7 @@
   </xsl:function>
   <!--
   The types the body of the object with this locator may be, as the tables
-  of "eo:inference" say, or none where they say nothing. They are the
+  of "eo:infer" say, or none where they say nothing. They are the
   objects the row of the "φ" of the object names, while a datum and an
   unknown name no object. An atom among them counts as the type it
   "returns" in "facts.xml", and a formation counts as what the "reduced" of

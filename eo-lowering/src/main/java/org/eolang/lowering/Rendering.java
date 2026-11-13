@@ -90,7 +90,7 @@ import org.cactoos.text.TextOf;
  * Plain data has no object around it, so a string or an {@code i16}, for
  * example, would lose every attribute of its own. This is why, when the
  * result is plain data the protocol names no object around, this stage
- * asks the tables of {@code eo:inference} what the body gives, and an
+ * asks the tables of {@code eo:infer} what the body gives, and an
  * entry whose body is not a number, a bool or bytes is a taint. The tables
  * must be there before the stage starts, even though most entries never
  * ask them.</p>
@@ -136,7 +136,7 @@ import org.cactoos.text.TextOf;
 final class Rendering implements Proc<Path> {
 
     /**
-     * The directory with the tables of {@code eo:inference},
+     * The directory with the tables of {@code eo:infer},
      * {@code facts.xml} and {@code answers.xml}, which say what the body of
      * an entry gives.
      */
@@ -145,7 +145,7 @@ final class Rendering implements Proc<Path> {
     /**
      * Ctor.
      *
-     * @param tbls The directory with the tables of {@code eo:inference}
+     * @param tbls The directory with the tables of {@code eo:infer}
      */
     Rendering(final Path tbls) {
         this.tables = tbls;
@@ -153,11 +153,12 @@ final class Rendering implements Proc<Path> {
 
     @Override
     public void exec(final Path home) throws IOException {
+        final long start = System.currentTimeMillis();
         for (final String table : new ListOf<>("facts.xml", "answers.xml")) {
             if (!Files.exists(this.tables.resolve(table))) {
                 throw new IllegalStateException(
                     String.format(
-                        "There is no '%s' in '%s', while rendering needs the tables of eo:inference to say what a body gives",
+                        "There is no '%s' in '%s', while rendering needs the tables of eo:infer to say what a body gives",
                         table, this.tables
                     )
                 );
@@ -252,24 +253,24 @@ final class Rendering implements Proc<Path> {
             home.resolve("rendered.tsv"),
             String.join("", rendered).getBytes(StandardCharsets.UTF_8)
         );
-        this.summarize(atoms, rendered, tainted);
+        this.summarize(atoms, rendered, tainted, System.currentTimeMillis() - start);
     }
 
     private void summarize(
         final Path atoms, final Collection<String> rendered,
-        final Collection<String> tainted
+        final Collection<String> tainted, final long msec
     ) {
         if (tainted.isEmpty()) {
             Logger.info(
                 this,
-                "Rendered %d atoms into %[file]s, while no entries were taints",
-                rendered.size(), atoms
+                "Rendered %d atoms into %[file]s in %[ms]s, while no entries were taints",
+                rendered.size(), atoms, msec
             );
         } else {
             Logger.info(
                 this,
-                "Rendered %d atoms into %[file]s, while %d entries were taints: %s",
-                rendered.size(), atoms, tainted.size(), new Shortlist(tainted, 6).asString()
+                "Rendered %d atoms into %[file]s in %[ms]s, while %d entries were taints: %s",
+                rendered.size(), atoms, msec, tainted.size(), new Shortlist(tainted, 6).asString()
             );
         }
     }

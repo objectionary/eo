@@ -30,10 +30,10 @@ jobs:
             maven-
       # The `lower` goal needs the exact phino version pinned in the plugin,
       # and this job is the one that always builds with lowering on.
-      - uses: objectionary/phino@c8be65134072cc4871e5107ca7178cc353cfd383  # master
+      - uses: objectionary/phino@32dc77d9a8129e4257f0b46b0f54b2ae709690b9  # master
         with:
-          version: 0.0.161
-      - run: mvn install '-Deo.coverageTracking=true' '-Deo.lowering=true'
+          version: 0.0.164
+      - run: mvn install '-Deo.transpile.coverage=true' '-Deo.lower.bypass=false'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # The goal must have run, and a missing folder is how a silently

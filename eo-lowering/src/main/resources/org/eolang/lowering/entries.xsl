@@ -29,7 +29,7 @@
   formation is going to dispatch on its inputs. So a number arrives as the
   formation of "number" with the symbol where its bytes would be, and every
   attribute the body takes off it dispatches exactly as it would on a literal.
-  What a void holds is read off the tables of "eo:inference" and worked out
+  What a void holds is read off the tables of "eo:infer" and worked out
   nowhere here. The "holds" of the void in "facts.xml" is the annotation of
   the source, true of every caller there will ever be, and it answers first.
   Otherwise the row of the place of the void in "answers.xml" says what the
@@ -95,7 +95,7 @@
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <!--
-  The directory with the tables of "eo:inference", as a URI. The stage that
+  The directory with the tables of "eo:infer", as a URI. The stage that
   runs this stylesheet has made sure "facts.xml" and "answers.xml" are
   there, so the tables are opened and never asked about.
   -->

@@ -20,4 +20,9 @@
 
   00-00-00-33.as-u32.as-bytes.eq 00-00-00-33 ++> can-convert-bytes-to-u32-and-back
 
+  eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-u32
+    u32 0D-61-F0-3A
+    88-1E-47-C9-02.as-u32
+      u32 0D-61-F0-3A > [message]
+
   01-01-01-01-01.as-u32 --> stops-on-bytes-of-wrong-size-when-converting-to-u32

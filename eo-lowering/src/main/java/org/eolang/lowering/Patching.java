@@ -74,7 +74,7 @@ final class Patching implements Proc<Path> {
      * Ctor.
      *
      * @param srcs The XMIR files of the build
-     * @param tables The directory with the tables of {@code eo:inference}
+     * @param tables The directory with the tables of {@code eo:infer}
      */
     Patching(final Collection<Path> srcs, final Path tables) {
         this(srcs, new Signatures(tables));

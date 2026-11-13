@@ -35,7 +35,7 @@ import org.eolang.printer.Xmir;
  * compares that against what is on disk. In its default "check" mode, it
  * prints a colored unified {@link Diff} for every file that diverges from
  * the canonical form and fails the build. When {@link #autofix} is turned
- * on (via the {@code eo.autoFix} property), it overwrites the divergent
+ * on (via the {@code eo.format.autofix} property), it overwrites the divergent
  * files with their canonical form instead of failing, much like
  * {@code gofmt -w} or {@code spotless:apply}.</p>
  *
@@ -63,8 +63,8 @@ public final class MjFormat extends MjPenalties {
      * failing the build.
      */
     @Parameter(
-        alias = "autoFix",
-        property = "eo.autoFix",
+        alias = "format.autofix",
+        property = "eo.format.autofix",
         required = true,
         defaultValue = "false"
     )
@@ -228,7 +228,7 @@ public final class MjFormat extends MjPenalties {
                     "%d of %d EO source(s) are not formatted canonically; %s",
                     divergent,
                     total,
-                    "run with -Deo.autoFix to reformat them automatically"
+                    "run with -Deo.format.autofix to reformat them automatically"
                 )
             );
         }

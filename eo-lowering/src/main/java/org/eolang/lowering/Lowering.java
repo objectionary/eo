@@ -41,9 +41,9 @@ import org.eolang.cache.GlobalCache;
  * of {@code throw};</li>
  * <li>{@code 2-protocols}, inside the home directory, holds one protocol file
  * for every entry that phino worked on;</li>
- * <li>a numbered {@code texts} directory inside the home holds the same protocols
- * written as indented text, for a person to read, only when they are asked
- * for;</li>
+ * <li>a numbered {@code minutes} directory inside the home holds the
+ * minutes, which are the same protocols written as indented text, for a
+ * person to read, only when they are asked for;</li>
  * <li>a numbered {@code atoms} directory inside the home holds the Java atoms;</li>
  * <li>a numbered {@code patched} directory holds
  * the XMIR files where atoms took the place of the bodies of
@@ -68,7 +68,7 @@ public final class Lowering {
     private final Collection<Path> sources;
 
     /**
-     * The directory with the tables of {@code eo:inference},
+     * The directory with the tables of {@code eo:infer},
      * {@code facts.xml} and {@code answers.xml}, which say what the voids
      * hold and what the bodies give.
      */
@@ -113,15 +113,15 @@ public final class Lowering {
     private final Duration budget;
 
     /**
-     * Whether every entry gets its protocol as indented text too.
+     * Whether every entry gets its minutes too.
      */
-    private final boolean texts;
+    private final boolean minutes;
 
     /**
      * Ctor.
      *
      * @param srcs The XMIR files of the build
-     * @param tbls The directory with the tables of {@code eo:inference}
+     * @param tbls The directory with the tables of {@code eo:infer}
      * @param dir The home directory of the lowering, usually {@code target/eo/NN-lowering}
      * @param exe The name of the phino program, or the path to it
      * @param pin The only version of phino that the lowering accepts
@@ -132,16 +132,16 @@ public final class Lowering {
      * @param again How many times one run of phino may enter the same
      *  formation again
      * @param span The time that one run of phino may take before it is stopped
-     * @param text Whether every entry gets its protocol as indented text too
+     * @param mins Whether every entry gets its minutes too
      * @checkstyle ParameterNumberCheck (10 lines)
      */
     public Lowering(
         final Collection<Path> srcs, final Path tbls, final Path dir, final String exe,
         final String pin, final GlobalCache store, final Scope range,
-        final int ceiling, final int again, final Duration span, final boolean text
+        final int ceiling, final int again, final Duration span, final boolean mins
     ) {
         this(
-            srcs, tbls, dir, new Phino(exe, pin), store, range, ceiling, again, span, text
+            srcs, tbls, dir, new Phino(exe, pin), store, range, ceiling, again, span, mins
         );
     }
 
@@ -149,7 +149,38 @@ public final class Lowering {
      * Ctor.
      *
      * @param srcs The XMIR files of the build
-     * @param tbls The directory with the tables of {@code eo:inference}
+     * @param tbls The directory with the tables of {@code eo:infer}
+     * @param dir The home directory of the lowering, usually {@code target/eo/NN-lowering}
+     * @param exe The name of the phino program, or the path to it
+     * @param pin The only version of phino that the lowering accepts
+     * @param memory The largest memory one run of phino may take, such as
+     *  "4G", or "0" when there is no limit
+     * @param store The cache, where the protocols are kept between builds
+     * @param range The entries that phino is allowed to run on
+     * @param ceiling The largest number of steps inside one another that one
+     *  run of phino may take
+     * @param again How many times one run of phino may enter the same
+     *  formation again
+     * @param span The time that one run of phino may take before it is stopped
+     * @param mins Whether every entry gets its minutes too
+     * @checkstyle ParameterNumberCheck (10 lines)
+     */
+    public Lowering(
+        final Collection<Path> srcs, final Path tbls, final Path dir, final String exe,
+        final String pin, final String memory, final GlobalCache store, final Scope range,
+        final int ceiling, final int again, final Duration span, final boolean mins
+    ) {
+        this(
+            srcs, tbls, dir, new Phino(exe, pin, memory), store, range, ceiling, again,
+            span, mins
+        );
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param srcs The XMIR files of the build
+     * @param tbls The directory with the tables of {@code eo:infer}
      * @param dir The home directory of the lowering, usually {@code target/eo/NN-lowering}
      * @param exe The phino program on this computer
      * @param store The cache, where the protocols are kept between builds
@@ -159,12 +190,12 @@ public final class Lowering {
      * @param again How many times one run of phino may enter the same
      *  formation again
      * @param span The time that one run of phino may take before it is stopped
-     * @param text Whether every entry gets its protocol as indented text too
+     * @param mins Whether every entry gets its minutes too
      */
     Lowering(
         final Collection<Path> srcs, final Path tbls, final Path dir, final Phino exe,
         final GlobalCache store, final Scope range, final int ceiling,
-        final int again, final Duration span, final boolean text
+        final int again, final Duration span, final boolean mins
     ) {
         this.sources = srcs;
         this.tables = tbls;
@@ -175,7 +206,7 @@ public final class Lowering {
         this.steps = ceiling;
         this.loops = again;
         this.budget = span;
-        this.texts = text;
+        this.minutes = mins;
     }
 
     /**
@@ -246,7 +277,7 @@ public final class Lowering {
                 new Merging(this.phino),
                 new Morphing(
                     this.phino, this.cache, this.scope, this.steps, this.loops, this.budget,
-                    this.texts
+                    this.minutes
                 ),
                 new Rendering(this.tables),
                 new Patching(this.sources, this.tables)

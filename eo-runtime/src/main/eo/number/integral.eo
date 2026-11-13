@@ -38,10 +38,7 @@
                 false
               true > [i]
             sum
-          as-number. >> step!
-            div.
-              mem.b.minus mem.a
-              mem.n
+          number ((mem.b.minus mem.a).div mem.n)! >> step
     T "the number of partitions must be a finite positive integer smaller than 2^53"
   times. > [^calc a b] >> subsection
     div.
@@ -144,14 +141,14 @@
       0
 
   eq. ++> can-recover-from-partitions-at-the-precision-boundary
-    "recovered"
+    42
     recovered
       0.integral
         I
         0
         1
         9007199254740992
-      "recovered"
+      42
 
   integral. --> stops-on-fractional-partitions
     0

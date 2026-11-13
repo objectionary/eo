@@ -30,4 +30,4 @@ answers:
   - /answers/o[@loc='Φ.inc' and @copies='2']
   - /answers/o[@loc='Φ.inc.v🌵x']/set[@copies='1']/is[@loc='Φ.oak']
   - /answers/o[@loc='Φ.inc.v🌵x']/set[@copies='1']/is[@loc='Φ.elm']
-  - /answers[not(o[@loc='Φ.inc.v🌵x']/set[is[@loc='Φ.oak'] and is[@loc='Φ.elm']])]
+  - /answers[not(o[@loc='Φ.inc.v🌵x']/set[./is[@loc='Φ.oak'] and ./is[@loc='Φ.elm']])]

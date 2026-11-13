@@ -171,6 +171,16 @@
           mem.slot 2 4 > part
       01-02-03-04
 
+  eq. ++> can-recover-from-reading-past-the-slot-end
+    malloc.of
+      8
+      read. > [mem]
+        mem.slot 2 5
+        4
+        3
+        C3-1F-08 > [message]
+    C3-1F-08
+
   ++> can-reject-child-that-exceeds-its-direct-parent
     not. > @
       malloc.of

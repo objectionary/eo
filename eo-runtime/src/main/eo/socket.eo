@@ -301,9 +301,10 @@
 
   ++> can-bind-and-listen-on-an-ephemeral-loopback-port
     os.is-windows.or > @
-      listen.
-        socket "127.0.0.1" 0
-        accepting
+      as-bool.
+        listen.
+          socket "127.0.0.1" 0
+          accepting
     true > [client] > accepting
 
   eq. ++> can-convert-a-port-above-the-signed-short-limit-in-htons
@@ -327,12 +328,34 @@
       true
     42
 
+  ++> can-recover-from-binding-to-an-address-of-another-host
+    os.is-windows.or > @
+      as-bool.
+        listen.
+          socket "203.0.113.7" 0
+          serving
+          unbound
+    false > [server] > serving
+    true > [message] > unbound
+
+  ++> can-recover-from-receiving-on-a-socket-that-only-listens
+    os.is-windows.or > @
+      eq.
+        listen.
+          socket "127.0.0.1" 0
+          receiving
+        6D-0E-B3
+    server.recv > [server] > receiving
+      9
+      6D-0E-B3 > [message]
+
   ++> can-report-a-connection-nobody-accepts
     os.is-windows.or > @
-      connect.
-        socket "127.0.0.1" 1
-        talking
-        refused
+      as-bool.
+        connect.
+          socket "127.0.0.1" 1
+          talking
+          refused
     true > [message] > refused
     false > [client] > talking
 

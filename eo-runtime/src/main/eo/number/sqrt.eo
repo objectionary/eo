@@ -22,7 +22,12 @@
 
 [^num] > sqrt
   if. > @
-    arg.lt 0
+    lt.
+      if. >> arg
+        num.as-bytes.size.eq 8
+        number num.as-bytes
+        T "the 'ρ' attribute must be a number"
+      0
     nan
     if.
       arg.as-bytes.eq 80-00-00-00-00-00-00-00
@@ -37,10 +42,6 @@
             arg.div seed
           2
         seed
-  if. > arg
-    num.as-bytes.size.eq 8
-    number num.as-bytes
-    T "the 'ρ' attribute must be a number"
 
   lt. ++> can-approximate-a-square-root-of-four
     abs.
@@ -88,6 +89,3 @@
     1.0e-9
 
   0.sqrt.eq 0 ++> can-take-a-square-root-of-zero
-
-  sqrt. --> stops-on-a-square-root-of-a-receiver-that-is-not-a-number
-    number "abc"

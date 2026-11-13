@@ -15,19 +15,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Test cases for {@link MjInferenceReport}.
+ * Test cases for {@link MjRender}.
  *
  * @since 0.71.0
  */
 @ExtendWith(MktmpResolver.class)
-final class MjInferenceReportTest {
+final class MjRenderTest {
 
     @Test
     void drawsAPagePerSourceFromTheAnswers(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             String.join(System.lineSeparator(), "[] > app", "  [] > t", "")
         );
-        maven.execute(MjParse.class).execute(MjInference.class);
+        maven.execute(MjParse.class).execute(MjInfer.class);
         Files.writeString(
             maven.targetPath().resolve(maven.dirName("inference")).resolve("answers.xml"),
             String.join(
@@ -36,7 +36,7 @@ final class MjInferenceReportTest {
                 "<o loc='Φ.app.t' copies='3'><is loc='Φ.app.t'/></o></answers>"
             )
         );
-        maven.execute(MjInferenceReport.class);
+        maven.execute(MjRender.class);
         MatcherAssert.assertThat(
             "a page of the program must be drawn from answers.xml, but it wasnt",
             Files.exists(
@@ -51,11 +51,11 @@ final class MjInferenceReportTest {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             String.join(System.lineSeparator(), "[] > app", "  [] > t", "")
         );
-        maven.execute(MjParse.class).execute(MjInference.class);
+        maven.execute(MjParse.class).execute(MjInfer.class);
         Files.delete(
             maven.targetPath().resolve(maven.dirName("inference")).resolve("answers.xml")
         );
-        maven.execute(MjInferenceReport.class);
+        maven.execute(MjRender.class);
         MatcherAssert.assertThat(
             "no page may be drawn when the engine wrote no answers, but one was",
             Files.exists(maven.targetPath().getParent().resolve("site/inference/index.html")),
@@ -65,7 +65,7 @@ final class MjInferenceReportTest {
 
     @Test
     void createsNoStageDirectoryWhenInferenceNeverRan(@Mktmp final Path temp) throws IOException {
-        new FakeMaven(temp).execute(MjInferenceReport.class);
+        new FakeMaven(temp).execute(MjRender.class);
         MatcherAssert.assertThat(
             "A goal that only reads must leave the target untouched, but it didnt",
             Files.exists(temp.resolve("target")),
