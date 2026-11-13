@@ -17,7 +17,6 @@ package org.eolang.inference;
  *   <li>{@code U}, an unknown, with its reason in {@code form}, and
  *   "decided" in {@code birth} for the unknown of a void only Java fills
  *   (4.5);</li>
- *   <li>{@code B}, rule b's head as is (4.3), the value in {@code base};</li>
  *   <li>{@code A}, rule A's mark (4.2), the value in {@code base} and its
  *   number of empty voids in {@code count}.</li>
  * </ul>
@@ -27,7 +26,7 @@ package org.eolang.inference;
  * @param birth The birthplace of a copy, or "decided"
  * @param bound The bits of the bound voids of a copy
  * @param tag The tag of a copy, empty when none
- * @param base The value a {@code B} or an {@code A} wraps, or -1
+ * @param base The value an {@code A} wraps, or -1
  * @param count The empty voids of an {@code A}
  * @since 0.76.0
  */

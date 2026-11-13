@@ -488,16 +488,6 @@ final class State {
     }
 
     /**
-     * Rule b's head, kept as is.
-     *
-     * @param head The head
-     * @return The value
-     */
-    int await(final int head) {
-        return this.course.await(head);
-    }
-
-    /**
      * Note that something waits for a stop.
      *
      * @param wish What waits

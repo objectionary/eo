@@ -17,22 +17,14 @@ package org.eolang.inference;
  * <li>What an object with empty voids reduces to carries a mark, the
  * number of its empty voids (rule A); a call uses the mark up.</li>
  * <li>An object whose {@code @} gives nothing typed is nothing until a
- * stop decides it, and is kept as itself from then on (rule e). T, rule
- * b's head and every unknown are not typed, and are left out of what an
- * object with empty voids reduces to.</li>
- * <li>Rule b's head goes into a void as what it reduces to, in one
- * step.</li>
+ * stop decides it, and is kept as itself from then on (rule e). T and
+ * every unknown are not typed, and are left out of what an object with
+ * empty voids reduces to.</li>
  * <li>An unknown goes into a void as it is, so it keeps its kind: the
  * void of an object nobody calls, or a void only Java fills.</li>
  * </ul>
  *
  * @since 0.76.0
- * @todo #9655:30min Remove rule b's head kept as is, the value of kind
- *  {@code 'B'} that {@code await()} makes. A call that waited on unknowns
- *  now makes its copy with them in its voids, so only {@code Rows.stamp()}
- *  calls {@code await()}, and only on a value of that kind, which nothing
- *  makes any more. The kind and every check for it, here and in
- *  {@code Calls}, {@code Reads}, {@code Rows} and {@code Values}, are dead.
  */
 final class Reduction {
 
@@ -78,7 +70,7 @@ final class Reduction {
         for (final int num : set) {
             final Ids kinds = this.kind(num);
             for (int idx = 0; idx < kinds.size(); ++idx) {
-                all.addAll(this.unwrapped(kinds.get(idx)));
+                all.add(kinds.get(idx));
             }
         }
         final Ids sorted = all.frozen();
@@ -104,44 +96,6 @@ final class Reduction {
         }
         this.state.remember(inside);
         return this.world.intern(new Value('A', "", "", 0L, "", inside, count));
-    }
-
-    /**
-     * Rule b's head, kept as is.
-     *
-     * @param head The head
-     * @return The value
-     */
-    int await(final int head) {
-        this.state.remember(head);
-        return this.world.intern(new Value('B', "", "", 0L, "", head, 0));
-    }
-
-    /**
-     * A value with rule b's wrapper taken off, as what its head reduces to.
-     *
-     * @param num The value
-     * @return What it stands for
-     */
-    Ids unwrapped(final int num) {
-        final Value value = this.world.value(num);
-        final Ids out;
-        if (value.kind() == 'B') {
-            out = this.kind(value.base());
-            for (int idx = 0; idx < out.size(); ++idx) {
-                if (this.world.value(out.get(idx)).kind() == 'B') {
-                    throw new IllegalStateException(
-                        String.format(
-                            "%s reduces to another value of rule b",
-                            this.world.full(num)
-                        )
-                    );
-                }
-            }
-        } else {
-            out = new Ids(num);
-        }
-        return out;
     }
 
     private Ints now(final int num) {
@@ -277,7 +231,7 @@ final class Reduction {
         for (int idx = 0; idx < out.size(); ++idx) {
             final int val = out.get(idx);
             final char kind = this.world.value(val).kind();
-            if (kind != 'T' && kind != 'B' && kind != 'U') {
+            if (kind != 'T' && kind != 'U') {
                 got.add(val);
             }
         }

@@ -149,24 +149,19 @@ final class Calls {
     }
 
     private Ints head(final int num, final Call call, final Set<Landing> landed) {
-        int head = num;
-        Value value = this.world.value(head);
-        if (value.kind() == 'B') {
-            head = value.base();
-            value = this.world.value(head);
-        }
+        final Value value = this.world.value(num);
         final List<String> voids = this.voids(value, call);
-        this.land(head, value, voids, call.size(), landed);
+        this.land(num, value, voids, call.size(), landed);
         final char kind = value.kind();
         final Ints out = new Ints();
         if (kind == 'A') {
             out.add(this.marked(value, call.size()));
         } else if (kind == 'O') {
-            out.addAll(this.object(head, value, call, voids));
+            out.addAll(this.object(num, value, call, voids));
         } else if (kind == 'D') {
             out.add(Values.TERM);
         } else {
-            out.add(head);
+            out.add(num);
         }
         return out;
     }
