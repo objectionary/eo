@@ -50,7 +50,7 @@ jobs:
           tar xzf "${RUNNER_TEMP}/maven.tgz" --directory "${RUNNER_TEMP}"
           echo "${RUNNER_TEMP}/apache-maven-${MAVEN}/bin" >> "${GITHUB_PATH}"
         env:
-          MAVEN: 3.9.16
+          MAVEN: 3.10.0
       - uses: actions/cache@v6
         with:
           path: ~/.m2/repository
