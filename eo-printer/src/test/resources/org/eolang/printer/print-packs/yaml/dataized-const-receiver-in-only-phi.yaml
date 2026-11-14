@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# An anonymous const receiver produced by dataized-to-const must not be
+# printed as a raw reversed dispatch with horizontal arguments.  The legal
+# verbose spelling keeps the only-phi test and gives the reversed dispatch its
+# own `> @` scope, where the auto-named const and bytes argument are legal.
+penalties:
+  INDENT: 2
+  BRACKET: 19
+  LEADING: 4
+  PHI: 15
+  IF: 50
+  EXCESS: 3
+  SYMBOL: 1
+  SPACE: 7
+  WIDTH: 80
+  STEP: 2
+origin: |
+  [] > foo
+
+    eq. ++> can-x
+      as-bytes.
+        dataized 5
+      40-14-00-00-00-00-00-00
+
+printed: |
+  [] > foo
+
+    ++> can-x
+      eq. > @
+        5 >>!
+        40-14-00-00-00-00-00-00
