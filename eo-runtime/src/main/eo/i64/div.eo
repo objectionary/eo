@@ -27,7 +27,9 @@
 [^num b cant-divide] > div
   if. > @
     b.as-bytes.eq 00-00-00-00-00-00-00-00
-    cant-divide "i64 cannot be divided by zero"
+    cant-divide
+      "Can't divide %s by i64 zero".printf
+        * num.as-decimal
     if.
       and.
         num.as-bytes.eq 80-00-00-00-00-00-00-00
