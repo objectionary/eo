@@ -196,6 +196,42 @@ final class CopiesTest {
     }
 
     @Test
+    void keepsFixedFillingNextToJavaUnknownOfWalkOnlyOne(@Mktmp final Path temp)
+        throws IOException {
+        final State state = new State(
+            CopiesTest.sources(temp)
+                .with("report.eo", "[] > report", "  os.status 1 \"ok\" > @")
+                .with("late.eo", "[x] > late", "  os.status 9 x > @")
+                .world()
+        );
+        state.seed();
+        MatcherAssert.assertThat(
+            "a void with a filling the facts fix and one only the walk answers must hold both, but it didnt",
+            state.row(state.java(new Annotation("Φ.os.status")), "v🌵note").frozen(),
+            Matchers.hasToString(
+                new Ints(state.shared("Φ.string"), Values.JGAP).frozen().toString()
+            )
+        );
+    }
+
+    @Test
+    void putsJavaUnknownForCallOnFormationOutsideCanon(@Mktmp final Path temp)
+        throws IOException {
+        final State state = new State(
+            CopiesTest.sources(temp)
+                .with("foo.eo", "[x] > foo", "  x > @")
+                .with("report.eo", "[] > report", "  os.status 1 (foo 5) > @")
+                .world()
+        );
+        state.seed();
+        MatcherAssert.assertThat(
+            "a call on a formation outside the canon must put the unknown only Java fills into its void, but it didnt",
+            state.row(state.java(new Annotation("Φ.os.status")), "v🌵note").frozen(),
+            Matchers.hasToString(new Ints(Values.JGAP).frozen().toString())
+        );
+    }
+
+    @Test
     void givesFormationFillingCopyJavaMadeAsItsRho(@Mktmp final Path temp)
         throws IOException {
         final State state = new State(
@@ -237,6 +273,10 @@ final class CopiesTest {
     }
 
     private static World called(final Path temp, final String... lines) throws IOException {
+        return CopiesTest.sources(temp).with("report.eo", lines).world();
+    }
+
+    private static Sources sources(final Path temp) {
         return new Sources(temp).with(
             "os.eo",
             "[] > os",
@@ -244,17 +284,10 @@ final class CopiesTest {
             "  [code note] > status",
             "    code > @",
             "    note > text"
-        ).with("report.eo", lines).world();
+        );
     }
 
     private static World status(final Path temp) throws IOException {
-        return new Sources(temp).with(
-            "os.eo",
-            "[] > os",
-            "  [] > check /Q.os.status",
-            "  [code note] > status",
-            "    code > @",
-            "    note > text"
-        ).world();
+        return CopiesTest.sources(temp).world();
     }
 }

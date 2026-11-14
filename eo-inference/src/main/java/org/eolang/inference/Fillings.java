@@ -38,16 +38,25 @@ import java.util.Set;
  * depend on the order in which the walk meets the files or the
  * objects.</p>
  *
+ * <p>A void of an object Java makes from a type with no brackets may hold
+ * the unknown only Java fills, and that is the decision of #9864, where the
+ * puzzle stood. A filling only the walk can answer, as the {@code cde}
+ * {@code getenv-return} in {@code posix.eo} hands on, cannot enter such a
+ * copy: one copy per type, from {@code facts.xml} alone, serves every
+ * caller, so a value found for one caller would make it depend on the order
+ * the walk meets the files, the defect #9657 removed, and a second walk
+ * would still tell it to callers that never put it there. So such a void
+ * holds the unknown next to the fillings {@link Copies} can name, a fresh
+ * formation, a call on a kind of the canon, {@code Φ}, a datum and a
+ * termination, and drops none of them; a call on any other formation it
+ * cannot name, even where the facts fix it, stands as the unknown instead.
+ * An atom that needs the voids of its result typed writes the brackets, as
+ * {@code getenv /Q.posix.getenv-return(Q.bool,Q.string)} does in
+ * {@code posix.eo}; demanding them would make an open type a hard error for
+ * programs that do not need the value. A place only the walk answers, an
+ * error among them, reads as that unknown as well.</p>
+ *
  * @since 0.76.0
- * @todo #9657:60min Decide what a filling only the walk can answer puts
- *  into a void of an object Java makes from a type with no brackets. Such
- *  a filling is a void handed on, as the {@code cde} that
- *  {@code getenv-return} in {@code posix.eo} hands to
- *  {@code posix.getenv-return}. For now {@link Copies} puts the unknown
- *  only Java fills into that void, next to the fillings the facts fix. The
- *  choices are to read such a void as one Java alone fills, to ask for the
- *  type with brackets on every atom whose object such a filling reaches, or
- *  to walk twice, the second time with what the first walk found there.
  */
 final class Fillings {
 
