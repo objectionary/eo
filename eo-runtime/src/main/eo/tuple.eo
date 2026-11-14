@@ -11,18 +11,31 @@
   [^list i fallback] > at
     if. > @
       or.
-        0.gt
-          number >> index
-            if. >>!
-              0.gt
-                number i! >> idx
-              list.length.plus idx
-              idx
-        list.length.lte index
-      fallback "Given index is out of tuple bounds"
+        not.
+          eq.
+            floor.
+              number ((0.gt idx).if (list.length.plus idx) idx)! >> index
+            index
+        or.
+          0.gt index
+          list.length.lte index
+      fallback
+        printf. >> failure
+          if.
+            index.floor.eq index
+            "Given index %s is out of tuple bounds"
+            "Index must be an integer, but was %s"
+          *
+            if.
+              idx.abs.lt 9.223372036854776e18
+              "%f".printf
+                * idx
+              string
+                as-scientific.
+                  number i! >> idx
       if. > [^list tup] >> at-fast
         0.eq tup.length
-        list.fallback "Given index is out of tuple bounds"
+        list.fallback failure
         if.
           eq.
             tup.length.plus -1
@@ -223,6 +236,16 @@
         3
         4
       20
+      "recovered" > [message]
+
+  eq. ++> can-reject-a-fractional-index-without-reading-the-tail
+    "recovered"
+    at.
+      tuple
+        T "The tail must not be inspected"
+        "last"
+        3
+      1.5
       "recovered" > [message]
 
   ++> can-report-the-length-of-a-non-empty-tuple
