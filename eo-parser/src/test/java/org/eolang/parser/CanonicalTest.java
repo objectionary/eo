@@ -31,15 +31,18 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * Test case for {@link Canonical}.
+ * The long tuple boundary test runs alone: under concurrent transforms its
+ * canonical XSL chain exceeds the default 20-second method timeout (#9879).
  *
  * @since 0.1
  */
+@Isolated
 final class CanonicalTest {
 
     @Test
@@ -62,16 +65,8 @@ final class CanonicalTest {
 
     /**
      * Accepts a tuple nested exactly 256 levels deep.
-     *
-     * @todo #9080:30min Enable acceptsTupleOfTheLargestSize again. It is off
-     *  because it runs past its 20 second timeout in the full parallel run of
-     *  eo-parser on CI (32 seconds in the fast ubuntu-24.04 job of #9869),
-     *  while the class passes on its own. Find out why parsing a tuple of 256
-     *  elements is that slow under load, fix it, and remove the Disabled
-     *  annotation.
      */
     @Test
-    @Disabled
     void acceptsTupleOfTheLargestSize() throws Exception {
         MatcherAssert.assertThat(
             "A tuple of 256 elements must parse without this error, but it didnt",
