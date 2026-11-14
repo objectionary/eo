@@ -6,9 +6,9 @@
 # negative infinity, a negative number and negative infinity are nan, and
 # positive infinity stays.
 #
-# `n` says that the receiver is not a number itself, rather than letting
-# the first comparison blame its own `b`, which is an attribute the caller
-# never wrote (#9283).
+# `n` holds the receiver once `num.checked` has found it eight bytes wide,
+# rather than leaving the first comparison to blame its own `b`, which is an
+# attribute the caller never wrote (#9283).
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -22,10 +22,7 @@
     nan
     if.
       lt.
-        if. >> n
-          num.as-bytes.size.eq 8
-          number num.as-bytes
-          T "the 'ρ' attribute must be a number"
+        num.checked >> n
         0
       nan
       if.
@@ -96,7 +93,7 @@
                   number
                     fold.step (level.minus 1) >> prev!
                   number prev
-          | n
+          | num.checked
           pinf
 
   -2.2.ln.is-nan ++> can-return-nan-for-a-logarithm-of-a-negative-float
