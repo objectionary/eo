@@ -241,7 +241,7 @@ final class Values {
         } else if (value.kind() == 'B') {
             name = String.format("%s~", this.full(value.base()));
         } else if (value.kind() == 'A') {
-            name = String.format("%s/%d", this.full(value.base()), value.count());
+            name = this.marked(value);
         } else if (value.kind() == 'U') {
             final StringBuilder text = new StringBuilder().append(value.kind())
                 .append(':').append(value.form());
@@ -251,6 +251,14 @@ final class Values {
             name = text.toString();
         } else {
             name = String.valueOf(value.kind());
+        }
+        return name;
+    }
+
+    private String marked(final Value value) {
+        String name = String.format("%s/%d", this.full(value.base()), value.count());
+        if (value.origin() >= 0) {
+            name = String.format("%s<%s>", name, this.full(value.origin()));
         }
         return name;
     }

@@ -38,13 +38,6 @@ import java.util.Set;
  * void of a copy made in EO code, or no void.</p>
  *
  * @since 0.76.0
- * @todo #9661:60min Land the argument of a call on rule A's mark in the
- *  void the mark stands for. A curried copy that counts goes into a void
- *  both as itself and as its mark. So when {@code [f] > fin} also reads
- *  {@code f.plus 0}, the call {@code f 2} on {@code foo 1} puts 2 into the
- *  {@code y} of the copy, but off the mark it lands in no void, and the
- *  argument loses its name. The mark has to keep the copy it came from, so
- *  that {@code marked()} fills that copy the way {@code object()} does.
  */
 final class Calls {
 
@@ -153,6 +146,10 @@ final class Calls {
         Value value = this.world.value(head);
         if (value.kind() == 'B') {
             head = value.base();
+            value = this.world.value(head);
+        }
+        if (value.kind() == 'A' && value.origin() >= 0) {
+            head = value.origin();
             value = this.world.value(head);
         }
         final List<String> voids = this.voids(value, call);
