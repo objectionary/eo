@@ -135,14 +135,9 @@ final class LnFormation implements Line {
             suffix.attribute(this.span.line(), this.span.indent()),
             this.span.line(), this.span.indent()
         );
-        if (!suffix.handle().isEmpty()) {
-            emit.local(suffix.handle());
-        }
+        new Marked(emit, suffix).apply();
         if (!binding.isEmpty()) {
             emit.slot(Emissions.bindingTag(binding));
-        }
-        if (suffix.constant()) {
-            emit.constant();
         }
         int column = this.span.indent() + 1;
         for (final String param : params) {

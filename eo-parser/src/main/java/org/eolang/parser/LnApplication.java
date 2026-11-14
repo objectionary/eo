@@ -194,7 +194,11 @@ final class LnApplication implements Line {
         final Emit emit, final Suffix suffix, final Value head,
         final List<MethodChain> chain, final List<Value> args
     ) {
-        new ChainEmission(emit, this.span, head, chain, suffix).run();
+        new ChainEmission(
+            emit, this.span.line(), chain,
+            suffix.attribute(this.span.line(), this.span.indent())
+        ).run(head);
+        new Marked(emit, suffix).apply();
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, this.span.line());
         }
