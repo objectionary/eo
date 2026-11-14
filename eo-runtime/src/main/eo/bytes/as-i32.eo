@@ -1,6 +1,6 @@
 # Bytes as a signed 32-bit integer `i32`: a 4-byte chain reinterpreted
 # as two's complement. For any other length the `cant-convert` fallback
-# is returned.
+# takes an error message. When unbound, it terminates with that message.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo

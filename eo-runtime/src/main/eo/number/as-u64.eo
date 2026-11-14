@@ -1,7 +1,8 @@
 # Converts the number to a `u64`, truncating the fractional part toward zero.
 # A negative number, `nan`, an infinity, or a magnitude of `2^64` and above
 # does not fit into the bounds of a `u64`, so the caller-supplied
-# `cant-convert` fallback is returned.
+# `cant-convert` fallback takes an error message.
+# When unbound, it terminates with that message.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
