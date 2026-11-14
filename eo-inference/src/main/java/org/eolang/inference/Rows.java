@@ -143,8 +143,12 @@ final class Rows {
         if (value.kind() == 'B') {
             result = this.state.await(this.stamp(value.base(), holder, site));
         } else if (value.kind() == 'A') {
+            int origin = value.origin();
+            if (origin >= 0) {
+                origin = this.stamp(origin, holder, site);
+            }
             result = this.state.mark(
-                this.stamp(value.base(), holder, site), value.count()
+                this.stamp(value.base(), holder, site), value.count(), origin
             );
         } else if (value.kind() == 'O' && (value.bound() & Formation.RHO) == 0
             && this.world.form(value.form()).open("ρ")) {
