@@ -157,16 +157,18 @@
                 nan
                 pinf
   [^num a] >> halved
-    shrunk.times 134217729 >> broad
-    broad.minus >> crown
-      broad.minus shrunk
     a.minus top > foot
-    a.div 268435456 >> shrunk
-    a.times 134217729 >> spread
     spread.is-finite.if > top
-      spread.minus
+      minus.
+        a.times 134217729 >> spread
         spread.minus a
-      crown.times 268435456
+      times.
+        minus. >>
+          times. >> broad
+            a.div 268435456 >> shrunk
+            134217729
+          broad.minus shrunk
+        268435456
   [^num x y] >> joined
     paired > @
       hi
