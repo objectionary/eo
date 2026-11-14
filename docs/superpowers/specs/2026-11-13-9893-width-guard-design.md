@@ -16,7 +16,7 @@ those reach a Java atom and fail with `BytesRaw.whenFit`.
 
 One attribute of the package, `number/checked.eo`:
 
-```
+```eo
 [^num] > checked
   if. > @
     num.as-bytes.size.eq 8
