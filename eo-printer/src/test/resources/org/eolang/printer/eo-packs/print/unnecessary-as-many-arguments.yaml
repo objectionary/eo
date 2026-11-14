@@ -7,7 +7,6 @@
 # gives has to stay what it was: every label goes from a run that is in
 # order, and a run that is not keeps all of them, however long it is.
 sheets:
-  - /org/eolang/parser/parse/resolve-before-stars.xsl
   - /org/eolang/parser/parse/wrap-method-calls.xsl
   - /org/eolang/parser/parse/const-to-dataized.xsl
   - /org/eolang/parser/parse/stars-to-tuples.xsl
