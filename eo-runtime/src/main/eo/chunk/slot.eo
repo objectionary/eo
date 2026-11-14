@@ -43,12 +43,12 @@
       cant-read
         "Can't read %f bytes from slot offset %f, because the slot has length %f".printf
           * count offset ^.length
-    printf. > [^ capacity] > resized
-      "Can't resize a chunk slot of length %f"
-      * ^.length
+    T > [^ capacity] > resized
+      "Can't resize a chunk slot of length %f".printf
+        * ^.length
     ^.valid.if > [^] > size
       ^.length
-      "Can't get the size of an invalid chunk slot"
+      T "Can't get the size of an invalid chunk slot"
     ^.^.window > [^ begin width] > slot
       ^
       begin
@@ -76,11 +76,9 @@
       ^.parent.write
         ^.start.plus offset
         data
-      "Can't write %f bytes at slot offset %f, because the slot has length %f".printf
-        *
-          data.size
-          offset
-          ^.length
+      T
+        "Can't write %f bytes at slot offset %f, because the slot has length %f".printf
+          * data.size offset ^.length
 
   ++> can-compose-offsets-through-three-nested-slots
     eq. > @
@@ -201,3 +199,26 @@
         mem.slot pinf 2 > infinite
         mem.slot -1 2 > negative
         mem.slot 7 2 > overrun
+
+  malloc.of --> stops-on-resizing-a-slot
+    8
+    resized. > [mem]
+      mem.slot 2 4
+      8
+
+  --> stops-on-taking-the-size-of-a-stale-slot
+    malloc.of > @
+      8
+      [mem]
+        seq * > @
+          part
+          mem.resized 2
+          part.size
+        mem.slot 4 2 > part
+
+  malloc.of --> stops-on-writing-past-the-slot-end
+    8
+    write. > [mem]
+      mem.slot 2 4
+      3
+      01-02
