@@ -14,7 +14,7 @@ asserts:
   # the file-local handle keeps its "@local" marker and gets a cactus name
   - //o[@local='shared' and @name]
   # only the reference in the handle's own scope binds to the cactus name
-  - /object[count(//o[@base=//o[@local='shared']/@name])=1]
+  - /object[count(//o[@base=concat('.', //o[@local='shared']/@name)])=1]
   # the shadowed reference still resolves to the nearer public attribute
   - /object[count(//o[@base='shared'])=1]
   - //o[@name='inner']//o[@base='shared']

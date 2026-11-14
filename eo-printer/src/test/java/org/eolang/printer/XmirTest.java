@@ -47,6 +47,48 @@ import org.junit.jupiter.params.ParameterizedTest;
  */
 final class XmirTest {
 
+    @Test
+    void preservesNestedHandleOwnersOnRoundTrip() throws IOException {
+        MatcherAssert.assertThat(
+            "nested handles keep their owners across a print",
+            new EoSyntax(
+                new Xmir(
+                    new EoSyntax(
+                        String.join(
+                            System.lineSeparator(),
+                            "[^app] > app",
+                            "  [n] >> rec",
+                            "  [^in] > inner",
+                            "    [n] >> rec",
+                            "      rec n > @",
+                            "    rec > local",
+                            "    ^.rec > outer",
+                            "  42 >>! value",
+                            "  [^d] > deeper",
+                            "    43 >>! value",
+                            "    value > own",
+                            "    ^.value > other",
+                            "  [n] >>! peg",
+                            "    n > @",
+                            "  foo > x",
+                            "    [n] >> peg-1",
+                            "      n > @",
+                            "  peg-1 > y"
+                        )
+                    ).parsed()
+                ).toEO()
+            ).parsed(),
+            XhtmlMatchers.hasXPaths(
+                "//o[@name='local' and @base='ξ.a🌵rec']",
+                "//o[@name='outer' and @base='ξ.ρ.a🌵rec']",
+                "//o[@name='own' and @base='ξ.a🌵value']",
+                "//o[@name='other' and @base='ξ.ρ.a🌵value']",
+                "//o[@name='app' and count(o[@name='a🌵peg-1'])=1]",
+                "//o[@name='y' and @base='ξ.a🌵peg-1']"
+            )
+        );
+    }
+
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/printer/print-packs/yaml", glob = "**.yaml")
     void printsToEo(final String pack) throws IOException {

@@ -28,11 +28,11 @@ sheets:
 asserts:
   # The multi-referenced formation is not dropped: it keeps its cactus name
   # and its file-local handle.
-  - /object/o[@name='foo']/o[@name='a🌵4-2' and @local='helper' and not(@base)]
+  - /object/o[@name='foo']/o[@name='a🌵helper' and @local='helper' and not(@base)]
   # Neither reference is inlined into a copy of the formation body: the bare
   # reference and the `.neg` dispatch both stay as cactus-named references.
-  - /object/o[@name='foo']/o[@base='ξ.a🌵4-2' and @name='x']
-  - /object/o[@name='foo']/o[@base='ξ.a🌵4-2.neg' and @name='y']
+  - /object/o[@name='foo']/o[@base='ξ.a🌵helper' and @name='x']
+  - /object/o[@name='foo']/o[@base='ξ.a🌵helper.neg' and @name='y']
   # No copy of the formation body was minted at a reference site.
   - /object[count(//o[not(@base)]/o[starts-with(@name, 'a🌵')])=1]
 input: |

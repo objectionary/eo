@@ -68,9 +68,8 @@
   <!--
   The same bindings indexed by name alone, for the two "kept reference"
   lookups, which climb the ancestor formations looking for whichever one
-  declares a segment of the reference's base. Cactus names are auto-generated
-  and effectively unique, so this bucket holds one node and the climb becomes a
-  parentage check on it rather than a scan of every ancestor's attributes.
+  declares a segment of the reference's base. The ξ/ρ path selects the owner
+  when a handled cactus name repeats in different formations.
   A handle floated into a pipe is indexed here too, even though it is not a
   merge candidate itself: "inline-cactoos" mints a pipe for a handle whose
   value applies a formation it relocates (#7863), and the readers of such a
@@ -367,7 +366,8 @@
   -->
   <xsl:function name="eo:kept-const-ref" as="element()*">
     <xsl:param name="ref" as="element()"/>
-    <xsl:variable name="candidates" select="key('moniker-name', tokenize($ref/@base, '\.'), root($ref))[eo:const-handle(.)][some $scope in $ref/ancestor::o satisfies $scope is ..]"/>
+    <xsl:variable name="owner" select="eo:own-formation($ref)"/>
+    <xsl:variable name="candidates" select="key('moniker-name', tokenize($ref/@base, '\.'), root($ref))[eo:const-handle(.)][if (exists($owner)) then .. is $owner else some $scope in $ref/ancestor::o satisfies $scope is ..]"/>
     <xsl:variable name="binding" select="$candidates[last()]"/>
     <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and (exists($binding/@pipe) or not(eo:moniker-refs($binding)[1] is $ref))) then $binding else ()"/>
   </xsl:function>
@@ -429,7 +429,8 @@
   -->
   <xsl:function name="eo:kept-local-ref" as="element()*">
     <xsl:param name="ref" as="element()"/>
-    <xsl:variable name="candidates" select="key('moniker-name', tokenize($ref/@base, '\.'), root($ref))[not(eo:const-handle(.)) and exists(@local)][some $scope in $ref/ancestor::o satisfies $scope is ..]"/>
+    <xsl:variable name="owner" select="eo:own-formation($ref)"/>
+    <xsl:variable name="candidates" select="key('moniker-name', tokenize($ref/@base, '\.'), root($ref))[not(eo:const-handle(.)) and exists(@local)][if (exists($owner)) then .. is $owner else some $scope in $ref/ancestor::o satisfies $scope is ..]"/>
     <xsl:variable name="binding" select="$candidates[last()]"/>
     <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and (exists($binding/@pipe) or eo:applied-hosted($binding) or not(eo:moniker-refs($binding)[1] is $ref))) then $binding else ()"/>
   </xsl:function>
