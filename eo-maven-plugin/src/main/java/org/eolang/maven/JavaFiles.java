@@ -18,7 +18,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.eolang.cache.Footprint;
-import org.eolang.cache.FpIgnore;
 import org.eolang.cache.GlobalCache;
 
 /**
@@ -32,8 +31,8 @@ import org.eolang.cache.GlobalCache;
  * <p>The implementation of an atom is written by hand, so no Java file is
  * made of it. Its JUnit companion is not: the class of an atom carries its
  * own {@code <tests>}, and that body reaches {@link JavaPlaced} like any
- * other, while the footprint that would have written the main source is
- * the one that writes nothing (#9390).</p>
+ * other. A class with no {@code <java>} body is not counted among the
+ * generated main sources, while the companion is still placed (#9390).</p>
  *
  * @since 0.74
  */
@@ -109,20 +108,18 @@ final class JavaFiles {
             final Xnav object = new Xnav(target).element("object");
             final Collection<Xnav> classes = object.elements(Filter.withName("class"))
                 .collect(Collectors.toList());
-            final boolean atom = object.path("o/o[@name='λ']").findAny().isPresent();
             for (final Xnav clazz : classes) {
                 final String jname = clazz.attribute("java-name").text().get();
                 final Path tgt = new Place(jname).make(this.generated, JavaFiles.JAVA);
                 this.touched.add(tgt);
-                final Footprint written;
-                if (atom && !jname.endsWith("Test")) {
-                    written = new FpIgnore();
-                } else {
+                if (clazz.element("java").text().isPresent()) {
                     this.fresh.add(tgt);
-                    final Footprint java = new FpJavaGenerated(
-                        clazz, new FileGenerationReport(saved, tgt, target)
-                    );
-                    written = new FpIfReleased(
+                }
+                final Footprint java = new FpJavaGenerated(
+                    clazz, new FileGenerationReport(saved, tgt, target)
+                );
+                new JavaPlaced(
+                    new FpIfReleased(
                         hsh,
                         cache.kept(
                             this.generated.relativize(tgt),
@@ -131,9 +128,10 @@ final class JavaFiles {
                             java
                         ),
                         java
-                    );
-                }
-                new JavaPlaced(written, tgt, this.generated, this.roots).exec(clazz, tests);
+                    ),
+                    tgt,
+                    this.generated, this.roots
+                ).exec(clazz, tests);
             }
             Logger.debug(
                 this,
