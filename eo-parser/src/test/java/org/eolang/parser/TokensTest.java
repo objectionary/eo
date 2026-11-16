@@ -4,11 +4,13 @@
  */
 package org.eolang.parser;
 
+import java.util.List;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /**
@@ -146,6 +148,22 @@ final class TokensTest {
             "readChain must produce one MethodChain per .NAME segment after the head",
             tokens.readChain(),
             Matchers.hasSize(2)
+        );
+    }
+
+    @ParameterizedTest
+    @CsvSource({"., 7, false", "?., 8, true"})
+    void preservesDispatchPositionAndFragility(
+        final String operator, final int column, final boolean fragile
+    ) {
+        final Span span = new Span(String.format("    foo%sbar", operator), 1);
+        final Tokens tokens = new Tokens(span.body(), span);
+        tokens.readName();
+        final MethodChain link = tokens.readChain().get(0);
+        MatcherAssert.assertThat(
+            "The dispatch link lost its method, dot position, or fragile flag",
+            List.of(link.name(), link.dot(), link.fragile()),
+            Matchers.equalTo(List.of("bar", column, fragile))
         );
     }
 

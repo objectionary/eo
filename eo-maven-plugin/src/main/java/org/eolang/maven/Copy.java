@@ -26,6 +26,12 @@ import org.eolang.inference.Annotation;
  * such types, so a place reads into finitely many copies and every read
  * ends.</p>
  *
+ * <p>A copy may also be blurred: its formation stands for several formations
+ * that have the same voids in the same order, such as the two the program
+ * puts into the {@code fork} of {@code bool}. Such a copy tells where the
+ * arguments of a call on it land, but nothing may be read off it, since each
+ * of those formations binds its attributes in its own way.</p>
+ *
  * @since 0.76.0
  */
 final class Copy {
@@ -43,6 +49,11 @@ final class Copy {
     private final Optional<Map.Entry<String, Annotation>> call;
 
     /**
+     * Whether the formation is the only one the copy may be of.
+     */
+    private final boolean exact;
+
+    /**
      * Ctor.
      *
      * @param kind The type: the formation, and the types an atom gives its
@@ -57,11 +68,39 @@ final class Copy {
      *
      * @param kind The type: the formation, and the types an atom gives its
      *  voids in brackets
+     * @param sole Whether the formation is the only one the copy may be of,
+     *  and not one of several with the same voids
+     */
+    Copy(final Annotation kind, final boolean sole) {
+        this(kind, Optional.empty(), sole);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param kind The type: the formation, and the types an atom gives its
+     *  voids in brackets
      * @param maker The call that made the copy, when the code shows one
      */
     Copy(final Annotation kind, final Optional<Map.Entry<String, Annotation>> maker) {
+        this(kind, maker, true);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param kind The type: the formation, and the types an atom gives its
+     *  voids in brackets
+     * @param maker The call that made the copy, when the code shows one
+     * @param sole Whether the formation is the only one the copy may be of
+     */
+    Copy(
+        final Annotation kind, final Optional<Map.Entry<String, Annotation>> maker,
+        final boolean sole
+    ) {
         this.type = kind;
         this.call = maker;
+        this.exact = sole;
     }
 
     @Override
@@ -73,14 +112,25 @@ final class Copy {
             result = false;
         } else {
             result = this.type.equals(((Copy) other).type)
-                && this.call.equals(((Copy) other).call);
+                && this.call.equals(((Copy) other).call)
+                && this.exact == ((Copy) other).exact;
         }
         return result;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.type, this.call);
+        return Objects.hash(this.type, this.call, this.exact);
+    }
+
+    /**
+     * Whether its formation is the only one it may be of, so that its
+     * attributes may be read.
+     *
+     * @return TRUE if it is, FALSE if it is blurred
+     */
+    boolean sole() {
+        return this.exact;
     }
 
     /**
@@ -102,7 +152,8 @@ final class Copy {
      */
     Copy applied(final String place, final Copy outer) {
         return new Copy(
-            new Annotation(this.formation()), Optional.of(Map.entry(place, outer.type))
+            new Annotation(this.formation()), Optional.of(Map.entry(place, outer.type)),
+            this.exact
         );
     }
 

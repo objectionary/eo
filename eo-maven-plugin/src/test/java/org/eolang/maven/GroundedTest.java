@@ -45,6 +45,32 @@ final class GroundedTest {
     }
 
     @Test
+    void groundsArgumentOfCallOnVoidFilledWithSameVoids(@Mktmp final Path temp)
+        throws IOException {
+        MatcherAssert.assertThat(
+            "an argument of a call on a void every caller fills alike must be grounded, but it isnt",
+            new Grounded(
+                GroundedTest.facts(
+                    temp,
+                    "<objects><type id='Φ.guard'>",
+                    "<attr name='fail' type='Φ.guard.fail' void='true'/>",
+                    "<attr name='φ' type='Φ.guard.φ'/>",
+                    "</type><type id='Φ.app'><attr name='φ' type='Φ.app.φ'/></type>",
+                    "<type id='Φ.app.φ.α0'>",
+                    "<attr name='message' type='Φ.app.φ.α0.message' void='true'/>",
+                    "</type></objects>",
+                    "<reads><read id='Φ.guard.φ' name='fail' of='Φ.guard.φ.ρ'/></reads>",
+                    "<heads><type id='Φ.guard.φ.ρ'><ref loc='Φ.guard'/></type>",
+                    "<type id='Φ.app.φ'><ref loc='Φ.guard'/></type></heads>",
+                    "<calls><call loc='Φ.guard.φ'><arg loc='Φ.guard.φ.α0' n='0'/></call>",
+                    "<call loc='Φ.app.φ'><arg loc='Φ.app.φ.α0' n='0'/></call></calls>"
+                )
+            ).arguments(),
+            Matchers.hasItem("Φ.guard.φ.α0")
+        );
+    }
+
+    @Test
     void groundsArgumentOfCallThroughRho(@Mktmp final Path temp) throws IOException {
         final String name = String.format("make%d", new SecureRandom().nextInt(10_000));
         MatcherAssert.assertThat(
