@@ -420,16 +420,6 @@ final class OriginsTest {
         );
     }
 
-    /**
-     * A {@code bool} whose {@code fork} is filled by {@code true} with
-     * {@code [left right]} decorating {@code yes}, and by {@code false} with
-     * the given voids decorating {@code no}, and whose {@code and} calls
-     * {@code fork} with two arguments.
-     *
-     * @param voids The voids of what {@code false} puts into {@code fork}
-     * @param extra More reads
-     * @return The origins
-     */
     private static Origins bool(
         final List<String> voids, final Map<String, Map.Entry<String, String>> extra
     ) {

@@ -51,6 +51,10 @@ import org.eolang.inference.Annotation;
  * stands here for every caller there is: a caller in Java, or in a program
  * built later, that fills the void with another formation breaks this.</p>
  *
+ * <p>Which calls copy a formation is found by following the head of every
+ * call once, the first time a void is asked for. While that runs, no void is
+ * filled, so a head that reads one stays unknown there.</p>
+ *
  * <p>So a {@link Copy} carries what fills its voids along the reads: a bare
  * {@code ξ} in the body of one of its attributes stands for that copy, and a
  * read of one of its voids copies what fills it. A place that reads any other
@@ -238,19 +242,6 @@ final class Origins {
         return found;
     }
 
-    /**
-     * What fills a void, when every call of the program that copies its
-     * formation fills it with a formation written right there, and all those
-     * formations have the same voids in the same order.
-     *
-     * <p>Which calls copy a formation is found by following the head of every
-     * call once, the first time a void is asked for. While that runs, no
-     * void is filled, so a head that reads one stays unknown.</p>
-     *
-     * @param place The place of the void
-     * @return The copy, blurred when there are several formations, or
-     *  nothing when the place is no void or the calls do not fix its shape
-     */
     private Optional<Copy> filled(final String place) {
         final Optional<Copy> found;
         if (this.fills.containsKey(place)) {
