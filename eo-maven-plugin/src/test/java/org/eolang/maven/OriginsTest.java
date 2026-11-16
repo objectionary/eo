@@ -121,6 +121,35 @@ final class OriginsTest {
     }
 
     @Test
+    void looksForAbsentNameBehindVoidDecorateeThatCallFills() {
+        final String kind = String.format("Φ.kind%d", new SecureRandom().nextInt(10_000));
+        MatcherAssert.assertThat(
+            "a name read behind a void φ that the call fills must be found in what fills it, but it isnt",
+            new Origins(
+                Map.of(
+                    "Φ", Map.of("number", "Φ.number", kind.substring(2), kind),
+                    "Φ.number", Map.of("φ", "Φ.number.φ"),
+                    kind, Map.of("eq", String.format("%s.eq", kind)),
+                    String.format("%s.eq", kind), Map.of()
+                ),
+                new Calls(
+                    Map.of("Φ.number", List.of("φ")),
+                    Map.of("Φ.app.φ.ρ", Map.of(0, "Φ.app.φ.ρ.α0")),
+                    Map.of(),
+                    Map.of()
+                ),
+                Map.of(
+                    "Φ.app.φ", Map.entry("Φ.app.φ.ρ", "eq"),
+                    "Φ.app.φ.ρ", Map.entry("Φ.app.φ.ρ.ρ", "number"),
+                    "Φ.app.φ.ρ.α0", Map.entry("Φ.app.φ.ρ.α0.ρ", kind.substring(2))
+                ),
+                Map.of("Φ.app.φ.ρ.ρ", "Φ", "Φ.app.φ.ρ.α0.ρ", "Φ")
+            ).formation("Φ.app.φ"),
+            Matchers.equalTo(Optional.of(String.format("%s.eq", kind)))
+        );
+    }
+
+    @Test
     void followsVoidOfWhatAtomReturnsToTypeItsBracketsGive() {
         final String kind = String.format("Φ.kind%d", new SecureRandom().nextInt(10_000));
         MatcherAssert.assertThat(
