@@ -10,11 +10,6 @@
 # answer over them exactly what `if` answers. `FF-` is also no character
 # at all, so a boolean no longer passes for the one-byte text U+0001,
 # the way it did when TRUE was `01-`.
-#
-# `fork` is typed with `choice`: whatever fills it, the formation `true`
-# or `false` puts there, has the two voids `left` and `right`, in this
-# order. So a call `x.if a b` is known to put `a` into `left` and `b`
-# into `right`, without asking which of the two booleans `x` is.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -24,15 +19,13 @@
 +unlint too-deep-object
 +version 0.0.0
 
-[] > bool
-  ? > fork /Q.bool.choice
+[fork] > bool
   if > @
     FF-
     00-
   flag.if > [^flag x] > and
     FF-.eq x
     false
-  [left right] > choice
   fork > if
   if > not
     false

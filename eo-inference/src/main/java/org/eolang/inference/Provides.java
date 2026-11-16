@@ -72,14 +72,6 @@ import org.xembly.Directives;
  * {@code holds} cell of a void keeps its own type when it names an object,
  * without the mark of termination.</p>
  *
- * <p>A void outside an atom may carry a type too, as
- * {@code ? > fork /Q.bool.choice} does in {@code bool}. Java fills no such
- * void, so the type says nothing about what is in it: it only promises that
- * whatever a caller puts there has the same voids as {@code Φ.bool.choice},
- * in the same order. The row keeps it in the {@code shape} cell rather than
- * in {@code holds}, so the walk never makes a copy of it, and only those who
- * want to know where the arguments of a call land read it (#9952).</p>
- *
  * <p>An annotation may name a variable rather than an object, and then it
  * names the voids that carry the same letter. {@code [] > recovered /A} over
  * {@code ? > value /A?} and {@code ? > alternative /A} says that what comes
@@ -194,7 +186,6 @@ final class Provides implements Section {
                 .up()
                 .up();
         }
-        final String cell = Provides.cell(kids);
         for (final Xnav kid : Provides.named(kids)) {
             final Noted attr = new Noted(kid);
             final String name = attr.says("name");
@@ -206,7 +197,7 @@ final class Provides implements Section {
                 row.set("void", "true");
                 final String held = Provides.held(attr.says("type"));
                 if (!held.isEmpty()) {
-                    row.set(cell, held);
+                    row.set("holds", held);
                 }
                 final String args = attr.says("args");
                 if (!args.isEmpty()) {
@@ -237,17 +228,6 @@ final class Provides implements Section {
             final String name = new Noted(kid).says("name");
             if (!name.isEmpty() && !"λ".equals(name)) {
                 found.add(kid);
-            }
-        }
-        return found;
-    }
-
-    private static String cell(final Collection<Xnav> kids) {
-        String found = "shape";
-        for (final Xnav kid : kids) {
-            if ("λ".equals(new Noted(kid).says("name"))) {
-                found = "holds";
-                break;
             }
         }
         return found;

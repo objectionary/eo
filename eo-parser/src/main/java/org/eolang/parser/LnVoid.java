@@ -4,12 +4,10 @@
  */
 package org.eolang.parser;
 
-import java.util.regex.Pattern;
-
 /**
  * A vertical void-attribute line — R-3.4.7 / R-3.4.8 of the spec.
  *
- * <p>Form: {@code ? > name} with an optional type annotation.
+ * <p>Form: {@code ? > name} with an optional atom-only type annotation.
  * The {@code ?} declares a void attribute on the enclosing formation,
  * equivalent to listing {@code name} among the bracket parameters; it
  * emits the same empty-set-based void child named {@code name}
@@ -30,25 +28,16 @@ import java.util.regex.Pattern;
  * </ul>
  *
  * <p>Every {@code Q.} root inside a type is promoted to {@code Φ.};
- * a generic type variable stays verbatim.</p>
- *
- * <p>Outside an atom, a void may carry only the first form, and only a
- * type that names objects: no type variable, since there is no atom
- * return to tie it to, and no trailing {@code ?}. Such a type promises
- * the shape of whatever fills the void: every object a caller puts there
- * has the same voids as the named object, in the same order. In
- * {@code bool}, {@code ? > fork /Q.bool.choice} says that both
- * {@code true} and {@code false} put a formation with the voids
- * {@code left} and {@code right} into {@code fork}. The {@code ^} void
- * holds the formation it is written in, so it takes no type outside an
- * atom.</p>
+ * a generic type variable stays verbatim. Both annotation forms are
+ * rejected outside an atom.</p>
  *
  * <p>The name may also be {@code ^}, which declares the formation's
  * receiver and emits a void named {@code ρ} (R-3.4.11). Its position
  * among the voids is free — a dispatch looks it up by name, not by
  * position — so it obeys the same R-3.4.9 ordering as every other void:
  * it may not stand below an attribute the formation has already bound.
- * It carries a type annotation only inside an atom.</p>
+ * It carries a type annotation like any other void, which is to say
+ * inside an atom only.</p>
  *
  * <p>Inside an atom, whose bracket head stays empty (R-3.4.10), the name
  * may instead be {@code @}, the only spelling left for a φ void there;
@@ -69,11 +58,6 @@ import java.util.regex.Pattern;
 final class LnVoid implements Line {
 
     /**
-     * A generic type variable inside a type tree.
-     */
-    private static final Pattern VARIABLE = Pattern.compile("(^|[(,])[A-F]($|[),])");
-
-    /**
      * The line's source span.
      */
     private final Span span;
@@ -92,18 +76,17 @@ final class LnVoid implements Line {
         Blanks.checkPlain(this.span, globals, emit);
         final String tail = this.span.body().substring(1);
         final int slash = tail.indexOf('/');
-        final Suffix suffix = new Suffix(
-            LnVoid.head(tail, slash), this.span, this.span.indent() + 1
+        this.attribute(
+            stack, globals, emit,
+            new Suffix(LnVoid.head(tail, slash), this.span, this.span.indent() + 1),
+            slash
         );
-        final boolean atom = this.attribute(stack, globals, emit, suffix);
-        if (slash >= 0 && !atom) {
-            this.checkShaped(suffix, tail, slash);
-        }
         this.annotate(emit, tail, slash);
     }
 
-    private boolean attribute(
-        final Stack stack, final Globals globals, final Emit emit, final Suffix suffix
+    private void attribute(
+        final Stack stack, final Globals globals, final Emit emit,
+        final Suffix suffix, final int slash
     ) {
         if (suffix.form() == Suffix.Form.NONE || suffix.auto() || suffix.test()
             || suffix.constant()) {
@@ -117,10 +100,10 @@ final class LnVoid implements Line {
             Kind.VOID, Openness.VCOMPLETED, new Admission(suffix.named(), true)
         );
         this.checkPlaced(level);
+        this.checkTyped(level, slash);
         globals.clearBlanks();
         globals.markEmitted();
         emit.object(this.name(suffix), "∅", this.span.line(), this.span.indent());
-        return level.patom();
     }
 
     private String name(final Suffix suffix) {
@@ -142,22 +125,12 @@ final class LnVoid implements Line {
         }
     }
 
-    private void checkShaped(final Suffix suffix, final String tail, final int slash) {
-        final String type = tail.substring(slash + 1).trim();
-        final String message;
-        if (suffix.form() == Suffix.Form.RECEIVER) {
-            message = "the ^ void takes a type annotation only inside an atom";
-        } else if (type.startsWith("{")) {
-            message = "a /{…} argument list is allowed only inside an atom";
-        } else if (type.endsWith("?")) {
-            message = "a void type marked with ? is allowed only inside an atom";
-        } else if (LnVoid.VARIABLE.matcher(type).find()) {
-            message = "a type variable on a void is allowed only inside an atom";
-        } else {
-            message = "";
-        }
-        if (!message.isEmpty()) {
-            throw new ParseError(this.span.line(), this.span.indent(), message);
+    private void checkTyped(final Level level, final int slash) {
+        if (slash >= 0 && !level.patom()) {
+            throw new ParseError(
+                this.span.line(), this.span.indent(),
+                "a void type annotation is allowed only inside an atom"
+            );
         }
     }
 
