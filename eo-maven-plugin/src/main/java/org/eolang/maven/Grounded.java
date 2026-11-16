@@ -33,18 +33,16 @@ import org.w3c.dom.Node;
  * {@code message}, so the engine says the string lands in {@code message}.
  * It knows only the callers it saw: a caller in Java, or in a program built
  * later, may put there a formation whose void has another name, and an
- * argument passed by name then finds no void to fill. Still, the program is
- * taken here for every caller there is, and {@link Origins} explains why. An
- * argument is grounded when {@link Origins} follows the head of its call to
- * one formation. It reads {@code facts.xml} first: a void that every call of
- * the program fills with a formation written right there, all with the same
- * voids in the same order, holds one of them, as {@code true} and
- * {@code false} fill the {@code fork} of {@code bool}. When that says nothing,
- * it reads {@code answers.xml} beside {@code facts.xml}: a void the engine
- * saw hold one formation and nothing else holds that formation. So
- * {@code fail} above holds the one formation every caller puts there, and
- * the {@code φ} of a {@code number} holds {@code Φ.bytes}, since the program
- * puts nothing else there (#9953).</p>
+ * argument passed by name then finds no void to fill. An argument is
+ * grounded only when {@link Origins} follows the head of its call to one
+ * formation from {@code facts.xml} alone, since then no caller can change the
+ * void it lands in. There are two exceptions, and {@link Origins} explains
+ * both. A void that every call of the program fills with a formation written
+ * right there, all with the same voids in the same order, holds one of them,
+ * as {@code true} and {@code false} fill the {@code fork} of {@code bool}. A
+ * void {@code φ} that the engine, in {@code answers.xml} beside
+ * {@code facts.xml}, saw hold one formation and nothing else holds that
+ * formation, as the {@code φ} of a {@code number} holds {@code Φ.bytes}.</p>
  *
  * <p>What an atom returns is a type, such as
  * {@code Φ.posix.status-return(Φ.number,Φ.string)}. The formation it fixes is

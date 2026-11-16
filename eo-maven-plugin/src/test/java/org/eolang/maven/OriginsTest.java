@@ -192,6 +192,28 @@ final class OriginsTest {
     }
 
     @Test
+    void ignoresEngineAnswerOfVoidOtherThanDecoratee() {
+        MatcherAssert.assertThat(
+            "a name read off a void other than φ must copy no formation, whatever the engine answers, but it does",
+            new Origins(
+                Map.of(
+                    "Φ", Map.of("app", "Φ.app", "loud", "Φ.loud"),
+                    "Φ.app", Map.of("scope", "Φ.app.scope", "φ", "Φ.app.φ"),
+                    "Φ.loud", Map.of("message", "Φ.loud.message")
+                ),
+                new Calls(
+                    Map.of("Φ.app", List.of("scope"), "Φ.loud", List.of("message")),
+                    Map.of(), Map.of(), Map.of()
+                ),
+                Map.of("Φ.app.φ", Map.entry("Φ.app.φ.ρ", "scope")),
+                Map.of("Φ.app.φ.ρ", "Φ.app"),
+                Map.of("Φ.app.scope", "Φ.loud")
+            ).formation("Φ.app.φ"),
+            Matchers.equalTo(Optional.empty())
+        );
+    }
+
+    @Test
     void ignoresEngineAnswerOfPlaceThatIsNoVoid() {
         MatcherAssert.assertThat(
             "the answer of the engine must not name a place that is no void, but it does",
