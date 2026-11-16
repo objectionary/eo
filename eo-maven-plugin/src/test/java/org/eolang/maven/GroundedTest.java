@@ -71,6 +71,45 @@ final class GroundedTest {
     }
 
     @Test
+    void groundsArgumentOfCallBehindVoidTheEngineAnswers(@Mktmp final Path temp)
+        throws IOException {
+        Files.write(
+            temp.resolve("answers.xml"),
+            String.join(
+                System.lineSeparator(),
+                "<answers>",
+                "  <o loc='Φ.number.φ' copies='1'>",
+                "    <is loc='Φ.bytes'/>",
+                "  </o>",
+                "</answers>"
+            ).getBytes(StandardCharsets.UTF_8)
+        );
+        MatcherAssert.assertThat(
+            "an argument of a call behind a void the engine saw hold one formation must be grounded, but it isnt",
+            new Grounded(GroundedTest.numbers(temp)).arguments(),
+            Matchers.hasItem("Φ.app.φ.α0")
+        );
+    }
+
+    @Test
+    void groundsNoArgumentOfCallBehindVoidTheEngineAnswersTwice(@Mktmp final Path temp)
+        throws IOException {
+        Files.write(
+            temp.resolve("answers.xml"),
+            String.join(
+                "",
+                "<answers><o loc='Φ.number.φ' copies='2'><is loc='Φ.bytes'/>",
+                "<terminator/></o></answers>"
+            ).getBytes(StandardCharsets.UTF_8)
+        );
+        MatcherAssert.assertThat(
+            "an argument of a call behind a void the engine also saw terminated must not be grounded, but it is",
+            new Grounded(GroundedTest.numbers(temp)).arguments(),
+            Matchers.not(Matchers.hasItem("Φ.app.φ.α0"))
+        );
+    }
+
+    @Test
     void groundsArgumentOfCallThroughRho(@Mktmp final Path temp) throws IOException {
         final String name = String.format("make%d", new SecureRandom().nextInt(10_000));
         MatcherAssert.assertThat(
@@ -236,6 +275,22 @@ final class GroundedTest {
                 )
             ).arguments(),
             Matchers.hasItem("Φ.app.φ.α0")
+        );
+    }
+
+    private static Path numbers(final Path dir) throws IOException {
+        return GroundedTest.facts(
+            dir,
+            "<objects><type id='Φ'>",
+            "<attr name='number' type='Φ.number'/><attr name='bytes' type='Φ.bytes'/>",
+            "<attr name='app' type='Φ.app'/></type>",
+            "<type id='Φ.number'><attr name='φ' type='Φ.number.φ' void='true'/></type>",
+            "<type id='Φ.bytes'><attr name='eq' type='Φ.bytes.eq'/></type>",
+            "<type id='Φ.bytes.eq'><attr name='b' type='Φ.bytes.eq.b' void='true'/></type>",
+            "<type id='Φ.app'><attr name='φ' type='Φ.app.φ'/></type></objects>",
+            "<reads><read id='Φ.app.φ' name='eq' of='Φ.app.φ.ρ'/></reads>",
+            "<heads><type id='Φ.app.φ.ρ'><ref loc='Φ.number'/></type></heads>",
+            "<calls><call loc='Φ.app.φ'><arg loc='Φ.app.φ.α0' n='0'/></call></calls>"
         );
     }
 
