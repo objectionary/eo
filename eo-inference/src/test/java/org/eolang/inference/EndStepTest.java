@@ -8,6 +8,7 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -22,19 +23,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 final class EndStepTest {
 
     @Test
-    void marksReadWithNoAnswer(@Mktmp final Path temp) throws IOException {
+    void namesReadWithNoAnswerAsLoop(@Mktmp final Path temp) throws IOException {
         final World world = new Sources(temp)
             .with("loop.eo", "[^] > loop", "  ^.loop.value > value", "  value > @")
             .world();
         final State state = new Settled(world).state();
         state.step();
         MatcherAssert.assertThat(
-            "a read with no answer must be marked at the end, but it wasnt",
-            state.token(
-                "Φ.loop.value",
-                world.intern(new Value('O', "Φ.loop", "Φ.loop", Formation.RHO, "", -1, 0))
-            ),
-            Matchers.equalTo(EndStep.CANT)
+            "a read with no answer must be told as a loop by both copies that say it, but it wasnt",
+            new Telling(state, world).told().sets(),
+            Matchers.hasEntry(
+                Matchers.equalTo("Φ.loop.value"),
+                Matchers.equalTo(Map.of("?unknown-loop", 2))
+            )
         );
     }
 

@@ -81,7 +81,7 @@ final class Emissions {
     ) {
         final Span span = new Span(tokens.body(), line);
         final Value head = tokens.readValue();
-        if (Emissions.reversedDispatch(tokens, head)) {
+        if (tokens.reversedAhead(head)) {
             final boolean fragile = tokens.consumeDispatch();
             final List<Value> rargs = tokens.readArgs();
             if (!rargs.isEmpty()) {
@@ -168,26 +168,14 @@ final class Emissions {
      * @param line Source line
      */
     static void emitArg(final Emit emit, final Value value, final int line) {
-        final List<MethodChain> tail = value.chain();
-        if (tail.isEmpty()) {
-            Emissions.openValue(emit, null, value, line);
-            if (value.bound()) {
-                emit.slot(Emissions.bindingTag(value.binding()));
-            }
-            if (value.constant()) {
-                emit.constant();
-            }
-            emit.close();
-        } else {
-            ChainEmission.link(emit, line, value, tail, null);
-            if (value.bound()) {
-                emit.slot(Emissions.bindingTag(value.binding()));
-            }
-            if (value.constant()) {
-                emit.constant();
-            }
-            emit.close();
+        ChainEmission.link(emit, line, value, value.chain(), null);
+        if (value.bound()) {
+            emit.slot(Emissions.bindingTag(value.binding()));
         }
+        if (value.constant()) {
+            emit.constant();
+        }
+        emit.close();
     }
 
     /**
@@ -435,24 +423,6 @@ final class Emissions {
             Emissions.expression(emit, name, tokens, line);
             tokens.checkEnd("unexpected content inside a parenthesised expression");
         }
-    }
-
-    private static boolean reversedDispatch(final Tokens tokens, final Value head) {
-        final boolean reversed;
-        if (head.reversible() && !head.global() && !tokens.atEnd() && tokens.dispatchAhead()) {
-            final int skip;
-            if (tokens.current() == '?') {
-                skip = 2;
-            } else {
-                skip = 1;
-            }
-            final int probe = tokens.cursor() + skip;
-            reversed = probe >= tokens.body().length()
-                || tokens.body().charAt(probe) == ' ';
-        } else {
-            reversed = false;
-        }
-        return reversed;
     }
 
     private static String reversedHead(final Value head) {
