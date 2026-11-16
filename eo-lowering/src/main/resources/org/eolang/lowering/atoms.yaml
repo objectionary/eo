@@ -40,8 +40,8 @@
     𝛿1: $.ρ
     𝛿2: $.v🌵b
   𝑛: >-
-    ⟦ φ ↦ Φ.bool( v🌵fork ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
-    on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧
+    ⟦ φ ↦ Φ.bool( v🌵fork ↦ ⟦ λ ⤍ L_fork, v🌵left ↦ ∅, v🌵right ↦ ∅,
+    on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.v🌵left, right🌵 ↦ ξ.v🌵right ⟧ ) ⟧
 - λ: L_bytes_size
   dataize:
     𝛿1: $.ρ
@@ -51,8 +51,8 @@
     𝛿1: $.ρ
     𝛿2: $.v🌵b
   𝑛: >-
-    ⟦ φ ↦ Φ.bool( v🌵fork ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
-    on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧
+    ⟦ φ ↦ Φ.bool( v🌵fork ↦ ⟦ λ ⤍ L_fork, v🌵left ↦ ∅, v🌵right ↦ ∅,
+    on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.v🌵left, right🌵 ↦ ξ.v🌵right ⟧ ) ⟧
 - λ: L_bytes_(and|or|concat|left|right)
   dataize:
     𝛿1: $.ρ
@@ -114,8 +114,8 @@
     𝛿1: $.v🌵name
   𝑛: >-
     Φ.posix.getenv-return(
-      ⟦ φ ↦ Φ.bool( v🌵fork ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
-      on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧,
+      ⟦ φ ↦ Φ.bool( v🌵fork ↦ ⟦ λ ⤍ L_fork, v🌵left ↦ ∅, v🌵right ↦ ∅,
+      on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.v🌵left, right🌵 ↦ ξ.v🌵right ⟧ ) ⟧,
       Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )
     )
 - λ: L_win32_getenv
@@ -123,8 +123,8 @@
     𝛿1: $.v🌵name
   𝑛: >-
     Φ.win32.getenv-return(
-      ⟦ φ ↦ Φ.bool( v🌵fork ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
-      on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧,
+      ⟦ φ ↦ Φ.bool( v🌵fork ↦ ⟦ λ ⤍ L_fork, v🌵left ↦ ∅, v🌵right ↦ ∅,
+      on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.v🌵left, right🌵 ↦ ξ.v🌵right ⟧ ) ⟧,
       Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )
     )
 - λ: L_posix_open
@@ -189,14 +189,14 @@
           pattern: >-
             ⟦ 𝐵1, φ ↦ Φ.bool( v🌵fork ↦ ⟦ ρ ↦ ∅, 𝜏1 ↦ ∅, 𝜏2 ↦ ∅, φ ↦ ξ.𝜏1 ⟧ ) ⟧
           result: >-
-            ⟦ 𝐵1, φ ↦ Φ.bool( v🌵fork ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
-            on🌵 ↦ ⟦ Δ ⤍ FF- ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧
+            ⟦ 𝐵1, φ ↦ Φ.bool( v🌵fork ↦ ⟦ λ ⤍ L_fork, v🌵left ↦ ∅, v🌵right ↦ ∅,
+            on🌵 ↦ ⟦ Δ ⤍ FF- ⟧, left🌵 ↦ ξ.v🌵left, right🌵 ↦ ξ.v🌵right ⟧ ) ⟧
         - name: false-literal
           pattern: >-
             ⟦ 𝐵1, φ ↦ Φ.bool( v🌵fork ↦ ⟦ ρ ↦ ∅, 𝜏1 ↦ ∅, 𝜏2 ↦ ∅, φ ↦ ξ.𝜏2 ⟧ ) ⟧
           result: >-
-            ⟦ 𝐵1, φ ↦ Φ.bool( v🌵fork ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅,
-            on🌵 ↦ ⟦ Δ ⤍ 00- ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧
+            ⟦ 𝐵1, φ ↦ Φ.bool( v🌵fork ↦ ⟦ λ ⤍ L_fork, v🌵left ↦ ∅, v🌵right ↦ ∅,
+            on🌵 ↦ ⟦ Δ ⤍ 00- ⟧, left🌵 ↦ ξ.v🌵left, right🌵 ↦ ξ.v🌵right ⟧ ) ⟧
     𝑛10:
       of: 𝑛6
       rules: *bool
