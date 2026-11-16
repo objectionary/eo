@@ -3,7 +3,7 @@
 ---
 # yamllint disable rule:line-length
 line: 2
-message: "allowed only inside an atom"
+message: "a /{…} argument list is allowed only inside an atom"
 input: |
   [] > foo
     ? > x /{string}

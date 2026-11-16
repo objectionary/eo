@@ -3,7 +3,7 @@
 ---
 # yamllint disable rule:line-length
 line: 2
-message: "a void type annotation is allowed only inside an atom"
+message: "the ^ void takes a type annotation only inside an atom"
 input: |
   [] > foo
     ? > ^ /Q.number

@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/expand-aliases.xsl
+  - /org/eolang/parser/parse/resolve-aliases.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/mandatory-as.xsl
+asserts:
+  - /object[not(errors)]
+  - /object/o[@name='bool' and not(o[@name='λ'])]/o[1][@name='fork' and @base='∅' and @type='Φ.bool.choice']
+  - /object/o[@name='pair']/o[@name='left' and @base='∅' and @type='Φ.pair(Φ.number,Φ.string)']
+input: |
+  [] > bool
+    ? > fork /Q.bool.choice
+    fork > if
+    [left right] > choice
+  [] > pair
+    ? > left /Q.pair(Q.number,Q.string)
