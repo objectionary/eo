@@ -17,7 +17,7 @@
     ? > sockaddr /Q.posix.sockaddr-in
     ? > length /Q.number
   [] > access /Q.number
-    ? > path /Q.string(Q.bytes)
+    ? > path /Q.string
     ? > mode /Q.number
   os.is-macos.if > append
     8
