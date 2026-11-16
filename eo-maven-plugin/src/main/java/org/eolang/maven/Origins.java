@@ -55,6 +55,19 @@ import org.eolang.inference.Annotation;
  * then the runtime puts the terminator there, which has no voids to name, so one
  * such place is enough to say nothing about the void.</p>
  *
+ * <p>When the calls of the program say nothing of a void, the engine may
+ * still know it, since it follows the heads of the calls through the callers
+ * it saw, and the calls alone may not: a literal {@code number 42} puts the
+ * copy {@code Φ.bytes(data)} into the {@code φ} of {@code number}, and a call
+ * {@code number x}, with {@code x} a void, puts whatever its callers put into
+ * {@code x}. When the engine answers that a void holds one formation and
+ * nothing else, with no terminator, no datum and no unknown, the void holds
+ * that formation here too (#9953). So {@code Φ.number.φ} holds
+ * {@code Φ.bytes}, and {@code eq}, {@code lt} or {@code minus} of a number
+ * are found there. This takes the program for every caller, as above, and
+ * one more thing: that Java puts into the voids of the copies it makes what
+ * the program puts there.</p>
+ *
  * <p>Which calls copy a formation is found by following the head of every
  * call once, the first time a void is asked for. While that runs, no void is
  * filled, so a head that reads one stays unknown there.</p>
@@ -117,6 +130,12 @@ final class Origins {
     private final Set<String> bare;
 
     /**
+     * The one formation the engine saw each void hold, by the place of the
+     * void, for the voids where it saw nothing else.
+     */
+    private final Map<String, String> answered;
+
+    /**
      * What fills each void, by the place of the void, once it is known.
      */
     private final Map<String, Optional<Copy>> fills;
@@ -141,10 +160,31 @@ final class Origins {
         final Map<String, Map.Entry<String, String>> dispatches,
         final Map<String, String> refs
     ) {
+        this(places, applications, dispatches, refs, Collections.emptyMap());
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param places The place each attribute of a formation leads to
+     * @param applications What the calls put into the voids
+     * @param dispatches The reads, by the place each lands at
+     * @param refs The formation each head points at
+     * @param sole The one formation the engine saw each void hold
+     * @checkstyle ParameterNumberCheck (10 lines)
+     */
+    Origins(
+        final Map<String, Map<String, String>> places,
+        final Calls applications,
+        final Map<String, Map.Entry<String, String>> dispatches,
+        final Map<String, String> refs,
+        final Map<String, String> sole
+    ) {
         this.attributes = places;
         this.calls = applications;
         this.reads = dispatches;
         this.heads = refs;
+        this.answered = sole;
         this.holes = new HashMap<>(0);
         this.copies = new HashMap<>(0);
         this.bare = new HashSet<>(0);
@@ -264,7 +304,9 @@ final class Origins {
         } else if (this.stage.get() == 1) {
             found = Optional.empty();
         } else {
-            found = Optional.ofNullable(this.holes.get(place)).flatMap(this::shape);
+            found = Optional.ofNullable(this.holes.get(place)).flatMap(
+                hole -> this.shape(hole).or(() -> this.answer(place))
+            );
             this.fills.put(place, found);
         }
         return found;
@@ -341,6 +383,12 @@ final class Origins {
             found = Optional.empty();
         }
         return found;
+    }
+
+    private Optional<Copy> answer(final String place) {
+        return Optional.ofNullable(this.answered.get(place)).filter(
+            this.attributes::containsKey
+        ).map(form -> new Copy(new Annotation(form)));
     }
 
     private static Copy root() {

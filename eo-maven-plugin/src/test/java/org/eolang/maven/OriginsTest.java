@@ -166,6 +166,47 @@ final class OriginsTest {
     }
 
     @Test
+    void looksForAbsentNameBehindVoidDecorateeTheEngineAnswers() {
+        MatcherAssert.assertThat(
+            "a name read behind a void φ the engine saw hold one formation must be found there, but it isnt",
+            new Origins(
+                Map.of(
+                    "Φ", Map.of("string", "Φ.string", "bytes", "Φ.bytes"),
+                    "Φ.string", Map.of("φ", "Φ.string.φ"),
+                    "Φ.bytes", Map.of("eq", "Φ.bytes.eq"),
+                    "Φ.bytes.eq", Map.of("b", "Φ.bytes.eq.b")
+                ),
+                new Calls(
+                    Map.of("Φ.string", List.of("φ"), "Φ.bytes.eq", List.of("b")),
+                    Map.of(), Map.of(), Map.of()
+                ),
+                Map.of(
+                    "Φ.app.φ", Map.entry("Φ.app.φ.ρ", "eq"),
+                    "Φ.app.φ.ρ", Map.entry("Φ.app.φ.ρ.ρ", "string")
+                ),
+                Map.of("Φ.app.φ.ρ.ρ", "Φ"),
+                Map.of("Φ.string.φ", "Φ.bytes")
+            ).formation("Φ.app.φ"),
+            Matchers.equalTo(Optional.of("Φ.bytes.eq"))
+        );
+    }
+
+    @Test
+    void ignoresEngineAnswerOfPlaceThatIsNoVoid() {
+        MatcherAssert.assertThat(
+            "the answer of the engine must not name a place that is no void, but it does",
+            new Origins(
+                Map.of("Φ", Map.of("bytes", "Φ.bytes")),
+                new Calls(Map.of(), Map.of(), Map.of(), Map.of()),
+                Map.of(),
+                Map.of(),
+                Map.of("Φ.app.x", "Φ.bytes")
+            ).formation("Φ.app.x"),
+            Matchers.equalTo(Optional.empty())
+        );
+    }
+
+    @Test
     void looksForAbsentNameBehindVoidDecorateeThatCallFills() {
         final String kind = String.format("Φ.kind%d", new SecureRandom().nextInt(10_000));
         MatcherAssert.assertThat(

@@ -12,9 +12,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.eolang.inference.Annotation;
+import org.w3c.dom.Node;
 
 /**
  * The arguments of the calls whose head the code alone fixes.
@@ -38,7 +40,10 @@ import org.eolang.inference.Annotation;
  * program fills with a formation written right there, all with the same
  * voids in the same order, as {@code true} and {@code false} fill the
  * {@code fork} of {@code bool}: there the program is taken for every caller
- * there is, and {@link Origins} explains why.</p>
+ * there is, and {@link Origins} explains why. The other exception is a void
+ * that the engine, in {@code answers.xml} beside {@code facts.xml}, saw hold
+ * one formation and nothing else, such as the {@code φ} of a
+ * {@code number}, which always holds {@code Φ.bytes}.</p>
  *
  * <p>What an atom returns is a type, such as
  * {@code Φ.posix.status-return(Φ.number,Φ.string)}. The formation it fixes is
@@ -59,12 +64,28 @@ final class Grounded {
     private final Path facts;
 
     /**
+     * The path of {@code answers.xml}.
+     */
+    private final Path answers;
+
+    /**
      * Ctor.
      *
      * @param path The path of {@code facts.xml}
      */
     Grounded(final Path path) {
+        this(path, path.resolveSibling("answers.xml"));
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param path The path of {@code facts.xml}
+     * @param rows The path of {@code answers.xml}, which may be absent
+     */
+    Grounded(final Path path, final Path rows) {
         this.facts = path;
+        this.answers = rows;
     }
 
     /**
@@ -161,13 +182,47 @@ final class Grounded {
                     type -> type.element("ref").attribute("loc").text().get(),
                     (first, second) -> first
                 )
-            )
+            ),
+            this.sole()
         );
         return table.element("calls").elements(Filter.withName("call"))
             .filter(call -> origins.formation(call.attribute("loc").text().get()).isPresent())
             .flatMap(call -> call.elements(Filter.withName("arg")))
             .map(arg -> arg.attribute("loc").text().get())
             .collect(Collectors.toSet());
+    }
+
+    /**
+     * The one formation the engine saw each place hold, for the places
+     * whose row in {@code answers.xml} has a single {@code is} and nothing
+     * else: no terminator, no datum, no unknown, no second option.
+     *
+     * @return The formation, by the place
+     * @throws IOException If the table can't be read
+     */
+    private Map<String, String> sole() throws IOException {
+        final Map<String, String> found;
+        if (Files.exists(this.answers)) {
+            found = new Xnav(new XMLDocument(this.answers).inner())
+                .element("answers")
+                .elements(Filter.withName("o"))
+                .filter(
+                    row -> row.elements(
+                        node -> node.node().getNodeType() == Node.ELEMENT_NODE
+                    ).count() == 1L
+                )
+                .filter(row -> row.elements(Filter.withName("is")).count() == 1L)
+                .collect(
+                    Collectors.toMap(
+                        row -> row.attribute("loc").text().get(),
+                        row -> row.element("is").attribute("loc").text().get(),
+                        (first, second) -> first
+                    )
+                );
+        } else {
+            found = Collections.emptyMap();
+        }
+        return found;
     }
 
     private static Map<String, String> targets(final Xnav type) {
