@@ -23,7 +23,7 @@ import org.eolang.inference.Annotation;
  * behind what an atom says it returns, since an atom decorates that.</p>
  *
  * <p>A void says nothing, since whoever makes the copy fills it, and a caller
- * outside the program may fill it with anything at all. There are three
+ * outside the program may fill it with anything at all. There are four
  * exceptions. A declared {@code ^} holds the formation it is written in,
  * which the locators tell. A void of a copy Java makes holds what the atom
  * promises: an atom returns a type, such as
@@ -35,7 +35,14 @@ import org.eolang.inference.Annotation;
  * {@code posix.stat-return code message mode size}, the void {@code cde}
  * holds what {@code code} copies, read in the copy the call is written in. A
  * positional argument goes into the void at its position, and an argument
- * bound by name goes into the void it names.</p>
+ * bound by name goes into the void it names. A void written with a type
+ * outside an atom, as {@code ? > fork /Q.bool.choice} in {@code bool},
+ * promises that whatever fills it has the same voids as the type, in the
+ * same order: {@code true} and {@code false} both put a formation with the
+ * voids {@code left} and {@code right} there. So a read of such a void copies
+ * the type here. It is not the formation that really fills the void, but
+ * it has the same voids, which is all a call on it needs to know where its
+ * arguments land (#9952).</p>
  *
  * <p>So a {@link Copy} carries what fills its voids along the reads: a bare
  * {@code ξ} in the body of one of its attributes stands for that copy, and a
@@ -77,6 +84,12 @@ final class Origins {
     private final Map<String, String> heads;
 
     /**
+     * The type each void outside an atom is written with, by the place of
+     * the void.
+     */
+    private final Map<String, String> shapes;
+
+    /**
      * Ctor.
      *
      * @param places The place each attribute of a formation leads to
@@ -90,10 +103,30 @@ final class Origins {
         final Map<String, Map.Entry<String, String>> dispatches,
         final Map<String, String> refs
     ) {
+        this(places, applications, dispatches, refs, Collections.emptyMap());
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param places The place each attribute of a formation leads to
+     * @param applications What the calls put into the voids
+     * @param dispatches The reads, by the place each lands at
+     * @param refs The formation each head points at
+     * @param types The type each void outside an atom is written with
+     */
+    Origins(
+        final Map<String, Map<String, String>> places,
+        final Calls applications,
+        final Map<String, Map.Entry<String, String>> dispatches,
+        final Map<String, String> refs,
+        final Map<String, String> types
+    ) {
         this.attributes = places;
         this.calls = applications;
         this.reads = dispatches;
         this.heads = refs;
+        this.shapes = types;
     }
 
     /**
@@ -121,6 +154,8 @@ final class Origins {
                     found = Optional.of(new Copy(new Annotation(place)));
                 } else if (this.calls.contains(place)) {
                     found = this.head(place, host, seen).map(head -> head.applied(place, host));
+                } else if (this.shapes.containsKey(place)) {
+                    found = this.copy(new Annotation(this.shapes.get(place)));
                 } else {
                     found = this.head(place, host, seen);
                 }

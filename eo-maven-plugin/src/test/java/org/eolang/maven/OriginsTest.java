@@ -35,6 +35,32 @@ final class OriginsTest {
     }
 
     @Test
+    void followsShapedVoidToItsType() {
+        MatcherAssert.assertThat(
+            "a call on a void written with a type must copy that type, but it doesnt",
+            new Origins(
+                Map.of(
+                    "Φ.bool", Map.of("fork", "Φ.bool.fork", "if", "Φ.bool.if"),
+                    "Φ.bool.choice", Map.of("left", "Φ.bool.choice.left")
+                ),
+                new Calls(
+                    Map.of("Φ.bool.choice", List.of("left", "right")),
+                    Map.of("Φ.bool.and.φ", Map.of(0, "Φ.bool.and.φ.α0", 1, "Φ.bool.and.φ.α1")),
+                    Map.of(),
+                    Map.of()
+                ),
+                Map.of(
+                    "Φ.bool.and.φ", Map.entry("Φ.bool.and.φ.ρ", "if"),
+                    "Φ.bool.if", Map.entry("Φ.bool.if.ρ", "fork")
+                ),
+                Map.of("Φ.bool.and.φ.ρ", "Φ.bool", "Φ.bool.if.ρ", "Φ.bool"),
+                Map.of("Φ.bool.fork", "Φ.bool.choice")
+            ).formation("Φ.bool.and.φ"),
+            Matchers.equalTo(Optional.of("Φ.bool.choice"))
+        );
+    }
+
+    @Test
     void followsDeclaredRhoToFormationAroundIt() {
         final String outer = String.format("Φ.oak%d", new SecureRandom().nextInt(10_000));
         MatcherAssert.assertThat(

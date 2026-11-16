@@ -45,6 +45,28 @@ final class GroundedTest {
     }
 
     @Test
+    void groundsArgumentOfCallOnShapedVoid(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "an argument of a call on a void written with a type must be grounded, but it isnt",
+            new Grounded(
+                GroundedTest.facts(
+                    temp,
+                    "<objects><type id='Φ.guard'>",
+                    "<attr name='fail' type='Φ.guard.fail' void='true' shape='Φ.note'/>",
+                    "<attr name='φ' type='Φ.guard.φ'/>",
+                    "</type>",
+                    "<type id='Φ.note'><attr name='text' type='Φ.note.text' void='true'/></type>",
+                    "</objects>",
+                    "<reads><read id='Φ.guard.φ' name='fail' of='Φ.guard.φ.ρ'/></reads>",
+                    "<heads><type id='Φ.guard.φ.ρ'><ref loc='Φ.guard'/></type></heads>",
+                    "<calls><call loc='Φ.guard.φ'><arg loc='Φ.guard.φ.α0' n='0'/></call></calls>"
+                )
+            ).arguments(),
+            Matchers.hasItem("Φ.guard.φ.α0")
+        );
+    }
+
+    @Test
     void groundsArgumentOfCallThroughRho(@Mktmp final Path temp) throws IOException {
         final String name = String.format("make%d", new SecureRandom().nextInt(10_000));
         MatcherAssert.assertThat(
