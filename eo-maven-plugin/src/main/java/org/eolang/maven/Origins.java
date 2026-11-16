@@ -171,7 +171,6 @@ final class Origins {
      * @param dispatches The reads, by the place each lands at
      * @param refs The formation each head points at
      * @param sole The one formation the engine saw each void hold
-     * @checkstyle ParameterNumberCheck (10 lines)
      */
     Origins(
         final Map<String, Map<String, String>> places,

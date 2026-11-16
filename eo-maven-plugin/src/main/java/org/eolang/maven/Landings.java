@@ -38,10 +38,11 @@ import java.util.stream.Collectors;
  * void, the string lands in {@code message} because every caller in the
  * program puts a formation with that void there, while a caller in Java may
  * put an object with no such void. So an argument is named only when
- * {@link Grounded} says the head of its call is fixed by the code alone,
- * followed in {@code facts.xml} without reading any void but {@code ρ}, the
- * ones an atom types in its brackets, and the ones a call written in the
- * program fills. Any other argument keeps its place.</p>
+ * {@link Grounded} follows the head of its call to one formation, taking the
+ * program for every caller there is: it reads no void but {@code ρ}, the
+ * ones an atom types in its brackets, the ones a call written in the program
+ * fills, and the ones the engine saw hold one formation and nothing else.
+ * Any other argument keeps its place.</p>
  *
  * @since 0.69.0
  */

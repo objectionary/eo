@@ -94,7 +94,7 @@ final class MjDealphaTest {
     }
 
     @Test
-    void keepsAlphaOfCallOnVoidThatCallerFills(@Mktmp final Path temp) throws IOException {
+    void namesArgumentOfCallOnVoidThatCallerFills(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             String.join(
                 System.lineSeparator(),
@@ -108,18 +108,18 @@ final class MjDealphaTest {
         ).withProgram("[@] > bytes", "bytes", "bytes.eo")
             .withProgram("[@] > number", "number", "number.eo");
         MatcherAssert.assertThat(
-            "an argument of a call on a void must keep its place whatever callers put there, but it was renamed",
+            "an argument of a call on a void every caller of the program fills alike must be named, but it isnt",
             new XMLDocument(
                 maven.execute(new PpDealpha()).result().get(
                     String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha"))
                 )
             ),
-            XhtmlMatchers.hasXPath("/object/o/o[@name='guard']/o[@name='φ']/o[@as='α0']")
+            XhtmlMatchers.hasXPath("/object/o/o[@name='guard']/o[@name='φ']/o[@as='v🌵message']")
         );
     }
 
     @Test
-    void keepsAlphaOfDispatchOffVoid(@Mktmp final Path temp) throws IOException {
+    void namesArgumentOfDispatchOffVoidThatCallerFills(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             String.join(
                 System.lineSeparator(),
@@ -140,13 +140,13 @@ final class MjDealphaTest {
             "number.eo"
         );
         MatcherAssert.assertThat(
-            "an argument of a method read off a void must keep its place, but it was renamed",
+            "an argument of a method read off a void every caller of the program fills alike must be named, but it isnt",
             new XMLDocument(
                 maven.execute(new PpDealpha()).result().get(
                     String.format("target/%s/foo/x/main.xmir", maven.dirName("dealpha"))
                 )
             ),
-            XhtmlMatchers.hasXPath("/object/o/o[@name='inc']/o[@name='φ']/o[@as='α0']")
+            XhtmlMatchers.hasXPath("/object/o/o[@name='inc']/o[@name='φ']/o[@as='v🌵y']")
         );
     }
 

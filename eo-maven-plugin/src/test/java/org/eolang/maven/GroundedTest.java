@@ -76,8 +76,11 @@ final class GroundedTest {
         Files.write(
             temp.resolve("answers.xml"),
             String.join(
-                "",
-                "<answers>\n  <o loc='Φ.number.φ' copies='1'>\n    <is loc='Φ.bytes'/>\n  </o>\n",
+                System.lineSeparator(),
+                "<answers>",
+                "  <o loc='Φ.number.φ' copies='1'>",
+                "    <is loc='Φ.bytes'/>",
+                "  </o>",
                 "</answers>"
             ).getBytes(StandardCharsets.UTF_8)
         );
