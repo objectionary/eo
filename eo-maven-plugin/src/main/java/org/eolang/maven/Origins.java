@@ -174,7 +174,7 @@ final class Origins {
         } else if ("φ".equals(name)) {
             found = this.calls.returned(owner.formation()).flatMap(this::copy);
         } else {
-            found = this.binding(owner, "φ", seen).flatMap(
+            found = this.attribute(owner, "φ", seen).flatMap(
                 inner -> this.attribute(inner, name, seen)
             );
         }
