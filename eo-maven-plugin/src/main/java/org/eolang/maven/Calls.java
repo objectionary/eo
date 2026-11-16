@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 import org.eolang.inference.Annotation;
 
 /**
@@ -84,6 +86,28 @@ final class Calls {
      */
     boolean contains(final String place) {
         return this.slots.containsKey(place) || this.names.containsKey(place);
+    }
+
+    /**
+     * The places of all calls of the program.
+     *
+     * @return The places
+     */
+    Set<String> places() {
+        final Set<String> all = new TreeSet<>(this.slots.keySet());
+        all.addAll(this.names.keySet());
+        return all;
+    }
+
+    /**
+     * The voids of a formation other than {@code ρ}, in the order they are
+     * written.
+     *
+     * @param formation The formation
+     * @return The names of the voids, empty when the formation has none
+     */
+    List<String> voids(final String formation) {
+        return this.voids.getOrDefault(formation, Collections.emptyList());
     }
 
     /**

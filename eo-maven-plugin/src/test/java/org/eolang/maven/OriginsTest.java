@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import java.security.SecureRandom;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,6 +31,50 @@ final class OriginsTest {
                 Map.of("Φ.guard.φ", Map.entry("Φ.guard.φ.ρ", "fail")),
                 Map.of("Φ.guard.φ.ρ", "Φ.guard")
             ).formation("Φ.guard.φ"),
+            Matchers.equalTo(Optional.empty())
+        );
+    }
+
+    @Test
+    void followsVoidFilledByFormationsWithSameVoids() {
+        MatcherAssert.assertThat(
+            "a call on a void all callers fill with the same voids must be followed, but it isnt",
+            OriginsTest.bool(List.of("left", "right"), Map.of(), Map.of())
+                .formation("Φ.bool.and.φ"),
+            Matchers.not(Matchers.equalTo(Optional.empty()))
+        );
+    }
+
+    @Test
+    void findsNoFormationBehindVoidFilledWithOtherVoids() {
+        MatcherAssert.assertThat(
+            "a call on a void filled with formations of other voids must not be followed, yet it is",
+            OriginsTest.bool(List.of("right", "left"), Map.of(), Map.of())
+                .formation("Φ.bool.and.φ"),
+            Matchers.equalTo(Optional.empty())
+        );
+    }
+
+    @Test
+    void findsNoFormationBehindVoidOfCopyMadeWithoutCall() {
+        MatcherAssert.assertThat(
+            "a void some copy leaves empty must not be followed, since ⊥ fills it, but it is",
+            OriginsTest.bool(
+                List.of("left", "right"), Map.of(), Map.of("Φ.app.φ", "Φ.bool")
+            ).formation("Φ.bool.and.φ"),
+            Matchers.equalTo(Optional.empty())
+        );
+    }
+
+    @Test
+    void readsNothingOffVoidFilledWithSeveralFormations() {
+        MatcherAssert.assertThat(
+            "a read off a void filled with several formations must copy nothing, but it does",
+            OriginsTest.bool(
+                List.of("left", "right"),
+                Map.of("Φ.bool.peek", Map.entry("Φ.bool.if", "φ")),
+                Map.of()
+            ).formation("Φ.bool.peek"),
             Matchers.equalTo(Optional.empty())
         );
     }
@@ -386,6 +431,45 @@ final class OriginsTest {
                 Map.of("Φ.ping.φ.ρ", "Φ", "Φ.pong.φ.ρ", "Φ", "Φ.run.ρ.ρ", "Φ")
             ).formation("Φ.run"),
             Matchers.equalTo(Optional.empty())
+        );
+    }
+
+    private static Origins bool(
+        final List<String> voids, final Map<String, Map.Entry<String, String>> extra,
+        final Map<String, String> more
+    ) {
+        final Map<String, String> refs = new HashMap<>(more);
+        refs.put("Φ.true.φ", "Φ.bool");
+        refs.put("Φ.false.φ", "Φ.bool");
+        refs.put("Φ.bool.and.φ.ρ", "Φ.bool");
+        refs.put("Φ.bool.if.ρ", "Φ.bool");
+        final Map<String, Map.Entry<String, String>> reads = new HashMap<>(extra);
+        reads.put("Φ.bool.and.φ", Map.entry("Φ.bool.and.φ.ρ", "if"));
+        reads.put("Φ.bool.if", Map.entry("Φ.bool.if.ρ", "fork"));
+        return new Origins(
+            Map.of(
+                "Φ.bool", Map.of("fork", "Φ.bool.fork", "if", "Φ.bool.if"),
+                "Φ.true.φ.α0", Map.of("φ", "Φ.yes"),
+                "Φ.false.φ.α0", Map.of("φ", "Φ.no"),
+                "Φ.yes", Map.of(),
+                "Φ.no", Map.of()
+            ),
+            new Calls(
+                Map.of(
+                    "Φ.bool", List.of("fork"),
+                    "Φ.true.φ.α0", List.of("left", "right"),
+                    "Φ.false.φ.α0", voids
+                ),
+                Map.of(
+                    "Φ.true.φ", Map.of(0, "Φ.true.φ.α0"),
+                    "Φ.false.φ", Map.of(0, "Φ.false.φ.α0"),
+                    "Φ.bool.and.φ", Map.of(0, "Φ.bool.and.φ.α0", 1, "Φ.bool.and.φ.α1")
+                ),
+                Map.of(),
+                Map.of()
+            ),
+            reads,
+            refs
         );
     }
 }

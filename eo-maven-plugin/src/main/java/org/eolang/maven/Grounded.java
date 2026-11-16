@@ -34,7 +34,11 @@ import org.eolang.inference.Annotation;
  * argument passed by name then finds no void to fill. An argument is
  * grounded only when {@link Origins} follows the head of its call to one
  * formation from {@code facts.xml} alone, since then no caller can change the
- * void it lands in.</p>
+ * void it lands in. The one exception is a void that every call of the
+ * program fills with a formation written right there, all with the same
+ * voids in the same order, as {@code true} and {@code false} fill the
+ * {@code fork} of {@code bool}: there the program is taken for every caller
+ * there is, and {@link Origins} explains why.</p>
  *
  * <p>What an atom returns is a type, such as
  * {@code Φ.posix.status-return(Φ.number,Φ.string)}. The formation it fixes is

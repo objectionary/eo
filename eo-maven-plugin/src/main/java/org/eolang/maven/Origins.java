@@ -4,10 +4,16 @@
  */
 package org.eolang.maven;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import org.eolang.inference.Annotation;
 
@@ -23,7 +29,7 @@ import org.eolang.inference.Annotation;
  * behind what an atom says it returns, since an atom decorates that.</p>
  *
  * <p>A void says nothing, since whoever makes the copy fills it, and a caller
- * outside the program may fill it with anything at all. There are three
+ * outside the program may fill it with anything at all. There are four
  * exceptions. A declared {@code ^} holds the formation it is written in,
  * which the locators tell. A void of a copy Java makes holds what the atom
  * promises: an atom returns a type, such as
@@ -35,7 +41,23 @@ import org.eolang.inference.Annotation;
  * {@code posix.stat-return code message mode size}, the void {@code cde}
  * holds what {@code code} copies, read in the copy the call is written in. A
  * positional argument goes into the void at its position, and an argument
- * bound by name goes into the void it names.</p>
+ * bound by name goes into the void it names. A void that every call of the
+ * program fills with a formation written right there holds one of those
+ * formations, when they all have the same voids in the same order: in
+ * {@code bool}, the void {@code fork} is filled only by {@code true} and
+ * {@code false}, with {@code [^pick left right]} and
+ * {@code [^state left right]}. A read of such a void copies none of them in
+ * particular, so it gives a blurred {@link Copy}, which tells where the
+ * arguments of a call on it land, and nothing more (#9952). The program
+ * stands here for every caller there is: a caller in Java, or in a program
+ * built later, that fills the void with another formation breaks this. A
+ * place that copies the formation without a call leaves the void empty, and
+ * then the runtime puts the terminator there, which has no voids to name, so one
+ * such place is enough to say nothing about the void.</p>
+ *
+ * <p>Which calls copy a formation is found by following the head of every
+ * call once, the first time a void is asked for. While that runs, no void is
+ * filled, so a head that reads one stays unknown there.</p>
  *
  * <p>So a {@link Copy} carries what fills its voids along the reads: a bare
  * {@code ξ} in the body of one of its attributes stands for that copy, and a
@@ -77,6 +99,35 @@ final class Origins {
     private final Map<String, String> heads;
 
     /**
+     * Each void other than {@code ρ}, by its place: the formation, and the
+     * name.
+     */
+    private final Map<String, Map.Entry<String, String>> holes;
+
+    /**
+     * The calls that copy each formation, with nothing in its voids yet, by
+     * the formation.
+     */
+    private final Map<String, List<String>> copies;
+
+    /**
+     * The formations that some place copies without a call, so that the
+     * runtime puts the terminator into their voids.
+     */
+    private final Set<String> bare;
+
+    /**
+     * What fills each void, by the place of the void, once it is known.
+     */
+    private final Map<String, Optional<Copy>> fills;
+
+    /**
+     * How far {@link #holes} and {@link #copies} are filled: zero before,
+     * one while, and two after.
+     */
+    private final AtomicInteger stage;
+
+    /**
      * Ctor.
      *
      * @param places The place each attribute of a formation leads to
@@ -94,6 +145,11 @@ final class Origins {
         this.calls = applications;
         this.reads = dispatches;
         this.heads = refs;
+        this.holes = new HashMap<>(0);
+        this.copies = new HashMap<>(0);
+        this.bare = new HashSet<>(0);
+        this.fills = new HashMap<>(0);
+        this.stage = new AtomicInteger();
     }
 
     /**
@@ -104,7 +160,7 @@ final class Origins {
      *  does not fix it
      */
     Optional<String> formation(final String place) {
-        return this.formation(place, new Copy(new Annotation("Φ")), new HashMap<>(0)).map(
+        return this.formation(place, Origins.root(), new HashMap<>(0)).map(
             Copy::formation
         );
     }
@@ -122,7 +178,7 @@ final class Origins {
                 } else if (this.calls.contains(place)) {
                     found = this.head(place, host, seen).map(head -> head.applied(place, host));
                 } else {
-                    found = this.head(place, host, seen);
+                    found = this.head(place, host, seen).or(() -> this.filled(place));
                 }
                 return found;
             }
@@ -154,11 +210,27 @@ final class Origins {
         return Origins.once(
             Map.entry(owner, name),
             seen,
-            () -> owner.member(name, this.calls).map(this::copy).orElseGet(
-                () -> owner.argument(name, this.calls).map(
-                    arg -> this.formation(arg.getKey(), arg.getValue(), seen)
-                ).orElseGet(() -> this.binding(owner, name, seen))
-            )
+            () -> {
+                final Optional<Copy> found;
+                if (owner.sole()) {
+                    found = owner.member(name, this.calls).map(this::copy).orElseGet(
+                        () -> this.argument(owner, name, seen).or(
+                            () -> this.binding(owner, name, seen)
+                        )
+                    );
+                } else {
+                    found = this.argument(owner, name, seen);
+                }
+                return found;
+            }
+        );
+    }
+
+    private Optional<Copy> argument(
+        final Copy owner, final String name, final Map<Map.Entry<?, ?>, Optional<Copy>> seen
+    ) {
+        return owner.argument(name, this.calls).flatMap(
+            arg -> this.formation(arg.getKey(), arg.getValue(), seen)
         );
     }
 
@@ -179,6 +251,100 @@ final class Origins {
             );
         }
         return found;
+    }
+
+    private Optional<Copy> filled(final String place) {
+        final Optional<Copy> found;
+        if (this.fills.containsKey(place)) {
+            found = this.fills.get(place);
+        } else if (this.stage.compareAndSet(0, 1)) {
+            this.index();
+            this.stage.set(2);
+            found = this.filled(place);
+        } else if (this.stage.get() == 1) {
+            found = Optional.empty();
+        } else {
+            found = Optional.ofNullable(this.holes.get(place)).flatMap(this::shape);
+            this.fills.put(place, found);
+        }
+        return found;
+    }
+
+    private void index() {
+        this.voids();
+        this.empties();
+        for (final String call : this.calls.places()) {
+            this.fresh(call).ifPresent(
+                head -> this.copies.computeIfAbsent(
+                    head, key -> new ArrayList<>(1)
+                ).add(call)
+            );
+        }
+    }
+
+    private void voids() {
+        for (final Map.Entry<String, Map<String, String>> form : this.attributes.entrySet()) {
+            for (final String name : this.calls.voids(form.getKey())) {
+                final String place = form.getValue().get(name);
+                if (place != null) {
+                    this.holes.put(place, Map.entry(form.getKey(), name));
+                }
+            }
+        }
+    }
+
+    private void empties() {
+        final Set<String> owners = new HashSet<>(0);
+        for (final Map.Entry<String, String> read : this.reads.values()) {
+            owners.add(read.getKey());
+        }
+        final Set<String> values = new TreeSet<>(this.reads.keySet());
+        for (final String head : this.heads.keySet()) {
+            if (!owners.contains(head)) {
+                values.add(head);
+            }
+        }
+        for (final String place : values) {
+            if (!this.calls.contains(place)
+                && !"ρ".equals(this.reads.getOrDefault(place, Map.entry("", "")).getValue())) {
+                this.fresh(place).ifPresent(this.bare::add);
+            }
+        }
+    }
+
+    private Optional<String> fresh(final String place) {
+        return this.head(place, Origins.root(), new HashMap<>(0)).filter(
+            head -> head.equals(new Copy(new Annotation(head.formation())))
+        ).map(Copy::formation);
+    }
+
+    private Optional<Copy> shape(final Map.Entry<String, String> hole) {
+        final Set<String> fillers = new TreeSet<>();
+        boolean closed = true;
+        for (final String call : this.copies.getOrDefault(hole.getKey(), List.of())) {
+            final Optional<String> arg = this.calls.argument(
+                call, hole.getKey(), hole.getValue()
+            );
+            if (arg.isPresent() && this.attributes.containsKey(arg.get())) {
+                fillers.add(arg.get());
+            } else {
+                closed = false;
+            }
+        }
+        final Optional<Copy> found;
+        if (closed && !fillers.isEmpty() && !this.bare.contains(hole.getKey())
+            && fillers.stream().map(this.calls::voids).distinct().count() == 1L) {
+            found = Optional.of(
+                new Copy(new Annotation(fillers.iterator().next()), fillers.size() == 1)
+            );
+        } else {
+            found = Optional.empty();
+        }
+        return found;
+    }
+
+    private static Copy root() {
+        return new Copy(new Annotation("Φ"));
     }
 
     private Optional<Copy> copy(final Annotation type) {

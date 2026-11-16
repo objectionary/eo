@@ -21,15 +21,15 @@ xmir:
   - "//o[@as='v🌵a' and @base='Φ.bool']/o[@as='v🌵fork']\
     /o[@name='λ' and text()='L_fork']"
   - "//o[@as='v🌵a' and @base='Φ.bool']/o[@as='v🌵fork']\
-    /o[@name='left' and @base='∅']"
+    /o[@name='v🌵left' and @base='∅']"
   - "//o[@as='v🌵a' and @base='Φ.bool']/o[@as='v🌵fork']\
-    /o[@name='right' and @base='∅']"
+    /o[@name='v🌵right' and @base='∅']"
   - "//o[@as='v🌵a' and @base='Φ.bool']/o[@as='v🌵fork']/o[@name='on🌵']\
     /o[@name='λ' and text()='𝜎1']"
   - "//o[@as='v🌵a' and @base='Φ.bool']/o[@as='v🌵fork']\
-    /o[@name='left🌵' and @base='ξ.left']"
+    /o[@name='left🌵' and @base='ξ.v🌵left']"
   - "//o[@as='v🌵a' and @base='Φ.bool']/o[@as='v🌵fork']\
-    /o[@name='right🌵' and @base='ξ.right']"
+    /o[@name='right🌵' and @base='ξ.v🌵right']"
   - "//o[@as='v🌵a' and @base='Φ.bool']/o[@as='v🌵fork'][not(o[@name='φ'])]"
 voids:
   - "𝜎1\t1\tv🌵a\tbool"
