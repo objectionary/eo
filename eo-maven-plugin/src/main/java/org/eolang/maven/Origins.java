@@ -7,6 +7,7 @@ package org.eolang.maven;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -49,7 +50,10 @@ import org.eolang.inference.Annotation;
  * particular, so it gives a blurred {@link Copy}, which tells where the
  * arguments of a call on it land, and nothing more (#9952). The program
  * stands here for every caller there is: a caller in Java, or in a program
- * built later, that fills the void with another formation breaks this.</p>
+ * built later, that fills the void with another formation breaks this. A
+ * place that copies the formation without a call leaves the void empty, and
+ * then the runtime puts the terminator there, which has no voids to name, so one
+ * such place is enough to say nothing about the void.</p>
  *
  * <p>Which calls copy a formation is found by following the head of every
  * call once, the first time a void is asked for. While that runs, no void is
@@ -107,6 +111,12 @@ final class Origins {
     private final Map<String, List<String>> copies;
 
     /**
+     * The formations that some place copies without a call, so that the
+     * runtime puts the terminator into their voids.
+     */
+    private final Set<String> bare;
+
+    /**
      * What fills each void, by the place of the void, once it is known.
      */
     private final Map<String, Optional<Copy>> fills;
@@ -137,6 +147,7 @@ final class Origins {
         this.heads = refs;
         this.holes = new HashMap<>(0);
         this.copies = new HashMap<>(0);
+        this.bare = new HashSet<>(0);
         this.fills = new HashMap<>(0);
         this.stage = new AtomicInteger();
     }
@@ -260,6 +271,18 @@ final class Origins {
     }
 
     private void index() {
+        this.voids();
+        this.empties();
+        for (final String call : this.calls.places()) {
+            this.fresh(call).ifPresent(
+                head -> this.copies.computeIfAbsent(
+                    head, key -> new ArrayList<>(1)
+                ).add(call)
+            );
+        }
+    }
+
+    private void voids() {
         for (final Map.Entry<String, Map<String, String>> form : this.attributes.entrySet()) {
             for (final String name : this.calls.voids(form.getKey())) {
                 final String place = form.getValue().get(name);
@@ -268,15 +291,31 @@ final class Origins {
                 }
             }
         }
-        for (final String call : this.calls.places()) {
-            this.head(call, Origins.root(), new HashMap<>(0)).filter(
-                head -> head.equals(new Copy(new Annotation(head.formation())))
-            ).ifPresent(
-                head -> this.copies.computeIfAbsent(
-                    head.formation(), key -> new ArrayList<>(1)
-                ).add(call)
-            );
+    }
+
+    private void empties() {
+        final Set<String> owners = new HashSet<>(0);
+        for (final Map.Entry<String, String> read : this.reads.values()) {
+            owners.add(read.getKey());
         }
+        final Set<String> values = new TreeSet<>(this.reads.keySet());
+        for (final String head : this.heads.keySet()) {
+            if (!owners.contains(head)) {
+                values.add(head);
+            }
+        }
+        for (final String place : values) {
+            if (!this.calls.contains(place)
+                && !"ρ".equals(this.reads.getOrDefault(place, Map.entry("", "")).getValue())) {
+                this.fresh(place).ifPresent(this.bare::add);
+            }
+        }
+    }
+
+    private Optional<String> fresh(final String place) {
+        return this.head(place, Origins.root(), new HashMap<>(0)).filter(
+            head -> head.equals(new Copy(new Annotation(head.formation())))
+        ).map(Copy::formation);
     }
 
     private Optional<Copy> shape(final Map.Entry<String, String> hole) {
@@ -293,7 +332,7 @@ final class Origins {
             }
         }
         final Optional<Copy> found;
-        if (closed && !fillers.isEmpty()
+        if (closed && !fillers.isEmpty() && !this.bare.contains(hole.getKey())
             && fillers.stream().map(this.calls::voids).distinct().count() == 1L) {
             found = Optional.of(
                 new Copy(new Annotation(fillers.iterator().next()), fillers.size() == 1)
