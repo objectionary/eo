@@ -34,8 +34,8 @@ jobs:
           distribution: 'temurin'
           java-version: 17.0.21+9
       - run: |
-          wget --quiet https://repo1.maven.org/maven2/org/codenarc/CodeNarc/3.5.0/CodeNarc-3.5.0-all.jar
-          java -cp CodeNarc-3.5.0-all.jar \
+          wget --quiet https://repo1.maven.org/maven2/org/codenarc/CodeNarc/3.7.0/CodeNarc-3.7.0-all.jar
+          java -cp CodeNarc-3.7.0-all.jar \
             org.codenarc.CodeNarc \
             -report=text:stdout \
             -maxPriority1Violations=0 \
