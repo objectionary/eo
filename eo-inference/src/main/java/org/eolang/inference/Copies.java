@@ -29,8 +29,10 @@ import java.util.Map;
  * ({@link Fillings}): each void holds what the calls put there, a formation
  * as a copy born inside the copy Java made, with that copy as its {@code ρ}
  * when the formation has no name of its own, a literal as the shared copy
- * of its kind, and anything only the walk could answer as the unknown only
- * Java fills. A void no call fills stays empty. A kind of the canon is its
+ * of its kind, and the unknown only Java fills for a call on a formation
+ * outside the canon and for anything only the walk could answer, since no
+ * walk answer may enter a copy that serves every caller ({@link Fillings},
+ * #9864). A void no call fills stays empty. A kind of the canon is its
  * shared copy, whatever its brackets say.</p>
  *
  * <p>A copy has a {@code ρ} only when its formation declares {@code ^}, as
