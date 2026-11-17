@@ -9,9 +9,10 @@
 # seed that is zero, infinite or nan has nothing to polish and is the answer
 # already.
 #
-# `arg` says that the receiver is not a number itself, rather than letting
-# the comparison with zero blame its own `b`, which is an attribute the
-# caller never wrote (#9283).
+# `arg` holds the receiver once `num.checked` has found it eight bytes wide,
+# and standing it as the receiver of the comparison with zero keeps the
+# failure inside `checked` rather than blaming `b` of `lt`, an attribute
+# the caller never wrote (#9283).
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -23,15 +24,12 @@
 [^num] > sqrt
   if. > @
     lt.
-      if. >> arg
-        num.as-bytes.size.eq 8
-        number num.as-bytes
-        T "the 'ρ' attribute must be a number"
+      num.checked >> arg
       0
     nan
     if.
       arg.as-bytes.eq 80-00-00-00-00-00-00-00
-      arg
+      num.checked
       if.
         seed.is-finite.and
           gt.
