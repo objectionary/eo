@@ -59,6 +59,13 @@ import org.eolang.inference.Annotation;
  * brackets, such as {@code Φ.bool}, builds its copy out of the objects of
  * the program, as {@code Data.ToPhi} makes {@code Φ.true}, so it fills no
  * void itself.
+ * A generic atom, such as {@code [] > recovered /A} with
+ * {@code ? > value /A?} and {@code ? > alternative /A}, returns whatever
+ * was put into one of its voids that carry its type variable, and the code
+ * does not say which one. So its {@code φ} copies a formation only when
+ * every such void holds a copy of that same formation: {@code recovered 42 7}
+ * copies {@code Φ.number}, while in {@code recovered x 7} with {@code x} a
+ * {@code Φ.string}, nothing is said about it (#9955).
  * The program stands here for every caller there is: a caller in Java, or in
  * a program built later, that fills the void with another formation breaks
  * this. A place that copies the formation without a call leaves the void
@@ -300,14 +307,33 @@ final class Origins {
         final Optional<Copy> found;
         if (places.containsKey(name)) {
             found = this.formation(places.get(name), owner, seen);
-        } else if ("φ".equals(name)) {
+        } else if ("φ".equals(name) && this.calls.slots(owner.formation()).isEmpty()) {
             found = this.calls.returned(owner.formation()).flatMap(this::copy);
+        } else if ("φ".equals(name)) {
+            found = this.generic(owner, places, seen);
         } else {
             found = this.attribute(owner, "φ", seen).flatMap(
                 inner -> this.attribute(inner, name, seen)
             );
         }
         return found;
+    }
+
+    private Optional<Copy> generic(
+        final Copy owner, final Map<String, String> places,
+        final Map<Map.Entry<?, ?>, Optional<Copy>> seen
+    ) {
+        final List<Optional<Copy>> held = new ArrayList<>(2);
+        for (final String slot : this.calls.slots(owner.formation())) {
+            held.add(
+                places.entrySet().stream().filter(
+                    entry -> entry.getValue().equals(slot)
+                ).map(Map.Entry::getKey).findFirst().flatMap(
+                    hole -> this.attribute(owner, hole, seen)
+                )
+            );
+        }
+        return Copy.agreed(held);
     }
 
     private Optional<Copy> filled(final String place) {

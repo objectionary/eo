@@ -695,6 +695,55 @@ final class OriginsTest {
         );
     }
 
+    @Test
+    void followsGenericAtomWhenEveryReturnedVoidHoldsSameFormation() {
+        MatcherAssert.assertThat(
+            "a call on what a generic atom returns must be found where all its returned voids agree, but it isnt",
+            OriginsTest.generic("number").formation("Φ.app.φ"),
+            Matchers.equalTo(Optional.of("Φ.number.eq"))
+        );
+    }
+
+    @Test
+    void findsNothingBehindGenericAtomWhenReturnedVoidsDisagree() {
+        MatcherAssert.assertThat(
+            "a call on what a generic atom returns must not be found where its returned voids disagree, but it is",
+            OriginsTest.generic("string").formation("Φ.app.φ"),
+            Matchers.equalTo(Optional.empty())
+        );
+    }
+
+    private static Origins generic(final String second) {
+        return new Origins(
+            Map.of(
+                "Φ", Map.of("g", "Φ.g", "number", "Φ.number", "string", "Φ.string"),
+                "Φ.g", Map.of("v", "Φ.g.v", "a", "Φ.g.a"),
+                "Φ.number", Map.of("eq", "Φ.number.eq"),
+                "Φ.number.eq", Map.of(),
+                "Φ.string", Map.of("eq", "Φ.string.eq"),
+                "Φ.string.eq", Map.of()
+            ),
+            new Calls(
+                Map.of("Φ.g", List.of("v", "a")),
+                Map.of("Φ.app.φ.ρ", Map.of(0, "Φ.app.φ.ρ.α0", 1, "Φ.app.φ.ρ.α1")),
+                Map.of(),
+                Map.of("Φ.g", new Annotation("Φ.g.v")),
+                Map.of("Φ.g", List.of("Φ.g.v", "Φ.g.a"))
+            ),
+            Map.of(
+                "Φ.app.φ", Map.entry("Φ.app.φ.ρ", "eq"),
+                "Φ.app.φ.ρ", Map.entry("Φ.app.φ.ρ.ρ", "g"),
+                "Φ.app.φ.ρ.α0", Map.entry("Φ.app.φ.ρ.α0.ρ", "number"),
+                "Φ.app.φ.ρ.α1", Map.entry("Φ.app.φ.ρ.α1.ρ", second)
+            ),
+            Map.of(
+                "Φ.app.φ.ρ.ρ", "Φ",
+                "Φ.app.φ.ρ.α0.ρ", "Φ",
+                "Φ.app.φ.ρ.α1.ρ", "Φ"
+            )
+        );
+    }
+
     private static Origins boxed(final String returned) {
         return new Origins(
             Map.of(
