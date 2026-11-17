@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 import org.eolang.inference.Annotation;
 
 /**
@@ -143,6 +144,18 @@ final class Calls {
      */
     Optional<Annotation> returned(final String atom) {
         return Optional.ofNullable(this.returns.get(atom));
+    }
+
+    /**
+     * The types the atoms say they return, which copy a formation.
+     *
+     * @param formation The formation
+     * @return The types, one for each atom that returns a copy of it
+     */
+    List<Annotation> made(final String formation) {
+        return this.returns.values().stream().filter(
+            type -> type.head().equals(formation)
+        ).collect(Collectors.toList());
     }
 
     /**

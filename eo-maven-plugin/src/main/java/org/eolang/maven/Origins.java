@@ -41,19 +41,34 @@ import org.eolang.inference.Annotation;
  * {@code posix.stat-return code message mode size}, the void {@code cde}
  * holds what {@code code} copies, read in the copy the call is written in. A
  * positional argument goes into the void at its position, and an argument
- * bound by name goes into the void it names. A void that every call of the
- * program fills with a formation written right there holds one of those
- * formations, when they all have the same voids in the same order: in
- * {@code bool}, the void {@code fork} is filled only by {@code true} and
- * {@code false}, with {@code [^pick left right]} and
- * {@code [^state left right]}. A read of such a void copies none of them in
- * particular, so it gives a blurred {@link Copy}, which tells where the
- * arguments of a call on it land, and nothing more (#9952). The program
- * stands here for every caller there is: a caller in Java, or in a program
- * built later, that fills the void with another formation breaks this. A
- * place that copies the formation without a call leaves the void empty, and
- * then the runtime puts the terminator there, which has no voids to name, so one
- * such place is enough to say nothing about the void.</p>
+ * bound by name goes into the void it names. A void holds one of the
+ * formations that the calls of the program put there, when every argument
+ * they put there copies a formation the code fixes, and all those formations
+ * have the same voids in the same order: in {@code bool}, the void
+ * {@code fork} is filled only by {@code true} and {@code false}, with
+ * {@code [^pick left right]} and {@code [^state left right]}. An argument may
+ * be a formation written right there, a read off what another call makes, or
+ * a void of the caller, which is looked up the same way, one hop at a time
+ * (#9954). A read of a void that several formations fill copies none of them
+ * in particular, so it gives a blurred {@link Copy}, which tells where the
+ * arguments of a call on it land, and nothing more (#9952). An atom that
+ * returns a copy of the formation fills the void too, with the type its
+ * brackets give, and when they give none, nothing is said about the void.
+ * The program stands here for every caller there is: a caller in Java, or in
+ * a program built later, that fills the void with another formation breaks
+ * this. A place that copies the formation without a call leaves the void
+ * empty, and then the runtime puts the terminator there, which has no voids
+ * to name, so one such place is enough to say nothing about the void.</p>
+ *
+ * <p>A helper may pass its own void back to itself, as in
+ * {@code rec (n.minus 1)}, so the arguments of a void may lead back to it.
+ * Such a void is first taken to hold nothing, and an argument that leads back
+ * to it adds nothing to what it holds. Then it is taken to hold what the
+ * other arguments put there, and every argument is looked up again, until
+ * what it holds stops changing. A recursive call passes on only what some
+ * outside call put there first, so a void that no outside call fills holds
+ * nothing the code fixes. What a void holds is remembered only when its
+ * lookup did not lean on another void still being looked up.</p>
  *
  * <p>When the calls of the program say nothing of a void {@code φ}, the
  * engine may still know it, since it follows the heads of the calls through
@@ -136,6 +151,11 @@ final class Origins {
     private final AtomicInteger stage;
 
     /**
+     * What the calls and the atoms put into each void.
+     */
+    private final Fillers fillers;
+
+    /**
      * Ctor.
      *
      * @param places The place each attribute of a formation leads to
@@ -178,6 +198,10 @@ final class Origins {
         this.bare = new HashSet<>(0);
         this.fills = new HashMap<>(0);
         this.stage = new AtomicInteger();
+        this.fillers = new Fillers(
+            places, applications, this.copies, this.bare,
+            (place, seen) -> this.formation(place, Origins.root(), seen)
+        );
     }
 
     /**
@@ -291,11 +315,26 @@ final class Origins {
             found = this.filled(place);
         } else if (this.stage.get() == 1) {
             found = Optional.empty();
+        } else if (this.fillers.open(place)) {
+            found = this.fillers.hit(place);
         } else {
-            found = Optional.ofNullable(this.holes.get(place)).flatMap(
-                hole -> this.shape(hole).or(() -> this.answer(hole, place))
-            );
+            found = this.settled(place);
+        }
+        return found;
+    }
+
+    private Optional<Copy> settled(final String place) {
+        final Map.Entry<String, String> hole = this.holes.get(place);
+        final Optional<Copy> found;
+        if (hole == null) {
+            found = Optional.empty();
             this.fills.put(place, found);
+        } else {
+            final Map.Entry<Optional<Copy>, Boolean> run = this.fillers.held(place, hole);
+            found = run.getKey().or(() -> this.answer(hole, place));
+            if (run.getValue()) {
+                this.fills.put(place, found);
+            }
         }
         return found;
     }
@@ -346,31 +385,6 @@ final class Origins {
         return this.head(place, Origins.root(), new HashMap<>(0)).filter(
             head -> head.equals(new Copy(new Annotation(head.formation())))
         ).map(Copy::formation);
-    }
-
-    private Optional<Copy> shape(final Map.Entry<String, String> hole) {
-        final Set<String> fillers = new TreeSet<>();
-        boolean closed = true;
-        for (final String call : this.copies.getOrDefault(hole.getKey(), List.of())) {
-            final Optional<String> arg = this.calls.argument(
-                call, hole.getKey(), hole.getValue()
-            );
-            if (arg.isPresent() && this.attributes.containsKey(arg.get())) {
-                fillers.add(arg.get());
-            } else {
-                closed = false;
-            }
-        }
-        final Optional<Copy> found;
-        if (closed && !fillers.isEmpty() && !this.bare.contains(hole.getKey())
-            && fillers.stream().map(this.calls::voids).distinct().count() == 1L) {
-            found = Optional.of(
-                new Copy(new Annotation(fillers.iterator().next()), fillers.size() == 1)
-            );
-        } else {
-            found = Optional.empty();
-        }
-        return found;
     }
 
     private Optional<Copy> answer(final Map.Entry<String, String> hole, final String place) {

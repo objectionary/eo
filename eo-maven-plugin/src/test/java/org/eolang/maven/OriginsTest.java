@@ -497,6 +497,245 @@ final class OriginsTest {
         );
     }
 
+    @Test
+    void followsVoidFilledByReadOffResultOfCall() {
+        MatcherAssert.assertThat(
+            "a void filled by a read off what a call makes must copy what the read copies, but it doesnt",
+            new Origins(
+                Map.of(
+                    "Φ", Map.of("box", "Φ.box", "make", "Φ.make", "kind", "Φ.kind"),
+                    "Φ.box", Map.of("v", "Φ.box.v", "φ", "Φ.box.φ"),
+                    "Φ.make", Map.of("k", "Φ.make.k", "out", "Φ.make.out"),
+                    "Φ.make.out", Map.of("go", "Φ.make.out.go"),
+                    "Φ.make.out.go", Map.of(),
+                    "Φ.kind", Map.of()
+                ),
+                new Calls(
+                    Map.of("Φ.box", List.of("v"), "Φ.make", List.of("k")),
+                    Map.of(
+                        "Φ.app", Map.of(0, "Φ.app.α0"),
+                        "Φ.app.α0.ρ", Map.of(0, "Φ.app.α0.ρ.α0")
+                    ),
+                    Map.of(),
+                    Map.of()
+                ),
+                Map.of(
+                    "Φ.box.φ", Map.entry("Φ.box.φ.ρ", "go"),
+                    "Φ.box.φ.ρ", Map.entry("Φ.box.φ.ρ.ρ", "v"),
+                    "Φ.app", Map.entry("Φ.app.ρ", "box"),
+                    "Φ.app.α0", Map.entry("Φ.app.α0.ρ", "out"),
+                    "Φ.app.α0.ρ", Map.entry("Φ.app.α0.ρ.ρ", "make"),
+                    "Φ.app.α0.ρ.α0", Map.entry("Φ.app.α0.ρ.α0.ρ", "kind")
+                ),
+                Map.of(
+                    "Φ.box.φ.ρ.ρ", "Φ.box",
+                    "Φ.app.ρ", "Φ",
+                    "Φ.app.α0.ρ.ρ", "Φ",
+                    "Φ.app.α0.ρ.α0.ρ", "Φ"
+                )
+            ).formation("Φ.box.φ"),
+            Matchers.equalTo(Optional.of("Φ.make.out.go"))
+        );
+    }
+
+    @Test
+    void followsVoidFilledByVoidOfCaller() {
+        MatcherAssert.assertThat(
+            "a void filled by a void of the caller, which a formation fills, must copy that formation, but it doesnt",
+            new Origins(
+                Map.of(
+                    "Φ", Map.of("box", "Φ.box", "relay", "Φ.relay"),
+                    "Φ.box", Map.of("v", "Φ.box.v", "φ", "Φ.box.φ"),
+                    "Φ.relay", Map.of("w", "Φ.relay.w", "φ", "Φ.relay.φ"),
+                    "Φ.app.α0", Map.of("go", "Φ.app.α0.go"),
+                    "Φ.app.α0.go", Map.of()
+                ),
+                new Calls(
+                    Map.of("Φ.box", List.of("v"), "Φ.relay", List.of("w")),
+                    Map.of(
+                        "Φ.relay.φ", Map.of(0, "Φ.relay.φ.α0"),
+                        "Φ.app", Map.of(0, "Φ.app.α0")
+                    ),
+                    Map.of(),
+                    Map.of()
+                ),
+                Map.of(
+                    "Φ.box.φ", Map.entry("Φ.box.φ.ρ", "go"),
+                    "Φ.box.φ.ρ", Map.entry("Φ.box.φ.ρ.ρ", "v"),
+                    "Φ.relay.φ", Map.entry("Φ.relay.φ.ρ", "box"),
+                    "Φ.relay.φ.α0", Map.entry("Φ.relay.φ.α0.ρ", "w"),
+                    "Φ.app", Map.entry("Φ.app.ρ", "relay")
+                ),
+                Map.of(
+                    "Φ.box.φ.ρ.ρ", "Φ.box",
+                    "Φ.relay.φ.ρ", "Φ",
+                    "Φ.relay.φ.α0.ρ", "Φ.relay",
+                    "Φ.app.ρ", "Φ"
+                )
+            ).formation("Φ.box.φ"),
+            Matchers.equalTo(Optional.of("Φ.app.α0.go"))
+        );
+    }
+
+    @Test
+    void followsVoidOfHelperThatPassesItToItself() {
+        MatcherAssert.assertThat(
+            "a void a helper passes to itself must copy what its outside caller puts there, but it doesnt",
+            OriginsTest.recursive(true).formation("Φ.rec.out"),
+            Matchers.equalTo(Optional.of("Φ.app.α0.go"))
+        );
+    }
+
+    @Test
+    void findsNothingBehindVoidHelperFillsWithWhatItReadsOffIt() {
+        MatcherAssert.assertThat(
+            "a void a helper fills with a read off it, which copies a formation with other voids, must copy nothing, but it does",
+            new Origins(
+                Map.of(
+                    "Φ", Map.of("rec", "Φ.rec"),
+                    "Φ.rec", Map.of("v", "Φ.rec.v", "φ", "Φ.rec.φ", "out", "Φ.rec.out"),
+                    "Φ.app.α0", Map.of("wrap", "Φ.app.α0.wrap", "go", "Φ.app.α0.go"),
+                    "Φ.app.α0.go", Map.of(),
+                    "Φ.app.α0.wrap", Map.of("z", "Φ.app.α0.wrap.z")
+                ),
+                new Calls(
+                    Map.of("Φ.rec", List.of("v"), "Φ.app.α0.wrap", List.of("z")),
+                    Map.of(
+                        "Φ.rec.φ", Map.of(0, "Φ.rec.φ.α0"),
+                        "Φ.app", Map.of(0, "Φ.app.α0")
+                    ),
+                    Map.of(),
+                    Map.of()
+                ),
+                Map.of(
+                    "Φ.rec.φ", Map.entry("Φ.rec.φ.ρ", "rec"),
+                    "Φ.rec.φ.α0", Map.entry("Φ.rec.φ.α0.ρ", "wrap"),
+                    "Φ.rec.φ.α0.ρ", Map.entry("Φ.rec.φ.α0.ρ.ρ", "v"),
+                    "Φ.rec.out", Map.entry("Φ.rec.out.ρ", "go"),
+                    "Φ.rec.out.ρ", Map.entry("Φ.rec.out.ρ.ρ", "v"),
+                    "Φ.app", Map.entry("Φ.app.ρ", "rec")
+                ),
+                Map.of(
+                    "Φ.rec.φ.ρ", "Φ",
+                    "Φ.rec.φ.α0.ρ.ρ", "Φ.rec",
+                    "Φ.rec.out.ρ.ρ", "Φ.rec",
+                    "Φ.app.ρ", "Φ"
+                )
+            ).formation("Φ.rec.out"),
+            Matchers.equalTo(Optional.empty())
+        );
+    }
+
+    @Test
+    void findsNothingBehindVoidOnlyItsOwnHelperFills() {
+        MatcherAssert.assertThat(
+            "a void only its own helper fills must copy no formation the code fixes, but it does",
+            OriginsTest.recursive(false).formation("Φ.rec.out"),
+            Matchers.equalTo(Optional.empty())
+        );
+    }
+
+    @Test
+    void findsNothingBehindVoidFilledByReadsOfFormationsWithOtherVoids() {
+        MatcherAssert.assertThat(
+            "a call on a void filled by formations with other voids must not be followed, yet it is",
+            new Origins(
+                Map.of(
+                    "Φ", Map.of("box", "Φ.box", "one", "Φ.one", "two", "Φ.two"),
+                    "Φ.box", Map.of("v", "Φ.box.v", "φ", "Φ.box.φ"),
+                    "Φ.one", Map.of("x", "Φ.one.x"),
+                    "Φ.two", Map.of("y", "Φ.two.y")
+                ),
+                new Calls(
+                    Map.of(
+                        "Φ.box", List.of("v"), "Φ.one", List.of("x"), "Φ.two", List.of("y")
+                    ),
+                    Map.of(
+                        "Φ.box.φ", Map.of(0, "Φ.box.φ.α0"),
+                        "Φ.a", Map.of(0, "Φ.a.α0"),
+                        "Φ.b", Map.of(0, "Φ.b.α0")
+                    ),
+                    Map.of(),
+                    Map.of()
+                ),
+                Map.of(
+                    "Φ.box.φ", Map.entry("Φ.box.φ.ρ", "v"),
+                    "Φ.a", Map.entry("Φ.a.ρ", "box"),
+                    "Φ.a.α0", Map.entry("Φ.a.α0.ρ", "one"),
+                    "Φ.b", Map.entry("Φ.b.ρ", "box"),
+                    "Φ.b.α0", Map.entry("Φ.b.α0.ρ", "two")
+                ),
+                Map.of(
+                    "Φ.box.φ.ρ", "Φ.box",
+                    "Φ.a.ρ", "Φ",
+                    "Φ.a.α0.ρ", "Φ",
+                    "Φ.b.ρ", "Φ",
+                    "Φ.b.α0.ρ", "Φ"
+                )
+            ).formation("Φ.box.φ"),
+            Matchers.equalTo(Optional.empty())
+        );
+    }
+
+    @Test
+    void findsNothingBehindVoidOfFormationAtomCopiesToo() {
+        MatcherAssert.assertThat(
+            "a void of a formation an atom copies with no type for it must copy nothing, but it does",
+            new Origins(
+                Map.of(
+                    "Φ", Map.of("box", "Φ.box", "check", "Φ.check"),
+                    "Φ.box", Map.of("v", "Φ.box.v", "φ", "Φ.box.φ"),
+                    "Φ.check", Map.of(),
+                    "Φ.app.α0", Map.of("go", "Φ.app.α0.go"),
+                    "Φ.app.α0.go", Map.of()
+                ),
+                new Calls(
+                    Map.of("Φ.box", List.of("v")),
+                    Map.of("Φ.app", Map.of(0, "Φ.app.α0")),
+                    Map.of(),
+                    Map.of("Φ.check", new Annotation("Φ.box"))
+                ),
+                Map.of(
+                    "Φ.box.φ", Map.entry("Φ.box.φ.ρ", "go"),
+                    "Φ.box.φ.ρ", Map.entry("Φ.box.φ.ρ.ρ", "v"),
+                    "Φ.app", Map.entry("Φ.app.ρ", "box")
+                ),
+                Map.of("Φ.box.φ.ρ.ρ", "Φ.box", "Φ.app.ρ", "Φ")
+            ).formation("Φ.box.φ"),
+            Matchers.equalTo(Optional.empty())
+        );
+    }
+
+    private static Origins recursive(final boolean outside) {
+        final Map<String, Map<Integer, String>> slots = new HashMap<>(0);
+        slots.put("Φ.rec.φ", Map.of(0, "Φ.rec.φ.α0"));
+        final Map<String, Map.Entry<String, String>> reads = new HashMap<>(0);
+        reads.put("Φ.rec.φ", Map.entry("Φ.rec.φ.ρ", "rec"));
+        reads.put("Φ.rec.φ.α0", Map.entry("Φ.rec.φ.α0.ρ", "v"));
+        reads.put("Φ.rec.out", Map.entry("Φ.rec.out.ρ", "go"));
+        reads.put("Φ.rec.out.ρ", Map.entry("Φ.rec.out.ρ.ρ", "v"));
+        final Map<String, String> refs = new HashMap<>(0);
+        refs.put("Φ.rec.φ.ρ", "Φ");
+        refs.put("Φ.rec.φ.α0.ρ", "Φ.rec");
+        refs.put("Φ.rec.out.ρ.ρ", "Φ.rec");
+        if (outside) {
+            slots.put("Φ.app", Map.of(0, "Φ.app.α0"));
+            reads.put("Φ.app", Map.entry("Φ.app.ρ", "rec"));
+            refs.put("Φ.app.ρ", "Φ");
+        }
+        return new Origins(
+            Map.of(
+                "Φ", Map.of("rec", "Φ.rec"),
+                "Φ.rec", Map.of("v", "Φ.rec.v", "φ", "Φ.rec.φ", "out", "Φ.rec.out"),
+                "Φ.app.α0", Map.of("go", "Φ.app.α0.go"),
+                "Φ.app.α0.go", Map.of()
+            ),
+            new Calls(Map.of("Φ.rec", List.of("v")), slots, Map.of(), Map.of()),
+            reads,
+            refs
+        );
+    }
+
     private static Origins bool(
         final List<String> voids, final Map<String, Map.Entry<String, String>> extra,
         final Map<String, String> more
