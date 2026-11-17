@@ -1,6 +1,6 @@
 # Returns a `tuple` of `strings`: the string separated by `delimiter`.
-# If `delimiter` is empty, the `cant-split` fallback is returned, or the
-# terminator when unbound.
+# If `delimiter` is empty, `cant-split` takes an error message.
+# When unbound, it terminates with that message.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo

@@ -1,11 +1,12 @@
 # Integer division of an `i64` number by the `i64` number `b`, truncated
 # toward zero. The quotient is built by restoring long division over the
 # magnitudes of both operands, with the sign applied afterwards. When `b` is
-# zero, the caller-supplied `cant-divide` fallback is returned, and so it is
+# zero, `cant-divide` takes an error message, as it does
 # when the smallest `i64` is divided by minus one, since that quotient is one
 # past the largest `i64` and has no answer here. The magnitude of the
 # dividend is taken once, since the restoring loop reads one bit of it
 # per step and negating a negative dividend costs a full carry chain.
+# When unbound, the fallback terminates with the error message.
 #
 # @todo #8385:60min Make an i64 division affordable. Starting the loop at the
 #  highest bit of the dividend brought `42 / 10` from 234MB to 85MB, but what

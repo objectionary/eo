@@ -1,7 +1,7 @@
 # Returns the string repeated `times` times.
 # If `times` is not a finite non-negative integer (negative, fractional, nan
-# or infinite), the `cant-repeat` fallback is returned,
-# or the terminator when unbound.
+# or infinite), `cant-repeat` takes an error message.
+# When unbound, it terminates with that message.
 # If `times` == 0, empty text is returned.
 
 +architect yegor256@gmail.com
