@@ -28,7 +28,7 @@ public final class TjForeign {
      *
      * @param original The delegate
      */
-    TjForeign(final Tojo original) {
+    public TjForeign(final Tojo original) {
         this.delegate = original;
     }
 
