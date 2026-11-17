@@ -28,7 +28,7 @@ public final class MjAssemble extends MjSafe {
     /**
      * The intermediate representation extension.
      */
-    static final String XMIR = "xmir";
+    public static final String XMIR = "xmir";
 
     /**
      * Source file extension.

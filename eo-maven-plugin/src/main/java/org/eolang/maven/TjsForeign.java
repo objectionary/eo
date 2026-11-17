@@ -28,7 +28,7 @@ import org.cactoos.scalar.Unchecked;
  *
  * @since 0.30
  */
-final class TjsForeign implements Closeable {
+public final class TjsForeign implements Closeable {
 
     /**
      * The delegate.
@@ -54,7 +54,7 @@ final class TjsForeign implements Closeable {
      * Constructor for tests.
      * Keeps all tojos in memory.
      */
-    TjsForeign() {
+    public TjsForeign() {
         this(() -> new TjSmart(new TjCached(new TjDefault(new MnMemory()))));
     }
 
@@ -92,7 +92,7 @@ final class TjsForeign implements Closeable {
      * @param name The name of the tojo
      * @return The tojo
      */
-    TjForeign add(final String name) {
+    public TjForeign add(final String name) {
         final Tojo tojo = this.tojos.value().add(name);
         if (!tojo.exists(Attribute.SCOPE.getKey())) {
             tojo.set(Attribute.SCOPE.getKey(), this.scope.get());
