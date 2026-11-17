@@ -164,6 +164,17 @@ final class Grounded {
                         type -> new Annotation(type.attribute("returns").text().get()),
                         (first, second) -> first
                     )
+                ),
+                table.element("objects").elements(Filter.withName("type")).filter(
+                    type -> type.elements(Filter.withName("return")).findAny().isPresent()
+                ).collect(
+                    Collectors.toMap(
+                        type -> type.attribute("id").text().get(),
+                        type -> type.elements(Filter.withName("return")).map(
+                            slot -> slot.attribute("loc").text().get()
+                        ).collect(Collectors.toList()),
+                        (first, second) -> first
+                    )
                 )
             ),
             table.element("reads").elements(Filter.withName("read")).collect(

@@ -4,9 +4,12 @@
  */
 package org.eolang.maven;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.eolang.inference.Annotation;
 
 /**
@@ -183,5 +186,37 @@ final class Copy {
                 arg -> Map.entry(arg, new Copy(made.getValue()))
             )
         );
+    }
+
+    /**
+     * The copy that all of the given ones agree on.
+     *
+     * <p>A generic atom returns what one of several voids holds, and the code
+     * does not say which. The result is known only when every void holds a
+     * copy of the same formation. When they are the same copy, it is that
+     * copy. When they are copies of the same formation made by different
+     * calls, it is a copy of the formation that no call in particular made.
+     * When one of them is unknown or blurred, or two of them copy different
+     * formations, nothing is said.</p>
+     *
+     * @param held What each void holds
+     * @return The copy they agree on, or nothing
+     */
+    static Optional<Copy> agreed(final Collection<Optional<Copy>> held) {
+        final Set<Copy> known = held.stream().flatMap(Optional::stream).collect(
+            Collectors.toSet()
+        );
+        final Optional<Copy> found;
+        if (held.isEmpty() || held.contains(Optional.empty())
+            || known.stream().map(Copy::formation).distinct().count() > 1L) {
+            found = Optional.empty();
+        } else if (known.size() == 1) {
+            found = known.stream().findFirst();
+        } else if (known.stream().allMatch(Copy::sole)) {
+            found = Optional.of(new Copy(new Annotation(known.iterator().next().formation())));
+        } else {
+            found = Optional.empty();
+        }
+        return found;
     }
 }

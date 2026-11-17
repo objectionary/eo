@@ -278,6 +278,40 @@ final class GroundedTest {
         );
     }
 
+    @Test
+    void groundsArgumentOfCallOnWhatGenericAtomReturns(@Mktmp final Path temp)
+        throws IOException {
+        MatcherAssert.assertThat(
+            "an argument of a call on what a generic atom returns must be grounded when all its returned voids agree, but it isnt",
+            new Grounded(
+                GroundedTest.facts(
+                    temp,
+                    "<objects><type id='Φ'>",
+                    "<attr name='g' type='Φ.g'/><attr name='number' type='Φ.number'/>",
+                    "</type><type id='Φ.g' returns='Φ.g.v'>",
+                    "<attr name='v' type='Φ.g.v' void='true'/>",
+                    "<attr name='a' type='Φ.g.a' void='true'/>",
+                    "<return loc='Φ.g.v'/><return loc='Φ.g.a'/>",
+                    "</type><type id='Φ.number'><attr name='eq' type='Φ.number.eq'/></type>",
+                    "<type id='Φ.number.eq'><attr name='b' type='Φ.number.eq.b' void='true'/>",
+                    "</type></objects><reads>",
+                    "<read id='Φ.app.φ' name='eq' of='Φ.app.φ.ρ'/>",
+                    "<read id='Φ.app.φ.ρ' name='g' of='Φ.app.φ.ρ.ρ'/>",
+                    "<read id='Φ.app.φ.ρ.α0' name='number' of='Φ.app.φ.ρ.α0.ρ'/>",
+                    "<read id='Φ.app.φ.ρ.α1' name='number' of='Φ.app.φ.ρ.α1.ρ'/>",
+                    "</reads><heads>",
+                    "<type id='Φ.app.φ.ρ.ρ'><ref loc='Φ'/></type>",
+                    "<type id='Φ.app.φ.ρ.α0.ρ'><ref loc='Φ'/></type>",
+                    "<type id='Φ.app.φ.ρ.α1.ρ'><ref loc='Φ'/></type>",
+                    "</heads><calls><call loc='Φ.app.φ.ρ'>",
+                    "<arg loc='Φ.app.φ.ρ.α0' n='0'/><arg loc='Φ.app.φ.ρ.α1' n='1'/>",
+                    "</call><call loc='Φ.app.φ'><arg loc='Φ.app.φ.α0' n='0'/></call></calls>"
+                )
+            ).arguments(),
+            Matchers.hasItem("Φ.app.φ.α0")
+        );
+    }
+
     private static Path numbers(final Path dir) throws IOException {
         return GroundedTest.facts(
             dir,

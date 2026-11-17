@@ -79,4 +79,48 @@ final class CopyTest {
             )
         );
     }
+
+    @Test
+    void agreesOnFormationThatCopiesOfDifferentCallsShare() {
+        final Copy outer = new Copy(new Annotation("Φ.app"));
+        MatcherAssert.assertThat(
+            "copies of one formation made by different calls must agree on the formation, but they dont",
+            Copy.agreed(
+                List.of(
+                    Optional.of(new Copy(new Annotation("Φ.number")).applied("Φ.app.α0", outer)),
+                    Optional.of(new Copy(new Annotation("Φ.number")).applied("Φ.app.α1", outer))
+                )
+            ),
+            Matchers.equalTo(Optional.of(new Copy(new Annotation("Φ.number"))))
+        );
+    }
+
+    @Test
+    void agreesOnNothingWhenOneCopyIsUnknown() {
+        MatcherAssert.assertThat(
+            "copies must agree on nothing when one of them is unknown, but they agree",
+            Copy.agreed(
+                List.of(Optional.of(new Copy(new Annotation("Φ.number"))), Optional.empty())
+            ),
+            Matchers.equalTo(Optional.empty())
+        );
+    }
+
+    @Test
+    void agreesOnNothingWhenOneCopyIsBlurred() {
+        MatcherAssert.assertThat(
+            "copies must agree on nothing when one of them is blurred, but they agree",
+            Copy.agreed(
+                List.of(
+                    Optional.of(
+                        new Copy(new Annotation("Φ.true")).applied(
+                            "Φ.app.α0", new Copy(new Annotation("Φ.app"))
+                        )
+                    ),
+                    Optional.of(new Copy(new Annotation("Φ.true"), false))
+                )
+            ),
+            Matchers.equalTo(Optional.empty())
+        );
+    }
 }
