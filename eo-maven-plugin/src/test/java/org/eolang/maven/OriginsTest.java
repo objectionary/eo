@@ -713,6 +713,42 @@ final class OriginsTest {
         );
     }
 
+    @Test
+    void readsNameOffForkWhenEverySideAgrees() {
+        MatcherAssert.assertThat(
+            "a name read off what a fork returns must be found when both sides give the same copy, but it isnt",
+            OriginsTest.forked("Φ.yes", "Φ.yes", false).formation("Φ.app"),
+            Matchers.equalTo(Optional.of("Φ.yes.foo"))
+        );
+    }
+
+    @Test
+    void readsNothingOffForkWhenSidesDisagree() {
+        MatcherAssert.assertThat(
+            "a name read off what a fork returns must copy nothing when the sides disagree, but it does",
+            OriginsTest.forked("Φ.yes", "Φ.no", false).formation("Φ.app"),
+            Matchers.equalTo(Optional.empty())
+        );
+    }
+
+    @Test
+    void readsNameOffNestedFork() {
+        MatcherAssert.assertThat(
+            "a name read off a fork whose side is another fork must be found when all sides agree, but it isnt",
+            OriginsTest.forked("Φ.yes", "Φ.yes", true).formation("Φ.app"),
+            Matchers.equalTo(Optional.of("Φ.yes.foo"))
+        );
+    }
+
+    @Test
+    void stillNamesArgumentsOfCallOnFork() {
+        MatcherAssert.assertThat(
+            "a void of a fork call must still copy its argument, but it doesnt",
+            OriginsTest.forked("Φ.yes", "Φ.no", false).formation("Φ.got"),
+            Matchers.equalTo(Optional.of("Φ.no"))
+        );
+    }
+
     private static Origins generic(final String second) {
         return new Origins(
             Map.of(
@@ -794,6 +830,65 @@ final class OriginsTest {
                 "Φ.app.α0.go", Map.of()
             ),
             new Calls(Map.of("Φ.rec", List.of("v")), slots, Map.of(), Map.of()),
+            reads,
+            refs
+        );
+    }
+
+    private static Origins forked(
+        final String left, final String right, final boolean nested
+    ) {
+        final Map<String, String> refs = new HashMap<>(0);
+        refs.put("Φ.true.φ", "Φ.bool");
+        refs.put("Φ.false.φ", "Φ.bool");
+        refs.put("Φ.true.φ.α0.φ.ρ", "Φ.true.φ.α0");
+        refs.put("Φ.false.φ.α0.φ.ρ", "Φ.false.φ.α0");
+        refs.put("Φ.bool.and.φ.ρ", "Φ.bool");
+        refs.put("Φ.bool.if.ρ", "Φ.bool");
+        refs.put("Φ.bool.and.φ.α1", right);
+        final Map<String, Map.Entry<String, String>> reads = new HashMap<>(0);
+        reads.put("Φ.true.φ.α0.φ", Map.entry("Φ.true.φ.α0.φ.ρ", "left"));
+        reads.put("Φ.false.φ.α0.φ", Map.entry("Φ.false.φ.α0.φ.ρ", "right"));
+        reads.put("Φ.bool.and.φ", Map.entry("Φ.bool.and.φ.ρ", "if"));
+        reads.put("Φ.bool.if", Map.entry("Φ.bool.if.ρ", "fork"));
+        reads.put("Φ.app", Map.entry("Φ.bool.and.φ", "foo"));
+        reads.put("Φ.got", Map.entry("Φ.bool.and.φ", "right"));
+        final Map<String, Map<Integer, String>> slots = new HashMap<>(0);
+        slots.put("Φ.true.φ", Map.of(0, "Φ.true.φ.α0"));
+        slots.put("Φ.false.φ", Map.of(0, "Φ.false.φ.α0"));
+        slots.put("Φ.bool.and.φ", Map.of(0, "Φ.bool.and.φ.α0", 1, "Φ.bool.and.φ.α1"));
+        if (nested) {
+            reads.put("Φ.bool.and.φ.α0", Map.entry("Φ.bool.and.φ.α0.ρ", "if"));
+            refs.put("Φ.bool.and.φ.α0.ρ", "Φ.bool");
+            refs.put("Φ.bool.and.φ.α0.α0", left);
+            refs.put("Φ.bool.and.φ.α0.α1", left);
+            slots.put(
+                "Φ.bool.and.φ.α0",
+                Map.of(0, "Φ.bool.and.φ.α0.α0", 1, "Φ.bool.and.φ.α0.α1")
+            );
+        } else {
+            refs.put("Φ.bool.and.φ.α0", left);
+        }
+        return new Origins(
+            Map.of(
+                "Φ.bool", Map.of("fork", "Φ.bool.fork", "if", "Φ.bool.if"),
+                "Φ.true.φ.α0", Map.of("φ", "Φ.true.φ.α0.φ"),
+                "Φ.false.φ.α0", Map.of("φ", "Φ.false.φ.α0.φ"),
+                "Φ.yes", Map.of("foo", "Φ.yes.foo"),
+                "Φ.yes.foo", Map.of(),
+                "Φ.no", Map.of("foo", "Φ.no.foo"),
+                "Φ.no.foo", Map.of()
+            ),
+            new Calls(
+                Map.of(
+                    "Φ.bool", List.of("fork"),
+                    "Φ.true.φ.α0", List.of("left", "right"),
+                    "Φ.false.φ.α0", List.of("left", "right")
+                ),
+                slots,
+                Map.of(),
+                Map.of()
+            ),
             reads,
             refs
         );

@@ -117,10 +117,32 @@ final class CopyTest {
                             "Φ.app.α0", new Copy(new Annotation("Φ.app"))
                         )
                     ),
-                    Optional.of(new Copy(new Annotation("Φ.true"), false))
+                    Optional.of(new Copy(List.of("Φ.true", "Φ.yes")))
                 )
             ),
             Matchers.equalTo(Optional.empty())
+        );
+    }
+
+    @Test
+    void givesOneSharpCandidatePerFormationWithSameCall() {
+        final Copy outer = new Copy(new Annotation("Φ.app"));
+        MatcherAssert.assertThat(
+            "a blurred copy must give a sharp copy of each formation, made by its call, but it doesnt",
+            new Copy(List.of("Φ.true", "Φ.false")).applied("Φ.app.φ", outer).candidates(),
+            Matchers.contains(
+                new Copy(new Annotation("Φ.false")).applied("Φ.app.φ", outer),
+                new Copy(new Annotation("Φ.true")).applied("Φ.app.φ", outer)
+            )
+        );
+    }
+
+    @Test
+    void isNotSoleWhenBlurred() {
+        MatcherAssert.assertThat(
+            "a copy of several formations must not be sole, but it is",
+            new Copy(List.of("Φ.true", "Φ.false")).sole(),
+            Matchers.is(false)
         );
     }
 }

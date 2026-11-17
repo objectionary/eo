@@ -5,10 +5,12 @@
 package org.eolang.maven;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 import org.eolang.inference.Annotation;
 
@@ -32,8 +34,10 @@ import org.eolang.inference.Annotation;
  * <p>A copy may also be blurred: its formation stands for several formations
  * that have the same voids in the same order, such as the two the program
  * puts into the {@code fork} of {@code bool}. Such a copy tells where the
- * arguments of a call on it land, but nothing may be read off it, since each
- * of those formations binds its attributes in its own way.</p>
+ * arguments of a call on it land. It keeps all those formations, its
+ * candidates, since each of them binds its attributes in its own way: a name
+ * read off it copies a formation only when every candidate, made by the same
+ * call, gives the same copy for the name (#9973).</p>
  *
  * @since 0.76.0
  */
@@ -52,9 +56,10 @@ final class Copy {
     private final Optional<Map.Entry<String, Annotation>> call;
 
     /**
-     * Whether the formation is the only one the copy may be of.
+     * The formations the copy may be of, in their natural order: just one
+     * when the copy is sharp, and several when it is blurred.
      */
-    private final boolean exact;
+    private final Set<String> forms;
 
     /**
      * Ctor.
@@ -69,13 +74,15 @@ final class Copy {
     /**
      * Ctor.
      *
-     * @param kind The type: the formation, and the types an atom gives its
-     *  voids in brackets
-     * @param sole Whether the formation is the only one the copy may be of,
-     *  and not one of several with the same voids
+     * @param candidates The formations the copy may be of, all with the same
+     *  voids in the same order: one for a sharp copy, several for a blurred
+     *  one
      */
-    Copy(final Annotation kind, final boolean sole) {
-        this(kind, Optional.empty(), sole);
+    Copy(final Collection<String> candidates) {
+        this(
+            new Annotation(new TreeSet<>(candidates).first()), Optional.empty(),
+            candidates
+        );
     }
 
     /**
@@ -86,7 +93,7 @@ final class Copy {
      * @param maker The call that made the copy, when the code shows one
      */
     Copy(final Annotation kind, final Optional<Map.Entry<String, Annotation>> maker) {
-        this(kind, maker, true);
+        this(kind, maker, Set.of(kind.head()));
     }
 
     /**
@@ -95,15 +102,15 @@ final class Copy {
      * @param kind The type: the formation, and the types an atom gives its
      *  voids in brackets
      * @param maker The call that made the copy, when the code shows one
-     * @param sole Whether the formation is the only one the copy may be of
+     * @param candidates The formations the copy may be of
      */
-    Copy(
+    private Copy(
         final Annotation kind, final Optional<Map.Entry<String, Annotation>> maker,
-        final boolean sole
+        final Collection<String> candidates
     ) {
         this.type = kind;
         this.call = maker;
-        this.exact = sole;
+        this.forms = Collections.unmodifiableSet(new TreeSet<>(candidates));
     }
 
     @Override
@@ -116,14 +123,14 @@ final class Copy {
         } else {
             result = this.type.equals(((Copy) other).type)
                 && this.call.equals(((Copy) other).call)
-                && this.exact == ((Copy) other).exact;
+                && this.forms.equals(((Copy) other).forms);
         }
         return result;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.type, this.call, this.exact);
+        return Objects.hash(this.type, this.call, this.forms);
     }
 
     /**
@@ -133,7 +140,7 @@ final class Copy {
      * @return TRUE if it is, FALSE if it is blurred
      */
     boolean sole() {
-        return this.exact;
+        return this.forms.size() == 1;
     }
 
     /**
@@ -143,6 +150,18 @@ final class Copy {
      */
     String formation() {
         return this.type.head();
+    }
+
+    /**
+     * The sharp copies it may be, one for each formation it may be of, all
+     * made by the call that made it.
+     *
+     * @return The copies, in the order of their formations
+     */
+    Collection<Copy> candidates() {
+        return this.forms.stream().map(
+            form -> new Copy(new Annotation(form), this.call, Set.of(form))
+        ).collect(Collectors.toList());
     }
 
     /**
@@ -156,7 +175,7 @@ final class Copy {
     Copy applied(final String place, final Copy outer) {
         return new Copy(
             new Annotation(this.formation()), Optional.of(Map.entry(place, outer.type)),
-            this.exact
+            this.forms
         );
     }
 
