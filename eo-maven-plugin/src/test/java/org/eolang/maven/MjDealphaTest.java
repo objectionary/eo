@@ -358,7 +358,7 @@ final class MjDealphaTest {
     }
 
     @Test
-    void keepsAlphaOfCallOnVoidOfCopyThatIfPicksWhenSidesDisagree(@Mktmp final Path temp) throws IOException {
+    void keepsAlphaWhenSidesOfIfDisagree(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             String.join(
                 System.lineSeparator(),
