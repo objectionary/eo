@@ -36,12 +36,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(MktmpResolver.class)
 final class DealphaingTest {
 
-    /**
-     * A program that terminates with a message.
-     */
-    private static final String BOTTOM =
-        "<object><o base='⊥' loc='Φ.k.φ'><o loc='Φ.k.φ.α0' as='α0'/></o></object>";
-
     @Test
     void renamesEveryArgumentOfApplication(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
@@ -90,7 +84,7 @@ final class DealphaingTest {
             "the message of ⊥ must keep its αN without failing the build, but it doesnt",
             new XMLDocument(
                 DealphaingTest.dealphaed(
-                    temp, true, DealphaingTest.BOTTOM, LandingsTest.grounded("Φ.k.φ.α0")
+                    temp, true, DealphaingTest.bottom(), LandingsTest.grounded("Φ.k.φ.α0")
                 )
             ),
             XhtmlMatchers.hasXPath("/object/o[@base='⊥']/o[@as='α0']")
@@ -123,13 +117,17 @@ final class DealphaingTest {
             "the log must count the message of ⊥ apart from the lost ones, but it doesnt",
             DealphaingTest.logged(
                 () -> DealphaingTest.dealphaed(
-                    temp, true, DealphaingTest.BOTTOM, LandingsTest.grounded("Φ.k.φ.α0")
+                    temp, true, DealphaingTest.bottom(), LandingsTest.grounded("Φ.k.φ.α0")
                 )
             ),
             Matchers.hasItem(
                 "Named 0 of 1 positional argument(s) in 1 XMIR(s), 1 are messages of ⊥, 0 found no void to be named after"
             )
         );
+    }
+
+    private static String bottom() {
+        return "<object><o base='⊥' loc='Φ.k.φ'><o loc='Φ.k.φ.α0' as='α0'/></o></object>";
     }
 
     private static List<String> logged(final Path temp) {
