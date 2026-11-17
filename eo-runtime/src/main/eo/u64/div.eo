@@ -73,6 +73,14 @@
       00-00-00-00-00-00-00-00.as-u64
       u64 00-00-00-00-00-00-00-2A > [message]
 
+  eq. ++> can-recover-from-division-by-zero-after-reading-the-message
+    u64 00-00-00-00-00-00-00-2A
+    FF-FF-FF-FF-FF-FF-FF-FF.as-u64.div
+      00-00-00-00-00-00-00-00.as-u64
+      seq * > [message]
+        message
+        u64 00-00-00-00-00-00-00-2A
+
   div. --> stops-on-division-by-zero
     00-00-00-00-00-00-00-02.as-u64
     00-00-00-00-00-00-00-00.as-u64
