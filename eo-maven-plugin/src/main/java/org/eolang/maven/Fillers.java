@@ -20,8 +20,8 @@ import org.eolang.inference.Annotation;
  * code alone says that.
  *
  * <p>Every call that copies the formation puts an argument into the void,
- * and every atom that returns a copy of it puts there the type its brackets
- * give. The void holds one of the formations these copy, when each of them
+ * and every atom that returns a copy of it with brackets puts there the type
+ * its brackets give. The void holds one of the formations these copy, when each of them
  * copies a formation the code fixes, all those formations have the same
  * voids in the same order, and no place copies the formation without a call.
  * With one formation the copy is sharp, and with several it is blurred.</p>

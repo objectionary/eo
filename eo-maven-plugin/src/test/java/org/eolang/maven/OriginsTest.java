@@ -678,31 +678,45 @@ final class OriginsTest {
     }
 
     @Test
-    void findsNothingBehindVoidOfFormationAtomCopiesToo() {
+    void findsNothingBehindVoidAtomFillsWithFormationOfOtherVoids() {
         MatcherAssert.assertThat(
-            "a void of a formation an atom copies with no type for it must copy nothing, but it does",
-            new Origins(
-                Map.of(
-                    "Φ", Map.of("box", "Φ.box", "check", "Φ.check"),
-                    "Φ.box", Map.of("v", "Φ.box.v", "φ", "Φ.box.φ"),
-                    "Φ.check", Map.of(),
-                    "Φ.app.α0", Map.of("go", "Φ.app.α0.go"),
-                    "Φ.app.α0.go", Map.of()
-                ),
-                new Calls(
-                    Map.of("Φ.box", List.of("v")),
-                    Map.of("Φ.app", Map.of(0, "Φ.app.α0")),
-                    Map.of(),
-                    Map.of("Φ.check", new Annotation("Φ.box"))
-                ),
-                Map.of(
-                    "Φ.box.φ", Map.entry("Φ.box.φ.ρ", "go"),
-                    "Φ.box.φ.ρ", Map.entry("Φ.box.φ.ρ.ρ", "v"),
-                    "Φ.app", Map.entry("Φ.app.ρ", "box")
-                ),
-                Map.of("Φ.box.φ.ρ.ρ", "Φ.box", "Φ.app.ρ", "Φ")
-            ).formation("Φ.box.φ"),
+            "a void an atom fills with a formation of other voids than the program puts there must copy nothing, but it does",
+            OriginsTest.boxed("Φ.box(Φ.other)").formation("Φ.box.φ"),
             Matchers.equalTo(Optional.empty())
+        );
+    }
+
+    @Test
+    void ignoresAtomThatReturnsTypeWithoutBrackets() {
+        MatcherAssert.assertThat(
+            "an atom that returns a type with no brackets must not change what the program puts into a void, but it does",
+            OriginsTest.boxed("Φ.box").formation("Φ.box.φ"),
+            Matchers.equalTo(Optional.of("Φ.app.α0.go"))
+        );
+    }
+
+    private static Origins boxed(final String returned) {
+        return new Origins(
+            Map.of(
+                "Φ", Map.of("box", "Φ.box", "check", "Φ.check", "other", "Φ.other"),
+                "Φ.box", Map.of("v", "Φ.box.v", "φ", "Φ.box.φ"),
+                "Φ.check", Map.of(),
+                "Φ.other", Map.of("q", "Φ.other.q"),
+                "Φ.app.α0", Map.of("go", "Φ.app.α0.go"),
+                "Φ.app.α0.go", Map.of()
+            ),
+            new Calls(
+                Map.of("Φ.box", List.of("v"), "Φ.other", List.of("q")),
+                Map.of("Φ.app", Map.of(0, "Φ.app.α0")),
+                Map.of(),
+                Map.of("Φ.check", new Annotation(returned))
+            ),
+            Map.of(
+                "Φ.box.φ", Map.entry("Φ.box.φ.ρ", "go"),
+                "Φ.box.φ.ρ", Map.entry("Φ.box.φ.ρ.ρ", "v"),
+                "Φ.app", Map.entry("Φ.app.ρ", "box")
+            ),
+            Map.of("Φ.box.φ.ρ.ρ", "Φ.box", "Φ.app.ρ", "Φ")
         );
     }
 

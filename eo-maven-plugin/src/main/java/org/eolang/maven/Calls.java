@@ -147,14 +147,22 @@ final class Calls {
     }
 
     /**
-     * The types the atoms say they return, which copy a formation.
+     * The types with brackets that the atoms say they return, which copy a
+     * formation.
+     *
+     * <p>Only the brackets tell what Java puts into the voids of the copy
+     * itself. An atom that returns a type with no brackets, such as
+     * {@code Φ.bool}, builds its copy the way {@code Data.ToPhi} does, out of
+     * the objects of the program, such as {@code Φ.true}, so the program
+     * fills the voids of that copy, not Java.</p>
      *
      * @param formation The formation
-     * @return The types, one for each atom that returns a copy of it
+     * @return The types, one for each atom that returns a copy of it with
+     *  brackets
      */
     List<Annotation> made(final String formation) {
         return this.returns.values().stream().filter(
-            type -> type.head().equals(formation)
+            type -> type.head().equals(formation) && !type.members().isEmpty()
         ).collect(Collectors.toList());
     }
 

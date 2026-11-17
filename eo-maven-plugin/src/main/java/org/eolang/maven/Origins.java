@@ -52,8 +52,13 @@ import org.eolang.inference.Annotation;
  * (#9954). A read of a void that several formations fill copies none of them
  * in particular, so it gives a blurred {@link Copy}, which tells where the
  * arguments of a call on it land, and nothing more (#9952). An atom that
- * returns a copy of the formation fills the void too, with the type its
- * brackets give, and when they give none, nothing is said about the void.
+ * returns a copy of the formation with brackets, such as
+ * {@code Φ.posix.time-return(Φ.number,Φ.number,Φ.number)}, fills the void
+ * too, with the type its brackets give, and when they give none for the
+ * void, nothing is said about it. An atom that returns a type with no
+ * brackets, such as {@code Φ.bool}, builds its copy out of the objects of
+ * the program, as {@code Data.ToPhi} makes {@code Φ.true}, so it fills no
+ * void itself.
  * The program stands here for every caller there is: a caller in Java, or in
  * a program built later, that fills the void with another formation breaks
  * this. A place that copies the formation without a call leaves the void
