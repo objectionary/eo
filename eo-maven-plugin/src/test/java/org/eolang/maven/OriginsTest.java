@@ -741,7 +741,7 @@ final class OriginsTest {
     }
 
     @Test
-    void stillNamesArgumentsOfCallOnFork() {
+    void namesArgumentsOfCallOnFork() {
         MatcherAssert.assertThat(
             "a void of a fork call must still copy its argument, but it doesnt",
             OriginsTest.forked("Φ.yes", "Φ.no", false).formation("Φ.got"),
