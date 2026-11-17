@@ -30,17 +30,24 @@ import org.eolang.Phi;
 public final class Portion {
 
     /**
-     * The object holding the buffer and the size.
+     * The buffer.
      */
-    private final Phi phi;
+    private final Phi buffer;
+
+    /**
+     * How many bytes of the buffer to hand over.
+     */
+    private final Expect<Phi> size;
 
     /**
      * Ctor.
      *
-     * @param phi The object holding the buffer and the size
+     * @param buffer The buffer
+     * @param size How many bytes of the buffer to hand over
      */
-    public Portion(final Phi phi) {
-        this.phi = phi;
+    public Portion(final Phi buffer, final Expect<Phi> size) {
+        this.buffer = buffer;
+        this.size = size;
     }
 
     /**
@@ -49,14 +56,14 @@ public final class Portion {
      * @return The bytes to hand over
      */
     public byte[] it() {
-        final byte[] buffer = new Dataized(this.phi.take("buffer")).take();
-        final int size = new Natural(Expect.at(this.phi, "size")).it();
-        if (size > buffer.length) {
+        final byte[] bytes = new Dataized(this.buffer).take();
+        final int count = new Natural(this.size).it();
+        if (count > bytes.length) {
             throw new ExFailure(
                 "Can't take %d bytes from a buffer of only %d bytes",
-                size, buffer.length
+                count, bytes.length
             );
         }
-        return Arrays.copyOf(buffer, size);
+        return Arrays.copyOf(bytes, count);
     }
 }

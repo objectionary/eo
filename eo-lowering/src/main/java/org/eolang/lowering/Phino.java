@@ -11,12 +11,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.List;
 import java.util.stream.Stream;
-import org.cactoos.io.ResourceOf;
+import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
+import org.cactoos.list.ListOf;
 import org.cactoos.text.TextOf;
 import org.cactoos.text.Trimmed;
 import org.cactoos.text.UncheckedText;
+import org.eolang.cache.GlobalCache;
 
 /**
  * The phino program installed on this computer.
@@ -26,13 +29,21 @@ import org.cactoos.text.UncheckedText;
  * itself, and this class is the only place that runs phino. Every new
  * release of phino may read its input a little differently and may give
  * different results. So, this module trusts phino only when its version is
- * exactly the one written in the resource file
- * {@code phino-version.txt}.</p>
+ * exactly the one it was given, which is called the "pin". Every command
+ * this class runs also hands the pin to phino, so phino itself refuses to
+ * work when its version is another one.</p>
  *
  * <p>phino is started as a separate process through {@link Jaxec}. What it
  * prints is not shown in the log of the build. Its normal output is thrown
  * away, and its error output is shown only when phino fails. A reader of
  * the log should not be worried by lines that do not matter.</p>
+ *
+ * <p>One run of phino may grow its memory until the whole computer has no
+ * memory left, which no limit of time can stop in time. So, this class may
+ * be given a limit of memory, such as "4G", which every run hands to
+ * phino. Then phino stops by itself when its memory grows over the limit,
+ * and closes the protocol with a {@code blown} element. A limit of "0"
+ * means no limit at all.</p>
  *
  * @since 0.64.0
  */
@@ -44,12 +55,38 @@ final class Phino {
     private final String binary;
 
     /**
+     * The only version of phino that this module accepts.
+     */
+    private final String version;
+
+    /**
+     * The largest memory one run of phino may take, such as "4G", or "0"
+     * when there is no limit.
+     */
+    private final String memory;
+
+    /**
      * Ctor.
      *
      * @param exe The name of the phino program, or the path to it
+     * @param pin The only version of phino that this module accepts
      */
-    Phino(final String exe) {
+    Phino(final String exe, final String pin) {
+        this(exe, pin, "0");
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param exe The name of the phino program, or the path to it
+     * @param pin The only version of phino that this module accepts
+     * @param limit The largest memory one run of phino may take, such as
+     *  "4G", or "0" when there is no limit
+     */
+    Phino(final String exe, final String pin, final String limit) {
         this.binary = exe;
+        this.version = pin;
+        this.memory = limit;
     }
 
     @Override
@@ -102,6 +139,7 @@ final class Phino {
         this.run(
             new Jaxec(
                 this.binary,
+                String.format("--pin=%s", this.version),
                 "merge",
                 "--input=xmir",
                 "--sweet",
@@ -115,10 +153,12 @@ final class Phino {
     /**
      * Ask phino to compute one entry of the world, with symbols as inputs.
      *
-     * <p>This is called "morphing". The stage {@link Planting} put every
-     * entry into an object named {@code l/}, under the name {@code e} plus
-     * the number of the entry, and this method asks phino to work on
-     * exactly that one. The name of that object holds nothing but ASCII,
+     * <p>The stage that calls this is named "morphing", since phino
+     * dataizes an object by morphing it first, and the morphs are most of
+     * what the protocol holds. The stage {@link Planting} put every entry
+     * into an object named {@code l🌵}, under the name {@code e} plus the
+     * number of the entry, and this method asks phino to dataize exactly
+     * that one. The name of that object holds nothing but ASCII,
      * because Java writes the arguments of a child process in the encoding
      * of the locale, and a locale outside UTF-8, which many containers run
      * with, turns every other letter into a question mark that phino
@@ -131,80 +171,135 @@ final class Phino {
      * nothing else. One entry that never ends must not stop the whole build,
      * so phino is told how many seconds it may work, and it stops by itself
      * when they are over. Then it closes the protocol with a {@code timeout}
-     * element and fails. This class never kills phino, because a killed phino
-     * leaves a protocol cut in the middle, which nobody can read.</p>
+     * element and exits normally, and this class reports the run as one that
+     * ran out of time. This class never kills phino, because a killed
+     * phino leaves a protocol cut in the middle, which nobody can read.</p>
      *
      * @param world The world, which {@link Merging} wrote
      * @param atoms The table of operations phino may write down
      * @param entry The number of the entry to work on
-     * @param protocol The file for the steps, in XML because its name ends with .xml
+     * @param protocol The file for the steps, always in XML
      * @param steps The largest number of steps phino may take inside one another
+     * @param loops How many times phino may enter the same formation again
+     *  before it decides that the run loops and cuts it
      * @param budget The time phino may work, rounded up to whole seconds
      * @throws IOException If phino cannot be started, or a
      *  {@link KilledException} if phino stopped because its time was over
      * @checkstyle ParameterNumberCheck (10 lines)
      */
-    void morph(
+    void dataize(
         final Path world, final Path atoms, final int entry, final Path protocol,
-        final int steps, final Duration budget
+        final int steps, final int loops, final Duration budget
     ) throws IOException {
-        final String task = String.format("morphing the entry %d of '%s'", entry, world);
-        try {
-            this.run(
-                new Jaxec(
-                    this.binary,
-                    "morph",
-                    "--deep",
-                    "--acyclic=plausible",
-                    "--partial",
-                    "--quiet",
-                    "--sweet",
-                    "--hide-rho",
-                    "--abridged",
-                    String.format("--symbolic=%s", atoms),
-                    String.format("--locator=Q.l/.e%d", entry),
-                    String.format("--protocol=%s", protocol),
-                    String.format("--max-steps=%d", steps),
-                    String.format(
-                        "--max-seconds=%d",
-                        Math.max(1L, budget.plusNanos(999_999_999L).toSeconds())
-                    ),
-                    world.toString()
-                ),
-                task
-            );
-        } catch (final IllegalStateException ex) {
-            if (Files.notExists(protocol)) {
-                throw ex;
-            }
-            try (Stream<String> lines = Files.lines(protocol)) {
-                if (lines.noneMatch(line -> line.contains("<timeout "))) {
-                    throw ex;
-                }
-            }
-            throw new KilledException(
-                Logger.format(
-                    "The binary '%s' ran out of its budget of %[ms]s while %s",
-                    this.binary, budget.toMillis(), task
-                ),
-                ex
-            );
-        }
+        this.record(world, atoms, entry, protocol, new ListOf<>(), steps, loops, budget);
+    }
+
+    /**
+     * Ask phino to compute one entry of the world, and to write its steps
+     * both in XML and as indented text, which are called its "minutes", in
+     * one run.
+     *
+     * <p>The minutes are what a person reads without any tool. phino
+     * writes them beside the XML protocol while it works, so the entry is not
+     * computed twice. When the time runs out, the minutes end with a
+     * {@code timeout …} line, the same way the protocol ends with its
+     * {@code timeout} element.</p>
+     *
+     * @param world The world, which {@link Merging} wrote
+     * @param atoms The table of operations phino may write down
+     * @param entry The number of the entry to work on
+     * @param protocol The file for the steps, always in XML
+     * @param minutes The file for the minutes, the same steps as indented text
+     * @param steps The largest number of steps phino may take inside one another
+     * @param loops How many times phino may enter the same formation again
+     *  before it decides that the run loops and cuts it
+     * @param budget The time phino may work, rounded up to whole seconds
+     * @throws IOException If phino cannot be started, or a
+     *  {@link KilledException} if phino stopped because its time was over
+     * @checkstyle ParameterNumberCheck (10 lines)
+     */
+    void dataize(
+        final Path world, final Path atoms, final int entry, final Path protocol,
+        final Path minutes, final int steps, final int loops, final Duration budget
+    ) throws IOException {
+        this.record(
+            world, atoms, entry, protocol,
+            new ListOf<>(String.format("--minutes=%s", minutes)),
+            steps, loops, budget
+        );
     }
 
     /**
      * The only version of phino that this module accepts.
      *
-     * @return The content of {@code phino-version.txt}, without spaces around it
+     * @return The version this object was given
      */
     String pin() {
-        return new UncheckedText(
-            new Trimmed(
-                new TextOf(
-                    new ResourceOf("org/eolang/lowering/phino-version.txt", this.getClass())
+        return this.version;
+    }
+
+    /**
+     * The cache of protocols, narrowed to the runs of this phino.
+     *
+     * <p>Two runs on the same entry may give different protocols when the
+     * version of phino or its limit of memory differ. So, the cache keeps
+     * the protocols of each pair apart.</p>
+     *
+     * @param cache The cache of protocols
+     * @return The same cache, narrowed to this version and limit of memory
+     */
+    GlobalCache narrowed(final GlobalCache cache) {
+        return cache.with(this.version).with(this.memory);
+    }
+
+    private void record(
+        final Path world, final Path atoms, final int entry, final Path protocol,
+        final List<String> extra, final int steps, final int loops, final Duration budget
+    ) throws IOException {
+        final String task = String.format("dataizing the entry %d of '%s'", entry, world);
+        this.run(
+            new Jaxec(
+                this.binary,
+                String.format("--pin=%s", this.version),
+                "dataize",
+                "--acyclic=plausible",
+                String.format("--max-loops=%d", loops),
+                "--partial",
+                "--quiet",
+                "--sweet",
+                "--hide-rho",
+                "--abridged",
+                String.format("--symbolic=%s", atoms),
+                String.format("--locator=Q.l🌵.e%d", entry),
+                String.format("--protocol=%s", protocol)
+            ).with(extra).with(
+                String.format("--max-steps=%d", steps),
+                String.format(
+                    "--max-seconds=%d",
+                    Math.max(1L, budget.plusNanos(999_999_999L).toSeconds())
                 )
-            )
-        ).asString();
+            ).with(
+                new ListOf<>(
+                    new Mapped<>(
+                        limit -> String.format("--max-memory=%s", limit),
+                        new Filtered<>(limit -> !"0".equals(limit), new ListOf<>(this.memory))
+                    )
+                )
+            ).with(world.toString()),
+            task
+        );
+        if (Files.exists(protocol)) {
+            try (Stream<String> lines = Files.lines(protocol)) {
+                if (lines.anyMatch(line -> line.contains("<timeout "))) {
+                    throw new KilledException(
+                        Logger.format(
+                            "The binary '%s' ran out of its budget of %[ms]s while %s",
+                            this.binary, budget.toMillis(), task
+                        )
+                    );
+                }
+            }
+        }
     }
 
     private void run(final Jaxec command, final String task) throws IOException {

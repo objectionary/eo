@@ -31,20 +31,19 @@ import org.slf4j.impl.StaticLoggerBinder;
  * Abstract Mojo for all others.
  *
  * @since 0.1
- * @todo #8968:60min Give the last fourteen parameters one-word names too.
+ * @todo #8968:60min Give the last thirteen parameters one-word names too.
  *  Every one of them wants a word that is already spent. {@code foreign}
  *  and {@code placed} each hold the word their {@code Format} sibling
- *  wants; {@code cache} holds the one {@code cacheEnabled} wants;
- *  {@code sourcesDir} wants the {@code sources} that {@code MjPrint} and
- *  {@code MjAtomsTable} both declare; the three binary filters
+ *  wants; {@code sourcesDir} wants the {@code sources} that {@code MjPrint} and
+ *  {@code MjTabulate} both declare; the three binary filters
  *  ({@code placeBinaries}, {@code skipBinaries}, {@code keepBinaries})
  *  want one word between them, as do the three lint flags
  *  ({@code skipSourceLints}, {@code skipProgramLints},
  *  {@code skipLinting}); and {@code ignoreRuntime},
  *  {@code failOnWarning}, {@code lintAsPackage} and
  *  {@code resolveInCentral} each want a word this class reads as
- *  something else. A file with its format, a cache with its switch, the
- *  binary filters and the lint flags are four groups, and once each one
+ *  something else. A file with its format, the binary filters and the
+ *  lint flags are three groups, and once each one
  *  is an object of its own the names come free.
  */
 abstract class MjSafe extends AbstractMojo {
@@ -105,9 +104,14 @@ abstract class MjSafe extends AbstractMojo {
     /**
      * Format of "foreign" file ("json" or "csv").
      *
-     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle MemberNameCheck (12 lines)
      */
-    @Parameter(property = "eo.foreignFormat", required = true, defaultValue = "csv")
+    @Parameter(
+        alias = "foreign.format",
+        property = "eo.foreign.format",
+        required = true,
+        defaultValue = "csv"
+    )
     protected String foreignFormat = "csv";
 
     /**
@@ -116,7 +120,8 @@ abstract class MjSafe extends AbstractMojo {
      * @checkstyle MemberNameCheck (8 lines)
      */
     @Parameter(
-        property = "eo.sourcesDir",
+        alias = "sources",
+        property = "eo.sources",
         required = true,
         defaultValue = "${project.basedir}/src/main/eo"
     )
@@ -126,8 +131,8 @@ abstract class MjSafe extends AbstractMojo {
      * Target directory.
      */
     @Parameter(
-        alias = "targetDir",
-        property = "eo.targetDir",
+        alias = "target",
+        property = "eo.target",
         required = true,
         defaultValue = "${project.build.directory}/eo"
     )
@@ -155,17 +160,22 @@ abstract class MjSafe extends AbstractMojo {
     /**
      * Format of "placed" file ("json" or "csv").
      *
-     * @checkstyle MemberNameCheck (7 lines)
+     * @checkstyle MemberNameCheck (12 lines)
      */
-    @Parameter(property = "eo.placedFormat", required = true, defaultValue = "json")
+    @Parameter(
+        alias = "placed.format",
+        property = "eo.placed.format",
+        required = true,
+        defaultValue = "json"
+    )
     protected String placedFormat = "json";
 
     /**
      * Generated sourced directory.
      */
     @Parameter(
-        alias = "generatedDir",
-        property = "eo.generatedDir",
+        alias = "generated",
+        property = "eo.generated",
         required = true,
         defaultValue = "${project.build.directory}/generated-sources"
     )
@@ -178,8 +188,8 @@ abstract class MjSafe extends AbstractMojo {
      * @since 0.41.0
      */
     @Parameter(
-        alias = "xslMeasuresFile",
-        property = "eo.xslMeasuresFile",
+        alias = "measures",
+        property = "eo.measures",
         required = true,
         defaultValue = "${project.build.directory}/eo/xsl-measures.csv"
     )
@@ -209,8 +219,8 @@ abstract class MjSafe extends AbstractMojo {
      * @since 0.24.0
      */
     @Parameter(
-        alias = "trackTransformationSteps",
-        property = "eo.trackTransformationSteps",
+        alias = "track",
+        property = "eo.track",
         required = true,
         defaultValue = "false"
     )
@@ -222,7 +232,7 @@ abstract class MjSafe extends AbstractMojo {
      *
      * @since 0.29.0
      */
-    @Parameter(alias = "unrollExitError", property = "eo.unrollExitError")
+    @Parameter(alias = "unroll", property = "eo.unroll")
     protected boolean unroll = true;
 
     /**
@@ -232,25 +242,24 @@ abstract class MjSafe extends AbstractMojo {
     protected File cache = Paths.get(System.getProperty("user.home")).resolve(".eo").toFile();
 
     /**
-     * Use global caching or not.
+     * Bypass the global cache, if TRUE.
      *
      * @since 0.55.0
-     * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.cacheEnabled", defaultValue = "true")
-    protected boolean cacheEnabled = true;
+    @Parameter(alias = "cache.bypass", property = "eo.cache.bypass", defaultValue = "false")
+    protected boolean uncached;
 
     /**
-     * Rewrite binaries in output directory or not.
+     * Leave binaries already in the output directory untouched, if TRUE.
      *
      * @since 0.32.0
      */
     @Parameter(
-        alias = "rewriteBinaries",
-        property = "eo.rewriteBinaries",
-        defaultValue = "true"
+        alias = "binaries.bypass",
+        property = "eo.binaries.bypass",
+        defaultValue = "false"
     )
-    protected boolean rewrite = true;
+    protected boolean preserved;
 
     /**
      * If we are offline and not able to download anything from the internet.
@@ -274,8 +283,8 @@ abstract class MjSafe extends AbstractMojo {
      * @since 0.57.0
      */
     @Parameter(
-        alias = "skipExperimentalLints",
-        property = "eo.skipExperimentalLints",
+        alias = "experimental.bypass",
+        property = "eo.experimental.bypass",
         required = true,
         defaultValue = "false"
     )
@@ -287,8 +296,8 @@ abstract class MjSafe extends AbstractMojo {
      * @since 0.10.0
      */
     @Parameter(
-        alias = "overWrite",
-        property = "eo.overWrite",
+        alias = "overwrite",
+        property = "eo.overwrite",
         required = true,
         defaultValue = "false"
     )
@@ -300,8 +309,8 @@ abstract class MjSafe extends AbstractMojo {
      * @since 0.9.0
      */
     @Parameter(
-        alias = "skipZeroVersions",
-        property = "eo.skipZeroVersions",
+        alias = "zeros.bypass",
+        property = "eo.zeros.bypass",
         required = true,
         defaultValue = "true"
     )
@@ -313,8 +322,8 @@ abstract class MjSafe extends AbstractMojo {
      * @since 0.1.0
      */
     @Parameter(
-        alias = "ignoreVersionConflicts",
-        property = "eo.ignoreVersionConflicts",
+        alias = "conflicts.bypass",
+        property = "eo.conflicts.bypass",
         required = true,
         defaultValue = "false"
     )
@@ -326,8 +335,8 @@ abstract class MjSafe extends AbstractMojo {
      * @since 0.12.0
      */
     @Parameter(
-        alias = "discoverSelf",
-        property = "eo.discoverSelf",
+        alias = "discover",
+        property = "eo.discover",
         required = true,
         defaultValue = "false"
     )
@@ -393,7 +402,12 @@ abstract class MjSafe extends AbstractMojo {
      *
      * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.ignoreRuntime", required = true, defaultValue = "false")
+    @Parameter(
+        alias = "runtime.bypass",
+        property = "eo.runtime.bypass",
+        required = true,
+        defaultValue = "false"
+    )
     protected boolean ignoreRuntime;
 
     /**
@@ -401,7 +415,12 @@ abstract class MjSafe extends AbstractMojo {
      *
      * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.failOnWarning", required = true, defaultValue = "true")
+    @Parameter(
+        alias = "lint.strict",
+        property = "eo.lint.strict",
+        required = true,
+        defaultValue = "true"
+    )
     protected boolean failOnWarning;
 
     /**
@@ -409,7 +428,12 @@ abstract class MjSafe extends AbstractMojo {
      *
      * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.lintAsPackage", required = true, defaultValue = "true")
+    @Parameter(
+        alias = "lint.package",
+        property = "eo.lint.package",
+        required = true,
+        defaultValue = "true"
+    )
     protected boolean lintAsPackage;
 
     /**
@@ -417,7 +441,12 @@ abstract class MjSafe extends AbstractMojo {
      *
      * @checkstyle MemberNameCheck (10 lines)
      */
-    @Parameter(property = "eo.skipLinting", required = true, defaultValue = "false")
+    @Parameter(
+        alias = "lint.bypass",
+        property = "eo.lint.bypass",
+        required = true,
+        defaultValue = "false"
+    )
     protected boolean skipLinting;
 
     /**
@@ -598,7 +627,7 @@ abstract class MjSafe extends AbstractMojo {
                 this.cache.toPath().resolve(Pulling.CACHE),
                 this.plugin.getVersion(),
                 this.overwrite,
-                this.cacheEnabled,
+                !this.uncached,
                 this.offline
             )
         );
@@ -606,13 +635,13 @@ abstract class MjSafe extends AbstractMojo {
 
     /**
      * The cache of one step, as configured by the user. This is the only
-     * place where {@code eo.cacheEnabled} is read, so that no step below
+     * place where {@code eo.cache.bypass} is read, so that no step below
      * has to know that the option exists.
      *
      * @param sub Directory of that step inside the machine-wide cache
      * @return The cache of that step
      */
     GlobalCache caching(final String sub) {
-        return new Caching(this.cache, this.cacheEnabled, this.plugin.getVersion()).forStep(sub);
+        return new Caching(this.cache, !this.uncached, this.plugin.getVersion()).forStep(sub);
     }
 }

@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# minus sits in a file of its own in the package number, so it is number.minus,
+# and the facts list it among the attributes of number, next to plus.
+sources:
+  number.eo: |
+    [@] > number
+      [] > plus
+  number/minus.eo: |
+    +package number
+
+    [] > minus
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+facts:
+  - /facts/objects/type[@id='Φ.number']/attr[@name='minus' and @type='Φ.number.minus']
+  - /facts/objects/type[@id='Φ.number']/attr[@name='plus' and @type='Φ.number.plus']
+answers:
+  - /answers/o[@loc='Φ.number.minus']/is[@loc='Φ.number.minus']

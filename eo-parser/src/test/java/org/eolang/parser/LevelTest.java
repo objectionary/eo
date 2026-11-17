@@ -150,8 +150,8 @@ final class LevelTest {
         final Level level = new Level(
             0, 1, Kind.COMPACT_TUPLE, Openness.OPEN, Kind.TOP_LEVEL, false
         );
-        level.observeBinding(false, new Span("first", 1));
-        level.observeBinding(true, new Span("second", 9));
+        level.observeBinding("", new Span("first", 1));
+        level.observeBinding("x", new Span("second", 9));
         MatcherAssert.assertThat(
             "error must be positioned at the line of the arg that broke the rule",
             Assertions.assertThrows(

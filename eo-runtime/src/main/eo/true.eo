@@ -8,12 +8,9 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^] > true
+[] > true
   bool > @
-    [^]
-      ? >> left
-      ? >> right
-      left > @
+    left > [^pick left right]
 
   true.and true ++> can-conjoin-true-with-true
 

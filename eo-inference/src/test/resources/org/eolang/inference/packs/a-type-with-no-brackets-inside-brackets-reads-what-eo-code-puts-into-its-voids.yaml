@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# read returns a reply whose body is a status, a type with no brackets inside
+# the brackets of reply. So the voids of that status hold what EO code puts
+# into a status: report puts a number into its code and a string into its
+# note, and the text read off the body of what read returns is a string.
+sources:
+  os.eo: |
+    [] > os
+      [] > read /Q.os.reply(Q.os.status)
+      [body] > reply
+        body > got
+      [code note] > status
+        code > @
+        note > text
+  app.eo: |
+    [] > app
+      os.read.got.text > @
+  report.eo: |
+    [] > report
+      os.status 7 "fine" > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.os.read.λ']/is[@loc='Φ.os.reply(Φ.os.status)']
+  - /answers/o[@loc='Φ.app.φ' and count(*)=1]/is[@loc='Φ.string']
+  - /answers[not(o[@loc='Φ.app.φ']//unknown)]

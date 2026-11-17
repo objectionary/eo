@@ -10,7 +10,8 @@ eo:
       [x] > shout
         x.as-bytes > @
   string.eo: |
-    [as-bytes] > string
-      as-bytes > @
+    [@] > string
+  bytes.eo: |
+    [@] > bytes
 pure:
   - "//o[@name='shout' and @pure='true']"

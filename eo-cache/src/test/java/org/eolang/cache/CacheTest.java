@@ -8,7 +8,6 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.Together;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -139,19 +138,14 @@ final class CacheTest {
         Files.createDirectories(base);
         final Path source = temp.resolve("message.txt");
         final String msg = "hello";
-        final Charset encoding = StandardCharsets.UTF_8;
-        Files.writeString(source, msg, encoding);
+        Files.writeString(source, msg, StandardCharsets.UTF_8);
         final Path tail = source.getFileName();
         final Cache cache = new Cache(base, p -> "compiled");
         cache.apply(source, temp.resolve("out.txt"), tail);
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content",
             CacheTest.stamp(base.resolve(tail)),
-            Matchers.equalTo(
-                Base64.getEncoder().encodeToString(
-                    MessageDigest.getInstance("SHA-256").digest(msg.getBytes(encoding))
-                )
-            )
+            Matchers.equalTo(CacheTest.hash(msg))
         );
     }
 
@@ -174,12 +168,7 @@ final class CacheTest {
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content for large file",
             CacheTest.stamp(cache.resolve(tail)),
-            Matchers.equalTo(
-                Base64.getEncoder().encodeToString(
-                    MessageDigest.getInstance("SHA-256")
-                        .digest(content.getBytes(StandardCharsets.UTF_8))
-                )
-            )
+            Matchers.equalTo(CacheTest.hash(content))
         );
     }
 
@@ -330,7 +319,7 @@ final class CacheTest {
     private static String hash(final String content) throws NoSuchAlgorithmException {
         return Base64.getEncoder().encodeToString(
             MessageDigest.getInstance("SHA-256")
-                .digest(content.getBytes(StandardCharsets.UTF_8))
+                .digest(String.format("file\0%s", content).getBytes(StandardCharsets.UTF_8))
         );
     }
 

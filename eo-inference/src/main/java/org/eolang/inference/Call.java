@@ -4,76 +4,45 @@
  */
 package org.eolang.inference;
 
-import org.xembly.Directives;
+import java.util.List;
 
 /**
- * One argument of one call, against the object the call was made on.
+ * One call at a place in a copy, with its arguments worked out (design doc
+ * 4.1): each argument as worked out in the copy around, and the same
+ * argument reduced (4.2).
  *
- * <p>A call made on a void says something no name taken off that void can
- * say: that whatever fills it is applied at all, at which place, and with
- * what. {@code while} writes {@code ^.body index} and {@code malloc} writes
- * {@code ^.scope m}, and the arity of those calls and what they pass used to
- * leave no row anywhere (#8158).</p>
- *
- * <p>What was passed is kept as a type rather than as a locator, because a
- * locator is a place in one program and a type is something a reader can go
- * and look at. An argument is written afresh at every call site, so the same
- * object passed at eleven of them is eleven locators and one type, and
- * counting the locators apart would make one call made eleven times look like
- * eleven calls.</p>
- *
- * @since 0.72.0
+ * @param site The place of the call, under the tag of the copy around
+ * @param ctx The copy around
+ * @param raw The arguments, as worked out, in order
+ * @param sets The arguments, reduced, in order
+ * @since 0.76.0
  */
-final class Call {
+record Call(Site site, int ctx, List<int[]> raw, List<int[]> sets) {
 
     /**
-     * The object the call was made on.
-     */
-    private final String applied;
-
-    /**
-     * The place the argument fills.
-     */
-    private final int slot;
-
-    /**
-     * What was passed there.
-     */
-    private final Type carried;
-
-    /**
-     * Ctor.
+     * How many arguments there are.
      *
-     * @param object The locator of the object the call was made on
-     * @param place The place the argument fills, counted from zero
-     * @param passed What was passed there
+     * @return The count
      */
-    Call(final String object, final int place, final Type passed) {
-        this.applied = object;
-        this.slot = place;
-        this.carried = passed;
+    int size() {
+        return this.raw.size();
     }
 
     /**
-     * The object the call was made on.
+     * Whether an argument for one of the empty voids of a head has nothing
+     * yet, the absence rule (4.1).
      *
-     * @return The locator
+     * @param free How many empty voids the head has
+     * @return TRUE if one has
      */
-    String of() {
-        return this.applied;
-    }
-
-    /**
-     * This call, to be put inside the row of a void.
-     *
-     * @return The directives
-     */
-    Directives directives() {
-        return new Directives()
-            .add("apply")
-            .attr("of", this.applied)
-            .attr("place", this.slot)
-            .append(this.carried.directives())
-            .up();
+    boolean lacking(final int free) {
+        boolean found = false;
+        for (int arg = 0; arg < Math.min(free, this.sets.size()); ++arg) {
+            if (this.sets.get(arg).length == 0) {
+                found = true;
+                break;
+            }
+        }
+        return found;
     }
 }

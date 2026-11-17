@@ -40,7 +40,7 @@ final class MjLintIT {
                 f.files().file(source).write(prog);
                 MjLintIT.appendItself(f)
                     .configuration()
-                    .set("failOnWarning", "false");
+                    .set("lint.strict", "false");
                 f.exec("process-classes");
                 final long before = MjLintIT.xmirModified(temp);
                 f.files().file(source).write(prog);
@@ -64,7 +64,7 @@ final class MjLintIT {
                     .write(MjLintIT.program().getBytes(StandardCharsets.UTF_8));
                 MjLintIT.appendItself(f)
                     .configuration()
-                    .set("failOnWarning", "false");
+                    .set("lint.strict", "false");
                 f.exec("process-classes");
                 MatcherAssert.assertThat(
                     "Lints URL was not printed, but it should",
