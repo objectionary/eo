@@ -98,7 +98,11 @@ final class LnCompactTuple implements Line {
         stack.hop(chain.size(), this.span.line(), this.span.indent());
         globals.clearBlanks();
         globals.markEmitted();
-        new ChainEmission(emit, this.span, head, chain, suffix).run();
+        new ChainEmission(
+            emit, this.span.line(), chain,
+            suffix.attribute(this.span.line(), this.span.indent())
+        ).run(head);
+        new Marked(emit, suffix).apply();
     }
 
     private Level transition(final Stack stack, final Suffix suffix, final Emit emit) {
