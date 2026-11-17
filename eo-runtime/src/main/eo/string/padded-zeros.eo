@@ -28,8 +28,7 @@
             string width.as-scientific
     if.
       and.
-        0.lt
-          text.length >> len!
+        0.lt len
         or.
           "-".eq sign
           "+".eq sign
@@ -39,7 +38,12 @@
             text.slice 0 1 >> sign
           as-bytes.
             padded-left.
-              text.slice 1 ((number len).minus 1).as-number
+              text.slice
+                1
+                as-number.
+                  minus.
+                    number text.length! >> len
+                    1
               if.
                 1.gt width
                 0

@@ -5,7 +5,7 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@base='Φ.q.f']/o[@as='x' and @base='Φ.string' and o/o[text()='68-69']]
+  - //o[@base='Φ.q.f']/o[@as='v🌵x' and @base='Φ.string' and o/o[text()='68-69']]
 input: |
   [] > main
     q.f > a

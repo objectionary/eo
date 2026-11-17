@@ -41,6 +41,10 @@ public class Expect<T> {
     /**
      * Starting point.
      *
+     * <p>It reads an attribute the object shows to everyone. An atom
+     * checks its own voids with {@link PhDefault#expected(String)}
+     * instead.</p>
+     *
      * @param phi The object
      * @param attr Attribute name
      * @return Expect pipeline

@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# An own read starts at ξ and goes only through ρ, so "x", "$.x", "^.x" and
+# "^.^.x" all read a void of the formation they land in and take its "v🌵"
+# name, together with every dispatch made on them (#9788).
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/mandatory-as.xsl
+  - /org/eolang/parser/parse/hide-voids.xsl
+  - /org/eolang/parser/parse/set-locators.xsl
+asserts:
+  - /object[not(errors)]
+  - //o[@name='bare' and @base='ξ.v🌵x']
+  - //o[@name='self' and @base='ξ.v🌵x']
+  - //o[@name='parent' and @base='ξ.ρ.v🌵x']
+  - //o[@name='grand' and @base='ξ.ρ.ρ.v🌵x']
+  - //o[@name='length' and @base='ξ.v🌵x.length']
+  - //o[@name='mine' and @base='ξ.v🌵y']
+input: |
+  [x] > foo
+    x > bare
+    $.x > self
+    x.length > length
+    [y] > inner
+      ^.x > parent
+      y > mine
+      [] > deeper
+        ^.^.x > grand

@@ -76,6 +76,17 @@ final class EOposixEOreaddirTest {
         );
     }
 
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void leavesNameEmptyAtTheEndOfDirectory(@TempDir final Path temp) throws IOException {
+        Files.write(temp.resolve("плюшка"), new byte[0]);
+        MatcherAssert.assertThat(
+            "the name a stream gives once it ran out must be an empty string, but it isnt",
+            new Dataized(EOposixEOreaddirTest.drained(temp).take("name")).asString(),
+            Matchers.emptyString()
+        );
+    }
+
     private static boolean touched(final Path dir) throws Exception {
         return new ProcessBuilder(
             "/bin/sh", "-c", "touch \"$1/$(printf '\\377\\376').txt\"", "sh", dir.toString()
@@ -83,13 +94,7 @@ final class EOposixEOreaddirTest {
     }
 
     private static Collection<byte[]> named(final Path path) {
-        final Phi handle = new Data.ToPhi(
-            new Dataized(
-                new PhApplication(
-                    new EOposix$EOopendir(), "path", new Data.ToPhi(path.toString())
-                ).take("code")
-            ).asNumber().intValue()
-        );
+        final Phi handle = EOposixEOreaddirTest.opened(path);
         final Collection<byte[]> names = new ArrayList<>(0);
         Phi entry = EOposixEOreaddirTest.entry(handle);
         while (new Dataized(entry.take("code")).asNumber().intValue() == 0) {
@@ -100,6 +105,28 @@ final class EOposixEOreaddirTest {
             new PhApplication(new EOposix$EOclosedir(), "dirp", handle).take("code")
         ).take();
         return names;
+    }
+
+    private static Phi drained(final Path path) {
+        final Phi handle = EOposixEOreaddirTest.opened(path);
+        Phi entry = EOposixEOreaddirTest.entry(handle);
+        while (new Dataized(entry.take("code")).asNumber().intValue() == 0) {
+            entry = EOposixEOreaddirTest.entry(handle);
+        }
+        new Dataized(
+            new PhApplication(new EOposix$EOclosedir(), "dirp", handle).take("code")
+        ).take();
+        return entry;
+    }
+
+    private static Phi opened(final Path path) {
+        return new Data.ToPhi(
+            new Dataized(
+                new PhApplication(
+                    new EOposix$EOopendir(), "path", new Data.ToPhi(path.toString())
+                ).take("code")
+            ).asNumber().intValue()
+        );
     }
 
     private static Phi entry(final Phi handle) {

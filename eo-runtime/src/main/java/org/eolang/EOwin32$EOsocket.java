@@ -27,9 +27,9 @@ public final class EOwin32$EOsocket extends PhDefault implements Atom {
     public EOwin32$EOsocket() {
         super(
             new Attrs(
-                new Attr("domain", new AtVoid("domain")),
-                new Attr("type", new AtVoid("type")),
-                new Attr("protocol", new AtVoid("protocol"))
+                new Attr("domain"),
+                new Attr("type"),
+                new Attr("protocol")
             )
         );
     }
@@ -39,9 +39,9 @@ public final class EOwin32$EOsocket extends PhDefault implements Atom {
         return new Data.ToPhi(
             Pointer.nativeValue(
                 Winsock.INSTANCE.socket(
-                    new Int(Expect.at(this, "domain")).it(),
-                    new Int(Expect.at(this, "type")).it(),
-                    new Int(Expect.at(this, "protocol")).it()
+                    new Int(this.expected("domain")).it(),
+                    new Int(this.expected("type")).it(),
+                    new Int(this.expected("protocol")).it()
                 )
             )
         );

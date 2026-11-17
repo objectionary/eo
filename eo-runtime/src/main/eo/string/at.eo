@@ -14,17 +14,7 @@
 [^text i fallback] > at
   if. > @
     not.
-      eq.
-        floor.
-          number
-            if. >> index!
-              0.gt
-                i >> idx!
-              plus.
-                number len
-                idx
-              idx
-        number index
+      index.floor.eq index
     fallback
       i.is-finite.if
         "Index must be an integer, but was %f".printf
@@ -36,8 +26,15 @@
       or.
         0.gt index
         gte.
-          number index
-          text.length >> len!
+          number >> index
+            if. >>!
+              0.gt
+                number i! >> idx
+              plus.
+                number text.length! >> len
+                idx
+              idx
+          len
       fallback
         i.is-finite.if
           "Given index %f is out of text bounds".printf

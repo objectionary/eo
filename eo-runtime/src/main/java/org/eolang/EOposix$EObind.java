@@ -24,9 +24,9 @@ public final class EOposix$EObind extends PhDefault implements Atom {
     public EOposix$EObind() {
         super(
             new Attrs(
-                new Attr("descriptor", new AtVoid("descriptor")),
-                new Attr("sockaddr", new AtVoid("sockaddr")),
-                new Attr("length", new AtVoid("length"))
+                new Attr("descriptor"),
+                new Attr("sockaddr"),
+                new Attr("length")
             )
         );
     }
@@ -35,9 +35,9 @@ public final class EOposix$EObind extends PhDefault implements Atom {
     public Phi lambda() {
         return new Data.ToPhi(
             CStdLib.INSTANCE.bind(
-                new Int(Expect.at(this, "descriptor")).it(),
-                new Sockaddr(this.take("sockaddr")).it(),
-                new Int(Expect.at(this, "length")).it()
+                new Int(this.expected("descriptor")).it(),
+                new Sockaddr(this.free("sockaddr")).it(),
+                new Int(this.expected("length")).it()
             )
         );
     }

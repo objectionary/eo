@@ -28,10 +28,7 @@ public final class EOchunk$EOresized extends PhDefault implements Atom {
         super(
             new Attrs(
                 new Attr(Phi.RHO, new AtRho()),
-                new Attr(
-                    EOchunk$EOresized.CAPACITY,
-                    new AtVoid(EOchunk$EOresized.CAPACITY)
-                )
+                new Attr(EOchunk$EOresized.CAPACITY)
             )
         );
     }
@@ -41,7 +38,7 @@ public final class EOchunk$EOresized extends PhDefault implements Atom {
         final Phi rho = this.take(Phi.RHO);
         Heaps.INSTANCE.resize(
             new Natural(Expect.at(rho, "id")).it(),
-            new Natural(Expect.at(this, EOchunk$EOresized.CAPACITY)).it()
+            new Natural(this.expected(EOchunk$EOresized.CAPACITY)).it()
         );
         return rho;
     }

@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# dead is T, so the foo read off it is T, and so is the bar read off that.
+sources:
+  app.eo: |
+    [] > app
+      T > dead
+      dead.foo.bar > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.dead']/terminator
+  - /answers/o[@loc='Φ.app.φ.ρ']/terminator
+  - /answers/o[@loc='Φ.app.φ']/terminator

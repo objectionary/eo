@@ -65,10 +65,10 @@
     7F-FF-FF-FF-FF-FF-FF-FF.as-u64
 
   eq. ++> can-recover-from-division-by-zero
-    "recovered"
+    u64 00-00-00-00-00-00-00-2A
     00-00-00-00-00-00-00-02.as-u64.div
       00-00-00-00-00-00-00-00.as-u64
-      "recovered" > [message]
+      u64 00-00-00-00-00-00-00-2A > [message]
 
   div. --> stops-on-division-by-zero
     00-00-00-00-00-00-00-02.as-u64

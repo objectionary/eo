@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# pair has two voids and the call gives it three arguments, so the call fails
+# (rule F) and the @ of app is T.
+sources:
+  pair.eo: |
+    [left right] > pair
+      left > @
+  app.eo: |
+    [] > app
+      pair 1 2 3 > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers[not(o[(@loc='Φ.app.φ.α0' or @loc='Φ.app.φ.α1' or @loc='Φ.app.φ.α2') and @lands])]
+  - /answers/o[@loc='Φ.app.φ']/terminator

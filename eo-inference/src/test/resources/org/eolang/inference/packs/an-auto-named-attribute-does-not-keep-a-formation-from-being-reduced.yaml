@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# held is a hidden name made by >>, so handled has nothing of its own but its
+# @ and that helper, and it reduces to the oak its @ gives.
+sources:
+  oak.eo: |
+    [] > oak
+      [] > leaf
+  handled.eo: |
+    [] > handled
+      oak >> held
+      held > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.handled.a🌵2-2']/is[@loc='Φ.oak']
+  - /answers[not(o[@loc='Φ.handled.held'])]
+  - /answers[not(o[starts-with(@loc, 'Φ.handled.') and not(starts-with(@loc, 'Φ.handled.φ') or starts-with(@loc, 'Φ.handled.a🌵2-2'))])]
+  - /answers/o[@loc='Φ.handled.φ']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.handled']/reduced/is[@loc='Φ.oak']

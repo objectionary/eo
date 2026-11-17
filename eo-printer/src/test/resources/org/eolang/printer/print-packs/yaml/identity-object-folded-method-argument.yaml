@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# An identity object written the long way folds into the `I` glyph (#6834)
+# even when it is the receiver of a method, and the glyph takes no
+# horizontal arguments (R-3.16.1), so the argument stays on its own line
+# (#9169).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > app
+    eq. > x
+      [c]
+        c > @
+      foo
+
+printed: |
+  [] > app
+    I.eq > x
+      foo

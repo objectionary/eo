@@ -1,20 +1,20 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# The planting does not ask what the body of an object returns: an object
+# The planting asks what the body of an object returns only to decide
+# whether the object gets a row of the table of operations: an object
 # gets an entry whatever its body is, since the atom may return the root as
 # the object it is, a copy of another object for example, and only the
 # rendering, when the root turns out to be data the atom would return bare,
 # asks the tables about the body and leaves such an entry in EO.
+# `app` hands `vague` a number, so the engine says that `k` holds one, while
+# `number` has no `plus`, so it cannot tell what the body is.
 eo:
   vague.eo: |
     [k] > vague
       k.plus 7 > @
-provides: |
-  <provides>
-    <type id="Φ.vague">
-      <attr name="k" type="Φ.vague.k" void="true" holds="Φ.number"/>
-    </type>
-  </provides>
+  app.eo: |
+    [] > app
+      vague 3 > used
 entries:
   - "1\tΦ.vague"

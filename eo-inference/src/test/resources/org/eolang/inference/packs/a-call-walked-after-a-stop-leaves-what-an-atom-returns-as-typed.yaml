@@ -1,0 +1,38 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The atom check returns a status with a number in its code and a string in
+# its note. Nobody calls late, so only a later stop keeps its copy as written,
+# and its call of status makes a copy of its own then. The copy Java makes has
+# its types from the start, whenever that call is walked: the text read off
+# what check returns is a string, and the @ of that status is a number, with
+# no unknown next to them.
+sources:
+  os.eo: |
+    [] > os
+      [] > check /Q.os.status(Q.number,Q.string)
+      [code note] > status
+        code > @
+        note > text
+  app.eo: |
+    [] > app
+      os.check.text > @
+  late.eo: |
+    [x] > late
+      os.status 0 "late" > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.late' and @study='1']
+  - /answers/o[@loc='Φ.late.φ.α1' and @lands='v🌵note']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.os.status']
+  - /answers/o[@loc='Φ.app.φ' and count(*)=1]/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.os.status.v🌵note' and count(*)=1]/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.os.status.v🌵code' and count(*)=1]/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.os.status.φ' and count(*)=1]/is[@loc='Φ.number']
+  - /answers[not(o[starts-with(@loc, 'Φ.os') or starts-with(@loc, 'Φ.app')]//unknown)]

@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# nowhere is not defined anywhere, so its read is T, and the foo read off T
+# is T too: the @ of jarref is T.
+sources:
+  jarref.eo: |
+    [] > jarref
+      nowhere.foo > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.jarref.φ.ρ' and count(*)=1]/terminator
+  - /answers/o[@loc='Φ.jarref.φ' and count(*)=1]/terminator

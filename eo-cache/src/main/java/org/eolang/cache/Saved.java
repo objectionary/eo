@@ -33,6 +33,12 @@ import org.cactoos.scalar.LengthOf;
  * an atomic rename means a reader always sees either the previous complete
  * file or the new one, never a partial one.</p>
  *
+ * <p>The temporary file is named after a short fixed prefix, and not after
+ * {@link #target}, because the JDK appends up to nineteen digits and
+ * {@code .tmp} to whatever prefix it is given (#9266). A target name of 232
+ * characters still fits the 255 bytes a file name may take, while the same
+ * name as a prefix does not.</p>
+ *
  * <p>On Windows that rename fails with
  * {@link java.nio.file.AccessDeniedException} while somebody else keeps a
  * handle on either of the two names: a concurrent reader of {@link #target},
@@ -112,11 +118,7 @@ public final class Saved implements Scalar<Path> {
             if (dir.toFile().mkdirs()) {
                 Logger.debug(this, "Directory created: %[file]s", dir);
             }
-            final Path tmp = Files.createTempFile(
-                dir,
-                String.format("%-3s", this.target.getFileName().toString()),
-                ".tmp"
-            );
+            final Path tmp = Files.createTempFile(dir, "eo-", ".tmp");
             try {
                 bytes = new IoChecked<>(
                     new LengthOf(

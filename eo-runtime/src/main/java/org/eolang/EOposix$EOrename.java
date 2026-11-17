@@ -29,16 +29,16 @@ public final class EOposix$EOrename extends PhDefault implements Atom {
     public EOposix$EOrename() {
         super(
             new Attrs(
-                new Attr("from", new AtVoid("from")),
-                new Attr("to", new AtVoid("to"))
+                new Attr("from"),
+                new Attr("to")
             )
         );
     }
 
     @Override
     public Phi lambda() {
-        final String from = new Cstring(Expect.at(this, "from")).it();
-        final String target = new Cstring(Expect.at(this, "to")).it();
+        final String from = new Cstring(this.expected("from")).it();
+        final String target = new Cstring(this.expected("to")).it();
         final Phi result = Phi.Φ.take("posix").take("status-return").copy();
         final int code = CStdLib.INSTANCE.rename(from, target);
         result.put(0, new Data.ToPhi(code));

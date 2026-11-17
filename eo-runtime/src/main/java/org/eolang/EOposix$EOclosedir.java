@@ -32,14 +32,14 @@ public final class EOposix$EOclosedir extends PhDefault implements Atom {
      * Ctor.
      */
     public EOposix$EOclosedir() {
-        super(new Attrs(new Attr("dirp", new AtVoid("dirp"))));
+        super(new Attrs(new Attr("dirp")));
     }
 
     @Override
     public Phi lambda() {
         final Pointer stream = Handles.INSTANCE.remove(
             "the 'dirp' attribute",
-            new Int(Expect.at(this, "dirp")).it()
+            new Int(this.expected("dirp")).it()
         );
         final Phi result = Phi.Φ.take("posix").take("status-return").copy();
         final int code = CStdLib.INSTANCE.closedir(stream);

@@ -86,4 +86,19 @@ final class MaxmemTest {
             "A value that is not a size must be refused loudly, but it wasnt"
         );
     }
+
+    @ParameterizedTest
+    @CsvSource({
+        "8589934592G",
+        "17179869185G",
+        "9223372036854775807K",
+        "99999999999999999999"
+    })
+    void refusesSizeBeyondLong(final String text) {
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> Maxmem.limit(text),
+            String.format("Size '%s' beyond a long was wrapped around, not refused", text)
+        );
+    }
 }

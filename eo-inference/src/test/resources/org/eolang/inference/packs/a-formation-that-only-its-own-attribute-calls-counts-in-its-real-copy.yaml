@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody outside calls a, and a never calls b, its attribute, so stop w
+# gives a a study copy inside the copy of box that app reads, and b one
+# inside that study copy. The study copy of b calls a through ^.^ with 5,
+# which makes a real copy of a, and a later stop gives b a study copy inside
+# it. A real copy counts wherever its call is made, while a study copy counts
+# only if its formation never gets a real copy and the copy around it
+# counts. So the study copy of a does not count, nor the study copy of b
+# inside it, x of a is 5 alone, and b is studied once, inside the real copy
+# of a.
+sources:
+  app.eo: |
+    [] > app
+      box > @
+  box.eo: |
+    [] > box
+      [^ x] > a
+        x > got
+        [^] > b
+          ^.^.a 5 > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.box.a.v🌵x' and count(*)=1]/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.box.a.got' and count(*)=1]/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.box.a.b.φ' and @copies='1']/is[@loc='Φ.box.a']

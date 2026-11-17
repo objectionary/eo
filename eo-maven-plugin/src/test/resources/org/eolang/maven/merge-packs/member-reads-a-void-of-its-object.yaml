@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A void can be read only in the file that declares it (#9788). A member is a
+# file of its own, outside its object, so it reads the object from outside.
+# The merge succeeds and renames nothing: the void stays "v🌵weight", the read
+# stays "weight", and the object has no attribute "weight", so the read fails
+# at runtime.
+eo:
+  crate.eo: |
+    [weight] > crate
+      weight > @
+  crate/heavy.eo: |
+    +package crate
+
+    [^box] > heavy
+      box.weight.gt 17 > @
+xmir:
+  crate.eo:
+    - "/object/o[@name='crate']\
+      /o[@base='∅' and @name='v🌵weight' and @loc='Φ.crate.v🌵weight']"
+    - "/object/o[@name='crate' and not(o[@name='weight'])]"
+    - "//o[@name='heavy']/o[@name='φ' and @base='ξ.ρ.weight.gt']"
