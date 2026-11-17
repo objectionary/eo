@@ -51,6 +51,19 @@ final class ArchitectureTest {
     }
 
     @Test
+    void namesEveryMojoClassAsOneVerb() {
+        Assertions.assertDoesNotThrow(
+            () -> ArchRuleDefinition.classes()
+                .that().haveSimpleNameStartingWith("Mj")
+                .and().haveSimpleNameNotEndingWith("Test")
+                .and().haveSimpleNameNotEndingWith("IT")
+                .should().haveNameMatching(".*\\.Mj[A-Z][a-z]+")
+                .because("a mojo is named as one verb, never a compound (#9894)")
+                .check(ArchitectureTest.imported())
+        );
+    }
+
+    @Test
     void buildsCacheGuardOnlyOnce() {
         ArchRuleDefinition.noClasses()
             .that().haveSimpleNameNotEndingWith("Test")

@@ -25,8 +25,8 @@ public final class EOwin32$EOread extends PhDefault implements Atom {
     public EOwin32$EOread() {
         super(
             new Attrs(
-                new Attr("descriptor", new AtVoid("descriptor")),
-                new Attr("size", new AtVoid("size"))
+                new Attr("descriptor"),
+                new Attr("size")
             )
         );
     }
@@ -34,10 +34,10 @@ public final class EOwin32$EOread extends PhDefault implements Atom {
     @Override
     public Phi lambda() {
         return new Intake(
-            this,
+            this.expected("size"),
             Phi.Φ.take("win32").take("read-return"),
             (buffer, size) -> Msvcrt.INSTANCE._read(
-                new Int(Expect.at(this, "descriptor")).it(), buffer, size
+                new Int(this.expected("descriptor")).it(), buffer, size
             )
         ).it();
     }

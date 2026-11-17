@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A formation handle read first with an argument, as a dispatch receiver,
+# and then bare. The applied reader hosts the formation as a `| 1` pipe, so
+# the bare reader must read it by its handle, not get a second copy under
+# the same name, which the parser refuses as a duplicate local name.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > app
+    [c] >> n0
+      c.plus 1 > @
+    eq. > @
+      n0 1
+      $.n0
+
+printed: |
+  [] > app
+    eq. > @
+      c.plus 1 > [c] >> n0
+      | 1
+      n0

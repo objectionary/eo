@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The atom half says it gives a number, so the plus read off half is
+# number.plus, though half itself has no plus.
+sources:
+  app.eo: |
+    [] > app
+      half.plus > @
+  half.eo: |
+    [] > half /Q.number
+      ? > x
+  number.eo: |
+    [@] > number
+      [] > plus
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.half.λ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.number.plus']
+  - /answers[not(o[@loc='Φ.half.plus'])]

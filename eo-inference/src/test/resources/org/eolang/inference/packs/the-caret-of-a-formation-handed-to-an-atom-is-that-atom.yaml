@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The formation app writes as the argument of the atom run declares its ^, and
+# it goes into the copy of run the call makes, so that copy is its ^. An atom
+# is an object like any other here, and nothing is forbidden. The ^ row names
+# run, the formation of that copy, and says that run reduces to the number it
+# returns.
+sources:
+  jobs.eo: |
+    [] > jobs
+      [] > run /Q.number
+        ? > job
+  app.eo: |
+    [] > app
+      jobs.run > @
+        [^]
+          42 > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵job']
+  - /answers/o[@loc='Φ.app.φ.α0.ρ' and @copies='1' and count(is)=1]/is[@loc='Φ.jobs.run']
+  - /answers/o[@loc='Φ.app.φ.α0.ρ' and count(reduced/*)=1]/reduced/is[@loc='Φ.number']
+  - /answers[not(//fails)]

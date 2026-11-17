@@ -167,7 +167,7 @@ final class ProxyIT {
         new AppendedPlugin(farea).value()
             .goals("register", "assemble", "resolve", "place")
             .configuration()
-            .set("ignoreRuntime", "true");
+            .set("runtime.bypass", "true");
         farea.withOpt("-s");
         farea.withOpt(
             farea.files().file("settings.xml").write(

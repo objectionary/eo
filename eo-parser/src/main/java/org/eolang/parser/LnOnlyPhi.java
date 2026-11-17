@@ -152,7 +152,7 @@ final class LnOnlyPhi implements Line {
         globals.seal(emit, this.span);
         final Tokens tokens = this.slot(
             stack, suffix,
-            new Span(" ".repeat(this.span.indent()).concat(lhs), this.span.line())
+            new Span(" ".repeat(this.span.indent()).concat(lhs), this.span.line()), emit
         );
         globals.clearBlanks();
         globals.markEmitted();
@@ -170,7 +170,9 @@ final class LnOnlyPhi implements Line {
         this.emitPhi(emit, tokens, stack.top().openness() == Openness.OPEN);
     }
 
-    private Tokens slot(final Stack stack, final Suffix suffix, final Span inner) {
+    private Tokens slot(
+        final Stack stack, final Suffix suffix, final Span inner, final Emit emit
+    ) {
         final Lhs lhs = new Lhs(inner);
         final int stars = lhs.stars();
         final Tokens tokens = lhs.tokens(stars);
@@ -184,7 +186,7 @@ final class LnOnlyPhi implements Line {
             reversed = tokens.reversedAhead(head);
             open = lhs.bare(tokens, head, reversed);
         }
-        final Level level = this.transition(stack, suffix, open);
+        final Level level = this.transition(stack, suffix, open, emit);
         if (!reversed) {
             level.consumeReceiver();
         }
@@ -228,15 +230,18 @@ final class LnOnlyPhi implements Line {
         }
     }
 
-    private Level transition(final Stack stack, final Suffix suffix, final boolean open) {
+    private Level transition(
+        final Stack stack, final Suffix suffix, final boolean open, final Emit emit
+    ) {
         final Openness openness;
         if (open) {
             openness = Openness.OPEN;
         } else {
             openness = Openness.HCOMPLETED;
         }
-        return new Transition(stack, this.span).apply(
-            Kind.ONLY_PHI, openness, new Admission(suffix.named(), suffix.test(), suffix.test())
+        return new Transition(stack, this.span, emit).apply(
+            Kind.ONLY_PHI, openness,
+            new Admission(suffix.named(), suffix.test(), suffix.test())
         );
     }
 

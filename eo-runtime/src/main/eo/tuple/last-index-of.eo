@@ -9,13 +9,13 @@
 +version 0.0.0
 
 [^list wanted] > last-index-of
-  if. > [^ t] >> rec
+  if. > [^list t] >> rec
     t.length.eq 0
     -1
     if.
-      t.head.eq ^.wanted
+      t.head.eq list.wanted
       t.length.minus 1
-      ^.rec t.tail
+      list.rec t.tail
   | list > @
 
   eq. ++> can-find-the-last-index-of-an-item

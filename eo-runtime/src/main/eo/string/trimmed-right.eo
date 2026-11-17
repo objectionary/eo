@@ -1,8 +1,9 @@
 # Returns the string trimmed from right side.
 # Removes all trailing ASCII whitespace bytes: `20-` (space), `09-`
 # (horizontal tab), `0A-` (line feed), `0B-` (vertical tab), `0C-`
-# (form feed), and `0D-` (carriage return). Matches the strip-set
-# used by `String.strip()` in Java for the ASCII range.
+# (form feed), and `0D-` (carriage return). This is the strip-set
+# `String.strip()` uses in Java for the ASCII range, except the four
+# separators `1C-` to `1F-`, which stay.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -20,13 +21,13 @@
       slice.
         text >> b!
         0
-        [^ index] >> first-non-ws-index
+        [^text index] >> first-non-ws-index
           if. > @
             -1.eq index
             0
             if.
               is-ws (b.slice index 1)!
-              ^.first-non-ws-index (index.plus -1).as-number
+              text.first-non-ws-index (index.plus -1).as-number
               index.plus 1
         | ((number len).plus -1)
   or. > [c] >> is-ws
@@ -41,9 +42,7 @@
             c.eq 0C-
             c.eq 0D-
 
-  eq. ++> can-trim-a-text-of-trailing-spaces-only
-    "     ".trimmed-right
-    ""
+  "     ".trimmed-right.eq "" ++> can-trim-a-text-of-trailing-spaces-only
 
   "value\r".trimmed-right.eq "value" ++> can-trim-a-trailing-carriage-return
 
@@ -55,14 +54,8 @@
 
   "".trimmed-right.eq "" ++> can-trim-an-empty-text-from-the-right
 
-  eq. ++> can-trim-many-trailing-spaces
-    "some     ".trimmed-right
-    "some"
+  "some     ".trimmed-right.eq "some" ++> can-trim-many-trailing-spaces
 
-  eq. ++> can-trim-mixed-trailing-whitespace
-    "value \t\n\f\r".trimmed-right
-    "value"
+  "value \t\n\f\r".trimmed-right.eq "value" ++> can-trim-mixed-trailing-whitespace
 
-  eq. ++> can-trim-one-trailing-space-from-the-right
-    "s ".trimmed-right
-    "s"
+  "s ".trimmed-right.eq "s" ++> can-trim-one-trailing-space-from-the-right

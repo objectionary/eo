@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# two.eo reads number, which is written in number.eo, so the @ of two is the
+# shared number.
+sources:
+  two.eo: |
+    [] > two
+      number > @
+  number.eo: |
+    [@] > number
+      [] > plus
+  bytes.eo: |
+    [@] > bytes
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.two.φ']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.number' and @copies='1']

@@ -5,24 +5,21 @@
 # is numbered after it. Every stage that comes later knows a formation by that
 # number and by nothing else, which is why the order has to be a rule and not
 # an accident of how the file happened to be walked.
+# `app` hands `outer` a number, and `inner` of such an `outer` another one,
+# so the engine says that `a` and `b` hold numbers.
 eo:
   outer.eo: |
     [a] > outer
       a.plus 1 > @
       [b] > inner
         b.plus 2 > @
-links: |
-  <links>
-    <type id="Φ.outer.φ">
-      <ref loc="Φ.number"/>
-    </type>
-    <type id="Φ.outer.inner.φ">
-      <ref loc="Φ.number"/>
-    </type>
-  </links>
+  app.eo: |
+    [] > app
+      outer 5 > first
+      (outer 5).inner 6 > second
 xmir:
-  - "//o[@name='e1']/o[@as='v' and @base='Φ.outer']"
-  - "//o[@name='e2']/o[@as='v' and @base='Φ.outer.inner']"
+  - "//o[@name='e1' and @base='Φ.outer']"
+  - "//o[@name='e2' and @base='Φ.outer.inner']"
 entries:
   - "1\tΦ.outer"
   - "2\tΦ.outer.inner"

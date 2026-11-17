@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets: []
+asserts:
+  - /object/errors/error[@line=3 and @pos=4 and @severity='error' and @lossy and contains(text(), 'star tuple elements cannot carry argument bindings')]
+input: |
+  [] > main
+    * > x
+      1:a

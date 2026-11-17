@@ -7,6 +7,7 @@ package org.eolang.cache;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.function.Predicate;
 import org.cactoos.Func;
 import org.cactoos.func.UncheckedFunc;
@@ -81,31 +82,22 @@ public final class Cache {
     public void apply(final Path source, final Path target, final Path tail) {
         try {
             final String sha = this.sha(source);
-            final Path hash = this.hash(tail);
-            final Path cache = this.base.resolve(tail);
-            if (
-                Files.notExists(hash)
-                    || Files.notExists(cache)
-                    || !Files.readString(hash).equals(sha)
-            ) {
-                final String content = new UncheckedFunc<>(this.compilation).apply(source);
-                new Saved(content, cache).value();
-                new Saved(content, target).value();
-                new Saved(sha, this.hash(tail)).value();
+            final Slot slot = new Slot(this.base.resolve(tail));
+            final Optional<String> found = slot.of(sha);
+            final String content;
+            if (found.isPresent()) {
+                content = found.get();
             } else {
-                new Saved(Files.readString(cache), target).value();
+                content = new UncheckedFunc<>(this.compilation).apply(source);
+                slot.put(sha, content);
             }
+            new Saved(content, target).value();
         } catch (final IOException ioexception) {
             throw new IllegalStateException(
                 "Failed to perform an IO operation with cache",
                 ioexception
             );
         }
-    }
-
-    private Path hash(final Path tail) {
-        final Path full = this.base.resolve(tail.normalize());
-        return full.getParent().resolve(String.format("%s.sha256", full.getFileName().toString()));
     }
 
     private String sha(final Path any) {

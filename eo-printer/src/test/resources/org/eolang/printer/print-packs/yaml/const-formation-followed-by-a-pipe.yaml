@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# #9382: a pipe follows the formation above it, so the const formation has
+# to stay where it was written. While the floated sibling stood in its
+# place, the line above the pipe was a bare reference ("foo-1 > foo!") and
+# the formation itself sat below the pipe, which failed to parse again with
+# "a pipe must follow a named formation or another pipe".
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > app
+    x.plus x > [x] > foo!
+    | 5 > foo5

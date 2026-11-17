@@ -27,6 +27,15 @@ final class LocatorTest {
     }
 
     @Test
+    void turnsTheLocatorIntoThePathOfItsMinutes() {
+        MatcherAssert.assertThat(
+            "the minutes must be at the path the locator names, but they arent",
+            new Locator("Φ.bytes.as-hex.a🌵16-3").minutes(),
+            Matchers.equalTo(Path.of("bytes", "as-hex", "a🌵16-3.txt"))
+        );
+    }
+
+    @Test
     void rejectsALocatorOutsideOfPhi() {
         Assertions.assertThrows(
             IllegalStateException.class,

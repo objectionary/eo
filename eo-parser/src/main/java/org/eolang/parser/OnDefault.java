@@ -17,6 +17,11 @@ import java.util.Optional;
  * <p>If package is present - it'll be joined with object name by dot.
  * Otherwise, only object name without package is returned.</p>
  *
+ * <p>The class name is looked up strictly only when there is a class to look
+ * at, so that two of them are still refused, while none of them lets
+ * {@link #get()} reach its own message instead of the one the strict lookup
+ * throws (#9325).</p>
+ *
  * @since 0.52
  */
 public final class OnDefault implements ObjectName {
@@ -80,12 +85,17 @@ public final class OnDefault implements ObjectName {
                 .element("object")
                 .element("o")
                 .attribute("name")
-                .text().orElseGet(
-                    () -> this.xnav.strict("/object/class/@name", 1)
-                        .findFirst()
-                        .flatMap(Xnav::text)
-                        .orElse(null)
-                )
+                .text().orElseGet(() -> this.declared().orElse(null))
         );
+    }
+
+    private Optional<String> declared() {
+        final Optional<String> found;
+        if (this.xnav.path("/object/class/@name").findAny().isPresent()) {
+            found = this.xnav.strict("/object/class/@name", 1).findFirst().flatMap(Xnav::text);
+        } else {
+            found = Optional.empty();
+        }
+        return found;
     }
 }

@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# An outside read of a void stays as written, finds no attribute under that
+# name and fails the way a typo does (#9788).
+sheets:
+  - /org/eolang/parser/parse/wrap-applications.xsl
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+  - /org/eolang/parser/parse/build-fqns.xsl
+  - /org/eolang/parser/parse/add-default-package.xsl
+  - /org/eolang/parser/parse/roll-bases.xsl
+  - /org/eolang/parser/parse/mandatory-as.xsl
+  - /org/eolang/parser/parse/hide-voids.xsl
+  - /org/eolang/parser/parse/set-locators.xsl
+asserts:
+  - /object[not(errors)]
+  - //o[@name='far' and @base='Φ.bar.x']
+  - //o[@name='applied' and @base='.x']/o[1][@base='Φ.foo']
+  - //o[@name='through' and @base='ξ.v🌵y.x']
+input: |
+  [x y] > foo
+    bar.x > far
+    (foo 5 6).x > applied
+    y.x > through

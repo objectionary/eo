@@ -15,6 +15,7 @@
   <xsl:variable name="eo:bottom" select="'⊥'"/>
   <xsl:variable name="eo:positive" select="concat('p', $eo:cactoos)"/>
   <xsl:variable name="eo:negative" select="concat('n', $eo:cactoos)"/>
+  <xsl:variable name="eo:veiled" select="concat('v', $eo:cactoos)"/>
   <xsl:variable name="eo:space" select="' '"/>
   <xsl:variable name="eo:new-line" select="'&#10;'"/>
 </xsl:stylesheet>

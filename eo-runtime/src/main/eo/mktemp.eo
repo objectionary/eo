@@ -33,32 +33,30 @@
             raw.slice
               0
               raw.size.minus 1
-            raw
-          -- > empty
-          os.is-windows.if > raw!
-            if.
-              tmp.eq empty
+            os.is-windows.if >> raw!
               if.
-                temp.eq empty
+                tmp.eq ""
                 if.
-                  userprofile.eq empty
-                  "C:\\Windows"
-                  getenv "USERPROFILE" empty >> userprofile!
-                getenv "TEMP" empty >> temp!
-              getenv "TMP" empty >> tmp!
-            if.
-              tmpdir.eq empty
-              if.
-                tmp.eq empty
-                if.
-                  temp.eq empty
+                  temp.eq ""
                   if.
-                    tempdir.eq empty
-                    "/tmp"
-                    getenv "TEMPDIR" empty >> tempdir!
-                  temp
-                tmp
-              getenv "TMPDIR" empty >> tmpdir!
+                    userprofile.eq ""
+                    "C:\\Windows".as-bytes
+                    getenv "USERPROFILE" "" >> userprofile!
+                  getenv "TEMP" "" >> temp!
+                getenv "TMP" "" >> tmp!
+              if.
+                tmpdir.eq ""
+                if.
+                  tmp.eq ""
+                  if.
+                    temp.eq ""
+                    if.
+                      tempdir.eq ""
+                      "/tmp".as-bytes
+                      getenv "TEMPDIR" "" >> tempdir!
+                    temp
+                  tmp
+                getenv "TMPDIR" "" >> tmpdir!
 
   mktemp.tmpfile.exists ++> can-create-a-temp-file
 

@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# dead is T applied to why. dead answers T, and the why handed to it keeps its
+# own answer, why, though it lands in no void.
+sources:
+  app.eo: |
+    [] > app
+      T > dead
+        why
+  why.eo: |
+    [] > why
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.dead']/terminator
+  - /answers/o[@loc='Φ.app.dead.α0']/is[@loc='Φ.why']
+  - /answers[not(o[@loc='Φ.app.dead.α0' and @lands])]
