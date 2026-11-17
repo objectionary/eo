@@ -36,8 +36,8 @@ import org.eolang.inference.Annotation;
  * puts into the {@code fork} of {@code bool}. Such a copy tells where the
  * arguments of a call on it land. It keeps all those formations, its
  * candidates, since each of them binds its attributes in its own way: a name
- * read off it copies a formation only when every candidate, made by the same
- * call, gives the same copy for the name (#9973).</p>
+ * read off it is looked up in every candidate, made by the same call, and
+ * copies a formation only when what they give agrees (#9973).</p>
  *
  * @since 0.76.0
  */
@@ -212,30 +212,43 @@ final class Copy {
      * The copy that all of the given ones agree on.
      *
      * <p>A generic atom returns what one of several voids holds, and the code
-     * does not say which. The result is known only when every void holds a
-     * copy of the same formation. When they are the same copy, it is that
-     * copy. When they are copies of the same formation made by different
-     * calls, it is a copy of the formation that no call in particular made.
-     * When one of them is unknown or blurred, or two of them copy different
-     * formations, nothing is said.</p>
+     * does not say which. A name read off a blurred copy is what one of its
+     * candidates gives, and the code does not say which either. So the
+     * result may be of any formation that any of the given copies may be of.
+     * When they are the same copy, it is that copy. When all those formations
+     * have the same voids in the same order, it is a copy of them, sharp when
+     * there is one and blurred when there are several, since the arguments of
+     * a call on it land in the same voids whichever it is. It is made by the
+     * call that made all the given copies, when there is one, and by no call
+     * in particular otherwise. When one of them is unknown, or the formations
+     * have different voids, nothing is said: {@code tuple.eq} and
+     * {@code bytes.eq} name their voids differently, so the argument of a
+     * call on one of the two lands nowhere in particular (#9973).</p>
      *
      * @param held What each void holds
+     * @param calls What the calls put into the voids
      * @return The copy they agree on, or nothing
      */
-    static Optional<Copy> agreed(final Collection<Optional<Copy>> held) {
+    static Optional<Copy> agreed(final Collection<Optional<Copy>> held, final Calls calls) {
         final Set<Copy> known = held.stream().flatMap(Optional::stream).collect(
             Collectors.toSet()
         );
+        final SortedSet<String> forms = known.stream().flatMap(copy -> copy.forms.stream())
+            .collect(Collectors.toCollection(TreeSet::new));
+        final Set<Optional<Map.Entry<String, Annotation>>> makers = known.stream()
+            .map(copy -> copy.call).collect(Collectors.toSet());
         final Optional<Copy> found;
         if (held.isEmpty() || held.contains(Optional.empty())
-            || known.stream().map(Copy::formation).distinct().count() > 1L) {
+            || forms.stream().map(calls::voids).distinct().count() > 1L) {
             found = Optional.empty();
         } else if (known.size() == 1) {
             found = known.stream().findFirst();
-        } else if (known.stream().allMatch(Copy::sole)) {
-            found = Optional.of(new Copy(new Annotation(known.iterator().next().formation())));
+        } else if (makers.size() == 1) {
+            found = Optional.of(
+                new Copy(new Annotation(forms.first()), makers.iterator().next(), forms)
+            );
         } else {
-            found = Optional.empty();
+            found = Optional.of(new Copy(forms));
         }
         return found;
     }

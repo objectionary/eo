@@ -760,7 +760,11 @@ final class OriginsTest {
                 "Φ.string.eq", Map.of()
             ),
             new Calls(
-                Map.of("Φ.g", List.of("v", "a")),
+                Map.of(
+                    "Φ.g", List.of("v", "a"),
+                    "Φ.number.eq", List.of("x"),
+                    "Φ.string.eq", List.of("y")
+                ),
                 Map.of("Φ.app.φ.ρ", Map.of(0, "Φ.app.φ.ρ.α0", 1, "Φ.app.φ.ρ.α1")),
                 Map.of(),
                 Map.of("Φ.g", new Annotation("Φ.g.v")),
@@ -883,7 +887,9 @@ final class OriginsTest {
                 Map.of(
                     "Φ.bool", List.of("fork"),
                     "Φ.true.φ.α0", List.of("left", "right"),
-                    "Φ.false.φ.α0", List.of("left", "right")
+                    "Φ.false.φ.α0", List.of("left", "right"),
+                    "Φ.yes.foo", List.of("a"),
+                    "Φ.no.foo", List.of("b")
                 ),
                 slots,
                 Map.of(),
@@ -918,7 +924,9 @@ final class OriginsTest {
                 Map.of(
                     "Φ.bool", List.of("fork"),
                     "Φ.true.φ.α0", List.of("left", "right"),
-                    "Φ.false.φ.α0", voids
+                    "Φ.false.φ.α0", voids,
+                    "Φ.yes", List.of("a"),
+                    "Φ.no", List.of("b")
                 ),
                 Map.of(
                     "Φ.true.φ", Map.of(0, "Φ.true.φ.α0"),

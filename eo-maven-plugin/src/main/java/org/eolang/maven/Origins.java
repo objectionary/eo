@@ -54,12 +54,12 @@ import org.eolang.inference.Annotation;
  * in particular, so it gives a blurred {@link Copy}, which tells where the
  * arguments of a call on it land (#9952). A name read off a blurred copy,
  * that is not an argument of its call, is looked up in each of those
- * formations, as if the same call had made a copy of it, and it copies a
- * formation only when all of them give the same copy: the {@code φ} of
- * {@code [^state left right]} is {@code right}, the {@code φ} of
- * {@code [^pick left right]} is {@code left}, and {@code .if} read off what
- * {@code 5.eq 8} returns is found when both {@code left} and {@code right} of
- * that call lead to {@code bool} (#9973). An atom that
+ * formations, as if the same call had made a copy of it. It copies a
+ * formation only when what they give agrees, as {@link Copy#agreed} says:
+ * the {@code φ} of {@code [^state left right]} is {@code right}, the
+ * {@code φ} of {@code [^pick left right]} is {@code left}, and {@code .if}
+ * read off what {@code 5.eq 8} returns is found when both {@code left} and
+ * {@code right} of that call lead to {@code bool} (#9973). An atom that
  * returns a copy of the formation with brackets, such as
  * {@code Φ.posix.time-return(Φ.number,Φ.number,Φ.number)}, fills the void
  * too, with the type its brackets give, and when they give none for the
@@ -295,7 +295,8 @@ final class Origins {
                         () -> Copy.agreed(
                             owner.candidates().stream().map(
                                 each -> this.attribute(each, name, seen)
-                            ).collect(Collectors.toList())
+                            ).collect(Collectors.toList()),
+                            this.calls
                         )
                     );
                 }
@@ -347,7 +348,7 @@ final class Origins {
                 )
             );
         }
-        return Copy.agreed(held);
+        return Copy.agreed(held, this.calls);
     }
 
     private Optional<Copy> filled(final String place) {
