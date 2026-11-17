@@ -5,11 +5,11 @@
 package org.eolang.maven;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 import org.eolang.inference.Annotation;
@@ -81,7 +81,7 @@ final class Copy {
     Copy(final Collection<String> candidates) {
         this(
             new Annotation(new TreeSet<>(candidates).first()), Optional.empty(),
-            candidates
+            new TreeSet<>(candidates)
         );
     }
 
@@ -93,7 +93,7 @@ final class Copy {
      * @param maker The call that made the copy, when the code shows one
      */
     Copy(final Annotation kind, final Optional<Map.Entry<String, Annotation>> maker) {
-        this(kind, maker, Set.of(kind.head()));
+        this(kind, maker, new TreeSet<>(Set.of(kind.head())));
     }
 
     /**
@@ -102,15 +102,16 @@ final class Copy {
      * @param kind The type: the formation, and the types an atom gives its
      *  voids in brackets
      * @param maker The call that made the copy, when the code shows one
-     * @param candidates The formations the copy may be of
+     * @param candidates The formations the copy may be of, which nobody
+     *  changes afterwards
      */
     private Copy(
         final Annotation kind, final Optional<Map.Entry<String, Annotation>> maker,
-        final Collection<String> candidates
+        final SortedSet<String> candidates
     ) {
         this.type = kind;
         this.call = maker;
-        this.forms = Collections.unmodifiableSet(new TreeSet<>(candidates));
+        this.forms = candidates;
     }
 
     @Override
@@ -160,7 +161,7 @@ final class Copy {
      */
     Collection<Copy> candidates() {
         return this.forms.stream().map(
-            form -> new Copy(new Annotation(form), this.call, Set.of(form))
+            form -> new Copy(new Annotation(form), this.call, new TreeSet<>(Set.of(form)))
         ).collect(Collectors.toList());
     }
 
@@ -175,7 +176,7 @@ final class Copy {
     Copy applied(final String place, final Copy outer) {
         return new Copy(
             new Annotation(this.formation()), Optional.of(Map.entry(place, outer.type)),
-            this.forms
+            new TreeSet<>(this.forms)
         );
     }
 
