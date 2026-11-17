@@ -215,10 +215,10 @@ final class JarIT {
             .execution("compile")
             .goals("register", "compile", "merge", "transpile")
             .configuration()
-            .set("ignoreRuntime", "true")
+            .set("runtime.bypass", "true")
             .set("offline", "true")
-            .set("failOnWarning", "false")
-            .set("skipLinting", "true");
+            .set("lint.strict", "false")
+            .set("lint.bypass", "true");
         farea.exec("clean", "compile", "jar:jar");
         MatcherAssert.assertThat(
             "Project must be successfully built and packaged into jar",

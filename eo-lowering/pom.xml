@@ -26,6 +26,11 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.eolang</groupId>
+      <artifactId>eo-inference</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-xml</artifactId>
       <!-- version from parent POM -->
@@ -46,9 +51,20 @@
       <!-- version from parent POM -->
     </dependency>
     <dependency>
+      <groupId>io.github.sekator778</groupId>
+      <artifactId>seqdir</artifactId>
+      <version>0.2.0</version>
+    </dependency>
+    <dependency>
       <groupId>net.sf.saxon</groupId>
       <artifactId>Saxon-HE</artifactId>
       <!-- version from parent POM -->
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.20</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -96,7 +112,7 @@
     <dependency>
       <groupId>ch.qos.reload4j</groupId>
       <artifactId>reload4j</artifactId>
-      <version>1.2.26</version>
+      <version>1.2.27</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

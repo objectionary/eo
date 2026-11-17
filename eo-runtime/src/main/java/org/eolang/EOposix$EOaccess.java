@@ -24,8 +24,8 @@ public final class EOposix$EOaccess extends PhDefault implements Atom {
     public EOposix$EOaccess() {
         super(
             new Attrs(
-                new Attr("path", new AtVoid("path")),
-                new Attr("mode", new AtVoid("mode"))
+                new Attr("path"),
+                new Attr("mode")
             )
         );
     }
@@ -34,8 +34,8 @@ public final class EOposix$EOaccess extends PhDefault implements Atom {
     public Phi lambda() {
         return new Data.ToPhi(
             CStdLib.INSTANCE.access(
-                new Cstring(Expect.at(this, "path")).it(),
-                new Int(Expect.at(this, "mode")).it()
+                new Cstring(this.expected("path")).it(),
+                new Int(this.expected("mode")).it()
             )
         );
     }

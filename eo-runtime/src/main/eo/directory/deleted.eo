@@ -15,12 +15,12 @@
 
 [^folder] > deleted
   seq * > @
-    if. > [^ tup] >> r
+    if. > [^dir tup] >> r
       tup.length.eq 0
       true
       seq *
         tup.head.deleted
-        ^.r tup.tail
+        dir.r tup.tail
     | entries
     folder.as-path.as-file.deleted
     folder

@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A receiver handle that repeats the name of an enclosing formation
+# (`[^foo n] >> rec` inside `foo`) is the nearer of the two declarations, so
+# `foo.rec` written inside `rec` binds through the handle to the parent of
+# `rec`, not to the formation `foo` further out (#9245).
+sheets:
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+asserts:
+  - /object[not(errors)]
+  - /object[count(//o[@method and @base=concat('.', //o[@local='rec']/@name)])=1]
+input: |
+  [] > foo
+    [] > mid
+      [^foo n] >> rec
+        if. > @
+          n.eq 0
+          n
+          foo.rec n
+      | > @
+        5

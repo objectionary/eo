@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A termination gives back no bytes, so a cache in front of it never keeps an
+# answer, and the key it builds from the message is work thrown away. It is
+# not marked, even when its message is data.
+eo:
+  app.eo: |
+    [] > app
+      T "boom" > failed
+      2.power 63 > x
+      x > @
+  number.eo: |
+    [@] > number
+      [x] > power
+        x > @
+  string.eo: |
+    [@] > string
+  bytes.eo: |
+    [@] > bytes
+pure:
+  - "//o[@name='failed' and not(@pure)]"
+  - "//o[@name='x' and @pure='true']"

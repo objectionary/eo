@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+line: 2
+message: "[2:16] error: 'optional marker ? is not allowed inside brackets'"
+input: |
+  [] > atom /Q.bytes
+    ? > x /Q.x(Q.a?)

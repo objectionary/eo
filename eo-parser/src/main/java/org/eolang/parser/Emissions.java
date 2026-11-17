@@ -33,14 +33,9 @@ final class Emissions {
      * What the parser says when the identity object is applied to
      * arguments (R-3.16.1). Shared by every position an application may
      * be written in — a line head ({@link LnApplication}), a paren
-     * group, an inline φ, and the φ of an only-phi line — so the writer
-     * gets the same instruction wherever the glyph carries arguments.
+     * group, an inline φ, and the φ of an only-phi line.
      */
-    static final String NO_IDENTITY_ARGS = String.join(
-        " ",
-        "the identity object takes no horizontal arguments;",
-        "put the argument on a deeper-indent line"
-    );
+    static final String NO_IDENTITY_ARGS = "the identity object takes no arguments";
 
     /**
      * The void the identity object {@code I} binds and decorates.
@@ -59,7 +54,7 @@ final class Emissions {
      * that glyph for auto-names.
      */
     private static final Pattern PARAM_NAME = Pattern.compile(
-        "[a-z][^ \\t,.|':;!?\\[\\]{}()\\x{1F335}]*"
+        "[a-z][^ \\t,.|':;!?/\\[\\]{}()\\x{1F335}]*"
     );
 
     /**
@@ -86,7 +81,7 @@ final class Emissions {
     ) {
         final Span span = new Span(tokens.body(), line);
         final Value head = tokens.readValue();
-        if (Emissions.reversedDispatch(tokens, head)) {
+        if (tokens.reversedAhead(head)) {
             final boolean fragile = tokens.consumeDispatch();
             final List<Value> rargs = tokens.readArgs();
             if (!rargs.isEmpty()) {
@@ -173,26 +168,14 @@ final class Emissions {
      * @param line Source line
      */
     static void emitArg(final Emit emit, final Value value, final int line) {
-        final List<MethodChain> tail = value.chain();
-        if (tail.isEmpty()) {
-            Emissions.openValue(emit, null, value, line);
-            if (value.bound()) {
-                emit.slot(Emissions.bindingTag(value.binding()));
-            }
-            if (value.constant()) {
-                emit.constant();
-            }
-            emit.close();
-        } else {
-            ChainEmission.link(emit, line, value, tail, null);
-            if (value.bound()) {
-                emit.slot(Emissions.bindingTag(value.binding()));
-            }
-            if (value.constant()) {
-                emit.constant();
-            }
-            emit.close();
+        ChainEmission.link(emit, line, value, value.chain(), null);
+        if (value.bound()) {
+            emit.slot(Emissions.bindingTag(value.binding()));
         }
+        if (value.constant()) {
+            emit.constant();
+        }
+        emit.close();
     }
 
     /**
@@ -207,8 +190,6 @@ final class Emissions {
         final String tag;
         if (!raw.isEmpty() && raw.chars().allMatch(c -> c >= '0' && c <= '9')) {
             tag = "α".concat(raw);
-        } else if ("^".equals(raw)) {
-            tag = "ρ";
         } else {
             tag = raw;
         }
@@ -431,7 +412,7 @@ final class Emissions {
         final Emit emit, final String name, final Value value, final int line
     ) {
         final String inner = value.raw().substring(1, value.raw().length() - 1);
-        final int phi = Emissions.topLevelInlinePhi(inner);
+        final int phi = Tokens.inlinePhi(inner);
         if (phi >= 0) {
             Emissions.inlinePhi(emit, name, inner, phi, value.pos() + 1, line);
         } else {
@@ -444,24 +425,6 @@ final class Emissions {
         }
     }
 
-    private static boolean reversedDispatch(final Tokens tokens, final Value head) {
-        final boolean reversed;
-        if (head.reversible() && !head.global() && !tokens.atEnd() && tokens.dispatchAhead()) {
-            final int skip;
-            if (tokens.current() == '?') {
-                skip = 2;
-            } else {
-                skip = 1;
-            }
-            final int probe = tokens.cursor() + skip;
-            reversed = probe >= tokens.body().length()
-                || tokens.body().charAt(probe) == ' ';
-        } else {
-            reversed = false;
-        }
-        return reversed;
-    }
-
     private static String reversedHead(final Value head) {
         final String mapped;
         if (head.kind() == Value.Kind.ROOT) {
@@ -470,27 +433,6 @@ final class Emissions {
             mapped = head.raw();
         }
         return mapped;
-    }
-
-    private static int topLevelInlinePhi(final String body) {
-        int depth = 0;
-        int found = -1;
-        int idx = 0;
-        while (idx < body.length() - 2 && found < 0) {
-            final char glyph = body.charAt(idx);
-            if (glyph == '"') {
-                idx = Tokens.closingQuote(body, idx);
-            } else if (glyph == '(') {
-                depth = depth + 1;
-            } else if (glyph == ')') {
-                depth = depth - 1;
-            } else if (depth == 0 && glyph == '>'
-                && body.charAt(idx + 1) == ' ' && body.charAt(idx + 2) == '[') {
-                found = idx;
-            }
-            idx = idx + 1;
-        }
-        return found;
     }
 
     private static void inlinePhi(

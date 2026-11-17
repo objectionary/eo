@@ -118,14 +118,35 @@ final class RowsTest {
     }
 
     @Test
-    void rejectsNullSpanAtValidNumber() {
-        final List<Span> source = new ArrayList<>(2);
-        source.add(new Span("альфа", 1));
+    void keepsMessageBareWhenSourceIsEmpty() {
+        MatcherAssert.assertThat(
+            "an empty source must leave the message without a source line",
+            new Rows(List.of()).underlined(1, 0, "пусто"),
+            Matchers.equalTo("[1:0] error: 'пусто'")
+        );
+    }
+
+    @Test
+    void rejectsSingleNullSpanAtConstruction() {
+        final List<Span> source = new ArrayList<>(1);
         source.add(null);
         Assertions.assertThrows(
             NullPointerException.class,
-            () -> new Rows(source).underlined(2, 0, "дыра"),
-            "a null span at a valid number is not refused with an exception"
+            () -> new Rows(source),
+            "a source containing only a null span must be refused at construction"
+        );
+    }
+
+    @Test
+    void rejectsNullBetweenValidSpansAtConstruction() {
+        final List<Span> source = new ArrayList<>(3);
+        source.add(new Span("альфа", 1));
+        source.add(null);
+        source.add(new Span("гамма", 3));
+        Assertions.assertThrows(
+            NullPointerException.class,
+            () -> new Rows(source),
+            "a null span between valid spans must be refused at construction"
         );
     }
 }

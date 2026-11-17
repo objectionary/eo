@@ -37,6 +37,12 @@ import org.xembly.Xembler;
  * <p>The rows come out in the order they were worked out, so that two builds
  * of the same program can be compared as text.</p>
  *
+ * <p>The same rows are a table of their own once the links are worked out,
+ * and a section of the facts before that: what {@link Starts} reads off the
+ * heads, the data and the terminations is stated by the text, and
+ * goes under {@code heads} in {@code facts.xml}. So the element that holds
+ * the rows is named by whoever writes them.</p>
+ *
  * @since 0.69.0
  */
 final class Types {
@@ -47,12 +53,28 @@ final class Types {
     private final Map<String, Type> rows;
 
     /**
+     * The name of the element that holds the rows.
+     */
+    private final String root;
+
+    /**
      * Ctor.
      *
      * @param types What every object turns out to be, by its locator
      */
     Types(final Map<String, Type> types) {
+        this(types, "links");
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param types What every object turns out to be, by its locator
+     * @param name The name of the element that holds the rows
+     */
+    Types(final Map<String, Type> types, final String name) {
         this.rows = types;
+        this.root = name;
     }
 
     /**
@@ -61,13 +83,22 @@ final class Types {
      * @return The document
      */
     XML asXml() {
-        final Directives dirs = new Directives().add("links");
+        return new XMLDocument(new Xembler(this.directives()).domQuietly());
+    }
+
+    /**
+     * This table as directives, which leave the cursor where they found it.
+     *
+     * @return The directives
+     */
+    Directives directives() {
+        final Directives dirs = new Directives().add(this.root);
         for (final Map.Entry<String, Type> row : this.rows.entrySet()) {
             dirs.add("type")
                 .attr("id", row.getKey())
                 .append(row.getValue().directives())
                 .up();
         }
-        return new XMLDocument(new Xembler(dirs).domQuietly());
+        return dirs.up();
     }
 }

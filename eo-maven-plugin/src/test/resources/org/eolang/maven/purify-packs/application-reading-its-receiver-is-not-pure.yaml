@@ -23,5 +23,7 @@ eo:
   number.eo: |
     [as-bytes] > number
       as-bytes > @
+  bytes.eo: |
+    [@] > bytes
 pure:
   - "//o[@name='get' and @base='ξ.read' and not(@pure)]"

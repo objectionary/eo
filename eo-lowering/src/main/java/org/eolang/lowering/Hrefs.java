@@ -18,7 +18,7 @@ import javax.xml.transform.stream.StreamSource;
  * inside this module, such as {@code /org/eolang/lowering/_returns.xsl},
  * and is read from the classpath, since it is packed into the jar of this
  * module. A table, which it opens while it runs, such as a table of
- * {@code eo:inference}, is named by its whole URI, and is read from the
+ * {@code eo:infer}, is named by its whole URI, and is read from the
  * disk.</p>
  *
  * @since 0.64.0

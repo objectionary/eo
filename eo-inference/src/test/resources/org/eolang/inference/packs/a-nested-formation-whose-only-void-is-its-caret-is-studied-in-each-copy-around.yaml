@@ -1,0 +1,45 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody reads made, and its only void is ^. Its copy as written sits in the
+# copy as written of choice, whose pick is empty, so it does not count, and a
+# stop studies made inside each of the two copies of choice, with that copy as
+# its ^. With yes, the @ of made is the grip that ^.grip 04- makes, whose @ is
+# its size, bytes. With no, it is T. made calls grip, so grip gets no study
+# copy: its one copy is the one ^.grip 04- makes, and its size and its @ are
+# bytes, with nothing unknown.
+sources:
+  choice.eo: |
+    [pick] > choice
+      [^ size] > grip
+        size > @
+      ^.pick > [^] > made
+        ^.grip 04-
+        T
+          "cannot make a grip"
+  yes.eo: |
+    [^] > yes
+      choice > @
+        [^ left right]
+          left > @
+  no.eo: |
+    [^] > no
+      choice > @
+        [^ left right]
+          right > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.choice.made' and @copies='2']
+  - /answers/o[@loc='Φ.choice.made.ρ' and @copies='2']/is[@loc='Φ.choice']
+  - /answers/o[@loc='Φ.choice.made.φ']/set[@copies='1']/terminator
+  - /answers/o[@loc='Φ.choice.made.φ']/set[@copies='1']/is[@loc='Φ.bytes']
+  - /answers/o[@loc='Φ.choice.grip' and @copies='1']
+  - /answers/o[@loc='Φ.choice.grip.v🌵size']/is[@loc='Φ.bytes']
+  - /answers/o[@loc='Φ.choice.grip.φ']/is[@loc='Φ.bytes']
+  - /answers[not(o[starts-with(@loc, 'Φ.choice.grip')]//unknown)]

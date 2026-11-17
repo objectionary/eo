@@ -19,7 +19,7 @@ final class PpDealpha implements Iterable<Class<? extends AbstractMojo>> {
     public Iterator<Class<? extends AbstractMojo>> iterator() {
         return Arrays.<Class<? extends AbstractMojo>>asList(
             MjParse.class,
-            MjInference.class,
+            MjInfer.class,
             MjDealpha.class
         ).iterator();
     }

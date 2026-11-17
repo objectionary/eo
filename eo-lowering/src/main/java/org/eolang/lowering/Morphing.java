@@ -5,27 +5,27 @@
 package org.eolang.lowering;
 
 import com.jcabi.log.Logger;
+import io.github.sekator778.seqdir.Seqdir;
+import io.github.sekator778.seqdir.Sequence;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Stream;
 import org.cactoos.Proc;
 import org.cactoos.Scalar;
 import org.cactoos.Text;
-import org.cactoos.bytes.BytesOf;
 import org.cactoos.bytes.Sha256DigestOf;
 import org.cactoos.experimental.Threads;
-import org.cactoos.io.Directory;
 import org.cactoos.io.InputOf;
-import org.cactoos.io.ResourceOf;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.iterable.Sorted;
 import org.cactoos.list.ListOf;
 import org.cactoos.scalar.IoChecked;
 import org.cactoos.scalar.LengthOf;
@@ -52,16 +52,17 @@ import org.eolang.cache.GlobalCache;
  * every processor. The build waits only as long as its slowest entry, and
  * not as long as all the entries together. One slow entry can keep the
  * build silent for minutes, so every thirty seconds this stage prints a
- * line from {@link Progress} that says how much work is done.</p>
+ * line from {@link Progress} that says how much work is done, and which
+ * entries phino is still working on.</p>
  *
  * <p>phino is allowed to write down only the operations that are listed in
- * the file {@code atoms.yaml}, such as adding two numbers. Before the runs,
- * this stage copies that file from the resources of the module into the
- * directory of the world, so that anybody can see what phino was told,
- * next to what phino answered. When phino meets an atom that is not in the
- * file, it leaves that atom as it is. Then the entry becomes a taint:
- * nothing is guessed about it, and nothing about it is turned into
- * Java.</p>
+ * the file {@code atoms.yaml}, such as adding two numbers. {@link Planting}
+ * writes that file into the directory of the world, next to where phino
+ * answers: the operations of the atoms of the library, from the resources
+ * of the module, and one row for every object the planting gave a row
+ * to. When phino meets an atom that is not in the file, it leaves that
+ * atom as it is. Then the entry becomes a taint: nothing is guessed about
+ * it, and nothing about it is turned into Java.</p>
  *
  * <p>Every run has two limits. The first limit is the largest number of
  * steps phino may take inside one another. This limit is needed because
@@ -84,17 +85,35 @@ import org.eolang.cache.GlobalCache;
  * one entry away from phino. The other entries get no protocol, and they
  * stay in EO.</p>
  *
- * <p>A protocol stays the same as long as four things stay the same: the
+ * <p>A protocol stays the same as long as six things stay the same: the
  * part of the world that its entry uses, as {@link Uses} says, the table of
- * operations, the version of phino, and the limit of steps. So, every
- * protocol is saved in the cache, together with these four things. When a
- * later build has the same four things, it takes the protocol from the
- * cache and does not run phino at all. An object that changed makes phino
- * run again only on the entries that use it. A run that was
- * stopped saves nothing in the cache, so the next build tries it again.
- * The protocols of an earlier build are deleted before the runs, so that
- * an entry that is not in the world any more leaves no protocol
- * behind.</p>
+ * operations, the version of phino, its limit of memory, the limit of
+ * steps, and the limit of loops. So, every protocol is saved in the cache,
+ * together with these six things. When a later build has the same six
+ * things, it takes the protocol from the cache and does not run phino at
+ * all. An object that changed makes phino run again only on the entries
+ * that use it. A run that was stopped saves nothing in the cache, so the
+ * next build tries it again. The protocols of an earlier build are deleted
+ * before the runs, so that an entry that is not in the world any more
+ * leaves no protocol behind.</p>
+ *
+ * <p>When the constructor asks for it, this stage also keeps the protocol
+ * of every entry as indented text, which a person can read without any
+ * tool, called the "minutes" of the entry. The same run of phino that
+ * writes the XML protocol of an entry writes its minutes too, into a file
+ * whose name ends with {@code .txt}, so no entry is computed twice. The
+ * cache keeps the protocols of builds with minutes apart from those
+ * without, so a protocol kept without its minutes never answers a build
+ * that asks for them, and phino runs once for both. The minutes land in a numbered
+ * {@code minutes} directory beside {@code 2-protocols}, so the minutes of
+ * {@code Φ.bytes.as-hex} are {@code minutes/bytes/as-hex.txt}. Nothing in
+ * the build reads them. The cache keeps them the same way as the
+ * protocols, so a later build with the same four things does not run
+ * phino for them either. The minutes of a run that was stopped stay on the
+ * disk for study, with a {@code timeout …} line where the time ran out.
+ * The minutes of an earlier build are deleted before the runs, even when
+ * this build does not ask for them, so that no minutes outlive their
+ * protocol.</p>
  *
  * @since 0.64.0
  */
@@ -121,9 +140,19 @@ final class Morphing implements Proc<Path> {
     private final int steps;
 
     /**
+     * How many times one run may enter the same formation again.
+     */
+    private final int loops;
+
+    /**
      * The time that one run may take before it is stopped.
      */
     private final Duration budget;
+
+    /**
+     * Whether every entry gets its minutes too.
+     */
+    private final boolean minutes;
 
     /**
      * Ctor.
@@ -132,17 +161,21 @@ final class Morphing implements Proc<Path> {
      * @param store The cache, where the protocols are kept between builds
      * @param range The entries that phino is allowed to run on
      * @param ceiling The largest number of steps inside one another
+     * @param again How many times one run may enter the same formation again
      * @param span The time that one run may take before it is stopped
+     * @param mins Whether every entry gets its minutes too
      */
     Morphing(
         final Phino exe, final GlobalCache store, final Scope range, final int ceiling,
-        final Duration span
+        final int again, final Duration span, final boolean mins
     ) {
         this.phino = exe;
         this.cache = store;
         this.scope = range;
         this.steps = ceiling;
+        this.loops = again;
         this.budget = span;
+        this.minutes = mins;
     }
 
     @Override
@@ -165,24 +198,29 @@ final class Morphing implements Proc<Path> {
                 )
             );
         }
-        final Path atoms = Files.write(
-            home.resolve("atoms.yaml"),
-            new IoChecked<>(
-                () -> new BytesOf(new ResourceOf("org/eolang/lowering/atoms.yaml")).asBytes()
-            ).value()
-        );
-        final Path protocols = home.resolve("2-protocols");
-        if (Files.exists(protocols)) {
-            for (final Path stale
-                : new Sorted<>(Comparator.reverseOrder(), new Directory(protocols))) {
-                Files.delete(stale);
-            }
+        final Path atoms = home.resolve("atoms.yaml");
+        if (!Files.exists(atoms)) {
+            throw new IllegalStateException(
+                String.format(
+                    "There is no '%s', while morphing needs the table of operations the planting writes",
+                    atoms
+                )
+            );
         }
+        final Sequence dirs = new Seqdir(home, 1).dirs();
+        final Path legacy = home.resolve("minutes");
+        final Path numbered = dirs.find("minutes").orElse(legacy);
+        final Path protocols = dirs.once("protocols");
+        for (final Path dir : new ListOf<>(protocols, legacy, numbered)) {
+            Morphing.clean(dir);
+        }
+        Files.deleteIfExists(legacy);
         Files.createDirectories(protocols);
-        final GlobalCache store = this.cache
-            .with(this.phino.pin())
+        final GlobalCache store = this.phino.narrowed(this.cache)
             .with(new UncheckedText(new HexOf(new Sha256DigestOf(new InputOf(atoms)))).asString())
-            .with(String.valueOf(this.steps));
+            .with(String.valueOf(this.steps))
+            .with(String.valueOf(this.loops))
+            .with(String.valueOf(this.minutes));
         final Uses uses = new Uses(home);
         final Collection<String> rows = new ListOf<>(
             new Filtered<>(
@@ -191,13 +229,19 @@ final class Morphing implements Proc<Path> {
                 new Mapped<>(Text::asString, new Split(new TextOf(entries), "\\R"))
             )
         );
+        final Path notes;
+        if (this.minutes && !rows.isEmpty()) {
+            notes = dirs.once("minutes");
+        } else {
+            notes = numbered;
+        }
         final Progress progress = new Progress(rows.size());
         final Timer ticker = new Timer("morphing-progress", true);
         ticker.scheduleAtFixedRate(
             new TimerTask() {
                 @Override
                 public void run() {
-                    Logger.info(Morphing.this, "Morphed %s so far", progress.asString());
+                    Logger.info(Morphing.this, "Morphed %s", progress.asString());
                 }
             },
             30_000L,
@@ -213,7 +257,7 @@ final class Morphing implements Proc<Path> {
                             Runtime.getRuntime().availableProcessors(),
                             new Mapped<Scalar<Path>>(
                                 row -> () -> this.morph(
-                                    world, atoms, protocols, row, progress, store, uses
+                                    world, atoms, protocols, notes, row, progress, store, uses
                                 ),
                                 rows
                             )
@@ -231,18 +275,41 @@ final class Morphing implements Proc<Path> {
         }
     }
 
+    private static void clean(final Path dir) throws IOException {
+        if (Files.exists(dir)) {
+            try (Stream<Path> inside = Files.walk(dir)) {
+                for (final Path stale : new ListOf<>(
+                    inside.filter(path -> !path.equals(dir))
+                        .sorted(Comparator.reverseOrder())
+                        .iterator()
+                )) {
+                    Files.delete(stale);
+                }
+            }
+        }
+    }
+
     private Path morph(
-        final Path world, final Path atoms, final Path protocols, final String row,
-        final Progress progress, final GlobalCache store, final Uses uses
+        final Path world, final Path atoms, final Path protocols, final Path notes,
+        final String row, final Progress progress, final GlobalCache store, final Uses uses
     ) throws IOException {
         final long start = System.currentTimeMillis();
         final String[] cells = row.split("\t", -1);
         final int number = Integer.parseInt(cells[0]);
-        final Path tail = new Locator(cells[1]).protocol();
+        final Locator locator = new Locator(cells[1]);
+        final Path tail = locator.protocol();
         final Path protocol = protocols.resolve(tail);
+        final Path note = notes.resolve(locator.minutes());
+        final Path draft = note.resolveSibling(
+            String.format("%s.draft", note.getFileName())
+        );
         Files.createDirectories(protocol.getParent());
+        if (this.minutes) {
+            Files.createDirectories(note.getParent());
+        }
         final String hash = uses.hash(number, cells[1]);
         final AtomicBoolean fresh = new AtomicBoolean();
+        progress.begin(cells[1]);
         try {
             store.kept(
                 tail,
@@ -250,10 +317,37 @@ final class Morphing implements Proc<Path> {
                 (src, tgt) -> false,
                 (src, tgt) -> {
                     fresh.set(true);
-                    this.phino.morph(src, atoms, number, tgt, this.steps, this.budget);
+                    if (this.minutes) {
+                        this.phino.dataize(
+                            src, atoms, number, tgt, draft, this.steps, this.loops, this.budget
+                        );
+                    } else {
+                        this.phino.dataize(
+                            src, atoms, number, tgt, this.steps, this.loops, this.budget
+                        );
+                    }
                     return tgt;
                 }
             ).apply(world, protocol);
+            if (this.minutes) {
+                store.kept(
+                    locator.minutes(),
+                    () -> hash,
+                    (src, tgt) -> false,
+                    (src, tgt) -> {
+                        if (!fresh.get()) {
+                            throw new IllegalStateException(
+                                String.format(
+                                    "The cache holds the protocol of the entry %d at %s, but not its minutes",
+                                    number, cells[1]
+                                )
+                            );
+                        }
+                        Files.move(draft, tgt, StandardCopyOption.REPLACE_EXISTING);
+                        return tgt;
+                    }
+                ).apply(world, note);
+            }
             if (fresh.get()) {
                 Logger.debug(
                     this,
@@ -270,11 +364,17 @@ final class Morphing implements Proc<Path> {
                 progress.reuse(protocol);
             }
         } catch (final KilledException ex) {
+            if (Files.exists(draft)) {
+                Files.move(draft, note, StandardCopyOption.REPLACE_EXISTING);
+            }
             Logger.warn(
                 this,
-                "Lowering of %s ran out of time budget (%[ms]s), its XML protocol kept in %[file]s for study",
+                "Lowering of %s ran out of time budget (%[ms]s), its protocol kept in %[file]s for study",
                 cells[1], this.budget.toMillis(), protocol
             );
+            progress.expire();
+        } finally {
+            progress.end(cells[1]);
         }
         return protocol;
     }

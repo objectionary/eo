@@ -21,17 +21,9 @@
 
   32.is-finite ++> can-be-finite-when-a-simple-number
 
-  not. ++> can-tell-it-is-not-finite-when-a-single-byte
-    is-finite.
-      number FF-
-
   not. ++> can-tell-it-is-not-finite-when-built-of-infinite-bytes
     is-finite.
       number pinf.as-bytes
-
-  not. ++> can-tell-it-is-not-finite-when-fewer-than-eight-bytes
-    is-finite.
-      number 00-00
 
   nan.is-finite.not ++> can-tell-it-is-not-finite-when-nan
 

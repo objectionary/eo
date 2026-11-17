@@ -7,8 +7,8 @@ sheets:
 asserts:
   - /object[not(errors)]
   - //o[@name='rec']/o[@base='∅' and @name='k🌵']
-  - //o[@name='rec']/o[@name='φ' and @base='.if']/o[@as='left' and @base='ξ.k🌵' and @again='true']
-  - //o[@name='rec']/o[@name='φ']/o[@as='right' and @base='ξ.ρ.rec' and @again='true']
+  - //o[@name='rec']/o[@name='φ' and @base='.if']/o[@as='v🌵left' and @base='ξ.k🌵' and @again='true']
+  - //o[@name='rec']/o[@name='φ']/o[@as='v🌵right' and @base='ξ.ρ.rec' and @again='true']
 input: |
   [] > main
     [i] > rec

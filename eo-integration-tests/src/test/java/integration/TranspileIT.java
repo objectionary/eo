@@ -90,8 +90,8 @@ final class TranspileIT {
             .execution("transpile-it")
             .goals("register", "compile", "merge", "transpile")
             .configuration()
-            .set("failOnWarning", "false")
-            .set("skipLinting", "true");
+            .set("lint.strict", "false")
+            .set("lint.bypass", "true");
         farea.exec("clean", "process-sources");
     }
 

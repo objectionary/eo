@@ -5,9 +5,9 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@base='∅' and @name='m']
+  - //o[@base='∅' and @name='v🌵m']
   - //o[@name='φ' and @base='Φ.seq']//o[@base='Φ.copied']/o[@base='Φ.a']
-  - //o[@name='φ' and @base='Φ.seq']//o[@base='ξ.m']
+  - //o[@name='φ' and @base='Φ.seq']//o[@base='ξ.v🌵m']
 input: |
   malloc.of > @
     5

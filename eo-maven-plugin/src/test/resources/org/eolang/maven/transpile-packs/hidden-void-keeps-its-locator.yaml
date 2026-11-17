@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A formation that fills a hidden void sits under a "v🌵" name (#9788), and
+# that name is an ordinary one: the formation keeps its locator, the way it
+# would under any other name, while a formation under a name the compiler
+# made, such as "a🌵", still goes without one.
+sheets:
+  - /org/eolang/parser/parse/set-locators.xsl
+  - /org/eolang/maven/transpile/set-original-names.xsl
+  - /org/eolang/maven/transpile/classes.xsl
+  - /org/eolang/maven/transpile/attrs.xsl
+  - /org/eolang/maven/transpile/data.xsl
+  - /org/eolang/maven/transpile/to-java.xsl
+document:
+  <?xml version="1.0" encoding="UTF-8"?>
+  <object>
+    <o name="foo">
+      <o name="v🌵left">
+        <o base="∅" name="v🌵inner"/>
+        <o base="ξ.v🌵inner" name="φ"/>
+      </o>
+      <o name="a🌵4-2">
+        <o base="∅" name="v🌵other"/>
+        <o base="ξ.v🌵other" name="φ"/>
+      </o>
+    </o>
+  </object>
+asserts:
+  - /object[not(errors)]
+  - //java/text()[contains(., 'new PhDefault("Φ.foo.v🌵left")')]
+  - //java/text()[not(contains(., 'new PhDefault("Φ.foo.a🌵4-2")'))]

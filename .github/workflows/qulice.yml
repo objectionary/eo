@@ -9,7 +9,9 @@ name: qulice
       - master
     paths:
       - '**.java'
+      - '**.xsl'
       - '**/pom.xml'
+      - 'src/test/groovy/**'
       - '.github/workflows/qulice.yml'
 permissions:
   contents: read
@@ -19,7 +21,7 @@ concurrency:
 jobs:
   qulice:
     timeout-minutes: 15
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-java@v6
