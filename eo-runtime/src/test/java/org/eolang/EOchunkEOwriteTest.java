@@ -32,8 +32,8 @@ final class EOchunkEOwriteTest {
                                 new EOchunk$EOwrite(),
                                 Phi.RHO,
                                 new PhApplication(
-                                    new PhDefault(new Attrs(new Attr("id", new AtVoid("id")))),
-                                    "id",
+                                    Phi.Φ.take("chunk"),
+                                    "identifier",
                                     new Data.ToPhi(id)
                                 )
                             ),
@@ -60,8 +60,8 @@ final class EOchunkEOwriteTest {
                         new EOchunk$EOwrite(),
                         Phi.RHO,
                         new PhApplication(
-                            new PhDefault(new Attrs(new Attr("id", new AtVoid("id")))),
-                            "id",
+                            Phi.Φ.take("chunk"),
+                            "identifier",
                             new Data.ToPhi(true)
                         )
                     )
@@ -84,8 +84,8 @@ final class EOchunkEOwriteTest {
                             new EOchunk$EOwrite(),
                             Phi.RHO,
                             new PhApplication(
-                                new PhDefault(new Attrs(new Attr("id", new AtVoid("id")))),
-                                "id",
+                                Phi.Φ.take("chunk"),
+                                "identifier",
                                 new Data.ToPhi(0)
                             )
                         ),

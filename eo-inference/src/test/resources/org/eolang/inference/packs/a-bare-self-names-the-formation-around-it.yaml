@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# $ in app names that copy of app itself, so me is an app, and me.tree reads
+# the tree of app: t is an oak.
+sources:
+  app.eo: |
+    [] > app
+      oak > tree
+      $ > me
+      me.tree > t
+  oak.eo: |
+    [] > oak
+      [] > leaf
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts:
+  - /facts/heads/type[@id='Φ.app.me']/ref[@loc='Φ.app']
+answers:
+  - /answers/o[@loc='Φ.app.me']/is[@loc='Φ.app']
+  - /answers/o[@loc='Φ.app.t.ρ']/is[@loc='Φ.app']
+  - /answers/o[@loc='Φ.app.t']/is[@loc='Φ.oak']

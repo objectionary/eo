@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -36,6 +39,7 @@ final class MjAssembleIT {
         new Farea(temp).together(
             f -> {
                 MjAssembleIT.prepare(f, "src/main/eo/foo/x/main.eo", MjAssembleIT.program());
+                MjAssembleIT.plantAllBut(f, "stdout.eo");
                 f.exec("package");
                 MjAssembleIT.succeeds(f);
                 final String parsed = MjAssembleIT.stdoutPath(temp, "-parse", "stdout.xmir");
@@ -76,6 +80,26 @@ final class MjAssembleIT {
                 );
             }
         );
+    }
+
+    private static void plantAllBut(final Farea farea, final String pulled)
+        throws IOException {
+        final Path home = Paths.get(
+            System.getProperty("basedir", System.getProperty("user.dir"))
+        ).getParent().resolve("eo-runtime/src/main/eo");
+        final List<Path> sources;
+        try (Stream<Path> paths = Files.walk(home)) {
+            sources = paths
+                .filter(Files::isRegularFile)
+                .filter(path -> path.getFileName().toString().endsWith(".eo"))
+                .filter(path -> !home.relativize(path).toString().equals(pulled))
+                .collect(Collectors.toList());
+        }
+        for (final Path source : sources) {
+            farea.files()
+                .file(String.format("src/main/eo/%s", home.relativize(source)))
+                .save(source);
+        }
     }
 
     private static String subdir(final Path home, final String suffix) throws IOException {

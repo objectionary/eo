@@ -86,17 +86,6 @@ final class CentralMaven implements BiConsumer<Dependency, Path> {
     }
 
     /**
-     * Constructor that accepts an optional repository system.
-     * Falls back to a fresh standalone system when {@code sys} is {@code null},
-     * which happens in tests that run without Maven injection.
-     *
-     * @param sys Repository system, or {@code null} to build one automatically
-     */
-    CentralMaven(final RepositorySystem sys) {
-        this(CentralMaven.nonNull(sys), CentralMaven.LOCAL);
-    }
-
-    /**
      * Private standalone constructor that builds the session from an already-created system.
      *
      * @param sys Repository system
@@ -201,16 +190,6 @@ final class CentralMaven implements BiConsumer<Dependency, Path> {
                 dep.getGroupId(), dep.getArtifactId(), classifier, dep.getVersion(), dest
             );
         }
-    }
-
-    private static RepositorySystem nonNull(final RepositorySystem sys) {
-        final RepositorySystem result;
-        if (sys == null) {
-            result = new RepositorySystemSupplier().get();
-        } else {
-            result = sys;
-        }
-        return result;
     }
 
     private static DefaultRepositorySystemSession standaloneSession(

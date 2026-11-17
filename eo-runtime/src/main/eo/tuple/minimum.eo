@@ -11,8 +11,7 @@
 
 [^list cant-min] > minimum
   list.is-empty.if > @
-    cant-min
-      "cannot get the minimum number from an empty sequence"
+    cant-min "cannot get the minimum number from an empty sequence"
     list.reduced
       pinf
       if. > [min item]
@@ -33,9 +32,9 @@
         -3
 
   eq. ++> can-recover-from-an-empty-list-when-taking-the-minimum
-    "recovered"
+    42
     tuple.empty.minimum
-      "recovered" > [msg]
+      42 > [msg]
 
   eq. ++> can-take-a-minimum-of-one-item
     minimum.

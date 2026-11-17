@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Nobody outside calls a or b, and each of them reads the other, so stop w
+# picks both at one stop: a gets a study copy inside the copy of box that app
+# reads, and b one inside that study copy. There a calls b with 7, which
+# makes a real copy of b, and b calls a through ^.^ with 5, which makes a
+# real copy of a. A real copy counts wherever its call is made, even inside
+# a study copy, while a study copy counts only if its formation never gets a
+# real copy. So no study copy of a or b counts: x of a is 5 alone, and y of
+# b is 7 in every copy of b that counts.
+sources:
+  app.eo: |
+    [] > app
+      box > @
+  box.eo: |
+    [] > box
+      [^ x] > a
+        x > got
+        b 7 > called
+        [^ y] > b
+          ^.^.a 5 > @
+          y > kept
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.box.a.v🌵x' and count(*)=1]/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.box.a.b.v🌵y' and count(*)=1]/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.box.a.b.kept' and count(*)=1]/is[@loc='Φ.number']
+  - /answers[not(o[starts-with(@loc, 'Φ.box.a')]//unknown[@kind='study'])]

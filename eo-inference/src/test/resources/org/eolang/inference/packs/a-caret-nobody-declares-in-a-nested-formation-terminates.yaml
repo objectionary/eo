@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# lamp sits inside shelf but declares no ^, so its ^ is T and not the shelf
+# around it: the book read off that ^ is T, and so is the @ of lamp.
+sources:
+  shelf.eo: |
+    [] > shelf
+      [] > book
+      [] > lamp
+        ^.book > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.shelf.lamp.φ.ρ']/terminator
+  - /answers/o[@loc='Φ.shelf.lamp.φ']/terminator
+  - /answers[not(o[@loc='Φ.shelf.lamp.φ']/is)]

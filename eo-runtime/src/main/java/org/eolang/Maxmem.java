@@ -44,6 +44,12 @@ public final class Maxmem implements InvocationInterceptor {
     private static final Pattern SIZE = Pattern.compile("(\\d+)\\s*([kKmMgG]?)[bB]?");
 
     /**
+     * What the refusal of a value that is not a size of a long says.
+     */
+    private static final String MISREAD =
+        "Can't understand '%s' as the value of eo.maxmem, try '1G' or '512M'";
+
+    /**
      * How many bytes a test without a {@link Budget} may allocate, zero if
      * there is no limit.
      */
@@ -101,14 +107,15 @@ public final class Maxmem implements InvocationInterceptor {
         } else {
             final Matcher matcher = Maxmem.SIZE.matcher(trimmed);
             if (!matcher.matches()) {
-                throw new IllegalArgumentException(
-                    String.format(
-                        "Can't understand '%s' as the value of eo.maxmem, try '1G' or '512M'",
-                        trimmed
-                    )
-                );
+                throw new IllegalArgumentException(String.format(Maxmem.MISREAD, trimmed));
             }
-            bytes = Long.parseLong(matcher.group(1)) * Maxmem.scale(matcher.group(2));
+            try {
+                bytes = Math.multiplyExact(
+                    Long.parseLong(matcher.group(1)), Maxmem.scale(matcher.group(2))
+                );
+            } catch (final ArithmeticException | NumberFormatException ex) {
+                throw new IllegalArgumentException(String.format(Maxmem.MISREAD, trimmed), ex);
+            }
         }
         return bytes;
     }

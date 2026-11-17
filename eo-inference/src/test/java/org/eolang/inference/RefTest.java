@@ -5,9 +5,6 @@
 package org.eolang.inference;
 
 import com.jcabi.matchers.XhtmlMatchers;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 import org.xembly.Directives;
@@ -21,41 +18,13 @@ import org.xembly.Xembler;
 final class RefTest {
 
     @Test
-    void marksWhatWasReachedThroughAVoid() {
+    void writesOnlyTheLocatorOfWhatItCopies() {
         MatcherAssert.assertThat(
-            "a copy reached through a void must say so, and so must a bind relayed there",
+            "a copy must not carry anything besides its locator, but it does",
             new Xembler(
-                new Directives().add("type").append(
-                    new Ref(
-                        "Φ.loud",
-                        Map.of("Φ.loud.message", "Φ.call.α0", "Φ.loud.size", "Φ.call.α1"),
-                        Collections.emptyList(),
-                        true,
-                        List.of("Φ.loud.message")
-                    ).directives()
-                )
+                new Directives().add("type").append(new Ref("Φ.vb7r.k2-qe.φ.ρ.ρ").directives())
             ).xmlQuietly(),
-            XhtmlMatchers.hasXPaths(
-                "/type/ref[@loc='Φ.loud' and @witnessed='true']",
-                "/type/ref/bind[@void='Φ.loud.message' and @witnessed='true']",
-                "/type/ref/bind[@void='Φ.loud.size' and not(@witnessed)]"
-            )
-        );
-    }
-
-    @Test
-    void saysNothingOfAPlainCopy() {
-        MatcherAssert.assertThat(
-            "a copy the program writes in so many words must not be marked, but it was",
-            new Xembler(
-                new Directives().add("type").append(
-                    new Ref("Φ.box", Map.of("Φ.box.item", "Φ.held.α0")).directives()
-                )
-            ).xmlQuietly(),
-            XhtmlMatchers.hasXPaths(
-                "/type/ref[@loc='Φ.box' and not(@witnessed)]",
-                "/type/ref/bind[@void='Φ.box.item' and not(@witnessed)]"
-            )
+            XhtmlMatchers.hasXPath("/type/ref[@loc='Φ.vb7r.k2-qe.φ.ρ.ρ' and not(node())]")
         );
     }
 }

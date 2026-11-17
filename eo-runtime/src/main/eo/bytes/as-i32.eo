@@ -7,6 +7,7 @@
 +package bytes
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint invalid-name-notation
 +version 0.0.0
 
 [^data cant-convert] > as-i32
@@ -18,5 +19,10 @@
         * data
 
   00-00-00-33.as-i32.as-bytes.eq 00-00-00-33 ++> can-convert-bytes-to-i32-and-back
+
+  eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-i32
+    i32 FF-FE-4C-17
+    03-5A-E1.as-i32
+      i32 FF-FE-4C-17 > [message]
 
   01-01-01-01-01.as-i32 --> stops-on-bytes-of-wrong-size-when-converting-to-i32

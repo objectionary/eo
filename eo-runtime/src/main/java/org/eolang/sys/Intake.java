@@ -28,9 +28,9 @@ import org.eolang.Phi;
 public final class Intake {
 
     /**
-     * The atom holding the size.
+     * How many bytes to read.
      */
-    private final Phi atom;
+    private final Expect<Phi> size;
 
     /**
      * The {@code read-return} of the platform, still empty.
@@ -45,14 +45,14 @@ public final class Intake {
     /**
      * Ctor.
      *
-     * @param atom The atom holding the size
+     * @param size How many bytes to read
      * @param forma The {@code read-return} of the platform, still empty
      * @param call The C function filling the buffer
      */
     public Intake(
-        final Phi atom, final Phi forma, final ToIntBiFunction<byte[], Integer> call
+        final Expect<Phi> size, final Phi forma, final ToIntBiFunction<byte[], Integer> call
     ) {
-        this.atom = atom;
+        this.size = size;
         this.forma = forma;
         this.call = call;
     }
@@ -63,9 +63,9 @@ public final class Intake {
      * @return A copy of the {@code read-return}, filled
      */
     public Phi it() {
-        final int size = new Natural(Expect.at(this.atom, "size")).it();
-        final byte[] buffer = new Buffer("the 'size' attribute", size).it();
-        final int count = this.call.applyAsInt(buffer, size);
+        final int length = new Natural(this.size).it();
+        final byte[] buffer = new Buffer("the 'size' attribute", length).it();
+        final int count = this.call.applyAsInt(buffer, length);
         final Phi result = this.forma.copy();
         result.put(0, new Data.ToPhi(count));
         result.put(1, new Data.ToPhi(Arrays.copyOf(buffer, Math.max(count, 0))));

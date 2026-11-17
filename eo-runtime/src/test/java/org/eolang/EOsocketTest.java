@@ -858,7 +858,7 @@ final class EOsocketTest {
          * Ctor.
          */
         Simple() {
-            super(new Attrs(new Attr("s", new AtVoid("s"))));
+            super(new Attrs(new Attr("s")));
         }
 
         @Override
@@ -889,13 +889,13 @@ final class EOsocketTest {
          * @param received Reseived message size
          */
         Server(final int received) {
-            super(new Attrs(new Attr("s", new AtVoid("s"))));
+            super(new Attrs(new Attr("s")));
             this.received = received;
         }
 
         @Override
         public Phi lambda() {
-            final Phi accept = this.take("s").take("accept").copy();
+            final Phi accept = this.free("s").take("accept").copy();
             accept.put(0, new EOsocketTest.Receiver(this.received));
             return accept;
         }
@@ -920,13 +920,13 @@ final class EOsocketTest {
          * @param received Reseived message size
          */
         Receiver(final int received) {
-            super(new Attrs(new Attr("s", new AtVoid("s"))));
+            super(new Attrs(new Attr("s")));
             this.received = received;
         }
 
         @Override
         public Phi lambda() {
-            final Phi recv = this.take("s").take("recv");
+            final Phi recv = this.free("s").take("recv");
             recv.put(0, new Data.ToPhi(this.received));
             return recv;
         }
@@ -951,13 +951,13 @@ final class EOsocketTest {
          * @param msg Message to send
          */
         Client(final String msg) {
-            super(new Attrs(new Attr("s", new AtVoid("s"))));
+            super(new Attrs(new Attr("s")));
             this.message = msg;
         }
 
         @Override
         public Phi lambda() {
-            final Phi sent = this.take("s").take("send").copy();
+            final Phi sent = this.free("s").take("send").copy();
             sent.put(0, new Data.ToPhi(this.message));
             return sent;
         }

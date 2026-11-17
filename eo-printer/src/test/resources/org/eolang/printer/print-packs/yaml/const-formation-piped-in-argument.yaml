@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A const formation (`[x] >>!`) applied through `|` inside an argument block.
+# The slot of `plus` holds the `.as-bytes` wrapper the const is turned into,
+# so that wrapper is what floats up; marking the formation inside it left the
+# wrapper empty and `plus` with a second argument, and the file printed as
+# two bare `dataized.as-bytes` lines that no longer parse (#9299).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [y] > app
+    y.plus > @
+      [x] >>!
+        x.plus 1 > @
+      | 5
+
+printed: |
+  [y] > app
+    y.plus > @
+      x.plus > [x] >>!
+        1
+      | 5

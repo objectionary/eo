@@ -22,6 +22,8 @@ eo:
   string.eo: |
     [as-bytes] > string
       as-bytes > @
+  bytes.eo: |
+    [@] > bytes
 pure:
   - "//o[@name='loud' and not(@pure)]"
   - "//o[@name='quiet' and @pure='true']"

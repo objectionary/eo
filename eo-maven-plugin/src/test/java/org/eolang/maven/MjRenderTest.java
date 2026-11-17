@@ -1,0 +1,75 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+ * SPDX-License-Identifier: MIT
+ */
+package org.eolang.maven;
+
+import com.yegor256.Mktmp;
+import com.yegor256.MktmpResolver;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+/**
+ * Test cases for {@link MjRender}.
+ *
+ * @since 0.71.0
+ */
+@ExtendWith(MktmpResolver.class)
+final class MjRenderTest {
+
+    @Test
+    void drawsAPagePerSourceFromTheAnswers(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(System.lineSeparator(), "[] > app", "  [] > t", "")
+        );
+        maven.execute(MjParse.class).execute(MjInfer.class);
+        Files.writeString(
+            maven.targetPath().resolve(maven.dirName("inference")).resolve("answers.xml"),
+            String.join(
+                "",
+                "<answers><o loc='Φ.app' copies='1'><is loc='Φ.app'/></o>",
+                "<o loc='Φ.app.t' copies='3'><is loc='Φ.app.t'/></o></answers>"
+            )
+        );
+        maven.execute(MjRender.class);
+        MatcherAssert.assertThat(
+            "a page of the program must be drawn from answers.xml, but it wasnt",
+            Files.exists(
+                maven.targetPath().getParent().resolve("site/inference/foo/x/main.eo.html")
+            ),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void drawsNothingWithoutAnswers(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
+            String.join(System.lineSeparator(), "[] > app", "  [] > t", "")
+        );
+        maven.execute(MjParse.class).execute(MjInfer.class);
+        Files.delete(
+            maven.targetPath().resolve(maven.dirName("inference")).resolve("answers.xml")
+        );
+        maven.execute(MjRender.class);
+        MatcherAssert.assertThat(
+            "no page may be drawn when the engine wrote no answers, but one was",
+            Files.exists(maven.targetPath().getParent().resolve("site/inference/index.html")),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void createsNoStageDirectoryWhenInferenceNeverRan(@Mktmp final Path temp) throws IOException {
+        new FakeMaven(temp).execute(MjRender.class);
+        MatcherAssert.assertThat(
+            "A goal that only reads must leave the target untouched, but it didnt",
+            Files.exists(temp.resolve("target")),
+            Matchers.is(false)
+        );
+    }
+}

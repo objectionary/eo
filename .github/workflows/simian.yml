@@ -18,12 +18,12 @@ concurrency:
 jobs:
   simian:
     timeout-minutes: 15
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
-          java-version: 17.0.20+101
+          java-version: 17.0.21+9
       - run: wget --quiet https://public.yegor256.com/simian.jar -O /tmp/simian.jar
       - run: java -jar /tmp/simian.jar -threshold=15 "-excludes=**/EOsocketTest.java" "-excludes=**/gen" "-excludes=**/it" "**/*.java"

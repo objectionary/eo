@@ -11,7 +11,8 @@ concurrency:
   cancel-in-progress: true
 jobs:
   pr-size:
-    runs-on: ubuntu-24.04
+    if: ${{ !contains(fromJSON('["yegor256", "maxonfjvipon"]'), github.event.pull_request.user.login) }}
+    runs-on: ubuntu-26.04
     steps:
       - name: Check pull request size
         env:

@@ -6,6 +6,7 @@ package org.eolang.maven;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -56,7 +57,7 @@ final class MjPlaceTest {
         ).toFile().lastModified();
         MatcherAssert.assertThat(
             "PlaceMojo must skip already placed binaries, but it doesn't",
-            new FakeMaven(temp).with("rewrite", false).withPlacedBinary(
+            new FakeMaven(temp).with("preserved", true).withPlacedBinary(
                 temp.resolve(this.targetClasses()).resolve(binary)
                 )
             .execute(MjPlace.class)
@@ -87,7 +88,7 @@ final class MjPlaceTest {
 
     @Test
     void placesWithoutBinaries(@Mktmp final Path temp) throws IOException {
-        Files.createDirectories(new Subdir(temp.resolve("target"), "resolve").path());
+        Files.createDirectories(new Seqdir(temp.resolve("target"), 2).dirs().once("resolve"));
         MatcherAssert.assertThat(
             String.format(
                 "PlaceMojo must not place binaries from %s",
@@ -206,7 +207,7 @@ final class MjPlaceTest {
     @Test
     void doesNotPlaceAgainIfNotUnplacedAndRewriteBinariesIsOff(@Mktmp final Path temp)
         throws Exception {
-        final FakeMaven maven = new FakeMaven(temp).with("rewrite", false);
+        final FakeMaven maven = new FakeMaven(temp).with("preserved", true);
         final String binary = "some.class";
         final String old = "some old content";
         MjPlaceTest.saveBinary(temp, old, binary);
@@ -252,7 +253,7 @@ final class MjPlaceTest {
     ) throws IOException {
         new Saved(
             content,
-            new Subdir(temp.resolve("target"), "resolve").path().resolve(
+            new Seqdir(temp.resolve("target"), 2).dirs().once("resolve").resolve(
                 Paths.get(String.format("%s/%s", "foo/hello/-/0.1", binary))
             )
         ).value();

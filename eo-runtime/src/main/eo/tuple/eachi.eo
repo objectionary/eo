@@ -12,15 +12,15 @@
 +version 0.0.0
 
 [^list func] > eachi
-  if. > [^ rest index] >> rec
+  if. > [^list rest index] >> rec
     rest.length.eq 0
     true
     if.
       rest.length.eq 1
-      ^.func rest.head index
+      list.func rest.head index
       seq *
-        ^.func rest.head index
-        ^.rec
+        list.func rest.head index
+        list.rec
           rest.tail
           index.plus 1
   | > @

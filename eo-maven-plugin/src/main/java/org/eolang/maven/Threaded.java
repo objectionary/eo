@@ -81,13 +81,16 @@ final class Threaded<T> {
                     tojo -> new ScalarWithFallback<>(
                         () -> this.scalar.apply(tojo),
                         new Fallback.From<>(
-                            Exception.class,
+                            Throwable.class,
                             ex -> {
                                 final String message = String.format(
                                     "Failed to process \"%s\" (%s)",
                                     tojo, tojo.getClass().getCanonicalName()
                                 );
                                 this.logger.accept(message);
+                                if (ex.getMessage() != null) {
+                                    this.logger.accept(ex.getMessage());
+                                }
                                 throw new IllegalStateException(message, ex);
                             }
                         )
