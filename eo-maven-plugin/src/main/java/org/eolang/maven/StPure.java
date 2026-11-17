@@ -12,7 +12,11 @@ import com.yegor256.xsline.StEnvelope;
 import com.yegor256.xsline.StXSL;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
+import java.net.URI;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
@@ -28,7 +32,7 @@ import org.xml.sax.SAXException;
 /**
  * The step of the transpile train that runs {@code purify.xsl}, which marks
  * the formations that are safe to cache by reading the tables
- * {@link MjInference} leaves on disk.
+ * {@link MjInfer} leaves on disk.
  *
  * <p>It is not a {@link com.yegor256.xsline.StClasspath} only because of
  * where those tables are. A stylesheet reads another document through the
@@ -39,7 +43,7 @@ import org.xml.sax.SAXException;
  * everything else — the libraries a stylesheet {@code xsl:import}-s — to the
  * classpath, as before. A table that is not there stays not there: the
  * resolver says so, {@code doc-available()} in the stylesheet hears it, and a
- * build that skips {@code eo:inference} marks nothing.</p>
+ * build that skips {@code eo:infer} marks nothing.</p>
  *
  * <p>A table read once is kept, because the stylesheet asks for it again for
  * every XMIR it stamps and the tables of {@code eo-runtime} are tens of
@@ -50,12 +54,22 @@ import org.xml.sax.SAXException;
  * since those megabytes are hundreds once parsed and reading a table again is
  * better than running a build out of memory.</p>
  *
+ * <p>What is kept is one state of the file, not its name: the time it was
+ * last written and its length go into the key. A build that runs
+ * {@code eo:infer} and then {@code eo:transpile} twice in one JVM
+ * rewrites the tables in between, and the second stamping must read what
+ * inference has just written rather than what the first one parsed
+ * (see #8225). A table that is not there has no state to tell, and an
+ * empty one stands for it: nothing is ever kept under such a key, since
+ * the reading throws before anything is put into the map.</p>
+ *
  * @since 0.75.0
  */
 final class StPure extends StEnvelope {
 
     /**
-     * The tables read so far, by their URIs.
+     * The tables read so far, by their URIs and the state of the files
+     * they were read from.
      */
     private static final Map<String, SoftReference<Node>> TABLES = new HashMap<>(0);
 
@@ -70,7 +84,7 @@ final class StPure extends StEnvelope {
      * Ctor.
      *
      * @param sheet The classpath path of the stylesheet to run
-     * @param tables The directory with the tables of {@link MjInference},
+     * @param tables The directory with the tables of {@link MjInfer},
      *  which does not have to exist
      */
     StPure(final String sheet, final Path tables) {
@@ -103,21 +117,37 @@ final class StPure extends StEnvelope {
     }
 
     private static Node table(final String href) throws TransformerException {
+        final String key = String.format("%s#%s", href, StPure.stamp(href));
         StPure.LOCK.lock();
         try {
-            final SoftReference<Node> kept = StPure.TABLES.get(href);
+            final SoftReference<Node> kept = StPure.TABLES.get(key);
             Node found = null;
             if (kept != null) {
                 found = kept.get();
             }
             if (found == null) {
                 found = StPure.parsed(href);
-                StPure.TABLES.put(href, new SoftReference<>(found));
+                StPure.TABLES.put(key, new SoftReference<>(found));
             }
             return found;
         } finally {
             StPure.LOCK.unlock();
         }
+    }
+
+    private static String stamp(final String href) {
+        String state;
+        try {
+            final BasicFileAttributes attrs = Files.readAttributes(
+                Paths.get(URI.create(href)), BasicFileAttributes.class
+            );
+            state = String.format(
+                "%d:%d", attrs.lastModifiedTime().toMillis(), attrs.size()
+            );
+        } catch (final IOException ex) {
+            state = "";
+        }
+        return state;
     }
 
     private static Node parsed(final String href) throws TransformerException {

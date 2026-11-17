@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# app calls cup twice, so cup has two real copies and its row says no study
+# copy. Nobody calls drink, and no copy fills its sip, so a stop gives it a
+# study copy inside each of the two copies of cup. Those two are all the
+# copies of drink that count, and its row says that both are study copies.
+sources:
+  app.eo: |
+    [] > app
+      cup 5 > first
+      cup 7 > second
+  cup.eo: |
+    [volume] > cup
+      volume > @
+      [^ sip] > drink
+        sip > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.cup.drink' and @copies='2' and @study='2']
+  - /answers/o[@loc='Φ.cup' and @copies='2' and not(@study)]

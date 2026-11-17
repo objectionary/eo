@@ -4,7 +4,6 @@
  */
 package org.eolang.parser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,15 +21,27 @@ final class Rows {
     /**
      * The source.
      */
-    private final List<Span> source;
+    private final Span[] source;
 
     /**
      * Ctor.
      *
+     * <p>Copies the source and refuses null spans before an error is
+     * formatted.</p>
+     *
      * @param lines The source in lines
      */
     Rows(final List<Span> lines) {
-        this.source = new ArrayList<>(lines);
+        this(List.copyOf(lines).toArray(Span[]::new));
+    }
+
+    /**
+     * Primary ctor.
+     *
+     * @param lines The copied source, with no null spans
+     */
+    private Rows(final Span... lines) {
+        this.source = lines;
     }
 
     /**
@@ -44,13 +55,13 @@ final class Rows {
     String underlined(final int number, final int pos, final String message) {
         final String located = new MsgLocated(number, pos, message).formatted();
         final String result;
-        if (number < 1 || number > this.source.size()) {
+        if (number < 1 || number > this.source.length) {
             result = located;
         } else {
             result = String.format(
                 "%s%n%s",
                 located,
-                new MsgUnderlined(this.source.get(number - 1).text(), pos, 1).formatted()
+                new MsgUnderlined(this.source[number - 1].text(), pos, 1).formatted()
             );
         }
         return result;

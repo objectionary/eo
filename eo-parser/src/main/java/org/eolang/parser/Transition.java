@@ -32,14 +32,22 @@ final class Transition {
     private final Span span;
 
     /**
+     * Directive sink, for the §4.5 argument-naming check run right after
+     * a naming suffix is applied.
+     */
+    private final Emit emit;
+
+    /**
      * Ctor.
      *
      * @param stk The indent stack
      * @param src The line span being adopted
+     * @param sink Directive sink
      */
-    Transition(final Stack stk, final Span src) {
+    Transition(final Stack stk, final Span src, final Emit sink) {
         this.stack = stk;
         this.span = src;
+        this.emit = sink;
     }
 
     /**
@@ -65,6 +73,7 @@ final class Transition {
             );
         }
         admission.name(level);
+        Eo.checkArgumentNaming(level, this.emit, this.span);
         return level;
     }
 
@@ -79,8 +88,7 @@ final class Transition {
             final Level top = this.stack.top();
             if (top.openness() != Openness.OPEN) {
                 throw new ParseError(
-                    this.span.line(), 0,
-                    "unexpected deeper-indent line — previous expression is closed for children"
+                    this.span.line(), this.position(top), Transition.message(top)
                 );
             }
             if (top.kind() == Kind.HEAD || top.kind() == Kind.HMETHOD) {
@@ -88,5 +96,24 @@ final class Transition {
             }
         }
         return this.stack.push(this.span.indent(), this.span.line(), kind, openness);
+    }
+
+    private int position(final Level top) {
+        int position = 0;
+        if (top.kind() == Kind.IDENTITY_OBJECT) {
+            position = this.span.indent();
+        }
+        return position;
+    }
+
+    private static String message(final Level top) {
+        String message = String.join(
+            " ", "unexpected deeper-indent line —",
+            "previous expression is closed for children"
+        );
+        if (top.kind() == Kind.IDENTITY_OBJECT) {
+            message = Emissions.NO_IDENTITY_ARGS;
+        }
+        return message;
     }
 }

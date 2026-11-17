@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# grove in the @ of app is the grove of that app, so the ^ grove declares
+# holds the app, and ^.oak is the oak of app.
+sources:
+  app.eo: |
+    [] > app
+      grove > @
+      [^] > grove
+        ^.oak > @
+      [] > oak
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.app']
+  - /answers/o[@loc='Φ.app.grove.ρ']/is[@loc='Φ.app']
+  - /answers/o[@loc='Φ.app.grove.φ']/is[@loc='Φ.app.oak']

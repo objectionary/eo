@@ -1,0 +1,73 @@
+# Converts the number to a `u64`, truncating the fractional part toward zero.
+# A negative number, `nan`, an infinity, or a magnitude of `2^64` and above
+# does not fit into the bounds of a `u64`, so the caller-supplied
+# `cant-convert` fallback is returned.
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++unlint invalid-name-notation
++version 0.0.0
+
+[^num cant-convert] > as-u64
+  if. > @
+    or.
+      not.
+        num.gte 0
+      num.gte 1.8446744073709552e19
+    cant-convert
+      "Can't convert number %s to u64 because it's out of u64 bounds".printf
+        *
+          string num.as-scientific
+    as-u64.
+      if.
+        num.gte 9.223372036854776e18
+        or.
+          as-bytes. (num.minus 9.223372036854776e18).as-i64
+          80-00-00-00-00-00-00-00
+        num.as-i64.as-bytes
+
+  eq. ++> can-convert-a-fraction-below-one-to-zero
+    0.5.as-u64.as-bytes
+    00-00-00-00-00-00-00-00
+
+  eq. ++> can-convert-negative-zero-to-zero
+    -0.as-u64.as-bytes
+    00-00-00-00-00-00-00-00
+
+  1.as-u64.as-number.eq 1 ++> can-convert-one-to-u64-and-back
+
+  eq. ++> can-convert-the-largest-u64
+    1.844674407370955e19.as-u64.as-bytes
+    FF-FF-FF-FF-FF-FF-F8-00
+
+  eq. ++> can-convert-the-two-to-the-63rd-power
+    9.223372036854776e18.as-u64.as-bytes
+    80-00-00-00-00-00-00-00
+
+  eq. ++> can-convert-two-hundred-fifty-five-to-u64-and-back
+    255.as-u64.as-number
+    255
+
+  1.as-u64.as-bytes.eq 00-00-00-00-00-00-00-01 ++> can-expose-the-bytes-of-one
+
+  eq. ++> can-recover-from-an-out-of-range-number
+    u64 00-00-00-00-00-00-00-2A
+    1.0e30.as-u64
+      u64 00-00-00-00-00-00-00-2A > [message]
+
+  eq. ++> can-truncate-a-positive-toward-zero
+    3.7.as-u64.as-bytes
+    00-00-00-00-00-00-00-03
+
+  -1.as-u64 --> stops-on-converting-a-negative-number
+
+  nan.as-u64 --> stops-on-converting-nan
+
+  ninf.as-u64 --> stops-on-converting-negative-infinity
+
+  pinf.as-u64 --> stops-on-converting-positive-infinity
+
+  1.8446744073709552e19.as-u64 --> stops-on-converting-the-two-to-the-64th-power

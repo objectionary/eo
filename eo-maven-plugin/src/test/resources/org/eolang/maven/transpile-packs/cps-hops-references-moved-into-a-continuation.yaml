@@ -6,8 +6,8 @@ sheets:
   - /org/eolang/maven/transpile/recursion-to-cps.xsl
 asserts:
   - /object[not(errors)]
-  - //o[starts-with(@name,'c🌵')]/o[@name='φ' and @base='ξ.ρ.k🌵']/o[@base='.plus']/o[@as='α0' and @base='ξ.ρ.i.plus']/o[@as='α0' and @base='ξ.ρ.ρ.step']
-  - //o[starts-with(@name,'c🌵')]/o[@name='φ']/o[@base='.plus']/o[@as='α0']/o[@as='α1' and not(@base) and o[@name='x'] and o[@name='φ' and @base='ξ.x.plus']/o[@as='α0' and @base='ξ.ρ.ρ.i']]
+  - //o[starts-with(@name,'c🌵')]/o[@name='φ' and @base='ξ.ρ.k🌵']/o[@base='.plus']/o[@as='α0' and @base='ξ.ρ.v🌵i.plus']/o[@as='α0' and @base='ξ.ρ.ρ.step']
+  - //o[starts-with(@name,'c🌵')]/o[@name='φ']/o[@base='.plus']/o[@as='α0']/o[@as='α1' and not(@base) and o[@name='v🌵x'] and o[@name='φ' and @base='ξ.v🌵x.plus']/o[@as='α0' and @base='ξ.ρ.ρ.v🌵i']]
   - //o[@name='other']/o[@name='φ' and @base='ξ.ρ.rec']/o[@as='α1']/o[@name='φ' and @base='ξ.r🌵']
 input: |
   [] > main

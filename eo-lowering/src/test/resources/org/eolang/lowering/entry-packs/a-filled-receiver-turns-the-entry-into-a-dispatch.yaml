@@ -1,28 +1,25 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# The `ρ` a formation declares is a void like the others, and the tables type
-# it like the others, but XMIR has no `as` of `ρ`. So a formation whose `ρ` is
-# filled is written as a dispatch off the planted object, which binds the same
-# thing the way the calculus itself does.
+# The `ρ` a formation declares is a void like the others, which holds the
+# formation it is written in, here the package `number`, but XMIR has no `as`
+# of `ρ`. So a formation whose `ρ` is filled is written as a dispatch off the
+# planted object, which binds the same thing the way the calculus itself
+# does. `app` hands `twice` a number, so the engine says that `x` holds one.
 eo:
   twice.eo: |
-    +package holder
+    +package number
 
     [^ x] > twice
       ^.plus x > @
-provides: |
-  <provides>
-    <type id="Φ.holder.twice">
-      <attr name="ρ" type="Φ.holder.twice.ρ" void="true" holds="Φ.number"/>
-      <attr name="x" type="Φ.holder.twice.x" void="true" holds="Φ.number"/>
-    </type>
-  </provides>
+  app.eo: |
+    [] > app
+      5.twice 3 > used
 xmir:
-  - "//o[@name='e1']/o[@as='v' and @base='.twice']"
-  - "//o[@name='e1']/o[@as='v']/o[1][@base='Φ.number' and not(@as)]/\
+  - "//o[@name='e1' and @base='.twice']"
+  - "//o[@name='e1']/o[1][@base='Φ.number' and not(@as)]/\
     /o[@name='λ' and text()='𝜎1']"
 voids:
   - "𝜎1\t1\tρ\tnumber"
 entries:
-  - "1\tΦ.holder.twice"
+  - "1\tΦ.number.twice"

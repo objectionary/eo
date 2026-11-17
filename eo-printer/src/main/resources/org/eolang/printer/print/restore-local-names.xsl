@@ -6,29 +6,24 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="restore-local-names" version="3.0">
   <!--
   Inverse of the parser's "resolve-local-names" pass, applied before
-  printing (#5563). A void declared with a file-local handle
-  ("? &gt;&gt; name", R-3.10.12) keeps a synthetic cactus @name plus a
+  printing (#5563). An object declared with a file-local handle
+  ("&gt;&gt; name", R-3.10.12) keeps a synthetic cactus @name plus a
   "@local='name'" marker; the parser resolves references to the cactus name
-  but the readable handle is preserved on the void. Here we put the handle
-  back: the void's @name becomes its handle and every @base segment that
-  points at that cactus name is rewritten to the handle, so references read
-  under the handle instead of a synthetic "vL_P" placeholder. The
-  "@local" marker is deliberately KEPT on the void (#5581) so that
-  "to-eo-tree" can print it back as a vertical "? &gt;&gt; name" line and
-  preserve the void's anonymity (§9.2, R-9.2.3), rather than collapsing it
-  into a public "[name]" bracket param.
+  but the readable handle is preserved on the object. Here we put the
+  handle back where the object survives to "to-eo-tree", so references read
+  under the handle instead of a synthetic "vL_P" placeholder.
 
-  A non-void "&gt;&gt;" handle sits on an anonymous formation. Usually the
+  A "&gt;&gt;" handle sits on an anonymous formation. Usually the
   "inline-cactoos" pass inlines that formation away, so its handle is
   irrelevant and the "@local" marker is simply dropped. A self-referential
   (recursive) formation is the exception: since #5677 "inline-cactoos"
   correctly keeps it in place, so it reaches "to-eo-tree" and must carry a
   readable name. Using the same self-reference test as that guard, such a
-  formation is treated like a handled void here — its "@local" is promoted
-  to the visible "@name", its self-references are rewritten back to the
-  handle, and the marker is KEPT so "to-eo-tree" prints "&gt;&gt; name"
-  rather than an anonymous "&gt;&gt;" bound to references to a synthetic
-  "vL_P" placeholder.
+  formation gets its handle back here — its "@local" is promoted to the
+  visible "@name", its self-references are rewritten back to the handle,
+  and the marker is KEPT so "to-eo-tree" prints "&gt;&gt; name" rather than
+  an anonymous "&gt;&gt;" bound to references to a synthetic "vL_P"
+  placeholder.
 
   A const "&gt;&gt;" handle (`a &gt;&gt; b!`, R-3.10.12) is a third case. Its
   value is dataized once and cached in a single binding, so a handle referenced
@@ -37,8 +32,8 @@
   #5828). Such a handle keeps its "@local" marker here — the parser leaves it on
   the wrapped value inside the "const-to-dataized" `.as-bytes`/`Φ.dataized`
   shell — so the handle survives to "to-eo-tree" and prints as `a &gt;&gt; b!`.
-  Unlike a void, its cactus "@name" is NOT promoted and its references are NOT
-  rewritten: the binding stays obfuscated so "inline-cactoos" leaves it whole
+  Unlike a recursive formation, its cactus "@name" is NOT promoted and its
+  references are NOT rewritten: the binding stays obfuscated so "inline-cactoos" leaves it whole
   and "merge-monikers" folds it onto its first reference as a moniker, the other
   references reading back as the bare handle. A single-use const still inlines
   to `a!` (#5821).
@@ -47,10 +42,10 @@
   case. A pipe object carries the "@pipe" marker so that both later passes leave
   it standing — "inline-cactoos" never inlines it and "merge-monikers" never
   folds it or rewrites its references. Its readable handle therefore lives or
-  dies entirely in this sheet: like a void, its "@local" marker is KEPT (at any
-  use count) and its references are rewritten back to the handle, so it prints
-  as `| args &gt;&gt; name` with references reading `name`. Unlike a void, its
-  cactus "@name" is NOT promoted — the pipe reads its "&gt;&gt; name" from
+  dies entirely in this sheet: like a recursive formation, its "@local" marker
+  is KEPT (at any use count) and its references are rewritten back to the
+  handle, so it prints as `| args &gt;&gt; name` with references reading
+  `name`. Unlike a recursive formation, its cactus "@name" is NOT promoted — the pipe reads its "&gt;&gt; name" from
   "@local" — so it stays a bare-named "@pipe" object all the way to
   "to-eo-tree".
   -->
@@ -187,8 +182,8 @@
   relocates a copy of the formation into the receiver slot and turns the "ρ"
   into a "| 55" pipe (#5844); unlike the sibling pipe, that relocated
   predecessor sits inside the dispatch block, so its readable "&gt;&gt; name"
-  handle is kept here — its "@local" marker survives, though (unlike a void)
-  its cactus "@name" is left obfuscated so "inline-cactoos" still recognises
+  handle is kept here — its "@local" marker survives, though (unlike a
+  recursive formation) its cactus "@name" is left obfuscated so "inline-cactoos" still recognises
   the reference and pipes it. References inside the formation itself are
   excluded, so a self-referential (recursive) helper is not mistaken for an
   external use.
@@ -257,6 +252,22 @@
     <xsl:sequence select="if (empty($wrapper) or not($wrapper/@base='.as-bytes') or empty($wrapper/@name) or empty($value/@local)) then false() else exists(key('local-head', $wrapper/@name/string(), root($wrapper))[contains(@base, $auto-dot)][ancestor::*[. is $wrapper/..]][not(ancestor-or-self::o[. is $wrapper])][2])"/>
   </xsl:function>
   <!--
+  Whether the binding "$target" is the value of a const file-local handle that
+  floated out of its shell. The parser writes "[x] &gt;&gt;! h" as a
+  "const-to-dataized" shell over a reference, and the formation itself is
+  lifted out of the shell to a sibling of it, carrying the readable handle
+  along, so the handle no longer sits inside the shell the way
+  "eo:const-handle" expects. "inline-cactoos" folds the formation back into the
+  shell, keeping its name, so the marker must survive this sheet to reach
+  "to-eo-tree" with it; dropped here, the const printed as an anonymous
+  "&gt;&gt;!" and every reader was stranded on a synthetic "vL_P" (#9297).
+  -->
+  <xsl:function name="eo:const-valued" as="xs:boolean">
+    <xsl:param name="target" as="element()"/>
+    <xsl:param name="name" as="xs:string?"/>
+    <xsl:sequence select="exists(eo:references($target, $name)[parent::o[@base='Φ.dataized']][parent::o/parent::o[@base='.as-bytes']])"/>
+  </xsl:function>
+  <!--
   Whether the applied reference "$ref" resolves to a recursive "&gt;&gt;" handle
   standing among its following siblings, so that it has to be relocated just
   below that handle and piped (#5848, below). The test belongs in the pattern
@@ -270,7 +281,7 @@
     <xsl:param name="ref" as="element()"/>
     <xsl:sequence select="exists($ref/following-sibling::o[@name = eo:resolved-name($ref/@base)][@local][eo:recursive(., @name/string())])"/>
   </xsl:function>
-  <xsl:key name="void-handle" match="o[@local and not(@name=$eo:rho) and (@base=$eo:empty or eo:recursive(., @name/string()) or @pipe)]" use="@name"/>
+  <xsl:key name="kept-handle" match="o[@local and (eo:recursive(., @name/string()) or @pipe)]" use="@name"/>
   <!--
   Whether some formation of this file names its receiver, "[^s …]"
   (R-3.4.13, #8227). Most files name none, so "eo:receiver-handled" below
@@ -287,22 +298,23 @@
   "ξ.ρ.ρ.bar" reads "ξ.s.ρ.bar" where it is declared and "ξ.ρ.s.bar" one
   formation further in, the way a nested reference to any other handle keeps
   its "ρ" hops in front of the handle. When the run leaves several formations
-  that name their receivers, the outermost of them takes the handle.
+  that name their receivers, each of them takes its own handle, so
+  "ξ.ρ.ρ.bar" reads "ξ.t.s.bar" from a formation "[^t]" inside "[^s]": the
+  parser reads a chain of handles back one formation per handle (#9245).
   -->
   <xsl:function name="eo:receiver-handled" as="xs:string*">
     <xsl:param name="ref" as="element()"/>
     <xsl:param name="segments" as="xs:string*"/>
     <xsl:variable name="scopes" as="element()*" select="if ($eo:receivers and $segments[1] = $eo:xi and $segments[2] = $eo:rho) then reverse($ref/ancestor::o[not(@base)]) else ()"/>
-    <xsl:variable name="hop" as="xs:integer?" select="max(for $at in 1 to count($scopes) return if (count($segments) gt $at and (every $seg in subsequence($segments, 2, $at) satisfies $seg = $eo:rho) and exists($scopes[$at]/o[@name=$eo:rho and @base=$eo:empty and @local])) then $at else ())"/>
-    <xsl:sequence select="if (empty($hop)) then $segments else (subsequence($segments, 1, $hop), string($scopes[$hop]/o[@name=$eo:rho and @base=$eo:empty and @local][1]/@local), subsequence($segments, $hop + 2))"/>
+    <xsl:sequence select="if (empty($scopes)) then $segments else for $at in 1 to count($segments) return if ($at gt 1 and $at le count($scopes) + 1 and (every $seg in subsequence($segments, 2, $at - 1) satisfies $seg = $eo:rho) and exists($scopes[$at - 1]/o[@name=$eo:rho and @base=$eo:empty and @local])) then string($scopes[$at - 1]/o[@name=$eo:rho and @base=$eo:empty and @local][1]/@local) else $segments[$at]"/>
   </xsl:function>
   <!--
-  References: rewrite each cactus segment that names a handled void, a
-  recursive formation, or a pipe-application handle (`| args &gt;&gt; name`,
-  §3.14 / #6015) back into the readable handle. A pipe object carries the
-  "@pipe" marker, so neither "inline-cactoos" nor "merge-monikers" ever folds it
-  or rewrites its references (both skip "@pipe" bindings); its references are
-  therefore restored here, exactly as a void's are. A formation applied as a
+  References: rewrite each cactus segment that names a recursive formation or
+  a pipe-application handle (`| args &gt;&gt; name`, §3.14 / #6015) back into
+  the readable handle. A pipe object carries the "@pipe" marker, so neither
+  "inline-cactoos" nor "merge-monikers" ever folds it or rewrites its
+  references (both skip "@pipe" bindings); its references are therefore
+  restored here, exactly as a recursive formation's are. A formation applied as a
   dispatch receiver (#5844) is deliberately excluded: its cactus name must
   survive so "inline-cactoos" still recognises the reference and pipes it.
 
@@ -318,23 +330,23 @@
   segment rewrite after it passes the handle through unchanged.
   -->
   <xsl:template match="@base">
-    <xsl:attribute name="base" select="string-join(for $seg in eo:receiver-handled(.., tokenize(., '\.')) return (if (key('void-handle', $seg)) then string(key('void-handle', $seg)[1]/@local) else $seg), '.')"/>
+    <xsl:attribute name="base" select="string-join(for $seg in eo:receiver-handled(.., tokenize(., '\.')) return (if (key('kept-handle', $seg)) then string(key('kept-handle', $seg)[1]/@local) else $seg), '.')"/>
   </xsl:template>
   <!--
-  Handled declaration (void or recursive formation): promote the handle
-  to the visible name. A formation applied as a dispatch receiver (#5844) and a
+  Recursive formation: promote the handle to the visible name. A formation applied as a dispatch receiver (#5844) and a
   pipe-application handle (#6015) are not promoted — only their "@local" marker
   is kept (below) — so their cactus name survives: the dispatch receiver for
   "inline-cactoos" to pipe against, the pipe handle to read as a `|` line whose
   "&gt;&gt; name" comes from "@local" rather than a promoted "@name". Nor is a
-  receiver that carries a handle (#8227): it stays the void "ρ", which is what
-  makes its head declare the receiver.
+  receiver that carries a handle (#8227), which is a void and so never
+  recursive: it stays the void "ρ", which is what makes its head declare the
+  receiver.
   -->
-  <xsl:template match="o[@local and not(@name=$eo:rho) and (@base=$eo:empty or eo:recursive(., @name/string()))]/@name">
+  <xsl:template match="o[@local and eo:recursive(., @name/string())]/@name">
     <xsl:attribute name="name" select="../@local"/>
   </xsl:template>
   <!--
-  Keep the marker on voids, on recursive formations, on a pipe-application
+  Keep the marker on a receiver void (#8227), on recursive formations, on a pipe-application
   handle (`| args &gt;&gt; name`, §3.14 / #6015) — never inlined or merged (it
   carries "@pipe", which both later passes skip), so its readable handle lives
   or dies here and must be kept at every use count — on a formation applied as
@@ -353,10 +365,12 @@
   application (#5952) — and on the value of a
   multi-referenced dataized-const handle (see
   "eo:const-handle") so "to-eo-tree" restores the readable "&gt;&gt; name"
-  handle; drop it on the other non-void formations, whose handle is inlined
-  away by "inline-cactoos".
+  handle — and on the value of a const handle that floated out of its shell
+  (see "eo:const-valued"), which "inline-cactoos" folds back into the shell
+  with its name, so the handle reaches "to-eo-tree" there; drop it on the other
+  non-void formations, whose handle is inlined away by "inline-cactoos".
   -->
-  <xsl:template match="o[not(@base=$eo:empty) and not(@pipe) and not(eo:recursive(., @name/string())) and not(eo:dispatched(., @name/string())) and not(eo:applied-receiver(., @name/string())) and not(eo:multi-referenced(., @name/string())) and not(eo:unreferenced(., @name/string())) and not(eo:nested-referenced(., @name/string())) and not(eo:reapplied(., @name/string())) and not(eo:const-handle(parent::o/parent::o))]/@local"/>
+  <xsl:template match="o[not(@base=$eo:empty) and not(@pipe) and not(eo:recursive(., @name/string())) and not(eo:dispatched(., @name/string())) and not(eo:applied-receiver(., @name/string())) and not(eo:multi-referenced(., @name/string())) and not(eo:unreferenced(., @name/string())) and not(eo:nested-referenced(., @name/string())) and not(eo:reapplied(., @name/string())) and not(eo:const-valued(., @name/string())) and not(eo:const-handle(parent::o/parent::o))]/@local"/>
   <!--
   When a recursive "&gt;&gt; name" handle is restored, its cactus name is
   promoted to the visible "@name" and every reference is rewritten from the

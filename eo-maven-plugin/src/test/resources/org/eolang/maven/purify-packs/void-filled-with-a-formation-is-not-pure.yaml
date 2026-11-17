@@ -18,6 +18,8 @@ eo:
   number.eo: |
     [as-bytes] > number
       as-bytes > @
+  bytes.eo: |
+    [@] > bytes
 pure:
   - "//o[@name='wraps' and not(@pure)]"
   - "//o[@name='counts' and @pure='true']"

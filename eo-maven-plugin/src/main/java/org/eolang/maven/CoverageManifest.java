@@ -38,7 +38,7 @@ import java.util.LinkedHashSet;
  * object declares are free this same way, which is why its own
  * declaration line never gets a hit (#6995); and, the same way, a void
  * attribute of any other formation (bracket-declared or written as
- * {@code ? >> name}) parses to an {@code o} whose own {@code @base} is
+ * {@code ? > name}) parses to an {@code o} whose own {@code @base} is
  * a void, the empty-set glyph — no body to dataize, so no {@code located} mode call and no
  * hit ever lands on its declaration line either (#7377).</p>
  *

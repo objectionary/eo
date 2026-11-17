@@ -26,9 +26,14 @@ class JavaPathTest {
         "Φ.obj.sub$attr, org.eolang.EO_obj.EOsub$EOattr",
         "Φ.obj.sub-dashed$attr, org.eolang.EO_obj.EOsub_dashed$EOattr",
         "Φ.obj.sub-dashed$attr-dashed, org.eolang.EO_obj.EOsub_dashed$EOattr_dashed",
-        "Φ.foo_bar, org.eolang.EOfoo__bar",
-        "Φ.obj.sub_under, org.eolang.EO_obj.EOsub__under",
-        "Φ.a_b-c, org.eolang.EOa__b_c"
+        "Φ.foo_bar, org.eolang.EOfoo$u00005Fbar",
+        "Φ.obj.sub_under, org.eolang.EO_obj.EOsub$u00005Funder",
+        "Φ.a_b-c, org.eolang.EOa$u00005Fb_c",
+        "Φ.a-_b, org.eolang.EOa_$u00005Fb",
+        "Φ.a_-b, org.eolang.EOa$u00005F_b",
+        "Φ.a%b, org.eolang.EOa$u000025b",
+        "Φ.obj.a*b, org.eolang.EO_obj.EOa$u00002Ab",
+        "Φ.foo_bar.baz, org.eolang.EO_foo$u00005Fbar.EObaz"
     })
     void convertsToString(final String name, final String expected) {
         MatcherAssert.assertThat(
@@ -42,7 +47,9 @@ class JavaPathTest {
     @CsvSource({
         "Φ.number, org.eolang.EO_number",
         "Φ.number.power, org.eolang.EO_number.EO_power",
-        "Φ.obj.sub, org.eolang.EO_obj.EO_sub"
+        "Φ.obj.sub, org.eolang.EO_obj.EO_sub",
+        "Φ.foo_bar.baz, org.eolang.EO_foo$u00005Fbar.EO_baz",
+        "Φ.a-b.c*d, org.eolang.EO_a_b.EO_c$u00002Ad"
     })
     void convertsToPackage(final String name, final String expected) {
         MatcherAssert.assertThat(

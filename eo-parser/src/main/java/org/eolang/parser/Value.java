@@ -6,6 +6,7 @@ package org.eolang.parser;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -27,7 +28,7 @@ final class Value {
      * Kinds of value that may carry a {@code .method} chain behind them.
      */
     private static final Set<Kind> CHAINABLE = Set.of(
-        Kind.IDENTIFIER, Kind.ROOT, Kind.GROUP, Kind.TERM,
+        Kind.IDENTIFIER, Kind.ROOT, Kind.GROUP, Kind.TERM, Kind.IDENTITY,
         Kind.INTEGER, Kind.FLOAT, Kind.STRING, Kind.BYTES, Kind.HEX
     );
 
@@ -173,6 +174,16 @@ final class Value {
             tag = this.binding;
         }
         return tag;
+    }
+
+    /**
+     * Inline binding label, absent when no binding follows the value —
+     * the form {@link Ties} reads an argument's binding in.
+     *
+     * @return Binding tag, or empty when absent
+     */
+    Optional<String> tie() {
+        return Optional.ofNullable(this.binding);
     }
 
     /**
@@ -331,25 +342,7 @@ final class Value {
     }
 
     private boolean wrapsInlinePhi() {
-        final String inner = this.raw.substring(1, this.raw.length() - 1);
-        boolean found = false;
-        int depth = 0;
-        int idx = 0;
-        while (idx < inner.length() - 2 && !found) {
-            final char glyph = inner.charAt(idx);
-            if (glyph == '"') {
-                idx = Tokens.closingQuote(inner, idx);
-            } else if (glyph == '(') {
-                depth = depth + 1;
-            } else if (glyph == ')') {
-                depth = depth - 1;
-            } else if (depth == 0 && glyph == '>'
-                && inner.charAt(idx + 1) == ' ' && inner.charAt(idx + 2) == '[') {
-                found = true;
-            }
-            idx = idx + 1;
-        }
-        return found;
+        return Tokens.inlinePhi(this.raw.substring(1, this.raw.length() - 1)) >= 0;
     }
 
     /**

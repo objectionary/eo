@@ -5,9 +5,9 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@base='∅' and @name='k']
+  - //o[@base='∅' and @name='v🌵k']
   - //o[@base='Φ.xyz' and @name='φ']/o[@as='α0' and @base='Φ.number']
-  - //o[@base='Φ.xyz' and @name='φ']/o[@as='α1' and @base='ξ.k.minus']
+  - //o[@base='Φ.xyz' and @name='φ']/o[@as='α1' and @base='ξ.v🌵k.minus']
 input: |
   [] > obj
     xyz > [k] >>

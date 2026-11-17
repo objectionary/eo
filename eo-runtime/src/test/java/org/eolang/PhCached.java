@@ -21,7 +21,7 @@ final class PhCached extends PhDefault {
     PhCached() {
         super(
             new Attrs(
-                new Attr("x", new AtVoid("x")),
+                new Attr("x"),
                 new Attr("y", new AtOnce(new AtVoid("y")))
             )
         );

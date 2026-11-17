@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# What a declared "^" holds is read off the locator of the formation and not
+# off its callers: "halved" is written in "number" and never called, so
+# nobody dispatches on it, and it is marked all the same, like "doubled",
+# which is dispatched on a number.
+eo:
+  app.eo: |
+    [] > app
+      42.doubled > @
+  number.eo: |
+    [as-bytes] > number
+      as-bytes > @
+      [x] > plus
+        x > @
+      [^] > doubled
+        ^.plus 0 > @
+      [^] > halved
+        ^.plus 0 > @
+  bytes.eo: |
+    [@] > bytes
+pure:
+  - "//o[@name='halved' and @pure='true']"
+  - "//o[@name='doubled' and @pure='true']"

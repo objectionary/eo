@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+line: 1
+message: |-
+  error: 'parameter names in voids must be NAME, @, ^ or ^NAME'
+input: |
+  [a/b] > g
+    g > @

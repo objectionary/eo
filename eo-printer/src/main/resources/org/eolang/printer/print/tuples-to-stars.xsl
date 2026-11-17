@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="tuples-to-stars" version="3.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="tuples-to-stars" version="3.0">
   <!--
   Performs the reverse operation of "/org/eolang/parser/stars-to-tuples.xsl".
 
@@ -22,7 +22,42 @@
   spurious numeric element (#5858).
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
-  <xsl:template match="o[@base = 'Φ.tuple' and o[1][starts-with(@base, 'Φ.tuple')]]">
+  <!--
+  How many elements a chain of layers holds, counted by the layers
+  themselves rather than read out of the length each one carries.
+  -->
+  <xsl:function name="eo:depth" as="xs:integer">
+    <xsl:param name="o" as="element()"/>
+    <xsl:sequence select="if ($o/@base = 'Φ.tuple.empty') then 0 else eo:depth($o/o[1]) + 1"/>
+  </xsl:function>
+  <!--
+  Whether the last child of a layer is a length marker that agrees with
+  the elements beside it. This sheet runs right after "StUnhex" (see
+  "Xmir"), which folds the bytes of a number into the text of the node, so
+  the length is readable here and is read. Before that fold a number the
+  author wrote is bytes, and a length nobody can read is left alone rather
+  than guessed at.
+  -->
+  <xsl:function name="eo:fits" as="xs:boolean">
+    <xsl:param name="marker" as="element()?"/>
+    <xsl:param name="length" as="xs:integer"/>
+    <xsl:sequence select="exists($marker) and $marker/@base = 'Φ.number' and (not(matches(normalize-space($marker), '^[0-9]+$')) or xs:integer(normalize-space($marker)) = $length)"/>
+  </xsl:function>
+  <!--
+  Whether a layer is one "stars-to-tuples" built, which is the only shape
+  this sheet knows how to read back (#9165). That sheet makes a nested
+  tuple, one element and the length of the two together, all bound by
+  position; the element is gone when a pipe predecessor was floated out of
+  the slot, which leaves the layer with two children. A "tuple" the author
+  wrote by hand answers to none of that, and rewriting it as a star drops
+  the arguments the star has no room for and recomputes the length, which
+  the re-parse accepts without a word.
+  -->
+  <xsl:function name="eo:star-layer" as="xs:boolean">
+    <xsl:param name="o" as="element()"/>
+    <xsl:sequence select="$o/@base = 'Φ.tuple' and count($o/o) = (2, 3) and empty($o/o/@as[not(matches(., '^α[0-9]+$'))]) and ($o/o[1]/@base = 'Φ.tuple.empty' or ($o/o[1]/@base = 'Φ.tuple' and eo:star-layer($o/o[1]))) and eo:fits($o/o[last()], eo:depth($o))"/>
+  </xsl:function>
+  <xsl:template match="o[eo:star-layer(.)]">
     <xsl:variable name="arg">
       <xsl:apply-templates select="o[position() != 1 and position() != last()]"/>
     </xsl:variable>
