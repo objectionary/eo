@@ -321,13 +321,23 @@ final class Origins {
     private Optional<Copy> attribute(
         final Copy owner, final String name, final Lookups seen
     ) {
+        final Optional<Copy> read;
+        if (owner.stops()) {
+            read = Optional.of(owner);
+        } else {
+            read = this.member(owner, name, seen);
+        }
+        return read;
+    }
+
+    private Optional<Copy> member(
+        final Copy owner, final String name, final Lookups seen
+    ) {
         return seen.once(
             Map.entry(owner, name),
             () -> {
                 final Optional<Copy> found;
-                if (owner.stops()) {
-                    found = Optional.of(owner);
-                } else if (owner.sole()) {
+                if (owner.sole()) {
                     found = owner.member(name, this.calls).map(this::copy).orElseGet(
                         () -> this.argument(owner, name, seen).or(
                             () -> this.binding(owner, name, seen)

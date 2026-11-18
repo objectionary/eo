@@ -113,7 +113,10 @@ final class CopyTest {
         MatcherAssert.assertThat(
             "copies must agree on what the others give when one of them is a terminator, but they dont",
             Copy.agreed(
-                List.of(Optional.of(Copy.terminator()), Optional.of(new Copy(new Annotation("Φ.number")))),
+                List.of(
+                    Optional.of(Copy.terminator()),
+                    Optional.of(new Copy(new Annotation("Φ.number")))
+                ),
                 CopyTest.calls()
             ),
             Matchers.equalTo(Optional.of(new Copy(new Annotation("Φ.number"))))
@@ -136,7 +139,9 @@ final class CopyTest {
     void agreesOnNothingWhenTerminatorMeetsUnknown() {
         MatcherAssert.assertThat(
             "copies must agree on nothing when one is a terminator and another is unknown, but they agree",
-            Copy.agreed(List.of(Optional.of(Copy.terminator()), Optional.empty()), CopyTest.calls()),
+            Copy.agreed(
+                List.of(Optional.of(Copy.terminator()), Optional.empty()), CopyTest.calls()
+            ),
             Matchers.equalTo(Optional.empty())
         );
     }

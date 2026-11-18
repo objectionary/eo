@@ -287,14 +287,6 @@ final class Copy {
         return found;
     }
 
-    /**
-     * The copy that all of the given ones agree on, none of them a
-     * terminator.
-     *
-     * @param held What each void holds
-     * @param calls What the calls put into the voids
-     * @return The copy they agree on, or nothing
-     */
     private static Optional<Copy> joined(
         final Collection<Optional<Copy>> held, final Calls calls
     ) {
