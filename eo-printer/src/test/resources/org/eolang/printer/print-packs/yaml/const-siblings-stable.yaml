@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Issue #9717: two sibling const formations must print/parse/print identically.
+penalties: {}
+origin: |
+  [] > main
+    [a] > b1
+      [b] >> k2!
+        1 > @
+        [] >> k6!
+          [x] >> h7
+            5 > z8
+      [bar] >> k9!
+        [c] > c10!
+          [y] > c13!
+            7 > z14
+        foo > @
+printed: |
+  [] > main
+    [a] > b1
+      [b] >> k2!
+        1 > @
+        [] >> k6!
+          [x] >> h7
+            5 > z8
+      [bar] >> k9!
+        foo > @
+        [c] > c10!
+          [y] > c13!
+            7 > z14

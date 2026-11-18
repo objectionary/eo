@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Issue #9717: a named formation before a pipe in a star tuple must settle.
+penalties: {}
+origin: |
+  [] > c1
+    * > n5
+      [y] > p7
+      | bar.c > q8
+printed: |
+  [] > c1
+    * q8 > n5
+    [y] > p7
+    | bar.c > q8

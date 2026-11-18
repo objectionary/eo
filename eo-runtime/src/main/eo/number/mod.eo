@@ -1,7 +1,7 @@
 # Calculate MOD.
 # An operation that finds the remainder after dividing the number by `b`.
-# When `b` is zero, the result is the caller-supplied `cant-mod` fallback, or
-# the terminator when none was provided, which terminates on use. Otherwise
+# When `b` is zero, `cant-mod` takes an error message. When unbound,
+# it terminates with that message. Otherwise
 # the divisor is doubled until it reaches the dividend and then halved back
 # down, subtracting it from the dividend whenever it fits. Doubling and
 # halving a double are exact, and every subtraction happens while the

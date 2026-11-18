@@ -278,6 +278,108 @@ final class GroundedTest {
         );
     }
 
+    @Test
+    void groundsArgumentOfCallOnWhatGenericAtomReturns(@Mktmp final Path temp)
+        throws IOException {
+        MatcherAssert.assertThat(
+            "an argument of a call on what a generic atom returns must be grounded when all its returned voids agree, but it isnt",
+            new Grounded(
+                GroundedTest.facts(
+                    temp,
+                    "<objects><type id='Φ'>",
+                    "<attr name='g' type='Φ.g'/><attr name='number' type='Φ.number'/>",
+                    "</type><type id='Φ.g' returns='Φ.g.v'>",
+                    "<attr name='v' type='Φ.g.v' void='true'/>",
+                    "<attr name='a' type='Φ.g.a' void='true'/>",
+                    "<return loc='Φ.g.v'/><return loc='Φ.g.a'/>",
+                    "</type><type id='Φ.number'><attr name='eq' type='Φ.number.eq'/></type>",
+                    "<type id='Φ.number.eq'><attr name='b' type='Φ.number.eq.b' void='true'/>",
+                    "</type></objects><reads>",
+                    "<read id='Φ.app.φ' name='eq' of='Φ.app.φ.ρ'/>",
+                    "<read id='Φ.app.φ.ρ' name='g' of='Φ.app.φ.ρ.ρ'/>",
+                    "<read id='Φ.app.φ.ρ.α0' name='number' of='Φ.app.φ.ρ.α0.ρ'/>",
+                    "<read id='Φ.app.φ.ρ.α1' name='number' of='Φ.app.φ.ρ.α1.ρ'/>",
+                    "</reads><heads>",
+                    "<type id='Φ.app.φ.ρ.ρ'><ref loc='Φ'/></type>",
+                    "<type id='Φ.app.φ.ρ.α0.ρ'><ref loc='Φ'/></type>",
+                    "<type id='Φ.app.φ.ρ.α1.ρ'><ref loc='Φ'/></type>",
+                    "</heads><calls><call loc='Φ.app.φ.ρ'>",
+                    "<arg loc='Φ.app.φ.ρ.α0' n='0'/><arg loc='Φ.app.φ.ρ.α1' n='1'/>",
+                    "</call><call loc='Φ.app.φ'><arg loc='Φ.app.φ.α0' n='0'/></call></calls>"
+                )
+            ).arguments(),
+            Matchers.hasItem("Φ.app.φ.α0")
+        );
+    }
+
+    @Test
+    void groundsArgumentOfCallOnForkWithTerminatorSide(@Mktmp final Path temp)
+        throws IOException {
+        MatcherAssert.assertThat(
+            "an argument of a call read off a fork whose other side is a terminator must be grounded, but it isnt",
+            new Grounded(GroundedTest.forked(temp, "<terminator/>")).arguments(),
+            Matchers.hasItem("Φ.app.φ.α0")
+        );
+    }
+
+    @Test
+    void groundsNoArgumentOfCallOnForkWithUnknownSide(@Mktmp final Path temp)
+        throws IOException {
+        MatcherAssert.assertThat(
+            "an argument of a call read off a fork whose other side is unknown must not be grounded, but it is",
+            new Grounded(GroundedTest.forked(temp, "<data/>")).arguments(),
+            Matchers.not(Matchers.hasItem("Φ.app.φ.α0"))
+        );
+    }
+
+    @Test
+    void groundsNoArgumentOfTerminator(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "an argument of a terminator must not be grounded, but it is",
+            new Grounded(GroundedTest.forked(temp, "<terminator/>")).arguments(),
+            Matchers.not(Matchers.hasItem("Φ.app.φ.ρ.α0.α0"))
+        );
+    }
+
+    private static Path forked(final Path dir, final String side) throws IOException {
+        return GroundedTest.facts(
+            dir,
+            "<objects><type id='Φ.bool'>",
+            "<attr name='fork' type='Φ.bool.fork' void='true'/>",
+            "<attr name='if' type='Φ.bool.if'/></type>",
+            "<type id='Φ.true'><attr name='φ' type='Φ.true.φ'/></type>",
+            "<type id='Φ.false'><attr name='φ' type='Φ.false.φ'/></type>",
+            "<type id='Φ.true.φ.α0'><attr name='left' type='Φ.true.φ.α0.left' void='true'/>",
+            "<attr name='right' type='Φ.true.φ.α0.right' void='true'/>",
+            "<attr name='φ' type='Φ.true.φ.α0.φ'/></type>",
+            "<type id='Φ.false.φ.α0'><attr name='left' type='Φ.false.φ.α0.left' void='true'/>",
+            "<attr name='right' type='Φ.false.φ.α0.right' void='true'/>",
+            "<attr name='φ' type='Φ.false.φ.α0.φ'/></type>",
+            "<type id='Φ.num'><attr name='minus' type='Φ.num.minus'/></type>",
+            "<type id='Φ.num.minus'><attr name='x' type='Φ.num.minus.x' void='true'/></type>",
+            "<type id='Φ.app'><attr name='φ' type='Φ.app.φ'/></type></objects>",
+            "<reads><read id='Φ.true.φ.α0.φ' name='left' of='Φ.true.φ.α0.φ.ρ'/>",
+            "<read id='Φ.false.φ.α0.φ' name='right' of='Φ.false.φ.α0.φ.ρ'/>",
+            "<read id='Φ.bool.if' name='fork' of='Φ.bool.if.ρ'/>",
+            "<read id='Φ.app.φ' name='minus' of='Φ.app.φ.ρ'/>",
+            "<read id='Φ.app.φ.ρ' name='if' of='Φ.app.φ.ρ.ρ'/></reads>",
+            "<heads><type id='Φ.true.φ'><ref loc='Φ.bool'/></type>",
+            "<type id='Φ.false.φ'><ref loc='Φ.bool'/></type>",
+            "<type id='Φ.true.φ.α0.φ.ρ'><ref loc='Φ.true.φ.α0'/></type>",
+            "<type id='Φ.false.φ.α0.φ.ρ'><ref loc='Φ.false.φ.α0'/></type>",
+            "<type id='Φ.bool.if.ρ'><ref loc='Φ.bool'/></type>",
+            "<type id='Φ.app.φ.ρ.ρ'><ref loc='Φ.bool'/></type>",
+            String.format("<type id='Φ.app.φ.ρ.α0'>%s</type>", side),
+            "<type id='Φ.app.φ.ρ.α1'><ref loc='Φ.num'/></type></heads>",
+            "<calls><call loc='Φ.true.φ'><arg loc='Φ.true.φ.α0' n='0'/></call>",
+            "<call loc='Φ.false.φ'><arg loc='Φ.false.φ.α0' n='0'/></call>",
+            "<call loc='Φ.app.φ.ρ.α0'><arg loc='Φ.app.φ.ρ.α0.α0' n='0'/></call>",
+            "<call loc='Φ.app.φ.ρ'><arg loc='Φ.app.φ.ρ.α0' n='0'/>",
+            "<arg loc='Φ.app.φ.ρ.α1' n='1'/></call>",
+            "<call loc='Φ.app.φ'><arg loc='Φ.app.φ.α0' n='0'/></call></calls>"
+        );
+    }
+
     private static Path numbers(final Path dir) throws IOException {
         return GroundedTest.facts(
             dir,

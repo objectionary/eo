@@ -121,7 +121,7 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
-      <version>3.10.0</version>
+      <version>3.10.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -158,7 +158,7 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-settings</artifactId>
-      <version>3.10.0</version>
+      <version>3.10.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -270,7 +270,7 @@
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-xml</artifactId>
-      <version>4.2.0</version>
+      <version>4.2.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -331,15 +331,6 @@
   <build>
     <plugins>
       <plugin>
-        <!--
-        @todo #9906:30min Remove '-Dorg.aspectj.weaver.Dump.exception=false'
-        from '.mvn/jvm.config' once jcabi/jcabi-maven-plugin#294 and
-        jcabi/jcabi-maven-plugin#295 are fixed. On JDK 25, a build without
-        'clean' makes AspectJ weave 'ObjectsIndex' a second time, and AspectJ
-        crashes and leaves an 'ajcore.*.txt' crash report behind, while the
-        plugin ignores the crash and passes the build. The flag only hides
-        those reports, so bump this plugin and drop the flag together.
-        -->
         <groupId>com.jcabi</groupId>
         <artifactId>jcabi-maven-plugin</artifactId>
         <version>0.17.2</version>

@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 import org.eolang.inference.Annotation;
 
 /**
@@ -59,6 +60,19 @@ final class Calls {
     private final Map<String, Annotation> returns;
 
     /**
+     * The voids each generic atom returns, by the atom.
+     *
+     * <p>A generic atom, such as {@code [] > recovered /A} with
+     * {@code ? > value /A?} and {@code ? > alternative /A}, returns
+     * whatever was put into one of its voids that carry the same type
+     * variable, and the code does not say which one. Here, the atom
+     * {@code Φ.recovered} has two such voids,
+     * {@code Φ.recovered.v🌵value} and
+     * {@code Φ.recovered.v🌵alternative}.</p>
+     */
+    private final Map<String, List<String>> generic;
+
+    /**
      * Ctor.
      *
      * @param holes The voids of each formation other than {@code ρ}, in order
@@ -72,10 +86,30 @@ final class Calls {
         final Map<String, Map<String, String>> named,
         final Map<String, Annotation> types
     ) {
+        this(holes, positional, named, types, Collections.emptyMap());
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param holes The voids of each formation other than {@code ρ}, in order
+     * @param positional The arguments each call passes by position
+     * @param named The arguments each call binds by name
+     * @param types The type each atom says it returns
+     * @param variable The voids each generic atom returns, by the atom
+     */
+    Calls(
+        final Map<String, List<String>> holes,
+        final Map<String, Map<Integer, String>> positional,
+        final Map<String, Map<String, String>> named,
+        final Map<String, Annotation> types,
+        final Map<String, List<String>> variable
+    ) {
         this.voids = holes;
         this.slots = positional;
         this.names = named;
         this.returns = types;
+        this.generic = variable;
     }
 
     /**
@@ -143,6 +177,37 @@ final class Calls {
      */
     Optional<Annotation> returned(final String atom) {
         return Optional.ofNullable(this.returns.get(atom));
+    }
+
+    /**
+     * The voids a generic atom returns: the places of all its voids that
+     * carry the type variable the atom says it returns.
+     *
+     * @param atom The formation of the atom
+     * @return The places of the voids, empty when the atom is not generic
+     */
+    List<String> slots(final String atom) {
+        return this.generic.getOrDefault(atom, Collections.emptyList());
+    }
+
+    /**
+     * The types with brackets that the atoms say they return, which copy a
+     * formation.
+     *
+     * <p>Only the brackets tell what Java puts into the voids of the copy
+     * itself. An atom that returns a type with no brackets, such as
+     * {@code Φ.bool}, builds its copy the way {@code Data.ToPhi} does, out of
+     * the objects of the program, such as {@code Φ.true}, so the program
+     * fills the voids of that copy, not Java.</p>
+     *
+     * @param formation The formation
+     * @return The types, one for each atom that returns a copy of it with
+     *  brackets
+     */
+    List<Annotation> made(final String formation) {
+        return this.returns.values().stream().filter(
+            type -> type.head().equals(formation) && !type.members().isEmpty()
+        ).collect(Collectors.toList());
     }
 
     /**

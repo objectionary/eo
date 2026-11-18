@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -33,19 +34,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith({WeAreOnline.class, MktmpResolver.class, MayBeSlow.class})
 final class MjAssembleIT {
 
-    /**
-     * Assemble with reactor booleans: the published copies use the unsupported
-     * {@code ? >> name} syntax. stdout and its other dependencies are still pulled.
-     *
-     * @param temp Sandbox directory
-     * @throws IOException If assembly fails
-     */
     @Test
     void assemblesTogether(@Mktmp final Path temp) throws IOException {
         new Farea(temp).together(
             f -> {
                 MjAssembleIT.prepare(f, "src/main/eo/foo/x/main.eo", MjAssembleIT.program());
-                MjAssembleIT.booleans(f);
+                MjAssembleIT.plantAllBut(f, "stdout.eo");
                 f.exec("package");
                 MjAssembleIT.succeeds(f);
                 final String parsed = MjAssembleIT.stdoutPath(temp, "-parse", "stdout.xmir");
@@ -88,13 +82,23 @@ final class MjAssembleIT {
         );
     }
 
-    private static void booleans(final Farea farea) throws IOException {
-        final Path runtime = Paths.get(
+    private static void plantAllBut(final Farea farea, final String pulled)
+        throws IOException {
+        final Path home = Paths.get(
             System.getProperty("basedir", System.getProperty("user.dir"))
         ).getParent().resolve("eo-runtime/src/main/eo");
-        for (final String name : List.of("true.eo", "false.eo")) {
-            farea.files().file(String.format("src/main/eo/%s", name))
-                .save(runtime.resolve(name));
+        final List<Path> sources;
+        try (Stream<Path> paths = Files.walk(home)) {
+            sources = paths
+                .filter(Files::isRegularFile)
+                .filter(path -> path.getFileName().toString().endsWith(".eo"))
+                .filter(path -> !home.relativize(path).toString().equals(pulled))
+                .collect(Collectors.toList());
+        }
+        for (final Path source : sources) {
+            farea.files()
+                .file(String.format("src/main/eo/%s", home.relativize(source)))
+                .save(source);
         }
     }
 

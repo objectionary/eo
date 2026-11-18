@@ -2,7 +2,8 @@
 # zero. The exponent and the mantissa are pulled out of its IEEE 754 layout
 # and the magnitude is shifted into place, with the two's complement taken
 # when it is negative. When it does not fit into the bounds of an `i64`,
-# the caller-supplied `cant-convert` fallback is returned.
+# the `cant-convert` fallback takes an error message.
+# When unbound, it terminates with that message.
 #
 # The message names a magnitude in `[2^63, 2^64)` exactly, like `i64/as-decimal` (#9725).
 
