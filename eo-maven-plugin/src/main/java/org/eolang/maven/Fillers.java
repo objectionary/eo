@@ -29,7 +29,9 @@ import org.eolang.inference.Annotation;
  * (#9978).</p>
  *
  * <p>A call that puts a terminator into the void adds nothing to what the
- * void holds, since the program stops before the copy is made (#9982).</p>
+ * void holds, since the program stops before the copy is made (#9982).
+ * Neither does an argument that is the very lookup still running, as
+ * {@link Copy#looped()} says (#9983).</p>
  *
  * <p>An argument may lead back to the void itself, when a helper passes its
  * own void to itself. In the first round the void is taken to hold nothing,
@@ -203,7 +205,7 @@ final class Fillers {
             () -> arg.flatMap(place -> this.lookup.apply(place, seen))
         );
         final Stream<Optional<Copy>> found;
-        if (run.getKey().filter(Copy::stops).isPresent()
+        if (run.getKey().filter(copy -> copy.stops() || copy.loops()).isPresent()
             || run.getKey().isEmpty() && arg.isPresent() && this.guesses.blind(run.getValue())) {
             found = Stream.empty();
         } else {

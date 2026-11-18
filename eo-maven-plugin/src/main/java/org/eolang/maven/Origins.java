@@ -272,7 +272,7 @@ final class Origins {
      */
     Optional<String> formation(final String place) {
         return this.formation(place, Origins.root(), this.fillers.lookups()).filter(
-            copy -> !copy.stops()
+            copy -> !copy.stops() && !copy.loops()
         ).map(Copy::formation);
     }
 
