@@ -89,7 +89,8 @@ final class CopyTest {
                 List.of(
                     Optional.of(new Copy(new Annotation("Φ.number")).applied("Φ.app.α0", outer)),
                     Optional.of(new Copy(new Annotation("Φ.number")).applied("Φ.app.α1", outer))
-                )
+                ),
+                CopyTest.calls()
             ),
             Matchers.equalTo(Optional.of(new Copy(new Annotation("Φ.number"))))
         );
@@ -100,27 +101,95 @@ final class CopyTest {
         MatcherAssert.assertThat(
             "copies must agree on nothing when one of them is unknown, but they agree",
             Copy.agreed(
-                List.of(Optional.of(new Copy(new Annotation("Φ.number"))), Optional.empty())
+                List.of(Optional.of(new Copy(new Annotation("Φ.number"))), Optional.empty()),
+                CopyTest.calls()
             ),
             Matchers.equalTo(Optional.empty())
         );
     }
 
     @Test
-    void agreesOnNothingWhenOneCopyIsBlurred() {
+    void blursFormationsWithSameVoids() {
         MatcherAssert.assertThat(
-            "copies must agree on nothing when one of them is blurred, but they agree",
+            "copies of formations with the same voids must agree on a blurred copy of them, but they dont",
             Copy.agreed(
                 List.of(
-                    Optional.of(
-                        new Copy(new Annotation("Φ.true")).applied(
-                            "Φ.app.α0", new Copy(new Annotation("Φ.app"))
-                        )
-                    ),
-                    Optional.of(new Copy(new Annotation("Φ.true"), false))
-                )
+                    Optional.of(new Copy(new Annotation("Φ.true"))),
+                    Optional.of(new Copy(List.of("Φ.true", "Φ.false")))
+                ),
+                CopyTest.calls()
+            ),
+            Matchers.equalTo(Optional.of(new Copy(List.of("Φ.false", "Φ.true"))))
+        );
+    }
+
+    @Test
+    void keepsCallThatMadeAllCopies() {
+        final Copy outer = new Copy(new Annotation("Φ.app"));
+        MatcherAssert.assertThat(
+            "copies made by one call must agree on a copy made by it, but they dont",
+            Copy.agreed(
+                List.of(
+                    Optional.of(new Copy(new Annotation("Φ.true")).applied("Φ.app.φ", outer)),
+                    Optional.of(new Copy(new Annotation("Φ.false")).applied("Φ.app.φ", outer))
+                ),
+                CopyTest.calls()
+            ),
+            Matchers.equalTo(
+                Optional.of(new Copy(List.of("Φ.true", "Φ.false")).applied("Φ.app.φ", outer))
+            )
+        );
+    }
+
+    @Test
+    void agreesOnNothingWhenVoidsDiffer() {
+        MatcherAssert.assertThat(
+            "copies of formations with different voids must agree on nothing, but they agree",
+            Copy.agreed(
+                List.of(
+                    Optional.of(new Copy(new Annotation("Φ.tuple.eq"))),
+                    Optional.of(new Copy(List.of("Φ.bytes.eq", "Φ.bytes.gt")))
+                ),
+                CopyTest.calls()
             ),
             Matchers.equalTo(Optional.empty())
+        );
+    }
+
+    @Test
+    void givesOneSharpCandidatePerFormationWithSameCall() {
+        final Copy outer = new Copy(new Annotation("Φ.app"));
+        MatcherAssert.assertThat(
+            "a blurred copy must give a sharp copy of each formation, made by its call, but it doesnt",
+            new Copy(List.of("Φ.true", "Φ.false")).applied("Φ.app.φ", outer).candidates(),
+            Matchers.contains(
+                new Copy(new Annotation("Φ.false")).applied("Φ.app.φ", outer),
+                new Copy(new Annotation("Φ.true")).applied("Φ.app.φ", outer)
+            )
+        );
+    }
+
+    @Test
+    void isNotSoleWhenBlurred() {
+        MatcherAssert.assertThat(
+            "a copy of several formations must not be sole, but it is",
+            new Copy(List.of("Φ.true", "Φ.false")).sole(),
+            Matchers.is(false)
+        );
+    }
+
+    private static Calls calls() {
+        return new Calls(
+            Map.of(
+                "Φ.true", List.of("left", "right"),
+                "Φ.false", List.of("left", "right"),
+                "Φ.tuple.eq", List.of("other"),
+                "Φ.bytes.eq", List.of("b"),
+                "Φ.bytes.gt", List.of("b")
+            ),
+            Map.of(),
+            Map.of(),
+            Map.of()
         );
     }
 }

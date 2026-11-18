@@ -162,15 +162,11 @@ final class Fillers {
             found.add(this.calls.member(type, hole.getValue()).map(Copy::new));
         }
         final Set<String> forms = found.stream().flatMap(Optional::stream)
+            .flatMap(copy -> copy.candidates().stream())
             .map(Copy::formation).collect(Collectors.toCollection(TreeSet::new));
         final Optional<Copy> held;
         if (!this.bare.contains(hole.getKey()) && this.known(found, forms)) {
-            held = Optional.of(
-                new Copy(
-                    new Annotation(forms.iterator().next()),
-                    forms.size() == 1 && found.stream().allMatch(copy -> copy.get().sole())
-                )
-            );
+            held = Optional.of(new Copy(forms));
         } else {
             held = Optional.empty();
         }
