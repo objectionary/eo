@@ -50,4 +50,24 @@ final class LookupsTest {
             Matchers.equalTo(Optional.of(number))
         );
     }
+
+    @Test
+    void doesNotKeepWhatLookupFoundWhileLedBackToAnotherStillRunning() {
+        final Lookups seen = new Lookups(new Guesses());
+        final Map.Entry<String, String> outer = Map.entry("Φ.grow", "φ");
+        final Map.Entry<String, String> inner = Map.entry("Φ.shrink", "φ");
+        seen.once(
+            outer,
+            () -> {
+                seen.once(inner, () -> seen.once(outer, Optional::empty));
+                return Optional.empty();
+            }
+        );
+        final Copy number = new Copy(new Annotation("Φ.number"));
+        MatcherAssert.assertThat(
+            "a lookup that was led back to another one still running must be done again once that one ends, but it isnt",
+            seen.once(inner, () -> Optional.of(number)),
+            Matchers.equalTo(Optional.of(number))
+        );
+    }
 }
