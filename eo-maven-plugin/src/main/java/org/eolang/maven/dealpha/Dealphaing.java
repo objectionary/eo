@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.maven;
+package org.eolang.maven.dealpha;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
@@ -18,6 +18,11 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import org.eolang.cache.Saved;
+import org.eolang.maven.Diff;
+import org.eolang.maven.MjAssemble;
+import org.eolang.maven.MjTranspile;
+import org.eolang.maven.Place;
+import org.eolang.maven.TjForeign;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -52,7 +57,7 @@ import org.w3c.dom.NodeList;
  *
  * @since 0.69.0
  */
-final class Dealphaing implements Step {
+public final class Dealphaing {
 
     /**
      * The positional name of an argument.
@@ -83,23 +88,27 @@ final class Dealphaing implements Step {
      * Ctor.
      *
      * @param objects The tojos of the objects to rename arguments in
-     * @param names The names of the voids the arguments land in
+     * @param tables The directory with inference tables
      * @param tgt Base target directory
      * @param fail Whether to fail when an argument has no name to take
      */
-    Dealphaing(
+    public Dealphaing(
         final Collection<TjForeign> objects,
-        final Landings names,
+        final Path tables,
         final Path tgt,
         final boolean fail
     ) {
         this.tojos = objects;
-        this.landings = names;
+        this.landings = new Landings(tables);
         this.target = tgt;
         this.strict = fail;
     }
 
-    @Override
+    /**
+     * Rename positional arguments in every XMIR.
+     *
+     * @throws IOException If XMIR or inference tables cannot be read or written
+     */
     public void exec() throws IOException {
         if (this.tojos.isEmpty()) {
             Logger.debug(this, "No XMIR to name the arguments in");

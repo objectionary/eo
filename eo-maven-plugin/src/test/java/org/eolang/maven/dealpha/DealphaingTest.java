@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.maven;
+package org.eolang.maven.dealpha;
 
 import com.jcabi.matchers.XhtmlMatchers;
 import com.jcabi.xml.XMLDocument;
@@ -22,6 +22,8 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 import org.cactoos.Scalar;
 import org.cactoos.scalar.Unchecked;
+import org.eolang.maven.TjForeign;
+import org.eolang.maven.TjsForeign;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -193,7 +195,7 @@ final class DealphaingTest {
             final TjForeign tojo = tojos.add("app").withXmir(xmir);
             new Dealphaing(
                 List.of(tojo),
-                new Landings(LandingsTest.tables(temp, facts, rows)),
+                LandingsTest.tables(temp, facts, rows),
                 temp.resolve("target"),
                 strict
             ).exec();
