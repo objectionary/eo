@@ -587,46 +587,6 @@ final class OriginsTest {
     }
 
     @Test
-    void findsNothingBehindVoidHelperFillsWithWhatItReadsOffIt() {
-        MatcherAssert.assertThat(
-            "a void a helper fills with a read off it, which copies a formation with other voids, must copy nothing, but it does",
-            new Origins(
-                Map.of(
-                    "Φ", Map.of("rec", "Φ.rec"),
-                    "Φ.rec", Map.of("v", "Φ.rec.v", "φ", "Φ.rec.φ", "out", "Φ.rec.out"),
-                    "Φ.app.α0", Map.of("wrap", "Φ.app.α0.wrap", "go", "Φ.app.α0.go"),
-                    "Φ.app.α0.go", Map.of(),
-                    "Φ.app.α0.wrap", Map.of("z", "Φ.app.α0.wrap.z")
-                ),
-                new Calls(
-                    Map.of("Φ.rec", List.of("v"), "Φ.app.α0.wrap", List.of("z")),
-                    Map.of(
-                        "Φ.rec.φ", Map.of(0, "Φ.rec.φ.α0"),
-                        "Φ.app", Map.of(0, "Φ.app.α0")
-                    ),
-                    Map.of(),
-                    Map.of()
-                ),
-                Map.of(
-                    "Φ.rec.φ", Map.entry("Φ.rec.φ.ρ", "rec"),
-                    "Φ.rec.φ.α0", Map.entry("Φ.rec.φ.α0.ρ", "wrap"),
-                    "Φ.rec.φ.α0.ρ", Map.entry("Φ.rec.φ.α0.ρ.ρ", "v"),
-                    "Φ.rec.out", Map.entry("Φ.rec.out.ρ", "go"),
-                    "Φ.rec.out.ρ", Map.entry("Φ.rec.out.ρ.ρ", "v"),
-                    "Φ.app", Map.entry("Φ.app.ρ", "rec")
-                ),
-                Map.of(
-                    "Φ.rec.φ.ρ", "Φ",
-                    "Φ.rec.φ.α0.ρ.ρ", "Φ.rec",
-                    "Φ.rec.out.ρ.ρ", "Φ.rec",
-                    "Φ.app.ρ", "Φ"
-                )
-            ).formation("Φ.rec.out"),
-            Matchers.equalTo(Optional.empty())
-        );
-    }
-
-    @Test
     void findsNothingBehindVoidOnlyItsOwnHelperFills() {
         MatcherAssert.assertThat(
             "a void only its own helper fills must copy no formation the code fixes, but it does",
@@ -746,6 +706,33 @@ final class OriginsTest {
             "a void of a fork call must still copy its argument, but it doesnt",
             OriginsTest.forked("Φ.yes", "Φ.no", false).formation("Φ.got"),
             Matchers.equalTo(Optional.of("Φ.no"))
+        );
+    }
+
+    @Test
+    void followsCallOnNameReadOffVoidFilledByFormationsWithOtherVoids() {
+        MatcherAssert.assertThat(
+            "a call on a name that every formation filling a void binds to one formation must be followed, even when their voids differ, but it isnt",
+            OriginsTest.counter(false).formation("Φ.rec.out"),
+            Matchers.equalTo(Optional.of("Φ.num.eq"))
+        );
+    }
+
+    @Test
+    void findsNothingBehindCallOnVoidFilledByFormationsWithOtherVoids() {
+        MatcherAssert.assertThat(
+            "a call made right on a void filled by formations with other voids must not be followed, yet it is",
+            OriginsTest.counter(false).formation("Φ.rec.go"),
+            Matchers.equalTo(Optional.empty())
+        );
+    }
+
+    @Test
+    void readsNothingOffVoidWhenFormationsWithOtherVoidsDisagree() {
+        MatcherAssert.assertThat(
+            "a name that formations with other voids filling a void bind differently must copy nothing, but it does",
+            OriginsTest.counter(true).formation("Φ.rec.out"),
+            Matchers.equalTo(Optional.empty())
         );
     }
 
@@ -897,6 +884,56 @@ final class OriginsTest {
             ),
             reads,
             refs
+        );
+    }
+
+    private static Origins counter(final boolean own) {
+        final Map<String, String> plus = new HashMap<>(
+            Map.of("y", "Φ.num.plus.y", "φ", "Φ.num.plus.φ")
+        );
+        if (own) {
+            plus.put("eq", "Φ.num.plus.eq");
+        }
+        return new Origins(
+            Map.of(
+                "Φ", Map.of("rec", "Φ.rec", "num", "Φ.num"),
+                "Φ.rec", Map.of(
+                    "v", "Φ.rec.v", "φ", "Φ.rec.φ", "out", "Φ.rec.out", "go", "Φ.rec.go"
+                ),
+                "Φ.num", Map.of("d", "Φ.num.d", "eq", "Φ.num.eq", "plus", "Φ.num.plus"),
+                "Φ.num.eq", Map.of("x", "Φ.num.eq.x"),
+                "Φ.num.plus", plus,
+                "Φ.num.plus.eq", Map.of("z", "Φ.num.plus.eq.z")
+            ),
+            new Calls(
+                Map.of(
+                    "Φ.rec", List.of("v"), "Φ.num", List.of("d"), "Φ.num.eq", List.of("x"),
+                    "Φ.num.plus", List.of("y"), "Φ.num.plus.eq", List.of("z")
+                ),
+                Map.of(
+                    "Φ.rec.φ", Map.of(0, "Φ.rec.φ.α0"), "Φ.app", Map.of(0, "Φ.app.α0"),
+                    "Φ.rec.φ.α0", Map.of(0, "Φ.rec.φ.α0.α0"),
+                    "Φ.rec.out", Map.of(0, "Φ.rec.out.α0"),
+                    "Φ.rec.go", Map.of(0, "Φ.rec.go.α0")
+                ),
+                Map.of(),
+                Map.of()
+            ),
+            Map.of(
+                "Φ.rec.φ", Map.entry("Φ.rec.φ.ρ", "rec"),
+                "Φ.rec.φ.α0", Map.entry("Φ.rec.φ.α0.ρ", "plus"),
+                "Φ.rec.φ.α0.ρ", Map.entry("Φ.rec.φ.α0.ρ.ρ", "v"),
+                "Φ.rec.out", Map.entry("Φ.rec.out.ρ", "eq"),
+                "Φ.rec.out.ρ", Map.entry("Φ.rec.out.ρ.ρ", "v"),
+                "Φ.rec.go", Map.entry("Φ.rec.go.ρ", "v"),
+                "Φ.app", Map.entry("Φ.app.ρ", "rec")
+            ),
+            Map.of(
+                "Φ.rec.φ.ρ", "Φ", "Φ.rec.φ.α0.ρ.ρ", "Φ.rec", "Φ.rec.φ.α0.α0", "Φ.num",
+                "Φ.rec.out.ρ.ρ", "Φ.rec", "Φ.rec.out.α0", "Φ.num", "Φ.rec.go.ρ", "Φ.rec",
+                "Φ.rec.go.α0", "Φ.num", "Φ.app.ρ", "Φ", "Φ.app.α0", "Φ.num",
+                "Φ.num.plus.φ", "Φ.num"
+            )
         );
     }
 

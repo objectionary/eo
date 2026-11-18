@@ -21,10 +21,13 @@ import org.eolang.inference.Annotation;
  *
  * <p>Every call that copies the formation puts an argument into the void,
  * and every atom that returns a copy of it with brackets puts there the type
- * its brackets give. The void holds one of the formations these copy, when each of them
- * copies a formation the code fixes, all those formations have the same
- * voids in the same order, and no place copies the formation without a call.
- * With one formation the copy is sharp, and with several it is blurred.</p>
+ * its brackets give. The void holds one of the formations these copy, when
+ * each of them copies a formation the code fixes, and no place copies the
+ * formation without a call. With one formation the copy is sharp, and with
+ * several it is blurred. Those formations do not have to have the same voids:
+ * a name read off the void is looked up in each of them, while a call on the
+ * void is refused when their voids differ, as {@link Copy#uniform} says
+ * (#9978).</p>
  *
  * <p>An argument may lead back to the void itself, when a helper passes its
  * own void to itself. In the first round the void is taken to hold nothing,
@@ -176,8 +179,7 @@ final class Fillers {
     private boolean known(final List<Optional<Copy>> found, final Set<String> forms) {
         return !forms.isEmpty()
             && found.stream().allMatch(Optional::isPresent)
-            && forms.stream().allMatch(this.attributes::containsKey)
-            && forms.stream().map(this.calls::voids).distinct().count() == 1L;
+            && forms.stream().allMatch(this.attributes::containsKey);
     }
 
     private Stream<Optional<Copy>> filler(

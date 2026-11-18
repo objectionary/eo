@@ -44,15 +44,20 @@ import org.eolang.inference.Annotation;
  * positional argument goes into the void at its position, and an argument
  * bound by name goes into the void it names. A void holds one of the
  * formations that the calls of the program put there, when every argument
- * they put there copies a formation the code fixes, and all those formations
- * have the same voids in the same order: in {@code bool}, the void
+ * they put there copies a formation the code fixes: in {@code bool}, the void
  * {@code fork} is filled only by {@code true} and {@code false}, with
  * {@code [^pick left right]} and {@code [^state left right]}. An argument may
  * be a formation written right there, a read off what another call makes, or
  * a void of the caller, which is looked up the same way, one hop at a time
  * (#9954). A read of a void that several formations fill copies none of them
  * in particular, so it gives a blurred {@link Copy}, which tells where the
- * arguments of a call on it land (#9952). A name read off a blurred copy,
+ * arguments of a call on it land when all those formations have the same
+ * voids in the same order (#9952). When they do not, as with
+ * {@code Φ.number} and {@code Φ.number.plus} filling the void {@code depth}
+ * of a recursive helper, a call on the void says nothing, since its
+ * arguments land in different voids of different formations, while a name
+ * read off it, such as {@code depth.gt}, is still found (#9978). A name read
+ * off a blurred copy,
  * that is not an argument of its call, is looked up in each of those
  * formations, as if the same call had made a copy of it. It copies a
  * formation only when what they give agrees, as {@link Copy#agreed} says:
@@ -248,7 +253,9 @@ final class Origins {
                 if (this.attributes.containsKey(place)) {
                     found = Optional.of(new Copy(new Annotation(place)));
                 } else if (this.calls.contains(place)) {
-                    found = this.head(place, host, seen).map(head -> head.applied(place, host));
+                    found = this.head(place, host, seen)
+                        .filter(head -> head.uniform(this.calls))
+                        .map(head -> head.applied(place, host));
                 } else {
                     found = this.head(place, host, seen).or(() -> this.filled(place));
                 }
