@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,6 +43,10 @@ import org.eolang.inference.Annotation;
  * {@code Φ.number.plus} in a void filled by both, the copy may be read but
  * not called, since an argument at one position lands in different voids of
  * different candidates (#9978).</p>
+ *
+ * <p>A terminator makes a copy of no formation at all, as
+ * {@link #terminator()} says. A name read off it, or a call on it, is a
+ * terminator too, since the program never gets that far (#9982).</p>
  *
  * @since 0.76.0
  */
@@ -135,6 +140,26 @@ final class Copy {
     @Override
     public int hashCode() {
         return Objects.hash(this.type, this.call, this.forms);
+    }
+
+    /**
+     * The copy a terminator makes: it is of no formation at all, since the
+     * program stops there and nothing is ever read off it (#9982).
+     *
+     * @return The copy
+     */
+    static Copy terminator() {
+        return new Copy(new Annotation("⊥"), Optional.empty(), new TreeSet<>());
+    }
+
+    /**
+     * Whether it is what a terminator makes, so that the program never gets
+     * past it.
+     *
+     * @return TRUE if it is
+     */
+    boolean stops() {
+        return this.forms.isEmpty();
     }
 
     /**
@@ -240,11 +265,31 @@ final class Copy {
      * {@code bytes.eq} name their voids differently, so the argument of a
      * call on one of the two lands nowhere in particular (#9973).</p>
      *
+     * <p>A copy a terminator makes is left out, since the program stops
+     * there and never reads anything off it: {@code x.if T 42} gives what
+     * {@code 42} gives, and so does {@code recovered T 42}. When all of them
+     * are terminators, so is the result (#9982).</p>
+     *
      * @param held What each void holds
      * @param calls What the calls put into the voids
      * @return The copy they agree on, or nothing
      */
     static Optional<Copy> agreed(final Collection<Optional<Copy>> held, final Calls calls) {
+        final List<Optional<Copy>> live = held.stream().filter(
+            each -> each.map(copy -> !copy.stops()).orElse(true)
+        ).collect(Collectors.toList());
+        final Optional<Copy> found;
+        if (!held.isEmpty() && live.isEmpty()) {
+            found = Optional.of(Copy.terminator());
+        } else {
+            found = Copy.joined(live, calls);
+        }
+        return found;
+    }
+
+    private static Optional<Copy> joined(
+        final Collection<Optional<Copy>> held, final Calls calls
+    ) {
         final Set<Copy> known = held.stream().flatMap(Optional::stream).collect(
             Collectors.toSet()
         );
