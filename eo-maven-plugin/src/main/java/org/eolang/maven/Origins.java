@@ -324,8 +324,6 @@ final class Origins {
         final Optional<Copy> read;
         if (owner.stops()) {
             read = Optional.of(owner);
-        } else if (owner.loops()) {
-            read = Optional.empty();
         } else {
             read = this.member(owner, name, seen);
         }
