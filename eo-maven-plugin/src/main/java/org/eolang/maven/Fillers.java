@@ -28,6 +28,9 @@ import org.eolang.inference.Annotation;
  * void is refused when their voids differ, as {@link Copy#uniform} says
  * (#9978).</p>
  *
+ * <p>A call that puts a terminator into the void adds nothing to what the
+ * void holds, since the program stops before the copy is made (#9982).</p>
+ *
  * <p>An argument may lead back to the void itself, when a helper passes its
  * own void to itself. In the first round the void is taken to hold nothing,
  * and such an argument adds nothing. In each next round the void is taken to
@@ -200,7 +203,8 @@ final class Fillers {
             () -> arg.flatMap(place -> this.lookup.apply(place, seen))
         );
         final Stream<Optional<Copy>> found;
-        if (run.getKey().isEmpty() && arg.isPresent() && this.guesses.blind(run.getValue())) {
+        if (run.getKey().filter(Copy::stops).isPresent()
+            || run.getKey().isEmpty() && arg.isPresent() && this.guesses.blind(run.getValue())) {
             found = Stream.empty();
         } else {
             found = Stream.of(run.getKey());

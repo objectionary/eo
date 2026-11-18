@@ -109,6 +109,39 @@ final class CopyTest {
     }
 
     @Test
+    void agreesOnOtherCopyWhenOneIsTerminator() {
+        MatcherAssert.assertThat(
+            "copies must agree on what the others give when one of them is a terminator, but they dont",
+            Copy.agreed(
+                List.of(Optional.of(Copy.terminator()), Optional.of(new Copy(new Annotation("Φ.number")))),
+                CopyTest.calls()
+            ),
+            Matchers.equalTo(Optional.of(new Copy(new Annotation("Φ.number"))))
+        );
+    }
+
+    @Test
+    void agreesOnTerminatorWhenAllAreTerminators() {
+        MatcherAssert.assertThat(
+            "copies that are all terminators must agree on a terminator, but they dont",
+            Copy.agreed(
+                List.of(Optional.of(Copy.terminator()), Optional.of(Copy.terminator())),
+                CopyTest.calls()
+            ).map(Copy::stops),
+            Matchers.equalTo(Optional.of(true))
+        );
+    }
+
+    @Test
+    void agreesOnNothingWhenTerminatorMeetsUnknown() {
+        MatcherAssert.assertThat(
+            "copies must agree on nothing when one is a terminator and another is unknown, but they agree",
+            Copy.agreed(List.of(Optional.of(Copy.terminator()), Optional.empty()), CopyTest.calls()),
+            Matchers.equalTo(Optional.empty())
+        );
+    }
+
+    @Test
     void blursFormationsWithSameVoids() {
         MatcherAssert.assertThat(
             "copies of formations with the same voids must agree on a blurred copy of them, but they dont",

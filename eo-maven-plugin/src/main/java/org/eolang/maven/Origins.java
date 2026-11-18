@@ -110,6 +110,14 @@ import org.eolang.inference.Annotation;
  * {@code scope} of {@code socket.connect} with any object it likes, so the
  * callers the engine saw say nothing about it.</p>
  *
+ * <p>A terminator, such as {@code T "it broke"}, is where the program stops,
+ * so nothing is ever read off what it makes, and no call on it ever runs.
+ * Its place copies no formation, yet it is not unknown either: a read off it,
+ * or a call on it, is a terminator too, and when the candidates of a blurred
+ * copy are agreed on, a terminator among them is left out. So in
+ * {@code x.if (T "too big") 42}, a name read off the {@code .if} is looked up
+ * in {@code 42} alone (#9982).</p>
+ *
  * @since 0.76.0
  */
 final class Origins {
@@ -164,6 +172,11 @@ final class Origins {
     private final Map<String, String> answered;
 
     /**
+     * The places of the terminators, where the program stops.
+     */
+    private final Set<String> stops;
+
+    /**
      * What fills each void, by the place of the void, once it is known.
      */
     private final Map<String, Optional<Copy>> fills;
@@ -212,7 +225,29 @@ final class Origins {
         final Map<String, String> refs,
         final Map<String, String> sole
     ) {
+        this(places, applications, dispatches, refs, sole, Collections.emptySet());
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param places The place each attribute of a formation leads to
+     * @param applications What the calls put into the voids
+     * @param dispatches The reads, by the place each lands at
+     * @param refs The formation each head points at
+     * @param sole The one formation the engine saw each void hold
+     * @param ends The places of the terminators
+     */
+    Origins(
+        final Map<String, Map<String, String>> places,
+        final Calls applications,
+        final Map<String, Map.Entry<String, String>> dispatches,
+        final Map<String, String> refs,
+        final Map<String, String> sole,
+        final Set<String> ends
+    ) {
         this.attributes = places;
+        this.stops = ends;
         this.calls = applications;
         this.reads = dispatches;
         this.heads = refs;
@@ -236,9 +271,9 @@ final class Origins {
      *  does not fix it
      */
     Optional<String> formation(final String place) {
-        return this.formation(place, Origins.root(), this.fillers.lookups()).map(
-            Copy::formation
-        );
+        return this.formation(place, Origins.root(), this.fillers.lookups()).filter(
+            copy -> !copy.stops()
+        ).map(Copy::formation);
     }
 
     private Optional<Copy> formation(
@@ -248,12 +283,14 @@ final class Origins {
             Map.entry(place, host),
             () -> {
                 final Optional<Copy> found;
-                if (this.attributes.containsKey(place)) {
+                if (this.stops.contains(place)) {
+                    found = Optional.of(Copy.terminator());
+                } else if (this.attributes.containsKey(place)) {
                     found = Optional.of(new Copy(new Annotation(place)));
                 } else if (this.calls.contains(place)) {
                     found = this.head(place, host, seen)
-                        .filter(head -> head.uniform(this.calls))
-                        .map(head -> head.applied(place, host));
+                        .filter(head -> head.stops() || head.uniform(this.calls))
+                        .map(head -> Origins.applied(head, place, host));
                 } else {
                     found = this.head(place, host, seen).or(() -> this.filled(place));
                 }
@@ -288,7 +325,9 @@ final class Origins {
             Map.entry(owner, name),
             () -> {
                 final Optional<Copy> found;
-                if (owner.sole()) {
+                if (owner.stops()) {
+                    found = Optional.of(owner);
+                } else if (owner.sole()) {
                     found = owner.member(name, this.calls).map(this::copy).orElseGet(
                         () -> this.argument(owner, name, seen).or(
                             () -> this.binding(owner, name, seen)
@@ -441,6 +480,16 @@ final class Origins {
         return Optional.ofNullable(this.answered.get(place)).filter(
             form -> "φ".equals(hole.getValue()) && this.attributes.containsKey(form)
         ).map(form -> new Copy(new Annotation(form)));
+    }
+
+    private static Copy applied(final Copy head, final String place, final Copy host) {
+        final Copy made;
+        if (head.stops()) {
+            made = head;
+        } else {
+            made = head.applied(place, host);
+        }
+        return made;
     }
 
     private static Copy root() {

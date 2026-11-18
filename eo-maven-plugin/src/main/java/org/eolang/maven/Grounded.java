@@ -44,6 +44,11 @@ import org.w3c.dom.Node;
  * {@code facts.xml}, saw hold one formation and nothing else holds that
  * formation, as the {@code φ} of a {@code number} holds {@code Φ.bytes}.</p>
  *
+ * <p>A head that {@code facts.xml} marks with {@code <terminator/>}, such as
+ * {@code T "it broke"}, is where the program stops. {@link Origins} leaves it
+ * out when it agrees on the sides of an {@code .if}, so a name read off
+ * {@code x.if (T "too big") 42} is found in {@code 42} (#9982).</p>
+ *
  * <p>What an atom returns is a type, such as
  * {@code Φ.posix.status-return(Φ.number,Φ.string)}. The formation it fixes is
  * the name before the brackets, and the brackets fix what Java puts into the
@@ -196,7 +201,10 @@ final class Grounded {
                     (first, second) -> first
                 )
             ),
-            this.sole()
+            this.sole(),
+            table.element("heads").elements(Filter.withName("type")).filter(
+                type -> type.elements(Filter.withName("terminator")).findAny().isPresent()
+            ).map(type -> type.attribute("id").text().get()).collect(Collectors.toSet())
         );
         return table.element("calls").elements(Filter.withName("call"))
             .filter(call -> origins.formation(call.attribute("loc").text().get()).isPresent())
