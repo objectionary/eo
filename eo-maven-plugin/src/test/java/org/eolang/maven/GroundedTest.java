@@ -341,6 +341,36 @@ final class GroundedTest {
         );
     }
 
+    @Test
+    void groundsArgumentOfReadOffHelperWhoseOtherSideIsHelperItself(@Mktmp final Path temp)
+        throws IOException {
+        MatcherAssert.assertThat(
+            "a read off a recursive helper must be found on the side that does not lead back to it, but it isnt",
+            new Grounded(
+                GroundedTest.looping(
+                    temp, "", "<type id='Φ.grow.φ.α1'><ref loc='Φ.grow'/></type>"
+                )
+            ).arguments(),
+            Matchers.hasItem("Φ.app.φ.α0")
+        );
+    }
+
+    @Test
+    void groundsNoArgumentOfReadOffHelperWhoseOtherSideReadsOffHelper(@Mktmp final Path temp)
+        throws IOException {
+        MatcherAssert.assertThat(
+            "a read off a recursive helper must not be found when its other side reads off the helper again, but it is",
+            new Grounded(
+                GroundedTest.looping(
+                    temp,
+                    "<read id='Φ.grow.φ.α1' name='g' of='Φ.grow.φ.α1.ρ'/>",
+                    "<type id='Φ.grow.φ.α1.ρ'><ref loc='Φ.grow'/></type>"
+                )
+            ).arguments(),
+            Matchers.not(Matchers.hasItem("Φ.app.φ.α0"))
+        );
+    }
+
     private static Path forked(final Path dir, final String side) throws IOException {
         return GroundedTest.facts(
             dir,
@@ -376,6 +406,51 @@ final class GroundedTest {
             "<call loc='Φ.app.φ.ρ.α0'><arg loc='Φ.app.φ.ρ.α0.α0' n='0'/></call>",
             "<call loc='Φ.app.φ.ρ'><arg loc='Φ.app.φ.ρ.α0' n='0'/>",
             "<arg loc='Φ.app.φ.ρ.α1' n='1'/></call>",
+            "<call loc='Φ.app.φ'><arg loc='Φ.app.φ.α0' n='0'/></call></calls>"
+        );
+    }
+
+    private static Path looping(final Path dir, final String read, final String side)
+        throws IOException {
+        return GroundedTest.facts(
+            dir,
+            "<objects><type id='Φ.bool'>",
+            "<attr name='fork' type='Φ.bool.fork' void='true'/>",
+            "<attr name='if' type='Φ.bool.if'/></type>",
+            "<type id='Φ.true'><attr name='φ' type='Φ.true.φ'/></type>",
+            "<type id='Φ.false'><attr name='φ' type='Φ.false.φ'/></type>",
+            "<type id='Φ.true.φ.α0'><attr name='left' type='Φ.true.φ.α0.left' void='true'/>",
+            "<attr name='right' type='Φ.true.φ.α0.right' void='true'/>",
+            "<attr name='φ' type='Φ.true.φ.α0.φ'/></type>",
+            "<type id='Φ.false.φ.α0'><attr name='left' type='Φ.false.φ.α0.left' void='true'/>",
+            "<attr name='right' type='Φ.false.φ.α0.right' void='true'/>",
+            "<attr name='φ' type='Φ.false.φ.α0.φ'/></type>",
+            "<type id='Φ.grow'><attr name='φ' type='Φ.grow.φ'/></type>",
+            "<type id='Φ.yes'><attr name='g' type='Φ.yes.g'/></type>",
+            "<type id='Φ.yes.g'><attr name='x' type='Φ.yes.g.x' void='true'/>",
+            "<attr name='g' type='Φ.yes.g.g'/></type>",
+            "<type id='Φ.yes.g.g'><attr name='y' type='Φ.yes.g.g.y' void='true'/>",
+            "<attr name='z' type='Φ.yes.g.g.z' void='true'/></type>",
+            "<type id='Φ.app'><attr name='φ' type='Φ.app.φ'/></type></objects>",
+            "<reads><read id='Φ.true.φ.α0.φ' name='left' of='Φ.true.φ.α0.φ.ρ'/>",
+            "<read id='Φ.false.φ.α0.φ' name='right' of='Φ.false.φ.α0.φ.ρ'/>",
+            "<read id='Φ.bool.if' name='fork' of='Φ.bool.if.ρ'/>",
+            "<read id='Φ.grow.φ' name='if' of='Φ.grow.φ.ρ'/>",
+            read,
+            "<read id='Φ.app.φ' name='g' of='Φ.app.φ.ρ'/></reads>",
+            "<heads><type id='Φ.true.φ'><ref loc='Φ.bool'/></type>",
+            "<type id='Φ.false.φ'><ref loc='Φ.bool'/></type>",
+            "<type id='Φ.true.φ.α0.φ.ρ'><ref loc='Φ.true.φ.α0'/></type>",
+            "<type id='Φ.false.φ.α0.φ.ρ'><ref loc='Φ.false.φ.α0'/></type>",
+            "<type id='Φ.bool.if.ρ'><ref loc='Φ.bool'/></type>",
+            "<type id='Φ.grow.φ.ρ'><ref loc='Φ.bool'/></type>",
+            "<type id='Φ.grow.φ.α0'><ref loc='Φ.yes'/></type>",
+            side,
+            "<type id='Φ.app.φ.ρ'><ref loc='Φ.grow'/></type></heads>",
+            "<calls><call loc='Φ.true.φ'><arg loc='Φ.true.φ.α0' n='0'/></call>",
+            "<call loc='Φ.false.φ'><arg loc='Φ.false.φ.α0' n='0'/></call>",
+            "<call loc='Φ.grow.φ'><arg loc='Φ.grow.φ.α0' n='0'/>",
+            "<arg loc='Φ.grow.φ.α1' n='1'/></call>",
             "<call loc='Φ.app.φ'><arg loc='Φ.app.φ.α0' n='0'/></call></calls>"
         );
     }

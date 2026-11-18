@@ -47,8 +47,11 @@ final class Lookups {
     /**
      * What the lookup finds, done only the first time it is asked for.
      *
-     * <p>While the lookup is in progress, asking for it again finds nothing,
-     * which cuts a cycle.</p>
+     * <p>While the lookup is in progress, asking for it again finds the copy
+     * that stands for the lookup itself, as {@link Copy#looped()} says, which
+     * cuts a cycle. A side that is this copy adds nothing to what the lookup
+     * finds, while a name read off it, or a call on it, finds nothing
+     * (#9983).</p>
      *
      * @param key The lookup
      * @param fresh How to do it
@@ -58,7 +61,7 @@ final class Lookups {
         if (this.done.containsKey(key)) {
             this.guesses.replay(this.done.get(key).getValue());
         } else {
-            this.done.put(key, Map.entry(Optional.empty(), Set.of()));
+            this.done.put(key, Map.entry(Optional.of(Copy.looped()), Set.of()));
             this.done.replace(key, this.guesses.tracked(fresh));
         }
         return this.done.get(key).getKey();

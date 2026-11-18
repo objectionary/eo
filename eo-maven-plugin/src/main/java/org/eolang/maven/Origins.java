@@ -272,7 +272,7 @@ final class Origins {
      */
     Optional<String> formation(final String place) {
         return this.formation(place, Origins.root(), this.fillers.lookups()).filter(
-            copy -> !copy.stops()
+            copy -> !copy.stops() && !copy.loops()
         ).map(Copy::formation);
     }
 
@@ -324,6 +324,8 @@ final class Origins {
         final Optional<Copy> read;
         if (owner.stops()) {
             read = Optional.of(owner);
+        } else if (owner.loops()) {
+            read = Optional.empty();
         } else {
             read = this.member(owner, name, seen);
         }

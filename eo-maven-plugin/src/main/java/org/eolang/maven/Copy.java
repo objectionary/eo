@@ -153,13 +153,34 @@ final class Copy {
     }
 
     /**
+     * The copy a lookup gives when it is asked for again while it is still
+     * running: it stands for whatever that lookup finds, so a side that is
+     * this copy adds nothing to what the lookup finds (#9983).
+     *
+     * @return The copy
+     */
+    static Copy looped() {
+        return new Copy(new Annotation("↺"), Optional.empty(), new TreeSet<>());
+    }
+
+    /**
      * Whether it is what a terminator makes, so that the program never gets
      * past it.
      *
      * @return TRUE if it is
      */
     boolean stops() {
-        return this.forms.isEmpty();
+        return this.forms.isEmpty() && !this.loops();
+    }
+
+    /**
+     * Whether it stands for a lookup that is still running, as
+     * {@link #looped()} says.
+     *
+     * @return TRUE if it does
+     */
+    boolean loops() {
+        return this.forms.isEmpty() && "↺".equals(this.type.head());
     }
 
     /**
@@ -270,16 +291,25 @@ final class Copy {
      * {@code 42} gives, and so does {@code recovered T 42}. When all of them
      * are terminators, so is the result (#9982).</p>
      *
+     * <p>A copy that stands for a lookup still running, as {@link #looped()}
+     * says, is left out too: it is the very lookup that asks, so it gives
+     * only what that lookup finds, and the lookup has only to agree with the
+     * others. When every one of them is such a copy, so is the result
+     * (#9983).</p>
+     *
      * @param held What each void holds
      * @param calls What the calls put into the voids
      * @return The copy they agree on, or nothing
      */
     static Optional<Copy> agreed(final Collection<Optional<Copy>> held, final Calls calls) {
         final List<Optional<Copy>> live = held.stream().filter(
-            each -> each.map(copy -> !copy.stops()).orElse(true)
+            each -> each.map(copy -> !copy.stops() && !copy.loops()).orElse(true)
         ).collect(Collectors.toList());
         final Optional<Copy> found;
-        if (!held.isEmpty() && live.isEmpty()) {
+        if (!held.isEmpty() && live.isEmpty()
+            && held.stream().flatMap(Optional::stream).allMatch(Copy::loops)) {
+            found = Optional.of(Copy.looped());
+        } else if (!held.isEmpty() && live.isEmpty()) {
             found = Optional.of(Copy.terminator());
         } else {
             found = Copy.joined(live, calls);

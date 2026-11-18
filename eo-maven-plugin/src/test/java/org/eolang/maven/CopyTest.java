@@ -147,6 +147,42 @@ final class CopyTest {
     }
 
     @Test
+    void agreesOnOtherCopyWhenOneIsLookupStillRunning() {
+        MatcherAssert.assertThat(
+            "copies must agree on what the others give when one stands for the lookup still running, but they dont",
+            Copy.agreed(
+                List.of(
+                    Optional.of(new Copy(new Annotation("Φ.number"))),
+                    Optional.of(Copy.looped())
+                ),
+                CopyTest.calls()
+            ),
+            Matchers.equalTo(Optional.of(new Copy(new Annotation("Φ.number"))))
+        );
+    }
+
+    @Test
+    void agreesOnLookupStillRunningWhenAllStandForIt() {
+        MatcherAssert.assertThat(
+            "copies that all stand for the lookup still running must agree on it, but they dont",
+            Copy.agreed(
+                List.of(Optional.of(Copy.looped()), Optional.of(Copy.looped())),
+                CopyTest.calls()
+            ).map(Copy::loops),
+            Matchers.equalTo(Optional.of(true))
+        );
+    }
+
+    @Test
+    void doesNotTakeLookupStillRunningForTerminator() {
+        MatcherAssert.assertThat(
+            "a copy that stands for a lookup still running must not stop the program, but it does",
+            Copy.looped().stops(),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void blursFormationsWithSameVoids() {
         MatcherAssert.assertThat(
             "copies of formations with the same voids must agree on a blurred copy of them, but they dont",
