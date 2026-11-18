@@ -5,6 +5,7 @@
 package org.eolang.maven;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -581,7 +582,16 @@ final class OriginsTest {
     void followsVoidOfHelperThatPassesItToItself() {
         MatcherAssert.assertThat(
             "a void a helper passes to itself must copy what its outside caller puts there, but it doesnt",
-            OriginsTest.recursive(true).formation("Φ.rec.out"),
+            OriginsTest.recursive(true, false).formation("Φ.rec.out"),
+            Matchers.equalTo(Optional.of("Φ.app.α0.go"))
+        );
+    }
+
+    @Test
+    void followsVoidOfHelperThatPassesItToItselfTwice() {
+        MatcherAssert.assertThat(
+            "a void a helper passes to itself twice must copy what its outside caller puts there, but it doesnt",
+            OriginsTest.recursive(true, true).formation("Φ.rec.out"),
             Matchers.equalTo(Optional.of("Φ.app.α0.go"))
         );
     }
@@ -590,7 +600,7 @@ final class OriginsTest {
     void findsNothingBehindVoidOnlyItsOwnHelperFills() {
         MatcherAssert.assertThat(
             "a void only its own helper fills must copy no formation the code fixes, but it does",
-            OriginsTest.recursive(false).formation("Φ.rec.out"),
+            OriginsTest.recursive(false, false).formation("Φ.rec.out"),
             Matchers.equalTo(Optional.empty())
         );
     }
@@ -796,17 +806,25 @@ final class OriginsTest {
         );
     }
 
-    private static Origins recursive(final boolean outside) {
+    private static Origins recursive(final boolean outside, final boolean twice) {
+        final List<String> own = new ArrayList<>(List.of("φ"));
+        if (twice) {
+            own.add("two");
+        }
         final Map<String, Map<Integer, String>> slots = new HashMap<>(0);
-        slots.put("Φ.rec.φ", Map.of(0, "Φ.rec.φ.α0"));
         final Map<String, Map.Entry<String, String>> reads = new HashMap<>(0);
-        reads.put("Φ.rec.φ", Map.entry("Φ.rec.φ.ρ", "rec"));
-        reads.put("Φ.rec.φ.α0", Map.entry("Φ.rec.φ.α0.ρ", "v"));
+        final Map<String, String> refs = new HashMap<>(0);
+        for (final String name : own) {
+            final String call = String.format("Φ.rec.%s", name);
+            final String arg = String.format("%s.α0", call);
+            slots.put(call, Map.of(0, arg));
+            reads.put(call, Map.entry(String.format("%s.ρ", call), "rec"));
+            reads.put(arg, Map.entry(String.format("%s.ρ", arg), "v"));
+            refs.put(String.format("%s.ρ", call), "Φ");
+            refs.put(String.format("%s.ρ", arg), "Φ.rec");
+        }
         reads.put("Φ.rec.out", Map.entry("Φ.rec.out.ρ", "go"));
         reads.put("Φ.rec.out.ρ", Map.entry("Φ.rec.out.ρ.ρ", "v"));
-        final Map<String, String> refs = new HashMap<>(0);
-        refs.put("Φ.rec.φ.ρ", "Φ");
-        refs.put("Φ.rec.φ.α0.ρ", "Φ.rec");
         refs.put("Φ.rec.out.ρ.ρ", "Φ.rec");
         if (outside) {
             slots.put("Φ.app", Map.of(0, "Φ.app.α0"));
@@ -816,7 +834,9 @@ final class OriginsTest {
         return new Origins(
             Map.of(
                 "Φ", Map.of("rec", "Φ.rec"),
-                "Φ.rec", Map.of("v", "Φ.rec.v", "φ", "Φ.rec.φ", "out", "Φ.rec.out"),
+                "Φ.rec", Map.of(
+                    "v", "Φ.rec.v", "φ", "Φ.rec.φ", "out", "Φ.rec.out", "two", "Φ.rec.two"
+                ),
                 "Φ.app.α0", Map.of("go", "Φ.app.α0.go"),
                 "Φ.app.α0.go", Map.of()
             ),

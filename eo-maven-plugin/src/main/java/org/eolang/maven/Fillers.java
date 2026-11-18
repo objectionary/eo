@@ -4,7 +4,6 @@
  */
 package org.eolang.maven;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -69,7 +68,7 @@ final class Fillers {
     /**
      * The copy a place makes, looked up with the lookups of one round.
      */
-    private final BiFunction<String, Map<Map.Entry<?, ?>, Optional<Copy>>, Optional<Copy>> lookup;
+    private final BiFunction<String, Lookups, Optional<Copy>> lookup;
 
     /**
      * Ctor.
@@ -85,7 +84,7 @@ final class Fillers {
         final Calls applications,
         final Map<String, List<String>> made,
         final Set<String> empty,
-        final BiFunction<String, Map<Map.Entry<?, ?>, Optional<Copy>>, Optional<Copy>> copy
+        final BiFunction<String, Lookups, Optional<Copy>> copy
     ) {
         this.attributes = places;
         this.calls = applications;
@@ -114,6 +113,16 @@ final class Fillers {
      */
     Optional<Copy> hit(final String place) {
         return this.guesses.hit(place);
+    }
+
+    /**
+     * A fresh cache of lookups, aware of the voids whose fillers are being
+     * looked at.
+     *
+     * @return The lookups
+     */
+    Lookups lookups() {
+        return new Lookups(this.guesses);
     }
 
     /**
@@ -157,7 +166,7 @@ final class Fillers {
     }
 
     private Optional<Copy> shape(final Map.Entry<String, String> hole) {
-        final Map<Map.Entry<?, ?>, Optional<Copy>> seen = new HashMap<>(0);
+        final Lookups seen = this.lookups();
         final List<Optional<Copy>> found = this.copies.getOrDefault(
             hole.getKey(), List.of()
         ).stream().flatMap(call -> this.filler(call, hole, seen)).collect(Collectors.toList());
@@ -184,7 +193,7 @@ final class Fillers {
 
     private Stream<Optional<Copy>> filler(
         final String call, final Map.Entry<String, String> hole,
-        final Map<Map.Entry<?, ?>, Optional<Copy>> seen
+        final Lookups seen
     ) {
         final Optional<String> arg = this.calls.argument(call, hole.getKey(), hole.getValue());
         final Map.Entry<Optional<Copy>, Set<String>> run = this.guesses.tracked(
