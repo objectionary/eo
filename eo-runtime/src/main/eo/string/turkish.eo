@@ -38,10 +38,6 @@
 
   "ıistanbul".eq "IİSTANBUL".turkish.lower ++> can-lower-case-dotted-and-dotless-i
 
-  eq. ++> can-lower-case-every-occurrence-of-a-mapped-character
-    "ıııı"
-    "IIII".turkish.lower
-
   eq. ++> can-round-trip-a-lower-cased-word
     "ıstanbul"
     "ıstanbul".turkish.upper.turkish.lower
@@ -50,4 +46,10 @@
     "İSTANBUL"
     "İSTANBUL".turkish.lower.turkish.upper
 
-  "İSTANBUL".eq "istanbul".turkish.upper ++> can-upper-case-dotted-and-dotless-i
+  eq. ++> can-turn-dotted-and-dotless-i-to-upper-case
+    "İSTANBUL"
+    "istanbul".turkish.upper
+
+  eq. ++> can-turn-every-occurrence-of-a-mapped-character-to-lower-case
+    "ıııı"
+    "IIII".turkish.lower
