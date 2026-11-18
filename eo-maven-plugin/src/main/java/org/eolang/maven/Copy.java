@@ -31,13 +31,17 @@ import org.eolang.inference.Annotation;
  * such types, so a place reads into finitely many copies and every read
  * ends.</p>
  *
- * <p>A copy may also be blurred: its formation stands for several formations
- * that have the same voids in the same order, such as the two the program
- * puts into the {@code fork} of {@code bool}. Such a copy tells where the
- * arguments of a call on it land. It keeps all those formations, its
- * candidates, since each of them binds its attributes in its own way: a name
- * read off it is looked up in every candidate, made by the same call, and
- * copies a formation only when what they give agrees (#9973).</p>
+ * <p>A copy may also be blurred: its formation stands for several formations,
+ * such as the two the program puts into the {@code fork} of {@code bool}. It
+ * keeps all those formations, its candidates, since each of them binds its
+ * attributes in its own way: a name read off it is looked up in every
+ * candidate, made by the same call, and copies a formation only when what
+ * they give agrees (#9973). The candidates do not have to have the same
+ * voids. When they do, the copy is uniform, and it tells where the arguments
+ * of a call on it land. When they do not, as with {@code Φ.number} and
+ * {@code Φ.number.plus} in a void filled by both, the copy may be read but
+ * not called, since an argument at one position lands in different voids of
+ * different candidates (#9978).</p>
  *
  * @since 0.76.0
  */
@@ -74,9 +78,8 @@ final class Copy {
     /**
      * Ctor.
      *
-     * @param candidates The formations the copy may be of, all with the same
-     *  voids in the same order: one for a sharp copy, several for a blurred
-     *  one
+     * @param candidates The formations the copy may be of: one for a sharp
+     *  copy, several for a blurred one, which may have different voids
      */
     Copy(final Collection<String> candidates) {
         this(
@@ -142,6 +145,18 @@ final class Copy {
      */
     boolean sole() {
         return this.forms.size() == 1;
+    }
+
+    /**
+     * Whether all the formations it may be of have the same voids in the
+     * same order, so that the arguments of a call on it land in the same
+     * voids whichever formation it is. A sharp copy always is.
+     *
+     * @param calls What the calls put into the voids
+     * @return TRUE if they have
+     */
+    boolean uniform(final Calls calls) {
+        return this.forms.stream().map(calls::voids).distinct().count() == 1L;
     }
 
     /**

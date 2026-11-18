@@ -749,6 +749,33 @@ final class OriginsTest {
         );
     }
 
+    @Test
+    void followsCallOnNameReadOffVoidFilledByFormationsWithOtherVoids() {
+        MatcherAssert.assertThat(
+            "a call on a name that every formation filling a void binds to one formation must be followed, even when their voids differ, but it isnt",
+            OriginsTest.counter(false).formation("Φ.rec.out"),
+            Matchers.equalTo(Optional.of("Φ.num.eq"))
+        );
+    }
+
+    @Test
+    void findsNothingBehindCallOnVoidFilledByFormationsWithOtherVoids() {
+        MatcherAssert.assertThat(
+            "a call made right on a void filled by formations with other voids must not be followed, yet it is",
+            OriginsTest.counter(false).formation("Φ.rec.go"),
+            Matchers.equalTo(Optional.empty())
+        );
+    }
+
+    @Test
+    void readsNothingOffVoidWhenFormationsWithOtherVoidsDisagree() {
+        MatcherAssert.assertThat(
+            "a name that formations with other voids filling a void bind differently must copy nothing, but it does",
+            OriginsTest.counter(true).formation("Φ.rec.out"),
+            Matchers.equalTo(Optional.empty())
+        );
+    }
+
     private static Origins generic(final String second) {
         return new Origins(
             Map.of(
@@ -892,6 +919,68 @@ final class OriginsTest {
                     "Φ.no.foo", List.of("b")
                 ),
                 slots,
+                Map.of(),
+                Map.of()
+            ),
+            reads,
+            refs
+        );
+    }
+
+    private static Origins counter(final boolean own) {
+        final Map<String, Map<String, String>> places = new HashMap<>(0);
+        places.put("Φ", Map.of("rec", "Φ.rec", "num", "Φ.num"));
+        places.put(
+            "Φ.rec",
+            Map.of("v", "Φ.rec.v", "φ", "Φ.rec.φ", "out", "Φ.rec.out", "go", "Φ.rec.go")
+        );
+        places.put("Φ.num", Map.of("d", "Φ.num.d", "eq", "Φ.num.eq", "plus", "Φ.num.plus"));
+        places.put("Φ.num.eq", Map.of("x", "Φ.num.eq.x"));
+        if (own) {
+            places.put(
+                "Φ.num.plus",
+                Map.of("y", "Φ.num.plus.y", "φ", "Φ.num.plus.φ", "eq", "Φ.num.plus.eq")
+            );
+            places.put("Φ.num.plus.eq", Map.of("z", "Φ.num.plus.eq.z"));
+        } else {
+            places.put("Φ.num.plus", Map.of("y", "Φ.num.plus.y", "φ", "Φ.num.plus.φ"));
+        }
+        final Map<String, Map.Entry<String, String>> reads = new HashMap<>(0);
+        reads.put("Φ.rec.φ", Map.entry("Φ.rec.φ.ρ", "rec"));
+        reads.put("Φ.rec.φ.α0", Map.entry("Φ.rec.φ.α0.ρ", "plus"));
+        reads.put("Φ.rec.φ.α0.ρ", Map.entry("Φ.rec.φ.α0.ρ.ρ", "v"));
+        reads.put("Φ.rec.out", Map.entry("Φ.rec.out.ρ", "eq"));
+        reads.put("Φ.rec.out.ρ", Map.entry("Φ.rec.out.ρ.ρ", "v"));
+        reads.put("Φ.rec.go", Map.entry("Φ.rec.go.ρ", "v"));
+        reads.put("Φ.app", Map.entry("Φ.app.ρ", "rec"));
+        final Map<String, String> refs = new HashMap<>(0);
+        refs.put("Φ.rec.φ.ρ", "Φ");
+        refs.put("Φ.rec.φ.α0.ρ.ρ", "Φ.rec");
+        refs.put("Φ.rec.φ.α0.α0", "Φ.num");
+        refs.put("Φ.rec.out.ρ.ρ", "Φ.rec");
+        refs.put("Φ.rec.out.α0", "Φ.num");
+        refs.put("Φ.rec.go.ρ", "Φ.rec");
+        refs.put("Φ.rec.go.α0", "Φ.num");
+        refs.put("Φ.app.ρ", "Φ");
+        refs.put("Φ.app.α0", "Φ.num");
+        refs.put("Φ.num.plus.φ", "Φ.num");
+        return new Origins(
+            places,
+            new Calls(
+                Map.of(
+                    "Φ.rec", List.of("v"),
+                    "Φ.num", List.of("d"),
+                    "Φ.num.eq", List.of("x"),
+                    "Φ.num.plus", List.of("y"),
+                    "Φ.num.plus.eq", List.of("z")
+                ),
+                Map.of(
+                    "Φ.rec.φ", Map.of(0, "Φ.rec.φ.α0"),
+                    "Φ.rec.φ.α0", Map.of(0, "Φ.rec.φ.α0.α0"),
+                    "Φ.rec.out", Map.of(0, "Φ.rec.out.α0"),
+                    "Φ.rec.go", Map.of(0, "Φ.rec.go.α0"),
+                    "Φ.app", Map.of(0, "Φ.app.α0")
+                ),
                 Map.of(),
                 Map.of()
             ),
