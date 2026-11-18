@@ -14,7 +14,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.eolang.inference.Annotation;
 
@@ -237,17 +236,16 @@ final class Origins {
      *  does not fix it
      */
     Optional<String> formation(final String place) {
-        return this.formation(place, Origins.root(), new HashMap<>(0)).map(
+        return this.formation(place, Origins.root(), this.fillers.lookups()).map(
             Copy::formation
         );
     }
 
     private Optional<Copy> formation(
-        final String place, final Copy host, final Map<Map.Entry<?, ?>, Optional<Copy>> seen
+        final String place, final Copy host, final Lookups seen
     ) {
-        return Origins.once(
+        return seen.once(
             Map.entry(place, host),
-            seen,
             () -> {
                 final Optional<Copy> found;
                 if (this.attributes.containsKey(place)) {
@@ -265,7 +263,7 @@ final class Origins {
     }
 
     private Optional<Copy> head(
-        final String place, final Copy host, final Map<Map.Entry<?, ?>, Optional<Copy>> seen
+        final String place, final Copy host, final Lookups seen
     ) {
         final Optional<Copy> found;
         if (this.reads.containsKey(place)) {
@@ -284,11 +282,10 @@ final class Origins {
     }
 
     private Optional<Copy> attribute(
-        final Copy owner, final String name, final Map<Map.Entry<?, ?>, Optional<Copy>> seen
+        final Copy owner, final String name, final Lookups seen
     ) {
-        return Origins.once(
+        return seen.once(
             Map.entry(owner, name),
-            seen,
             () -> {
                 final Optional<Copy> found;
                 if (owner.sole()) {
@@ -313,7 +310,7 @@ final class Origins {
     }
 
     private Optional<Copy> argument(
-        final Copy owner, final String name, final Map<Map.Entry<?, ?>, Optional<Copy>> seen
+        final Copy owner, final String name, final Lookups seen
     ) {
         return owner.argument(name, this.calls).flatMap(
             arg -> this.formation(arg.getKey(), arg.getValue(), seen)
@@ -321,7 +318,7 @@ final class Origins {
     }
 
     private Optional<Copy> binding(
-        final Copy owner, final String name, final Map<Map.Entry<?, ?>, Optional<Copy>> seen
+        final Copy owner, final String name, final Lookups seen
     ) {
         final Map<String, String> places = this.attributes.getOrDefault(
             owner.formation(), Collections.emptyMap()
@@ -343,7 +340,7 @@ final class Origins {
 
     private Optional<Copy> generic(
         final Copy owner, final Map<String, String> places,
-        final Map<Map.Entry<?, ?>, Optional<Copy>> seen
+        final Lookups seen
     ) {
         final List<Optional<Copy>> held = new ArrayList<>(2);
         for (final String slot : this.calls.slots(owner.formation())) {
@@ -435,7 +432,7 @@ final class Origins {
     }
 
     private Optional<String> fresh(final String place) {
-        return this.head(place, Origins.root(), new HashMap<>(0)).filter(
+        return this.head(place, Origins.root(), this.fillers.lookups()).filter(
             head -> head.equals(new Copy(new Annotation(head.formation())))
         ).map(Copy::formation);
     }
@@ -454,17 +451,5 @@ final class Origins {
         return Optional.of(type).filter(
             kind -> this.attributes.containsKey(kind.head())
         ).map(Copy::new);
-    }
-
-    private static Optional<Copy> once(
-        final Map.Entry<?, ?> key,
-        final Map<Map.Entry<?, ?>, Optional<Copy>> seen,
-        final Supplier<Optional<Copy>> fresh
-    ) {
-        if (!seen.containsKey(key)) {
-            seen.put(key, Optional.empty());
-            seen.replace(key, fresh.get());
-        }
-        return seen.get(key);
     }
 }
