@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+name: ticket-guard
+'on':
+  pull_request:
+    branches:
+      - master
+    types:
+      - opened
+      - reopened
+      - edited
+      - synchronize
+permissions: {}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  ticket-guard:
+    runs-on: ubuntu-slim
+    timeout-minutes: 3
+    permissions:
+      issues: read
+      pull-requests: read
+    steps:
+      - uses: illia-m-b/ticket-guard-action@v1
+        with:
+          ignore-actors: |
+            dependabot[bot]
+            renovate[bot]
+            github-actions[bot]

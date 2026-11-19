@@ -73,6 +73,18 @@ final class Guesses {
     }
 
     /**
+     * Note that the lookup in progress ran into the voids again, when it
+     * reuses what an earlier lookup found while running into them.
+     *
+     * @param places The places of the voids
+     */
+    void replay(final Set<String> places) {
+        if (!this.touched.isEmpty()) {
+            this.touched.peek().addAll(places);
+        }
+    }
+
+    /**
      * Take the void to hold something, and open it, if it is not open yet.
      *
      * @param place The place of the void
