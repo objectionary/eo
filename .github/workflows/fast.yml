@@ -114,7 +114,7 @@ jobs:
       # leg builds with lowering explicitly off, keeping the disabled path
       # of the goal continuously covered.
       - if: ${{ matrix.os == 'ubuntu-24.04' }}
-        uses: objectionary/phino@8aa9f018d3f5ccf3da76e7d19a63b96415879636  # master
+        uses: objectionary/phino@c8b0eef7031bb23c3797e02e3212fae3fd551295  # master
         with:
           version: 0.0.165
       - if: ${{ matrix.os != 'ubuntu-24.04' }}
