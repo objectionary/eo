@@ -91,6 +91,12 @@
     "m"
     "some".at -2
 
+  eq. ++> can-return-a-character-with-a-terminator-for-the-fallback
+    "m"
+    "some".at
+      2
+      T
+
   eq. ++> can-return-the-first-character
     "s"
     "some".at 0

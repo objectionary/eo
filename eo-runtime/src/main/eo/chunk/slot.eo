@@ -156,6 +156,19 @@
           mem.slot 4 8 > parent
       true
 
+  ++> can-read-a-slot-with-a-terminator-for-the-error
+    eq. > @
+      malloc.of
+        8
+        [mem]
+          seq * > @
+            part
+            part.write 0 01-02
+            part.write 2 03-04
+            part.read 0 4 T
+          mem.slot 2 4 > part
+      01-02-03-04
+
   ++> can-read-and-write-at-slot-edges
     eq. > @
       malloc.of

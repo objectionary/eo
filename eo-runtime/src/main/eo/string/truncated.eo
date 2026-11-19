@@ -74,6 +74,12 @@
     "hey"
     "hey".truncated 3
 
+  eq. ++> can-truncate-a-text-with-a-terminator-for-the-error
+    "Je"
+    "Jeff".truncated
+      2
+      T
+
   eq. ++> can-truncate-to-an-empty-text
     ""
     "Jeffrey".truncated 0

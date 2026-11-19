@@ -272,6 +272,16 @@
     [items] > array
       items > elements
 
+  eq. ++> can-take-an-item-with-a-terminator-for-the-fallback
+    "one"
+    at.
+      *
+        "zero"
+        "one"
+        "two"
+      1
+      T
+
   ++> can-take-the-first-item-by-a-negative-index
     eq. > @
       array.at -5

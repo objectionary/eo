@@ -40,6 +40,11 @@
 
   1.as-u64.as-number.eq 1 ++> can-convert-one-to-u64-and-back
 
+  eq. ++> can-convert-one-to-u64-with-a-terminator-for-the-error
+    as-bytes.
+      1.as-u64 T
+    00-00-00-00-00-00-00-01
+
   eq. ++> can-convert-the-largest-u64
     1.844674407370955e19.as-u64.as-bytes
     FF-FF-FF-FF-FF-FF-F8-00

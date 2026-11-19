@@ -20,6 +20,10 @@
 
   00-00-00-33.as-i32.as-bytes.eq 00-00-00-33 ++> can-convert-bytes-to-i32-and-back
 
+  eq. ++> can-convert-bytes-to-i32-with-a-terminator-for-the-error
+    00-00-00-2A.as-i32 T
+    i32 00-00-00-2A
+
   eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-i32
     i32 FF-FE-4C-17
     03-5A-E1.as-i32
