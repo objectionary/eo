@@ -399,9 +399,9 @@ final class OriginsTest {
     }
 
     @Test
-    void findsNothingBehindVoidOfCopyWithMoreVoidsThanArguments() {
+    void findsNothingBehindVoidThatCallLeavesEmpty() {
         MatcherAssert.assertThat(
-            "a read of a void of a copy its call leaves short of arguments must copy no formation the code fixes, but it does",
+            "a read of a void that the call leaves empty must copy no formation the code fixes, but it does",
             new Origins(
                 Map.of(
                     "Φ", Map.of("status", "Φ.status", "number", "Φ.number"),
@@ -416,7 +416,7 @@ final class OriginsTest {
                     Map.of()
                 ),
                 Map.of(
-                    "Φ.status.code", Map.entry("Φ.status.code.ρ", "cde"),
+                    "Φ.status.code", Map.entry("Φ.status.code.ρ", "msg"),
                     "Φ.app.φ", Map.entry("Φ.app.φ.ρ", "code"),
                     "Φ.app.φ.ρ", Map.entry("Φ.app.φ.ρ.ρ", "status"),
                     "Φ.app.φ.ρ.α0", Map.entry("Φ.app.φ.ρ.α0.ρ", "number")
