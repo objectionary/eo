@@ -21,9 +21,10 @@ import org.eolang.inference.Annotation;
  * written. With {@code [cde msg] > status}, the call {@code status 0 "done"}
  * at {@code Φ.app.φ} puts the object at {@code Φ.app.φ.α0} into
  * {@code cde} and the one at {@code Φ.app.φ.α1} into {@code msg}. An
- * argument bound by name goes into the void it names. The code tells where an
- * argument goes only when its call fills every void of the formation once,
- * so a call with fewer or more arguments than voids tells nothing here. A
+ * argument bound by name goes into the void it names. A call may leave some
+ * voids empty, and then its arguments still go where their positions and
+ * names say, but a call with an argument past the last void, or with two
+ * arguments for one void, tells nothing here. A
  * head whose copy already holds something in a void has no room for that
  * many arguments, so such a call fails before anyone reads its voids.</p>
  *
@@ -147,11 +148,19 @@ final class Calls {
     /**
      * The place of the argument that a call puts into a void.
      *
+     * <p>The arguments of the call must fit into the voids: every positional
+     * argument has a void at its position, and every argument bound by name
+     * goes into a void of the formation that no positional argument fills.
+     * They may leave some voids empty: with
+     * {@code [text width fill cant-pad] > padded-left}, the call
+     * {@code "42".padded-left 5 " "} puts {@code 5} into {@code width} and
+     * leaves {@code cant-pad} empty (#10010).</p>
+     *
      * @param call The place of the call
      * @param formation The formation the call copies
      * @param name The name of the void
-     * @return The place of the argument, or nothing when the call does not
-     *  fill every void of the formation once
+     * @return The place of the argument, or nothing when the call leaves the
+     *  void empty or its arguments do not fit into the voids
      */
     Optional<String> argument(final String call, final String formation, final String name) {
         final List<String> holes = this.voids.getOrDefault(formation, Collections.emptyList());
@@ -159,7 +168,7 @@ final class Calls {
         final Map<String, String> bound = this.names.getOrDefault(call, Collections.emptyMap());
         final int pos = holes.indexOf(name);
         final Optional<String> found;
-        if (pos < 0 || holes.size() != placed.size() + bound.size()) {
+        if (pos < 0 || !Calls.fitting(holes, placed, bound)) {
             found = Optional.empty();
         } else {
             found = Optional.ofNullable(placed.get(pos)).or(
@@ -251,5 +260,26 @@ final class Calls {
             found = Optional.empty();
         }
         return found;
+    }
+
+    private static boolean fitting(
+        final List<String> holes, final Map<Integer, String> placed,
+        final Map<String, String> bound
+    ) {
+        boolean fit = true;
+        for (final int pos : placed.keySet()) {
+            if (pos < 0 || pos >= holes.size()) {
+                fit = false;
+                break;
+            }
+        }
+        for (final String name : bound.keySet()) {
+            final int pos = holes.indexOf(name);
+            if (pos < 0 || placed.containsKey(pos)) {
+                fit = false;
+                break;
+            }
+        }
+        return fit;
     }
 }
