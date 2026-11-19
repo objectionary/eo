@@ -71,6 +71,36 @@ final class GroundedTest {
     }
 
     @Test
+    void groundsNoArgumentOfCallOnVoidSomeCallerFillsWithTerminator(@Mktmp final Path temp)
+        throws IOException {
+        MatcherAssert.assertThat(
+            "an argument of a call on a void that may hold the terminator must not be grounded, since the terminator takes no argument by name, but it is",
+            new Grounded(
+                GroundedTest.facts(
+                    temp,
+                    "<objects><type id='Φ.guard'>",
+                    "<attr name='fail' type='Φ.guard.fail' void='true'/>",
+                    "<attr name='φ' type='Φ.guard.φ'/>",
+                    "</type><type id='Φ.app'><attr name='φ' type='Φ.app.φ'/></type>",
+                    "<type id='Φ.other'><attr name='φ' type='Φ.other.φ'/></type>",
+                    "<type id='Φ.app.φ.α0'>",
+                    "<attr name='message' type='Φ.app.φ.α0.message' void='true'/>",
+                    "</type></objects>",
+                    "<reads><read id='Φ.guard.φ' name='fail' of='Φ.guard.φ.ρ'/></reads>",
+                    "<heads><type id='Φ.guard.φ.ρ'><ref loc='Φ.guard'/></type>",
+                    "<type id='Φ.app.φ'><ref loc='Φ.guard'/></type>",
+                    "<type id='Φ.other.φ'><ref loc='Φ.guard'/></type>",
+                    "<type id='Φ.other.φ.α0'><terminator/></type></heads>",
+                    "<calls><call loc='Φ.guard.φ'><arg loc='Φ.guard.φ.α0' n='0'/></call>",
+                    "<call loc='Φ.app.φ'><arg loc='Φ.app.φ.α0' n='0'/></call>",
+                    "<call loc='Φ.other.φ'><arg loc='Φ.other.φ.α0' n='0'/></call></calls>"
+                )
+            ).arguments(),
+            Matchers.not(Matchers.hasItem("Φ.guard.φ.α0"))
+        );
+    }
+
+    @Test
     void groundsArgumentOfCallBehindVoidTheEngineAnswers(@Mktmp final Path temp)
         throws IOException {
         Files.write(

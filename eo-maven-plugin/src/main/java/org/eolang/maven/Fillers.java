@@ -42,9 +42,11 @@ import org.eolang.inference.Annotation;
  * such as {@code safe 5 T} in a test of {@code [x cant] > safe}. That call
  * shows that the void may be left with the terminator in it, so a place that
  * leaves it empty adds nothing more. Then the void holds the terminator, when
- * no other call fills it, and what the other calls put there otherwise
- * (#9997). A void that would be known this way, if only some call put a
- * terminator into it, is remembered, as {@link #vacant()} says, so that the
+ * no other call fills it, and what the other calls put there otherwise,
+ * in a copy that may be the terminator instead, as {@link Copy#ends()} says,
+ * since a call on the void may then land in the terminator (#9997). A void
+ * that would be known this way, if only some call put a terminator into it,
+ * is remembered, as {@link #vacant()} says, so that the
  * test it lacks may be named.</p>
  *
  * <p>An argument may lead back to the void itself, when a helper passes its
@@ -229,7 +231,7 @@ final class Fillers {
         } else if (live.isEmpty()) {
             held = Optional.of(Copy.terminator());
         } else {
-            held = this.known(live);
+            held = this.known(live).map(copy -> copy.ending(copy.ends() || ends));
         }
         return Map.entry(
             held, vacant && !ends && (live.isEmpty() || this.known(live).isPresent())
@@ -265,7 +267,11 @@ final class Fillers {
         if (!forms.isEmpty()
             && live.stream().allMatch(Optional::isPresent)
             && forms.stream().allMatch(this.attributes::containsKey)) {
-            found = Optional.of(new Copy(forms));
+            found = Optional.of(
+                new Copy(forms).ending(
+                    live.stream().flatMap(Optional::stream).anyMatch(Copy::ends)
+                )
+            );
         } else {
             found = Optional.empty();
         }

@@ -74,7 +74,7 @@ final class FillersTest {
                 Set.of("Φ.app.t", "Φ.app.f"),
                 Set.of("Φ.safe")
             ).held("Φ.safe.cant", Map.entry("Φ.safe", "cant")).getKey(),
-            Matchers.equalTo(Optional.of(new Copy(List.of("Φ.fix"))))
+            Matchers.equalTo(Optional.of(new Copy(List.of("Φ.fix")).ending(true)))
         );
     }
 

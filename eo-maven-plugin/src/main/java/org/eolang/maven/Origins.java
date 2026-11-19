@@ -273,11 +273,12 @@ final class Origins {
      *
      * @param place The locator of the place
      * @return The locator of the formation, or nothing when the code alone
-     *  does not fix it
+     *  does not fix it, or when the place may be the terminator instead, as
+     *  {@link Copy#ends()} says
      */
     Optional<String> formation(final String place) {
         return this.formation(place, Origins.ROOT, this.fillers.lookups()).filter(
-            copy -> !copy.stops() && !copy.loops()
+            copy -> !copy.stops() && !copy.loops() && !copy.ends()
         ).map(Copy::formation);
     }
 
