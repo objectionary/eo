@@ -170,6 +170,27 @@ final class Calls {
     }
 
     /**
+     * Whether a call leaves a void of the formation it copies empty.
+     *
+     * <p>It does when it passes fewer arguments by position than it takes to
+     * reach the void, and binds nothing to it by name. With
+     * {@code [i fallback] > at}, the call {@code s.at 3} leaves out
+     * {@code fallback}, but not {@code i} (#9997).</p>
+     *
+     * @param call The place of the call
+     * @param formation The formation the call copies
+     * @param name The name of the void
+     * @return TRUE if it leaves the void empty
+     */
+    boolean leaves(final String call, final String formation, final String name) {
+        final int pos = this.voids.getOrDefault(formation, Collections.emptyList())
+            .indexOf(name);
+        return pos >= 0
+            && !this.slots.getOrDefault(call, Collections.emptyMap()).containsKey(pos)
+            && !this.names.getOrDefault(call, Collections.emptyMap()).containsKey(name);
+    }
+
+    /**
      * The type an atom says it returns.
      *
      * @param atom The formation of the atom

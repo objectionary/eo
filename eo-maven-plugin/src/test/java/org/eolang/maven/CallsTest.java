@@ -65,6 +65,48 @@ final class CallsTest {
     }
 
     @Test
+    void leavesOutVoidPastLastPositionalArgument() {
+        MatcherAssert.assertThat(
+            "a call with fewer arguments than voids must leave the last void empty, but it doesnt",
+            new Calls(
+                Map.of("Φ.string.at", List.of("i", "fallback")),
+                Map.of("Φ.app.φ", Map.of(0, "Φ.app.φ.α0")),
+                Map.of(),
+                Map.of()
+            ).leaves("Φ.app.φ", "Φ.string.at", "fallback"),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void doesNotLeaveOutVoidThatGetsArgument() {
+        MatcherAssert.assertThat(
+            "a call must not leave empty a void its positional argument goes into, but it does",
+            new Calls(
+                Map.of("Φ.string.at", List.of("i", "fallback")),
+                Map.of("Φ.app.φ", Map.of(0, "Φ.app.φ.α0")),
+                Map.of(),
+                Map.of()
+            ).leaves("Φ.app.φ", "Φ.string.at", "i"),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void doesNotLeaveOutVoidBoundByName() {
+        MatcherAssert.assertThat(
+            "a call must not leave empty a void it binds by name, but it does",
+            new Calls(
+                Map.of("Φ.string.at", List.of("i", "fallback")),
+                Map.of("Φ.app.φ", Map.of(0, "Φ.app.φ.α0")),
+                Map.of("Φ.app.φ", Map.of("fallback", "Φ.app.φ.f")),
+                Map.of()
+            ).leaves("Φ.app.φ", "Φ.string.at", "fallback"),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void findsTypeBracketsGiveVoid() {
         final String kind = String.format("Φ.kind%d", new SecureRandom().nextInt(10_000));
         MatcherAssert.assertThat(
