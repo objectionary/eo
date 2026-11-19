@@ -38,7 +38,7 @@ jobs:
       # macOS build with lowering explicitly off, keeping the disabled path
       # of the goal continuously covered.
       - if: ${{ matrix.os == 'ubuntu-24.04' }}
-        uses: objectionary/phino@82259db92b0b2c6d956f9752b4a0959a1a3e72d8  # master
+        uses: objectionary/phino@39397bd31cf59bdd939416a0e7baa9f575f00916  # master
         with:
           version: 0.0.165
       - if: ${{ matrix.os != 'ubuntu-24.04' }}
