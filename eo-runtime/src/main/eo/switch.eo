@@ -96,6 +96,14 @@
       * true "TRUE2"
     "TRUE1"
 
+  eq. ++> can-switch-with-a-terminator-for-the-fallback
+    "2"
+    switch
+      *
+        * false "1"
+        * true "2"
+      T
+
   switch * --> stops-on-all-false-cases-without-fallback
     *
       false

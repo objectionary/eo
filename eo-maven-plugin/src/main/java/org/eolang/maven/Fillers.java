@@ -4,6 +4,8 @@
  */
 package org.eolang.maven;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,7 +13,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.eolang.inference.Annotation;
 
 /**
@@ -32,6 +33,21 @@ import org.eolang.inference.Annotation;
  * void holds, since the program stops before the copy is made (#9982).
  * Neither does an argument that is the very lookup still running, as
  * {@link Copy#looped()} says (#9983).</p>
+ *
+ * <p>A place that copies the formation without a call, or a call that leaves
+ * the void out, as {@link Calls#leaves} says, leaves the void empty. The code
+ * does not say what is there then, since an atom, or a helper the formation
+ * is handed to, may fill it, so such a place makes the void unknown. There is
+ * one exception: some call of the program puts a terminator into the void,
+ * such as {@code safe 5 T} in a test of {@code [x cant] > safe}. That call
+ * shows that the void may be left with the terminator in it, so a place that
+ * leaves it empty adds nothing more. Then the void holds the terminator, when
+ * no other call fills it, and what the other calls put there otherwise,
+ * in a copy that may be the terminator instead, as {@link Copy#ends()} says,
+ * since a call on the void may then land in the terminator (#9997). A void
+ * that would be known this way, if only some call put a terminator into it,
+ * is remembered, as {@link #vacant()} says, so that the
+ * test it lacks may be named.</p>
  *
  * <p>An argument may lead back to the void itself, when a helper passes its
  * own void to itself. In the first round the void is taken to hold nothing,
@@ -76,6 +92,12 @@ final class Fillers {
     private final BiFunction<String, Lookups, Optional<Copy>> lookup;
 
     /**
+     * The voids that are left empty and would be known if some call put a
+     * terminator into them: the formation and the name of each.
+     */
+    private final Set<Map.Entry<String, String>> empties;
+
+    /**
      * Ctor.
      *
      * @param places The place each attribute of a formation leads to
@@ -97,6 +119,23 @@ final class Fillers {
         this.bare = empty;
         this.guesses = new Guesses();
         this.lookup = copy;
+        this.empties = new HashSet<>(0);
+    }
+
+    /**
+     * The voids that the places of the program leave empty, and that would be
+     * known if some call put a terminator into them, among the voids looked
+     * at so far.
+     *
+     * <p>Such a void needs a test that passes the terminator to it, when it
+     * may be left empty indeed: then the program itself says that it may hold
+     * the terminator. A void that an atom, or a helper, fills is listed too,
+     * since the code does not tell that from a void left empty (#9997).</p>
+     *
+     * @return The formation and the name of each void
+     */
+    Set<Map.Entry<String, String>> vacant() {
+        return this.empties;
     }
 
     /**
@@ -146,57 +185,100 @@ final class Fillers {
         final String place, final Map.Entry<String, String> hole
     ) {
         this.guesses.guess(place, Optional.empty());
+        final List<Boolean> lacking = new ArrayList<>(1);
         final Map.Entry<Optional<Copy>, Set<String>> run = this.guesses.tracked(
-            () -> this.held(place, hole, Optional.empty(), 8)
+            () -> this.held(place, hole, Optional.empty(), 8, lacking)
         );
         this.guesses.close(place);
-        return Map.entry(run.getKey(), !this.guesses.leaning(run.getValue()));
+        final boolean settled = !this.guesses.leaning(run.getValue());
+        if (settled && lacking.contains(true)) {
+            this.empties.add(hole);
+        }
+        return Map.entry(run.getKey(), settled);
     }
 
     private Optional<Copy> held(
         final String place, final Map.Entry<String, String> hole,
-        final Optional<Copy> guess, final int left
+        final Optional<Copy> guess, final int left, final List<Boolean> lacking
     ) {
-        final Optional<Copy> next = this.shape(hole);
+        final Map.Entry<Optional<Copy>, Boolean> shaped = this.shape(hole);
+        final Optional<Copy> next = shaped.getKey();
         final Optional<Copy> found;
         if (next.isEmpty() || next.equals(guess)) {
             found = next;
+            lacking.add(shaped.getValue());
         } else if (left == 0) {
             found = Optional.empty();
         } else {
             this.guesses.guess(place, next);
-            found = this.held(place, hole, next, left - 1);
+            found = this.held(place, hole, next, left - 1, lacking);
         }
         return found;
     }
 
-    private Optional<Copy> shape(final Map.Entry<String, String> hole) {
+    private Map.Entry<Optional<Copy>, Boolean> shape(final Map.Entry<String, String> hole) {
+        final List<Optional<Copy>> found = this.found(hole);
+        final boolean ends = found.stream().anyMatch(
+            each -> each.filter(Copy::stops).isPresent()
+        );
+        final List<Optional<Copy>> live = found.stream().filter(
+            each -> each.map(copy -> !copy.stops()).orElse(true)
+        ).collect(Collectors.toList());
+        final boolean vacant = this.vacant(hole);
+        final Optional<Copy> held;
+        if (!ends && (vacant || live.isEmpty())) {
+            held = Optional.empty();
+        } else if (live.isEmpty()) {
+            held = Optional.of(Copy.terminator());
+        } else {
+            held = this.known(live).map(copy -> copy.ending(copy.ends() || ends));
+        }
+        return Map.entry(
+            held, vacant && !ends && (live.isEmpty() || this.known(live).isPresent())
+        );
+    }
+
+    private boolean vacant(final Map.Entry<String, String> hole) {
+        return this.bare.contains(hole.getKey())
+            || this.copies.getOrDefault(hole.getKey(), List.of()).stream().anyMatch(
+                call -> this.calls.leaves(call, hole.getKey(), hole.getValue())
+            );
+    }
+
+    private List<Optional<Copy>> found(final Map.Entry<String, String> hole) {
         final Lookups seen = this.lookups();
-        final List<Optional<Copy>> found = this.copies.getOrDefault(
-            hole.getKey(), List.of()
-        ).stream().flatMap(call -> this.filler(call, hole, seen)).collect(Collectors.toList());
+        final List<Optional<Copy>> found = new ArrayList<>(0);
+        for (final String call : this.copies.getOrDefault(hole.getKey(), List.of())) {
+            if (!this.calls.leaves(call, hole.getKey(), hole.getValue())) {
+                this.filler(call, hole, seen).ifPresent(found::add);
+            }
+        }
         for (final Annotation type : this.calls.made(hole.getKey())) {
             found.add(this.calls.member(type, hole.getValue()).map(Copy::new));
         }
-        final Set<String> forms = found.stream().flatMap(Optional::stream)
+        return found;
+    }
+
+    private Optional<Copy> known(final List<Optional<Copy>> live) {
+        final Set<String> forms = live.stream().flatMap(Optional::stream)
             .flatMap(copy -> copy.candidates().stream())
             .map(Copy::formation).collect(Collectors.toCollection(TreeSet::new));
-        final Optional<Copy> held;
-        if (!this.bare.contains(hole.getKey()) && this.known(found, forms)) {
-            held = Optional.of(new Copy(forms));
+        final Optional<Copy> found;
+        if (!forms.isEmpty()
+            && live.stream().allMatch(Optional::isPresent)
+            && forms.stream().allMatch(this.attributes::containsKey)) {
+            found = Optional.of(
+                new Copy(forms).ending(
+                    live.stream().flatMap(Optional::stream).anyMatch(Copy::ends)
+                )
+            );
         } else {
-            held = Optional.empty();
+            found = Optional.empty();
         }
-        return held;
+        return found;
     }
 
-    private boolean known(final List<Optional<Copy>> found, final Set<String> forms) {
-        return !forms.isEmpty()
-            && found.stream().allMatch(Optional::isPresent)
-            && forms.stream().allMatch(this.attributes::containsKey);
-    }
-
-    private Stream<Optional<Copy>> filler(
+    private Optional<Optional<Copy>> filler(
         final String call, final Map.Entry<String, String> hole,
         final Lookups seen
     ) {
@@ -204,12 +286,12 @@ final class Fillers {
         final Map.Entry<Optional<Copy>, Set<String>> run = this.guesses.tracked(
             () -> arg.flatMap(place -> this.lookup.apply(place, seen))
         );
-        final Stream<Optional<Copy>> found;
-        if (run.getKey().filter(copy -> copy.stops() || copy.loops()).isPresent()
+        final Optional<Optional<Copy>> found;
+        if (run.getKey().filter(Copy::loops).isPresent()
             || run.getKey().isEmpty() && arg.isPresent() && this.guesses.blind(run.getValue())) {
-            found = Stream.empty();
+            found = Optional.empty();
         } else {
-            found = Stream.of(run.getKey());
+            found = Optional.of(run.getKey());
         }
         return found;
     }

@@ -123,6 +123,11 @@ import org.eolang.inference.Annotation;
 final class Origins {
 
     /**
+     * The copy of {@code Φ}, the formation every place is written in.
+     */
+    private static final Copy ROOT = new Copy(new Annotation("Φ"));
+
+    /**
      * The place each attribute of a formation leads to, by the name, by the
      * formation: the body of a bound attribute, the formation a declared
      * {@code ρ} is written in, or the void itself for any other void. Nothing
@@ -259,7 +264,7 @@ final class Origins {
         this.stage = new AtomicInteger();
         this.fillers = new Fillers(
             places, applications, this.copies, this.bare,
-            (place, seen) -> this.formation(place, Origins.root(), seen)
+            (place, seen) -> this.formation(place, Origins.ROOT, seen)
         );
     }
 
@@ -268,12 +273,24 @@ final class Origins {
      *
      * @param place The locator of the place
      * @return The locator of the formation, or nothing when the code alone
-     *  does not fix it
+     *  does not fix it, or when the place may be the terminator instead, as
+     *  {@link Copy#ends()} says
      */
     Optional<String> formation(final String place) {
-        return this.formation(place, Origins.root(), this.fillers.lookups()).filter(
-            copy -> !copy.stops() && !copy.loops()
+        return this.formation(place, Origins.ROOT, this.fillers.lookups()).filter(
+            copy -> !copy.stops() && !copy.loops() && !copy.ends()
         ).map(Copy::formation);
+    }
+
+    /**
+     * The voids the places of the program leave empty, that would be known
+     * if some call put a terminator into them, as {@link Fillers#vacant()}
+     * says.
+     *
+     * @return The formation and the name of each void
+     */
+    Set<Map.Entry<String, String>> vacant() {
+        return this.fillers.vacant();
     }
 
     private Optional<Copy> formation(
@@ -481,7 +498,7 @@ final class Origins {
     }
 
     private Optional<String> fresh(final String place) {
-        return this.head(place, Origins.root(), this.fillers.lookups()).filter(
+        return this.head(place, Origins.ROOT, this.fillers.lookups()).filter(
             head -> head.equals(new Copy(new Annotation(head.formation())))
         ).map(Copy::formation);
     }
@@ -500,10 +517,6 @@ final class Origins {
             made = head.applied(place, host);
         }
         return made;
-    }
-
-    private static Copy root() {
-        return new Copy(new Annotation("Φ"));
     }
 
     private Optional<Copy> copy(final Annotation type) {

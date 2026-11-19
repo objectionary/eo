@@ -22,6 +22,10 @@
       "Can't read %x as an ASCII code, it is not a single byte".printf
         * text.as-bytes
 
+  eq. ++> can-read-the-code-of-a-letter-with-a-terminator-for-the-error
+    "a".as-ascii T
+    97
+
   97.eq "a".as-ascii ++> can-read-the-code-of-a-lowercase-letter
 
   33.eq "!".as-ascii ++> can-read-the-code-of-a-punctuation-mark

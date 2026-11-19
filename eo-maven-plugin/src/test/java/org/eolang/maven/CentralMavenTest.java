@@ -6,6 +6,7 @@ package org.eolang.maven;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import com.yegor256.OnlineMeans;
 import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -33,6 +34,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @since 0.55
  */
+@OnlineMeans(
+    url = "https://repo1.maven.org/maven2/org/eolang/eo-runtime/0.7.0/"
+        + "eo-runtime-0.7.0.jar"
+)
 @ExtendWith(MktmpResolver.class)
 final class CentralMavenTest {
 

@@ -83,6 +83,15 @@
         0
   text.as-bytes >> bts!
 
+  eq. ++> can-nsplit-a-string-with-a-terminator-for-the-error
+    "a-b-c-d".nsplit
+      "-"
+      2
+      T
+    *
+      "a"
+      "b-c-d"
+
   eq. ++> can-nsplit-an-empty-text-into-one-empty-string
     "".nsplit
       "-"

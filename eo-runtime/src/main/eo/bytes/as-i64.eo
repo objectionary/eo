@@ -24,6 +24,10 @@
     00-00-00-00-00-00-00-33.as-i64.as-bytes
     00-00-00-00-00-00-00-33
 
+  eq. ++> can-convert-bytes-to-i64-with-a-terminator-for-the-error
+    00-00-00-00-00-00-00-2A.as-i64 T
+    42.as-i64
+
   eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-i64
     i64 00-00-00-00-00-00-00-2A
     01-01-01-01.as-i64

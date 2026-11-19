@@ -92,6 +92,13 @@
     80-.as-i8.div 01-.as-i8
     80-.as-i8
 
+  eq. ++> can-divide-i8-with-a-terminator-for-the-error
+    div.
+      i8 0D-
+      i8 FB-
+      T
+    i8 FE-
+
   eq. ++> can-divide-with-a-remainder
     0D-.as-i8.div FB-.as-i8
     FE-.as-i8

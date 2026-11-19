@@ -65,6 +65,13 @@
       10
       " "
 
+  eq. ++> can-pad-right-with-a-terminator-for-the-error
+    "x  "
+    "x".padded-right
+      3
+      " "
+      T
+
   eq. ++> can-pad-with-trailing-zeros-when-padding-right
     "4200"
     "42".padded-right
