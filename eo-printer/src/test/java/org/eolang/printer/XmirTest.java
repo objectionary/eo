@@ -138,6 +138,42 @@ final class XmirTest {
     }
 
     @Test
+    void parsesPrintedDataizedReceiverWithoutErrors() throws IOException {
+        MatcherAssert.assertThat(
+            "a dataized const receiver must still parse after printing",
+            new EoSyntax(new InputOf(this.printedReceiver())).parsed(),
+            Matchers.not(XhtmlMatchers.hasXPath("//errors/error"))
+        );
+    }
+
+    @Test
+    void keepsOneConstAndOnePayload() throws IOException {
+        final XML xml = new Xsline(
+            new StClasspath("/org/eolang/printer/print/dataized-to-const.xsl")
+        ).pass(new EoSyntax(new InputOf(this.printedReceiver())).parsed());
+        MatcherAssert.assertThat(
+            "the round trip must keep one const and one payload",
+            List.of(
+                xml.xpath("count(//o[@base='Φ.number' and @const])"),
+                xml.xpath(
+                    "count(//o[@base='Φ.number' and @const]/o[@base='Φ.bytes']/o)"
+                )
+            ),
+            Matchers.everyItem(Matchers.equalTo(List.of("1")))
+        );
+    }
+
+    @Test
+    void reprintsDataizedReceiverUnchanged() throws IOException {
+        final String printed = this.printedReceiver();
+        MatcherAssert.assertThat(
+            "printing the reparsed receiver again must reproduce the first print",
+            new Xmir(new EoSyntax(new InputOf(printed)).parsed()).toEO(),
+            Matchers.equalTo(printed)
+        );
+    }
+
+    @Test
     void keepsHeadWhenPipeChainHasNoTerminalHost() {
         MatcherAssert.assertThat(
             "the head remains in the incomplete chain",
@@ -481,5 +517,23 @@ final class XmirTest {
             );
         }
         return weights;
+    }
+
+    private String printedReceiver() throws IOException {
+        return new Xmir(
+            new EoSyntax(
+                new InputOf(
+                    String.join(
+                        String.valueOf('\n'),
+                        "[] > foo",
+                        "",
+                        "  eq. ++> can-x",
+                        "    as-bytes.",
+                        "      dataized 5",
+                        "    40-14-00-00-00-00-00-00"
+                    )
+                )
+            ).parsed()
+        ).toEO();
     }
 }
