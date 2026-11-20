@@ -75,11 +75,7 @@
   ++> can-integrate-a-linear-function
     close-to > @
       as-number.
-        0.integral
-          I
-          1
-          10
-          15
+        0.integral I 1 10 15
       49.5
       1.0e-7
     lte. > [value operand err] > close-to
@@ -109,11 +105,7 @@
   ++> can-integrate-with-a-single-partition
     close-to > @
       as-number.
-        0.integral
-          I
-          0
-          1
-          1
+        0.integral I 0 1 1
       0.5
       1.0e-7
     lte. > [value operand err] > close-to
@@ -126,11 +118,7 @@
   ++> can-integrate-with-an-evenly-dividing-step
     close-to > @
       as-number.
-        0.integral
-          I
-          0
-          10
-          10
+        0.integral I 0 10 10
       50
       1.0e-7
     lte. > [value operand err] > close-to
@@ -143,11 +131,7 @@
   eq. ++> can-recover-from-partitions-at-the-precision-boundary
     42
     recovered
-      0.integral
-        I
-        0
-        1
-        9007199254740992
+      0.integral I 0 1 9007199254740992
       42
 
   integral. --> stops-on-fractional-partitions
