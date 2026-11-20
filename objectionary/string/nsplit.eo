@@ -3,20 +3,21 @@
 # The last element contains the remainder of the string after splitting.
 # If `delimiter` is empty, or `limit` is not a finite integer of at least 1
 # (fractional, nan, infinite, zero or negative), the `cant-split` fallback is
-# returned, or the terminator when unbound, the same way `split` behaves.
+# applied to an error message, the same way `split` behaves.
+# When unbound, it terminates with that message.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.2
++version 0.63.3
 
-[^ delimiter limit cant-split] > nsplit
+[^text delimiter limit cant-split] > nsplit
   if. > @
     or.
       eq.
-        delimiter.size >> size!
+        number delimiter.size! >> size
         0
       or.
         1.gt limit
@@ -33,18 +34,22 @@
               string limit.as-scientific
     if.
       1.eq limit
-      * ^
-      [^ accum start current count] >> rec-nsplit
+      * text
+      [^split accum start current count] >> rec-nsplit
         if. > @
-          ^.^.size.eq current
-          appended
+          split.text.size.eq current
+          accum.with >> appended
+            string
+              bts.slice
+                start
+                current.minus start
           if.
             or.
               size.eq 0
               gt.
                 current.plus size
-                ^.^.size
-            ^.rec-nsplit
+                split.text.size
+            split.rec-nsplit
               accum
               start
               as-number.
@@ -52,12 +57,12 @@
               count
             if.
               and.
-                ^.delimiter.eq
+                split.delimiter.eq
                   bts.slice current size
                 lt.
                   number count
-                  minus. (number ^.limit) 1
-              ^.rec-nsplit
+                  minus. (number split.limit) 1
+              split.rec-nsplit
                 appended
                 as-number.
                   current.plus size
@@ -65,37 +70,27 @@
                   current.plus size
                 as-number.
                   count.plus 1
-              ^.rec-nsplit
+              split.rec-nsplit
                 accum
                 start
                 as-number.
                   current.plus 1
                 count
-        accum.with > appended
-          string
-            bts.slice
-              start
-              current.minus start
       |
         *
         0
         0
         0
-  ^.as-bytes >> bts!
+  text.as-bytes >> bts!
 
-  eq. ++> can-format-the-error-message-of-a-fractional-limit
-    "Invalid limit 1.500000 for nsplit, must be at least 1"
-    "a-b-c".nsplit
+  eq. ++> can-nsplit-a-string-with-a-terminator-for-the-error
+    "a-b-c-d".nsplit
       "-"
-      1.5
-      I
-
-  eq. ++> can-format-the-error-message-of-an-infinite-limit-when-splitting
-    "Invalid limit infinity for nsplit, must be at least 1"
-    "a-b-c".nsplit
-      "-"
-      pinf
-      I
+      2
+      T
+    *
+      "a"
+      "b-c-d"
 
   eq. ++> can-nsplit-an-empty-text-into-one-empty-string
     "".nsplit
@@ -104,32 +99,36 @@
     * ""
 
   eq. ++> can-recover-from-a-fractional-limit
-    "recovered"
+    * "recovered"
     "a-b-c".nsplit
       "-"
       1.5
-      "recovered" > [message]
+      * > [message]
+        "recovered"
 
   eq. ++> can-recover-from-an-empty-delimiter-when-nsplitting
-    "recovered"
+    * "recovered"
     "abc".nsplit
       ""
       3
-      "recovered" > [message]
+      * > [message]
+        "recovered"
 
   eq. ++> can-recover-from-an-infinite-limit-when-splitting
-    "recovered"
+    * "recovered"
     "a-b-c".nsplit
       "-"
       pinf
-      "recovered" > [message]
+      * > [message]
+        "recovered"
 
   eq. ++> can-recover-from-an-invalid-limit
-    "fallback"
+    * "fallback"
     "text".nsplit
       "-"
       0
-      "fallback" > [message]
+      * > [message]
+        "fallback"
 
   eq. ++> can-split-into-empty-strings
     "-a-b-c".nsplit

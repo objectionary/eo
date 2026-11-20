@@ -2,33 +2,35 @@
 # The byte of the character is left-padded with a zero byte into a 16-bit
 # word, read as an integer and then expressed as a number. If the character
 # is not exactly one byte wide (an empty string, or a multi-byte UTF-8
-# character), the `cant-read` fallback is returned, or the terminator
-# when unbound.
+# character), `cant-read` takes an error message.
+# When unbound, it terminates with that message.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.2
++version 0.63.3
 
-[^ cant-read] > as-ascii
+[^text cant-read] > as-ascii
   if. > @
-    ^.as-bytes.size.eq 1
+    text.as-bytes.size.eq 1
     as-number.
       as-i16.
-        00-.concat ^.as-bytes
+        00-.concat text.as-bytes
     cant-read
       "Can't read %x as an ASCII code, it is not a single byte".printf
-        * ^.as-bytes
+        * text.as-bytes
+
+  eq. ++> can-read-the-code-of-a-letter-with-a-terminator-for-the-error
+    "a".as-ascii T
+    97
 
   97.eq "a".as-ascii ++> can-read-the-code-of-a-lowercase-letter
 
   33.eq "!".as-ascii ++> can-read-the-code-of-a-punctuation-mark
 
-  eq. ++> can-read-the-code-of-a-space
-    32
-    " ".as-ascii
+  32.eq " ".as-ascii ++> can-read-the-code-of-a-space
 
   65.eq "A".as-ascii ++> can-read-the-code-of-an-uppercase-letter
 
@@ -43,14 +45,14 @@
   48.eq "0".as-ascii ++> can-read-the-code-of-the-zero-digit
 
   eq. ++> can-recover-from-a-multi-byte-character
-    "recovered"
+    42
     "Ж".as-ascii
-      "recovered" > [message]
+      42 > [message]
 
   eq. ++> can-recover-from-an-empty-string
-    "recovered"
+    42
     "".as-ascii
-      "recovered" > [message]
+      42 > [message]
 
   "Ж".as-ascii --> stops-on-a-multi-byte-character
 

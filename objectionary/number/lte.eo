@@ -5,13 +5,13 @@
 +package number
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.2
++version 0.63.3
 
-[^ b] > lte
+[^num b] > lte
   or. > @
-    ^.lt
-      b >> value!
-    ^.eq value
+    num.lt
+      number b! >> value
+    num.eq value
 
   eq. ++> can-be-less-than-or-equal-to-a-float-when-negative-infinity
     ninf.lte 42.5

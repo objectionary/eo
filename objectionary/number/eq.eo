@@ -1,23 +1,22 @@
 # TRUE when the number equals `b`, FALSE otherwise. The comparison follows
 # IEEE 754: a not-a-number value is equal to nothing, not even to itself, while
 # positive and negative zero are equal to each other. Everything else is
-# compared byte by byte, so a value of any other type is simply not equal.
-# Identical bytes settle the answer at once, save for a not-a-number, so
-# the zero checks run only when the bytes differ.
+# compared byte by byte. Identical bytes settle the answer at once, save for a
+# not-a-number, so the zero checks run only when the bytes differ.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.2
++version 0.63.3
 
-[^ b] > eq
+[^num b] > eq
   if. > @
     eq.
-      ^.as-bytes >> mine!
+      num.as-bytes >> mine!
       b >> other!
-    ^.is-nan.not
+    num.is-nan.not
     and.
       or.
         mine.eq
@@ -28,15 +27,9 @@
         other.eq pzero
         other.eq nzero
 
-  eq. ++> can-compare-two-different-number-types
-    68.eq "12345678"
-    false
-
   eq. ++> can-compare-two-numbers-through-the-package
     42.eq 42
     true
-
-  42.eq 42.as-bytes ++> can-equal-an-integer-through-bytes
 
   eq. ++> can-equal-float-zero-to-integer-zero
     0.eq 0

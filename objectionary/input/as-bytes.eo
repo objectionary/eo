@@ -14,13 +14,13 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint redundant-attachment
-+version 0.63.2
++version 0.63.3
 
-[^] > as-bytes
+[^source] > as-bytes
   malloc.of > @
     0
-    seq * > [^ m] >>
-      ^.^.copied m.to-output
+    seq * > [^stream m] >>
+      stream.source.copied m.to-output
       m
 
   ++> can-convert-bytes-to-an-input-and-back
@@ -32,5 +32,7 @@
 
   eq. ++> can-return-empty-bytes-from-a-dead-input
     as-bytes.
-      input input.dead
+      input
+        dead.
+          input 01-02-03.as-input
     --

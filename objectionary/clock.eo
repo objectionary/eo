@@ -9,18 +9,18 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.2
++version 0.63.3
 
 [] > clock
   as-i64. > @
     plus.
-      now.seconds.times 1000
+      times.
+        seconds.
+          called. >> now
+            os.is-windows.if win32.ftime64-s posix.gettimeofday
+        1000
       floor.
         now.micros.div 1000
-  called. > now
-    os.is-windows.if
-      win32.ftime64-s
-      posix.gettimeofday
 
   clock.as-bytes.size.eq 8 ++> can-be-eight-bytes-long
 

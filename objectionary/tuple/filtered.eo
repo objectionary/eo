@@ -9,11 +9,11 @@
 +package tuple
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.2
++version 0.63.3
 
-[^ func] > filtered
-  ^.filteredi > @
-    ^.func item > [^ item index] >>
+[^list func] > filtered
+  list.filteredi > @
+    list.func item > [^list item index] >>
 
   eq. ++> can-filter-a-list
     filtered.

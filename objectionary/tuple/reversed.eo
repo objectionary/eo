@@ -5,19 +5,19 @@
 +package tuple
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.2
++version 0.63.3
 
-[^] > reversed
-  [^ rest acc] >> rec
+[^list] > reversed
+  [^list rest acc] >> rec
     if. > @
       rest.length.eq 0
       acc
       seq *
-        next.length
-        ^.rec rest.tail next
-    acc.with rest.head > next
+        length.
+          acc.with rest.head >> next
+        list.rec rest.tail next
   | > @
-    ^
+    list
     *
 
   eq. ++> can-reverse-a-tuple

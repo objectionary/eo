@@ -10,11 +10,12 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.63.2
++rt jvm org.eolang:eo-runtime:0.63.3
 +rt node eo2js-runtime:0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.2
++unlint invalid-name-notation
++version 0.63.3
 
 [] > win32
   [] > accept /Q.number
@@ -38,10 +39,12 @@
     ? > sockaddr /Q.win32.sockaddr-in
     ? > length /Q.number
   256 > creat
-  [code name] > dir-return
+  [cde nme] > dir-return
     win32.dir-return > called
       code
       name
+    cde > code
+    nme > name
   17 > eexist
   10022 > einval
   [] > errno /Q.number
@@ -49,19 +52,21 @@
   -1 > failure
   [] > find-close /Q.number
     ? > search /Q.number
-  [] > find-first-file /Q.win32.search-return
+  [] > find-first-file /Q.win32.search-return(Q.number,Q.string,Q.string)
     ? > pattern /Q.string
-  [] > find-next-file /Q.win32.dir-return
+  [] > find-next-file /Q.win32.dir-return(Q.number,Q.string)
     ? > search /Q.number
-  [] > ftime64-s /Q.win32.time-return
+  [] > ftime64-s /Q.win32.time-return(Q.number,Q.number,Q.number)
   [] > get-file-attributes /Q.number
     ? > path /Q.string
-  [] > getenv /Q.win32.getenv-return
+  [] > getenv /Q.win32.getenv-return(Q.bool,Q.string)
     ? > name /Q.string
-  [code value] > getenv-return
+  [cde vle] > getenv-return
     win32.getenv-return > called
-      code
+      cde
       value
+    cde > code
+    vle > value
   [] > getpid /Q.number
   2 > inet
   [] > inet-addr /Q.number
@@ -70,78 +75,96 @@
   [] > listen /Q.number
     ? > descriptor /Q.number
     ? > backlog /Q.number
-  [] > mkdir /Q.win32.status-return
+  [] > mkdir /Q.win32.status-return(Q.number,Q.string)
     ? > path /Q.string
   384 > mode
   -1 > none
-  [] > open /Q.win32.status-return
+  [] > open /Q.win32.status-return(Q.number,Q.string)
     ? > path /Q.string
     ? > flags /Q.number
     ? > mode /Q.number
   32768 > rdonly
   32770 > rdwr
-  [] > read /Q.win32.read-return
+  [] > read /Q.win32.read-return(Q.number,Q.bytes)
     ? > descriptor /Q.number
     ? > size /Q.number
-  [code data] > read-return
+  [cde dta] > read-return
     data > @
     win32.read-return > called
       code
       data
-  [] > recv /Q.win32.read-return
+    cde > code
+    dta > data
+  [] > recv /Q.win32.read-return(Q.number,Q.bytes)
     ? > descriptor /Q.number
     ? > size /Q.number
     ? > flags /Q.number
-  [] > rename /Q.win32.status-return
+  [] > rename /Q.win32.status-return(Q.number,Q.string)
     ? > from /Q.string
     ? > to /Q.string
   00-00-00-00-00-00-04-00 > reparse
-  [] > rmdir /Q.win32.status-return
+  [] > rmdir /Q.win32.status-return(Q.number,Q.string)
     ? > path /Q.string
-  [code name message] > search-return
+  [cde nme msg] > search-return
     win32.search-return > called
       code
       name
       message
+    cde > code
+    msg > message
+    nme > name
   [] > send /Q.number
     ? > descriptor /Q.number
     ? > buffer
     ? > size /Q.number
     ? > flags /Q.number
-  [family port address] > sockaddr-in
+  [domain service host] > sockaddr-in
+    host > address
+    domain > family
     00-00-00-00-00-00-00-00 > padding
+    service > port
     plus. > size
       plus.
-        family.size.plus port.size
-        address.size
+        domain.size.plus service.size
+        host.size
       padding.size
   [] > socket /Q.number
     ? > domain /Q.number
     ? > type /Q.number
     ? > protocol /Q.number
-  [code mode size] > stat-return
+  [cde msg mde sze] > stat-return
     win32.stat-return > called
       code
+      message
       mode
       size
-  [] > stat64 /Q.win32.stat-return
+    cde > code
+    msg > message
+    mde > mode
+    sze > size
+  [] > stat64 /Q.win32.stat-return(Q.number,Q.string,Q.number,Q.number)
     ? > path /Q.string
-  [code message] > status-return
+  [cde msg] > status-return
     win32.status-return > called
       code
       message
+    cde > code
+    msg > message
   2 > stderr
   0 > stdin
   1 > stdout
   1 > stream
   6 > tcp
-  [code seconds micros] > time-return
+  [cde scnds mcrs] > time-return
     win32.time-return > called
       code
       seconds
       micros
+    cde > code
+    mcrs > micros
+    scnds > seconds
   512 > trunc
-  [] > unlink /Q.win32.status-return
+  [] > unlink /Q.win32.status-return(Q.number,Q.string)
     ? > path /Q.string
   4294967295 > unresolved
   02-02 > version
@@ -177,9 +200,9 @@
   ++> can-compute-the-size-of-a-sockaddr-in
     addr.size.eq 16 > @
     win32.sockaddr-in > addr
-      00-00
-      00-00
-      00-00-00-00
+      i16 00-00
+      i16 00-00
+      i32 00-00-00-00
 
   ++> can-open-a-file-with-the-append-flag
     os.is-windows.not.or > @
@@ -276,7 +299,7 @@
 
   win32.send --> stops-on-send-size-being-negative
     0
-    "ab"
+    "ab".as-bytes
     -0.5
     0
 

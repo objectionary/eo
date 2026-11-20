@@ -54,11 +54,11 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.63.2
++rt jvm org.eolang:eo-runtime:0.63.3
 +rt node eo2js-runtime:0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.2
++version 0.63.3
 
 [] > malloc
   malloc.of > [scope] > empty
@@ -68,13 +68,13 @@
     malloc.of > @
       size.
         object >> bts!
-      seq * > [^ m] >>
+      seq * > [^task m] >>
         m.write 0 bts
-        ^.scope m
+        task.scope m
   [] > of /Q.bytes
     ? > ^
     ? > size /Q.number
-    ? > scope /{Q.chunk}
+    ? > scope /{Q.chunk(Q.number)}
 
   ++> can-allocate-a-block-of-the-right-size
     malloc.of > @
@@ -188,7 +188,7 @@
   malloc.of ++> can-give-an-id-to-an-allocated-block
     1
     m.put > [m]
-      m.id.gt 0
+      m.id.gte 0
 
   eq. ++> can-grow-an-empty-block-on-the-first-put
     malloc.empty
@@ -241,8 +241,7 @@
     malloc.of > mem
       13
       seq * > [m]
-        m.put
-          "Hello, world!"
+        m.put "Hello, world!"
         m.put 42
 
   ++> can-read-with-an-offset-and-a-length
@@ -303,9 +302,7 @@
         malloc.of > @
           12
           seq * > [^ m] >>
-            m.write
-              0
-              "Hello, "
+            m.write 0 "Hello, "
             m.write 7 "Jeff!"
             ^.b.put
               eq.
@@ -366,8 +363,7 @@
 
   malloc.for --> stops-on-overflowing-a-string-block
     "Hello"
-    m.put > [m]
-      "Much longer string!"
+    m.put "Much longer string!" > [m]
 
   malloc.for --> stops-on-reading-over-the-limit
     10

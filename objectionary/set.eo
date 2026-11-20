@@ -4,17 +4,17 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.2
++version 0.63.3
 
 [lst] > set
   [mp] >> ctor
     mp.keys > @
-    ^.mp.has item > [^ item] > has
+    store.mp.has item > [^store item] > has
     mp.size > size
-    set.ctor > [^ item] > with
-      ^.mp.with item true
-    set.ctor > [^ item] > without
-      ^.mp.without item
+    set.ctor > [^store item] > with
+      store.mp.with item true
+    set.ctor > [^store item] > without
+      store.mp.without item
   | > @
     map
       lst.mapped

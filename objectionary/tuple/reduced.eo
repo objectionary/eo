@@ -8,12 +8,12 @@
 +package tuple
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.2
++version 0.63.3
 
-[^ start func] > reduced
-  ^.reducedi > @
+[^list start func] > reduced
+  list.reducedi > @
     start
-    ^.func > [^ accum item index] >>
+    list.func > [^list accum item index] >>
       accum
       item
 

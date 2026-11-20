@@ -5,13 +5,13 @@
 +package tuple
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.2
++version 0.63.3
 
-[^ element] > without
-  ^.reduced > @
+[^list element] > without
+  list.reduced > @
     *
-    if. > [^ accum item] >>
-      ^.element.eq item
+    if. > [^list accum item] >>
+      list.element.eq item
       accum
       accum.with item
 

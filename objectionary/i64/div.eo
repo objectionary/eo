@@ -1,11 +1,12 @@
 # Integer division of an `i64` number by the `i64` number `b`, truncated
 # toward zero. The quotient is built by restoring long division over the
 # magnitudes of both operands, with the sign applied afterwards. When `b` is
-# zero, the caller-supplied `cant-divide` fallback is returned, and so it is
+# zero, `cant-divide` takes an error message, as it does
 # when the smallest `i64` is divided by minus one, since that quotient is one
 # past the largest `i64` and has no answer here. The magnitude of the
 # dividend is taken once, since the restoring loop reads one bit of it
 # per step and negating a negative dividend costs a full carry chain.
+# When unbound, the fallback terminates with the error message.
 #
 # @todo #8385:60min Make an i64 division affordable. Starting the loop at the
 #  highest bit of the dividend brought `42 / 10` from 234MB to 85MB, but what
@@ -22,22 +23,48 @@
 +package i64
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.2
++version 0.63.3
 
-[^ b cant-divide] > div
+[^num b cant-divide] > div
   if. > @
     b.as-bytes.eq 00-00-00-00-00-00-00-00
-    cant-divide
-      "i64 cannot be divided by zero"
+    cant-divide "i64 cannot be divided by zero"
     if.
       and.
-        ^.as-bytes.eq 80-00-00-00-00-00-00-00
+        num.as-bytes.eq 80-00-00-00-00-00-00-00
         b.as-bytes.eq FF-FF-FF-FF-FF-FF-FF-FF
-      cant-divide
-        "the smallest i64 divided by minus one is past the largest i64"
-      quotiented
+      cant-divide "the smallest i64 divided by minus one is past the largest i64"
+      if.
+        eq.
+          and.
+            num.as-bytes.xor b.as-bytes
+            80-00-00-00-00-00-00-00
+          80-00-00-00-00-00-00-00
+        plus.
+          i64
+            not.
+              looped >> quotient
+                [^scan m acc step] >> topbit
+                  if. > @
+                    step.lt 1
+                    acc
+                    scan.topbit
+                      if.
+                        shifted.eq 00-00-00-00-00-00-00-00 >> empty
+                        m
+                        m.right step >> shifted!
+                      empty.if acc (acc.plus step)
+                      step.div 2
+                |
+                  magnitude num.as-bytes >> dividend
+                  0
+                  32
+                00-00-00-00-00-00-00-00
+                00-00-00-00-00-00-00-00
+          i64 00-00-00-00-00-00-00-01
+        i64 quotient
   00-00-00-00-00-00-00-01.left i > [i] >> bit
-  [^ index remainder quot] >> looped
+  [^loop index remainder quot] >> looped
     if. > @
       index.lt 0
       quot
@@ -51,7 +78,7 @@
               shifted-sign.xor divisor-sign >> signs-differ!
               next-rem.xor 80-00-00-00-00-00-00-00 >> trial-nonnegative!
           80-00-00-00-00-00-00-00
-        ^.looped
+        loop.looped
           index.minus 1
           as-bytes. >> next-rem!
             plus.
@@ -59,7 +86,7 @@
               i64 subtrahend
           quot.or >>!
             bit index
-        ^.looped
+        loop.looped
           index.minus 1
           or. >> shifted!
             remainder.left 1
@@ -67,35 +94,6 @@
               dividend.right index
               00-00-00-00-00-00-00-01
           quot
-  if. > quotiented
-    eq.
-      and.
-        ^.as-bytes.xor b.as-bytes
-        80-00-00-00-00-00-00-00
-      80-00-00-00-00-00-00-00
-    as-bytes.
-      plus.
-        i64
-          not.
-            looped >> quotient
-              [^ m acc step] >> topbit
-                if. > @
-                  step.lt 1
-                  acc
-                  ^.topbit
-                    empty.if m shifted
-                    empty.if acc (acc.plus step)
-                    step.div 2
-                shifted.eq 00-00-00-00-00-00-00-00 > empty
-                m.right step > shifted!
-              |
-                magnitude ^.as-bytes >> dividend
-                0
-                32
-              00-00-00-00-00-00-00-00
-              00-00-00-00-00-00-00-00
-        i64 00-00-00-00-00-00-00-01
-    i64 quotient
   as-bytes. >> subtrahend!
     plus.
       i64
@@ -122,6 +120,13 @@
       dividend
     -235.as-i64 > dividend
 
+  eq. ++> can-divide-i64-with-a-terminator-for-the-error
+    div.
+      i64 00-00-00-00-00-00-00-0D
+      i64 FF-FF-FF-FF-FF-FF-FF-FB
+      T
+    i64 FF-FF-FF-FF-FF-FF-FF-FE
+
   lt. ++> can-divide-into-less-than-one
     1.as-i64.div 5.as-i64
     1.as-i64
@@ -141,17 +146,17 @@
     -2.as-i64
 
   eq. ++> can-recover-from-division-by-zero
-    "recovered"
+    i64 00-00-00-00-00-00-00-2A
     2.as-i64.div
       0.as-i64
-      "recovered" > [message]
+      i64 00-00-00-00-00-00-00-2A > [message]
 
   eq. ++> can-recover-from-min-divided-by-minus-one
-    "recovered"
+    i64 00-00-00-00-00-00-00-2A
     div.
       i64 80-00-00-00-00-00-00-00
       -1.as-i64
-      "recovered" > [message]
+      i64 00-00-00-00-00-00-00-2A > [message]
 
   eq. ++> can-truncate-toward-zero
     -13.as-i64.div 5.as-i64

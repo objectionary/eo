@@ -11,15 +11,13 @@
 +package string
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.2
++version 0.63.3
 
-[^] > lower
-  ^.english.lower > @
+[^text] > lower
+  text.english.lower > @
 
   "äöü".eq "äöü".lower ++> can-keep-non-ascii-letters-when-lower-casing
 
-  eq. ++> can-lower-case-text
-    "good evening"
-    "Good evening".lower
+  "good evening".eq "Good evening".lower ++> can-lower-case-text
 
   "hello".eq "HELLO".lower ++> can-lower-case-text-through-the-package

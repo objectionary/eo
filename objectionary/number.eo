@@ -3,11 +3,12 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.63.2
++rt jvm org.eolang:eo-runtime:0.63.3
 +rt node eo2js-runtime:0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.2
++unlint invalid-name-notation
++version 0.63.3
 
 [@] > number
   as-i32.as-i16 > as-i16
@@ -123,6 +124,12 @@
   42.as-bytes.eq 42 ++> can-compare-its-bytes-to-an-integer
 
   42.as-bytes.eq 42 ++> can-convert-to-bytes-and-back
+
+  and. ++> can-dataize-known-literals
+    42.as-bytes.eq 40-45-00-00-00-00-00-00
+    and.
+      "雪".as-bytes.eq E9-9B-AA
+      01-AF.eq 01-AF
 
   eq. ++> can-divide-a-positive-dividend
     256.div 16

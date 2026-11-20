@@ -5,17 +5,17 @@
 # from `slice`, where a `limit` beyond the end of the string terminates the
 # computation.
 # If `limit` is not a finite non-negative integer (negative, fractional, nan
-# or infinite), the `cant-truncate` fallback is returned, or the terminator
-# when unbound.
+# or infinite), `cant-truncate` takes an error message.
+# When unbound, it terminates with that message.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.2
++version 0.63.3
 
-[^ limit cant-truncate] > truncated
+[^text limit cant-truncate] > truncated
   if. > @
     or.
       0.gt limit
@@ -28,9 +28,9 @@
           *
             string limit.as-scientific
     if.
-      limit.lt ^.length
-      ^.slice 0 limit
-      ^
+      limit.lt text.length
+      text.slice 0 limit
+      text
 
   eq. ++> can-count-characters-and-not-bytes-when-truncating
     "Жу"
@@ -73,6 +73,12 @@
   eq. ++> can-return-a-text-of-the-exact-limit-unchanged
     "hey"
     "hey".truncated 3
+
+  eq. ++> can-truncate-a-text-with-a-terminator-for-the-error
+    "Je"
+    "Jeff".truncated
+      2
+      T
 
   eq. ++> can-truncate-to-an-empty-text
     ""

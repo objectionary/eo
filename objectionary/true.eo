@@ -6,14 +6,11 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.2
++version 0.63.3
 
-[^] > true
+[] > true
   bool > @
-    [^]
-      ? >> left
-      ? >> right
-      left > @
+    left > [^pick left right]
 
   true.and true ++> can-conjoin-true-with-true
 

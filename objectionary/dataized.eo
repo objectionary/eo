@@ -21,7 +21,7 @@
 #   [] > inner
 #     5 > five
 #
-# (dataized foo).as-bytes > result # result is 00-00-00-00-00-00-00-05
+# (dataized foo).as-bytes > result # result is 40-14-00-00-00-00-00-00
 # result.as-number > f             # f is 5
 # ```
 #
@@ -31,11 +31,11 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.63.2
++rt jvm org.eolang:eo-runtime:0.63.3
 +rt node eo2js-runtime:0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.2
++version 0.63.3
 
 [] > dataized /Q.bytes
   ? > target
@@ -80,6 +80,11 @@
       inner.five > @
       [] > inner
         5 > five
+
+  ++> can-dataize-a-number-into-the-bytes-of-a-double
+    eq. > @
+      5 >>!
+      40-14-00-00-00-00-00-00
 
   ++> can-dataize-a-number-to-the-same-bytes-as-as-bytes
     eq. > @

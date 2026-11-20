@@ -5,27 +5,23 @@
 +package string
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.2
++version 0.63.3
 
-[^ substring] > ends-with
+[^text substring] > ends-with
   and. > @
     lte.
-      number
-        part.size >> size!
-      txt.size >> length!
+      number part.size! >> size
+      length
     eq.
       slice.
-        ^ >> txt!
+        text >> txt!
         minus.
-          number length
+          number txt.size! >> length
           size
         size
       substring >> part!
 
-  ends-with. ++> can-end-with-a-substring
-    "Hello world!"
-    "world!"
+  "Hello world!".ends-with "world!" ++> can-end-with-a-substring
 
   not. ++> can-tell-it-does-not-end-with-an-absent-substring
-    "Hello world!".ends-with
-      "Hello"
+    "Hello world!".ends-with "Hello"
