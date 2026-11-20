@@ -145,6 +145,51 @@ final class FillersTest {
         );
     }
 
+    @Test
+    void worksVoidOutAgainWhenVoidItOpenedIsOpenNow() {
+        final AtomicInteger shaped = new AtomicInteger();
+        final AtomicReference<Fillers> self = new AtomicReference<>();
+        final Map<String, List<String>> asks = Map.of(
+            "Φ.app.c.α0", List.of("b", "c"),
+            "Φ.app.c.α1", List.of("a", "c"),
+            "Φ.app.c.α2", List.of("a", "b")
+        );
+        final Fillers fillers = new Fillers(
+            Map.of(
+                "Φ.tri", Map.of("a", "Φ.tri.a", "b", "Φ.tri.b", "c", "Φ.tri.c"),
+                "Φ.fix", Map.of()
+            ),
+            new Calls(
+                Map.of("Φ.tri", List.of("a", "b", "c")),
+                Map.of("Φ.app.c", Map.of(0, "Φ.app.c.α0", 1, "Φ.app.c.α1", 2, "Φ.app.c.α2")),
+                Collections.emptyMap(), Collections.emptyMap()
+            ),
+            Map.of("Φ.tri", List.of("Φ.app.c")),
+            Set.of(),
+            (place, seen) -> {
+                if ("Φ.app.c.α1".equals(place)) {
+                    shaped.incrementAndGet();
+                }
+                for (final String name : asks.get(place)) {
+                    final String hole = String.format("Φ.tri.%s", name);
+                    if (self.get().open(hole)) {
+                        self.get().hit(hole);
+                    } else {
+                        self.get().held(hole, Map.entry("Φ.tri", name));
+                    }
+                }
+                return Optional.of(new Copy(new Annotation("Φ.fix")));
+            }
+        );
+        self.set(fillers);
+        fillers.held("Φ.tri.a", Map.entry("Φ.tri", "a"));
+        MatcherAssert.assertThat(
+            "a void must be worked out again when a void it opened itself is open now, since it would read the guess of that void instead, but it isnt",
+            shaped.get(),
+            Matchers.equalTo(12)
+        );
+    }
+
     private static Fillers chain(final AtomicInteger shaped) {
         final AtomicReference<Fillers> self = new AtomicReference<>();
         final Fillers fillers = FillersTest.pair(
