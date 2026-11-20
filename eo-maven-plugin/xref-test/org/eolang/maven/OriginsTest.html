@@ -1,0 +1,1013 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="" lang="">
+<head><meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title>OriginsTest xref</title>
+<link type="text/css" rel="stylesheet" href="../../../stylesheet.css" />
+</head>
+<body>
+<div id="overview"><a href="../../../../testapidocs/org/eolang/maven/OriginsTest.html">View Javadoc</a></div><pre>
+<a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
+<a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com</em>
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> * SPDX-License-Identifier: MIT</em>
+<a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> */</em>
+<a class="jxr_linenumber" name="L5" href="#L5">5</a>   <strong class="jxr_keyword">package</strong> org.eolang.maven;
+<a class="jxr_linenumber" name="L6" href="#L6">6</a>   
+<a class="jxr_linenumber" name="L7" href="#L7">7</a>   <strong class="jxr_keyword">import</strong> java.security.SecureRandom;
+<a class="jxr_linenumber" name="L8" href="#L8">8</a>   <strong class="jxr_keyword">import</strong> java.util.ArrayList;
+<a class="jxr_linenumber" name="L9" href="#L9">9</a>   <strong class="jxr_keyword">import</strong> java.util.HashMap;
+<a class="jxr_linenumber" name="L10" href="#L10">10</a>  <strong class="jxr_keyword">import</strong> java.util.List;
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <strong class="jxr_keyword">import</strong> java.util.Optional;
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">import</strong> org.eolang.inference.Annotation;
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">import</strong> org.hamcrest.MatcherAssert;
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> org.hamcrest.Matchers;
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> org.junit.jupiter.api.Test;
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment"> * Test cases for {@link Origins}.</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment"> * @since 0.76.0</em>
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a name="OriginsTest" href="../../../org/eolang/maven/OriginsTest.html#OriginsTest">OriginsTest</a> {
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>      @Test
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>      <strong class="jxr_keyword">void</strong> findsNoFormationBehindVoid() {
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>          MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>              <span class="jxr_string">"a read of a void must copy no formation the code fixes, but it does"</span>,
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>              <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>                  Map.of(<span class="jxr_string">"Φ.guard"</span>, Map.of(<span class="jxr_string">"fail"</span>, <span class="jxr_string">"Φ.guard.fail"</span>, <span class="jxr_string">"φ"</span>, <span class="jxr_string">"Φ.guard.φ"</span>)),
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>                  <strong class="jxr_keyword">new</strong> Calls(Map.of(<span class="jxr_string">"Φ.guard"</span>, List.of(<span class="jxr_string">"fail"</span>)), Map.of(), Map.of(), Map.of()),
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>                  Map.of(<span class="jxr_string">"Φ.guard.φ"</span>, Map.entry(<span class="jxr_string">"Φ.guard.φ.ρ"</span>, <span class="jxr_string">"fail"</span>)),
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>                  Map.of(<span class="jxr_string">"Φ.guard.φ.ρ"</span>, <span class="jxr_string">"Φ.guard"</span>)
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>              ).formation(<span class="jxr_string">"Φ.guard.φ"</span>),
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>              Matchers.equalTo(Optional.empty())
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>          );
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>      }
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>      @Test
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">void</strong> followsVoidFilledByFormationsWithSameVoids() {
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>          MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>              <span class="jxr_string">"a call on a void all callers fill with the same voids must be followed, but it isnt"</span>,
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>              OriginsTest.bool(List.of(<span class="jxr_string">"left"</span>, <span class="jxr_string">"right"</span>), Map.of(), Map.of())
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>                  .formation(<span class="jxr_string">"Φ.bool.and.φ"</span>),
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>              Matchers.not(Matchers.equalTo(Optional.empty()))
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>          );
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>      }
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>  
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>      @Test
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>      <strong class="jxr_keyword">void</strong> findsNoFormationBehindVoidFilledWithOtherVoids() {
+<a class="jxr_linenumber" name="L51" href="#L51">51</a>          MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L52" href="#L52">52</a>              <span class="jxr_string">"a call on a void filled with formations of other voids must not be followed, yet it is"</span>,
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>              OriginsTest.bool(List.of(<span class="jxr_string">"right"</span>, <span class="jxr_string">"left"</span>), Map.of(), Map.of())
+<a class="jxr_linenumber" name="L54" href="#L54">54</a>                  .formation(<span class="jxr_string">"Φ.bool.and.φ"</span>),
+<a class="jxr_linenumber" name="L55" href="#L55">55</a>              Matchers.equalTo(Optional.empty())
+<a class="jxr_linenumber" name="L56" href="#L56">56</a>          );
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>      }
+<a class="jxr_linenumber" name="L58" href="#L58">58</a>  
+<a class="jxr_linenumber" name="L59" href="#L59">59</a>      @Test
+<a class="jxr_linenumber" name="L60" href="#L60">60</a>      <strong class="jxr_keyword">void</strong> findsNoFormationBehindVoidOfCopyMadeWithoutCall() {
+<a class="jxr_linenumber" name="L61" href="#L61">61</a>          MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>              <span class="jxr_string">"a void some copy leaves empty must not be followed, since ⊥ fills it, but it is"</span>,
+<a class="jxr_linenumber" name="L63" href="#L63">63</a>              OriginsTest.bool(
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>                  List.of(<span class="jxr_string">"left"</span>, <span class="jxr_string">"right"</span>), Map.of(), Map.of(<span class="jxr_string">"Φ.app.φ"</span>, <span class="jxr_string">"Φ.bool"</span>)
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>              ).formation(<span class="jxr_string">"Φ.bool.and.φ"</span>),
+<a class="jxr_linenumber" name="L66" href="#L66">66</a>              Matchers.equalTo(Optional.empty())
+<a class="jxr_linenumber" name="L67" href="#L67">67</a>          );
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>      }
+<a class="jxr_linenumber" name="L69" href="#L69">69</a>  
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>      @Test
+<a class="jxr_linenumber" name="L71" href="#L71">71</a>      <strong class="jxr_keyword">void</strong> readsNothingOffVoidFilledWithSeveralFormations() {
+<a class="jxr_linenumber" name="L72" href="#L72">72</a>          MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>              <span class="jxr_string">"a read off a void filled with several formations must copy nothing, but it does"</span>,
+<a class="jxr_linenumber" name="L74" href="#L74">74</a>              OriginsTest.bool(
+<a class="jxr_linenumber" name="L75" href="#L75">75</a>                  List.of(<span class="jxr_string">"left"</span>, <span class="jxr_string">"right"</span>),
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>                  Map.of(<span class="jxr_string">"Φ.bool.peek"</span>, Map.entry(<span class="jxr_string">"Φ.bool.if"</span>, <span class="jxr_string">"φ"</span>)),
+<a class="jxr_linenumber" name="L77" href="#L77">77</a>                  Map.of()
+<a class="jxr_linenumber" name="L78" href="#L78">78</a>              ).formation(<span class="jxr_string">"Φ.bool.peek"</span>),
+<a class="jxr_linenumber" name="L79" href="#L79">79</a>              Matchers.equalTo(Optional.empty())
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>          );
+<a class="jxr_linenumber" name="L81" href="#L81">81</a>      }
+<a class="jxr_linenumber" name="L82" href="#L82">82</a>  
+<a class="jxr_linenumber" name="L83" href="#L83">83</a>      @Test
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>      <strong class="jxr_keyword">void</strong> followsDeclaredRhoToFormationAroundIt() {
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>          <strong class="jxr_keyword">final</strong> String <strong class="jxr_keyword">outer</strong> = String.format(<span class="jxr_string">"Φ.oak%d"</span>, <strong class="jxr_keyword">new</strong> SecureRandom().nextInt(10_000));
+<a class="jxr_linenumber" name="L86" href="#L86">86</a>          MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L87" href="#L87">87</a>              <span class="jxr_string">"a read of a declared ρ must copy the formation it is written in, but it doesnt"</span>,
+<a class="jxr_linenumber" name="L88" href="#L88">88</a>              <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>                  Map.of(
+<a class="jxr_linenumber" name="L90" href="#L90">90</a>                      <strong class="jxr_keyword">outer</strong>, Map.of(<span class="jxr_string">"leaf"</span>, String.format(<span class="jxr_string">"%s.leaf"</span>, <strong class="jxr_keyword">outer</strong>)),
+<a class="jxr_linenumber" name="L91" href="#L91">91</a>                      String.format(<span class="jxr_string">"%s.leaf"</span>, <strong class="jxr_keyword">outer</strong>), Map.of(<span class="jxr_string">"ρ"</span>, <strong class="jxr_keyword">outer</strong>)
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>                  ),
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>                  <strong class="jxr_keyword">new</strong> Calls(Map.of(), Map.of(), Map.of(), Map.of()),
+<a class="jxr_linenumber" name="L94" href="#L94">94</a>                  Map.of(
+<a class="jxr_linenumber" name="L95" href="#L95">95</a>                      String.format(<span class="jxr_string">"%s.leaf.φ.ρ"</span>, <strong class="jxr_keyword">outer</strong>),
+<a class="jxr_linenumber" name="L96" href="#L96">96</a>                      Map.entry(String.format(<span class="jxr_string">"%s.leaf.φ.ρ.ρ"</span>, <strong class="jxr_keyword">outer</strong>), <span class="jxr_string">"ρ"</span>)
+<a class="jxr_linenumber" name="L97" href="#L97">97</a>                  ),
+<a class="jxr_linenumber" name="L98" href="#L98">98</a>                  Map.of(String.format(<span class="jxr_string">"%s.leaf.φ.ρ.ρ"</span>, <strong class="jxr_keyword">outer</strong>), String.format(<span class="jxr_string">"%s.leaf"</span>, <strong class="jxr_keyword">outer</strong>))
+<a class="jxr_linenumber" name="L99" href="#L99">99</a>              ).formation(String.format(<span class="jxr_string">"%s.leaf.φ.ρ"</span>, <strong class="jxr_keyword">outer</strong>)),
+<a class="jxr_linenumber" name="L100" href="#L100">100</a>             Matchers.equalTo(Optional.of(<strong class="jxr_keyword">outer</strong>))
+<a class="jxr_linenumber" name="L101" href="#L101">101</a>         );
+<a class="jxr_linenumber" name="L102" href="#L102">102</a>     }
+<a class="jxr_linenumber" name="L103" href="#L103">103</a> 
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>     @Test
+<a class="jxr_linenumber" name="L105" href="#L105">105</a>     <strong class="jxr_keyword">void</strong> followsBoundAttributeToWhatItsBodyCopies() {
+<a class="jxr_linenumber" name="L106" href="#L106">106</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L107" href="#L107">107</a>             <span class="jxr_string">"a curried copy must copy the formation its body copies, but it doesnt"</span>,
+<a class="jxr_linenumber" name="L108" href="#L108">108</a>             <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L109" href="#L109">109</a>                 Map.of(
+<a class="jxr_linenumber" name="L110" href="#L110">110</a>                     <span class="jxr_string">"Φ.app"</span>, Map.of(<span class="jxr_string">"pair"</span>, <span class="jxr_string">"Φ.app.pair"</span>, <span class="jxr_string">"half"</span>, <span class="jxr_string">"Φ.app.half"</span>),
+<a class="jxr_linenumber" name="L111" href="#L111">111</a>                     <span class="jxr_string">"Φ.app.pair"</span>, Map.of(<span class="jxr_string">"left"</span>, <span class="jxr_string">"Φ.app.pair.left"</span>, <span class="jxr_string">"right"</span>, <span class="jxr_string">"Φ.app.pair.right"</span>)
+<a class="jxr_linenumber" name="L112" href="#L112">112</a>                 ),
+<a class="jxr_linenumber" name="L113" href="#L113">113</a>                 <strong class="jxr_keyword">new</strong> Calls(
+<a class="jxr_linenumber" name="L114" href="#L114">114</a>                     Map.of(<span class="jxr_string">"Φ.app.pair"</span>, List.of(<span class="jxr_string">"left"</span>, <span class="jxr_string">"right"</span>)), Map.of(), Map.of(), Map.of()
+<a class="jxr_linenumber" name="L115" href="#L115">115</a>                 ),
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>                 Map.of(
+<a class="jxr_linenumber" name="L117" href="#L117">117</a>                     <span class="jxr_string">"Φ.app.φ"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ"</span>, <span class="jxr_string">"half"</span>),
+<a class="jxr_linenumber" name="L118" href="#L118">118</a>                     <span class="jxr_string">"Φ.app.half"</span>, Map.entry(<span class="jxr_string">"Φ.app.half.ρ"</span>, <span class="jxr_string">"pair"</span>)
+<a class="jxr_linenumber" name="L119" href="#L119">119</a>                 ),
+<a class="jxr_linenumber" name="L120" href="#L120">120</a>                 Map.of(<span class="jxr_string">"Φ.app.φ.ρ"</span>, <span class="jxr_string">"Φ.app"</span>, <span class="jxr_string">"Φ.app.half.ρ"</span>, <span class="jxr_string">"Φ.app"</span>)
+<a class="jxr_linenumber" name="L121" href="#L121">121</a>             ).formation(<span class="jxr_string">"Φ.app.φ"</span>),
+<a class="jxr_linenumber" name="L122" href="#L122">122</a>             Matchers.equalTo(Optional.of(<span class="jxr_string">"Φ.app.pair"</span>))
+<a class="jxr_linenumber" name="L123" href="#L123">123</a>         );
+<a class="jxr_linenumber" name="L124" href="#L124">124</a>     }
+<a class="jxr_linenumber" name="L125" href="#L125">125</a> 
+<a class="jxr_linenumber" name="L126" href="#L126">126</a>     @Test
+<a class="jxr_linenumber" name="L127" href="#L127">127</a>     <strong class="jxr_keyword">void</strong> looksForAbsentNameBehindDecoratee() {
+<a class="jxr_linenumber" name="L128" href="#L128">128</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L129" href="#L129">129</a>             <span class="jxr_string">"a name a formation does not bind must be found behind its φ, but it isnt"</span>,
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>             <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L131" href="#L131">131</a>                 Map.of(
+<a class="jxr_linenumber" name="L132" href="#L132">132</a>                     <span class="jxr_string">"Φ"</span>, Map.of(<span class="jxr_string">"wrap"</span>, <span class="jxr_string">"Φ.wrap"</span>, <span class="jxr_string">"box"</span>, <span class="jxr_string">"Φ.box"</span>),
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>                     <span class="jxr_string">"Φ.wrap"</span>, Map.of(<span class="jxr_string">"φ"</span>, <span class="jxr_string">"Φ.wrap.φ"</span>),
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>                     <span class="jxr_string">"Φ.box"</span>, Map.of(<span class="jxr_string">"make"</span>, <span class="jxr_string">"Φ.box.make"</span>),
+<a class="jxr_linenumber" name="L135" href="#L135">135</a>                     <span class="jxr_string">"Φ.box.make"</span>, Map.of(<span class="jxr_string">"k"</span>, <span class="jxr_string">"Φ.box.make.k"</span>)
+<a class="jxr_linenumber" name="L136" href="#L136">136</a>                 ),
+<a class="jxr_linenumber" name="L137" href="#L137">137</a>                 <strong class="jxr_keyword">new</strong> Calls(Map.of(<span class="jxr_string">"Φ.box.make"</span>, List.of(<span class="jxr_string">"k"</span>)), Map.of(), Map.of(), Map.of()),
+<a class="jxr_linenumber" name="L138" href="#L138">138</a>                 Map.of(
+<a class="jxr_linenumber" name="L139" href="#L139">139</a>                     <span class="jxr_string">"Φ.wrap.φ"</span>, Map.entry(<span class="jxr_string">"Φ.wrap.φ.ρ"</span>, <span class="jxr_string">"box"</span>),
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>                     <span class="jxr_string">"Φ.run"</span>, Map.entry(<span class="jxr_string">"Φ.run.ρ"</span>, <span class="jxr_string">"make"</span>),
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>                     <span class="jxr_string">"Φ.run.ρ"</span>, Map.entry(<span class="jxr_string">"Φ.run.ρ.ρ"</span>, <span class="jxr_string">"wrap"</span>)
+<a class="jxr_linenumber" name="L142" href="#L142">142</a>                 ),
+<a class="jxr_linenumber" name="L143" href="#L143">143</a>                 Map.of(<span class="jxr_string">"Φ.wrap.φ.ρ"</span>, <span class="jxr_string">"Φ"</span>, <span class="jxr_string">"Φ.run.ρ.ρ"</span>, <span class="jxr_string">"Φ"</span>)
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>             ).formation(<span class="jxr_string">"Φ.run"</span>),
+<a class="jxr_linenumber" name="L145" href="#L145">145</a>             Matchers.equalTo(Optional.of(<span class="jxr_string">"Φ.box.make"</span>))
+<a class="jxr_linenumber" name="L146" href="#L146">146</a>         );
+<a class="jxr_linenumber" name="L147" href="#L147">147</a>     }
+<a class="jxr_linenumber" name="L148" href="#L148">148</a> 
+<a class="jxr_linenumber" name="L149" href="#L149">149</a>     @Test
+<a class="jxr_linenumber" name="L150" href="#L150">150</a>     <strong class="jxr_keyword">void</strong> findsNothingBehindVoidDecoratee() {
+<a class="jxr_linenumber" name="L151" href="#L151">151</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L152" href="#L152">152</a>             <span class="jxr_string">"a name read behind a void φ must copy no formation the code fixes, but it does"</span>,
+<a class="jxr_linenumber" name="L153" href="#L153">153</a>             <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L154" href="#L154">154</a>                 Map.of(
+<a class="jxr_linenumber" name="L155" href="#L155">155</a>                     <span class="jxr_string">"Φ"</span>, Map.of(<span class="jxr_string">"string"</span>, <span class="jxr_string">"Φ.string"</span>),
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>                     <span class="jxr_string">"Φ.string"</span>, Map.of(<span class="jxr_string">"φ"</span>, <span class="jxr_string">"Φ.string.φ"</span>)
+<a class="jxr_linenumber" name="L157" href="#L157">157</a>                 ),
+<a class="jxr_linenumber" name="L158" href="#L158">158</a>                 <strong class="jxr_keyword">new</strong> Calls(Map.of(<span class="jxr_string">"Φ.string"</span>, List.of(<span class="jxr_string">"φ"</span>)), Map.of(), Map.of(), Map.of()),
+<a class="jxr_linenumber" name="L159" href="#L159">159</a>                 Map.of(
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>                     <span class="jxr_string">"Φ.app.φ"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ"</span>, <span class="jxr_string">"eq"</span>),
+<a class="jxr_linenumber" name="L161" href="#L161">161</a>                     <span class="jxr_string">"Φ.app.φ.ρ"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ.ρ"</span>, <span class="jxr_string">"string"</span>)
+<a class="jxr_linenumber" name="L162" href="#L162">162</a>                 ),
+<a class="jxr_linenumber" name="L163" href="#L163">163</a>                 Map.of(<span class="jxr_string">"Φ.app.φ.ρ.ρ"</span>, <span class="jxr_string">"Φ"</span>)
+<a class="jxr_linenumber" name="L164" href="#L164">164</a>             ).formation(<span class="jxr_string">"Φ.app.φ"</span>),
+<a class="jxr_linenumber" name="L165" href="#L165">165</a>             Matchers.equalTo(Optional.empty())
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>         );
+<a class="jxr_linenumber" name="L167" href="#L167">167</a>     }
+<a class="jxr_linenumber" name="L168" href="#L168">168</a> 
+<a class="jxr_linenumber" name="L169" href="#L169">169</a>     @Test
+<a class="jxr_linenumber" name="L170" href="#L170">170</a>     <strong class="jxr_keyword">void</strong> looksForAbsentNameBehindVoidDecorateeTheEngineAnswers() {
+<a class="jxr_linenumber" name="L171" href="#L171">171</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>             <span class="jxr_string">"a name read behind a void φ the engine saw hold one formation must be found there, but it isnt"</span>,
+<a class="jxr_linenumber" name="L173" href="#L173">173</a>             <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>                 Map.of(
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>                     <span class="jxr_string">"Φ"</span>, Map.of(<span class="jxr_string">"string"</span>, <span class="jxr_string">"Φ.string"</span>, <span class="jxr_string">"bytes"</span>, <span class="jxr_string">"Φ.bytes"</span>),
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>                     <span class="jxr_string">"Φ.string"</span>, Map.of(<span class="jxr_string">"φ"</span>, <span class="jxr_string">"Φ.string.φ"</span>),
+<a class="jxr_linenumber" name="L177" href="#L177">177</a>                     <span class="jxr_string">"Φ.bytes"</span>, Map.of(<span class="jxr_string">"eq"</span>, <span class="jxr_string">"Φ.bytes.eq"</span>),
+<a class="jxr_linenumber" name="L178" href="#L178">178</a>                     <span class="jxr_string">"Φ.bytes.eq"</span>, Map.of(<span class="jxr_string">"b"</span>, <span class="jxr_string">"Φ.bytes.eq.b"</span>)
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>                 ),
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>                 <strong class="jxr_keyword">new</strong> Calls(
+<a class="jxr_linenumber" name="L181" href="#L181">181</a>                     Map.of(<span class="jxr_string">"Φ.string"</span>, List.of(<span class="jxr_string">"φ"</span>), <span class="jxr_string">"Φ.bytes.eq"</span>, List.of(<span class="jxr_string">"b"</span>)),
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>                     Map.of(), Map.of(), Map.of()
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>                 ),
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>                 Map.of(
+<a class="jxr_linenumber" name="L185" href="#L185">185</a>                     <span class="jxr_string">"Φ.app.φ"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ"</span>, <span class="jxr_string">"eq"</span>),
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>                     <span class="jxr_string">"Φ.app.φ.ρ"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ.ρ"</span>, <span class="jxr_string">"string"</span>)
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>                 ),
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>                 Map.of(<span class="jxr_string">"Φ.app.φ.ρ.ρ"</span>, <span class="jxr_string">"Φ"</span>),
+<a class="jxr_linenumber" name="L189" href="#L189">189</a>                 Map.of(<span class="jxr_string">"Φ.string.φ"</span>, <span class="jxr_string">"Φ.bytes"</span>)
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>             ).formation(<span class="jxr_string">"Φ.app.φ"</span>),
+<a class="jxr_linenumber" name="L191" href="#L191">191</a>             Matchers.equalTo(Optional.of(<span class="jxr_string">"Φ.bytes.eq"</span>))
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>         );
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>     }
+<a class="jxr_linenumber" name="L194" href="#L194">194</a> 
+<a class="jxr_linenumber" name="L195" href="#L195">195</a>     @Test
+<a class="jxr_linenumber" name="L196" href="#L196">196</a>     <strong class="jxr_keyword">void</strong> ignoresEngineAnswerOfVoidOtherThanDecoratee() {
+<a class="jxr_linenumber" name="L197" href="#L197">197</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L198" href="#L198">198</a>             <span class="jxr_string">"a name read off a void other than φ must copy no formation, whatever the engine answers, but it does"</span>,
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>             <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L200" href="#L200">200</a>                 Map.of(
+<a class="jxr_linenumber" name="L201" href="#L201">201</a>                     <span class="jxr_string">"Φ"</span>, Map.of(<span class="jxr_string">"app"</span>, <span class="jxr_string">"Φ.app"</span>, <span class="jxr_string">"loud"</span>, <span class="jxr_string">"Φ.loud"</span>),
+<a class="jxr_linenumber" name="L202" href="#L202">202</a>                     <span class="jxr_string">"Φ.app"</span>, Map.of(<span class="jxr_string">"scope"</span>, <span class="jxr_string">"Φ.app.scope"</span>, <span class="jxr_string">"φ"</span>, <span class="jxr_string">"Φ.app.φ"</span>),
+<a class="jxr_linenumber" name="L203" href="#L203">203</a>                     <span class="jxr_string">"Φ.loud"</span>, Map.of(<span class="jxr_string">"message"</span>, <span class="jxr_string">"Φ.loud.message"</span>)
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>                 ),
+<a class="jxr_linenumber" name="L205" href="#L205">205</a>                 <strong class="jxr_keyword">new</strong> Calls(
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>                     Map.of(<span class="jxr_string">"Φ.app"</span>, List.of(<span class="jxr_string">"scope"</span>), <span class="jxr_string">"Φ.loud"</span>, List.of(<span class="jxr_string">"message"</span>)),
+<a class="jxr_linenumber" name="L207" href="#L207">207</a>                     Map.of(), Map.of(), Map.of()
+<a class="jxr_linenumber" name="L208" href="#L208">208</a>                 ),
+<a class="jxr_linenumber" name="L209" href="#L209">209</a>                 Map.of(<span class="jxr_string">"Φ.app.φ"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ"</span>, <span class="jxr_string">"scope"</span>)),
+<a class="jxr_linenumber" name="L210" href="#L210">210</a>                 Map.of(<span class="jxr_string">"Φ.app.φ.ρ"</span>, <span class="jxr_string">"Φ.app"</span>),
+<a class="jxr_linenumber" name="L211" href="#L211">211</a>                 Map.of(<span class="jxr_string">"Φ.app.scope"</span>, <span class="jxr_string">"Φ.loud"</span>)
+<a class="jxr_linenumber" name="L212" href="#L212">212</a>             ).formation(<span class="jxr_string">"Φ.app.φ"</span>),
+<a class="jxr_linenumber" name="L213" href="#L213">213</a>             Matchers.equalTo(Optional.empty())
+<a class="jxr_linenumber" name="L214" href="#L214">214</a>         );
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>     }
+<a class="jxr_linenumber" name="L216" href="#L216">216</a> 
+<a class="jxr_linenumber" name="L217" href="#L217">217</a>     @Test
+<a class="jxr_linenumber" name="L218" href="#L218">218</a>     <strong class="jxr_keyword">void</strong> ignoresEngineAnswerOfPlaceThatIsNoVoid() {
+<a class="jxr_linenumber" name="L219" href="#L219">219</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>             <span class="jxr_string">"the answer of the engine must not name a place that is no void, but it does"</span>,
+<a class="jxr_linenumber" name="L221" href="#L221">221</a>             <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L222" href="#L222">222</a>                 Map.of(<span class="jxr_string">"Φ"</span>, Map.of(<span class="jxr_string">"bytes"</span>, <span class="jxr_string">"Φ.bytes"</span>)),
+<a class="jxr_linenumber" name="L223" href="#L223">223</a>                 <strong class="jxr_keyword">new</strong> Calls(Map.of(), Map.of(), Map.of(), Map.of()),
+<a class="jxr_linenumber" name="L224" href="#L224">224</a>                 Map.of(),
+<a class="jxr_linenumber" name="L225" href="#L225">225</a>                 Map.of(),
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>                 Map.of(<span class="jxr_string">"Φ.app.x"</span>, <span class="jxr_string">"Φ.bytes"</span>)
+<a class="jxr_linenumber" name="L227" href="#L227">227</a>             ).formation(<span class="jxr_string">"Φ.app.x"</span>),
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>             Matchers.equalTo(Optional.empty())
+<a class="jxr_linenumber" name="L229" href="#L229">229</a>         );
+<a class="jxr_linenumber" name="L230" href="#L230">230</a>     }
+<a class="jxr_linenumber" name="L231" href="#L231">231</a> 
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>     @Test
+<a class="jxr_linenumber" name="L233" href="#L233">233</a>     <strong class="jxr_keyword">void</strong> looksForAbsentNameBehindVoidDecorateeThatCallFills() {
+<a class="jxr_linenumber" name="L234" href="#L234">234</a>         <strong class="jxr_keyword">final</strong> String kind = String.format(<span class="jxr_string">"Φ.kind%d"</span>, <strong class="jxr_keyword">new</strong> SecureRandom().nextInt(10_000));
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L236" href="#L236">236</a>             <span class="jxr_string">"a name read behind a void φ that the call fills must be found in what fills it, but it isnt"</span>,
+<a class="jxr_linenumber" name="L237" href="#L237">237</a>             <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>                 Map.of(
+<a class="jxr_linenumber" name="L239" href="#L239">239</a>                     <span class="jxr_string">"Φ"</span>, Map.of(<span class="jxr_string">"number"</span>, <span class="jxr_string">"Φ.number"</span>, kind.substring(2), kind),
+<a class="jxr_linenumber" name="L240" href="#L240">240</a>                     <span class="jxr_string">"Φ.number"</span>, Map.of(<span class="jxr_string">"φ"</span>, <span class="jxr_string">"Φ.number.φ"</span>),
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>                     kind, Map.of(<span class="jxr_string">"eq"</span>, String.format(<span class="jxr_string">"%s.eq"</span>, kind)),
+<a class="jxr_linenumber" name="L242" href="#L242">242</a>                     String.format(<span class="jxr_string">"%s.eq"</span>, kind), Map.of()
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>                 ),
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>                 <strong class="jxr_keyword">new</strong> Calls(
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>                     Map.of(<span class="jxr_string">"Φ.number"</span>, List.of(<span class="jxr_string">"φ"</span>)),
+<a class="jxr_linenumber" name="L246" href="#L246">246</a>                     Map.of(<span class="jxr_string">"Φ.app.φ.ρ"</span>, Map.of(0, <span class="jxr_string">"Φ.app.φ.ρ.α0"</span>)),
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>                     Map.of(),
+<a class="jxr_linenumber" name="L248" href="#L248">248</a>                     Map.of()
+<a class="jxr_linenumber" name="L249" href="#L249">249</a>                 ),
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>                 Map.of(
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>                     <span class="jxr_string">"Φ.app.φ"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ"</span>, <span class="jxr_string">"eq"</span>),
+<a class="jxr_linenumber" name="L252" href="#L252">252</a>                     <span class="jxr_string">"Φ.app.φ.ρ"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ.ρ"</span>, <span class="jxr_string">"number"</span>),
+<a class="jxr_linenumber" name="L253" href="#L253">253</a>                     <span class="jxr_string">"Φ.app.φ.ρ.α0"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ.α0.ρ"</span>, kind.substring(2))
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>                 ),
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>                 Map.of(<span class="jxr_string">"Φ.app.φ.ρ.ρ"</span>, <span class="jxr_string">"Φ"</span>, <span class="jxr_string">"Φ.app.φ.ρ.α0.ρ"</span>, <span class="jxr_string">"Φ"</span>)
+<a class="jxr_linenumber" name="L256" href="#L256">256</a>             ).formation(<span class="jxr_string">"Φ.app.φ"</span>),
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>             Matchers.equalTo(Optional.of(String.format(<span class="jxr_string">"%s.eq"</span>, kind)))
+<a class="jxr_linenumber" name="L258" href="#L258">258</a>         );
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>     }
+<a class="jxr_linenumber" name="L260" href="#L260">260</a> 
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>     @Test
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>     <strong class="jxr_keyword">void</strong> followsVoidOfWhatAtomReturnsToTypeItsBracketsGive() {
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>         <strong class="jxr_keyword">final</strong> String kind = String.format(<span class="jxr_string">"Φ.kind%d"</span>, <strong class="jxr_keyword">new</strong> SecureRandom().nextInt(10_000));
+<a class="jxr_linenumber" name="L264" href="#L264">264</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L265" href="#L265">265</a>             <span class="jxr_string">"a read of a void of what an atom returns must copy the type its brackets give it, but it doesnt"</span>,
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>             <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L267" href="#L267">267</a>                 Map.of(
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>                     <span class="jxr_string">"Φ"</span>, Map.of(<span class="jxr_string">"check"</span>, <span class="jxr_string">"Φ.check"</span>, <span class="jxr_string">"status"</span>, <span class="jxr_string">"Φ.status"</span>, <span class="jxr_string">"kind"</span>, kind),
+<a class="jxr_linenumber" name="L269" href="#L269">269</a>                     <span class="jxr_string">"Φ.check"</span>, Map.of(),
+<a class="jxr_linenumber" name="L270" href="#L270">270</a>                     <span class="jxr_string">"Φ.status"</span>,
+<a class="jxr_linenumber" name="L271" href="#L271">271</a>                     Map.of(<span class="jxr_string">"msg"</span>, <span class="jxr_string">"Φ.status.msg"</span>, <span class="jxr_string">"cde"</span>, <span class="jxr_string">"Φ.status.cde"</span>, <span class="jxr_string">"code"</span>, <span class="jxr_string">"Φ.status.code"</span>),
+<a class="jxr_linenumber" name="L272" href="#L272">272</a>                     kind, Map.of()
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>                 ),
+<a class="jxr_linenumber" name="L274" href="#L274">274</a>                 <strong class="jxr_keyword">new</strong> Calls(
+<a class="jxr_linenumber" name="L275" href="#L275">275</a>                     Map.of(<span class="jxr_string">"Φ.status"</span>, List.of(<span class="jxr_string">"msg"</span>, <span class="jxr_string">"cde"</span>)),
+<a class="jxr_linenumber" name="L276" href="#L276">276</a>                     Map.of(),
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>                     Map.of(),
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>                     Map.of(
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>                         <span class="jxr_string">"Φ.check"</span>, <strong class="jxr_keyword">new</strong> Annotation(String.format(<span class="jxr_string">"Φ.status(Φ.string,%s)"</span>, kind))
+<a class="jxr_linenumber" name="L280" href="#L280">280</a>                     )
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>                 ),
+<a class="jxr_linenumber" name="L282" href="#L282">282</a>                 Map.of(
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>                     <span class="jxr_string">"Φ.status.code"</span>, Map.entry(<span class="jxr_string">"Φ.status.code.ρ"</span>, <span class="jxr_string">"cde"</span>),
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>                     <span class="jxr_string">"Φ.app.φ"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ"</span>, <span class="jxr_string">"code"</span>),
+<a class="jxr_linenumber" name="L285" href="#L285">285</a>                     <span class="jxr_string">"Φ.app.φ.ρ"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ.ρ"</span>, <span class="jxr_string">"check"</span>)
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>                 ),
+<a class="jxr_linenumber" name="L287" href="#L287">287</a>                 Map.of(<span class="jxr_string">"Φ.status.code.ρ"</span>, <span class="jxr_string">"Φ.status"</span>, <span class="jxr_string">"Φ.app.φ.ρ.ρ"</span>, <span class="jxr_string">"Φ"</span>)
+<a class="jxr_linenumber" name="L288" href="#L288">288</a>             ).formation(<span class="jxr_string">"Φ.app.φ"</span>),
+<a class="jxr_linenumber" name="L289" href="#L289">289</a>             Matchers.equalTo(Optional.of(kind))
+<a class="jxr_linenumber" name="L290" href="#L290">290</a>         );
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>     }
+<a class="jxr_linenumber" name="L292" href="#L292">292</a> 
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>     @Test
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>     <strong class="jxr_keyword">void</strong> followsVoidOfCopyMadeInEoToArgumentWrittenThere() {
+<a class="jxr_linenumber" name="L295" href="#L295">295</a>         <strong class="jxr_keyword">final</strong> String kind = String.format(<span class="jxr_string">"Φ.kind%d"</span>, <strong class="jxr_keyword">new</strong> SecureRandom().nextInt(10_000));
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>             <span class="jxr_string">"a read of a void of a copy made in EO must copy what the argument written there copies, but it doesnt"</span>,
+<a class="jxr_linenumber" name="L298" href="#L298">298</a>             <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L299" href="#L299">299</a>                 Map.of(
+<a class="jxr_linenumber" name="L300" href="#L300">300</a>                     <span class="jxr_string">"Φ"</span>, Map.of(<span class="jxr_string">"status"</span>, <span class="jxr_string">"Φ.status"</span>, kind.substring(2), kind),
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>                     <span class="jxr_string">"Φ.status"</span>, Map.of(<span class="jxr_string">"cde"</span>, <span class="jxr_string">"Φ.status.cde"</span>, <span class="jxr_string">"code"</span>, <span class="jxr_string">"Φ.status.code"</span>),
+<a class="jxr_linenumber" name="L302" href="#L302">302</a>                     kind, Map.of()
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>                 ),
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>                 <strong class="jxr_keyword">new</strong> Calls(
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>                     Map.of(<span class="jxr_string">"Φ.status"</span>, List.of(<span class="jxr_string">"cde"</span>)),
+<a class="jxr_linenumber" name="L306" href="#L306">306</a>                     Map.of(<span class="jxr_string">"Φ.app.φ.ρ"</span>, Map.of(0, <span class="jxr_string">"Φ.app.φ.ρ.α0"</span>)),
+<a class="jxr_linenumber" name="L307" href="#L307">307</a>                     Map.of(),
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>                     Map.of()
+<a class="jxr_linenumber" name="L309" href="#L309">309</a>                 ),
+<a class="jxr_linenumber" name="L310" href="#L310">310</a>                 Map.of(
+<a class="jxr_linenumber" name="L311" href="#L311">311</a>                     <span class="jxr_string">"Φ.status.code"</span>, Map.entry(<span class="jxr_string">"Φ.status.code.ρ"</span>, <span class="jxr_string">"cde"</span>),
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>                     <span class="jxr_string">"Φ.app.φ"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ"</span>, <span class="jxr_string">"code"</span>),
+<a class="jxr_linenumber" name="L313" href="#L313">313</a>                     <span class="jxr_string">"Φ.app.φ.ρ"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ.ρ"</span>, <span class="jxr_string">"status"</span>),
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>                     <span class="jxr_string">"Φ.app.φ.ρ.α0"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ.α0.ρ"</span>, kind.substring(2))
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>                 ),
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>                 Map.of(
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>                     <span class="jxr_string">"Φ.status.code.ρ"</span>, <span class="jxr_string">"Φ.status"</span>,
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>                     <span class="jxr_string">"Φ.app.φ.ρ.ρ"</span>, <span class="jxr_string">"Φ"</span>,
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>                     <span class="jxr_string">"Φ.app.φ.ρ.α0.ρ"</span>, <span class="jxr_string">"Φ"</span>
+<a class="jxr_linenumber" name="L320" href="#L320">320</a>                 )
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>             ).formation(<span class="jxr_string">"Φ.app.φ"</span>),
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>             Matchers.equalTo(Optional.of(kind))
+<a class="jxr_linenumber" name="L323" href="#L323">323</a>         );
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>     }
+<a class="jxr_linenumber" name="L325" href="#L325">325</a> 
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>     @Test
+<a class="jxr_linenumber" name="L327" href="#L327">327</a>     <strong class="jxr_keyword">void</strong> followsArgumentInCopyItsCallIsWrittenIn() {
+<a class="jxr_linenumber" name="L328" href="#L328">328</a>         <strong class="jxr_keyword">final</strong> String kind = String.format(<span class="jxr_string">"Φ.kind%d"</span>, <strong class="jxr_keyword">new</strong> SecureRandom().nextInt(10_000));
+<a class="jxr_linenumber" name="L329" href="#L329">329</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L330" href="#L330">330</a>             <span class="jxr_string">"an argument must be read in the copy its call is written in, but it isnt"</span>,
+<a class="jxr_linenumber" name="L331" href="#L331">331</a>             <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L332" href="#L332">332</a>                 Map.of(
+<a class="jxr_linenumber" name="L333" href="#L333">333</a>                     <span class="jxr_string">"Φ"</span>, Map.of(<span class="jxr_string">"check"</span>, <span class="jxr_string">"Φ.check"</span>, <span class="jxr_string">"status"</span>, <span class="jxr_string">"Φ.status"</span>, <span class="jxr_string">"kind"</span>, kind),
+<a class="jxr_linenumber" name="L334" href="#L334">334</a>                     <span class="jxr_string">"Φ.check"</span>, Map.of(),
+<a class="jxr_linenumber" name="L335" href="#L335">335</a>                     <span class="jxr_string">"Φ.status"</span>,
+<a class="jxr_linenumber" name="L336" href="#L336">336</a>                     Map.of(
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>                         <span class="jxr_string">"cde"</span>, <span class="jxr_string">"Φ.status.cde"</span>,
+<a class="jxr_linenumber" name="L338" href="#L338">338</a>                         <span class="jxr_string">"called"</span>, <span class="jxr_string">"Φ.status.called"</span>,
+<a class="jxr_linenumber" name="L339" href="#L339">339</a>                         <span class="jxr_string">"code"</span>, <span class="jxr_string">"Φ.status.code"</span>
+<a class="jxr_linenumber" name="L340" href="#L340">340</a>                     ),
+<a class="jxr_linenumber" name="L341" href="#L341">341</a>                     kind, Map.of()
+<a class="jxr_linenumber" name="L342" href="#L342">342</a>                 ),
+<a class="jxr_linenumber" name="L343" href="#L343">343</a>                 <strong class="jxr_keyword">new</strong> Calls(
+<a class="jxr_linenumber" name="L344" href="#L344">344</a>                     Map.of(<span class="jxr_string">"Φ.status"</span>, List.of(<span class="jxr_string">"cde"</span>)),
+<a class="jxr_linenumber" name="L345" href="#L345">345</a>                     Map.of(<span class="jxr_string">"Φ.status.called"</span>, Map.of(0, <span class="jxr_string">"Φ.status.called.α0"</span>)),
+<a class="jxr_linenumber" name="L346" href="#L346">346</a>                     Map.of(),
+<a class="jxr_linenumber" name="L347" href="#L347">347</a>                     Map.of(<span class="jxr_string">"Φ.check"</span>, <strong class="jxr_keyword">new</strong> Annotation(String.format(<span class="jxr_string">"Φ.status(%s)"</span>, kind)))
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>                 ),
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>                 Map.of(
+<a class="jxr_linenumber" name="L350" href="#L350">350</a>                     <span class="jxr_string">"Φ.status.code"</span>, Map.entry(<span class="jxr_string">"Φ.status.code.ρ"</span>, <span class="jxr_string">"cde"</span>),
+<a class="jxr_linenumber" name="L351" href="#L351">351</a>                     <span class="jxr_string">"Φ.status.called"</span>, Map.entry(<span class="jxr_string">"Φ.status.called.ρ"</span>, <span class="jxr_string">"status"</span>),
+<a class="jxr_linenumber" name="L352" href="#L352">352</a>                     <span class="jxr_string">"Φ.status.called.α0"</span>, Map.entry(<span class="jxr_string">"Φ.status.called.α0.ρ"</span>, <span class="jxr_string">"code"</span>),
+<a class="jxr_linenumber" name="L353" href="#L353">353</a>                     <span class="jxr_string">"Φ.app.φ"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ"</span>, <span class="jxr_string">"code"</span>),
+<a class="jxr_linenumber" name="L354" href="#L354">354</a>                     <span class="jxr_string">"Φ.app.φ.ρ"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ.ρ"</span>, <span class="jxr_string">"called"</span>),
+<a class="jxr_linenumber" name="L355" href="#L355">355</a>                     <span class="jxr_string">"Φ.app.φ.ρ.ρ"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ.ρ.ρ"</span>, <span class="jxr_string">"check"</span>)
+<a class="jxr_linenumber" name="L356" href="#L356">356</a>                 ),
+<a class="jxr_linenumber" name="L357" href="#L357">357</a>                 Map.of(
+<a class="jxr_linenumber" name="L358" href="#L358">358</a>                     <span class="jxr_string">"Φ.status.code.ρ"</span>, <span class="jxr_string">"Φ.status"</span>,
+<a class="jxr_linenumber" name="L359" href="#L359">359</a>                     <span class="jxr_string">"Φ.status.called.ρ"</span>, <span class="jxr_string">"Φ"</span>,
+<a class="jxr_linenumber" name="L360" href="#L360">360</a>                     <span class="jxr_string">"Φ.status.called.α0.ρ"</span>, <span class="jxr_string">"Φ.status"</span>,
+<a class="jxr_linenumber" name="L361" href="#L361">361</a>                     <span class="jxr_string">"Φ.app.φ.ρ.ρ.ρ"</span>, <span class="jxr_string">"Φ"</span>
+<a class="jxr_linenumber" name="L362" href="#L362">362</a>                 )
+<a class="jxr_linenumber" name="L363" href="#L363">363</a>             ).formation(<span class="jxr_string">"Φ.app.φ"</span>),
+<a class="jxr_linenumber" name="L364" href="#L364">364</a>             Matchers.equalTo(Optional.of(kind))
+<a class="jxr_linenumber" name="L365" href="#L365">365</a>         );
+<a class="jxr_linenumber" name="L366" href="#L366">366</a>     }
+<a class="jxr_linenumber" name="L367" href="#L367">367</a> 
+<a class="jxr_linenumber" name="L368" href="#L368">368</a>     @Test
+<a class="jxr_linenumber" name="L369" href="#L369">369</a>     <strong class="jxr_keyword">void</strong> findsNothingBehindVoidThatUnknownCallerFills() {
+<a class="jxr_linenumber" name="L370" href="#L370">370</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L371" href="#L371">371</a>             <span class="jxr_string">"a read of a void filled with what an unknown caller passes must copy no formation the code fixes, but it does"</span>,
+<a class="jxr_linenumber" name="L372" href="#L372">372</a>             <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L373" href="#L373">373</a>                 Map.of(
+<a class="jxr_linenumber" name="L374" href="#L374">374</a>                     <span class="jxr_string">"Φ"</span>, Map.of(<span class="jxr_string">"app"</span>, <span class="jxr_string">"Φ.app"</span>, <span class="jxr_string">"status"</span>, <span class="jxr_string">"Φ.status"</span>, <span class="jxr_string">"number"</span>, <span class="jxr_string">"Φ.number"</span>),
+<a class="jxr_linenumber" name="L375" href="#L375">375</a>                     <span class="jxr_string">"Φ.app"</span>, Map.of(<span class="jxr_string">"f"</span>, <span class="jxr_string">"Φ.app.f"</span>, <span class="jxr_string">"φ"</span>, <span class="jxr_string">"Φ.app.φ"</span>),
+<a class="jxr_linenumber" name="L376" href="#L376">376</a>                     <span class="jxr_string">"Φ.status"</span>, Map.of(<span class="jxr_string">"cde"</span>, <span class="jxr_string">"Φ.status.cde"</span>, <span class="jxr_string">"code"</span>, <span class="jxr_string">"Φ.status.code"</span>),
+<a class="jxr_linenumber" name="L377" href="#L377">377</a>                     <span class="jxr_string">"Φ.number"</span>, Map.of()
+<a class="jxr_linenumber" name="L378" href="#L378">378</a>                 ),
+<a class="jxr_linenumber" name="L379" href="#L379">379</a>                 <strong class="jxr_keyword">new</strong> Calls(
+<a class="jxr_linenumber" name="L380" href="#L380">380</a>                     Map.of(<span class="jxr_string">"Φ.app"</span>, List.of(<span class="jxr_string">"f"</span>), <span class="jxr_string">"Φ.status"</span>, List.of(<span class="jxr_string">"cde"</span>)),
+<a class="jxr_linenumber" name="L381" href="#L381">381</a>                     Map.of(<span class="jxr_string">"Φ.app.φ.ρ"</span>, Map.of(0, <span class="jxr_string">"Φ.app.φ.ρ.α0"</span>)),
+<a class="jxr_linenumber" name="L382" href="#L382">382</a>                     Map.of(),
+<a class="jxr_linenumber" name="L383" href="#L383">383</a>                     Map.of()
+<a class="jxr_linenumber" name="L384" href="#L384">384</a>                 ),
+<a class="jxr_linenumber" name="L385" href="#L385">385</a>                 Map.of(
+<a class="jxr_linenumber" name="L386" href="#L386">386</a>                     <span class="jxr_string">"Φ.status.code"</span>, Map.entry(<span class="jxr_string">"Φ.status.code.ρ"</span>, <span class="jxr_string">"cde"</span>),
+<a class="jxr_linenumber" name="L387" href="#L387">387</a>                     <span class="jxr_string">"Φ.app.φ"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ"</span>, <span class="jxr_string">"code"</span>),
+<a class="jxr_linenumber" name="L388" href="#L388">388</a>                     <span class="jxr_string">"Φ.app.φ.ρ"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ.ρ"</span>, <span class="jxr_string">"status"</span>),
+<a class="jxr_linenumber" name="L389" href="#L389">389</a>                     <span class="jxr_string">"Φ.app.φ.ρ.α0"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ.α0.ρ"</span>, <span class="jxr_string">"f"</span>)
+<a class="jxr_linenumber" name="L390" href="#L390">390</a>                 ),
+<a class="jxr_linenumber" name="L391" href="#L391">391</a>                 Map.of(
+<a class="jxr_linenumber" name="L392" href="#L392">392</a>                     <span class="jxr_string">"Φ.status.code.ρ"</span>, <span class="jxr_string">"Φ.status"</span>,
+<a class="jxr_linenumber" name="L393" href="#L393">393</a>                     <span class="jxr_string">"Φ.app.φ.ρ.ρ"</span>, <span class="jxr_string">"Φ"</span>,
+<a class="jxr_linenumber" name="L394" href="#L394">394</a>                     <span class="jxr_string">"Φ.app.φ.ρ.α0.ρ"</span>, <span class="jxr_string">"Φ.app"</span>
+<a class="jxr_linenumber" name="L395" href="#L395">395</a>                 )
+<a class="jxr_linenumber" name="L396" href="#L396">396</a>             ).formation(<span class="jxr_string">"Φ.app.φ"</span>),
+<a class="jxr_linenumber" name="L397" href="#L397">397</a>             Matchers.equalTo(Optional.empty())
+<a class="jxr_linenumber" name="L398" href="#L398">398</a>         );
+<a class="jxr_linenumber" name="L399" href="#L399">399</a>     }
+<a class="jxr_linenumber" name="L400" href="#L400">400</a> 
+<a class="jxr_linenumber" name="L401" href="#L401">401</a>     @Test
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>     <strong class="jxr_keyword">void</strong> findsNothingBehindVoidThatCallLeavesEmpty() {
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L404" href="#L404">404</a>             <span class="jxr_string">"a read of a void that the call leaves empty must copy no formation the code fixes, but it does"</span>,
+<a class="jxr_linenumber" name="L405" href="#L405">405</a>             <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L406" href="#L406">406</a>                 Map.of(
+<a class="jxr_linenumber" name="L407" href="#L407">407</a>                     <span class="jxr_string">"Φ"</span>, Map.of(<span class="jxr_string">"status"</span>, <span class="jxr_string">"Φ.status"</span>, <span class="jxr_string">"number"</span>, <span class="jxr_string">"Φ.number"</span>),
+<a class="jxr_linenumber" name="L408" href="#L408">408</a>                     <span class="jxr_string">"Φ.status"</span>,
+<a class="jxr_linenumber" name="L409" href="#L409">409</a>                     Map.of(<span class="jxr_string">"cde"</span>, <span class="jxr_string">"Φ.status.cde"</span>, <span class="jxr_string">"msg"</span>, <span class="jxr_string">"Φ.status.msg"</span>, <span class="jxr_string">"code"</span>, <span class="jxr_string">"Φ.status.code"</span>),
+<a class="jxr_linenumber" name="L410" href="#L410">410</a>                     <span class="jxr_string">"Φ.number"</span>, Map.of()
+<a class="jxr_linenumber" name="L411" href="#L411">411</a>                 ),
+<a class="jxr_linenumber" name="L412" href="#L412">412</a>                 <strong class="jxr_keyword">new</strong> Calls(
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>                     Map.of(<span class="jxr_string">"Φ.status"</span>, List.of(<span class="jxr_string">"cde"</span>, <span class="jxr_string">"msg"</span>)),
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>                     Map.of(<span class="jxr_string">"Φ.app.φ.ρ"</span>, Map.of(0, <span class="jxr_string">"Φ.app.φ.ρ.α0"</span>)),
+<a class="jxr_linenumber" name="L415" href="#L415">415</a>                     Map.of(),
+<a class="jxr_linenumber" name="L416" href="#L416">416</a>                     Map.of()
+<a class="jxr_linenumber" name="L417" href="#L417">417</a>                 ),
+<a class="jxr_linenumber" name="L418" href="#L418">418</a>                 Map.of(
+<a class="jxr_linenumber" name="L419" href="#L419">419</a>                     <span class="jxr_string">"Φ.status.code"</span>, Map.entry(<span class="jxr_string">"Φ.status.code.ρ"</span>, <span class="jxr_string">"msg"</span>),
+<a class="jxr_linenumber" name="L420" href="#L420">420</a>                     <span class="jxr_string">"Φ.app.φ"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ"</span>, <span class="jxr_string">"code"</span>),
+<a class="jxr_linenumber" name="L421" href="#L421">421</a>                     <span class="jxr_string">"Φ.app.φ.ρ"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ.ρ"</span>, <span class="jxr_string">"status"</span>),
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>                     <span class="jxr_string">"Φ.app.φ.ρ.α0"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ.α0.ρ"</span>, <span class="jxr_string">"number"</span>)
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>                 ),
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>                 Map.of(
+<a class="jxr_linenumber" name="L425" href="#L425">425</a>                     <span class="jxr_string">"Φ.status.code.ρ"</span>, <span class="jxr_string">"Φ.status"</span>,
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>                     <span class="jxr_string">"Φ.app.φ.ρ.ρ"</span>, <span class="jxr_string">"Φ"</span>,
+<a class="jxr_linenumber" name="L427" href="#L427">427</a>                     <span class="jxr_string">"Φ.app.φ.ρ.α0.ρ"</span>, <span class="jxr_string">"Φ"</span>
+<a class="jxr_linenumber" name="L428" href="#L428">428</a>                 )
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>             ).formation(<span class="jxr_string">"Φ.app.φ"</span>),
+<a class="jxr_linenumber" name="L430" href="#L430">430</a>             Matchers.equalTo(Optional.empty())
+<a class="jxr_linenumber" name="L431" href="#L431">431</a>         );
+<a class="jxr_linenumber" name="L432" href="#L432">432</a>     }
+<a class="jxr_linenumber" name="L433" href="#L433">433</a> 
+<a class="jxr_linenumber" name="L434" href="#L434">434</a>     @Test
+<a class="jxr_linenumber" name="L435" href="#L435">435</a>     <strong class="jxr_keyword">void</strong> stopsOnCopiesThatApplyThemselvesInCircle() {
+<a class="jxr_linenumber" name="L436" href="#L436">436</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L437" href="#L437">437</a>             <span class="jxr_string">"copies whose attribute applies their own formation again must copy nothing, but they do"</span>,
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>             <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L439" href="#L439">439</a>                 Map.of(
+<a class="jxr_linenumber" name="L440" href="#L440">440</a>                     <span class="jxr_string">"Φ"</span>, Map.of(<span class="jxr_string">"count"</span>, <span class="jxr_string">"Φ.count"</span>),
+<a class="jxr_linenumber" name="L441" href="#L441">441</a>                     <span class="jxr_string">"Φ.count"</span>, Map.of(<span class="jxr_string">"n"</span>, <span class="jxr_string">"Φ.count.n"</span>, <span class="jxr_string">"next"</span>, <span class="jxr_string">"Φ.count.next"</span>)
+<a class="jxr_linenumber" name="L442" href="#L442">442</a>                 ),
+<a class="jxr_linenumber" name="L443" href="#L443">443</a>                 <strong class="jxr_keyword">new</strong> Calls(
+<a class="jxr_linenumber" name="L444" href="#L444">444</a>                     Map.of(<span class="jxr_string">"Φ.count"</span>, List.of(<span class="jxr_string">"n"</span>)),
+<a class="jxr_linenumber" name="L445" href="#L445">445</a>                     Map.of(<span class="jxr_string">"Φ.count.next.ρ"</span>, Map.of(0, <span class="jxr_string">"Φ.count.next.ρ.α0"</span>)),
+<a class="jxr_linenumber" name="L446" href="#L446">446</a>                     Map.of(),
+<a class="jxr_linenumber" name="L447" href="#L447">447</a>                     Map.of()
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>                 ),
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>                 Map.of(
+<a class="jxr_linenumber" name="L450" href="#L450">450</a>                     <span class="jxr_string">"Φ.count.next"</span>, Map.entry(<span class="jxr_string">"Φ.count.next.ρ"</span>, <span class="jxr_string">"next"</span>),
+<a class="jxr_linenumber" name="L451" href="#L451">451</a>                     <span class="jxr_string">"Φ.count.next.ρ"</span>, Map.entry(<span class="jxr_string">"Φ.count.next.ρ.ρ"</span>, <span class="jxr_string">"count"</span>),
+<a class="jxr_linenumber" name="L452" href="#L452">452</a>                     <span class="jxr_string">"Φ.count.next.ρ.α0"</span>, Map.entry(<span class="jxr_string">"Φ.count.next.ρ.α0.ρ"</span>, <span class="jxr_string">"n"</span>)
+<a class="jxr_linenumber" name="L453" href="#L453">453</a>                 ),
+<a class="jxr_linenumber" name="L454" href="#L454">454</a>                 Map.of(<span class="jxr_string">"Φ.count.next.ρ.ρ"</span>, <span class="jxr_string">"Φ"</span>, <span class="jxr_string">"Φ.count.next.ρ.α0.ρ"</span>, <span class="jxr_string">"Φ.count"</span>)
+<a class="jxr_linenumber" name="L455" href="#L455">455</a>             ).formation(<span class="jxr_string">"Φ.count.next"</span>),
+<a class="jxr_linenumber" name="L456" href="#L456">456</a>             Matchers.equalTo(Optional.empty())
+<a class="jxr_linenumber" name="L457" href="#L457">457</a>         );
+<a class="jxr_linenumber" name="L458" href="#L458">458</a>     }
+<a class="jxr_linenumber" name="L459" href="#L459">459</a> 
+<a class="jxr_linenumber" name="L460" href="#L460">460</a>     @Test
+<a class="jxr_linenumber" name="L461" href="#L461">461</a>     <strong class="jxr_keyword">void</strong> stopsOnReadsThatRunInCircle() {
+<a class="jxr_linenumber" name="L462" href="#L462">462</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L463" href="#L463">463</a>             <span class="jxr_string">"reads that run back into themselves must copy nothing, but they do"</span>,
+<a class="jxr_linenumber" name="L464" href="#L464">464</a>             <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L465" href="#L465">465</a>                 Map.of(<span class="jxr_string">"Φ.app"</span>, Map.of(<span class="jxr_string">"a"</span>, <span class="jxr_string">"Φ.app.a"</span>, <span class="jxr_string">"b"</span>, <span class="jxr_string">"Φ.app.b"</span>)),
+<a class="jxr_linenumber" name="L466" href="#L466">466</a>                 <strong class="jxr_keyword">new</strong> Calls(Map.of(), Map.of(), Map.of(), Map.of()),
+<a class="jxr_linenumber" name="L467" href="#L467">467</a>                 Map.of(
+<a class="jxr_linenumber" name="L468" href="#L468">468</a>                     <span class="jxr_string">"Φ.app.φ"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ"</span>, <span class="jxr_string">"a"</span>),
+<a class="jxr_linenumber" name="L469" href="#L469">469</a>                     <span class="jxr_string">"Φ.app.a"</span>, Map.entry(<span class="jxr_string">"Φ.app.a.ρ"</span>, <span class="jxr_string">"b"</span>),
+<a class="jxr_linenumber" name="L470" href="#L470">470</a>                     <span class="jxr_string">"Φ.app.b"</span>, Map.entry(<span class="jxr_string">"Φ.app.b.ρ"</span>, <span class="jxr_string">"a"</span>)
+<a class="jxr_linenumber" name="L471" href="#L471">471</a>                 ),
+<a class="jxr_linenumber" name="L472" href="#L472">472</a>                 Map.of(<span class="jxr_string">"Φ.app.φ.ρ"</span>, <span class="jxr_string">"Φ.app"</span>, <span class="jxr_string">"Φ.app.a.ρ"</span>, <span class="jxr_string">"Φ.app"</span>, <span class="jxr_string">"Φ.app.b.ρ"</span>, <span class="jxr_string">"Φ.app"</span>)
+<a class="jxr_linenumber" name="L473" href="#L473">473</a>             ).formation(<span class="jxr_string">"Φ.app.φ"</span>),
+<a class="jxr_linenumber" name="L474" href="#L474">474</a>             Matchers.equalTo(Optional.empty())
+<a class="jxr_linenumber" name="L475" href="#L475">475</a>         );
+<a class="jxr_linenumber" name="L476" href="#L476">476</a>     }
+<a class="jxr_linenumber" name="L477" href="#L477">477</a> 
+<a class="jxr_linenumber" name="L478" href="#L478">478</a>     @Test
+<a class="jxr_linenumber" name="L479" href="#L479">479</a>     <strong class="jxr_keyword">void</strong> stopsOnDecorateesThatRunInCircle() {
+<a class="jxr_linenumber" name="L480" href="#L480">480</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L481" href="#L481">481</a>             <span class="jxr_string">"decoratees that run back into themselves must copy nothing, but they do"</span>,
+<a class="jxr_linenumber" name="L482" href="#L482">482</a>             <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L483" href="#L483">483</a>                 Map.of(
+<a class="jxr_linenumber" name="L484" href="#L484">484</a>                     <span class="jxr_string">"Φ"</span>, Map.of(<span class="jxr_string">"ping"</span>, <span class="jxr_string">"Φ.ping"</span>, <span class="jxr_string">"pong"</span>, <span class="jxr_string">"Φ.pong"</span>),
+<a class="jxr_linenumber" name="L485" href="#L485">485</a>                     <span class="jxr_string">"Φ.ping"</span>, Map.of(<span class="jxr_string">"φ"</span>, <span class="jxr_string">"Φ.ping.φ"</span>),
+<a class="jxr_linenumber" name="L486" href="#L486">486</a>                     <span class="jxr_string">"Φ.pong"</span>, Map.of(<span class="jxr_string">"φ"</span>, <span class="jxr_string">"Φ.pong.φ"</span>)
+<a class="jxr_linenumber" name="L487" href="#L487">487</a>                 ),
+<a class="jxr_linenumber" name="L488" href="#L488">488</a>                 <strong class="jxr_keyword">new</strong> Calls(Map.of(), Map.of(), Map.of(), Map.of()),
+<a class="jxr_linenumber" name="L489" href="#L489">489</a>                 Map.of(
+<a class="jxr_linenumber" name="L490" href="#L490">490</a>                     <span class="jxr_string">"Φ.ping.φ"</span>, Map.entry(<span class="jxr_string">"Φ.ping.φ.ρ"</span>, <span class="jxr_string">"pong"</span>),
+<a class="jxr_linenumber" name="L491" href="#L491">491</a>                     <span class="jxr_string">"Φ.pong.φ"</span>, Map.entry(<span class="jxr_string">"Φ.pong.φ.ρ"</span>, <span class="jxr_string">"ping"</span>),
+<a class="jxr_linenumber" name="L492" href="#L492">492</a>                     <span class="jxr_string">"Φ.run"</span>, Map.entry(<span class="jxr_string">"Φ.run.ρ"</span>, <span class="jxr_string">"zzz"</span>),
+<a class="jxr_linenumber" name="L493" href="#L493">493</a>                     <span class="jxr_string">"Φ.run.ρ"</span>, Map.entry(<span class="jxr_string">"Φ.run.ρ.ρ"</span>, <span class="jxr_string">"ping"</span>)
+<a class="jxr_linenumber" name="L494" href="#L494">494</a>                 ),
+<a class="jxr_linenumber" name="L495" href="#L495">495</a>                 Map.of(<span class="jxr_string">"Φ.ping.φ.ρ"</span>, <span class="jxr_string">"Φ"</span>, <span class="jxr_string">"Φ.pong.φ.ρ"</span>, <span class="jxr_string">"Φ"</span>, <span class="jxr_string">"Φ.run.ρ.ρ"</span>, <span class="jxr_string">"Φ"</span>)
+<a class="jxr_linenumber" name="L496" href="#L496">496</a>             ).formation(<span class="jxr_string">"Φ.run"</span>),
+<a class="jxr_linenumber" name="L497" href="#L497">497</a>             Matchers.equalTo(Optional.empty())
+<a class="jxr_linenumber" name="L498" href="#L498">498</a>         );
+<a class="jxr_linenumber" name="L499" href="#L499">499</a>     }
+<a class="jxr_linenumber" name="L500" href="#L500">500</a> 
+<a class="jxr_linenumber" name="L501" href="#L501">501</a>     @Test
+<a class="jxr_linenumber" name="L502" href="#L502">502</a>     <strong class="jxr_keyword">void</strong> followsVoidFilledByReadOffResultOfCall() {
+<a class="jxr_linenumber" name="L503" href="#L503">503</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L504" href="#L504">504</a>             <span class="jxr_string">"a void filled by a read off what a call makes must copy what the read copies, but it doesnt"</span>,
+<a class="jxr_linenumber" name="L505" href="#L505">505</a>             <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L506" href="#L506">506</a>                 Map.of(
+<a class="jxr_linenumber" name="L507" href="#L507">507</a>                     <span class="jxr_string">"Φ"</span>, Map.of(<span class="jxr_string">"box"</span>, <span class="jxr_string">"Φ.box"</span>, <span class="jxr_string">"make"</span>, <span class="jxr_string">"Φ.make"</span>, <span class="jxr_string">"kind"</span>, <span class="jxr_string">"Φ.kind"</span>),
+<a class="jxr_linenumber" name="L508" href="#L508">508</a>                     <span class="jxr_string">"Φ.box"</span>, Map.of(<span class="jxr_string">"v"</span>, <span class="jxr_string">"Φ.box.v"</span>, <span class="jxr_string">"φ"</span>, <span class="jxr_string">"Φ.box.φ"</span>),
+<a class="jxr_linenumber" name="L509" href="#L509">509</a>                     <span class="jxr_string">"Φ.make"</span>, Map.of(<span class="jxr_string">"k"</span>, <span class="jxr_string">"Φ.make.k"</span>, <span class="jxr_string">"out"</span>, <span class="jxr_string">"Φ.make.out"</span>),
+<a class="jxr_linenumber" name="L510" href="#L510">510</a>                     <span class="jxr_string">"Φ.make.out"</span>, Map.of(<span class="jxr_string">"go"</span>, <span class="jxr_string">"Φ.make.out.go"</span>),
+<a class="jxr_linenumber" name="L511" href="#L511">511</a>                     <span class="jxr_string">"Φ.make.out.go"</span>, Map.of(),
+<a class="jxr_linenumber" name="L512" href="#L512">512</a>                     <span class="jxr_string">"Φ.kind"</span>, Map.of()
+<a class="jxr_linenumber" name="L513" href="#L513">513</a>                 ),
+<a class="jxr_linenumber" name="L514" href="#L514">514</a>                 <strong class="jxr_keyword">new</strong> Calls(
+<a class="jxr_linenumber" name="L515" href="#L515">515</a>                     Map.of(<span class="jxr_string">"Φ.box"</span>, List.of(<span class="jxr_string">"v"</span>), <span class="jxr_string">"Φ.make"</span>, List.of(<span class="jxr_string">"k"</span>)),
+<a class="jxr_linenumber" name="L516" href="#L516">516</a>                     Map.of(
+<a class="jxr_linenumber" name="L517" href="#L517">517</a>                         <span class="jxr_string">"Φ.app"</span>, Map.of(0, <span class="jxr_string">"Φ.app.α0"</span>),
+<a class="jxr_linenumber" name="L518" href="#L518">518</a>                         <span class="jxr_string">"Φ.app.α0.ρ"</span>, Map.of(0, <span class="jxr_string">"Φ.app.α0.ρ.α0"</span>)
+<a class="jxr_linenumber" name="L519" href="#L519">519</a>                     ),
+<a class="jxr_linenumber" name="L520" href="#L520">520</a>                     Map.of(),
+<a class="jxr_linenumber" name="L521" href="#L521">521</a>                     Map.of()
+<a class="jxr_linenumber" name="L522" href="#L522">522</a>                 ),
+<a class="jxr_linenumber" name="L523" href="#L523">523</a>                 Map.of(
+<a class="jxr_linenumber" name="L524" href="#L524">524</a>                     <span class="jxr_string">"Φ.box.φ"</span>, Map.entry(<span class="jxr_string">"Φ.box.φ.ρ"</span>, <span class="jxr_string">"go"</span>),
+<a class="jxr_linenumber" name="L525" href="#L525">525</a>                     <span class="jxr_string">"Φ.box.φ.ρ"</span>, Map.entry(<span class="jxr_string">"Φ.box.φ.ρ.ρ"</span>, <span class="jxr_string">"v"</span>),
+<a class="jxr_linenumber" name="L526" href="#L526">526</a>                     <span class="jxr_string">"Φ.app"</span>, Map.entry(<span class="jxr_string">"Φ.app.ρ"</span>, <span class="jxr_string">"box"</span>),
+<a class="jxr_linenumber" name="L527" href="#L527">527</a>                     <span class="jxr_string">"Φ.app.α0"</span>, Map.entry(<span class="jxr_string">"Φ.app.α0.ρ"</span>, <span class="jxr_string">"out"</span>),
+<a class="jxr_linenumber" name="L528" href="#L528">528</a>                     <span class="jxr_string">"Φ.app.α0.ρ"</span>, Map.entry(<span class="jxr_string">"Φ.app.α0.ρ.ρ"</span>, <span class="jxr_string">"make"</span>),
+<a class="jxr_linenumber" name="L529" href="#L529">529</a>                     <span class="jxr_string">"Φ.app.α0.ρ.α0"</span>, Map.entry(<span class="jxr_string">"Φ.app.α0.ρ.α0.ρ"</span>, <span class="jxr_string">"kind"</span>)
+<a class="jxr_linenumber" name="L530" href="#L530">530</a>                 ),
+<a class="jxr_linenumber" name="L531" href="#L531">531</a>                 Map.of(
+<a class="jxr_linenumber" name="L532" href="#L532">532</a>                     <span class="jxr_string">"Φ.box.φ.ρ.ρ"</span>, <span class="jxr_string">"Φ.box"</span>,
+<a class="jxr_linenumber" name="L533" href="#L533">533</a>                     <span class="jxr_string">"Φ.app.ρ"</span>, <span class="jxr_string">"Φ"</span>,
+<a class="jxr_linenumber" name="L534" href="#L534">534</a>                     <span class="jxr_string">"Φ.app.α0.ρ.ρ"</span>, <span class="jxr_string">"Φ"</span>,
+<a class="jxr_linenumber" name="L535" href="#L535">535</a>                     <span class="jxr_string">"Φ.app.α0.ρ.α0.ρ"</span>, <span class="jxr_string">"Φ"</span>
+<a class="jxr_linenumber" name="L536" href="#L536">536</a>                 )
+<a class="jxr_linenumber" name="L537" href="#L537">537</a>             ).formation(<span class="jxr_string">"Φ.box.φ"</span>),
+<a class="jxr_linenumber" name="L538" href="#L538">538</a>             Matchers.equalTo(Optional.of(<span class="jxr_string">"Φ.make.out.go"</span>))
+<a class="jxr_linenumber" name="L539" href="#L539">539</a>         );
+<a class="jxr_linenumber" name="L540" href="#L540">540</a>     }
+<a class="jxr_linenumber" name="L541" href="#L541">541</a> 
+<a class="jxr_linenumber" name="L542" href="#L542">542</a>     @Test
+<a class="jxr_linenumber" name="L543" href="#L543">543</a>     <strong class="jxr_keyword">void</strong> followsVoidFilledByVoidOfCaller() {
+<a class="jxr_linenumber" name="L544" href="#L544">544</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L545" href="#L545">545</a>             <span class="jxr_string">"a void filled by a void of the caller, which a formation fills, must copy that formation, but it doesnt"</span>,
+<a class="jxr_linenumber" name="L546" href="#L546">546</a>             <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L547" href="#L547">547</a>                 Map.of(
+<a class="jxr_linenumber" name="L548" href="#L548">548</a>                     <span class="jxr_string">"Φ"</span>, Map.of(<span class="jxr_string">"box"</span>, <span class="jxr_string">"Φ.box"</span>, <span class="jxr_string">"relay"</span>, <span class="jxr_string">"Φ.relay"</span>),
+<a class="jxr_linenumber" name="L549" href="#L549">549</a>                     <span class="jxr_string">"Φ.box"</span>, Map.of(<span class="jxr_string">"v"</span>, <span class="jxr_string">"Φ.box.v"</span>, <span class="jxr_string">"φ"</span>, <span class="jxr_string">"Φ.box.φ"</span>),
+<a class="jxr_linenumber" name="L550" href="#L550">550</a>                     <span class="jxr_string">"Φ.relay"</span>, Map.of(<span class="jxr_string">"w"</span>, <span class="jxr_string">"Φ.relay.w"</span>, <span class="jxr_string">"φ"</span>, <span class="jxr_string">"Φ.relay.φ"</span>),
+<a class="jxr_linenumber" name="L551" href="#L551">551</a>                     <span class="jxr_string">"Φ.app.α0"</span>, Map.of(<span class="jxr_string">"go"</span>, <span class="jxr_string">"Φ.app.α0.go"</span>),
+<a class="jxr_linenumber" name="L552" href="#L552">552</a>                     <span class="jxr_string">"Φ.app.α0.go"</span>, Map.of()
+<a class="jxr_linenumber" name="L553" href="#L553">553</a>                 ),
+<a class="jxr_linenumber" name="L554" href="#L554">554</a>                 <strong class="jxr_keyword">new</strong> Calls(
+<a class="jxr_linenumber" name="L555" href="#L555">555</a>                     Map.of(<span class="jxr_string">"Φ.box"</span>, List.of(<span class="jxr_string">"v"</span>), <span class="jxr_string">"Φ.relay"</span>, List.of(<span class="jxr_string">"w"</span>)),
+<a class="jxr_linenumber" name="L556" href="#L556">556</a>                     Map.of(
+<a class="jxr_linenumber" name="L557" href="#L557">557</a>                         <span class="jxr_string">"Φ.relay.φ"</span>, Map.of(0, <span class="jxr_string">"Φ.relay.φ.α0"</span>),
+<a class="jxr_linenumber" name="L558" href="#L558">558</a>                         <span class="jxr_string">"Φ.app"</span>, Map.of(0, <span class="jxr_string">"Φ.app.α0"</span>)
+<a class="jxr_linenumber" name="L559" href="#L559">559</a>                     ),
+<a class="jxr_linenumber" name="L560" href="#L560">560</a>                     Map.of(),
+<a class="jxr_linenumber" name="L561" href="#L561">561</a>                     Map.of()
+<a class="jxr_linenumber" name="L562" href="#L562">562</a>                 ),
+<a class="jxr_linenumber" name="L563" href="#L563">563</a>                 Map.of(
+<a class="jxr_linenumber" name="L564" href="#L564">564</a>                     <span class="jxr_string">"Φ.box.φ"</span>, Map.entry(<span class="jxr_string">"Φ.box.φ.ρ"</span>, <span class="jxr_string">"go"</span>),
+<a class="jxr_linenumber" name="L565" href="#L565">565</a>                     <span class="jxr_string">"Φ.box.φ.ρ"</span>, Map.entry(<span class="jxr_string">"Φ.box.φ.ρ.ρ"</span>, <span class="jxr_string">"v"</span>),
+<a class="jxr_linenumber" name="L566" href="#L566">566</a>                     <span class="jxr_string">"Φ.relay.φ"</span>, Map.entry(<span class="jxr_string">"Φ.relay.φ.ρ"</span>, <span class="jxr_string">"box"</span>),
+<a class="jxr_linenumber" name="L567" href="#L567">567</a>                     <span class="jxr_string">"Φ.relay.φ.α0"</span>, Map.entry(<span class="jxr_string">"Φ.relay.φ.α0.ρ"</span>, <span class="jxr_string">"w"</span>),
+<a class="jxr_linenumber" name="L568" href="#L568">568</a>                     <span class="jxr_string">"Φ.app"</span>, Map.entry(<span class="jxr_string">"Φ.app.ρ"</span>, <span class="jxr_string">"relay"</span>)
+<a class="jxr_linenumber" name="L569" href="#L569">569</a>                 ),
+<a class="jxr_linenumber" name="L570" href="#L570">570</a>                 Map.of(
+<a class="jxr_linenumber" name="L571" href="#L571">571</a>                     <span class="jxr_string">"Φ.box.φ.ρ.ρ"</span>, <span class="jxr_string">"Φ.box"</span>,
+<a class="jxr_linenumber" name="L572" href="#L572">572</a>                     <span class="jxr_string">"Φ.relay.φ.ρ"</span>, <span class="jxr_string">"Φ"</span>,
+<a class="jxr_linenumber" name="L573" href="#L573">573</a>                     <span class="jxr_string">"Φ.relay.φ.α0.ρ"</span>, <span class="jxr_string">"Φ.relay"</span>,
+<a class="jxr_linenumber" name="L574" href="#L574">574</a>                     <span class="jxr_string">"Φ.app.ρ"</span>, <span class="jxr_string">"Φ"</span>
+<a class="jxr_linenumber" name="L575" href="#L575">575</a>                 )
+<a class="jxr_linenumber" name="L576" href="#L576">576</a>             ).formation(<span class="jxr_string">"Φ.box.φ"</span>),
+<a class="jxr_linenumber" name="L577" href="#L577">577</a>             Matchers.equalTo(Optional.of(<span class="jxr_string">"Φ.app.α0.go"</span>))
+<a class="jxr_linenumber" name="L578" href="#L578">578</a>         );
+<a class="jxr_linenumber" name="L579" href="#L579">579</a>     }
+<a class="jxr_linenumber" name="L580" href="#L580">580</a> 
+<a class="jxr_linenumber" name="L581" href="#L581">581</a>     @Test
+<a class="jxr_linenumber" name="L582" href="#L582">582</a>     <strong class="jxr_keyword">void</strong> followsVoidOfHelperThatPassesItToItself() {
+<a class="jxr_linenumber" name="L583" href="#L583">583</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L584" href="#L584">584</a>             <span class="jxr_string">"a void a helper passes to itself must copy what its outside caller puts there, but it doesnt"</span>,
+<a class="jxr_linenumber" name="L585" href="#L585">585</a>             OriginsTest.recursive(<strong class="jxr_keyword">true</strong>, false).formation(<span class="jxr_string">"Φ.rec.out"</span>),
+<a class="jxr_linenumber" name="L586" href="#L586">586</a>             Matchers.equalTo(Optional.of(<span class="jxr_string">"Φ.app.α0.go"</span>))
+<a class="jxr_linenumber" name="L587" href="#L587">587</a>         );
+<a class="jxr_linenumber" name="L588" href="#L588">588</a>     }
+<a class="jxr_linenumber" name="L589" href="#L589">589</a> 
+<a class="jxr_linenumber" name="L590" href="#L590">590</a>     @Test
+<a class="jxr_linenumber" name="L591" href="#L591">591</a>     <strong class="jxr_keyword">void</strong> followsVoidOfHelperThatPassesItToItselfTwice() {
+<a class="jxr_linenumber" name="L592" href="#L592">592</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L593" href="#L593">593</a>             <span class="jxr_string">"a void a helper passes to itself twice must copy what its outside caller puts there, but it doesnt"</span>,
+<a class="jxr_linenumber" name="L594" href="#L594">594</a>             OriginsTest.recursive(<strong class="jxr_keyword">true</strong>, <strong class="jxr_keyword">true</strong>).formation(<span class="jxr_string">"Φ.rec.out"</span>),
+<a class="jxr_linenumber" name="L595" href="#L595">595</a>             Matchers.equalTo(Optional.of(<span class="jxr_string">"Φ.app.α0.go"</span>))
+<a class="jxr_linenumber" name="L596" href="#L596">596</a>         );
+<a class="jxr_linenumber" name="L597" href="#L597">597</a>     }
+<a class="jxr_linenumber" name="L598" href="#L598">598</a> 
+<a class="jxr_linenumber" name="L599" href="#L599">599</a>     @Test
+<a class="jxr_linenumber" name="L600" href="#L600">600</a>     <strong class="jxr_keyword">void</strong> findsNothingBehindVoidOnlyItsOwnHelperFills() {
+<a class="jxr_linenumber" name="L601" href="#L601">601</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L602" href="#L602">602</a>             <span class="jxr_string">"a void only its own helper fills must copy no formation the code fixes, but it does"</span>,
+<a class="jxr_linenumber" name="L603" href="#L603">603</a>             OriginsTest.recursive(false, false).formation(<span class="jxr_string">"Φ.rec.out"</span>),
+<a class="jxr_linenumber" name="L604" href="#L604">604</a>             Matchers.equalTo(Optional.empty())
+<a class="jxr_linenumber" name="L605" href="#L605">605</a>         );
+<a class="jxr_linenumber" name="L606" href="#L606">606</a>     }
+<a class="jxr_linenumber" name="L607" href="#L607">607</a> 
+<a class="jxr_linenumber" name="L608" href="#L608">608</a>     @Test
+<a class="jxr_linenumber" name="L609" href="#L609">609</a>     <strong class="jxr_keyword">void</strong> findsNothingBehindVoidFilledByReadsOfFormationsWithOtherVoids() {
+<a class="jxr_linenumber" name="L610" href="#L610">610</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L611" href="#L611">611</a>             <span class="jxr_string">"a call on a void filled by formations with other voids must not be followed, yet it is"</span>,
+<a class="jxr_linenumber" name="L612" href="#L612">612</a>             <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L613" href="#L613">613</a>                 Map.of(
+<a class="jxr_linenumber" name="L614" href="#L614">614</a>                     <span class="jxr_string">"Φ"</span>, Map.of(<span class="jxr_string">"box"</span>, <span class="jxr_string">"Φ.box"</span>, <span class="jxr_string">"one"</span>, <span class="jxr_string">"Φ.one"</span>, <span class="jxr_string">"two"</span>, <span class="jxr_string">"Φ.two"</span>),
+<a class="jxr_linenumber" name="L615" href="#L615">615</a>                     <span class="jxr_string">"Φ.box"</span>, Map.of(<span class="jxr_string">"v"</span>, <span class="jxr_string">"Φ.box.v"</span>, <span class="jxr_string">"φ"</span>, <span class="jxr_string">"Φ.box.φ"</span>),
+<a class="jxr_linenumber" name="L616" href="#L616">616</a>                     <span class="jxr_string">"Φ.one"</span>, Map.of(<span class="jxr_string">"x"</span>, <span class="jxr_string">"Φ.one.x"</span>),
+<a class="jxr_linenumber" name="L617" href="#L617">617</a>                     <span class="jxr_string">"Φ.two"</span>, Map.of(<span class="jxr_string">"y"</span>, <span class="jxr_string">"Φ.two.y"</span>)
+<a class="jxr_linenumber" name="L618" href="#L618">618</a>                 ),
+<a class="jxr_linenumber" name="L619" href="#L619">619</a>                 <strong class="jxr_keyword">new</strong> Calls(
+<a class="jxr_linenumber" name="L620" href="#L620">620</a>                     Map.of(
+<a class="jxr_linenumber" name="L621" href="#L621">621</a>                         <span class="jxr_string">"Φ.box"</span>, List.of(<span class="jxr_string">"v"</span>), <span class="jxr_string">"Φ.one"</span>, List.of(<span class="jxr_string">"x"</span>), <span class="jxr_string">"Φ.two"</span>, List.of(<span class="jxr_string">"y"</span>)
+<a class="jxr_linenumber" name="L622" href="#L622">622</a>                     ),
+<a class="jxr_linenumber" name="L623" href="#L623">623</a>                     Map.of(
+<a class="jxr_linenumber" name="L624" href="#L624">624</a>                         <span class="jxr_string">"Φ.box.φ"</span>, Map.of(0, <span class="jxr_string">"Φ.box.φ.α0"</span>),
+<a class="jxr_linenumber" name="L625" href="#L625">625</a>                         <span class="jxr_string">"Φ.a"</span>, Map.of(0, <span class="jxr_string">"Φ.a.α0"</span>),
+<a class="jxr_linenumber" name="L626" href="#L626">626</a>                         <span class="jxr_string">"Φ.b"</span>, Map.of(0, <span class="jxr_string">"Φ.b.α0"</span>)
+<a class="jxr_linenumber" name="L627" href="#L627">627</a>                     ),
+<a class="jxr_linenumber" name="L628" href="#L628">628</a>                     Map.of(),
+<a class="jxr_linenumber" name="L629" href="#L629">629</a>                     Map.of()
+<a class="jxr_linenumber" name="L630" href="#L630">630</a>                 ),
+<a class="jxr_linenumber" name="L631" href="#L631">631</a>                 Map.of(
+<a class="jxr_linenumber" name="L632" href="#L632">632</a>                     <span class="jxr_string">"Φ.box.φ"</span>, Map.entry(<span class="jxr_string">"Φ.box.φ.ρ"</span>, <span class="jxr_string">"v"</span>),
+<a class="jxr_linenumber" name="L633" href="#L633">633</a>                     <span class="jxr_string">"Φ.a"</span>, Map.entry(<span class="jxr_string">"Φ.a.ρ"</span>, <span class="jxr_string">"box"</span>),
+<a class="jxr_linenumber" name="L634" href="#L634">634</a>                     <span class="jxr_string">"Φ.a.α0"</span>, Map.entry(<span class="jxr_string">"Φ.a.α0.ρ"</span>, <span class="jxr_string">"one"</span>),
+<a class="jxr_linenumber" name="L635" href="#L635">635</a>                     <span class="jxr_string">"Φ.b"</span>, Map.entry(<span class="jxr_string">"Φ.b.ρ"</span>, <span class="jxr_string">"box"</span>),
+<a class="jxr_linenumber" name="L636" href="#L636">636</a>                     <span class="jxr_string">"Φ.b.α0"</span>, Map.entry(<span class="jxr_string">"Φ.b.α0.ρ"</span>, <span class="jxr_string">"two"</span>)
+<a class="jxr_linenumber" name="L637" href="#L637">637</a>                 ),
+<a class="jxr_linenumber" name="L638" href="#L638">638</a>                 Map.of(
+<a class="jxr_linenumber" name="L639" href="#L639">639</a>                     <span class="jxr_string">"Φ.box.φ.ρ"</span>, <span class="jxr_string">"Φ.box"</span>,
+<a class="jxr_linenumber" name="L640" href="#L640">640</a>                     <span class="jxr_string">"Φ.a.ρ"</span>, <span class="jxr_string">"Φ"</span>,
+<a class="jxr_linenumber" name="L641" href="#L641">641</a>                     <span class="jxr_string">"Φ.a.α0.ρ"</span>, <span class="jxr_string">"Φ"</span>,
+<a class="jxr_linenumber" name="L642" href="#L642">642</a>                     <span class="jxr_string">"Φ.b.ρ"</span>, <span class="jxr_string">"Φ"</span>,
+<a class="jxr_linenumber" name="L643" href="#L643">643</a>                     <span class="jxr_string">"Φ.b.α0.ρ"</span>, <span class="jxr_string">"Φ"</span>
+<a class="jxr_linenumber" name="L644" href="#L644">644</a>                 )
+<a class="jxr_linenumber" name="L645" href="#L645">645</a>             ).formation(<span class="jxr_string">"Φ.box.φ"</span>),
+<a class="jxr_linenumber" name="L646" href="#L646">646</a>             Matchers.equalTo(Optional.empty())
+<a class="jxr_linenumber" name="L647" href="#L647">647</a>         );
+<a class="jxr_linenumber" name="L648" href="#L648">648</a>     }
+<a class="jxr_linenumber" name="L649" href="#L649">649</a> 
+<a class="jxr_linenumber" name="L650" href="#L650">650</a>     @Test
+<a class="jxr_linenumber" name="L651" href="#L651">651</a>     <strong class="jxr_keyword">void</strong> findsNothingBehindVoidAtomFillsWithFormationOfOtherVoids() {
+<a class="jxr_linenumber" name="L652" href="#L652">652</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L653" href="#L653">653</a>             <span class="jxr_string">"a void an atom fills with a formation of other voids than the program puts there must copy nothing, but it does"</span>,
+<a class="jxr_linenumber" name="L654" href="#L654">654</a>             OriginsTest.boxed(<span class="jxr_string">"Φ.box(Φ.other)"</span>).formation(<span class="jxr_string">"Φ.box.φ"</span>),
+<a class="jxr_linenumber" name="L655" href="#L655">655</a>             Matchers.equalTo(Optional.empty())
+<a class="jxr_linenumber" name="L656" href="#L656">656</a>         );
+<a class="jxr_linenumber" name="L657" href="#L657">657</a>     }
+<a class="jxr_linenumber" name="L658" href="#L658">658</a> 
+<a class="jxr_linenumber" name="L659" href="#L659">659</a>     @Test
+<a class="jxr_linenumber" name="L660" href="#L660">660</a>     <strong class="jxr_keyword">void</strong> ignoresAtomThatReturnsTypeWithoutBrackets() {
+<a class="jxr_linenumber" name="L661" href="#L661">661</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L662" href="#L662">662</a>             <span class="jxr_string">"an atom that returns a type with no brackets must not change what the program puts into a void, but it does"</span>,
+<a class="jxr_linenumber" name="L663" href="#L663">663</a>             OriginsTest.boxed(<span class="jxr_string">"Φ.box"</span>).formation(<span class="jxr_string">"Φ.box.φ"</span>),
+<a class="jxr_linenumber" name="L664" href="#L664">664</a>             Matchers.equalTo(Optional.of(<span class="jxr_string">"Φ.app.α0.go"</span>))
+<a class="jxr_linenumber" name="L665" href="#L665">665</a>         );
+<a class="jxr_linenumber" name="L666" href="#L666">666</a>     }
+<a class="jxr_linenumber" name="L667" href="#L667">667</a> 
+<a class="jxr_linenumber" name="L668" href="#L668">668</a>     @Test
+<a class="jxr_linenumber" name="L669" href="#L669">669</a>     <strong class="jxr_keyword">void</strong> followsGenericAtomWhenEveryReturnedVoidHoldsSameFormation() {
+<a class="jxr_linenumber" name="L670" href="#L670">670</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L671" href="#L671">671</a>             <span class="jxr_string">"a call on what a generic atom returns must be found where all its returned voids agree, but it isnt"</span>,
+<a class="jxr_linenumber" name="L672" href="#L672">672</a>             OriginsTest.<strong class="jxr_keyword">generic</strong>(<span class="jxr_string">"number"</span>).formation(<span class="jxr_string">"Φ.app.φ"</span>),
+<a class="jxr_linenumber" name="L673" href="#L673">673</a>             Matchers.equalTo(Optional.of(<span class="jxr_string">"Φ.number.eq"</span>))
+<a class="jxr_linenumber" name="L674" href="#L674">674</a>         );
+<a class="jxr_linenumber" name="L675" href="#L675">675</a>     }
+<a class="jxr_linenumber" name="L676" href="#L676">676</a> 
+<a class="jxr_linenumber" name="L677" href="#L677">677</a>     @Test
+<a class="jxr_linenumber" name="L678" href="#L678">678</a>     <strong class="jxr_keyword">void</strong> findsNothingBehindGenericAtomWhenReturnedVoidsDisagree() {
+<a class="jxr_linenumber" name="L679" href="#L679">679</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L680" href="#L680">680</a>             <span class="jxr_string">"a call on what a generic atom returns must not be found where its returned voids disagree, but it is"</span>,
+<a class="jxr_linenumber" name="L681" href="#L681">681</a>             OriginsTest.<strong class="jxr_keyword">generic</strong>(<span class="jxr_string">"string"</span>).formation(<span class="jxr_string">"Φ.app.φ"</span>),
+<a class="jxr_linenumber" name="L682" href="#L682">682</a>             Matchers.equalTo(Optional.empty())
+<a class="jxr_linenumber" name="L683" href="#L683">683</a>         );
+<a class="jxr_linenumber" name="L684" href="#L684">684</a>     }
+<a class="jxr_linenumber" name="L685" href="#L685">685</a> 
+<a class="jxr_linenumber" name="L686" href="#L686">686</a>     @Test
+<a class="jxr_linenumber" name="L687" href="#L687">687</a>     <strong class="jxr_keyword">void</strong> readsNameOffForkWhenEverySideAgrees() {
+<a class="jxr_linenumber" name="L688" href="#L688">688</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L689" href="#L689">689</a>             <span class="jxr_string">"a name read off what a fork returns must be found when both sides give the same copy, but it isnt"</span>,
+<a class="jxr_linenumber" name="L690" href="#L690">690</a>             OriginsTest.forked(<span class="jxr_string">"Φ.yes"</span>, <span class="jxr_string">"Φ.yes"</span>, false).formation(<span class="jxr_string">"Φ.app"</span>),
+<a class="jxr_linenumber" name="L691" href="#L691">691</a>             Matchers.equalTo(Optional.of(<span class="jxr_string">"Φ.yes.foo"</span>))
+<a class="jxr_linenumber" name="L692" href="#L692">692</a>         );
+<a class="jxr_linenumber" name="L693" href="#L693">693</a>     }
+<a class="jxr_linenumber" name="L694" href="#L694">694</a> 
+<a class="jxr_linenumber" name="L695" href="#L695">695</a>     @Test
+<a class="jxr_linenumber" name="L696" href="#L696">696</a>     <strong class="jxr_keyword">void</strong> readsNothingOffForkWhenSidesDisagree() {
+<a class="jxr_linenumber" name="L697" href="#L697">697</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L698" href="#L698">698</a>             <span class="jxr_string">"a name read off what a fork returns must copy nothing when the sides disagree, but it does"</span>,
+<a class="jxr_linenumber" name="L699" href="#L699">699</a>             OriginsTest.forked(<span class="jxr_string">"Φ.yes"</span>, <span class="jxr_string">"Φ.no"</span>, false).formation(<span class="jxr_string">"Φ.app"</span>),
+<a class="jxr_linenumber" name="L700" href="#L700">700</a>             Matchers.equalTo(Optional.empty())
+<a class="jxr_linenumber" name="L701" href="#L701">701</a>         );
+<a class="jxr_linenumber" name="L702" href="#L702">702</a>     }
+<a class="jxr_linenumber" name="L703" href="#L703">703</a> 
+<a class="jxr_linenumber" name="L704" href="#L704">704</a>     @Test
+<a class="jxr_linenumber" name="L705" href="#L705">705</a>     <strong class="jxr_keyword">void</strong> readsNameOffNestedFork() {
+<a class="jxr_linenumber" name="L706" href="#L706">706</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L707" href="#L707">707</a>             <span class="jxr_string">"a name read off a fork whose side is another fork must be found when all sides agree, but it isnt"</span>,
+<a class="jxr_linenumber" name="L708" href="#L708">708</a>             OriginsTest.forked(<span class="jxr_string">"Φ.yes"</span>, <span class="jxr_string">"Φ.yes"</span>, <strong class="jxr_keyword">true</strong>).formation(<span class="jxr_string">"Φ.app"</span>),
+<a class="jxr_linenumber" name="L709" href="#L709">709</a>             Matchers.equalTo(Optional.of(<span class="jxr_string">"Φ.yes.foo"</span>))
+<a class="jxr_linenumber" name="L710" href="#L710">710</a>         );
+<a class="jxr_linenumber" name="L711" href="#L711">711</a>     }
+<a class="jxr_linenumber" name="L712" href="#L712">712</a> 
+<a class="jxr_linenumber" name="L713" href="#L713">713</a>     @Test
+<a class="jxr_linenumber" name="L714" href="#L714">714</a>     <strong class="jxr_keyword">void</strong> namesArgumentsOfCallOnFork() {
+<a class="jxr_linenumber" name="L715" href="#L715">715</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L716" href="#L716">716</a>             <span class="jxr_string">"a void of a fork call must still copy its argument, but it doesnt"</span>,
+<a class="jxr_linenumber" name="L717" href="#L717">717</a>             OriginsTest.forked(<span class="jxr_string">"Φ.yes"</span>, <span class="jxr_string">"Φ.no"</span>, false).formation(<span class="jxr_string">"Φ.got"</span>),
+<a class="jxr_linenumber" name="L718" href="#L718">718</a>             Matchers.equalTo(Optional.of(<span class="jxr_string">"Φ.no"</span>))
+<a class="jxr_linenumber" name="L719" href="#L719">719</a>         );
+<a class="jxr_linenumber" name="L720" href="#L720">720</a>     }
+<a class="jxr_linenumber" name="L721" href="#L721">721</a> 
+<a class="jxr_linenumber" name="L722" href="#L722">722</a>     @Test
+<a class="jxr_linenumber" name="L723" href="#L723">723</a>     <strong class="jxr_keyword">void</strong> followsCallOnNameReadOffVoidFilledByFormationsWithOtherVoids() {
+<a class="jxr_linenumber" name="L724" href="#L724">724</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L725" href="#L725">725</a>             <span class="jxr_string">"a call on a name that every formation filling a void binds to one formation must be followed, even when their voids differ, but it isnt"</span>,
+<a class="jxr_linenumber" name="L726" href="#L726">726</a>             OriginsTest.counter(false).formation(<span class="jxr_string">"Φ.rec.out"</span>),
+<a class="jxr_linenumber" name="L727" href="#L727">727</a>             Matchers.equalTo(Optional.of(<span class="jxr_string">"Φ.num.eq"</span>))
+<a class="jxr_linenumber" name="L728" href="#L728">728</a>         );
+<a class="jxr_linenumber" name="L729" href="#L729">729</a>     }
+<a class="jxr_linenumber" name="L730" href="#L730">730</a> 
+<a class="jxr_linenumber" name="L731" href="#L731">731</a>     @Test
+<a class="jxr_linenumber" name="L732" href="#L732">732</a>     <strong class="jxr_keyword">void</strong> findsNothingBehindCallOnVoidFilledByFormationsWithOtherVoids() {
+<a class="jxr_linenumber" name="L733" href="#L733">733</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L734" href="#L734">734</a>             <span class="jxr_string">"a call made right on a void filled by formations with other voids must not be followed, yet it is"</span>,
+<a class="jxr_linenumber" name="L735" href="#L735">735</a>             OriginsTest.counter(false).formation(<span class="jxr_string">"Φ.rec.go"</span>),
+<a class="jxr_linenumber" name="L736" href="#L736">736</a>             Matchers.equalTo(Optional.empty())
+<a class="jxr_linenumber" name="L737" href="#L737">737</a>         );
+<a class="jxr_linenumber" name="L738" href="#L738">738</a>     }
+<a class="jxr_linenumber" name="L739" href="#L739">739</a> 
+<a class="jxr_linenumber" name="L740" href="#L740">740</a>     @Test
+<a class="jxr_linenumber" name="L741" href="#L741">741</a>     <strong class="jxr_keyword">void</strong> readsNothingOffVoidWhenFormationsWithOtherVoidsDisagree() {
+<a class="jxr_linenumber" name="L742" href="#L742">742</a>         MatcherAssert.assertThat(
+<a class="jxr_linenumber" name="L743" href="#L743">743</a>             <span class="jxr_string">"a name that formations with other voids filling a void bind differently must copy nothing, but it does"</span>,
+<a class="jxr_linenumber" name="L744" href="#L744">744</a>             OriginsTest.counter(<strong class="jxr_keyword">true</strong>).formation(<span class="jxr_string">"Φ.rec.out"</span>),
+<a class="jxr_linenumber" name="L745" href="#L745">745</a>             Matchers.equalTo(Optional.empty())
+<a class="jxr_linenumber" name="L746" href="#L746">746</a>         );
+<a class="jxr_linenumber" name="L747" href="#L747">747</a>     }
+<a class="jxr_linenumber" name="L748" href="#L748">748</a> 
+<a class="jxr_linenumber" name="L749" href="#L749">749</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Origins <strong class="jxr_keyword">generic</strong>(<strong class="jxr_keyword">final</strong> String second) {
+<a class="jxr_linenumber" name="L750" href="#L750">750</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L751" href="#L751">751</a>             Map.of(
+<a class="jxr_linenumber" name="L752" href="#L752">752</a>                 <span class="jxr_string">"Φ"</span>, Map.of(<span class="jxr_string">"g"</span>, <span class="jxr_string">"Φ.g"</span>, <span class="jxr_string">"number"</span>, <span class="jxr_string">"Φ.number"</span>, <span class="jxr_string">"string"</span>, <span class="jxr_string">"Φ.string"</span>),
+<a class="jxr_linenumber" name="L753" href="#L753">753</a>                 <span class="jxr_string">"Φ.g"</span>, Map.of(<span class="jxr_string">"v"</span>, <span class="jxr_string">"Φ.g.v"</span>, <span class="jxr_string">"a"</span>, <span class="jxr_string">"Φ.g.a"</span>),
+<a class="jxr_linenumber" name="L754" href="#L754">754</a>                 <span class="jxr_string">"Φ.number"</span>, Map.of(<span class="jxr_string">"eq"</span>, <span class="jxr_string">"Φ.number.eq"</span>),
+<a class="jxr_linenumber" name="L755" href="#L755">755</a>                 <span class="jxr_string">"Φ.number.eq"</span>, Map.of(),
+<a class="jxr_linenumber" name="L756" href="#L756">756</a>                 <span class="jxr_string">"Φ.string"</span>, Map.of(<span class="jxr_string">"eq"</span>, <span class="jxr_string">"Φ.string.eq"</span>),
+<a class="jxr_linenumber" name="L757" href="#L757">757</a>                 <span class="jxr_string">"Φ.string.eq"</span>, Map.of()
+<a class="jxr_linenumber" name="L758" href="#L758">758</a>             ),
+<a class="jxr_linenumber" name="L759" href="#L759">759</a>             <strong class="jxr_keyword">new</strong> Calls(
+<a class="jxr_linenumber" name="L760" href="#L760">760</a>                 Map.of(
+<a class="jxr_linenumber" name="L761" href="#L761">761</a>                     <span class="jxr_string">"Φ.g"</span>, List.of(<span class="jxr_string">"v"</span>, <span class="jxr_string">"a"</span>),
+<a class="jxr_linenumber" name="L762" href="#L762">762</a>                     <span class="jxr_string">"Φ.number.eq"</span>, List.of(<span class="jxr_string">"x"</span>),
+<a class="jxr_linenumber" name="L763" href="#L763">763</a>                     <span class="jxr_string">"Φ.string.eq"</span>, List.of(<span class="jxr_string">"y"</span>)
+<a class="jxr_linenumber" name="L764" href="#L764">764</a>                 ),
+<a class="jxr_linenumber" name="L765" href="#L765">765</a>                 Map.of(<span class="jxr_string">"Φ.app.φ.ρ"</span>, Map.of(0, <span class="jxr_string">"Φ.app.φ.ρ.α0"</span>, 1, <span class="jxr_string">"Φ.app.φ.ρ.α1"</span>)),
+<a class="jxr_linenumber" name="L766" href="#L766">766</a>                 Map.of(),
+<a class="jxr_linenumber" name="L767" href="#L767">767</a>                 Map.of(<span class="jxr_string">"Φ.g"</span>, <strong class="jxr_keyword">new</strong> Annotation(<span class="jxr_string">"Φ.g.v"</span>)),
+<a class="jxr_linenumber" name="L768" href="#L768">768</a>                 Map.of(<span class="jxr_string">"Φ.g"</span>, List.of(<span class="jxr_string">"Φ.g.v"</span>, <span class="jxr_string">"Φ.g.a"</span>))
+<a class="jxr_linenumber" name="L769" href="#L769">769</a>             ),
+<a class="jxr_linenumber" name="L770" href="#L770">770</a>             Map.of(
+<a class="jxr_linenumber" name="L771" href="#L771">771</a>                 <span class="jxr_string">"Φ.app.φ"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ"</span>, <span class="jxr_string">"eq"</span>),
+<a class="jxr_linenumber" name="L772" href="#L772">772</a>                 <span class="jxr_string">"Φ.app.φ.ρ"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ.ρ"</span>, <span class="jxr_string">"g"</span>),
+<a class="jxr_linenumber" name="L773" href="#L773">773</a>                 <span class="jxr_string">"Φ.app.φ.ρ.α0"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ.α0.ρ"</span>, <span class="jxr_string">"number"</span>),
+<a class="jxr_linenumber" name="L774" href="#L774">774</a>                 <span class="jxr_string">"Φ.app.φ.ρ.α1"</span>, Map.entry(<span class="jxr_string">"Φ.app.φ.ρ.α1.ρ"</span>, second)
+<a class="jxr_linenumber" name="L775" href="#L775">775</a>             ),
+<a class="jxr_linenumber" name="L776" href="#L776">776</a>             Map.of(
+<a class="jxr_linenumber" name="L777" href="#L777">777</a>                 <span class="jxr_string">"Φ.app.φ.ρ.ρ"</span>, <span class="jxr_string">"Φ"</span>,
+<a class="jxr_linenumber" name="L778" href="#L778">778</a>                 <span class="jxr_string">"Φ.app.φ.ρ.α0.ρ"</span>, <span class="jxr_string">"Φ"</span>,
+<a class="jxr_linenumber" name="L779" href="#L779">779</a>                 <span class="jxr_string">"Φ.app.φ.ρ.α1.ρ"</span>, <span class="jxr_string">"Φ"</span>
+<a class="jxr_linenumber" name="L780" href="#L780">780</a>             )
+<a class="jxr_linenumber" name="L781" href="#L781">781</a>         );
+<a class="jxr_linenumber" name="L782" href="#L782">782</a>     }
+<a class="jxr_linenumber" name="L783" href="#L783">783</a> 
+<a class="jxr_linenumber" name="L784" href="#L784">784</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Origins boxed(<strong class="jxr_keyword">final</strong> String returned) {
+<a class="jxr_linenumber" name="L785" href="#L785">785</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L786" href="#L786">786</a>             Map.of(
+<a class="jxr_linenumber" name="L787" href="#L787">787</a>                 <span class="jxr_string">"Φ"</span>, Map.of(<span class="jxr_string">"box"</span>, <span class="jxr_string">"Φ.box"</span>, <span class="jxr_string">"check"</span>, <span class="jxr_string">"Φ.check"</span>, <span class="jxr_string">"other"</span>, <span class="jxr_string">"Φ.other"</span>),
+<a class="jxr_linenumber" name="L788" href="#L788">788</a>                 <span class="jxr_string">"Φ.box"</span>, Map.of(<span class="jxr_string">"v"</span>, <span class="jxr_string">"Φ.box.v"</span>, <span class="jxr_string">"φ"</span>, <span class="jxr_string">"Φ.box.φ"</span>),
+<a class="jxr_linenumber" name="L789" href="#L789">789</a>                 <span class="jxr_string">"Φ.check"</span>, Map.of(),
+<a class="jxr_linenumber" name="L790" href="#L790">790</a>                 <span class="jxr_string">"Φ.other"</span>, Map.of(<span class="jxr_string">"q"</span>, <span class="jxr_string">"Φ.other.q"</span>),
+<a class="jxr_linenumber" name="L791" href="#L791">791</a>                 <span class="jxr_string">"Φ.app.α0"</span>, Map.of(<span class="jxr_string">"go"</span>, <span class="jxr_string">"Φ.app.α0.go"</span>),
+<a class="jxr_linenumber" name="L792" href="#L792">792</a>                 <span class="jxr_string">"Φ.app.α0.go"</span>, Map.of()
+<a class="jxr_linenumber" name="L793" href="#L793">793</a>             ),
+<a class="jxr_linenumber" name="L794" href="#L794">794</a>             <strong class="jxr_keyword">new</strong> Calls(
+<a class="jxr_linenumber" name="L795" href="#L795">795</a>                 Map.of(<span class="jxr_string">"Φ.box"</span>, List.of(<span class="jxr_string">"v"</span>), <span class="jxr_string">"Φ.other"</span>, List.of(<span class="jxr_string">"q"</span>)),
+<a class="jxr_linenumber" name="L796" href="#L796">796</a>                 Map.of(<span class="jxr_string">"Φ.app"</span>, Map.of(0, <span class="jxr_string">"Φ.app.α0"</span>)),
+<a class="jxr_linenumber" name="L797" href="#L797">797</a>                 Map.of(),
+<a class="jxr_linenumber" name="L798" href="#L798">798</a>                 Map.of(<span class="jxr_string">"Φ.check"</span>, <strong class="jxr_keyword">new</strong> Annotation(returned))
+<a class="jxr_linenumber" name="L799" href="#L799">799</a>             ),
+<a class="jxr_linenumber" name="L800" href="#L800">800</a>             Map.of(
+<a class="jxr_linenumber" name="L801" href="#L801">801</a>                 <span class="jxr_string">"Φ.box.φ"</span>, Map.entry(<span class="jxr_string">"Φ.box.φ.ρ"</span>, <span class="jxr_string">"go"</span>),
+<a class="jxr_linenumber" name="L802" href="#L802">802</a>                 <span class="jxr_string">"Φ.box.φ.ρ"</span>, Map.entry(<span class="jxr_string">"Φ.box.φ.ρ.ρ"</span>, <span class="jxr_string">"v"</span>),
+<a class="jxr_linenumber" name="L803" href="#L803">803</a>                 <span class="jxr_string">"Φ.app"</span>, Map.entry(<span class="jxr_string">"Φ.app.ρ"</span>, <span class="jxr_string">"box"</span>)
+<a class="jxr_linenumber" name="L804" href="#L804">804</a>             ),
+<a class="jxr_linenumber" name="L805" href="#L805">805</a>             Map.of(<span class="jxr_string">"Φ.box.φ.ρ.ρ"</span>, <span class="jxr_string">"Φ.box"</span>, <span class="jxr_string">"Φ.app.ρ"</span>, <span class="jxr_string">"Φ"</span>)
+<a class="jxr_linenumber" name="L806" href="#L806">806</a>         );
+<a class="jxr_linenumber" name="L807" href="#L807">807</a>     }
+<a class="jxr_linenumber" name="L808" href="#L808">808</a> 
+<a class="jxr_linenumber" name="L809" href="#L809">809</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Origins recursive(<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> outside, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> twice) {
+<a class="jxr_linenumber" name="L810" href="#L810">810</a>         <strong class="jxr_keyword">final</strong> List&lt;String&gt; own = <strong class="jxr_keyword">new</strong> ArrayList&lt;&gt;(List.of(<span class="jxr_string">"φ"</span>));
+<a class="jxr_linenumber" name="L811" href="#L811">811</a>         <strong class="jxr_keyword">if</strong> (twice) {
+<a class="jxr_linenumber" name="L812" href="#L812">812</a>             own.add(<span class="jxr_string">"two"</span>);
+<a class="jxr_linenumber" name="L813" href="#L813">813</a>         }
+<a class="jxr_linenumber" name="L814" href="#L814">814</a>         <strong class="jxr_keyword">final</strong> Map&lt;String, Map&lt;Integer, String&gt;&gt; slots = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;(0);
+<a class="jxr_linenumber" name="L815" href="#L815">815</a>         <strong class="jxr_keyword">final</strong> Map&lt;String, Map.Entry&lt;String, String&gt;&gt; reads = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;(0);
+<a class="jxr_linenumber" name="L816" href="#L816">816</a>         <strong class="jxr_keyword">final</strong> Map&lt;String, String&gt; refs = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;(0);
+<a class="jxr_linenumber" name="L817" href="#L817">817</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> String name : own) {
+<a class="jxr_linenumber" name="L818" href="#L818">818</a>             <strong class="jxr_keyword">final</strong> String call = String.format(<span class="jxr_string">"Φ.rec.%s"</span>, name);
+<a class="jxr_linenumber" name="L819" href="#L819">819</a>             <strong class="jxr_keyword">final</strong> String arg = String.format(<span class="jxr_string">"%s.α0"</span>, call);
+<a class="jxr_linenumber" name="L820" href="#L820">820</a>             slots.put(call, Map.of(0, arg));
+<a class="jxr_linenumber" name="L821" href="#L821">821</a>             reads.put(call, Map.entry(String.format(<span class="jxr_string">"%s.ρ"</span>, call), <span class="jxr_string">"rec"</span>));
+<a class="jxr_linenumber" name="L822" href="#L822">822</a>             reads.put(arg, Map.entry(String.format(<span class="jxr_string">"%s.ρ"</span>, arg), <span class="jxr_string">"v"</span>));
+<a class="jxr_linenumber" name="L823" href="#L823">823</a>             refs.put(String.format(<span class="jxr_string">"%s.ρ"</span>, call), <span class="jxr_string">"Φ"</span>);
+<a class="jxr_linenumber" name="L824" href="#L824">824</a>             refs.put(String.format(<span class="jxr_string">"%s.ρ"</span>, arg), <span class="jxr_string">"Φ.rec"</span>);
+<a class="jxr_linenumber" name="L825" href="#L825">825</a>         }
+<a class="jxr_linenumber" name="L826" href="#L826">826</a>         reads.put(<span class="jxr_string">"Φ.rec.out"</span>, Map.entry(<span class="jxr_string">"Φ.rec.out.ρ"</span>, <span class="jxr_string">"go"</span>));
+<a class="jxr_linenumber" name="L827" href="#L827">827</a>         reads.put(<span class="jxr_string">"Φ.rec.out.ρ"</span>, Map.entry(<span class="jxr_string">"Φ.rec.out.ρ.ρ"</span>, <span class="jxr_string">"v"</span>));
+<a class="jxr_linenumber" name="L828" href="#L828">828</a>         refs.put(<span class="jxr_string">"Φ.rec.out.ρ.ρ"</span>, <span class="jxr_string">"Φ.rec"</span>);
+<a class="jxr_linenumber" name="L829" href="#L829">829</a>         <strong class="jxr_keyword">if</strong> (outside) {
+<a class="jxr_linenumber" name="L830" href="#L830">830</a>             slots.put(<span class="jxr_string">"Φ.app"</span>, Map.of(0, <span class="jxr_string">"Φ.app.α0"</span>));
+<a class="jxr_linenumber" name="L831" href="#L831">831</a>             reads.put(<span class="jxr_string">"Φ.app"</span>, Map.entry(<span class="jxr_string">"Φ.app.ρ"</span>, <span class="jxr_string">"rec"</span>));
+<a class="jxr_linenumber" name="L832" href="#L832">832</a>             refs.put(<span class="jxr_string">"Φ.app.ρ"</span>, <span class="jxr_string">"Φ"</span>);
+<a class="jxr_linenumber" name="L833" href="#L833">833</a>         }
+<a class="jxr_linenumber" name="L834" href="#L834">834</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L835" href="#L835">835</a>             Map.of(
+<a class="jxr_linenumber" name="L836" href="#L836">836</a>                 <span class="jxr_string">"Φ"</span>, Map.of(<span class="jxr_string">"rec"</span>, <span class="jxr_string">"Φ.rec"</span>),
+<a class="jxr_linenumber" name="L837" href="#L837">837</a>                 <span class="jxr_string">"Φ.rec"</span>, Map.of(
+<a class="jxr_linenumber" name="L838" href="#L838">838</a>                     <span class="jxr_string">"v"</span>, <span class="jxr_string">"Φ.rec.v"</span>, <span class="jxr_string">"φ"</span>, <span class="jxr_string">"Φ.rec.φ"</span>, <span class="jxr_string">"out"</span>, <span class="jxr_string">"Φ.rec.out"</span>, <span class="jxr_string">"two"</span>, <span class="jxr_string">"Φ.rec.two"</span>
+<a class="jxr_linenumber" name="L839" href="#L839">839</a>                 ),
+<a class="jxr_linenumber" name="L840" href="#L840">840</a>                 <span class="jxr_string">"Φ.app.α0"</span>, Map.of(<span class="jxr_string">"go"</span>, <span class="jxr_string">"Φ.app.α0.go"</span>),
+<a class="jxr_linenumber" name="L841" href="#L841">841</a>                 <span class="jxr_string">"Φ.app.α0.go"</span>, Map.of()
+<a class="jxr_linenumber" name="L842" href="#L842">842</a>             ),
+<a class="jxr_linenumber" name="L843" href="#L843">843</a>             <strong class="jxr_keyword">new</strong> Calls(Map.of(<span class="jxr_string">"Φ.rec"</span>, List.of(<span class="jxr_string">"v"</span>)), slots, Map.of(), Map.of()),
+<a class="jxr_linenumber" name="L844" href="#L844">844</a>             reads,
+<a class="jxr_linenumber" name="L845" href="#L845">845</a>             refs
+<a class="jxr_linenumber" name="L846" href="#L846">846</a>         );
+<a class="jxr_linenumber" name="L847" href="#L847">847</a>     }
+<a class="jxr_linenumber" name="L848" href="#L848">848</a> 
+<a class="jxr_linenumber" name="L849" href="#L849">849</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Origins forked(
+<a class="jxr_linenumber" name="L850" href="#L850">850</a>         <strong class="jxr_keyword">final</strong> String left, <strong class="jxr_keyword">final</strong> String right, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> nested
+<a class="jxr_linenumber" name="L851" href="#L851">851</a>     ) {
+<a class="jxr_linenumber" name="L852" href="#L852">852</a>         <strong class="jxr_keyword">final</strong> Map&lt;String, String&gt; refs = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;(0);
+<a class="jxr_linenumber" name="L853" href="#L853">853</a>         refs.put(<span class="jxr_string">"Φ.true.φ"</span>, <span class="jxr_string">"Φ.bool"</span>);
+<a class="jxr_linenumber" name="L854" href="#L854">854</a>         refs.put(<span class="jxr_string">"Φ.false.φ"</span>, <span class="jxr_string">"Φ.bool"</span>);
+<a class="jxr_linenumber" name="L855" href="#L855">855</a>         refs.put(<span class="jxr_string">"Φ.true.φ.α0.φ.ρ"</span>, <span class="jxr_string">"Φ.true.φ.α0"</span>);
+<a class="jxr_linenumber" name="L856" href="#L856">856</a>         refs.put(<span class="jxr_string">"Φ.false.φ.α0.φ.ρ"</span>, <span class="jxr_string">"Φ.false.φ.α0"</span>);
+<a class="jxr_linenumber" name="L857" href="#L857">857</a>         refs.put(<span class="jxr_string">"Φ.bool.and.φ.ρ"</span>, <span class="jxr_string">"Φ.bool"</span>);
+<a class="jxr_linenumber" name="L858" href="#L858">858</a>         refs.put(<span class="jxr_string">"Φ.bool.if.ρ"</span>, <span class="jxr_string">"Φ.bool"</span>);
+<a class="jxr_linenumber" name="L859" href="#L859">859</a>         refs.put(<span class="jxr_string">"Φ.bool.and.φ.α1"</span>, right);
+<a class="jxr_linenumber" name="L860" href="#L860">860</a>         <strong class="jxr_keyword">final</strong> Map&lt;String, Map.Entry&lt;String, String&gt;&gt; reads = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;(0);
+<a class="jxr_linenumber" name="L861" href="#L861">861</a>         reads.put(<span class="jxr_string">"Φ.true.φ.α0.φ"</span>, Map.entry(<span class="jxr_string">"Φ.true.φ.α0.φ.ρ"</span>, <span class="jxr_string">"left"</span>));
+<a class="jxr_linenumber" name="L862" href="#L862">862</a>         reads.put(<span class="jxr_string">"Φ.false.φ.α0.φ"</span>, Map.entry(<span class="jxr_string">"Φ.false.φ.α0.φ.ρ"</span>, <span class="jxr_string">"right"</span>));
+<a class="jxr_linenumber" name="L863" href="#L863">863</a>         reads.put(<span class="jxr_string">"Φ.bool.and.φ"</span>, Map.entry(<span class="jxr_string">"Φ.bool.and.φ.ρ"</span>, <span class="jxr_string">"if"</span>));
+<a class="jxr_linenumber" name="L864" href="#L864">864</a>         reads.put(<span class="jxr_string">"Φ.bool.if"</span>, Map.entry(<span class="jxr_string">"Φ.bool.if.ρ"</span>, <span class="jxr_string">"fork"</span>));
+<a class="jxr_linenumber" name="L865" href="#L865">865</a>         reads.put(<span class="jxr_string">"Φ.app"</span>, Map.entry(<span class="jxr_string">"Φ.bool.and.φ"</span>, <span class="jxr_string">"foo"</span>));
+<a class="jxr_linenumber" name="L866" href="#L866">866</a>         reads.put(<span class="jxr_string">"Φ.got"</span>, Map.entry(<span class="jxr_string">"Φ.bool.and.φ"</span>, <span class="jxr_string">"right"</span>));
+<a class="jxr_linenumber" name="L867" href="#L867">867</a>         <strong class="jxr_keyword">final</strong> Map&lt;String, Map&lt;Integer, String&gt;&gt; slots = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;(0);
+<a class="jxr_linenumber" name="L868" href="#L868">868</a>         slots.put(<span class="jxr_string">"Φ.true.φ"</span>, Map.of(0, <span class="jxr_string">"Φ.true.φ.α0"</span>));
+<a class="jxr_linenumber" name="L869" href="#L869">869</a>         slots.put(<span class="jxr_string">"Φ.false.φ"</span>, Map.of(0, <span class="jxr_string">"Φ.false.φ.α0"</span>));
+<a class="jxr_linenumber" name="L870" href="#L870">870</a>         slots.put(<span class="jxr_string">"Φ.bool.and.φ"</span>, Map.of(0, <span class="jxr_string">"Φ.bool.and.φ.α0"</span>, 1, <span class="jxr_string">"Φ.bool.and.φ.α1"</span>));
+<a class="jxr_linenumber" name="L871" href="#L871">871</a>         <strong class="jxr_keyword">if</strong> (nested) {
+<a class="jxr_linenumber" name="L872" href="#L872">872</a>             reads.put(<span class="jxr_string">"Φ.bool.and.φ.α0"</span>, Map.entry(<span class="jxr_string">"Φ.bool.and.φ.α0.ρ"</span>, <span class="jxr_string">"if"</span>));
+<a class="jxr_linenumber" name="L873" href="#L873">873</a>             refs.put(<span class="jxr_string">"Φ.bool.and.φ.α0.ρ"</span>, <span class="jxr_string">"Φ.bool"</span>);
+<a class="jxr_linenumber" name="L874" href="#L874">874</a>             refs.put(<span class="jxr_string">"Φ.bool.and.φ.α0.α0"</span>, left);
+<a class="jxr_linenumber" name="L875" href="#L875">875</a>             refs.put(<span class="jxr_string">"Φ.bool.and.φ.α0.α1"</span>, left);
+<a class="jxr_linenumber" name="L876" href="#L876">876</a>             slots.put(
+<a class="jxr_linenumber" name="L877" href="#L877">877</a>                 <span class="jxr_string">"Φ.bool.and.φ.α0"</span>,
+<a class="jxr_linenumber" name="L878" href="#L878">878</a>                 Map.of(0, <span class="jxr_string">"Φ.bool.and.φ.α0.α0"</span>, 1, <span class="jxr_string">"Φ.bool.and.φ.α0.α1"</span>)
+<a class="jxr_linenumber" name="L879" href="#L879">879</a>             );
+<a class="jxr_linenumber" name="L880" href="#L880">880</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L881" href="#L881">881</a>             refs.put(<span class="jxr_string">"Φ.bool.and.φ.α0"</span>, left);
+<a class="jxr_linenumber" name="L882" href="#L882">882</a>         }
+<a class="jxr_linenumber" name="L883" href="#L883">883</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L884" href="#L884">884</a>             Map.of(
+<a class="jxr_linenumber" name="L885" href="#L885">885</a>                 <span class="jxr_string">"Φ.bool"</span>, Map.of(<span class="jxr_string">"fork"</span>, <span class="jxr_string">"Φ.bool.fork"</span>, <span class="jxr_string">"if"</span>, <span class="jxr_string">"Φ.bool.if"</span>),
+<a class="jxr_linenumber" name="L886" href="#L886">886</a>                 <span class="jxr_string">"Φ.true.φ.α0"</span>, Map.of(<span class="jxr_string">"φ"</span>, <span class="jxr_string">"Φ.true.φ.α0.φ"</span>),
+<a class="jxr_linenumber" name="L887" href="#L887">887</a>                 <span class="jxr_string">"Φ.false.φ.α0"</span>, Map.of(<span class="jxr_string">"φ"</span>, <span class="jxr_string">"Φ.false.φ.α0.φ"</span>),
+<a class="jxr_linenumber" name="L888" href="#L888">888</a>                 <span class="jxr_string">"Φ.yes"</span>, Map.of(<span class="jxr_string">"foo"</span>, <span class="jxr_string">"Φ.yes.foo"</span>),
+<a class="jxr_linenumber" name="L889" href="#L889">889</a>                 <span class="jxr_string">"Φ.yes.foo"</span>, Map.of(),
+<a class="jxr_linenumber" name="L890" href="#L890">890</a>                 <span class="jxr_string">"Φ.no"</span>, Map.of(<span class="jxr_string">"foo"</span>, <span class="jxr_string">"Φ.no.foo"</span>),
+<a class="jxr_linenumber" name="L891" href="#L891">891</a>                 <span class="jxr_string">"Φ.no.foo"</span>, Map.of()
+<a class="jxr_linenumber" name="L892" href="#L892">892</a>             ),
+<a class="jxr_linenumber" name="L893" href="#L893">893</a>             <strong class="jxr_keyword">new</strong> Calls(
+<a class="jxr_linenumber" name="L894" href="#L894">894</a>                 Map.of(
+<a class="jxr_linenumber" name="L895" href="#L895">895</a>                     <span class="jxr_string">"Φ.bool"</span>, List.of(<span class="jxr_string">"fork"</span>),
+<a class="jxr_linenumber" name="L896" href="#L896">896</a>                     <span class="jxr_string">"Φ.true.φ.α0"</span>, List.of(<span class="jxr_string">"left"</span>, <span class="jxr_string">"right"</span>),
+<a class="jxr_linenumber" name="L897" href="#L897">897</a>                     <span class="jxr_string">"Φ.false.φ.α0"</span>, List.of(<span class="jxr_string">"left"</span>, <span class="jxr_string">"right"</span>),
+<a class="jxr_linenumber" name="L898" href="#L898">898</a>                     <span class="jxr_string">"Φ.yes.foo"</span>, List.of(<span class="jxr_string">"a"</span>),
+<a class="jxr_linenumber" name="L899" href="#L899">899</a>                     <span class="jxr_string">"Φ.no.foo"</span>, List.of(<span class="jxr_string">"b"</span>)
+<a class="jxr_linenumber" name="L900" href="#L900">900</a>                 ),
+<a class="jxr_linenumber" name="L901" href="#L901">901</a>                 slots,
+<a class="jxr_linenumber" name="L902" href="#L902">902</a>                 Map.of(),
+<a class="jxr_linenumber" name="L903" href="#L903">903</a>                 Map.of()
+<a class="jxr_linenumber" name="L904" href="#L904">904</a>             ),
+<a class="jxr_linenumber" name="L905" href="#L905">905</a>             reads,
+<a class="jxr_linenumber" name="L906" href="#L906">906</a>             refs
+<a class="jxr_linenumber" name="L907" href="#L907">907</a>         );
+<a class="jxr_linenumber" name="L908" href="#L908">908</a>     }
+<a class="jxr_linenumber" name="L909" href="#L909">909</a> 
+<a class="jxr_linenumber" name="L910" href="#L910">910</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Origins counter(<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> own) {
+<a class="jxr_linenumber" name="L911" href="#L911">911</a>         <strong class="jxr_keyword">final</strong> Map&lt;String, String&gt; plus = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;(
+<a class="jxr_linenumber" name="L912" href="#L912">912</a>             Map.of(<span class="jxr_string">"y"</span>, <span class="jxr_string">"Φ.num.plus.y"</span>, <span class="jxr_string">"φ"</span>, <span class="jxr_string">"Φ.num.plus.φ"</span>)
+<a class="jxr_linenumber" name="L913" href="#L913">913</a>         );
+<a class="jxr_linenumber" name="L914" href="#L914">914</a>         <strong class="jxr_keyword">if</strong> (own) {
+<a class="jxr_linenumber" name="L915" href="#L915">915</a>             plus.put(<span class="jxr_string">"eq"</span>, <span class="jxr_string">"Φ.num.plus.eq"</span>);
+<a class="jxr_linenumber" name="L916" href="#L916">916</a>         }
+<a class="jxr_linenumber" name="L917" href="#L917">917</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L918" href="#L918">918</a>             Map.of(
+<a class="jxr_linenumber" name="L919" href="#L919">919</a>                 <span class="jxr_string">"Φ"</span>, Map.of(<span class="jxr_string">"rec"</span>, <span class="jxr_string">"Φ.rec"</span>, <span class="jxr_string">"num"</span>, <span class="jxr_string">"Φ.num"</span>),
+<a class="jxr_linenumber" name="L920" href="#L920">920</a>                 <span class="jxr_string">"Φ.rec"</span>, Map.of(
+<a class="jxr_linenumber" name="L921" href="#L921">921</a>                     <span class="jxr_string">"v"</span>, <span class="jxr_string">"Φ.rec.v"</span>, <span class="jxr_string">"φ"</span>, <span class="jxr_string">"Φ.rec.φ"</span>, <span class="jxr_string">"out"</span>, <span class="jxr_string">"Φ.rec.out"</span>, <span class="jxr_string">"go"</span>, <span class="jxr_string">"Φ.rec.go"</span>
+<a class="jxr_linenumber" name="L922" href="#L922">922</a>                 ),
+<a class="jxr_linenumber" name="L923" href="#L923">923</a>                 <span class="jxr_string">"Φ.num"</span>, Map.of(<span class="jxr_string">"d"</span>, <span class="jxr_string">"Φ.num.d"</span>, <span class="jxr_string">"eq"</span>, <span class="jxr_string">"Φ.num.eq"</span>, <span class="jxr_string">"plus"</span>, <span class="jxr_string">"Φ.num.plus"</span>),
+<a class="jxr_linenumber" name="L924" href="#L924">924</a>                 <span class="jxr_string">"Φ.num.eq"</span>, Map.of(<span class="jxr_string">"x"</span>, <span class="jxr_string">"Φ.num.eq.x"</span>),
+<a class="jxr_linenumber" name="L925" href="#L925">925</a>                 <span class="jxr_string">"Φ.num.plus"</span>, plus,
+<a class="jxr_linenumber" name="L926" href="#L926">926</a>                 <span class="jxr_string">"Φ.num.plus.eq"</span>, Map.of(<span class="jxr_string">"z"</span>, <span class="jxr_string">"Φ.num.plus.eq.z"</span>)
+<a class="jxr_linenumber" name="L927" href="#L927">927</a>             ),
+<a class="jxr_linenumber" name="L928" href="#L928">928</a>             <strong class="jxr_keyword">new</strong> Calls(
+<a class="jxr_linenumber" name="L929" href="#L929">929</a>                 Map.of(
+<a class="jxr_linenumber" name="L930" href="#L930">930</a>                     <span class="jxr_string">"Φ.rec"</span>, List.of(<span class="jxr_string">"v"</span>), <span class="jxr_string">"Φ.num"</span>, List.of(<span class="jxr_string">"d"</span>), <span class="jxr_string">"Φ.num.eq"</span>, List.of(<span class="jxr_string">"x"</span>),
+<a class="jxr_linenumber" name="L931" href="#L931">931</a>                     <span class="jxr_string">"Φ.num.plus"</span>, List.of(<span class="jxr_string">"y"</span>), <span class="jxr_string">"Φ.num.plus.eq"</span>, List.of(<span class="jxr_string">"z"</span>)
+<a class="jxr_linenumber" name="L932" href="#L932">932</a>                 ),
+<a class="jxr_linenumber" name="L933" href="#L933">933</a>                 Map.of(
+<a class="jxr_linenumber" name="L934" href="#L934">934</a>                     <span class="jxr_string">"Φ.rec.φ"</span>, Map.of(0, <span class="jxr_string">"Φ.rec.φ.α0"</span>), <span class="jxr_string">"Φ.app"</span>, Map.of(0, <span class="jxr_string">"Φ.app.α0"</span>),
+<a class="jxr_linenumber" name="L935" href="#L935">935</a>                     <span class="jxr_string">"Φ.rec.φ.α0"</span>, Map.of(0, <span class="jxr_string">"Φ.rec.φ.α0.α0"</span>),
+<a class="jxr_linenumber" name="L936" href="#L936">936</a>                     <span class="jxr_string">"Φ.rec.out"</span>, Map.of(0, <span class="jxr_string">"Φ.rec.out.α0"</span>),
+<a class="jxr_linenumber" name="L937" href="#L937">937</a>                     <span class="jxr_string">"Φ.rec.go"</span>, Map.of(0, <span class="jxr_string">"Φ.rec.go.α0"</span>)
+<a class="jxr_linenumber" name="L938" href="#L938">938</a>                 ),
+<a class="jxr_linenumber" name="L939" href="#L939">939</a>                 Map.of(),
+<a class="jxr_linenumber" name="L940" href="#L940">940</a>                 Map.of()
+<a class="jxr_linenumber" name="L941" href="#L941">941</a>             ),
+<a class="jxr_linenumber" name="L942" href="#L942">942</a>             Map.of(
+<a class="jxr_linenumber" name="L943" href="#L943">943</a>                 <span class="jxr_string">"Φ.rec.φ"</span>, Map.entry(<span class="jxr_string">"Φ.rec.φ.ρ"</span>, <span class="jxr_string">"rec"</span>),
+<a class="jxr_linenumber" name="L944" href="#L944">944</a>                 <span class="jxr_string">"Φ.rec.φ.α0"</span>, Map.entry(<span class="jxr_string">"Φ.rec.φ.α0.ρ"</span>, <span class="jxr_string">"plus"</span>),
+<a class="jxr_linenumber" name="L945" href="#L945">945</a>                 <span class="jxr_string">"Φ.rec.φ.α0.ρ"</span>, Map.entry(<span class="jxr_string">"Φ.rec.φ.α0.ρ.ρ"</span>, <span class="jxr_string">"v"</span>),
+<a class="jxr_linenumber" name="L946" href="#L946">946</a>                 <span class="jxr_string">"Φ.rec.out"</span>, Map.entry(<span class="jxr_string">"Φ.rec.out.ρ"</span>, <span class="jxr_string">"eq"</span>),
+<a class="jxr_linenumber" name="L947" href="#L947">947</a>                 <span class="jxr_string">"Φ.rec.out.ρ"</span>, Map.entry(<span class="jxr_string">"Φ.rec.out.ρ.ρ"</span>, <span class="jxr_string">"v"</span>),
+<a class="jxr_linenumber" name="L948" href="#L948">948</a>                 <span class="jxr_string">"Φ.rec.go"</span>, Map.entry(<span class="jxr_string">"Φ.rec.go.ρ"</span>, <span class="jxr_string">"v"</span>),
+<a class="jxr_linenumber" name="L949" href="#L949">949</a>                 <span class="jxr_string">"Φ.app"</span>, Map.entry(<span class="jxr_string">"Φ.app.ρ"</span>, <span class="jxr_string">"rec"</span>)
+<a class="jxr_linenumber" name="L950" href="#L950">950</a>             ),
+<a class="jxr_linenumber" name="L951" href="#L951">951</a>             Map.of(
+<a class="jxr_linenumber" name="L952" href="#L952">952</a>                 <span class="jxr_string">"Φ.rec.φ.ρ"</span>, <span class="jxr_string">"Φ"</span>, <span class="jxr_string">"Φ.rec.φ.α0.ρ.ρ"</span>, <span class="jxr_string">"Φ.rec"</span>, <span class="jxr_string">"Φ.rec.φ.α0.α0"</span>, <span class="jxr_string">"Φ.num"</span>,
+<a class="jxr_linenumber" name="L953" href="#L953">953</a>                 <span class="jxr_string">"Φ.rec.out.ρ.ρ"</span>, <span class="jxr_string">"Φ.rec"</span>, <span class="jxr_string">"Φ.rec.out.α0"</span>, <span class="jxr_string">"Φ.num"</span>, <span class="jxr_string">"Φ.rec.go.ρ"</span>, <span class="jxr_string">"Φ.rec"</span>,
+<a class="jxr_linenumber" name="L954" href="#L954">954</a>                 <span class="jxr_string">"Φ.rec.go.α0"</span>, <span class="jxr_string">"Φ.num"</span>, <span class="jxr_string">"Φ.app.ρ"</span>, <span class="jxr_string">"Φ"</span>, <span class="jxr_string">"Φ.app.α0"</span>, <span class="jxr_string">"Φ.num"</span>,
+<a class="jxr_linenumber" name="L955" href="#L955">955</a>                 <span class="jxr_string">"Φ.num.plus.φ"</span>, <span class="jxr_string">"Φ.num"</span>
+<a class="jxr_linenumber" name="L956" href="#L956">956</a>             )
+<a class="jxr_linenumber" name="L957" href="#L957">957</a>         );
+<a class="jxr_linenumber" name="L958" href="#L958">958</a>     }
+<a class="jxr_linenumber" name="L959" href="#L959">959</a> 
+<a class="jxr_linenumber" name="L960" href="#L960">960</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> Origins bool(
+<a class="jxr_linenumber" name="L961" href="#L961">961</a>         <strong class="jxr_keyword">final</strong> List&lt;String&gt; voids, <strong class="jxr_keyword">final</strong> Map&lt;String, Map.Entry&lt;String, String&gt;&gt; extra,
+<a class="jxr_linenumber" name="L962" href="#L962">962</a>         <strong class="jxr_keyword">final</strong> Map&lt;String, String&gt; more
+<a class="jxr_linenumber" name="L963" href="#L963">963</a>     ) {
+<a class="jxr_linenumber" name="L964" href="#L964">964</a>         <strong class="jxr_keyword">final</strong> Map&lt;String, String&gt; refs = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;(more);
+<a class="jxr_linenumber" name="L965" href="#L965">965</a>         refs.put(<span class="jxr_string">"Φ.true.φ"</span>, <span class="jxr_string">"Φ.bool"</span>);
+<a class="jxr_linenumber" name="L966" href="#L966">966</a>         refs.put(<span class="jxr_string">"Φ.false.φ"</span>, <span class="jxr_string">"Φ.bool"</span>);
+<a class="jxr_linenumber" name="L967" href="#L967">967</a>         refs.put(<span class="jxr_string">"Φ.bool.and.φ.ρ"</span>, <span class="jxr_string">"Φ.bool"</span>);
+<a class="jxr_linenumber" name="L968" href="#L968">968</a>         refs.put(<span class="jxr_string">"Φ.bool.if.ρ"</span>, <span class="jxr_string">"Φ.bool"</span>);
+<a class="jxr_linenumber" name="L969" href="#L969">969</a>         <strong class="jxr_keyword">final</strong> Map&lt;String, Map.Entry&lt;String, String&gt;&gt; reads = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;(extra);
+<a class="jxr_linenumber" name="L970" href="#L970">970</a>         reads.put(<span class="jxr_string">"Φ.bool.and.φ"</span>, Map.entry(<span class="jxr_string">"Φ.bool.and.φ.ρ"</span>, <span class="jxr_string">"if"</span>));
+<a class="jxr_linenumber" name="L971" href="#L971">971</a>         reads.put(<span class="jxr_string">"Φ.bool.if"</span>, Map.entry(<span class="jxr_string">"Φ.bool.if.ρ"</span>, <span class="jxr_string">"fork"</span>));
+<a class="jxr_linenumber" name="L972" href="#L972">972</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Origins(
+<a class="jxr_linenumber" name="L973" href="#L973">973</a>             Map.of(
+<a class="jxr_linenumber" name="L974" href="#L974">974</a>                 <span class="jxr_string">"Φ.bool"</span>, Map.of(<span class="jxr_string">"fork"</span>, <span class="jxr_string">"Φ.bool.fork"</span>, <span class="jxr_string">"if"</span>, <span class="jxr_string">"Φ.bool.if"</span>),
+<a class="jxr_linenumber" name="L975" href="#L975">975</a>                 <span class="jxr_string">"Φ.true.φ.α0"</span>, Map.of(<span class="jxr_string">"φ"</span>, <span class="jxr_string">"Φ.yes"</span>),
+<a class="jxr_linenumber" name="L976" href="#L976">976</a>                 <span class="jxr_string">"Φ.false.φ.α0"</span>, Map.of(<span class="jxr_string">"φ"</span>, <span class="jxr_string">"Φ.no"</span>),
+<a class="jxr_linenumber" name="L977" href="#L977">977</a>                 <span class="jxr_string">"Φ.yes"</span>, Map.of(),
+<a class="jxr_linenumber" name="L978" href="#L978">978</a>                 <span class="jxr_string">"Φ.no"</span>, Map.of()
+<a class="jxr_linenumber" name="L979" href="#L979">979</a>             ),
+<a class="jxr_linenumber" name="L980" href="#L980">980</a>             <strong class="jxr_keyword">new</strong> Calls(
+<a class="jxr_linenumber" name="L981" href="#L981">981</a>                 Map.of(
+<a class="jxr_linenumber" name="L982" href="#L982">982</a>                     <span class="jxr_string">"Φ.bool"</span>, List.of(<span class="jxr_string">"fork"</span>),
+<a class="jxr_linenumber" name="L983" href="#L983">983</a>                     <span class="jxr_string">"Φ.true.φ.α0"</span>, List.of(<span class="jxr_string">"left"</span>, <span class="jxr_string">"right"</span>),
+<a class="jxr_linenumber" name="L984" href="#L984">984</a>                     <span class="jxr_string">"Φ.false.φ.α0"</span>, voids,
+<a class="jxr_linenumber" name="L985" href="#L985">985</a>                     <span class="jxr_string">"Φ.yes"</span>, List.of(<span class="jxr_string">"a"</span>),
+<a class="jxr_linenumber" name="L986" href="#L986">986</a>                     <span class="jxr_string">"Φ.no"</span>, List.of(<span class="jxr_string">"b"</span>)
+<a class="jxr_linenumber" name="L987" href="#L987">987</a>                 ),
+<a class="jxr_linenumber" name="L988" href="#L988">988</a>                 Map.of(
+<a class="jxr_linenumber" name="L989" href="#L989">989</a>                     <span class="jxr_string">"Φ.true.φ"</span>, Map.of(0, <span class="jxr_string">"Φ.true.φ.α0"</span>),
+<a class="jxr_linenumber" name="L990" href="#L990">990</a>                     <span class="jxr_string">"Φ.false.φ"</span>, Map.of(0, <span class="jxr_string">"Φ.false.φ.α0"</span>),
+<a class="jxr_linenumber" name="L991" href="#L991">991</a>                     <span class="jxr_string">"Φ.bool.and.φ"</span>, Map.of(0, <span class="jxr_string">"Φ.bool.and.φ.α0"</span>, 1, <span class="jxr_string">"Φ.bool.and.φ.α1"</span>)
+<a class="jxr_linenumber" name="L992" href="#L992">992</a>                 ),
+<a class="jxr_linenumber" name="L993" href="#L993">993</a>                 Map.of(),
+<a class="jxr_linenumber" name="L994" href="#L994">994</a>                 Map.of()
+<a class="jxr_linenumber" name="L995" href="#L995">995</a>             ),
+<a class="jxr_linenumber" name="L996" href="#L996">996</a>             reads,
+<a class="jxr_linenumber" name="L997" href="#L997">997</a>             refs
+<a class="jxr_linenumber" name="L998" href="#L998">998</a>         );
+<a class="jxr_linenumber" name="L999" href="#L999">999</a>     }
+<a class="jxr_linenumber" name="L1000" href="#L1000">1000</a> }
+</pre>
+<hr/>
+<div id="footer">© 2016–2026 <a href="https://github.com/objectionary/eo">EO</a></div>
+</body>
+</html>

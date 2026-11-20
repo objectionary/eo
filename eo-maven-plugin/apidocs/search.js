@@ -27,7 +27,7 @@ var noResult = {l: "No results found"};
 var loading = {l: "Loading search index..."};
 var catModules = "Modules";
 var catPackages = "Packages";
-var catTypes = "Types";
+var catTypes = "Classes and Interfaces";
 var catMembers = "Members";
 var catSearchTags = "Search Tags";
 var highlight = "<span class=\"result-highlight\">$&</span>";

@@ -18,11 +18,11 @@
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_javadoccomment"> * Pull EO files from Objectionary.</em>
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> *     This goal goes through all objects from "foreign" catalog and looks for those without</em>
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> *     sources and pulls them from Objectionary remote repository.</em>
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_javadoccomment"> *     The pulled sources are stored in the {@link Pulling#DIR} directory.</em>
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment"> * &lt;/p&gt;</em>
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;This goal goes through all objects from "foreign" catalog and looks for those without</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> * sources and pulls them from Objectionary remote repository.</em>
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_javadoccomment"> * The pulled sources are stored in a directory {@code Seqdir} numbers "pull".&lt;/p&gt;</em>
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment"> * @since 0.1</em>
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L20" href="#L20">20</a>  @Mojo(
@@ -30,23 +30,32 @@
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>      defaultPhase = LifecyclePhase.PROCESS_SOURCES,
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>      threadSafe = <strong class="jxr_keyword">true</strong>
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  )
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a name="MjPull" href="../../../org/eolang/maven/MjPull.html#MjPull">MjPull</a> <strong class="jxr_keyword">extends</strong> MjSafe {
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a name="MjPull" href="../../../org/eolang/maven/MjPull.html#MjPull">MjPull</a> <strong class="jxr_keyword">extends</strong> <a name="MjSafe" href="../../../org/eolang/maven/MjSafe.html#MjSafe">MjSafe</a> {
 <a class="jxr_linenumber" name="L26" href="#L26">26</a>  
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>      @Override
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> exec() <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>          <strong class="jxr_keyword">new</strong> <a name="Pulling" href="../../../org/eolang/maven/Pulling.html#Pulling">Pulling</a>(
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>              <strong class="jxr_keyword">this</strong>.scopedTojos(),
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>              <strong class="jxr_keyword">this</strong>.targetDir.toPath().resolve(Pulling.DIR),
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>              <strong class="jxr_keyword">this</strong>.hash,
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>              <strong class="jxr_keyword">this</strong>.objectionary(),
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>              <strong class="jxr_keyword">this</strong>.cache.toPath().resolve(Pulling.CACHE),
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>              <strong class="jxr_keyword">this</strong>.plugin.getVersion(),
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>              <strong class="jxr_keyword">this</strong>.overWrite,
-<a class="jxr_linenumber" name="L37" href="#L37">37</a>              <strong class="jxr_keyword">this</strong>.cacheEnabled,
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>              <strong class="jxr_keyword">this</strong>.offline
-<a class="jxr_linenumber" name="L39" href="#L39">39</a>          ).exec();
-<a class="jxr_linenumber" name="L40" href="#L40">40</a>      }
-<a class="jxr_linenumber" name="L41" href="#L41">41</a>  }
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  <em class="jxr_javadoccomment">     * Ctor.</em>
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>      <strong class="jxr_keyword">public</strong> <a name="MjPull" href="../../../org/eolang/maven/MjPull.html#MjPull">MjPull</a>() {
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>          <em class="jxr_comment">// nothing</em>
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>      }
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>      @Override
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> exec() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>          <strong class="jxr_keyword">try</strong> (<a name="TjsForeign" href="../../../org/eolang/maven/TjsForeign.html#TjsForeign">TjsForeign</a> tojos = <strong class="jxr_keyword">this</strong>.tojos()) {
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>              <strong class="jxr_keyword">new</strong> <a name="Pulling" href="../../../org/eolang/maven/Pulling.html#Pulling">Pulling</a>(
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>                  tojos,
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>                  <strong class="jxr_keyword">this</strong>.target.toPath(),
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>                  <strong class="jxr_keyword">this</strong>.hash,
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>                  <strong class="jxr_keyword">this</strong>.objectionary(),
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>                  <strong class="jxr_keyword">this</strong>.cache.toPath().resolve(Pulling.CACHE),
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>                  <strong class="jxr_keyword">this</strong>.plugin.getVersion(),
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>                  <strong class="jxr_keyword">this</strong>.overwrite,
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>                  !<strong class="jxr_keyword">this</strong>.uncached,
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>                  <strong class="jxr_keyword">this</strong>.offline
+<a class="jxr_linenumber" name="L47" href="#L47">47</a>              ).exec();
+<a class="jxr_linenumber" name="L48" href="#L48">48</a>          }
+<a class="jxr_linenumber" name="L49" href="#L49">49</a>      }
+<a class="jxr_linenumber" name="L50" href="#L50">50</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2016–2026 <a href="https://github.com/objectionary/eo">EO</a></div>

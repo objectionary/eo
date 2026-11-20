@@ -23,12 +23,6 @@
                                                                                                                                                                                         <ul>
                                                                             </ul>
                                                             </li>
-                                                                                                                                        <li >
-                                <span>                        <a href="usage.html" title="Usage">Usage</a>
-        </span>
-                                                                                                                                                                                        <ul>
-                                                                            </ul>
-                                                            </li>
                                                                                                                                         <li  class='active' >
                                 <span>                        <a href="plugin-info.html" title="Goals">Goals</a>
         </span>
@@ -124,11 +118,11 @@
                             </div>
                             <ul class="badges">
                                 <li>
-                                    <strong itemprop="version">0.61.3</strong>
+                                    <strong itemprop="version">0.63.3</strong>
                                 </li>
                                 <li>
-                                    <time itemprop="datePublished" datetime="2026-06-29">
-                                        29-Jun-2026
+                                    <time itemprop="datePublished" datetime="2026-11-20">
+                                        20-Nov-2026
                                     </time>
                                 </li>
                                 <li class="menu-button">menu</li>
@@ -147,68 +141,127 @@
 <th>Description</th></tr>
 <tr class="b">
 <td><a href="./assemble-mojo.html">eo:assemble</a></td>
-<td>Pull all necessary EO XML files from Objectionary and parse them all. 
+<td>Pull all necessary EO XML files from Objectionary and parse them all.
 <p>This goal combines <code>MjParse</code><!-- no javadoc sites associated -->, <code>MjProbe</code><!-- no javadoc sites associated --> and <code>MjPull</code><!-- no javadoc sites associated -->. See their documentation to find out more details. The <code></code><!-- no javadoc sites associated --> runs these goals repeatedly until no new objects are pulled or parsed in a cycle.</p></td></tr>
 <tr class="a">
-<td><a href="./atoms-table-mojo.html">eo:atoms-table</a></td>
-<td>Generate the atom return types table from XMIR sources. 
-<p>Walks the XMIR sources in <code>atomsInputDir</code><!-- no javadoc sites associated -->, extracts the <code>forma</code> of every lambda atom together with its declared return type, and writes the result as a CSV file at <code>atomsOutput</code><!-- no javadoc sites associated -->. Each output line has the form <code>&lt;forma&gt;,&lt;return-type&gt;</code>; entries are sorted by <code>forma</code> to make the file stable across builds.</p></td></tr>
-<tr class="b">
 <td><a href="./clean-mojo.html">eo:clean</a></td>
-<td>Implementation of maven clean plugin, just deleting target/eo directory. 
+<td>Implementation of maven clean plugin, just deleting target/eo directory.
 <p>This goal simply deletes the directory containing all the files used for compilation.</p></td></tr>
-<tr class="a">
-<td><a href="./compile-mojo.html">eo:compile</a></td>
-<td>Compile and lint all EO files. 
-<p>This goal combines <code>MjAssemble</code><!-- no javadoc sites associated -->, <code>MjLint</code><!-- no javadoc sites associated -->, <code>MjResolve</code><!-- no javadoc sites associated --> and <code>MjPlace</code><!-- no javadoc sites associated --> goals. See their documentation to find out more details. The <code></code><!-- no javadoc sites associated --> is useful to run the whole compilation process in one go without the need to call each goal separately.</p></td></tr>
 <tr class="b">
+<td><a href="./compile-mojo.html">eo:compile</a></td>
+<td>Compile and lint all EO files.
+<p>This goal combines <code>MjAssemble</code><!-- no javadoc sites associated -->, <code>MjLint</code><!-- no javadoc sites associated -->, <code>MjMerge</code><!-- no javadoc sites associated -->, <code>MjResolve</code><!-- no javadoc sites associated --> and <code>MjPlace</code><!-- no javadoc sites associated --> goals. See their documentation to find out more details. The <code></code><!-- no javadoc sites associated --> is useful to run the whole compilation process in one go without the need to call each goal separately.</p>
+<p>The merge happens right after the lint, so that every goal between this one and <code>MjTranspile</code><!-- no javadoc sites associated --> that reads an object through its tojo, such as <code>MjDealpha</code><!-- no javadoc sites associated --> and <code>MjLower</code><!-- no javadoc sites associated -->, reads it in the shape it will be compiled in and not in the shape the parser left. A project therefore never has to name <code>merge</code> between them, and naming it changes nothing: a member already inside its object is not moved again.</p>
+<p><code>MjInfer</code><!-- no javadoc sites associated --> reads the files the parser wrote, one per source, and not the merged ones, for the reasons its own documentation gives. Its tables still fit the merged objects: the parser gives every object the locator it will carry once it is inside its package object, and the merge moves none of them.</p></td></tr>
+<tr class="a">
+<td><a href="./dealpha-mojo.html">eo:dealpha</a></td>
+<td>Mojo that gives the positional arguments of a program the names of the voids they land in, right after the <code>inference</code> goal.
+<p>The parser has no way to know which void an argument fills, so it names them by their places: in <code>foo k</code>, the <code>k</code> is <code>α0</code>. The <code>answers.xml</code> of <code>MjInfer</code><!-- no javadoc sites associated --> knows better, since the row of an argument names the void it lands in whenever there is one. This goal reads it and writes <code>foo (bar: k)</code> instead, wherever the answer is certain, as described in #8301, and the <code>facts.xml</code> beside it says that no caller can change it.</p>
+<p>An argument keeps its place where no single void is known to take it, and the number of those is written to the log. With <code>rigid</code><!-- no javadoc sites associated --> set, the build fails when there is one.</p>
+<p>The XMIR goes to a directory <code>Seqdir</code> numbers "dealpha", and <code>MjTranspile</code><!-- no javadoc sites associated --> reads it from there.</p></td></tr>
+<tr class="b">
+<td><a href="./format-mojo.html">eo:format</a></td>
+<td>Enforce the canonical layout of <code>.eo</code> sources.
+<p>This goal walks through all registered <code>.eo</code> sources (see <code>MjRegister</code><!-- no javadoc sites associated -->), reformats every one of them in memory by parsing it to XMIR and printing it back with <code>org.eolang.printer.Xmir.toEO()</code><!-- no javadoc sites associated --> until the text stops changing (the moniker merge of #5739 is not a single-pass fixpoint, so the canonical form is the fixpoint of parse-and-print), and compares that against what is on disk. In its default "check" mode, it prints a colored unified <code>Diff</code><!-- no javadoc sites associated --> for every file that diverges from the canonical form and fails the build. When <code>autofix</code><!-- no javadoc sites associated --> is turned on (via the <code>eo.format.autofix</code> property), it overwrites the divergent files with their canonical form instead of failing, much like <code>gofmt -w</code> or <code>spotless:apply</code>.</p>
+<p>Parsing a source is by far the costliest thing this goal does, so it does it as few times as it can: the sources are checked concurrently, through <code>Threaded</code><!-- no javadoc sites associated -->, the way every other goal walks them, and each settling pass keeps the tree it parsed instead of parsing the same text again to lay it out.</p>
+<p>Every source is decoded strictly before <code>Raws</code><!-- no javadoc sites associated --> is asked for a tree, so a file that is not UTF-8 fails with its own name and line instead of being formatted from a tree the raw cache holds for an earlier text of the path.</p></td></tr>
+<tr class="a">
 <td><a href="./help-mojo.html">eo:help</a></td>
 <td>Display help information on eo-maven-plugin.
 <br />
- Call <code>mvn eo:help -Ddetail=true -Dgoal=&lt;goal-name&gt;</code> to display parameter details.</td></tr>
+Call <code>mvn eo:help -Ddetail=true -Dgoal=&lt;goal-name&gt;</code> to display parameter details.</td></tr>
+<tr class="b">
+<td><a href="./infer-mojo.html">eo:infer</a></td>
+<td>Mojo that reads what a program says about its own objects, preferably after the <code>assemble</code> goal.
+<p>What a program says about its objects is written down into <code>facts.xml</code>, which a later goal can read. In this program, for example, <code>t</code> has <code>next</code>, the object attached to <code>next</code> has nothing, and <code>inc</code> reads <code>foo</code> off whatever it is given:</p>
+<pre> [] &gt; app
+  inc t &gt; @
+  [] &gt; t
+    [] &gt; next
+  [x] &gt; inc
+    x.next.foo &gt; @</pre>
+<p>One pass through the XMIR of every file parsed so far writes every formation with its attributes, every name read and what it is read off, the head of every chain, and every call with its arguments.</p>
+<p>Nothing here says whether the program is wrong. Judging it was written and taken out again in #6661, because a verdict needs the object that misses an attribute to have been seen whole, and almost none of them have been; the program has to be described before anything can read it for mistakes.</p>
+<p>The XMIR of every registered source is read, and not every file the parse directory holds: a source that was deleted leaves its XMIR behind, and the facts would go on describing an object nobody wrote any more (#9271). Where each one lies is worked out from the identifier of the tojo, and not read off its <code>xmir</code> attribute, because <code>eo:merge</code> moves that attribute of a package object into the merge directory, while the facts are made of what the parser wrote.</p>
+<p>The engine then reads <code>facts.xml</code> and writes <code>answers.xml</code> beside it: for every place, which objects it can be when Java runs the program. It has to know three lists of names of the program, which are parameters here: <code>canon</code><!-- no javadoc sites associated -->, <code>roots</code><!-- no javadoc sites associated --> and <code>scalars</code><!-- no javadoc sites associated -->. They have no defaults: a program names its own, the way the <code>pom.xml</code> of eo-runtime does, and a list left unset is empty.</p>
+<p>The prepared XMIR is saved in <code>prepared</code><!-- no javadoc sites associated -->, and <code>facts.xml</code> and <code>answers.xml</code> in <code>tables</code><!-- no javadoc sites associated -->. Nothing of it fails the build.</p></td></tr>
 <tr class="a">
 <td><a href="./lint-mojo.html">eo:lint</a></td>
-<td>Mojo that runs all lints and checks errors and warnings, preferably after the <code>assemble</code> goal. 
-<p>This goal goes through all XMIR files generated in the previous steps (see <code>MjParse</code><!-- no javadoc sites associated --> or <code>MjPull</code><!-- no javadoc sites associated --> goals) and runs all available lints on them. If any errors or warnings are found, they are logged to the console, and depending on the configuration, the build may fail. The linting results are also embedded back into the XMIR files for future reference. Lints might use caching to speed up the process on subsequent runs. Cached files are stored in the <code>Linting.CACHE</code><!-- no javadoc sites associated --> directory. The results of linting are saved in the <code>Linting.DIR</code><!-- no javadoc sites associated --> directory.</p></td></tr>
+<td>Mojo that runs all lints and checks errors and warnings, preferably after the <code>assemble</code> goal.
+<p>This goal goes through all XMIR files generated in the previous steps (see <code>MjParse</code><!-- no javadoc sites associated --> or <code>MjPull</code><!-- no javadoc sites associated --> goals) and runs all available lints on them. If any errors or warnings are found, they are logged to the console, and depending on the configuration, the build may fail. The linting results are also embedded back into the XMIR files for future reference. Lints might use caching to speed up the process on subsequent runs. Cached files are stored in the <code>Linting.CACHE</code><!-- no javadoc sites associated --> directory. The results of linting are saved in a directory <code>Seqdir</code> numbers "lint".</p></td></tr>
 <tr class="b">
+<td><a href="./lower-mojo.html">eo:lower</a></td>
+<td>Fold the formations of a program into Java atoms.
+<p>A formation whose behaviour is decided at compile time pays the full cost of the object graph at runtime, for an answer the compiler could have known. Lowering computes such a formation through the external <code>phino</code> binary, which is the only thing here that knows the calculus, and keeps the answer as the body of a Java atom, so that the graph is never built while the program runs.</p>
+<p>This goal is the entry point of that pipeline. It runs after <code>render</code>, by which time a program has said everything the lowering needs to hear about it, and before <code>transpile</code>, the last moment at which the Java of a program can still be changed.</p>
+<p>The goal folds by default; <code>-Deo.lower.bypass=true</code> turns it off. When phino cannot be started on this computer, the goal prints a warning and does nothing, so the build goes on without atoms. With <code>-Deo.lower.optional=false</code> the goal fails the build instead. When it runs it makes sure that the binary on this machine is the one the pin names, since an answer of another version cannot be trusted, and then plants the entries of the build. It hands the lowering the XMIR of every standalone object, the directory where <code>eo:infer</code> left its tables, because an entry is a formation applied to what the tables say its voids hold, and one home directory, which <code>Seqdir</code> numbers as <code>NN-lowering</code>. There the lowering keeps the world, the sources with their tests cut out in <code>1-planting</code>, and the protocol of every object morphed in <code>2-protocols</code>. The atoms the lowering renders land in the numbered <code>atoms</code> directory, which this goal finds and hands to javac as a source root, and every XMIR file with an atom in the place of a body lands in the numbered <code>patched</code> directory, where this goal points the tojo of that object, so the transpiler reads the patched copy and every other object stays where it was. The copies stay from build to build, so only a copy listed in <code>patched.tsv</code>, one patched in this very build, is handed to the transpiler.</p>
+<p>With <code>-Deo.lower.minutes=true</code> the lowering also keeps the protocol of every entry as indented text, called its "minutes", in the numbered <code>minutes</code> directory, beside <code>2-protocols</code>, so a person can read why an entry stopped where it did without any tool. The same run of phino writes both, so no entry is computed twice.</p></td></tr>
+<tr class="a">
+<td><a href="./measure-mojo.html">eo:measure</a></td>
+<td>Turns the raw <code>loc:line:pos</code> coverage hits <code>PhCoverage</code> appended at runtime into an LCOV tracefile.
+<p>Bound to the <code>verify</code> phase, after the tests that actually populate the raw hits file have run (unlike <code>transpile</code>, which only decides whether locations get wrapped in <code>PhCoverage</code> in the first place, long before any test executes). Does nothing when <code>eo.measure.hits</code> is not set or the file does not exist yet, the same "no-op when disabled" contract <code>PhCoverage</code> itself follows, unless <code>eo.measure.minimum</code> is above zero: then the build fails, because a gate that measured nothing must not pass.</p>
+<p>Every <code>.eo</code> file is re-parsed from its own source instead of reading the <code>xmir</code> stored in its tojo, because that xmir is the <code>MjMerge</code> one for a package root and mixes the members it spliced in, whose lines refer to their own files. Reporting those members' locations against the package root puts lines of unrelated files where the package's meta directives are, so each file is covered under its own name (they all carry <code>@loc</code> with the <code>Φ</code> prefix of the object they name, so the runtime hits still line up).</p>
+<p>Every registered <code>.eo</code> file gets a record of its own, even one the manifest names no location in: a file of nothing but atom declarations and unit tests, like <code>bytes.eo</code>, has no dataizable body at all. Such a file used to be absent from the tracefile altogether, which left the report unable to tell it apart from a file that was never compiled (#7057).</p>
+<p>The raw hits are read one line at a time and never held together in memory. What the report keeps out of them is one counter per line of source, so its own size is bounded by the manifest, but the file the runtime appends to is not: a location is written once per generated class per JVM, so every surefire fork appends its own copy of the few thousand distinct locations, and while every <code>PhCoverage</code> wrapper still started a dedup set of its own (#6508), a whole test suite left gigabytes of duplicates behind. Reading that file into a list first is what killed the <code>eo-runtime</code> coverage build with an <code>OutOfMemoryError</code> once it outgrew the 4Gb heap <code>.mvn/jvm.config</code> gives Maven.</p></td></tr>
+<tr class="b">
+<td><a href="./merge-mojo.html">eo:merge</a></td>
+<td>Put every member of a package inside the object that the package names.
+<p>An object and the package of the same name are two things today, and it takes the runtime to join them: asked for an attribute it does not hold, <code>Φ.number</code> goes looking for <code>Φ.number.lt</code> on the classpath and binds itself into the first void of what it finds. This goal does that joining at compile time instead, where the parts are already on disk as XMIR, so that <code>lt</code> is simply an attribute of <code>number</code> and nothing has to be searched for at runtime.</p>
+<p>It runs after <code>MjLint</code><!-- no javadoc sites associated -->, so that every member is read and reported on as the file a human wrote, and before <code>MjTranspile</code><!-- no javadoc sites associated -->, which is the first goal that cares about the shape of the object it compiles. The merged XMIR goes to a directory <code>Seqdir</code> numbers "merge".</p>
+<p>Every package this build compiles an object for is merged. A package whose name no object carries keeps its members as objects of their own, reached through the package namespace as before.</p>
+<p><code>MjCompile</code><!-- no javadoc sites associated --> runs the same step right after its lint, and <code>MjTranspile</code><!-- no javadoc sites associated --> runs it again before it writes anything, so a build that never names this goal still compiles merged objects, and every goal between the two reads them merged. Naming it anyway costs nothing: a member already inside its object is not moved again.</p></td></tr>
+<tr class="a">
 <td><a href="./parse-mojo.html">eo:parse</a></td>
-<td>Parse EO to XML. 
+<td>Parse EO to XML.
 <p>This is the initial goal that parses all found EO sources to XMIRs. You can read more about XMIR format <a href="https://www.eolang.org/XMIR.html">here</a></p>
-<p>The goal scans all the EO sources registered in the foreign file catalog (see <code>MjRegister</code><!-- no javadoc sites associated --> and <code>MjPull</code><!-- no javadoc sites associated -->) and then parses those that were not parsed before (i.e. do not have XMIRs yet) to XMIR format. The resulting XMIR files are stored in the <code>Parsing.DIR</code><!-- no javadoc sites associated --> directory.</p></td></tr>
-<tr class="a">
+<p>The goal scans all the EO sources registered in the foreign file catalog (see <code>MjRegister</code><!-- no javadoc sites associated --> and <code>MjPull</code><!-- no javadoc sites associated -->) and then parses those that were not parsed before (i.e. do not have XMIRs yet) to XMIR format. The resulting XMIR files are stored in a directory <code>Seqdir</code> numbers "parse".</p></td></tr>
+<tr class="b">
 <td><a href="./place-mojo.html">eo:place</a></td>
-<td>Take binary files from where <code>MjResolve</code><!-- no javadoc sites associated --> placed them and copy to the <code>target/classes</code> directory. 
-<p>Input directory is <code>MjResolve.DIR</code><!-- no javadoc sites associated -->. Output directory is <code>MjPlace#targetDir</code><!-- this link could not be resolved -->/classes.</p><br /><strong>See also:</strong> <a href="https://news.eolang.org/2022-10-19-placed-catalog.html">Place catalog</a></td></tr>
-<tr class="b">
+<td>Take binary files from where <code>MjResolve</code><!-- no javadoc sites associated -->
+ placed them and copy to the <code>target/classes</code> directory.
+<p>Input directory is a directory <code>Seqdir</code> numbers "resolve". Output directory is <code>target</code>/classes.</p><br />
+<strong>See also:</strong> <a href="https://news.eolang.org/2022-10-19-placed-catalog.html">Place catalog</a></td></tr>
+<tr class="a">
 <td><a href="./print-mojo.html">eo:print</a></td>
-<td>Print XMIR to EO. 
-<p>This goal goes through all XMIR sources found in the specified directory, converts them back to EO format, and saves the resulting EO files in the specified output directory, preserving the original directory structure. Input XMIR files are found in <code>printSourcesDir</code><!-- no javadoc sites associated -->, output EO files are saved in <code>printOutputDir</code><!-- no javadoc sites associated -->.</p></td></tr>
-<tr class="a">
-<td><a href="./probe-mojo.html">eo:probe</a></td>
-<td>Go through all `probe` and `also` metas in XMIR files, try to locate the objects pointed by `probe` in Objectionary, and if found, register them in the catalog. More about the purpose of this Mojo is in <a href="https://github.com/objectionary/eo/issues/1323">this issue</a>. 
-<p>This goal just modifies the "foreign" catalog by adding newly discovered objects to it. It does not download or pull the sources of these objects, that is the job of <code>MjPull</code><!-- no javadoc sites associated --> goal which usually goes after this one. This goal does not create any files on the disk either.</p></td></tr>
+<td>Print XMIR to EO.
+<p>This goal goes through all XMIR sources found in the specified directory, converts them back to EO format, and saves the resulting EO files in the specified output directory, preserving the original directory structure. Input XMIR files are found in <code>sources</code><!-- no javadoc sites associated -->, output EO files are saved in <code>output</code><!-- no javadoc sites associated -->.</p></td></tr>
 <tr class="b">
-<td><a href="./pull-mojo.html">eo:pull</a></td>
-<td>Pull EO files from Objectionary. 
-<p>This goal goes through all objects from "foreign" catalog and looks for those without sources and pulls them from Objectionary remote repository. The pulled sources are stored in the <code>Pulling.DIR</code><!-- no javadoc sites associated --> directory.</p></td></tr>
+<td><a href="./probe-mojo.html">eo:probe</a></td>
+<td>Go through all `probe` and `also` metas in XMIR files, try to locate the objects pointed by `probe` in Objectionary, and if found, register them in the catalog. More about the purpose of this Mojo is in <a href="https://github.com/objectionary/eo/issues/1323">this issue</a>.
+<p>This goal just modifies the "foreign" catalog by adding newly discovered objects to it. It does not download or pull the sources of these objects, that is the job of <code>MjPull</code><!-- no javadoc sites associated --> goal which usually goes after this one. This goal does not create any files on the disk either.</p></td></tr>
 <tr class="a">
+<td><a href="./pull-mojo.html">eo:pull</a></td>
+<td>Pull EO files from Objectionary.
+<p>This goal goes through all objects from "foreign" catalog and looks for those without sources and pulls them from Objectionary remote repository. The pulled sources are stored in a directory <code>Seqdir</code> numbers "pull".</p></td></tr>
+<tr class="b">
 <td><a href="./register-mojo.html">eo:register</a></td>
-<td>Find and register all <code>.eo</code> sources in the "foreign" catalog. 
-<p>This goal scans the <code>&lt;sourcesDir&gt;</code> directory for all <code>.eo</code> files matching the inclusion and exclusion GLOB filters specified in the <code>&lt;includeSources&gt;</code> and <code>&lt;excludeSources&gt;</code> parameters respectively. By default, it includes all <code>.eo</code> files found recursively. Each found EO source is then registered in the "foreign" catalog that later processed by other goals like <code>MjParse</code><!-- no javadoc sites associated -->, <code>MjAssemble</code><!-- no javadoc sites associated --> or <code>MjCompile</code><!-- no javadoc sites associated -->. This goal only changes the "foreign" catalog and does not save any generated files.</p></td></tr>
+<td>Find and register all <code>.eo</code> sources in the "foreign" catalog.
+<p>This goal scans the <code>&lt;sources&gt;</code> directory for all <code>.eo</code> files matching the inclusion and exclusion GLOB filters specified in the <code>&lt;register.included&gt;</code> and <code>&lt;register.excluded&gt;</code> parameters respectively. By default, it includes all <code>.eo</code> files found recursively. Each found EO source is then registered in the "foreign" catalog that later processed by other goals like <code>MjParse</code><!-- no javadoc sites associated -->, <code>MjAssemble</code><!-- no javadoc sites associated --> or <code>MjCompile</code><!-- no javadoc sites associated -->. This goal only changes the "foreign" catalog and does not save any generated files.</p></td></tr>
+<tr class="a">
+<td><a href="./render-mojo.html">eo:render</a></td>
+<td>Draw a page per source file from what <code>MjInfer</code><!-- no javadoc sites associated -->
+ wrote.
+<p>A page shows the author's own source with a mark on every object, coloured by one of nine bands of what the engine answers there in <code>answers.xml</code>: green where it answers one name and nothing else, other colours where it answers several names, names with gaps, an unknown of one of four kinds, or only errors. An index lists the pages with a bar per file, and the goal logs how many objects fall in each band and writes the same numbers down in <code>ladder.txt</code>, beside the directory of the tables.</p>
+<p>A goal of its own rather than a flag on <code>MjInfer</code><!-- no javadoc sites associated -->: a build that wants the pages asks for this goal, one that does not never runs it.</p></td></tr>
 <tr class="b">
 <td><a href="./resolve-mojo.html">eo:resolve</a></td>
-<td>Find all required runtime dependencies, download them from Maven Central, unpack and place to the <code>target/eo</code> directory. 
+<td>Find all required runtime dependencies, download them from Maven Central, unpack and place to the <code>target/eo</code> directory.
 <p>The motivation for this mojo is simple: Maven doesn't have a mechanism for adding .JAR files to transpile/test classpath in runtime.</p>
-<p>This goal goes through all dependencies found in the <code>MjPull</code><!-- no javadoc sites associated --> goal, finds their implementations (i.e. transitive dependencies), downloads them from Maven Central, unpacks them and places the resulting files to the <code>DIR</code><!-- no javadoc sites associated --> directory.</p></td></tr>
+<p>This goal goes through all dependencies found in the <code>MjPull</code><!-- no javadoc sites associated --> goal, finds their implementations (i.e. transitive dependencies), downloads them from Maven Central, unpacks them and places the resulting files to a directory <code>Seqdir</code> numbers "resolve".</p></td></tr>
 <tr class="a">
-<td><a href="./transpile-mojo.html">eo:transpile</a></td>
-<td>Transpile. 
-<p>This Maven Mojo transpiles XMIR files into Java source files. The goal of this class is to automate the process of transforming EO intermediate representations (XMIRs) into Java code, optimize the output, and integrate the results into the Maven build lifecycle for further processing.</p>
-<p>This is one of the final goals that transpiles XMIRs to Java files generated by <code>MjAssemble</code><!-- no javadoc sites associated -->, <code>MjParse</code><!-- no javadoc sites associated --> or <code>MjPull</code><!-- no javadoc sites associated --> goals. The resulting Java files are stored in the <code>Transpiling.DIR</code><!-- no javadoc sites associated --> directory. The intermediate optimized XMIRs are stored in the <code>Transpiling.PRE</code><!-- no javadoc sites associated --> directory.</p></td></tr>
+<td><a href="./tabulate-mojo.html">eo:tabulate</a></td>
+<td>Generate the atom return types table from XMIR sources.
+<p>Walks the XMIR sources in <code>sources</code><!-- no javadoc sites associated -->, extracts the <code>forma</code> of every lambda atom together with its declared return type, and writes the result as a CSV file at <code>csv</code><!-- no javadoc sites associated -->. Each output line has the form <code>&lt;forma&gt;,&lt;return-type&gt;</code>; entries are sorted by <code>forma</code> to make the file stable across builds. A return type that is a tree, such as <code>Φ.posix.status-return(Φ.number,Φ.string)</code>, is written as the name before its brackets, since the runtime checks only that name.</p></td></tr>
 <tr class="b">
+<td><a href="./transpile-mojo.html">eo:transpile</a></td>
+<td>Transpile.
+<p>This Maven Mojo transpiles XMIR files into Java source files. The goal of this class is to automate the process of transforming EO intermediate representations (XMIRs) into Java code, optimize the output, and integrate the results into the Maven build lifecycle for further processing.</p>
+<p>This is one of the final goals that transpiles XMIRs to Java files generated by <code>MjAssemble</code><!-- no javadoc sites associated -->, <code>MjParse</code><!-- no javadoc sites associated --> or <code>MjPull</code><!-- no javadoc sites associated --> goals. The resulting Java files are stored in a directory <code>Seqdir</code> numbers "transpile". The intermediate optimized XMIRs are stored in a directory <code>Seqdir</code> numbers "pre-transpile".</p>
+<p>Before anything is written, the members of every package this build compiles an object for are put inside that object, the way <code>MjMerge</code><!-- no javadoc sites associated --> does it. The two are the same step and running both changes nothing, since <code>Merging</code><!-- no javadoc sites associated --> leaves a merged member alone; it is done here as well because the shape of an object decides the name of the Java class of every atom it holds, and a build that skipped the goal would name classes that the library it compiles against does not carry. An atom <code>string.foo.bar</code> ships as <code>EOstring$EOfoo$EObar</code>, which is where it lands once <code>foo</code> is an attribute of <code>string</code>, and nowhere near the <code>org.eolang.EO_string</code> package an unmerged <code>+package string</code> would compile it into (#8295).</p></td></tr>
+<tr class="a">
 <td><a href="./unplace-mojo.html">eo:unplace</a></td>
 <td>It deletes binary files, which were previously copied by "place" mojo so these binaries are not got into result JAR.</td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="./unspile-mojo.html">eo:unspile</a></td>
 <td>Goes through all .class files and deletes those that were created from autogenerated sources so these binaries are not got into result JAR.</td></tr></table></section><section><a id="System_Requirements"></a>
 <h2>System Requirements</h2>
@@ -216,7 +269,7 @@
 <table class="bodyTable">
 <tr class="a">
 <td>Maven</td>
-<td>3.9.16</td></tr>
+<td>3.10.1</td></tr>
 <tr class="b">
 <td>JDK</td>
 <td>17</td></tr></table></section><section><a id="System_Requirements_History"></a>
@@ -228,10 +281,14 @@
 <th>Maven</th>
 <th>JDK</th></tr>
 <tr class="b">
-<td>from 0.45.0 to 0.61.2</td>
+<td>from 0.62.0 to 0.63.3</td>
+<td>-</td>
+<td>17</td></tr>
+<tr class="a">
+<td>from 0.45.0 to 0.61.3</td>
 <td>-</td>
 <td>11</td></tr>
-<tr class="a">
+<tr class="b">
 <td>from 0.1 to 0.44.0</td>
 <td>-</td>
 <td>8</td></tr></table></section><section><a id="Usage"></a>
@@ -246,7 +303,7 @@
         &lt;plugin&gt;
           &lt;groupId&gt;org.eolang&lt;/groupId&gt;
           &lt;artifactId&gt;eo-maven-plugin&lt;/artifactId&gt;
-          &lt;version&gt;0.61.3&lt;/version&gt;
+          &lt;version&gt;0.63.3&lt;/version&gt;
         &lt;/plugin&gt;
         ...
       &lt;/plugins&gt;

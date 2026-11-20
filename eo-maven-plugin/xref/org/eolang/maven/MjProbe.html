@@ -23,27 +23,34 @@
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> * More about the purpose of this Mojo is in</em>
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_javadoccomment"> * &lt;a href="<a href="https://github.com/objectionary/eo/issues/1323" target="alexandria_uri">https://github.com/objectionary/eo/issues/1323</a>"&gt;this issue&lt;/a&gt;.</em>
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment"> *     This goal just modifies the "foreign" catalog by adding newly discovered</em>
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment"> *     objects to it. It does not download or pull the sources of these objects,</em>
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment"> *     that is the job of {@link MjPull} goal which usually goes after this one.</em>
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment"> *     This goal does not create any files on the disk either.</em>
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment"> * &lt;/p&gt;</em>
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment"> * @since 0.28.11</em>
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  @Mojo(
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>      name = <span class="jxr_string">"probe"</span>,
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>      defaultPhase = LifecyclePhase.PROCESS_SOURCES,
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>      threadSafe = <strong class="jxr_keyword">true</strong>
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>  )
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a name="MjProbe" href="../../../org/eolang/maven/MjProbe.html#MjProbe">MjProbe</a> <strong class="jxr_keyword">extends</strong> MjSafe {
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>      @Override
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> exec() <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L36" href="#L36">36</a>          <strong class="jxr_keyword">new</strong> <a name="Probing" href="../../../org/eolang/maven/Probing.html#Probing">Probing</a>(<strong class="jxr_keyword">this</strong>.scopedTojos(), <strong class="jxr_keyword">this</strong>.objectionary(), !<strong class="jxr_keyword">this</strong>.offline).exec();
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;This goal just modifies the "foreign" catalog by adding newly discovered</em>
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment"> * objects to it. It does not download or pull the sources of these objects,</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment"> * that is the job of {@link MjPull} goal which usually goes after this one.</em>
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <em class="jxr_javadoccomment"> * This goal does not create any files on the disk either.&lt;/p&gt;</em>
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment"> * @since 0.28.11</em>
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  @Mojo(
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>      name = <span class="jxr_string">"probe"</span>,
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>      defaultPhase = LifecyclePhase.PROCESS_SOURCES,
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>      threadSafe = <strong class="jxr_keyword">true</strong>
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>  )
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a name="MjProbe" href="../../../org/eolang/maven/MjProbe.html#MjProbe">MjProbe</a> <strong class="jxr_keyword">extends</strong> <a name="MjSafe" href="../../../org/eolang/maven/MjSafe.html#MjSafe">MjSafe</a> {
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>  
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment">     * Ctor.</em>
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>      <strong class="jxr_keyword">public</strong> <a name="MjProbe" href="../../../org/eolang/maven/MjProbe.html#MjProbe">MjProbe</a>() {
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>          <em class="jxr_comment">// nothing</em>
 <a class="jxr_linenumber" name="L37" href="#L37">37</a>      }
-<a class="jxr_linenumber" name="L38" href="#L38">38</a>  }
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>  
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>      @Override
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> exec() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>          <strong class="jxr_keyword">try</strong> (<a name="TjsForeign" href="../../../org/eolang/maven/TjsForeign.html#TjsForeign">TjsForeign</a> tojos = <strong class="jxr_keyword">this</strong>.tojos()) {
+<a class="jxr_linenumber" name="L42" href="#L42">42</a>              <strong class="jxr_keyword">new</strong> <a name="Probing" href="../../../org/eolang/maven/Probing.html#Probing">Probing</a>(tojos, <strong class="jxr_keyword">this</strong>.objectionary(), !<strong class="jxr_keyword">this</strong>.offline).exec();
+<a class="jxr_linenumber" name="L43" href="#L43">43</a>          }
+<a class="jxr_linenumber" name="L44" href="#L44">44</a>      }
+<a class="jxr_linenumber" name="L45" href="#L45">45</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2016–2026 <a href="https://github.com/objectionary/eo">EO</a></div>

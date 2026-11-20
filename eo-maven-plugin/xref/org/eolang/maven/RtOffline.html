@@ -17,22 +17,23 @@
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_javadoccomment"> * Offline runtime dependency from the current project manifest.</em>
-<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_javadoccomment"> * @since 0.62.0</em>
-<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a name="RtOffline" href="../../../org/eolang/maven/RtOffline.html#RtOffline">RtOffline</a> <strong class="jxr_keyword">implements</strong> Scalar&lt;Dep&gt; {
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment">     * EO current offline version.</em>
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <a name="Dep" href="../../../org/eolang/maven/Dep.html#Dep">Dep</a> EO_OFFLINE = <strong class="jxr_keyword">new</strong> <a name="Dep" href="../../../org/eolang/maven/Dep.html#Dep">Dep</a>().withGroupId(<span class="jxr_string">"org.eolang"</span>)
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>          .withArtifactId(<span class="jxr_string">"eo-runtime"</span>)
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>          .withVersion(Manifests.read(<span class="jxr_string">"EO-Version"</span>));
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>      @Override
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>      <strong class="jxr_keyword">public</strong> <a name="Dep" href="../../../org/eolang/maven/Dep.html#Dep">Dep</a> value() <strong class="jxr_keyword">throws</strong> Exception {
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>          <strong class="jxr_keyword">return</strong> RtOffline.EO_OFFLINE;
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>      }
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>  }
+<a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment"> * @since 0.62.0</em>
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a name="RtOffline" href="../../../org/eolang/maven/RtOffline.html#RtOffline">RtOffline</a> <strong class="jxr_keyword">implements</strong> Scalar&lt;Dep&gt; {
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment">     * EO current offline version.</em>
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <a name="Dep" href="../../../org/eolang/maven/Dep.html#Dep">Dep</a> EO_OFFLINE = <strong class="jxr_keyword">new</strong> <a name="Dep" href="../../../org/eolang/maven/Dep.html#Dep">Dep</a>().withGroupId(<span class="jxr_string">"org.eolang"</span>)
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>          .withArtifactId(<span class="jxr_string">"eo-runtime"</span>)
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>          .withVersion(Manifests.read(<span class="jxr_string">"EO-Version"</span>));
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>      @Override
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>      <strong class="jxr_keyword">public</strong> <a name="Dep" href="../../../org/eolang/maven/Dep.html#Dep">Dep</a> value() <strong class="jxr_keyword">throws</strong> Exception {
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>          <strong class="jxr_keyword">return</strong> RtOffline.EO_OFFLINE;
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>      }
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2016–2026 <a href="https://github.com/objectionary/eo">EO</a></div>

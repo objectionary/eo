@@ -19,26 +19,34 @@
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_javadoccomment"> * It deletes binary files, which were previously copied by "place" mojo so</em>
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment"> * these binaries are not got into result JAR.</em>
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> * @since 0.11</em>
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  @Mojo(
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>      name = <span class="jxr_string">"unplace"</span>,
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>      defaultPhase = LifecyclePhase.PREPARE_PACKAGE,
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>      threadSafe = <strong class="jxr_keyword">true</strong>
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  )
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a name="MjUnplace" href="../../../org/eolang/maven/MjUnplace.html#MjUnplace">MjUnplace</a> <strong class="jxr_keyword">extends</strong> MjSafe {
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>      @Override
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> exec() <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>          <strong class="jxr_keyword">new</strong> <a name="Timed" href="../../../org/eolang/maven/Timed.html#Timed">Timed</a>(
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>              <strong class="jxr_keyword">new</strong> <a name="Unplacing" href="../../../org/eolang/maven/Unplacing.html#Unplacing">Unplacing</a>(
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>                  <strong class="jxr_keyword">this</strong>.placedTojos,
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>                  <strong class="jxr_keyword">this</strong>.classesDir.toPath(),
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>                  <strong class="jxr_keyword">this</strong>.keepBinaries
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>              )
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>          ).exec();
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>      }
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>  }
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> * @since 0.11</em>
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  @Mojo(
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>      name = <span class="jxr_string">"unplace"</span>,
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>      defaultPhase = LifecyclePhase.PREPARE_PACKAGE,
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>      threadSafe = <strong class="jxr_keyword">true</strong>
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  )
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a name="MjUnplace" href="../../../org/eolang/maven/MjUnplace.html#MjUnplace">MjUnplace</a> <strong class="jxr_keyword">extends</strong> <a name="MjSafe" href="../../../org/eolang/maven/MjSafe.html#MjSafe">MjSafe</a> {
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>  
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>      <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>  <em class="jxr_javadoccomment">     * Ctor.</em>
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>  <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>      <strong class="jxr_keyword">public</strong> <a name="MjUnplace" href="../../../org/eolang/maven/MjUnplace.html#MjUnplace">MjUnplace</a>() {
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>          <em class="jxr_comment">// nothing</em>
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>      }
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>  
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>      @Override
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>      <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> exec() <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>          <strong class="jxr_keyword">try</strong> (<a name="TjsPlaced" href="../../../org/eolang/maven/TjsPlaced.html#TjsPlaced">TjsPlaced</a> placed = <strong class="jxr_keyword">this</strong>.placed()) {
+<a class="jxr_linenumber" name="L34" href="#L34">34</a>              <strong class="jxr_keyword">new</strong> <a name="Unplacing" href="../../../org/eolang/maven/Unplacing.html#Unplacing">Unplacing</a>(
+<a class="jxr_linenumber" name="L35" href="#L35">35</a>                  placed,
+<a class="jxr_linenumber" name="L36" href="#L36">36</a>                  <strong class="jxr_keyword">this</strong>.classes.toPath(),
+<a class="jxr_linenumber" name="L37" href="#L37">37</a>                  <strong class="jxr_keyword">this</strong>.keepBinaries
+<a class="jxr_linenumber" name="L38" href="#L38">38</a>              ).exec();
+<a class="jxr_linenumber" name="L39" href="#L39">39</a>          }
+<a class="jxr_linenumber" name="L40" href="#L40">40</a>      }
+<a class="jxr_linenumber" name="L41" href="#L41">41</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2016–2026 <a href="https://github.com/objectionary/eo">EO</a></div>
