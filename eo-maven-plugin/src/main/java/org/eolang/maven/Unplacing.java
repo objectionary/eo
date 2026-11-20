@@ -9,8 +9,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * Core unplacing logic: removes binary files that were previously placed by {@link Placing}.
@@ -38,6 +39,11 @@ final class Unplacing implements Step {
     private final Set<String> keep;
 
     /**
+     * Walks a directory, once per call.
+     */
+    private final Function<Path, Walk> walks;
+
+    /**
      * Constructor.
      *
      * @param plcd Placed binaries catalog
@@ -49,9 +55,27 @@ final class Unplacing implements Step {
         final Path clsses,
         final Set<String> keepbinaries
     ) {
+        this(plcd, clsses, keepbinaries, WkDefault::new);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param plcd Placed binaries catalog
+     * @param clsses Classes output directory
+     * @param keepbinaries Binaries to keep
+     * @param walker Walks a directory, once per call
+     */
+    Unplacing(
+        final TjsPlaced plcd,
+        final Path clsses,
+        final Set<String> keepbinaries,
+        final Function<Path, Walk> walker
+    ) {
         this.placed = plcd;
         this.classes = clsses;
         this.keep = keepbinaries;
+        this.walks = walker;
     }
 
     @Override
@@ -64,11 +88,11 @@ final class Unplacing implements Step {
     }
 
     private void unplace() {
-        final Walk binaries = new WkDefault(this.classes);
+        final Walk binaries = this.walks.apply(this.classes);
         if (binaries.isEmpty()) {
             Logger.warn(this, "No classes found in %[file]s", this.classes);
         } else {
-            final Collection<Path> available = binaries.excludes(this.keep);
+            final Set<Path> available = new HashSet<>(binaries.excludes(this.keep));
             final int total = new Threaded<>(
                 this.placed.classes(),
                 tojo -> this.unplace(tojo, available)
@@ -95,13 +119,13 @@ final class Unplacing implements Step {
 
     private int unplace(
         final TjPlaced tojo,
-        final Collection<Path> available
+        final Set<Path> available
     ) throws IOException {
         final String related = tojo.related();
         final Path path = Paths.get(tojo.identifier());
         final String hash = new FileHash(path).toString();
         final int total;
-        final boolean inside = available.stream().anyMatch(path::equals);
+        final boolean inside = available.contains(path);
         if (tojo.sameHash(hash)) {
             if (inside) {
                 Logger.debug(
