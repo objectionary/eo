@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import org.cactoos.io.InputOf;
 import org.cactoos.scalar.Unchecked;
@@ -63,6 +64,11 @@ final class Placing implements Step {
     private final boolean rewrite;
 
     /**
+     * Walks a directory, once per call.
+     */
+    private final Function<Path, Walk> walks;
+
+    /**
      * Constructor.
      *
      * @param placedtojos Catalog of placed binaries
@@ -80,12 +86,40 @@ final class Placing implements Step {
         final Set<String> excludebinaries,
         final boolean rewritebinaries
     ) {
+        this(
+            placedtojos, homedir, classesdir,
+            includebinaries, excludebinaries, rewritebinaries,
+            WkDefault::new
+        );
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param placedtojos Catalog of placed binaries
+     * @param homedir Home directory of resolved deps
+     * @param classesdir Output classes directory
+     * @param includebinaries Inclusion GLOB filters
+     * @param excludebinaries Exclusion GLOB filters
+     * @param rewritebinaries Whether to overwrite
+     * @param walker Walks a directory, once per call
+     */
+    Placing(
+        final TjsPlaced placedtojos,
+        final Path homedir,
+        final Path classesdir,
+        final Set<String> includebinaries,
+        final Set<String> excludebinaries,
+        final boolean rewritebinaries,
+        final Function<Path, Walk> walker
+    ) {
         this.placed = placedtojos;
         this.home = homedir;
         this.classes = classesdir;
         this.include = includebinaries;
         this.exclude = excludebinaries;
         this.rewrite = rewritebinaries;
+        this.walks = walker;
     }
 
     @Override
@@ -120,16 +154,19 @@ final class Placing implements Step {
         }
         final Path dir = this.home.resolve(dep);
         final long copied = new Placing.PlacedDependency(dir, dep, this.rewrite).get();
-        if (copied > 0) {
-            Logger.debug(
-                this, "Placed %d binary file(s) out of %d, found in %s, to %[file]s",
-                copied, new WkDefault(dir).size(), dep, this.classes
-            );
-        } else {
-            Logger.debug(
-                this, "No binary file(s) out of %d were placed from %s, to %[file]s",
-                new WkDefault(dir).size(), dep, this.classes
-            );
+        if (Logger.isDebugEnabled(this)) {
+            final int total = this.walks.apply(dir).size();
+            if (copied > 0) {
+                Logger.debug(
+                    this, "Placed %d binary file(s) out of %d, found in %s, to %[file]s",
+                    copied, total, dep, this.classes
+                );
+            } else {
+                Logger.debug(
+                    this, "No binary file(s) out of %d were placed from %s, to %[file]s",
+                    total, dep, this.classes
+                );
+            }
         }
         return copied;
     }
@@ -175,7 +212,7 @@ final class Placing implements Step {
 
         @Override
         public Long get() {
-            return new WkDefault(this.dir)
+            return Placing.this.walks.apply(this.dir)
                 .includes(Placing.this.include)
                 .excludes(Placing.this.exclude)
                 .stream()
@@ -204,9 +241,14 @@ final class Placing implements Step {
         }
 
         private void printLogInfoAboutBinary(final Path file) {
-            final Path target = Placing.this.classes.resolve(
-                this.dir.relativize(file)
-            );
+            if (Logger.isDebugEnabled(this)) {
+                this.logBinary(
+                    file, Placing.this.classes.resolve(this.dir.relativize(file))
+                );
+            }
+        }
+
+        private void logBinary(final Path file, final Path target) {
             final Optional<TjPlaced> tojo = Placing.this.placed.find(target);
             if (tojo.isPresent()) {
                 if (!Files.exists(target)) {
