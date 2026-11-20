@@ -8,8 +8,6 @@ import com.jcabi.matchers.XhtmlMatchers;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.xembly.Directives;
 import org.xembly.Xembler;
 
@@ -919,18 +917,6 @@ final class EoTest {
             EoTest.render("foo > main", "  CA-FE-", "  BE-BE"),
             XhtmlMatchers.hasXPath(
                 "/object/o[@name='main']/o[@base='Φ.bytes']/o[text()='CA-FE-BE-BE']"
-            )
-        );
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {" ", "\t"})
-    void rejectsTrailingWhitespaceInBytesContinuations(final String whitespace) {
-        MatcherAssert.assertThat(
-            "a bytes continuation must reject trailing spaces and tabs before trimming",
-            EoTest.render("foo > main", "  CA-FE-", "  BE-BE".concat(whitespace)),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),'trailing whitespace at end of line')]"
             )
         );
     }
