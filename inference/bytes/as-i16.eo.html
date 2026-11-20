@@ -1,24 +1,112 @@
-<!DOCTYPE HTML><html lang="en"><head><meta charset="UTF-8"><title>bytes/as-i16.eo</title><style>
+<!DOCTYPE HTML><html lang="en"><head><meta charset="utf-8"><title>bytes/as-i16.eo</title><style>
       body { font: 13px/1.5 ui-monospace, Menlo, Consolas, monospace; margin: 2em; color: #1a1a1a; background: #fff; }
       h1 { font-size: 15px; font-weight: 600; margin: 0 0 .8em; }
       a { color: #0645ad; }
-      .tally span { margin-right: 1.4em; padding: .1em .4em; border-radius: 3px; }
+      .tally span { margin-right: 1.4em; padding: .1em .4em; border-radius: 3px; display: inline-block; margin-bottom: .3em; }
       .tally .named { background: #d7f0d7; }
-      .tally .rooted { background: #fbeecc; }
+      .tally .gaps { background: #eef3c2; }
+      .tally .pair { background: #d3eff2; }
+      .tally .mixed { background: #d9e5fb; }
+      .tally .loop { background: #fadce9; }
       .tally .atom { background: #e6dcf5; }
-      .tally .unfilled { background: #dfe6e9; }
-      .tally .blank { background: #f7d4d4; }
+      .tally .study { background: #dfe6e9; }
+      .tally .empty { background: #fbeecc; }
+      .tally .error { background: #efe2dc; }
+      .tally span[data-band] { cursor: pointer; user-select: none; }
+      .tally span.on { box-shadow: 0 0 0 2px #1a1a1a; }
       table.src { border-collapse: collapse; }
       td.no { text-align: right; padding-right: 1em; color: #999; user-select: none; vertical-align: top; }
       td.eo { white-space: pre; }
+      tr.hidden { display: none; }
+      table.src td { transition: background-color .6s; }
+      tr.lit td { background: #fff3b0; transition: none; }
+      tr.cut td { border-top: 1px dashed #ccc; }
       .mark { position: relative; box-shadow: inset 0 -2px 0 currentColor; cursor: help; }
       .mark.named { color: #2e7d32; }
-      .mark.rooted { color: #b26a00; }
+      .mark.gaps { color: #7c8c00; }
+      .mark.pair { color: #00838f; }
+      .mark.mixed { color: #1e5bc6; }
+      .mark.loop { color: #c2185b; }
       .mark.atom { color: #6a3fb5; }
-      .mark.unfilled { color: #546e7a; }
-      .mark.blank { color: #c62828; }
-      .pop { display: none; position: absolute; left: 0; top: 1.6em; z-index: 9; white-space: normal; width: 26em; padding: .6em .8em; background: #fffdf5; color: #1a1a1a; border: 1px solid #ccc; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
-      .mark:hover .pop { display: block; }
+      .mark.study { color: #546e7a; }
+      .mark.empty { color: #b26a00; }
+      .mark.error { color: #795548; }
+      .pop { display: none; position: absolute; left: 0; top: 100%; margin-top: .3em; z-index: 9; white-space: normal; width: 52em; padding: .6em .8em; background: #fffdf5; color: #1a1a1a; border: 1px solid #ccc; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
+      .pop::before { content: ""; position: absolute; left: -1px; right: -1px; bottom: 100%; height: calc(.3em + 1px); }
+      .mark:hover .pop, .mark.held .pop { display: block; }
+      .mark.off { color: inherit; box-shadow: none; cursor: auto; }
+      .mark.off:hover .pop { display: none; }
       .said { display: block; }
+      .said code.tree { display: block; white-space: pre-wrap; }
+      .item { display: list-item; list-style: disc; margin-left: 1.2em; }
       code { background: #f2f2f2; padding: 0 .2em; }
-    </style></head><body><h1><a href="../index.html">all files</a> / bytes/as-i16.eo</h1><p class="tally"><span class="named">31 named</span><span class="rooted">3 rooted at a void</span><span class="atom">0 filled by an atom</span><span class="unfilled">2 filled by nobody</span><span class="blank">0 nothing known</span></p><table class="src"><tr><td class="no">1</td><td class="eo"># Bytes as a signed 16-bit integer `i16`: a 2-byte chain reinterpreted</td></tr><tr><td class="no">2</td><td class="eo"># as two's complement. For any other length the `cant-convert` fallback</td></tr><tr><td class="no">3</td><td class="eo"># is returned.</td></tr><tr><td class="no">4</td><td class="eo"></td></tr><tr><td class="no">5</td><td class="eo">+architect yegor256@gmail.com</td></tr><tr><td class="no">6</td><td class="eo">+home https://github.com/objectionary/eo</td></tr><tr><td class="no">7</td><td class="eo">+package bytes</td></tr><tr><td class="no">8</td><td class="eo">+spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com</td></tr><tr><td class="no">9</td><td class="eo">+spdx SPDX-License-Identifier: MIT</td></tr><tr><td class="no">10</td><td class="eo">+version 0.0.0</td></tr><tr><td class="no">11</td><td class="eo"></td></tr><tr><td class="no">12</td><td class="eo">[<span class="mark named">^<span class="pop"><span class="said"><b>what it is dispatched on (ρ)</b>: <code>Φ.bytes</code></span></span></span> <span class="mark unfilled">cant-convert<span class="pop"><span class="said"><b>cant-convert</b>: void, filled by nobody</span></span></span>] &gt; <span class="mark named">as-i16<span class="pop"><span class="said"><b>as-i16</b>: <code>Φ.bytes.as-i16</code></span></span></span></td></tr><tr><td class="no">13</td><td class="eo">  <span class="mark rooted">if<span class="pop"><span class="said"><b>what it decorates to (φ)</b>: <code>Φ.bool.if</code>, seen <code>Φ.false.φ.α0</code>, <code>Φ.true.φ.α0</code></span></span></span>. &gt; @</td></tr><tr><td class="no">14</td><td class="eo">    <span class="mark named">^<span class="pop"><span class="said"><b>what it is dispatched on (ρ)</b>: <code>Φ.bytes</code></span></span></span><span class="mark named">.size<span class="pop"><span class="said"><b>what it is dispatched on (ρ)</b>: <code>Φ.number</code></span></span></span><span class="mark named">.eq<span class="pop"><span class="said"><b>what it is dispatched on (ρ)</b>: <code>Φ.bool</code></span></span></span> <span class="mark named">2<span class="pop"><span class="said"><b>argument 0</b>: <code>Φ.number</code></span><span class="said"><b>argument 0</b>: <code>Φ.bytes</code></span></span></span></td></tr><tr><td class="no">15</td><td class="eo">    <span class="mark named">i16<span class="pop"><span class="said"><b>argument 0</b>: <code>Φ.i16</code></span></span></span> <span class="mark named">^<span class="pop"><span class="said"><b>argument 0</b>: <code>Φ.bytes</code></span></span></span></td></tr><tr><td class="no">16</td><td class="eo">    <span class="mark unfilled">cant-convert<span class="pop"><span class="said"><b>argument 1</b>: <code>Φ.bytes.as-i16.cant-convert</code>, filled by nobody</span></span></span></td></tr><tr><td class="no">17</td><td class="eo">      <span class="mark named">"Can't convert non 2 length bytes to i16, bytes are %x"<span class="pop"><span class="said"><b>what it is dispatched on (ρ)</b>: <code>Φ.string</code></span><span class="said"><b>argument 0</b>: <code>Φ.bytes</code></span></span></span><span class="mark named">.printf<span class="pop"><span class="said"><b>argument 0</b>: <code>Φ.string</code></span></span></span></td></tr><tr><td class="no">18</td><td class="eo">        <span class="mark named">*<span class="pop"><span class="said"><b>argument 0</b>: <code>Φ.tuple</code></span><span class="said"><b>argument 0</b>: <code>Φ.tuple</code></span><span class="said"><b>argument 2</b>: <code>Φ.number</code></span><span class="said"><b>argument 0</b>: <code>Φ.bytes</code></span><span class="said"><b>what it is dispatched on (ρ)</b>: <code>Φ.tuple</code></span></span></span> <span class="mark named">^<span class="pop"><span class="said"><b>argument 1</b>: <code>Φ.bytes</code></span></span></span></td></tr><tr><td class="no">19</td><td class="eo"></td></tr><tr><td class="no">20</td><td class="eo">  <span class="mark named">00-33<span class="pop"><span class="said"><b>p🌵can-convert-bytes-to-i16-and-back</b>: <code>Φ.bytes.as-i16.p🌵can-convert-bytes-to-i16-and-back</code></span><span class="said"><b>what it is dispatched on (ρ)</b>: <code>Φ.bytes</code></span></span></span><span class="mark named">.as-i16<span class="pop"><span class="said"><b>what it is dispatched on (ρ)</b>: <code>Φ.bytes.as-i16</code></span></span></span><span class="mark rooted">.as-bytes<span class="pop"><span class="said"><b>what it is dispatched on (ρ)</b>: <code>Φ.bool.if.as-bytes</code>, seen <code>Φ.false.φ.α0</code>, <code>Φ.true.φ.α0</code></span></span></span><span class="mark rooted">.eq<span class="pop"><span class="said"><b>what it decorates to (φ)</b>: <code>Φ.bool.if.as-bytes.eq</code>, seen <code>Φ.false.φ.α0</code>, <code>Φ.true.φ.α0</code></span></span></span> <span class="mark named">00-33<span class="pop"><span class="said"><b>argument 0</b>: <code>Φ.bytes</code></span></span></span> ++&gt; can-convert-bytes-to-i16-and-back</td></tr><tr><td class="no">21</td><td class="eo"></td></tr><tr><td class="no">22</td><td class="eo">  <span class="mark named">01-01-01<span class="pop"><span class="said"><b>n🌵stops-on-bytes-of-wrong-size-when-converting-to-i16</b>: <code>Φ.bytes.as-i16</code></span><span class="said"><b>what it is dispatched on (ρ)</b>: <code>Φ.bytes</code></span></span></span><span class="mark named">.as-i16<span class="pop"><span class="said"><b>what it decorates to (φ)</b>: <code>Φ.bytes.as-i16</code></span></span></span> --&gt; stops-on-bytes-of-wrong-size-when-converting-to-i16</td></tr></table></body></html>
+      .hid { color: #888; font-style: italic; }
+    </style></head><body><h1><a href="../index.html">all files</a> / bytes/as-i16.eo</h1><p class="tally" title="Click colours to show only their objects, with five lines around each; click a chosen colour again to drop it"><span class="named" data-band="named">71 named</span><span class="gaps" data-band="gaps">10 one name, with gaps</span><span class="pair" data-band="pair">0 two names</span><span class="mixed" data-band="mixed">0 two or more names, maybe with gaps</span><span class="loop" data-band="loop">0 unknown, nothing ever answers</span><span class="atom" data-band="atom">0 unknown, filled by an atom</span><span class="study" data-band="study">0 unknown, nobody calls this object</span><span class="empty" data-band="empty">0 unknown, filled by nobody</span><span class="error" data-band="error">1 only an error</span></p><table class="src"><tr id="L1"><td class="no">1</td><td class="eo"># Bytes as a signed 16-bit integer `i16`: a 2-byte chain reinterpreted</td></tr><tr id="L2"><td class="no">2</td><td class="eo"># as two's complement. For any other length the `cant-convert` fallback</td></tr><tr id="L3"><td class="no">3</td><td class="eo"># takes an error message. When unbound, it terminates with that message.</td></tr><tr id="L4"><td class="no">4</td><td class="eo"></td></tr><tr id="L5"><td class="no">5</td><td class="eo">+architect yegor256@gmail.com</td></tr><tr id="L6"><td class="no">6</td><td class="eo">+home https://github.com/objectionary/eo</td></tr><tr id="L7"><td class="no">7</td><td class="eo">+package bytes</td></tr><tr id="L8"><td class="no">8</td><td class="eo">+spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com</td></tr><tr id="L9"><td class="no">9</td><td class="eo">+spdx SPDX-License-Identifier: MIT</td></tr><tr id="L10"><td class="no">10</td><td class="eo">+unlint invalid-name-notation</td></tr><tr id="L11"><td class="no">11</td><td class="eo">+version 0.0.0</td></tr><tr id="L12"><td class="no">12</td><td class="eo"></td></tr><tr id="L13"><td class="no">13</td><td class="eo">[<span class="mark named" data-band="named">^<span class="pop"><span class="said"><code>Φ.bytes</code> (all 14 copies)</span></span></span>data <span class="mark gaps" data-band="gaps">cant-convert<span class="pop"><span class="said"><span class="item">unknown, filled by nobody (12 of 14 copies)</span><span class="item">an error (T) (1 of 14 copies)</span><span class="item"><code>[∅] → Φ.i16</code>, written at line <a href="#L30" title="Φ.bytes.as-i16.p🌵can-recover-from-bytes-of-wrong-size-when-converting-to-i16.φ.α0.α0">30</a> (1 of 14 copies)</span></span></span></span>] &gt; <span class="mark named" data-band="named">as-i16<span class="pop"><span class="said"><code>Φ.bytes.as-i16</code> (all 14 copies)</span></span></span></td></tr><tr id="L14"><td class="no">14</td><td class="eo">  <span class="mark gaps" data-band="gaps">if<span class="pop"><span class="said"><span class="item"><code>Φ.i16</code> (all 14 copies)</span><span class="item">an error (T) (13 of 14 copies)</span></span></span></span>. &gt; @</td></tr><tr id="L15"><td class="no">15</td><td class="eo">    <span class="mark named" data-band="named">data<span class="pop"><span class="said"><code>Φ.bytes</code> (all 14 copies)</span></span></span><span class="mark named" data-band="named">.size<span class="pop"><span class="said"><code>Φ.number</code> (all 14 copies)</span></span></span><span class="mark named" data-band="named">.eq<span class="pop"><span class="said"><code>Φ.bool</code> (all 14 copies)</span></span></span> <span class="mark named" data-band="named">2<span class="pop"><span class="said"><code>Φ.number</code> (all 14 copies)</span></span></span></td></tr><tr id="L16"><td class="no">16</td><td class="eo">    <span class="mark named" data-band="named">i16<span class="pop"><span class="said"><code>Φ.i16</code> (all 14 copies)</span></span></span> <span class="mark named" data-band="named">data<span class="pop"><span class="said"><code>Φ.bytes</code> (all 14 copies)</span></span></span></td></tr><tr id="L17"><td class="no">17</td><td class="eo">    <span class="mark gaps" data-band="gaps">cant-convert<span class="pop"><span class="said"><span class="item">an error (T) (13 of 14 copies)</span><span class="item"><code>Φ.i16</code> (1 of 14 copies)</span></span></span></span></td></tr><tr id="L18"><td class="no">18</td><td class="eo">      <span class="mark named" data-band="named">"Can't convert non 2 length bytes to i16, bytes are %x"<span class="pop"><span class="said"><code>Φ.string</code> (all 14 copies)</span></span></span><span class="mark named" data-band="named">.printf<span class="pop"><span class="said"><code>Φ.string</code> (all 14 copies)</span></span></span></td></tr><tr id="L19"><td class="no">19</td><td class="eo">        <span class="mark named" data-band="named">*<span class="pop"><span class="said"><code>Φ.tuple</code> (all 14 copies)</span></span></span> <span class="mark named" data-band="named">data<span class="pop"><span class="said"><code>Φ.bytes</code> (all 14 copies)</span></span></span></td></tr><tr id="L20"><td class="no">20</td><td class="eo"></td></tr><tr id="L21"><td class="no">21</td><td class="eo">  <span class="mark named" data-band="named">00-33<span class="pop"><span class="said"><code>Φ.bytes.as-i16.p🌵can-convert-bytes-to-i16-and-back</code></span></span></span><span class="mark gaps" data-band="gaps">.as-i16<span class="pop"><span class="said"><span class="item">an error (T)</span><span class="item"><code>Φ.i16</code></span></span></span></span><span class="mark gaps" data-band="gaps">.as-bytes<span class="pop"><span class="said"><span class="item">an error (T)</span><span class="item"><code>Φ.bytes</code></span></span></span></span><span class="mark gaps" data-band="gaps">.eq<span class="pop"><span class="said"><span class="item">an error (T)</span><span class="item"><code>Φ.bool</code></span></span></span></span> <span class="mark named" data-band="named">00-33<span class="pop"><span class="said"><code>Φ.bytes</code></span></span></span> ++&gt; can-convert-bytes-to-i16-and-back</td></tr><tr id="L22"><td class="no">22</td><td class="eo"></td></tr><tr id="L23"><td class="no">23</td><td class="eo">  <span class="mark gaps" data-band="gaps">eq<span class="pop"><span class="said"><span class="item">an error (T)</span><span class="item"><code>Φ.bool</code></span></span></span></span>. ++&gt; can-convert-bytes-to-i16-with-a-terminator-for-the-error</td></tr><tr id="L24"><td class="no">24</td><td class="eo">    <span class="mark named" data-band="named">00-2A<span class="pop"><span class="said"><code>Φ.bytes</code></span></span></span><span class="mark gaps" data-band="gaps">.as-i16<span class="pop"><span class="said"><span class="item">an error (T)</span><span class="item"><code>Φ.i16</code></span></span></span></span> <span class="mark error" data-band="error">T<span class="pop"><span class="said">an error (T)</span></span></span></td></tr><tr id="L25"><td class="no">25</td><td class="eo">    <span class="mark named" data-band="named">i16<span class="pop"><span class="said"><code>Φ.i16</code></span></span></span> <span class="mark named" data-band="named">00-2A<span class="pop"><span class="said"><code>Φ.bytes</code></span></span></span></td></tr><tr id="L26"><td class="no">26</td><td class="eo"></td></tr><tr id="L27"><td class="no">27</td><td class="eo">  <span class="mark gaps" data-band="gaps">eq<span class="pop"><span class="said"><span class="item">an error (T)</span><span class="item"><code>Φ.bool</code></span></span></span></span>. ++&gt; can-recover-from-bytes-of-wrong-size-when-converting-to-i16</td></tr><tr id="L28"><td class="no">28</td><td class="eo">    <span class="mark named" data-band="named">i16<span class="pop"><span class="said"><code>Φ.i16</code></span></span></span> <span class="mark named" data-band="named">7F-3C<span class="pop"><span class="said"><code>Φ.bytes</code></span></span></span></td></tr><tr id="L29"><td class="no">29</td><td class="eo">    <span class="mark named" data-band="named">C8-<span class="pop"><span class="said"><code>Φ.bytes</code></span></span></span><span class="mark named" data-band="named">.as-i16<span class="pop"><span class="said"><code>Φ.i16</code></span></span></span></td></tr><tr id="L30"><td class="no">30</td><td class="eo">      <span class="mark named" data-band="named">i16<span class="pop"><span class="said"><code>Φ.i16</code></span></span></span> <span class="mark named" data-band="named">7F-3C<span class="pop"><span class="said"><code>Φ.bytes</code></span></span></span> &gt; <span class="mark named" data-band="named">[<span class="pop"><span class="said"><code>Φ.bytes.as-i16.p🌵can-recover-from-bytes-of-wrong-size-when-converting-to-i16.φ.α0.α0</code></span></span></span><span class="mark named" data-band="named">message<span class="pop"><span class="said"><code>Φ.string</code></span></span></span>]</td></tr><tr id="L31"><td class="no">31</td><td class="eo"></td></tr><tr id="L32"><td class="no">32</td><td class="eo">  <span class="mark named" data-band="named">01-01-01<span class="pop"><span class="said"><code>Φ.bytes.as-i16.n🌵stops-on-bytes-of-wrong-size-when-converting-to-i16</code></span></span></span><span class="mark gaps" data-band="gaps">.as-i16<span class="pop"><span class="said"><span class="item">an error (T)</span><span class="item"><code>Φ.i16</code></span></span></span></span> --&gt; stops-on-bytes-of-wrong-size-when-converting-to-i16</td></tr></table><script>
+      (function () {
+        var chips = Array.from(document.querySelectorAll('.tally span[data-band]'));
+        var marks = Array.from(document.querySelectorAll('.mark'));
+        var lines = Array.from(document.querySelectorAll('table.src tr'));
+        var around = 5;
+        function shown() {
+          var picked = chips.filter(function (chip) { return chip.classList.contains('on'); }).map(function (chip) { return chip.dataset.band; });
+          marks.forEach(function (mark) {
+            mark.classList.toggle('off', picked.length > 0 ? picked.indexOf(mark.dataset.band) === -1 : false);
+          });
+          var marked = lines.map(function (line) { return line.querySelector('.mark:not(.off)') !== null; });
+          var previous = -1;
+          lines.forEach(function (line, at) {
+            var kept = picked.length === 0 || marked.slice(Math.max(0, at - around), at + around + 1).indexOf(true) !== -1;
+            line.classList.toggle('hidden', !kept);
+            line.classList.toggle('cut', kept && previous >= 0 && at > previous + 1);
+            if (kept) { previous = at; }
+          });
+          try { localStorage.setItem('bands', picked.join(' ')); } catch (ignored) {}
+        }
+        var saved = '';
+        try { saved = localStorage.getItem('bands') || ''; } catch (ignored) {}
+        chips.forEach(function (chip) {
+          chip.classList.toggle('on', saved.split(' ').indexOf(chip.dataset.band) !== -1);
+          chip.addEventListener('click', function () { chip.classList.toggle('on'); shown(); });
+        });
+        shown();
+      })();
+    </script><script>
+      (function () {
+        var held = null;
+        function release() {
+          if (held !== null) { held.classList.remove('held'); held = null; }
+        }
+        document.addEventListener('mousedown', function (event) {
+          var pop = event.target.closest('.pop');
+          release();
+          if (pop !== null) { held = pop.parentNode; held.classList.add('held'); }
+        });
+        document.addEventListener('mouseup', function () {
+          if (held !== null && String(window.getSelection()) === '') { release(); }
+        });
+        document.addEventListener('keydown', function (event) {
+          if (event.key === 'Escape') { release(); }
+        });
+      })();
+    </script><script>
+      (function () {
+        var lit = null;
+        function dim() {
+          if (lit !== null) { lit.classList.remove('lit'); lit = null; }
+        }
+        function light() {
+          dim();
+          lit = location.hash === '' ? null : document.getElementById(location.hash.slice(1));
+          if (lit !== null) { lit.classList.add('lit'); }
+        }
+        ['wheel', 'touchmove', 'keydown', 'mousedown'].forEach(function (name) {
+          document.addEventListener(name, dim, { passive: true });
+        });
+        document.addEventListener('click', function (event) {
+          var link = event.target.closest('a');
+          if (link !== null && link.hash === location.hash && link.pathname === location.pathname) { light(); }
+        });
+        window.addEventListener('hashchange', light);
+        light();
+      })();
+    </script></body></html>
