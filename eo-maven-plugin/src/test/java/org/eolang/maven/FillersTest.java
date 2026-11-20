@@ -30,6 +30,10 @@ import org.junit.jupiter.api.Test;
  * argument, the one in {@code cant}, is a terminator at {@code Φ.app.t}, a
  * copy of {@code fix} at {@code Φ.app.f}, and unknown anywhere else.</p>
  *
+ * <p>Other cases are about {@code [a b] > pair}, copied by one call at
+ * {@code Φ.app.c}, whose argument in {@code a} asks twice what {@code b}
+ * holds, while the argument in {@code b} leans on {@code a}.</p>
+ *
  * @since 0.76.0
  */
 final class FillersTest {
@@ -141,14 +145,6 @@ final class FillersTest {
         );
     }
 
-    /**
-     * Fillers of {@code [a b] > pair}, copied by one call at {@code Φ.app.c},
-     * whose argument in {@code a} asks twice what {@code b} holds, while
-     * {@code b} leans on {@code a}.
-     *
-     * @param shaped How many times the argument in {@code b} is looked up
-     * @return The fillers
-     */
     private static Fillers chain(final AtomicInteger shaped) {
         final AtomicReference<Fillers> self = new AtomicReference<>();
         final Fillers fillers = FillersTest.pair(

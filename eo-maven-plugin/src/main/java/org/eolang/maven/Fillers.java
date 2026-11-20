@@ -194,18 +194,12 @@ final class Fillers {
      * still open. Then it can't be remembered for good, but it is kept
      * together with the situation it was found in, as {@link Situation} says,
      * and given back when asked for again in the same situation, instead of
-     * being worked out again (#10020). The situation is the same when three
-     * things are the same as they were:</p>
-     *
-     * <ul>
-     *   <li>every open void it leaned on is still open, with the same
-     *   guess;</li>
-     *   <li>no void it opened itself is open now, since then the work would
-     *   take the guess of that void instead of working it out;</li>
-     *   <li>no void it opened itself is known for good now, since then the
-     *   work would take what it holds for good instead of working it
-     *   out.</li>
-     * </ul>
+     * being worked out again (#10020). The situation is the same when every
+     * open void it leaned on is still open with the same guess, and no void
+     * it opened itself is open now, or known for good now. If such a void
+     * were open, the work would take its guess, and if it were known for
+     * good, the work would take what it holds, instead of working it out as
+     * it did the first time.</p>
      *
      * <p>Nothing else is read by the work, since what is known for good never
      * changes, so in the same situation it finds the same copy. The voids

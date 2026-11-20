@@ -197,13 +197,6 @@ final class Guesses {
         return places.stream().anyMatch(this.held::containsKey);
     }
 
-    /**
-     * Run a lookup and collect the open voids it ran into and the voids it
-     * opened, passing both on to the lookup around it.
-     *
-     * @param lookup The lookup
-     * @return What it found, the voids it ran into, and the voids it opened
-     */
     private Map.Entry<Optional<Copy>, Map.Entry<Set<String>, Set<String>>> framed(
         final Supplier<Optional<Copy>> lookup
     ) {
