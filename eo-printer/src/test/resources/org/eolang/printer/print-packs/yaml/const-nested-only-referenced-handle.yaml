@@ -1,14 +1,12 @@
 # SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 # SPDX-License-Identifier: MIT
 ---
-# yamllint disable rule:line-length
 # A const file-local handle (`a >> b!`, #5817) whose only reference lives inside
-# a nested `>>` formation body. The reference climbs to it as `ξ.ρ.<name>`, which
-# resolves to the same auto-name, so it counts as a single use and the const
-# folds onto it as the anonymous inline argument `b.size!` (#5821). What broke
-# was the formation around it: nothing references `slice-byte`, so
-# "inline-cactoos" dropped that binding and the const's only reference went with
-# it, leaving a bare `[b] > array` with both declarations gone (#5914).
+# a nested `>>` formation body. Folding the const into that reference would move
+# its dataization into the nested formation, where it runs again in every copy
+# of it, so the const stays standing in its owner (#9122). Nothing references
+# `slice-byte` either, and it is kept as well, so neither declaration vanishes
+# (#5914).
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -24,4 +22,5 @@ origin: |
 
 printed: |
   [b] > array
-    index.lt ^.b.size! > [index] >> slice-byte
+    b.size >> len!
+    index.lt len > [index] >> slice-byte

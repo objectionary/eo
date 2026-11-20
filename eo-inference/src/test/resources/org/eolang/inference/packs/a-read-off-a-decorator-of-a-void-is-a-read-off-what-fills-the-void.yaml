@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# book is nothing but a @ that gives its pages, so book leaf is a leaf, and
+# mine.size is the size of leaf.
+sources:
+  book.eo: |
+    [pages] > book
+      pages > @
+  leaf.eo: |
+    [] > leaf
+      [] > size
+  app.eo: |
+    [] > app
+      book leaf > mine
+      mine.size > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.book.φ']/is[@loc='Φ.leaf']
+  - /answers/o[@loc='Φ.app.mine']/is[@loc='Φ.leaf']
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.leaf']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.leaf.size']

@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   site:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-java@v6
@@ -32,12 +32,12 @@ jobs:
       - run: mvn clean site -Psite
   telegram:
     needs: site
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     if: ${{ always() }}
     permissions:
       actions: read
     steps:
-      - uses: yegor256/terald-action@a0ef862a24f962a4258fd9390d0a67b5529f0eef  # master
+      - uses: yegor256/terald-action@0.1.0
         with:
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          chat: -1004371404002
+          chat: ${{ secrets.TELEGRAM_CHAT }}

@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs eo" id="inline-cactoos" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs eo" id="inline-cactoos" version="3.0">
   <!--
   Converts such EO code:
   [] > foo
@@ -77,8 +77,8 @@
   handle in the chain. Each hop follows a `@base` that resolves to another
   auto-named handle, the current handle carrying no arguments of its own, and
   stops at the first handle whose `@base` is not such a reference (the one that
-  holds the real value), or at one carrying its own children, an abstract
-  formation or a void — none of which is a transparent alias. A target that is
+  holds the real value), or at one carrying its own children or an abstract
+  formation, since neither is a transparent alias. A target that is
   not an alias resolves to itself. Without this the alias's own `@base` is copied
   to the use site verbatim while the drop template removes the handle it names,
   stranding a dangling `Φ.v..` (#6004). The chain travelled so far comes along in
@@ -91,15 +91,14 @@
     <xsl:param name="target" as="element()"/>
     <xsl:param name="seen" as="element()*"/>
     <xsl:variable name="inner" select="$target/ancestor::o/o[@name=eo:resolved-name($target/@base)][1]"/>
-    <xsl:sequence select="if (contains($target/@base, $auto-dot) and not($target/o) and exists($inner) and not(eo:void($inner)) and not(eo:abstract($inner)) and (every $node in $seen satisfies not($inner is $node))) then eo:alias-target($inner, ($seen, $target)) else $target"/>
+    <xsl:sequence select="if (contains($target/@base, $auto-dot) and not($target/o) and exists($inner) and not(eo:abstract($inner)) and (every $node in $seen satisfies not($inner is $node))) then eo:alias-target($inner, ($seen, $target)) else $target"/>
   </xsl:function>
   <!--
-  Inline a reference to an auto-named abstract. A `? >> name` void
-  (R-3.4.7 / R-3.10.12) also has a cactus name, so a reference that
-  resolves to a void (or to nothing) is left untouched. A recursive
-  helper (`? >> rec` whose body calls `rec` again) compiles to an
-  auto-named abstract that references its own name; inlining it would
-  copy that self-reference back in and fire this template forever, so
+  Inline a reference to an auto-named abstract. A reference that resolves
+  to nothing is left untouched. A recursive helper (`[x] >> rec` whose
+  body calls `rec` again) compiles to an auto-named abstract that
+  references its own name; inlining it would copy that self-reference
+  back in and fire this template forever, so
   such a target is also left untouched (both the reference and the
   abstraction stay in place). A target that is rebuilt at every site it lands
   in (see `eo:rebuilt`) and reached from more than one site is likewise left
@@ -116,7 +115,10 @@
   onto the first reference. A const
   whose value reaches another auto-name is kept for a third reason (#5910):
   the folded value can only be laid out vertically, which the anonymous inline
-  const argument cannot spell (see "eo:vertical-const" below).
+  const argument cannot spell (see "eo:vertical-const" below). A const read
+  from inside a deeper formation is kept for a fourth (#9122): folded there, it
+  is dataized again in every copy of that formation, while its `!` promises a
+  single dataization in its owner (see "eo:nested-const" below).
 
   The inlined value keeps the target's obfuscated cactus `@name` only when
   the name is still meaningful downstream: an abstract formation, whose name
@@ -138,7 +140,7 @@
     <xsl:variable name="target" select="ancestor::o/o[@name=$name][1]"/>
     <xsl:variable name="keep-name" as="xs:boolean" select="exists($target) and (eo:abstract($target) or ($target/@base = '.as-bytes' and $target/o[1]/@base = 'Φ.dataized' and eo:abstract($target/o[1]/o[1])))"/>
     <xsl:choose>
-      <xsl:when test="exists($target) and not(eo:void($target)) and not(eo:recursive($target, $name)) and not(eo:vertical-const($target)) and not(eo:multi-referenced($target, $name) and eo:rebuilt($target)) and not(eo:reapplied($target, $name))">
+      <xsl:when test="exists($target) and not(eo:recursive($target, $name)) and not(eo:vertical-const($target)) and not(eo:nested-const($target, $name)) and not(eo:multi-referenced($target, $name) and eo:rebuilt($target)) and not(eo:reapplied($target, $name))">
         <xsl:choose>
           <!--
           The reference is the base of an application — it carries its own
@@ -272,6 +274,19 @@
                 <xsl:apply-templates select="@as"/>
               </xsl:if>
               <!--
+              The folded handle applies the formation standing right above it
+              (`n0 42 &gt;&gt; n3` under `[b] &gt;&gt; n0`), and this reference
+              stands right below the handle, so once the handle is gone the
+              application lands directly under the formation. The formation is
+              kept there as the anonymous `[b] &gt;&gt;` (see `eo:piped`), so the
+              application must read it as a `| 42` pipe, the same way a
+              hand-written `n0 42 &gt; @` does; without the marker it is printed
+              against the cactus name, as a "vL_P" nothing declares (#9167).
+              -->
+              <xsl:if test="not(starts-with(@as, $eo:alpha)) and exists($value/o) and preceding-sibling::o[1] is $target and exists($target/preceding-sibling::o[1][eo:piped(., eo:resolved-name($value/@base))])">
+                <xsl:attribute name="pipe"/>
+              </xsl:if>
+              <!--
               The reference carries a binding name of its own and the target
               contributes none — a based `a &gt;&gt; b` handle is neither an
               abstract formation nor a dataized const, so `$keep-name` is false
@@ -288,6 +303,21 @@
               -->
               <xsl:if test="@name and not($keep-name)">
                 <xsl:apply-templates select="@name"/>
+              </xsl:if>
+              <!--
+              The reference carries a `&gt;&gt;` handle name of its own, marked
+              `@local` by "restore-local-names". A const handle over an alias
+              (`h &gt;&gt;! g` over `foo &gt;&gt; h`) puts that mark on the
+              argument inside `Φ.dataized`, which is this reference, so folding
+              `h` here dropped it with the rest of the reference's attributes
+              and "dataized-to-const" had no name left to print: the const came
+              out anonymous and its reader was stranded on a synthetic "v5_2"
+              nothing declares (#9296). The mark is carried over for the same
+              reason the name above is, and under the same guard: a target that
+              keeps a name of its own already brings its own `@local` along.
+              -->
+              <xsl:if test="@local and not($keep-name)">
+                <xsl:apply-templates select="@local"/>
               </xsl:if>
               <!--
               The folded value is rebased as a whole `o` and then unwrapped
@@ -345,13 +375,15 @@
     </xsl:choose>
   </xsl:template>
   <!--
-  Drop an inlined auto-named abstract; keep cactus-named voids, keep
-  self-referential (recursive) abstracts, which are never inlined, keep a
-  binding no reference reaches at all (#5914), keep a multi-referenced binding
+  Drop an inlined auto-named abstract; keep self-referential (recursive)
+  abstracts, which are never inlined, keep a binding no reference reaches
+  at all (#5914), keep a multi-referenced binding
   that is rebuilt at every site — a dataized-const handle (#5828), an abstract
   formation (#5876) or an application (#5956) — which is never
   inlined, keep a const that only a vertical layout can spell,
-  which is never inlined either (#5910), keep a formation applied through a
+  which is never inlined either (#5910), keep a const read from inside a deeper
+  formation (see `eo:nested-const`), which a fold would dataize again in every
+  copy of that formation (#9122), keep a formation applied through a
   `@pipe` continuation, which is kept in place above its pipe rather than
   inlined (#5834), keep a single-use formation reached through a positional
   argument (see `eo:arg-applied`), which is left standing rather than relocated
@@ -373,16 +405,16 @@
   reads yet would silently vanish (#5914).
 
   The handle name is atomised once here, for the reason spelled out on
-  `eo:resolved-name` above (#6669). Each of the nine questions below declares its
+  `eo:resolved-name` above (#6669). Each of the ten questions below declares its
   `$name` as `xs:string`, and this template is the only place that answered them
   with the `@name` attribute node rather than its string value — every other
   caller passes the `$name` variable of the inlining template, itself the string
   returned by `eo:resolved-name`. Handing over the node is what let a
   `DOMNodeWrapper` reach the `ValueComparison` inside `eo:references` and crash
   the whole sheet. The match pattern requires `@name`, so the string is always
-  the name the nine were asked about before.
+  the name the ten were asked about before.
   -->
-  <xsl:template match="o[starts-with(@name, $auto) and not(eo:void(.))]" priority="1">
+  <xsl:template match="o[starts-with(@name, $auto)]" priority="1">
     <xsl:variable name="name" as="xs:string" select="string(@name)"/>
     <xsl:if test="eo:kept-binding(., $name)">
       <!--
@@ -390,25 +422,39 @@
       another based handle (`p >> r` over `E0- >> p`, #7297) — a
       transparent alias exactly like the one `eo:alias-target` resolves
       for an ordinary reference above. When the aliased handle is not
-      itself kept (none of the same nine conditions apply to it), the
+      itself kept (none of the same ten conditions apply to it), the
       priority-0 template above never runs for it either — it never
       matches this element, whose higher-priority binding-drop match
       wins — so its binding vanishes and a naive verbatim copy would
       leave this node's `@base` pointing at nothing, printed as an
       orphaned synthetic name (#7297). Resolve the alias chain here too,
-      landing the real value directly, and skip this for an abstract or
-      void alias target, whose own name (or const layout) still matters
+      landing the real value directly, and skip this for an abstract
+      alias target, whose own name (or const layout) still matters
       and is handled by the ordinary reference path instead.
       -->
       <xsl:variable name="ref-name" select="if (contains(@base, $auto-dot)) then eo:resolved-name(@base) else ()"/>
       <xsl:variable name="ref-target" select="if (exists($ref-name)) then ancestor::o/o[@name=$ref-name][1] else ()"/>
       <xsl:choose>
-        <xsl:when test="exists($ref-target) and not(eo:void($ref-target)) and not(eo:abstract($ref-target)) and not(eo:kept-binding($ref-target, $ref-name))">
+        <xsl:when test="exists($ref-target) and not(eo:abstract($ref-target)) and not(eo:kept-binding($ref-target, $ref-name))">
           <xsl:variable name="alias" select="eo:alias-target($ref-target, ())"/>
           <xsl:copy>
             <xsl:apply-templates select="@*[name() != 'base']"/>
             <xsl:attribute name="base" select="$alias/@base"/>
             <xsl:apply-templates select="$alias/node()"/>
+            <!--
+            This binding applies the alias to arguments of its own
+            (`h 5 &gt;&gt; g` over `foo &gt;&gt; h`), so landing the alias
+            value alone hands `g` the (empty) argument list of `h` and the
+            `5` is gone, printed as `foo &gt;&gt; g` (#9294) — the kept-handle
+            flavour of the loss #5952 fixed on the reference path above. The
+            binding's own `o` children follow the alias's so the arguments
+            survive as `foo 5 &gt;&gt; g`. Guarded the same way: an alias that
+            is already applied has no inline spelling as the head of another
+            application and is kept standing instead (see `eo:reapplied`).
+            -->
+            <xsl:if test="not($alias/o)">
+              <xsl:apply-templates select="o"/>
+            </xsl:if>
           </xsl:copy>
         </xsl:when>
         <xsl:otherwise>
@@ -470,6 +516,22 @@
   <xsl:function name="eo:vertical-const" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:sequence select="eo:dataized-const($target) and not(eo:abstract($target/o[1]/o[1])) and exists($target//o[contains(@base, $auto-dot)])"/>
+  </xsl:function>
+  <!--
+  Whether the dataized-const `$target` is read by a reference that sits inside a
+  formation deeper than the one owning the const. Such a const is dataized once,
+  in its owner, and every reader shares that one result. Folded into the deeper
+  reference, the dataization moves into the nested formation and runs again in
+  every copy of it, so a recursive helper dataizes the const at every step
+  (#9122). Such a const is kept as its own named binding instead, the same
+  carve-out the multi-referenced const gets (#5828), and "merge-monikers" later
+  rewrites the reference back to its handle, as it does for a multi-referenced
+  one (#5893, #5917).
+  -->
+  <xsl:function name="eo:nested-const" as="xs:boolean">
+    <xsl:param name="target" as="element()"/>
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:sequence select="eo:dataized-const($target) and (some $ref in eo:references($target, $name) satisfies eo:host-drop($target, $ref) &gt; 0)"/>
   </xsl:function>
   <!--
   Whether the auto-named abstract formation `$target` is immediately followed
@@ -549,23 +611,29 @@
   than folded (#5952). Restricted to based handles: an abstract formation
   becomes a `| args` pipe (see the two abstract branches above), and a bare or
   argument-less based handle (`a.plus &gt;&gt; b`) carries no children of its
-  own, so appending the reference's arguments applies it cleanly.
+  own, so appending the reference's arguments applies it cleanly. A
+  dataized-const handle (`foo &gt;&gt;! h`, R-3.10.12) counts here too: its
+  children are the `&#934;.dataized` wrapper rather than arguments, yet the fold
+  reads them the same way and appends nothing, so `h 5 &gt; g` printed as
+  `foo &gt; g!` and the `5` was gone (#9295). Such a const has no inline
+  spelling as the head of an application either — the fold would have to dataize
+  the value and apply the result in one breath — so it is left standing as well.
   -->
   <xsl:function name="eo:reapplied" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string"/>
-    <xsl:sequence select="not(eo:abstract($target)) and not(eo:dataized-const($target)) and exists($target/o) and exists(eo:references($target, $name)[eo:resolved-name(@base) = $name and o])"/>
+    <xsl:sequence select="not(eo:abstract($target)) and exists($target/o) and exists(eo:references($target, $name)[eo:resolved-name(@base) = $name and o])"/>
   </xsl:function>
   <!--
   Whether the auto-named binding `$target` survives the drop template
-  below — the same nine questions the template's own "xsl:if" asks,
+  below — the same ten questions the template's own "xsl:if" asks,
   shared so a binding's kept/dropped status can be looked up for a
   target other than the current node (#7297).
   -->
   <xsl:function name="eo:kept-binding" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string"/>
-    <xsl:sequence select="eo:recursive($target, $name) or eo:dispatched($target, $name) or eo:vertical-const($target) or eo:unreferenced($target, $name) or (eo:multi-referenced($target, $name) and eo:rebuilt($target)) or eo:piped($target, $name) or eo:arg-applied($target, $name) or eo:nested-applied($target, $name) or eo:reapplied($target, $name)"/>
+    <xsl:sequence select="eo:recursive($target, $name) or eo:dispatched($target, $name) or eo:vertical-const($target) or eo:nested-const($target, $name) or eo:unreferenced($target, $name) or (eo:multi-referenced($target, $name) and eo:rebuilt($target)) or eo:piped($target, $name) or eo:arg-applied($target, $name) or eo:nested-applied($target, $name) or eo:reapplied($target, $name)"/>
   </xsl:function>
   <!--
   The references in the binding's owner that reach the auto-name `$name`
@@ -648,8 +716,7 @@
   `$drop` formations, from a node `$depth` formations inside that value.
   A climb of `$depth` lands on the value's own root, so a climb that far
   or further has left the value and gains `$drop` hops. A shorter climb
-  stays inside, and a base rooted anywhere but `ξ`, or naming nothing
-  past its climb, is left alone.
+  stays inside, and a base rooted anywhere but `ξ` is left alone.
   -->
   <xsl:function name="eo:dropped-base" as="xs:string">
     <xsl:param name="base" as="xs:string"/>
@@ -657,7 +724,7 @@
     <xsl:param name="depth" as="xs:integer"/>
     <xsl:variable name="segments" select="tokenize($base, '\.')"/>
     <xsl:variable name="climb" select="if ($segments[1] = $eo:xi) then eo:rho-climb(subsequence($segments, 2)) else -1"/>
-    <xsl:sequence select="if ($drop &lt;= 0 or $climb &lt; $depth or count($segments) &lt;= $climb + 1) then $base else string-join(($eo:xi, for $i in 1 to ($climb + $drop) return $eo:rho, subsequence($segments, $climb + 2)), '.')"/>
+    <xsl:sequence select="if ($drop &lt;= 0 or $climb &lt; $depth) then $base else string-join(($eo:xi, for $i in 1 to ($climb + $drop) return $eo:rho, subsequence($segments, $climb + 2)), '.')"/>
   </xsl:function>
   <!--
   Rewrites the bases of a folded value, counting how deep inside it each

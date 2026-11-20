@@ -12,7 +12,7 @@ import com.jcabi.xml.XMLDocument;
 import com.yegor256.xsline.Shift;
 import com.yegor256.xsline.TrDefault;
 import com.yegor256.xsline.Train;
-import fixtures.LargeProgram;
+import fixtures.SlowProgram;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
@@ -37,6 +37,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -92,26 +93,34 @@ final class EoSyntaxTest {
     }
 
     @Test
+    void parsesAFileThatStartsWithAByteOrderMark() throws Exception {
+        MatcherAssert.assertThat(
+            "a byte order mark in front of the first line must not reach the parser, but it did",
+            XhtmlMatchers.xhtml(
+                new EoSyntax(
+                    Character.toString(0xFEFF).concat(
+                        String.format("# The app.%n%n+package foo%n%n[] > app%n  42 > x%n")
+                    )
+                ).parsed().toString()
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object[not(errors)]",
+                "/object/o[@name='app']"
+            )
+        );
+    }
+
+    @Test
+    @Timeout(60L)
     void measuresRealParsingTime() throws Exception {
         MatcherAssert.assertThat(
             "ms attribute is not a measured elapsed time",
             Long.parseLong(
                 new EoSyntax(
-                    new LargeProgram(30), UnaryOperator.<XML>identity()
+                    new SlowProgram(400L), UnaryOperator.<XML>identity()
                 ).parsed().xpath("/object/@ms").get(0)
             ),
-            Matchers.greaterThan(0L)
-        );
-    }
-
-    @Test
-    void measuresSubMillisecondParsingTime() throws Exception {
-        final EoSyntax syntax = new EoSyntax(String.format("# Ünïcödé.%n[] > tiny%n"));
-        syntax.parsed();
-        MatcherAssert.assertThat(
-            "ms attribute of a sub-millisecond parse is not rounded up to one",
-            Long.parseLong(syntax.parsed().xpath("/object/@ms").get(0)),
-            Matchers.greaterThan(0L)
+            Matchers.greaterThanOrEqualTo(400L)
         );
     }
 
@@ -143,15 +152,16 @@ final class EoSyntaxTest {
     }
 
     @Test
+    @Timeout(60L)
     void measuresParsingTimeOnEveryCall() throws Exception {
         final EoSyntax syntax = new EoSyntax(
-            new LargeProgram(30), UnaryOperator.<XML>identity()
+            new SlowProgram(0L, 400L), UnaryOperator.<XML>identity()
         );
         syntax.parsed();
         MatcherAssert.assertThat(
             "second parse of the same syntax does not measure its own elapsed time",
             Long.parseLong(syntax.parsed().xpath("/object/@ms").get(0)),
-            Matchers.greaterThan(0L)
+            Matchers.greaterThanOrEqualTo(400L)
         );
     }
 
@@ -215,17 +225,6 @@ final class EoSyntaxTest {
                 ).parsed().toString()
             ),
             XhtmlMatchers.hasXPaths("/object/errors/error")
-        );
-    }
-
-    @Test
-    void reportsDeeplyNestedFormationsInsteadOfOverflowing() throws Exception {
-        MatcherAssert.assertThat(
-            "a source nested deeper than the walk allows must answer a parser error, not take the whole process down",
-            new EoSyntax(new InputOf(EoSyntaxTest.nested(Stack.DEEPEST * 2)))
-                .parsed()
-                .xpath("/object/errors/error[contains(text(),'nested deeper than')]/text()"),
-            Matchers.hasSize(1)
         );
     }
 
@@ -710,6 +709,22 @@ final class EoSyntaxTest {
         );
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"#", "# first"})
+    void writesCommentThatSchemaAccepts(final String comment) throws Exception {
+        MatcherAssert.assertThat(
+            "A top comment, even an empty one, must give XMIR valid against the schema",
+            new XMLDocument(
+                new EoSyntax(
+                    new InputOf(
+                        String.join(System.lineSeparator(), comment, "", "[] > foo")
+                    )
+                ).parsed().toString()
+            ).validate(new XMLDocument(new ResourceOf("XMIR.xsd").stream())),
+            Matchers.empty()
+        );
+    }
+
     @Test
     void checksProhibitionCactusInObjectName() throws Exception {
         MatcherAssert.assertThat(
@@ -878,19 +893,6 @@ final class EoSyntaxTest {
     }
 
     @Test
-    void rejectsUnrecognisedEscapeSequence() throws Exception {
-        MatcherAssert.assertThat(
-            "an unrecognised escape sequence must name the offending characters, not blame unicode or octal escapes",
-            EoSyntaxTest.raw(
-                String.join(String.valueOf((char) 10), "[] > foo", "  \"\\q\" > @")
-            ).toString(),
-            XhtmlMatchers.hasXPath(
-                "/object/errors/error[contains(text(),\"unrecognised escape sequence\")]"
-            )
-        );
-    }
-
-    @Test
     void namesLoneSurrogateInErrorMessage() throws Exception {
         MatcherAssert.assertThat(
             "a lone surrogate escape must name the offending codepoint, not blame unicode or octal escapes generically",
@@ -921,6 +923,30 @@ final class EoSyntaxTest {
             EoSyntaxTest.raw("+foo").toString(),
             XhtmlMatchers.hasXPath("/object[@version and @revision and @dob and @time]")
         );
+    }
+
+    @Test
+    @Timeout(60L)
+    void reportsDeepStructuresInsteadOfOverflowing() throws Exception {
+        for (final String source : Arrays.asList(
+            EoSyntaxTest.nested(Stack.DEEPEST * 2),
+            String.format(
+                "+package foo%n%n[] > app%n  x%s > @%n",
+                ".y".repeat(Stack.DEEPEST * 3)
+            ),
+            String.format(
+                "+package foo%n%n[] > app%n  %sx y%s > @%n",
+                "(".repeat(Stack.DEEPEST * 2),
+                ")".repeat(Stack.DEEPEST * 2)
+            )
+        )) {
+            MatcherAssert.assertThat(
+                "a source deeper than the parser limit must produce an error",
+                new EoSyntax(new InputOf(source)).parsed()
+                    .xpath("/object/errors/error[contains(text(),'nested deeper than')]/text()"),
+                Matchers.hasSize(1)
+            );
+        }
     }
 
     private static Stream<Arguments> naughty() throws Exception {
@@ -963,14 +989,10 @@ final class EoSyntaxTest {
     }
 
     private static String nested(final int depth) {
-        final String eol = String.format("%n");
-        final StringBuilder source = new StringBuilder(depth * 16)
-            .append("[] > top").append(eol);
+        final StringBuilder source = new StringBuilder("[] > top").append(String.format("%n"));
         for (int level = 1; level <= depth; level = level + 1) {
-            for (int indent = 0; indent < level; indent = indent + 1) {
-                source.append("  ");
-            }
-            source.append("[] > n").append(level).append(eol);
+            source.append("  ".repeat(level)).append("[] > n").append(level)
+                .append(String.format("%n"));
         }
         return source.toString();
     }

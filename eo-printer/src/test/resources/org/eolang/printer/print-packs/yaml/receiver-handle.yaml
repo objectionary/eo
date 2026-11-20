@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A receiver written as "^s" (R-3.4.11) must print back under its handle,
+# both in the bracket head and in the body that reads it, rather than as
+# a vertical "? >> s" void and an "s" for every "ρ" segment (#8227).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [^s args] > printf
+    s.^.bar args > @
+
+printed: |
+  s.^.bar > [^s args] > printf
+    args

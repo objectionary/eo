@@ -10,6 +10,7 @@ import com.jcabi.log.Logger;
 import com.jcabi.manifests.Manifests;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,7 +22,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
-import org.cactoos.list.ListOf;
+import org.eolang.cache.Cache;
+import org.eolang.cache.CachePath;
+import org.eolang.cache.ConcurrentCache;
+import org.eolang.cache.Saved;
 import org.eolang.lints.Defect;
 import org.eolang.lints.Severity;
 import org.eolang.lints.Source;
@@ -40,7 +44,7 @@ import org.xembly.Xembler;
  * The linting results are also embedded back into the XMIR files for future reference.
  * Lints might use caching to speed up the process on subsequent runs.
  * Cached files are stored in the {@link #CACHE} directory.
- * The results of linting are saved in the {@link #DIR} directory.</p>
+ * The results of linting are saved in a directory {@code Seqdir} numbers "lint".</p>
  *
  * <p>Note: this class is intentionally named {@code Linting} rather than {@code Lint} to avoid
  * a conflict with Maven's Plexus configurator. When a class named {@code Lint} exists in the
@@ -54,12 +58,7 @@ import org.xembly.Xembler;
 final class Linting implements Step {
 
     /**
-     * The directory where to lint to.
-     */
-    static final String DIR = "3-lint";
-
-    /**
-     * Subdirectory for linted cache.
+     * Directory for linted cache.
      */
     static final String CACHE = "linted";
 
@@ -140,7 +139,7 @@ final class Linting implements Step {
      *
      * @param srcs Scoped tojos
      * @param compiled Compile tojos
-     * @param target Target directory
+     * @param tgt Target directory
      * @param cache Base cache directory
      * @param enabled Whether caching is enabled
      * @param ver Plugin version
@@ -154,7 +153,7 @@ final class Linting implements Step {
     Linting(
         final TjsForeign srcs,
         final TjsForeign compiled,
-        final Path target,
+        final Path tgt,
         final Path cache,
         final boolean enabled,
         final String ver,
@@ -167,7 +166,7 @@ final class Linting implements Step {
     ) {
         this.tojos = srcs;
         this.compile = compiled;
-        this.target = target;
+        this.target = tgt;
         this.cache = cache;
         this.enabled = enabled;
         this.version = ver;
@@ -183,7 +182,7 @@ final class Linting implements Step {
     @Override
     public void exec() throws IOException {
         if (this.skip) {
-            Logger.info(this, "Linting is skipped because eo:skipLinting is TRUE");
+            Logger.info(this, "Linting is skipped because eo.lint.bypass is TRUE");
         } else {
             this.linting();
         }
@@ -225,6 +224,10 @@ final class Linting implements Step {
         return sum;
     }
 
+    private Path dir() throws IOException {
+        return new Seqdir(this.target, 2).dirs().once("lint");
+    }
+
     private void linting() throws IOException {
         final Collection<TjForeign> programs = this.tojos.withXmir();
         final Map<Severity, Integer> counts = new ConcurrentHashMap<>();
@@ -251,7 +254,7 @@ final class Linting implements Step {
         } else {
             Logger.info(
                 this,
-                "Skipping linting as package (use -Deo.lintAsPackage=true to enable)"
+                "Skipping linting as package (use -Deo.lint.package=true to enable)"
             );
         }
         final String sum = Linting.summary(counts);
@@ -278,14 +281,14 @@ final class Linting implements Step {
             if (this.warning) {
                 throw new IllegalStateException(
                     String.format(
-                        "In %d XMIR files, we found %s (use -Deo.failOnWarning=false to ignore):%n%s",
+                        "In %d XMIR files, we found %s (use -Deo.lint.strict=false to ignore):%n%s",
                         programs.size(), sum, details
                     )
                 );
             }
             Logger.info(
                 this,
-                "Use -Deo.failOnWarning=true to fail the build on warnings, currently it's set to false"
+                "Use -Deo.lint.strict=true to fail the build on warnings, currently it's set to false"
             );
         }
     }
@@ -297,8 +300,8 @@ final class Linting implements Step {
     ) throws Exception {
         final Path source = tojo.xmir();
         final XML xmir = new XMLDocument(source);
-        final Path base = this.target.resolve(Linting.DIR);
-        final Path out = new LintTarget(xmir, source).under(base);
+        final Path base = this.dir();
+        final Path out = new LintTarget(xmir, source, tojo.identifier()).under(base);
         if (this.enabled) {
             this.guard.apply(
                 source, out, base.relativize(out),
@@ -363,12 +366,12 @@ final class Linting implements Step {
             progs.put(ent.getKey(), new XMLDocument(ent.getValue()));
         }
         if (!this.programlints.isEmpty()) {
-            Logger.info(this, "Unliting WPA lints: %[list]s", this.programlints);
+            Logger.info(this, "Unlinting WPA lints: %[list]s", this.programlints);
         }
         final List<org.eolang.wpa.Defect> defects;
         if (this.enabled) {
             final Path wpa = Path.of("wpa.xmir");
-            final Path base = this.target.resolve(Linting.DIR);
+            final Path base = this.dir();
             final Path out = base.resolve(wpa);
             Files.createDirectories(base);
             this.guard.apply(
@@ -489,7 +492,7 @@ final class Linting implements Step {
                     .map(Linting::toDefect)
                     .collect(Collectors.toList())
             )
-            .orElse(new ListOf<>());
+            .orElse(new ArrayList<>(0));
     }
 
     private static Defect toDefect(final Xnav error) {

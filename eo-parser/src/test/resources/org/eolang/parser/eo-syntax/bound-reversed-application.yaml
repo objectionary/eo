@@ -7,8 +7,8 @@ asserts:
   - /object[not(errors)]
   - //o[@base='Φ.true.if' and o[@base='Φ.string' and @as='α0']]
   - //o[@base='Φ.true.if' and o[@base='Φ.string' and @as='α1']]
-  - //o[@base='Φ.false.if' and o[@base='Φ.number' and @as='a']]
-  - //o[@base='Φ.false.if' and o[@base='Φ.number' and @as='b']]
+  - //o[@base='Φ.false.if' and o[@base='Φ.number' and @as='v🌵a']]
+  - //o[@base='Φ.false.if' and o[@base='Φ.number' and @as='v🌵b']]
 input: |
   [] > main
     if. > first

@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The entry names a formation nested in another one, so the atom goes into
+# the nested formation, and the top one keeps its own body.
+eo:
+  outer.eo: |
+    [a] > outer
+      inner a > @
+      [b] > inner
+        b.plus 1 > @
+rendered:
+  - "3\tΦ.outer.inner"
+patched:
+  outer.xmir:
+    - "/object/o[@name='outer']/o[@name='φ' and @base='ξ.inner']"
+    - "/object/o[@name='outer']/o[@name='inner']\
+      /o[@name='φ' and not(@base) and @loc='Φ.outer.inner.φ']/o[@name='λ']"
+    - "/object/o[@name='outer'][not(o[@name='φ']/o[@name='λ'])]"

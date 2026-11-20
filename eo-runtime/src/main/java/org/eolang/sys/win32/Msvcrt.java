@@ -22,7 +22,7 @@ import com.sun.jna.WString;
  * name leaving the active code page still reaches the CRT as it was written,
  * while EO goes on asking for the narrow name it shares with posix.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
 @SuppressWarnings("PMD.MethodNamingConventions")
 public interface Msvcrt extends Library {

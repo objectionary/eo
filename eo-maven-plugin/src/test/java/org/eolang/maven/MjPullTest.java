@@ -8,6 +8,7 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.WeAreOnline;
 import com.yegor256.tojos.MnCsv;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,6 +18,7 @@ import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.scalar.ScalarOf;
 import org.cactoos.text.TextOf;
+import org.eolang.cache.Saved;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.io.FileMatchers;
@@ -121,24 +123,24 @@ final class MjPullTest {
 
     @Test
     void doesNotPullInOfflineMode(@Mktmp final Path tmp) throws IOException {
-        final Map<String, Path> result = new FakeMaven(tmp)
+        final FakeMaven maven = new FakeMaven(tmp)
             .withHelloWorld()
-            .with("offline", true)
-            .execute(new PpPull())
-            .result();
+            .with("offline", true);
+        final Map<String, Path> result = maven.execute(new PpPull()).result();
         final String stdout = "org/eolang/stdout.eo";
         final String string = "org/eolang/string.eo";
+        final String dir = maven.dirName("pull");
         MatcherAssert.assertThat(
             String.format(
                 "%s folder should not contain %s and %s file, but it did",
-                Pulling.DIR,
+                dir,
                 stdout,
                 string
             ),
             result,
             Matchers.allOf(
-                Matchers.not(Matchers.hasKey(String.format("%s/%s", Pulling.DIR, stdout))),
-                Matchers.not(Matchers.hasKey(String.format("%s/%s", Pulling.DIR, string)))
+                Matchers.not(Matchers.hasKey(String.format("%s/%s", dir, stdout))),
+                Matchers.not(Matchers.hasKey(String.format("%s/%s", dir, string)))
             )
         );
     }
@@ -149,7 +151,7 @@ final class MjPullTest {
             .withHelloWorld()
             .execute(new PpPull());
         final Path path = maven.result().get(
-            String.format("target/%s/bytes.%s", Pulling.DIR, MjAssemble.EO)
+            String.format("target/%s/bytes.%s", maven.dirName("pull"), MjAssemble.EO)
         );
         final long mtime = path.toFile().lastModified();
         maven.execute(MjPull.class);
@@ -207,7 +209,7 @@ final class MjPullTest {
             ),
             FileTime.fromMillis(System.currentTimeMillis() + 50_000)
         );
-        new FakeMaven(temp).withProgram(
+        final FakeMaven maven = new FakeMaven(temp).withProgram(
             String.join(
                 System.lineSeparator(),
                 "+package foo.x",
@@ -216,8 +218,8 @@ final class MjPullTest {
                 "  Q.io.stdout > @"
             )
         ).with("hash", new CommitHash.ChConstant(hash))
-            .with("cache", cache.toFile())
-            .execute(new PpPull());
+            .with("cache", cache.toFile());
+        maven.execute(new PpPull());
         MatcherAssert.assertThat(
             "PullMojo should take source from cache, but it does not",
             new TextOf(
@@ -225,7 +227,7 @@ final class MjPullTest {
                     temp.resolve(
                         String.format(
                             "target/%s/io/stdout.%s",
-                            Pulling.DIR,
+                            maven.dirName("pull"),
                             MjAssemble.EO
                         )
                     )
@@ -239,11 +241,17 @@ final class MjPullTest {
         return "stdout";
     }
 
-    private static boolean exists(final Path temp, final String source) {
-        return Files.exists(temp.resolve("target").resolve(MjPullTest.path(source)));
+    private static boolean exists(final Path temp, final String source) throws IOException {
+        return Files.exists(temp.resolve("target").resolve(MjPullTest.path(temp, source)));
     }
 
-    private static Path path(final String source) {
-        return new Place(source).make(Paths.get(Pulling.DIR), "eo");
+    private static Path path(final Path temp, final String source) throws IOException {
+        return new Place(source).make(
+            Paths.get(
+                new Seqdir(temp.resolve("target"), 2)
+                    .dirs().once("pull").getFileName().toString()
+            ),
+            "eo"
+        );
     }
 }

@@ -17,6 +17,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.eolang.cache.Footprint;
+import org.eolang.cache.GlobalCache;
 
 /**
  * The Java files that a transpiled XMIR is written out as.
@@ -25,6 +27,12 @@ import java.util.stream.Stream;
  * a Java file under the generated sources directory, taken from the
  * global cache when the tojo is at a released hash and put there when
  * it is not.</p>
+ *
+ * <p>The implementation of an atom is written by hand, so no Java file is
+ * made of it. Its JUnit companion is not: the class of an atom carries its
+ * own {@code <tests>}, and that body reaches {@link JavaPlaced} like any
+ * other. A class with no {@code <java>} body is not counted among the
+ * generated main sources, while the companion is still placed (#9390).</p>
  *
  * @since 0.74
  */
@@ -59,12 +67,19 @@ final class JavaFiles {
     private final Collection<Path> touched;
 
     /**
+     * Configured test source roots.
+     */
+    private final Path[] roots;
+
+    /**
      * Ctor.
      *
      * @param dir Generated sources directory
+     * @param roots Configured test source roots
      */
-    JavaFiles(final Path dir) {
+    JavaFiles(final Path dir, final Path... roots) {
         this.generated = dir;
+        this.roots = roots.clone();
         this.fresh = new ConcurrentLinkedQueue<>();
         this.touched = new ConcurrentLinkedQueue<>();
     }
@@ -93,31 +108,30 @@ final class JavaFiles {
             final Xnav object = new Xnav(target).element("object");
             final Collection<Xnav> classes = object.elements(Filter.withName("class"))
                 .collect(Collectors.toList());
-            final boolean atom = object.path("o/o[@name='λ']").findAny().isPresent();
             for (final Xnav clazz : classes) {
                 final String jname = clazz.attribute("java-name").text().get();
                 final Path tgt = new Place(jname).make(this.generated, JavaFiles.JAVA);
                 this.touched.add(tgt);
-                if (!atom || jname.endsWith("Test")) {
+                if (clazz.element("java").text().isPresent()) {
                     this.fresh.add(tgt);
-                    final Footprint java = new FpJavaGenerated(
-                        clazz, new FileGenerationReport(saved, tgt, target)
-                    );
-                    new JavaPlaced(
-                        new FpIfReleased(
-                            hsh,
-                            cache.kept(
-                                this.generated.relativize(tgt),
-                                () -> hsh,
-                                new RewritePolicy(rewrite, tgt),
-                                java
-                            ),
+                }
+                final Footprint java = new FpJavaGenerated(
+                    clazz, new FileGenerationReport(saved, tgt, target)
+                );
+                new JavaPlaced(
+                    new FpIfReleased(
+                        hsh,
+                        cache.kept(
+                            this.generated.relativize(tgt),
+                            () -> hsh,
+                            new RewritePolicy(rewrite, tgt),
                             java
                         ),
-                        tgt,
-                        this.generated
-                    ).exec(clazz, tests);
-                }
+                        java
+                    ),
+                    tgt,
+                    this.generated, this.roots
+                ).exec(clazz, tests);
             }
             Logger.debug(
                 this,

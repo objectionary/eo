@@ -14,7 +14,6 @@ import java.util.Objects;
 import java.util.function.UnaryOperator;
 import org.cactoos.Input;
 import org.cactoos.io.InputOf;
-import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.xembly.Directives;
 import org.xembly.Xembler;
@@ -115,7 +114,7 @@ public final class EoSyntax implements Syntax {
     @Override
     public XML parsed() throws IOException {
         final long start = System.nanoTime();
-        final String text = new UncheckedText(new TextOf(this.input)).asString();
+        final String text = new UncheckedText(new Unmarked(this.input)).asString();
         return this.transform.apply(
             new XMLDocument(
                 new Xembler(

@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * The {@code struct _stat64} of the Microsoft C runtime.
  *
- * @since 0.74.0
+ * @since 0.64.0
  * @checkstyle VisibilityModifierCheck (60 lines)
  */
 public final class WinStat extends Structure {

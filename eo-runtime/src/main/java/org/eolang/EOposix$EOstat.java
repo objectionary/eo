@@ -24,13 +24,13 @@ public final class EOposix$EOstat extends PhDefault implements Atom {
      * Ctor.
      */
     public EOposix$EOstat() {
-        super(new Attrs(new Attr("path", new AtVoid("path"))));
+        super(new Attrs(new Attr("path")));
     }
 
     @Override
     public Phi lambda() {
         return new Stat(
-            new Cstring(Expect.at(this, "path")).it(),
+            new Cstring(this.expected("path")).it(),
             (path, buf) -> CStdLib.INSTANCE.stat(path, buf)
         ).it();
     }

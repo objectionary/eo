@@ -1,6 +1,7 @@
 # Bytes as a floating-point `number`: an 8-byte chain reinterpreted as an
 # IEEE 754 double, mapping the special chains to `nan`, `pinf`, and `ninf`.
-# For any other length the `cant-convert` fallback is returned.
+# For any other length, `cant-convert` takes an error message.
+# When unbound, it terminates with that message.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -9,28 +10,32 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^ cant-convert] > as-number
+[^data cant-convert] > as-number
   if. > @
-    ^.size.eq 8
+    data.size.eq 8
     if.
       is-nan.
-        number ^
+        number data
       nan
       if.
-        ^.eq pinf.as-bytes
+        data.eq pinf.as-bytes
         pinf
         if.
-          ^.eq ninf.as-bytes
+          data.eq ninf.as-bytes
           ninf
-          number ^
+          number data
     cant-convert
       "Can't convert non 8 length bytes to a number, bytes are %x".printf
-        * ^
+        * data
+
+  eq. ++> can-convert-bytes-to-a-number-with-a-terminator-for-the-error
+    40-45-00-00-00-00-00-00.as-number T
+    42
 
   eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-a-number
-    "recovered"
+    42
     01-01-01-01.as-number
-      "recovered" > [message]
+      42 > [message]
 
   is-nan. ++> can-route-non-canonical-nan-bytes-to-nan
     FF-F8-00-00-00-00-00-00.as-number

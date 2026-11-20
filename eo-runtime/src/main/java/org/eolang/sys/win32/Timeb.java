@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * The {@code struct __timeb64} filled by {@code _ftime64_s}.
  *
- * @since 0.74.0
+ * @since 0.64.0
  * @checkstyle VisibilityModifierCheck (100 lines)
  */
 public final class Timeb extends Structure {

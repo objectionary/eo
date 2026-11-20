@@ -25,23 +25,23 @@ public final class EOposix$EOsend extends PhDefault implements Atom {
     public EOposix$EOsend() {
         super(
             new Attrs(
-                new Attr("descriptor", new AtVoid("descriptor")),
-                new Attr("buffer", new AtVoid("buffer")),
-                new Attr("size", new AtVoid("size")),
-                new Attr("flags", new AtVoid("flags"))
+                new Attr("descriptor"),
+                new Attr("buffer"),
+                new Attr("size"),
+                new Attr("flags")
             )
         );
     }
 
     @Override
     public Phi lambda() {
-        final byte[] chunk = new Portion(this).it();
+        final byte[] chunk = new Portion(this.free("buffer"), this.expected("size")).it();
         return new Data.ToPhi(
             CStdLib.INSTANCE.send(
-                new Int(Expect.at(this, "descriptor")).it(),
+                new Int(this.expected("descriptor")).it(),
                 chunk,
                 chunk.length,
-                new Int(Expect.at(this, "flags")).it()
+                new Int(this.expected("flags")).it()
             )
         );
     }

@@ -19,7 +19,7 @@ asserts:
   - //tests[contains(text(), 'new Dataized(this.take("works")).asBool()')]
   - //tests[contains(text(), 'void on_overflow() throws java.lang.Exception')]
   - //tests[contains(text(), 'Assertions.assertThrows(Exception.class, () -> {')]
-  - //tests[contains(text(), 'new Dataized(this.take("on-overflow")).asBool();')]
+  - //tests[contains(text(), 'new Dataized(this.take("on-overflow")).take();')]
 input: |
   [] > some
     7 > yes

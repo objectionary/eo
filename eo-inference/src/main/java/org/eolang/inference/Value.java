@@ -1,0 +1,88 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+ * SPDX-License-Identifier: MIT
+ */
+package org.eolang.inference;
+
+/**
+ * One value the walk knows, named by what it is made of.
+ *
+ * <p>The kinds, by the letter that names them:</p>
+ *
+ * <ul>
+ *   <li>{@code O}, a copy (3.1): its formation, its birthplace, the bits of
+ *   its bound voids and its tag, empty when it has none;</li>
+ *   <li>{@code Φ}, the root; {@code D}, a datum; {@code T}, a termination;
+ *   {@code J}, what only Java puts into a {@code ρ};</li>
+ *   <li>{@code U}, an unknown, with its reason in {@code form}, and
+ *   "decided" in {@code birth} for the unknown of a void only Java fills
+ *   (4.5);</li>
+ *   <li>{@code B}, rule b's head as is (4.3), the value in {@code base};</li>
+ *   <li>{@code A}, rule A's mark (4.2), the value in {@code base} and its
+ *   number of empty voids in {@code count}, with its source copy in
+ *   {@code origin} when it has one.</li>
+ * </ul>
+ *
+ * @param kind The letter of the kind
+ * @param form The formation of a copy, or the reason of an unknown
+ * @param birth The birthplace of a copy, or "decided"
+ * @param bound The bits of the bound voids of a copy
+ * @param tag The tag of a copy, empty when none
+ * @param base The value a {@code B} or an {@code A} wraps, or -1
+ * @param count The empty voids of an {@code A}
+ * @param origin The source copy of an {@code A}, or -1
+ * @since 0.76.0
+ */
+record Value(
+    char kind, String form, String birth, long bound, String tag, int base, int count, int origin
+) {
+
+    /**
+     * Ctor of a value without a source copy.
+     *
+     * @param kind The kind
+     * @param form The formation, reason or label
+     * @param birth The birthplace
+     * @param bound The bound voids
+     * @param tag The tag
+     * @param base The wrapped value
+     * @param count The empty voids
+     */
+    Value(
+        final char kind, final String form, final String birth, final long bound,
+        final String tag, final int base, final int count
+    ) {
+        this(kind, form, birth, bound, tag, base, count, -1);
+    }
+
+    /**
+     * Ctor of a copy.
+     *
+     * @param form The formation
+     * @param born Where it is born, with its tag
+     * @param bound The bits of its bound voids
+     */
+    Value(final String form, final Site born, final long bound) {
+        this('O', form, born.place(), bound, born.tag(), -1, 0);
+    }
+
+    /**
+     * Whether it is a copy made in EO code, not by Java and not shared.
+     *
+     * @return TRUE if it is
+     */
+    boolean placed() {
+        return !this.java() && !"canon".equals(this.birth);
+    }
+
+    /**
+     * Whether it is a copy Java made: born {@code java}, with the bracket
+     * list of its type right after that when the type has one.
+     *
+     * @return TRUE if it is
+     */
+    boolean java() {
+        return Values.JBORN.equals(this.birth)
+            || this.birth.startsWith(Values.JBORN.concat("("));
+    }
+}

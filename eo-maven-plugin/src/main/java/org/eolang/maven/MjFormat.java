@@ -8,6 +8,7 @@ import com.github.lombrozo.xnav.Filter;
 import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -15,10 +16,12 @@ import java.util.Optional;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.cactoos.text.TextOf;
+import org.cactoos.io.InputOf;
 import org.cactoos.text.UncheckedText;
+import org.eolang.cache.Saved;
 import org.eolang.parser.Canonical;
 import org.eolang.parser.EoSyntax;
+import org.eolang.parser.Utf8;
 import org.eolang.printer.Xmir;
 
 /**
@@ -32,7 +35,7 @@ import org.eolang.printer.Xmir;
  * compares that against what is on disk. In its default "check" mode, it
  * prints a colored unified {@link Diff} for every file that diverges from
  * the canonical form and fails the build. When {@link #autofix} is turned
- * on (via the {@code eo.autoFix} property), it overwrites the divergent
+ * on (via the {@code eo.format.autofix} property), it overwrites the divergent
  * files with their canonical form instead of failing, much like
  * {@code gofmt -w} or {@code spotless:apply}.</p>
  *
@@ -41,6 +44,10 @@ import org.eolang.printer.Xmir;
  * through {@link Threaded}, the way every other goal walks them, and each
  * settling pass keeps the tree it parsed instead of parsing the same text
  * again to lay it out.</p>
+ *
+ * <p>Every source is decoded strictly before {@link Raws} is asked for a tree,
+ * so a file that is not UTF-8 fails with its own name and line instead of being
+ * formatted from a tree the raw cache holds for an earlier text of the path.</p>
  *
  * @since 0.57.0
  */
@@ -56,8 +63,8 @@ public final class MjFormat extends MjPenalties {
      * failing the build.
      */
     @Parameter(
-        alias = "autoFix",
-        property = "eo.autoFix",
+        alias = "format.autofix",
+        property = "eo.format.autofix",
         required = true,
         defaultValue = "false"
     )
@@ -75,18 +82,24 @@ public final class MjFormat extends MjPenalties {
         final long start = System.currentTimeMillis();
         try (TjsForeign tojos = this.tojos()) {
             final Collection<TjForeign> sources = tojos.withSources();
+            final Raws raws = new Raws(
+                this.caching(Parsing.CACHE).with("raws"),
+                new Seqdir(this.target.toPath(), 2).dirs().once("raw")
+            );
             this.report(
                 sources.size(),
-                new Threaded<>(sources, this::reformat).total(),
+                new Threaded<>(sources, tojo -> this.reformat(tojo, raws)).total(),
                 System.currentTimeMillis() - start
             );
         }
     }
 
-    private int reformat(final TjForeign tojo) throws IOException {
+    private int reformat(final TjForeign tojo, final Raws raws) throws IOException {
         final Path source = tojo.source();
-        final String actual = new UncheckedText(new TextOf(source)).asString();
-        final String canonical = this.canonical(tojo, actual);
+        final String actual = new UncheckedText(
+            new Utf8(new InputOf(source), source.toString())
+        ).asString();
+        final String canonical = this.canonical(tojo, actual, raws);
         final Diff diff = new Diff(actual, canonical);
         final int diverged;
         if (diff.same()) {
@@ -108,9 +121,13 @@ public final class MjFormat extends MjPenalties {
         return diverged;
     }
 
-    private String canonical(final TjForeign tojo, final String source) throws IOException {
+    private String canonical(
+        final TjForeign tojo, final String source, final Raws raws
+    ) throws IOException {
         String structure = source;
-        XML tree = MjFormat.checked(tojo.source(), structure, this.stored(tojo));
+        XML tree = MjFormat.checked(
+            tojo.source(), structure, new Canonical().apply(raws.of(tojo))
+        );
         Optional<String> settled = Optional.empty();
         final int settle = 8;
         for (int pass = 0; pass < settle; ++pass) {
@@ -129,15 +146,6 @@ public final class MjFormat extends MjPenalties {
             canon = new Xmir(tree, this.weights()).toEO();
         }
         return canon;
-    }
-
-    private XML stored(final TjForeign tojo) throws IOException {
-        return new Canonical().apply(
-            new Raws(
-                this.caching(Parsing.CACHE).with("raws"),
-                this.target.toPath().resolve("0-raw")
-            ).of(tojo)
-        );
     }
 
     private static XML checked(final Path source, final String structure, final XML xmir) {
@@ -220,7 +228,7 @@ public final class MjFormat extends MjPenalties {
                     "%d of %d EO source(s) are not formatted canonically; %s",
                     divergent,
                     total,
-                    "run with -Deo.autoFix to reformat them automatically"
+                    "run with -Deo.format.autofix to reformat them automatically"
                 )
             );
         }

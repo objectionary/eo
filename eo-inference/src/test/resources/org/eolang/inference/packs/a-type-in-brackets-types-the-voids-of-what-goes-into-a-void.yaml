@@ -1,0 +1,33 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# make returns an outer whose item is an inner whose part is a leaf. Java makes
+# a copy of each, its voids typed as the brackets say, so the item read off
+# what make returns is an inner, and the part read off that inner is a leaf.
+sources:
+  os.eo: |
+    [] > os
+      [] > make /Q.os.outer(Q.os.inner(Q.os.leaf))
+      [item] > outer
+        item > got
+      [part] > inner
+        part > got
+      [] > leaf
+  app.eo: |
+    [] > app
+      os.make.got > first
+      first.got > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.os.make.λ']/is[@loc='Φ.os.outer(Φ.os.inner(Φ.os.leaf))']
+  - /answers/o[@loc='Φ.app.first' and count(*)=1]/is[@loc='Φ.os.inner']
+  - /answers/o[@loc='Φ.app.φ' and count(*)=1]/is[@loc='Φ.os.leaf']
+  - /answers/o[@loc='Φ.os.outer.v🌵item' and count(*)=1]/is[@loc='Φ.os.inner']
+  - /answers/o[@loc='Φ.os.inner.v🌵part' and count(*)=1]/is[@loc='Φ.os.leaf']
+  - /answers[not(//unknown)]

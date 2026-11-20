@@ -7,52 +7,65 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[tail head length] > tuple
-  [^ i fallback] > at
+[prior last count] > tuple
+  [^list i fallback] > at
     if. > @
       or.
-        0.gt
-          if. >> index!
-            0.gt
-              i >> idx!
-            ^.length.plus idx
-            idx
-        ^.length.lte index
+        not.
+          eq.
+            floor.
+              number ((0.gt idx).if (list.length.plus idx) idx)! >> index
+            index
+        or.
+          0.gt index
+          list.length.lte index
       fallback
-        "Given index is out of tuple bounds"
-      if. > [^ tup] >> at-fast
+        printf. >> failure
+          if.
+            index.floor.eq index
+            "Given index %s is out of tuple bounds"
+            "Index must be an integer, but was %s"
+          *
+            if.
+              idx.abs.lt 9.223372036854776e18
+              "%f".printf
+                * idx
+              string
+                as-scientific.
+                  number i! >> idx
+      if. > [^list tup] >> at-fast
         0.eq tup.length
-        ^.fallback
-          "Given index is out of tuple bounds"
+        list.fallback failure
         if.
           eq.
             tup.length.plus -1
             index
           tup.head
-          ^.at-fast tup.tail
-      | ^
+          list.at-fast tup.tail
+      | list
   tuple > empty
-    T
-      "Can't get tail from the empty tuple"
-    T
-      "Can't get head from the empty tuple"
+    T "Can't get tail from the empty tuple"
+    T "Can't get head from the empty tuple"
     0
-  [^ other] > eq
+  [^list other] > eq
     and. > @
-      ^.length.eq other.length
-      if. > [^ first second] >> receq
+      list.length.eq other.length
+      if. > [^list first second] >> receq
         first.length.eq 0
         true
         if.
           first.head.eq second.head
-          ^.receq first.tail second.tail
+          list.receq first.tail second.tail
           false
-      | ^ other
-  tuple > [^ x] > with
-    ^
+      | list other
+  last > head
+  count > length
+  prior > tail
+  tuple > [^list x] > with
+    list
     x
     as-number.
-      ^.length.plus 1
+      list.length.plus 1
 
   ++> can-add-an-item
     and. > @
@@ -225,6 +238,16 @@
       20
       "recovered" > [message]
 
+  eq. ++> can-reject-a-fractional-index-without-reading-the-tail
+    "recovered"
+    at.
+      tuple
+        T "The tail must not be inspected"
+        "last"
+        3
+      1.5
+      "recovered" > [message]
+
   ++> can-report-the-length-of-a-non-empty-tuple
     eq. > @
       length.
@@ -236,7 +259,8 @@
             "d"
             "e"
       5
-    [elements] > array
+    [items] > array
+      items > elements
 
   ++> can-report-the-length-of-an-empty-tuple
     eq. > @
@@ -245,7 +269,18 @@
           array
             *
       0
-    [elements] > array
+    [items] > array
+      items > elements
+
+  eq. ++> can-take-an-item-with-a-terminator-for-the-fallback
+    "one"
+    at.
+      *
+        "zero"
+        "one"
+        "two"
+      1
+      T
 
   ++> can-take-the-first-item-by-a-negative-index
     eq. > @

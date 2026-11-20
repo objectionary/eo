@@ -16,6 +16,11 @@ import org.xembly.Xembler;
 /**
  * Test case for {@link Eo}.
  *
+ * <p>End-to-end tests of the walker — feed EO source text, assert the
+ * shape of the emitted XMIR. Tests focus on the line shapes implemented
+ * so far (blank, comment, meta) plus the cross-cutting concerns
+ * (recovery, indent validation, EOF checks).</p>
+ *
  * @since 0.1
  */
 final class EoTest {
@@ -94,7 +99,9 @@ final class EoTest {
         MatcherAssert.assertThat(
             "a line whose indent is an odd number of spaces must surface the odd-indent error",
             EoTest.render(" +foo"),
-            XhtmlMatchers.hasXPath("/object/errors/error[contains(text(),'unexpected odd indent')]")
+            XhtmlMatchers.hasXPath(
+                "/object/errors/error[contains(text(),'unexpected odd indent')]"
+            )
         );
     }
 
@@ -158,7 +165,9 @@ final class EoTest {
                 "  [] > good",
                 "    one > first"
             ),
-            XhtmlMatchers.hasXPath("/object/o[@name='example']/o[@name='good']/o[@name='first']")
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='example']/o[@name='good']/o[@name='first']"
+            )
         );
     }
 
@@ -303,7 +312,9 @@ final class EoTest {
         MatcherAssert.assertThat(
             "an atom with a generic return must keep the type variable verbatim on its lambda marker",
             EoTest.render("[] > recovered /A"),
-            XhtmlMatchers.hasXPath("/object/o[@name='recovered']/o[@name='λ' and @atom='A']")
+            XhtmlMatchers.hasXPath(
+                "/object/o[@name='recovered']/o[@name='λ' and @atom='A']"
+            )
         );
     }
 
@@ -645,7 +656,9 @@ final class EoTest {
                 "  hi",
                 "  \"\"\" > x"
             ),
-            XhtmlMatchers.hasXPath("/object//o[@name='x']/o[@base='Φ.bytes']/o[text()='68-69']")
+            XhtmlMatchers.hasXPath(
+                "/object//o[@name='x']/o[@base='Φ.bytes']/o[text()='68-69']"
+            )
         );
     }
 
@@ -733,7 +746,9 @@ final class EoTest {
                 "  \"\"\"",
                 "  unfinished"
             ),
-            XhtmlMatchers.hasXPath("/object/errors/error[contains(text(),'unclosed text block')]")
+            XhtmlMatchers.hasXPath(
+                "/object/errors/error[contains(text(),'unclosed text block')]"
+            )
         );
     }
 
@@ -977,7 +992,9 @@ final class EoTest {
             "a single trailing blank line is legal — no error must surface",
             EoTest.render("+foo"),
             Matchers.not(
-                XhtmlMatchers.hasXPath("/object/errors/error[contains(text(),'trailing blank')]")
+                XhtmlMatchers.hasXPath(
+                    "/object/errors/error[contains(text(),'trailing blank')]"
+                )
             )
         );
     }

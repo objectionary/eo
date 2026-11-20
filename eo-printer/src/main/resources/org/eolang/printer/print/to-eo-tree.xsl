@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="to-eo-tree" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="to-eo-tree" version="3.0">
   <!-- An EO-source printer; its tree templates form one cohesive module. -->
   <!-- xslint-disable-file too-many-templates -->
   <!--
@@ -141,16 +141,18 @@
     <xsl:sequence select="if (contains($text, $eo:cactus-name)) then replace($text, $eo:cactus-pattern, 'v$1_$2') else $text"/>
   </xsl:function>
   <!--
-  Render a stored signature (an atom's "/sig" or a void forma) as its EO
-  surface form. A rooted "Φ.name" always keeps an explicit "Q." root, so
-  every rooted signature reads uniformly and re-parses directly back to its
-  "Φ." root instead of relying on a bare name being re-homed. Names with no
-  "Φ." root pass through.
+  Render a stored type (an atom's "/sig", a void type or a callback list)
+  as its EO surface form. A type is a tree such as "Φ.pair(A,Φ.bytes)",
+  so every name in it that has a "Φ." root keeps an explicit "Q." root,
+  wherever it stands: at the head, after a bracket, a comma or the space
+  between two callback members. Every rooted type reads uniformly and
+  re-parses directly back to its "Φ." roots instead of relying on a bare
+  name being re-homed. Names with no "Φ." root, type variables, the
+  delimiters and a trailing "?" pass through.
   -->
   <xsl:function name="eo:signature" as="xs:string">
     <xsl:param name="sig" as="xs:string"/>
-    <xsl:variable name="rest" select="substring-after($sig, $eo:root-prefix)"/>
-    <xsl:sequence select="if (starts-with($sig, $eo:root-prefix)) then concat('Q.', $rest) else $sig"/>
+    <xsl:sequence select="replace($sig, concat('(^|[(), ])', $eo:program, '\.'), '$1Q.')"/>
   </xsl:function>
   <!-- Count the leading run of consecutive ρ segments in a sequence. -->
   <xsl:function name="eo:rho-run" as="xs:integer">
@@ -159,32 +161,33 @@
   </xsl:function>
   <!--
   Whether a void has to be printed as a "? &gt; name" body line instead of
-  being folded into the "[…]" bracket head. Three shapes cannot live in
-  the head: a "&gt;&gt; name" handle, whose anonymity a public bracket param
-  would blow (§9.2, R-9.2.3, #5581); a "/type" or "/{type …}" annotation,
-  which a bracket param cannot express (#5614); and every void of an
-  atom, whose head must stay empty (R-3.4.10) so a typed void may be
-  followed by an untyped one without the two swapping places (#6082).
+  being folded into the "[…]" bracket head. Two shapes cannot live in the
+  head: a "/type" or "/{type …}" annotation, which a bracket param cannot
+  express (#5614); and every void of an atom, whose head must stay empty
+  (R-3.4.10) so a typed void may be followed by an untyped one without the
+  two swapping places (#6082). The handle of a receiver is not one of
+  them: "^s" is a bracket param, and the only spelling the receiver's
+  handle has (R-3.4.13, #8227).
   -->
   <xsl:function name="eo:vertical-void" as="xs:boolean">
     <xsl:param name="o" as="element()"/>
-    <xsl:sequence select="eo:void($o) and (exists($o/@local) or exists($o/@type) or exists($o/@args) or eo:atom($o/..))"/>
+    <xsl:sequence select="eo:void($o) and (exists($o/@type) or exists($o/@args) or eo:atom($o/..))"/>
   </xsl:function>
   <!--
-  A void's type tail (R-3.4.8): " /type" for its own forma, " /{type …}"
+  A void's type tail (R-3.4.8): " /type" for its own type, " /{type …}"
   for the argument types of a callback branch, or the empty string when
-  the void is untyped. Every forma is rendered like the atom's own "/sig"
-  — the implicit Φ. root stripped, a type variable verbatim — and a
-  trailing "?" marking a maybe-⊥ value survives the stripping.
+  the void is untyped. Every type is rendered like the atom's own "/sig",
+  each "Φ." root shown as "Q." and a type variable verbatim, and a
+  trailing "?" marking a maybe-⊥ value stays where it is.
   -->
   <xsl:function name="eo:void-type" as="xs:string">
     <xsl:param name="o" as="element()"/>
     <xsl:choose>
       <xsl:when test="exists($o/@type)">
-        <xsl:sequence select="concat(' /', eo:signature(replace($o/@type, '\?$', '')), if (ends-with($o/@type, '?')) then '?' else '')"/>
+        <xsl:sequence select="concat(' /', eo:signature(string($o/@type)))"/>
       </xsl:when>
       <xsl:when test="exists($o/@args)">
-        <xsl:sequence select="concat(' /{', string-join(for $t in tokenize($o/@args, ' ') return eo:signature($t), ' '), '}')"/>
+        <xsl:sequence select="concat(' /{', eo:signature(string($o/@args)), '}')"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:sequence select="''"/>
@@ -210,7 +213,7 @@
   -->
   <xsl:function name="eo:identity" as="xs:boolean">
     <xsl:param name="o" as="element()"/>
-    <xsl:sequence select="eo:abstract($o) and not(eo:has-data($o)) and count($o/o) = 2 and eo:void($o/o[1]) and $o/o[1]/@name != $eo:rho and empty($o/o[1]/(@local, @type, @args)) and $o/o[2]/@name = $eo:phi and empty($o/o[2]/o) and empty($o/o[2]/@const) and $o/o[2]/@base = concat($eo:xi-prefix, $o/o[1]/@name)"/>
+    <xsl:sequence select="eo:abstract($o) and not(eo:has-data($o)) and count($o/o) = 2 and eo:void($o/o[1]) and $o/o[1]/@name != $eo:rho and empty($o/o[1]/(@type, @args)) and $o/o[2]/@name = $eo:phi and empty($o/o[2]/o) and empty($o/o[2]/@const) and $o/o[2]/@base = concat($eo:xi-prefix, $o/o[1]/@name)"/>
   </xsl:function>
   <!-- PROGRAM -->
   <xsl:template match="object">
@@ -388,16 +391,13 @@
   <!-- VOID AS A VERTICAL BODY LINE -->
   <!--
   A void the bracket head cannot hold, printed as a "? &gt; name" body line
-  (R-3.4.7); "eo:vertical-void" names the three shapes. A "&gt;&gt; name"
-  handle survives "restore-local-names" in @local and keeps the void
-  anonymous; a "/type" or "/{type …}" tail is rendered by
-  "eo:void-type"; and a φ or ρ void reverts to its "@" or "^" surface
-  spelling.
+  (R-3.4.7); "eo:vertical-void" names the two shapes. A "/type" or
+  "/{type …}" tail is rendered by "eo:void-type", and a φ or ρ void
+  reverts to its "@" or "^" surface spelling.
   -->
   <xsl:template match="o[eo:vertical-void(.)]" mode="tree">
-    <xsl:variable name="arrow" select="if (exists(@local)) then ' &gt;&gt; ' else ' &gt; '"/>
-    <xsl:variable name="label" select="if (exists(@local)) then string(@local) else if (@name = $eo:phi) then '@' else if (@name = $eo:rho) then '^' else string(@name)"/>
-    <line base="?" tail="{concat($arrow, $label, eo:void-type(.))}" abstract="no" test="no" reversed="no"/>
+    <xsl:variable name="label" select="if (@name = $eo:phi) then '@' else if (@name = $eo:rho) then '^' else string(@name)"/>
+    <line base="?" tail="{concat(' &gt; ', $label, eo:void-type(.))}" abstract="no" test="no" reversed="no"/>
   </xsl:template>
   <!-- PIPE APPLICATION (§3.14) -->
   <!--
@@ -497,7 +497,7 @@
           -->
           <xsl:value-of select="eo:translate-path($self-rest)"/>
         </xsl:when>
-        <xsl:when test="not(@local) and $segments[1] = $eo:xi and $rho-count = 0 and $hop-name != '' and $hop-name != $eo:rho and $hop-name != $eo:phi and $hop-name != $eo:xi and $hop-name != $eo:program and empty(ancestor::o[not(@base)][1]/o[@name=$hop-name]) and empty($local-handle)">
+        <xsl:when test="$segments[1] = $eo:xi and $rho-count = 0 and $hop-name != '' and $hop-name != $eo:rho and $hop-name != $eo:phi and $hop-name != $eo:xi and $hop-name != $eo:program and empty(ancestor::o[not(@base)][1]/o[@name=$hop-name]) and empty($local-handle)">
           <!--
           An explicit "$.name" (zero ρ hops) whose immediate enclosing
           formation has no "name" of its own, and which is not a
@@ -513,10 +513,9 @@
           DOES own "name", or "name" is such an in-scope file-local handle,
           bare and "$.name" resolve identically, so the otherwise branch
           below safely prints it bare, matching a plain same-scope
-          reference. A node that itself carries "@local" is a moniker's own
-          bound value, already relocated in place of its reference site by
-          merge-monikers.xsl, so its ancestor context here no longer
-          reflects its original scope — skip it too, matching bare.
+          reference. A node carrying "@local" may be an unread handle
+          still standing in its original scope, so its explicit self root
+          needs the same check (#9722).
           -->
           <xsl:value-of select="concat('$.', eo:translate-path($hop-rest))"/>
         </xsl:when>
@@ -545,7 +544,7 @@
             <xsl:value-of select="'@'"/>
           </xsl:when>
           <xsl:when test="@name = $eo:rho">
-            <xsl:value-of select="'^'"/>
+            <xsl:value-of select="concat('^', @local)"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="@name"/>

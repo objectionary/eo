@@ -15,13 +15,16 @@ concurrency:
 jobs:
   trufflehog:
     timeout-minutes: 25
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
+      # Full history of `master` only: `fetch-depth: 0` would also pull
+      # `gh-pages`, about three gigabytes of site snapshots, and the job
+      # would time out before scanning a single commit.
+      - name: Fetch history of master
+        run: git fetch --unshallow --no-tags origin +refs/heads/master:refs/remotes/origin/master
       - name: Secret Scanning
-        uses: trufflesecurity/trufflehog@a3fcdde40d1d300dd2eadbac2e497aa7847cdfcf # main
+        uses: trufflesecurity/trufflehog@d232362a64a09a9e7d58267b8f5acef00ae90e23 # main
         with:
           extra_args: --only-verified

@@ -1,0 +1,142 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+ * SPDX-License-Identifier: MIT
+ */
+package org.eolang.maven;
+
+import com.github.lombrozo.xnav.Xnav;
+import com.jcabi.log.Logger;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.StClasspath;
+import com.yegor256.xsline.Xsline;
+import io.github.sekator778.seqdir.Seqdir;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Map;
+import java.util.TreeMap;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.text.TextOf;
+import org.cactoos.text.UncheckedText;
+import org.eolang.inference.Annotation;
+
+/**
+ * Generate the atom return types table from XMIR sources.
+ *
+ * <p>Walks the XMIR sources in {@link #sources}, extracts the
+ * {@code forma} of every lambda atom together with its declared return
+ * type, and writes the result as a CSV file at {@link #csv}.
+ * Each output line has the form {@code <forma>,<return-type>}; entries
+ * are sorted by {@code forma} to make the file stable across builds.
+ * A return type that is a tree, such as
+ * {@code Φ.posix.status-return(Φ.number,Φ.string)}, is written as the
+ * name before its brackets, since the runtime checks only that name.</p>
+ *
+ * @since 0.57
+ */
+@Mojo(
+    name = "tabulate",
+    defaultPhase = LifecyclePhase.PROCESS_CLASSES,
+    threadSafe = true
+)
+public final class MjTabulate extends MjSafe {
+
+    /**
+     * Directory with XMIR sources to scan for atoms, falling back to the
+     * "parse" directory {@code Seqdir} already found when unset.
+     */
+    @Parameter(alias = "tabulate.sources", property = "eo.tabulate.sources")
+    private File sources;
+
+    /**
+     * Output CSV file with the atoms table.
+     */
+    @Parameter(
+        alias = "tabulate.csv",
+        property = "eo.tabulate.csv",
+        required = true,
+        defaultValue = "${project.build.outputDirectory}/org/eolang/atoms.csv"
+    )
+    private File csv;
+
+    /**
+     * Ctor.
+     */
+    public MjTabulate() {
+        // nothing
+    }
+
+    @Override
+    void exec() throws IOException {
+        final Path home;
+        if (this.sources == null) {
+            home = new Seqdir(this.target.toPath(), 2).dirs().find("parse")
+                .orElse(this.target.toPath().resolve("parse"));
+        } else {
+            home = this.sources.toPath();
+        }
+        if (!Files.isDirectory(home)) {
+            Logger.info(
+                this,
+                "No XMIR sources at %[file]s, atoms table will be empty",
+                home
+            );
+            this.write(new TreeMap<>());
+            return;
+        }
+        final Map<String, String> table = new TreeMap<>();
+        final Xsline xsline = new Xsline(
+            new StClasspath("/org/eolang/maven/atoms-table.xsl")
+        );
+        for (final Path source : new WkDefault(home)) {
+            final XML before = new XMLDocument(
+                new UncheckedText(new TextOf(source)).asString()
+            );
+            final Xnav after = new Xnav(xsline.pass(before).inner());
+            after.path("/atoms/atom").forEach(
+                atom -> table.put(
+                    atom.attribute("forma").text().orElseThrow(
+                        () -> new IllegalStateException(
+                            "atom element must carry 'forma' attribute"
+                        )
+                    ),
+                    new Annotation(
+                        atom.attribute("returns").text().orElseThrow(
+                            () -> new IllegalStateException(
+                                "atom element must carry 'returns' attribute"
+                            )
+                        )
+                    ).head()
+                )
+            );
+        }
+        this.write(table);
+        Logger.info(
+            this,
+            "Wrote %d atom return type(s) to %[file]s",
+            table.size(),
+            this.csv.toPath()
+        );
+    }
+
+    private void write(final Map<String, String> table) throws IOException {
+        final Path target = this.csv.toPath();
+        final Path parent = target.getParent();
+        if (parent != null) {
+            Files.createDirectories(parent);
+        }
+        final StringBuilder out = new StringBuilder();
+        for (final Map.Entry<String, String> entry : table.entrySet()) {
+            out.append(entry.getKey())
+                .append(',')
+                .append(entry.getValue())
+                .append('\n');
+        }
+        Files.writeString(target, out.toString(), StandardCharsets.UTF_8);
+    }
+}

@@ -16,6 +16,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.cactoos.text.TextOf;
+import org.eolang.cache.Saved;
 import org.eolang.printer.Xmir;
 
 /**
@@ -45,8 +46,8 @@ public final class MjPrint extends MjPenalties {
      * Directory with XMIR sources to print.
      */
     @Parameter(
-        alias = "printSourcesDir",
-        property = "eo.printSourcesDir",
+        alias = "print.sources",
+        property = "eo.print.sources",
         required = true,
         defaultValue = "${project.basedir}/src/main/xmir"
     )
@@ -56,8 +57,8 @@ public final class MjPrint extends MjPenalties {
      * Directory where printed EO files are placed.
      */
     @Parameter(
-        alias = "printOutputDir",
-        property = "eo.printOutputDir",
+        alias = "print.output",
+        property = "eo.print.output",
         required = true,
         defaultValue = "${project.build.directory}/generated-sources/eo"
     )

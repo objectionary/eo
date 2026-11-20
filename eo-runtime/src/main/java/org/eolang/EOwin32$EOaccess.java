@@ -25,8 +25,8 @@ public final class EOwin32$EOaccess extends PhDefault implements Atom {
     public EOwin32$EOaccess() {
         super(
             new Attrs(
-                new Attr("path", new AtVoid("path")),
-                new Attr("mode", new AtVoid("mode"))
+                new Attr("path"),
+                new Attr("mode")
             )
         );
     }
@@ -35,8 +35,8 @@ public final class EOwin32$EOaccess extends PhDefault implements Atom {
     public Phi lambda() {
         return new Data.ToPhi(
             Msvcrt.INSTANCE._waccess(
-                new WString(new Cstring(Expect.at(this, "path")).it()),
-                new Int(Expect.at(this, "mode")).it()
+                new WString(new Cstring(this.expected("path")).it()),
+                new Int(this.expected("mode")).it()
             )
         );
     }

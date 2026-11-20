@@ -8,9 +8,9 @@
 
 [buf] > buffer
   buf > @
-  buffer > [^ str] > with
+  buffer > [^store str] > with
     string
-      ^.buf.as-bytes.concat str.as-bytes
+      store.buf.as-bytes.concat str.as-bytes
 
   eq. ++> can-build-a-simple-string
     with.
@@ -27,7 +27,6 @@
   eq. ++> can-decorate-a-string-after-building
     length.
       with.
-        buffer
-          "Hi, "
+        buffer "Hi, "
         "Mark"
     8

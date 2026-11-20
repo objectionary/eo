@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A symbol minted by a λ function the table of operations does not hold has
+# no Java to be spelled with.
+locator: Φ.clock.now
+number: 9
+taint: is minted by L_clock_now, which has no Java
+eo:
+  clock.eo: |
+    [] > clock
+      [^] > now
+        ^.at > @
+      [] > at /Q.number
+        ? > ^
+voids:
+  - "𝜎1\t9\tρ\tobject"
+protocol: |
+  <protocol>
+    <dataize at="Φ.l🌵.e9">
+      <evaluate λ="L_clock_now" by="morph" at="Φ.a🌵1">
+        <minted symbol="𝜎2">𝜎1</minted>
+      </evaluate>
+      <manufactured meta="𝛿·3·1">𝜎2</manufactured>
+    </dataize>
+    <msec>168</msec>
+    <firings>2</firings>
+    <fps>17</fps>
+  </protocol>

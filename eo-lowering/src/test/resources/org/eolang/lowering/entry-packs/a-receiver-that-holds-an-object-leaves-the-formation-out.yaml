@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The `ρ` a formation declares is a void like the others, so a `ρ` that holds
+# an object leaves the formation out too, the way the `input-block` of a
+# `read` is left out. A declared `ρ` holds the formation it is written in,
+# here `reader`. `app` hands `block` a number, so the engine says that `size`
+# holds one, and only the `ρ` leaves the formation out.
+eo:
+  reader.eo: |
+    [] > reader
+      [^ size] > block
+        ^.read size > @
+  app.eo: |
+    [] > app
+      reader.block 8 > used
+xmir:
+  - "/object/o[@name='l🌵'][not(o[starts-with(@name, 'e')])]"

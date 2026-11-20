@@ -7,11 +7,14 @@ package org.eolang.maven;
 import com.tngtech.archunit.base.DescribedPredicate;
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.domain.JavaConstructorCall;
+import com.tngtech.archunit.core.domain.JavaMethodCall;
 import com.tngtech.archunit.core.domain.JavaModifier;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 import com.tngtech.archunit.lang.syntax.elements.GivenClassesConjunction;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.eolang.cache.ConcurrentCache;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -48,12 +51,36 @@ final class ArchitectureTest {
     }
 
     @Test
+    void namesEveryMojoClassAsOneVerb() {
+        Assertions.assertDoesNotThrow(
+            () -> ArchRuleDefinition.classes()
+                .that().haveSimpleNameStartingWith("Mj")
+                .and().haveSimpleNameNotEndingWith("Test")
+                .and().haveSimpleNameNotEndingWith("IT")
+                .should().haveNameMatching(".*\\.Mj[A-Z][a-z]+")
+                .because("a mojo is named as one verb, never a compound (#9894)")
+                .check(ArchitectureTest.imported())
+        );
+    }
+
+    @Test
     void buildsCacheGuardOnlyOnce() {
         ArchRuleDefinition.noClasses()
             .that().haveSimpleNameNotEndingWith("Test")
             .should().callConstructorWhere(ArchitectureTest.guardBuiltPerCall())
             .because("a per-call guard hands each thread an empty lock map (#5720)")
             .check(ArchitectureTest.imported());
+    }
+
+    @Test
+    void buildsStepCacheOncePerRun() {
+        Assertions.assertDoesNotThrow(
+            () -> ArchRuleDefinition.noClasses()
+                .that().haveSimpleNameNotEndingWith("Test")
+                .should().callMethodWhere(ArchitectureTest.cacheBuiltPerSource())
+                .because("each cache built per source brings its own guard (#8903)")
+                .check(ArchitectureTest.imported())
+        );
     }
 
     private static JavaClasses imported() {
@@ -66,6 +93,19 @@ final class ArchitectureTest {
             public boolean test(final JavaConstructorCall call) {
                 return call.getTargetOwner().isEquivalentTo(ConcurrentCache.class)
                     && !call.getOrigin().isConstructor();
+            }
+        };
+    }
+
+    private static DescribedPredicate<JavaMethodCall> cacheBuiltPerSource() {
+        return new DescribedPredicate<JavaMethodCall>("step cache is built per source") {
+            @Override
+            public boolean test(final JavaMethodCall call) {
+                return call.getTarget().getOwner().isAssignableTo(MjSafe.class)
+                    && "caching".equals(call.getTarget().getName())
+                    && call.getOrigin().getRawParameterTypes().stream().anyMatch(
+                        type -> type.isEquivalentTo(TjForeign.class)
+                    );
             }
         };
     }
