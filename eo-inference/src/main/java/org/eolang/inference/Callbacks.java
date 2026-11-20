@@ -34,14 +34,21 @@ final class Callbacks {
     private final World world;
 
     /**
+     * The copies Java makes.
+     */
+    private final Copies copies;
+
+    /**
      * Ctor.
      *
      * @param walk The state of the walk
      * @param world The world the walk goes over
+     * @param copies The copies Java makes
      */
-    Callbacks(final State walk, final World world) {
+    Callbacks(final State walk, final World world, final Copies copies) {
         this.state = walk;
         this.world = world;
+        this.copies = copies;
     }
 
     /**
@@ -51,7 +58,7 @@ final class Callbacks {
      * @param types The types the atom calls it back with
      * @param site The site of the call, under the tag of the caller
      */
-    void called(final int num, final List<String> types, final Site site) {
+    void called(final int num, final List<Annotation> types, final Site site) {
         final Value value = this.world.value(num);
         if (value.kind() == 'O' && !this.world.opened(value).isEmpty()) {
             final List<String> holes = this.world.opened(value);
@@ -61,9 +68,7 @@ final class Callbacks {
             }
             final int count = Math.min(holes.size(), types.size());
             for (int idx = 0; idx < count; ++idx) {
-                final int made = this.state.java(new Annotation(types.get(idx)));
-                this.state.remember(made);
-                rows.put(holes.get(idx), new int[] {made});
+                rows.put(holes.get(idx), this.copies.made(types.get(idx)));
             }
             this.state.remember(
                 this.state.copy(

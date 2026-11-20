@@ -376,7 +376,7 @@ final class State {
      * @param types The types the atom calls it back with
      * @param site The site of the call, under the tag of the caller
      */
-    void called(final int num, final List<String> types, final Site site) {
+    void called(final int num, final List<Annotation> types, final Site site) {
         this.population.called(num, types, site);
     }
 
