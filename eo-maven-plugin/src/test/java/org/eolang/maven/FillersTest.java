@@ -12,6 +12,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
 import org.eolang.inference.Annotation;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -97,6 +100,89 @@ final class FillersTest {
                 "Φ.safe.cant", Map.entry("Φ.safe", "cant")
             ).getKey(),
             Matchers.equalTo(Optional.empty())
+        );
+    }
+
+    @Test
+    void givesBackWhatVoidLeaningOnOpenVoidHeldInSameSituation() {
+        final AtomicInteger shaped = new AtomicInteger();
+        FillersTest.chain(shaped).held("Φ.pair.a", Map.entry("Φ.pair", "a"));
+        MatcherAssert.assertThat(
+            "a void that leans on an open void must be worked out once per guess of that void, not once per lookup, but it isnt",
+            shaped.get(),
+            Matchers.equalTo(4)
+        );
+    }
+
+    @Test
+    void givesBackWhatVoidLeaningOnOpenVoidHeldAsNotSettled() {
+        final List<Boolean> settled = new ArrayList<>(2);
+        final AtomicReference<Fillers> self = new AtomicReference<>();
+        final Fillers fillers = FillersTest.pair(
+            (place, seen) -> {
+                final Optional<Copy> found;
+                if ("Φ.app.c.α0".equals(place)) {
+                    settled.add(self.get().held("Φ.pair.b", Map.entry("Φ.pair", "b")).getValue());
+                    settled.add(self.get().held("Φ.pair.b", Map.entry("Φ.pair", "b")).getValue());
+                    found = Optional.of(new Copy(new Annotation("Φ.fix")));
+                } else {
+                    self.get().hit("Φ.pair.a");
+                    found = Optional.of(new Copy(new Annotation("Φ.fix")));
+                }
+                return found;
+            }
+        );
+        self.set(fillers);
+        fillers.held("Φ.pair.a", Map.entry("Φ.pair", "a"));
+        MatcherAssert.assertThat(
+            "what a void that leans on an open void holds must never be remembered for good, even when given back, but it is",
+            settled,
+            Matchers.everyItem(Matchers.equalTo(false))
+        );
+    }
+
+    /**
+     * Fillers of {@code [a b] > pair}, copied by one call at {@code Φ.app.c},
+     * whose argument in {@code a} asks twice what {@code b} holds, while
+     * {@code b} leans on {@code a}.
+     *
+     * @param shaped How many times the argument in {@code b} is looked up
+     * @return The fillers
+     */
+    private static Fillers chain(final AtomicInteger shaped) {
+        final AtomicReference<Fillers> self = new AtomicReference<>();
+        final Fillers fillers = FillersTest.pair(
+            (place, seen) -> {
+                final Optional<Copy> found;
+                if ("Φ.app.c.α0".equals(place)) {
+                    self.get().held("Φ.pair.b", Map.entry("Φ.pair", "b"));
+                    found = self.get().held("Φ.pair.b", Map.entry("Φ.pair", "b")).getKey();
+                } else {
+                    shaped.incrementAndGet();
+                    self.get().hit("Φ.pair.a");
+                    found = Optional.of(new Copy(new Annotation("Φ.fix")));
+                }
+                return found;
+            }
+        );
+        self.set(fillers);
+        return fillers;
+    }
+
+    private static Fillers pair(final BiFunction<String, Lookups, Optional<Copy>> lookup) {
+        return new Fillers(
+            Map.of(
+                "Φ.pair", Map.of("a", "Φ.pair.a", "b", "Φ.pair.b"),
+                "Φ.fix", Map.of()
+            ),
+            new Calls(
+                Map.of("Φ.pair", List.of("a", "b")),
+                Map.of("Φ.app.c", Map.of(0, "Φ.app.c.α0", 1, "Φ.app.c.α1")),
+                Collections.emptyMap(), Collections.emptyMap()
+            ),
+            Map.of("Φ.pair", List.of("Φ.app.c")),
+            Set.of(),
+            lookup
         );
     }
 

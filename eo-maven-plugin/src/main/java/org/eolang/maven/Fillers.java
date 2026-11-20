@@ -5,6 +5,8 @@
 package org.eolang.maven;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -98,6 +100,17 @@ final class Fillers {
     private final Set<Map.Entry<String, String>> empties;
 
     /**
+     * What each void was found to hold while it leaned on other open voids,
+     * each with the situation it was found in, by the place of the void.
+     */
+    private final Map<String, List<Map.Entry<Situation, Optional<Copy>>>> kept;
+
+    /**
+     * The places of the voids found to hold what they hold for good.
+     */
+    private final Set<String> settled;
+
+    /**
      * Ctor.
      *
      * @param places The place each attribute of a formation leads to
@@ -120,6 +133,8 @@ final class Fillers {
         this.guesses = new Guesses();
         this.lookup = copy;
         this.empties = new HashSet<>(0);
+        this.kept = new HashMap<>(0);
+        this.settled = new HashSet<>(0);
     }
 
     /**
@@ -175,6 +190,28 @@ final class Fillers {
      * <p>It takes at most eight rounds, and after that the void is said to
      * hold nothing the code fixes.</p>
      *
+     * <p>What the void holds may lean on the guess of another void that is
+     * still open. Then it can't be remembered for good, but it is kept
+     * together with the situation it was found in, as {@link Situation} says,
+     * and given back when asked for again in the same situation, instead of
+     * being worked out again (#10020). The situation is the same when three
+     * things are the same as they were:</p>
+     *
+     * <ul>
+     *   <li>every open void it leaned on is still open, with the same
+     *   guess;</li>
+     *   <li>no void it opened itself is open now, since then the work would
+     *   take the guess of that void instead of working it out;</li>
+     *   <li>no void it opened itself is known for good now, since then the
+     *   work would take what it holds for good instead of working it
+     *   out.</li>
+     * </ul>
+     *
+     * <p>Nothing else is read by the work, since what is known for good never
+     * changes, so in the same situation it finds the same copy. The voids
+     * it leaned on and opened are noted again, so that the lookup in progress
+     * still knows it leans on them.</p>
+     *
      * @param place The place of the void
      * @param hole The formation of the void, and its name
      * @return The copy, or nothing when the code does not fix it, and whether
@@ -184,17 +221,48 @@ final class Fillers {
     Map.Entry<Optional<Copy>, Boolean> held(
         final String place, final Map.Entry<String, String> hole
     ) {
-        this.guesses.guess(place, Optional.empty());
-        final List<Boolean> lacking = new ArrayList<>(1);
-        final Map.Entry<Optional<Copy>, Set<String>> run = this.guesses.tracked(
-            () -> this.held(place, hole, Optional.empty(), 8, lacking)
-        );
-        this.guesses.close(place);
-        final boolean settled = !this.guesses.leaning(run.getValue());
-        if (settled && lacking.contains(true)) {
-            this.empties.add(hole);
+        final Optional<Map.Entry<Situation, Optional<Copy>>> again = this.kept.getOrDefault(
+            place, List.of()
+        ).stream().filter(
+            each -> this.guesses.holds(each.getKey())
+                && Collections.disjoint(each.getKey().opened(), this.settled)
+        ).findFirst();
+        final Map.Entry<Optional<Copy>, Boolean> found;
+        if (again.isPresent()) {
+            this.guesses.replay(again.get().getKey());
+            found = Map.entry(again.get().getValue(), false);
+        } else {
+            found = this.fresh(place, hole);
         }
-        return Map.entry(run.getKey(), settled);
+        return found;
+    }
+
+    private Map.Entry<Optional<Copy>, Boolean> fresh(
+        final String place, final Map.Entry<String, String> hole
+    ) {
+        final List<Boolean> lacking = new ArrayList<>(1);
+        final Map.Entry<Optional<Copy>, Situation> run = this.guesses.situated(
+            () -> {
+                this.guesses.guess(place, Optional.empty());
+                final Optional<Copy> made = this.held(
+                    place, hole, Optional.empty(), 8, lacking
+                );
+                this.guesses.close(place);
+                return made;
+            }
+        );
+        final boolean done = run.getValue().leaned().isEmpty();
+        if (done) {
+            this.settled.add(place);
+            if (lacking.contains(true)) {
+                this.empties.add(hole);
+            }
+        } else {
+            this.kept.computeIfAbsent(place, key -> new ArrayList<>(1)).add(
+                Map.entry(run.getValue(), run.getKey())
+            );
+        }
+        return Map.entry(run.getKey(), done);
     }
 
     private Optional<Copy> held(
