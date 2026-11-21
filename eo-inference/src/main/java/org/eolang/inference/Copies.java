@@ -43,13 +43,6 @@ import java.util.Map;
  * still told from the shared copy by the {@code Φ} it is handed.</p>
  *
  * @since 0.76.0
- * @todo #9657:60min Let a type variable in the brackets of a type or in a
- *  call back list, as in {@code Φ.box(A)} or {@code /{Q.string B}}, stand
- *  for what the voids of the atom that carry the same letter hold, the way
- *  {@code /A} does for the whole return of {@code recovered}. The copy
- *  Java makes would then depend on the copy of the atom it comes from, so
- *  it could no longer be one copy per type, and for now {@code java()}
- *  stops the engine on such a type. Nothing in eo-runtime writes one yet.
  */
 final class Copies {
 
@@ -190,14 +183,6 @@ final class Copies {
      * @return The copy
      */
     int java(final Annotation type) {
-        if (type.variable()) {
-            throw new IllegalStateException(
-                String.format(
-                    "Java makes a copy of the type variable %s, which the engine cannot follow outside the return of an atom yet",
-                    type
-                )
-            );
-        }
         if (!this.world.formation(type.head())) {
             throw new IllegalStateException(
                 String.format(
@@ -210,13 +195,11 @@ final class Copies {
         if (type.members().isEmpty() && !this.canon.containsKey(type.head())) {
             made = this.supplied(type.head());
         } else {
-            made = this.typed(
-                type,
-                new Site(
-                    Values.JBORN.concat(type.toString().substring(type.head().length())), ""
-                ),
-                Formation.RHO
-            );
+            String birth = Values.JBORN.concat(type.toString().substring(type.head().length()));
+            if (type.contextual()) {
+                birth = String.format("%s:%d", birth, type.origin());
+            }
+            made = this.typed(type, new Site(birth, ""), Formation.RHO);
         }
         return made;
     }
@@ -313,6 +296,33 @@ final class Copies {
         return bits;
     }
 
+    /**
+     * Values Java supplies for a bracket member or a callback argument.
+     *
+     * @param member The annotation
+     * @return The values
+     */
+    int[] made(final Annotation member) {
+        final Ints values = new Ints();
+        if (member.variable()) {
+            final int origin = member.origin();
+            if (origin == Copies.NO_RHO) {
+                throw new IllegalStateException("No atom for type variable ".concat(member.head()));
+            }
+            final Formation shape = this.world.form(this.world.value(origin).form());
+            for (final String name : shape.carrying(member.head())) {
+                for (final int value : this.state.cell(origin, name)) {
+                    values.add(value);
+                }
+            }
+        } else {
+            final int copy = this.java(member);
+            this.state.remember(copy);
+            values.add(copy);
+        }
+        return values.array();
+    }
+
     private void share(final List<String> kinds) {
         for (final String kind : kinds) {
             if (!List.of("φ").equals(this.world.form(kind).order())) {
@@ -375,12 +385,6 @@ final class Copies {
         return this.copy(
             new Value(form, born, bits | this.bits(form, List.copyOf(rows.keySet()))), rows
         );
-    }
-
-    private int[] made(final Annotation member) {
-        final int copy = this.java(member);
-        this.state.remember(copy);
-        return new int[] {copy};
     }
 
     private int supplied(final String form) {

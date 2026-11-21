@@ -251,7 +251,7 @@ final class Reduction {
 
     private Ints atom(final int num) {
         final Value value = this.world.value(num);
-        final Annotation type = new Annotation(this.world.form(value.form()).returns());
+        final Annotation type = new Annotation(this.world.form(value.form()).returns(), num);
         final Ints result = new Ints();
         if (this.world.formation(type.head())) {
             final int made = this.state.java(type);
