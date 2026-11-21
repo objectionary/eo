@@ -1,0 +1,67 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A based `>> helper` read once, deep inside an expression, used to be folded
+# into that read as an anonymous argument. The parser leaves an anonymous
+# argument where it is written, so the folded body sat past the twelve levels
+# the `too-deep-object` lint allows, and the lint refused what the formatter
+# had just printed (#9891). Folded with its handle instead, as
+# `eq. >> helper`, the body is hoisted back to `deep` on the next parse, and
+# the file passes the lint.
+penalties: {}
+origin: |
+  +package x
+
+  [a] > deep
+    plus. > @
+      plus.
+        plus.
+          plus.
+            plus.
+              plus.
+                plus.
+                  plus.
+                    plus.
+                      plus.
+                        a
+                        helper
+                      1
+                    1
+                  1
+                1
+              1
+            1
+          1
+        1
+      1
+    eq. >> helper
+      a.plus (a.plus (a.plus 1))
+      0
+printed: |
+  +package x
+
+  [a] > deep
+    plus. > @
+      plus.
+        plus.
+          plus.
+            plus.
+              plus.
+                plus.
+                  plus.
+                    plus.
+                      a.plus
+                        eq. >> helper
+                          a.plus
+                            a.plus (a.plus 1)
+                          0
+                      1
+                    1
+                  1
+                1
+              1
+            1
+          1
+        1
+      1
