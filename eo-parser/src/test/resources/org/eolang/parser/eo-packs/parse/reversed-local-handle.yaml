@@ -6,8 +6,8 @@ sheets:
   - /org/eolang/parser/parse/resolve-local-names.xsl
 asserts:
   - /object[not(errors)]
-  - //o[@base='.if' and @local='pick' and @name='a🌵2-2']
-  - //o[@base='a🌵2-2' and @name='φ']
+  - //o[@base='.if' and @local='pick' and @name='a🌵pick']
+  - //o[@base='.a🌵pick' and @name='φ']/o[@base='ξ']
   - /object[count(//o[@base='pick'])=0]
 input: |
   [] > main

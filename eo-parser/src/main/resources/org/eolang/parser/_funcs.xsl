@@ -52,16 +52,16 @@
   <!--
   The formation that an own read lands in, or nothing when the object is no
   own read or climbs above the top of the document. An own read goes from
-  "ξ" through nothing but "ρ" hops to a name: a base rolled as "ξ.x",
-  "ξ.ρ.x" or "ξ.ρ.ρ.x.plus", or a dispatch ".x" made on an object that is
-  nothing but such hops. Each hop climbs to the formation around.
+  "ξ" through "ρ" hops, or the receiver handle the printer writes there,
+  to a name ("ξ.x", "ξ.ρ.x", "ξ.ρ.ρ.x.plus"). A ".x" dispatch on such hops
+  climbs the same way. Each hop moves one formation out.
   -->
   <xsl:function name="eo:own-formation" as="element(o)?">
     <xsl:param name="o" as="element(o)"/>
     <xsl:variable name="segments" select="tokenize(string($o/@base), '\.')"/>
     <xsl:choose>
       <xsl:when test="$segments[1] = $eo:xi">
-        <xsl:sequence select="$o/ancestor::o[eo:abstract(.)][index-of(for $segment in $segments return $segment = $eo:rho, false())[2] - 1]"/>
+        <xsl:sequence select="eo:climbed(reverse($o/ancestor::o[eo:abstract(.)]), $segments, 1)"/>
       </xsl:when>
       <xsl:when test="$segments[1] = '' and count($segments) = 2">
         <xsl:sequence select="eo:landing($o/o[1])"/>
@@ -79,6 +79,21 @@
   <xsl:function name="eo:own-name" as="xs:string">
     <xsl:param name="o" as="element(o)"/>
     <xsl:sequence select="string(tokenize(string($o/@base), '\.')[. != $eo:rho][2])"/>
+  </xsl:function>
+  <!-- A "ρ", or a receiver handle that is not also an attribute here. -->
+  <xsl:function name="eo:hop" as="xs:boolean">
+    <xsl:param name="scope" as="element(o)?"/>
+    <xsl:param name="step" as="xs:string"/>
+    <xsl:variable name="handle" select="string($scope/o[@name=$eo:rho][@base=$eo:empty][1]/@local)"/>
+    <xsl:sequence select="exists($scope) and ($step = $eo:rho or ($handle != '' and $step = $handle and empty($scope/o[@name=$step])))"/>
+  </xsl:function>
+  <!-- The formation that owns the name, nearest scope first in "$scopes". -->
+  <xsl:function name="eo:climbed" as="element(o)?">
+    <xsl:param name="scopes" as="element(o)*"/>
+    <xsl:param name="segments" as="xs:string*"/>
+    <xsl:param name="depth" as="xs:integer"/>
+    <xsl:variable name="step" select="string($segments[$depth + 1])"/>
+    <xsl:sequence select="if ($step = '') then () else if (eo:hop($scopes[$depth], $step)) then eo:climbed($scopes, $segments, $depth + 1) else $scopes[$depth]"/>
   </xsl:function>
   <!-- BYTES TO STRING -->
   <xsl:function name="eo:bytes-to-string" as="xs:string">

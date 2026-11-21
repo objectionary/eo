@@ -12,10 +12,10 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - /object/o[@name='app']/o[@base='ξ.base' and @name='a🌵5-2' and @local='tokens' and @pipe='']
-  - /object/o[@name='app']/o[@name='a' and @base='ξ.a🌵5-2.at']
-  - /object/o[@name='app']/o[@name='b' and @base='ξ.a🌵5-2.at']
-  - /object/o[@name='app'][count(o[@base='ξ.a🌵5-2.at'])=2]
+  - /object/o[@name='app']/o[@base='ξ.base' and @name='a🌵tokens' and @local='tokens' and @pipe='']
+  - /object/o[@name='app']/o[@name='a' and @base='ξ.a🌵tokens.at']
+  - /object/o[@name='app']/o[@name='b' and @base='ξ.a🌵tokens.at']
+  - /object/o[@name='app'][count(o[@base='ξ.a🌵tokens.at'])=2]
   - /object[count(//o[@base='Φ.tokens'])=0]
 input: |
   [] > app

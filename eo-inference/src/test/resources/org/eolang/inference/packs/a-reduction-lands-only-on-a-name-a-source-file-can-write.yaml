@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# The @ of shaded is a copy of hue, which the parser names a🌵4-4, so shaded
+# The @ of shaded is a copy of hue, which the parser names a🌵hue, so shaded
 # keeps its own name: it reduces to itself, not to that hidden name.
 sources:
   tree.eo: |
@@ -19,6 +19,6 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.tree.shaded.φ']/is[@loc='Φ.tree.shaded.a🌵4-4']
+  - /answers/o[@loc='Φ.tree.shaded.φ']/is[@loc='Φ.tree.shaded.a🌵hue']
   - /answers/o[@loc='Φ.tree.shaded']/reduced/is[@loc='Φ.tree.shaded']
-  - /answers[not(o[@loc='Φ.tree.shaded']/reduced/is[@loc='Φ.tree.shaded.a🌵4-4'])]
+  - /answers[not(o[@loc='Φ.tree.shaded']/reduced/is[@loc='Φ.tree.shaded.a🌵hue'])]
