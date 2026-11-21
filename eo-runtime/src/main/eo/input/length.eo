@@ -21,9 +21,7 @@
         length.plus
           size.
             ^. (input.read 1048576).read >> chunk
-  | > @
-    source
-    0
+  | source 0 > @
 
   eq. ++> can-read-all-bytes-and-return-the-length
     length.

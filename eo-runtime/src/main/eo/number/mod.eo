@@ -189,9 +189,7 @@
     0
 
   eq. ++> can-take-a-modulo-with-a-terminator-for-the-error
-    7.mod
-      3
-      T
+    7.mod 3 T
     1
 
   eq. ++> can-take-an-exact-modulo-of-a-large-dividend-by-thirteen

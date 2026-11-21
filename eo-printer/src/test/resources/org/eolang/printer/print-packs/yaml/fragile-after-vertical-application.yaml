@@ -8,10 +8,10 @@
 # body - the sort key collapsed to the empty string, so it floated to
 # the front of the alphabetical order. R-6.2.2 puts the chain's naming
 # line on the last link, so the continuation carries "> w" while the
-# vertical application it hangs on keeps "z" as the intermediate name
-# R-6.2.3 allows. The run sorts under its own name, ahead of "z", and
-# the printer writes the receiver into the head, so the printed line
-# reads back as this very object.
+# application keeps "z" as the intermediate name R-6.2.3 allows. The
+# run sorts under its own name, ahead of "z", and the printer writes
+# the receiver into the head, so the printed line reads back as this
+# very object.
 penalties:
   INDENT: 3
   BRACKET: 7
@@ -29,6 +29,4 @@ origin: |
 printed: |
   [] > m
     z?.y > w
-    x > z
-      1
-      2
+    x 1 2 > z
