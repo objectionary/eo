@@ -13,7 +13,7 @@ eo:
       [x] > c_d
         x > @
 voids:
-  - "𝜎9\t3\tx\tstring"
+  - "𝜎9\t3\tv🌵x\tstring"
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e3">
@@ -47,6 +47,6 @@ java: |
 
       @Override
       public Phi lambda() {
-          return this.take("ρ").take("x");
+          return this.take("ρ").take("v🌵x");
       }
   }

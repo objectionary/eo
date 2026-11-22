@@ -19,13 +19,13 @@ eo:
       one 1 > first
       two 2 > second
 xmir:
-  - "//o[@name='e1' and @base='Φ.one']/o[@as='a']/\
+  - "//o[@name='e1' and @base='Φ.one']/o[@as='v🌵a']/\
     /o[@name='λ' and text()='𝜎1']"
-  - "//o[@name='e2' and @base='Φ.two']/o[@as='c']/\
+  - "//o[@name='e2' and @base='Φ.two']/o[@as='v🌵c']/\
     /o[@name='λ' and text()='𝜎2']"
 entries:
   - "1\tΦ.one"
   - "2\tΦ.two"
 voids:
-  - "𝜎1\t1\ta\tnumber"
-  - "𝜎2\t2\tc\tnumber"
+  - "𝜎1\t1\tv🌵a\tnumber"
+  - "𝜎2\t2\tv🌵c\tnumber"

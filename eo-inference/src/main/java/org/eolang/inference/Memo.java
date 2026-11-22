@@ -18,9 +18,9 @@ import java.util.function.Supplier;
  *
  * <p>Every answer is a stored question, asked again only when it lost its
  * answer. An answer keeps the answers that read it, and so does every row,
- * pool, count and walk of {@code use()}: when one of them grows, the
- * answers that read it lose theirs, then the answers that read those, up to
- * the copies walked, and the next cheap pass works out only those. An
+ * count and walk of {@code use()}: when one of them grows, the answers that
+ * read it lose theirs, then the answers that read those, up to the copies
+ * walked, and the next cheap pass works out only those. An
  * answer only grows: what is worked out again is joined to what was
  * there. A question met again while it is being asked gives what it has
  * so far, a cycle hit, and a walk of {@code use()} that met one is not
@@ -188,18 +188,6 @@ final class Memo {
             list.add(this.keys.get(this.stored.get(idx)));
         }
         return list;
-    }
-
-    /**
-     * Put another answer in place of a stored one, after the passes.
-     *
-     * @param key The question
-     * @param answer The answer
-     */
-    void replace(final Key key, final Ints answer) {
-        final int node = this.find(key);
-        this.answers.set(node, this.shared(answer.frozen()));
-        this.present.set(node);
     }
 
     /**

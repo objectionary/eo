@@ -73,10 +73,10 @@ final class LandingsTest {
                     LandingsTest.grounded("Φ.z.φ", "Φ.z.φ.α0", "Φ.z.φ.α1"),
                     "<o loc='Φ.z.φ' copies='1'><is loc='Φ.z.pair'/></o>",
                     "<o loc='Φ.z.φ.α0' copies='1' lands='left'><data/></o>",
-                    "<o loc='Φ.z.φ.α1' copies='1' lands='a🌵14-6'><data/></o>"
+                    "<o loc='Φ.z.φ.α1' copies='1' lands='v🌵right'><data/></o>"
                 )
             ).names(),
-            Matchers.hasEntry("Φ.z.φ.α1", "a🌵14-6")
+            Matchers.hasEntry("Φ.z.φ.α1", "v🌵right")
         );
     }
 
@@ -105,7 +105,7 @@ final class LandingsTest {
         );
     }
 
-    private static Path tables(
+    static Path tables(
         final Path dir, final String facts, final String... rows
     ) throws IOException {
         Files.write(dir.resolve("facts.xml"), facts.getBytes(StandardCharsets.UTF_8));
@@ -117,7 +117,7 @@ final class LandingsTest {
         return dir;
     }
 
-    private static String grounded(final String call, final String... args) {
+    static String grounded(final String call, final String... args) {
         return String.format(
             "<facts><objects><type id='Φ.made'/></objects><reads/><heads><type id='%1$s'><ref loc='Φ.made'/></type></heads><calls><call loc='%1$s'>%2$s</call></calls></facts>",
             call,

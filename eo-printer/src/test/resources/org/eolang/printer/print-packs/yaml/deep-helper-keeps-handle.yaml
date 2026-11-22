@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The based `>> helper` is read once, past the twelve levels the
+# `too-deep-object` lint allows. Folded there anonymously, as it used to be,
+# it stayed that deep on the next parse and the lint refused the printed file
+# (#9891). With its handle it is hoisted back to `deep`, so it keeps it.
+penalties: {}
+origin: |
+  +package x
+
+  [a] > deep
+    plus. > @
+      plus.
+        plus.
+          plus.
+            plus.
+              plus.
+                plus.
+                  plus.
+                    plus.
+                      a.plus
+                        eq. >> helper
+                          a.plus
+                            a.plus (a.plus 1)
+                          0
+                      1
+                    1
+                  1
+                1
+              1
+            1
+          1
+        1
+      1

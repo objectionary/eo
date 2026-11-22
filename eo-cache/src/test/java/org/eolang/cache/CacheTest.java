@@ -8,7 +8,6 @@ import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import com.yegor256.Together;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -86,6 +85,50 @@ final class CacheTest {
     }
 
     @Test
+    void recompilesWhenFileSpellingTheDirWordBecomesEmptyDirectory(
+        @Mktmp final Path temp
+    ) throws IOException {
+        final Path base = temp.resolve("cache-marker-file-to-directory");
+        Files.createDirectories(base);
+        final Path source = temp.resolve("source");
+        new Saved("dir\0", source).value();
+        final Path target = temp.resolve("target");
+        final Path tail = source.getFileName();
+        final Cache cache = new Cache(base, CacheTest::kind);
+        cache.apply(source, target, tail);
+        Files.delete(source);
+        Files.createDirectory(source);
+        cache.apply(source, target, tail);
+        MatcherAssert.assertThat(
+            "an empty directory replacing a file that holds the directory word must be compiled",
+            Files.readString(target),
+            Matchers.equalTo("directory")
+        );
+    }
+
+    @Test
+    void recompilesWhenEmptyDirectoryBecomesFileSpellingTheDirWord(
+        @Mktmp final Path temp
+    ) throws IOException {
+        final Path base = temp.resolve("cache-directory-to-marker-file");
+        Files.createDirectories(base);
+        final Path source = temp.resolve("source");
+        Files.createDirectory(source);
+        final Path target = temp.resolve("target");
+        final Path tail = source.getFileName();
+        final Cache cache = new Cache(base, CacheTest::kind);
+        cache.apply(source, target, tail);
+        Files.delete(source);
+        new Saved("dir\0", source).value();
+        cache.apply(source, target, tail);
+        MatcherAssert.assertThat(
+            "a file holding the directory word that replaces an empty directory must be compiled",
+            Files.readString(target),
+            Matchers.equalTo("file")
+        );
+    }
+
+    @Test
     void compilesAgainWhenChanged(@Mktmp final Path temp) throws Exception {
         final Path base = temp.resolve("cache-base-dir");
         Files.createDirectories(base);
@@ -139,19 +182,14 @@ final class CacheTest {
         Files.createDirectories(base);
         final Path source = temp.resolve("message.txt");
         final String msg = "hello";
-        final Charset encoding = StandardCharsets.UTF_8;
-        Files.writeString(source, msg, encoding);
+        Files.writeString(source, msg, StandardCharsets.UTF_8);
         final Path tail = source.getFileName();
         final Cache cache = new Cache(base, p -> "compiled");
         cache.apply(source, temp.resolve("out.txt"), tail);
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content",
             CacheTest.stamp(base.resolve(tail)),
-            Matchers.equalTo(
-                Base64.getEncoder().encodeToString(
-                    MessageDigest.getInstance("SHA-256").digest(msg.getBytes(encoding))
-                )
-            )
+            Matchers.equalTo(CacheTest.hash(msg))
         );
     }
 
@@ -174,12 +212,7 @@ final class CacheTest {
         MatcherAssert.assertThat(
             "SHA-256 hash file has incorrect content for large file",
             CacheTest.stamp(cache.resolve(tail)),
-            Matchers.equalTo(
-                Base64.getEncoder().encodeToString(
-                    MessageDigest.getInstance("SHA-256")
-                        .digest(content.getBytes(StandardCharsets.UTF_8))
-                )
-            )
+            Matchers.equalTo(CacheTest.hash(content))
         );
     }
 
@@ -327,10 +360,20 @@ final class CacheTest {
         );
     }
 
+    private static String kind(final Path path) {
+        final String out;
+        if (Files.isDirectory(path)) {
+            out = "directory";
+        } else {
+            out = "file";
+        }
+        return out;
+    }
+
     private static String hash(final String content) throws NoSuchAlgorithmException {
         return Base64.getEncoder().encodeToString(
             MessageDigest.getInstance("SHA-256")
-                .digest(content.getBytes(StandardCharsets.UTF_8))
+                .digest(String.format("file\0%s", content).getBytes(StandardCharsets.UTF_8))
         );
     }
 

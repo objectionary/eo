@@ -105,7 +105,7 @@ final class MjUnplaceTest {
                 Paths.get(String.format("foo/hello/-/0.1/%s", binary))
             )
         ).value();
-        final FakeMaven maven = new FakeMaven(temp).with("rewrite", false);
+        final FakeMaven maven = new FakeMaven(temp).with("preserved", true);
         maven.execute(MjPlace.class);
         maven.execute(MjUnplace.class);
         MatcherAssert.assertThat(

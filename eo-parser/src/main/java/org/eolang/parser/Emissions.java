@@ -33,14 +33,9 @@ final class Emissions {
      * What the parser says when the identity object is applied to
      * arguments (R-3.16.1). Shared by every position an application may
      * be written in — a line head ({@link LnApplication}), a paren
-     * group, an inline φ, and the φ of an only-phi line — so the writer
-     * gets the same instruction wherever the glyph carries arguments.
+     * group, an inline φ, and the φ of an only-phi line.
      */
-    static final String NO_IDENTITY_ARGS = String.join(
-        " ",
-        "the identity object takes no horizontal arguments;",
-        "put the argument on a deeper-indent line"
-    );
+    static final String NO_IDENTITY_ARGS = "the identity object takes no arguments";
 
     /**
      * The void the identity object {@code I} binds and decorates.
@@ -86,7 +81,7 @@ final class Emissions {
     ) {
         final Span span = new Span(tokens.body(), line);
         final Value head = tokens.readValue();
-        if (Emissions.reversedDispatch(tokens, head)) {
+        if (tokens.reversedAhead(head)) {
             final boolean fragile = tokens.consumeDispatch();
             final List<Value> rargs = tokens.readArgs();
             if (!rargs.isEmpty()) {
@@ -108,7 +103,7 @@ final class Emissions {
         if (head.identity() && !args.isEmpty()) {
             throw new ParseError(line, head.pos(), Emissions.NO_IDENTITY_ARGS);
         }
-        ChainEmission.link(emit, line, head, chain, name);
+        new ChainEmission(emit, line, chain, name).run(head);
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, line);
         }
@@ -173,26 +168,14 @@ final class Emissions {
      * @param line Source line
      */
     static void emitArg(final Emit emit, final Value value, final int line) {
-        final List<MethodChain> tail = value.chain();
-        if (tail.isEmpty()) {
-            Emissions.openValue(emit, null, value, line);
-            if (value.bound()) {
-                emit.slot(Emissions.bindingTag(value.binding()));
-            }
-            if (value.constant()) {
-                emit.constant();
-            }
-            emit.close();
-        } else {
-            ChainEmission.link(emit, line, value, tail, null);
-            if (value.bound()) {
-                emit.slot(Emissions.bindingTag(value.binding()));
-            }
-            if (value.constant()) {
-                emit.constant();
-            }
-            emit.close();
+        new ChainEmission(emit, line, value.chain(), null).run(value);
+        if (value.bound()) {
+            emit.slot(Emissions.bindingTag(value.binding()));
         }
+        if (value.constant()) {
+            emit.constant();
+        }
+        emit.close();
     }
 
     /**
@@ -440,24 +423,6 @@ final class Emissions {
             Emissions.expression(emit, name, tokens, line);
             tokens.checkEnd("unexpected content inside a parenthesised expression");
         }
-    }
-
-    private static boolean reversedDispatch(final Tokens tokens, final Value head) {
-        final boolean reversed;
-        if (head.reversible() && !head.global() && !tokens.atEnd() && tokens.dispatchAhead()) {
-            final int skip;
-            if (tokens.current() == '?') {
-                skip = 2;
-            } else {
-                skip = 1;
-            }
-            final int probe = tokens.cursor() + skip;
-            reversed = probe >= tokens.body().length()
-                || tokens.body().charAt(probe) == ' ';
-        } else {
-            reversed = false;
-        }
-        return reversed;
     }
 
     private static String reversedHead(final Value head) {

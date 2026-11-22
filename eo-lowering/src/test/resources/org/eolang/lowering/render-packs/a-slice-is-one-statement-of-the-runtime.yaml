@@ -21,7 +21,7 @@ eo:
     [] > app
       head 01-02-03 > used
 voids:
-  - "𝜎1\t6\tx\tbytes"
+  - "𝜎1\t6\tv🌵x\tbytes"
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e6">
@@ -74,7 +74,7 @@ java: |
       }
 
       private byte[] 𝜎1() {
-          return new Dataized(this.take("ρ").take("x")).take();
+          return new Dataized(this.take("ρ").take("v🌵x")).take();
       }
 
       private byte[] 𝜎2() {

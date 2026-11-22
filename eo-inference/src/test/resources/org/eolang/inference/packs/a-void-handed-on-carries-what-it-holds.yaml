@@ -29,9 +29,9 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.bee.φ.α0' and @lands='x']/is[@loc='Φ.oak']
-  - /answers/o[@loc='Φ.wrap.φ.α0' and @lands='x']/is[@loc='Φ.elm']
-  - /answers/o[@loc='Φ.app.φ.α0' and @lands='y']/is[@loc='Φ.elm']
+  - /answers/o[@loc='Φ.bee.φ.α0' and @lands='v🌵x']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.wrap.φ.α0' and @lands='v🌵x']/is[@loc='Φ.elm']
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵y']/is[@loc='Φ.elm']
   - /answers/o[@loc='Φ.inc' and @copies='2']
-  - /answers/o[@loc='Φ.inc.x']/set[@copies='1']/is[@loc='Φ.oak']
-  - /answers/o[@loc='Φ.inc.x']/set[@copies='1']/is[@loc='Φ.elm']
+  - /answers/o[@loc='Φ.inc.v🌵x']/set[@copies='1']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.inc.v🌵x']/set[@copies='1']/is[@loc='Φ.elm']

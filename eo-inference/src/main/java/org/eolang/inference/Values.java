@@ -15,8 +15,8 @@ import java.util.Map;
  * <p>A value is made of what it is (3.1): two copies of the same formation,
  * born at the same place, with the same tag and the same voids bound, are
  * one copy, and are one number. The first six numbers are the root, a datum,
- * a termination, Java's mark, an open void, and an open void a stop
- * decided.</p>
+ * a termination, Java's mark, the unknown of a void nobody fills, and the
+ * unknown of a void only Java fills.</p>
  *
  * @since 0.76.0
  */
@@ -43,17 +43,21 @@ final class Values {
     static final int JAVA = 3;
 
     /**
-     * An open void.
+     * The unknown of a void nobody fills in a copy that stands for a caller
+     * who is not there, a study copy or one kept as written: what a read
+     * of that void gives.
      */
     static final int GAP = 4;
 
     /**
-     * An open void a stop decided Java alone fills (4.4).
+     * The unknown of a void only Java fills: what a void of a copy Java made
+     * reads when the annotation of the atom gives it no type (4.5).
      */
     static final int JGAP = 5;
 
     /**
-     * The birthplace of every copy Java makes.
+     * The birthplace of every copy Java makes, with the bracket list of its
+     * type right after it when the type has one.
      */
     static final String JBORN = "java";
 
@@ -133,37 +137,6 @@ final class Values {
      */
     int size() {
         return this.all.size();
-    }
-
-    /**
-     * An unknown, for a reason.
-     *
-     * @param why The reason
-     * @return Its number
-     */
-    int unknown(final String why) {
-        return this.intern(new Value('U', why, "", 0L, "", -1, 0));
-    }
-
-    /**
-     * A failing read.
-     *
-     * @param label What fails
-     * @return Its number
-     */
-    int conflict(final String label) {
-        return this.intern(new Value('X', label, "", 0L, "", -1, 0));
-    }
-
-    /**
-     * Whether a value is an open void, decided or not.
-     *
-     * @param num The number
-     * @return TRUE if it is
-     */
-    boolean vacant(final int num) {
-        final Value value = this.get(num);
-        return value.kind() == 'U' && "open void".equals(value.form());
     }
 
     /**
@@ -268,8 +241,8 @@ final class Values {
         } else if (value.kind() == 'B') {
             name = String.format("%s~", this.full(value.base()));
         } else if (value.kind() == 'A') {
-            name = String.format("%s/%d", this.full(value.base()), value.count());
-        } else if (value.kind() == 'U' || value.kind() == 'X') {
+            name = this.marked(value);
+        } else if (value.kind() == 'U') {
             final StringBuilder text = new StringBuilder().append(value.kind())
                 .append(':').append(value.form());
             if (!value.birth().isEmpty()) {
@@ -278,6 +251,14 @@ final class Values {
             name = text.toString();
         } else {
             name = String.valueOf(value.kind());
+        }
+        return name;
+    }
+
+    private String marked(final Value value) {
+        String name = String.format("%s/%d", this.full(value.base()), value.count());
+        if (value.origin() >= 0) {
+            name = String.format("%s<%s>", name, this.full(value.origin()));
         }
         return name;
     }

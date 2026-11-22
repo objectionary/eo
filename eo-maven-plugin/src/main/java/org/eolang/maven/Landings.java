@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  * the name only when the call puts the argument into one void and nowhere
  * else. An argument has no {@code lands}, and keeps its place, when it lands
  * in two voids, when a head of its call is something the engine cannot follow
- * to a formation, such as an open void or an object made in Java, or when
+ * to a formation, such as an unknown or an object made in Java, or when
  * every head of its call fails.</p>
  *
  * <p>The engine finds that void from what the program was seen to put into
@@ -39,8 +39,9 @@ import java.util.stream.Collectors;
  * program puts a formation with that void there, while a caller in Java may
  * put an object with no such void. So an argument is named only when
  * {@link Grounded} says the head of its call is fixed by the code alone,
- * followed in {@code facts.xml} without reading any void but {@code ρ}. Any
- * other argument keeps its place.</p>
+ * followed in {@code facts.xml} without reading any void but {@code ρ}, the
+ * ones an atom types in its brackets, and the ones a call written in the
+ * program fills. Any other argument keeps its place.</p>
  *
  * @since 0.69.0
  */
@@ -88,7 +89,7 @@ final class Landings {
         if (!Files.exists(this.answers)) {
             throw new IOException(
                 Logger.format(
-                    "The table %[file]s is absent, while the arguments can be named only after the 'inference' goal has written it",
+                    "The table %[file]s is absent, while the arguments can be named only after the 'infer' goal has written it",
                     this.answers
                 )
             );

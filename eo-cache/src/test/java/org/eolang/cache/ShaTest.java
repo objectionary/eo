@@ -95,19 +95,55 @@ final class ShaTest {
     }
 
     @Test
-    void hashesLoneFileWithoutFraming(@Mktmp final Path temp)
+    void distinguishesAFileSpellingTheDirWordFromAnEmptyDir(@Mktmp final Path temp)
+        throws IOException {
+        new Saved("dir\0", temp.resolve("word.txt")).value();
+        Files.createDirectories(temp.resolve("empty"));
+        MatcherAssert.assertThat(
+            "a file holding the directory word and an empty directory hash alike",
+            new Sha(temp.resolve("word.txt")).toString(),
+            Matchers.not(Matchers.equalTo(new Sha(temp.resolve("empty")).toString()))
+        );
+    }
+
+    @Test
+    void distinguishesAFileSpellingTheDirWordWithoutNulFromAnEmptyDir(@Mktmp final Path temp)
+        throws IOException {
+        new Saved("dir", temp.resolve("word.txt")).value();
+        Files.createDirectories(temp.resolve("empty"));
+        MatcherAssert.assertThat(
+            "a file holding the directory word without the NUL and an empty directory hash alike",
+            new Sha(temp.resolve("word.txt")).toString(),
+            Matchers.not(Matchers.equalTo(new Sha(temp.resolve("empty")).toString()))
+        );
+    }
+
+    @Test
+    void distinguishesAFileHoldingDirectoryEntriesFromThatDirectory(@Mktmp final Path temp)
+        throws IOException {
+        new Saved(String.format("dir\0a.txt\0hello\0%d\0", 5), temp.resolve("word.txt")).value();
+        new Saved("hello", temp.resolve("dir/a.txt")).value();
+        MatcherAssert.assertThat(
+            "a file holding a directory digest and that directory hash alike",
+            new Sha(temp.resolve("word.txt")).toString(),
+            Matchers.not(Matchers.equalTo(new Sha(temp.resolve("dir")).toString()))
+        );
+    }
+
+    @Test
+    void framesALoneFileWithItsKindWord(@Mktmp final Path temp)
         throws IOException, NoSuchAlgorithmException {
         final long seed = System.nanoTime();
         final String text = String.format("%s-ñ-🐘", Long.toHexString(seed));
         final Path file = temp.resolve("lone.txt");
         new Saved(text, file).value();
         MatcherAssert.assertThat(
-            String.format("hash of a lone file is not the plain one of its bytes, seed=%d", seed),
+            String.format("hash of a lone file is the framed one of its bytes, seed=%d", seed),
             new Sha(file).toString(),
             Matchers.equalTo(
                 Base64.getEncoder().encodeToString(
                     MessageDigest.getInstance("SHA-256")
-                        .digest(text.getBytes(StandardCharsets.UTF_8))
+                        .digest("file\0".concat(text).getBytes(StandardCharsets.UTF_8))
                 )
             )
         );
@@ -128,7 +164,7 @@ final class ShaTest {
             Matchers.equalTo(
                 Base64.getEncoder().encodeToString(
                     MessageDigest.getInstance("SHA-256")
-                        .digest(text.getBytes(StandardCharsets.UTF_8))
+                        .digest("file\0".concat(text).getBytes(StandardCharsets.UTF_8))
                 )
             )
         );

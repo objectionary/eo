@@ -19,7 +19,7 @@ eo:
     [] > app
       sum 5 > used
 voids:
-  - "𝜎1\t5\tx\tobject"
+  - "𝜎1\t5\tv🌵x\tobject"
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e5">
@@ -59,11 +59,11 @@ java: |
 
       @Override
       public Phi lambda() {
-          return new Data.ToPhi(java.nio.ByteBuffer.wrap(this.𝜎3()).getDouble());
+          return new Data.ToPhi(new Dataized(new Data.ToPhi(this.𝜎3())).asNumber());
       }
 
       private byte[] 𝜎1() {
-          return new Dataized(this.take("ρ").take("x")).take();
+          return new Dataized(this.take("ρ").take("v🌵x")).take();
       }
 
       private byte[] 𝜎2() {
@@ -71,6 +71,6 @@ java: |
       }
 
       private byte[] 𝜎3() {
-          return java.nio.ByteBuffer.allocate(8).putDouble(java.nio.ByteBuffer.wrap(this.𝜎2()).getDouble() + java.nio.ByteBuffer.wrap(this.𝜎2()).getDouble()).array();
+          return java.nio.ByteBuffer.allocate(8).putDouble(new Dataized(new Data.ToPhi(this.𝜎2())).asNumber() + new Dataized(new Data.ToPhi(this.𝜎2())).asNumber()).array();
       }
   }

@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -45,12 +44,20 @@ import org.w3c.dom.Node;
  * two can be compared with {@code diff -r}. That is why the files are sorted
  * by code point, why the stylesheets are run by Saxon, which writes the bytes
  * {@code xsltproc} writes when told to put no {@code Content-Type} into the
- * head, and why every file ends with a line feed. The directory is emptied
- * first, so the page of a deleted source goes with it.</p>
+ * head, and why every file ends with a line feed. The names an author gave
+ * the objects the parser hides are the one thing the Python report does not
+ * draw: {@link Handles} puts them on a page, and every page carries the
+ * style they are drawn in. The directory is emptied first, so the page of a
+ * deleted source goes with it.</p>
  *
  * @since 0.70.0
  */
 public final class Report {
+
+    /**
+     * The extension of a page of the report.
+     */
+    private static final String PAGE = ".html";
 
     /**
      * The directory with the prepared XMIR files.
@@ -87,27 +94,34 @@ public final class Report {
         final Map<String, Xnav> roots = this.roots();
         final Map<String, Xnav> formations = new HashMap<>(0);
         final Map<String, String> files = new HashMap<>(0);
+        final Map<String, String> locals = new HashMap<>(0);
         for (final Map.Entry<String, Xnav> root : roots.entrySet()) {
             this.objects(root.getValue()).forEach(
                 object -> {
-                    final String loc = new Noted(object).says("loc");
+                    final Noted noted = new Noted(object);
+                    final String loc = noted.says("loc");
                     if (!loc.isEmpty() && object.attribute("base").text().isEmpty()) {
                         formations.put(loc, object);
                         files.put(loc, root.getKey());
+                    }
+                    if (!loc.isEmpty() && !noted.says("local").isEmpty()) {
+                        locals.put(loc, noted.says("local"));
                     }
                 }
             );
         }
         final Table table = new Table(new Xnav(this.answers));
         final Shapes shapes = new Shapes(formations, files, table);
+        final Handles handles = new Handles(locals);
         final Templates sheet = Report.sheet("page.xsl");
         final Map<String, Map<String, Integer>> tallies = new LinkedHashMap<>(0);
         for (final Map.Entry<String, Xnav> root : roots.entrySet()) {
             final Document page = Report.document();
             final Element drawn = new Page(root.getValue(), root.getKey(), table, shapes)
                 .drawn(page);
+            handles.spelled(drawn);
             page.appendChild(drawn);
-            Report.styled(sheet, page, out.resolve(root.getKey().concat(".html")));
+            Report.styled(sheet, page, out.resolve(root.getKey().concat(Report.PAGE)));
             tallies.put(root.getKey(), Report.tally(drawn));
         }
         final Document index = Report.document();
@@ -119,12 +133,12 @@ public final class Report {
 
     private static void wiped(final Path out) throws IOException {
         if (Files.exists(out)) {
-            final List<Path> all;
+            final List<Path> pages;
             try (Stream<Path> walked = Files.walk(out)) {
-                all = walked.sorted(Comparator.reverseOrder()).toList();
+                pages = walked.filter(path -> path.toString().endsWith(Report.PAGE)).toList();
             }
-            for (final Path path : all) {
-                Files.delete(path);
+            for (final Path page : pages) {
+                Files.delete(page);
             }
         }
     }
@@ -201,7 +215,7 @@ public final class Report {
         for (final String name : names) {
             final Element file = parent.getOwnerDocument().createElement("file");
             file.setAttribute("name", name.substring(name.lastIndexOf('/') + 1));
-            file.setAttribute("href", name.concat(".html"));
+            file.setAttribute("href", name.concat(Report.PAGE));
             for (final String band : Band.ORDER) {
                 file.setAttribute(band, Integer.toString(pages.get(name).get(band)));
             }

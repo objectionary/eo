@@ -15,6 +15,6 @@ final class WithVoidPhi extends PhDefault {
      * Ctor.
      */
     WithVoidPhi() {
-        super(new Attrs(new Attr(Phi.PHI, new AtVoid(Phi.PHI))));
+        super(new Attrs(new Attr(Phi.PHI)));
     }
 }

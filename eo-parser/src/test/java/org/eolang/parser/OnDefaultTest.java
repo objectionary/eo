@@ -100,7 +100,7 @@ final class OnDefaultTest {
                 ).get(),
                 "We should fail fast when no object name can be derived"
             ).getMessage(),
-            Matchers.containsString("found 0")
+            Matchers.containsString("XMIR should have either")
         );
     }
 

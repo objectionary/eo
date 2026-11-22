@@ -19,8 +19,8 @@ eo:
     [] > app
       shout "hey" > used
 rows:
-  - "L_shout\tΦ.shout\tΦ.shout\ts:string"
+  - "L_shout\tΦ.shout\tΦ.shout\tv🌵s:string"
 table:
   - "- λ: L_shout"
-  - "    𝛿1: $.s"
+  - "    𝛿1: $.v🌵s"
   - "  𝑛: Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )"

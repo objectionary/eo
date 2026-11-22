@@ -37,11 +37,10 @@ import org.xembly.Directives;
  * a dispatch of its own, which is what the splitting done before any clue
  * looks at the XMIR is for.</p>
  *
- * <p>A row is about a place in the program, not about an object. Which places
- * hold the same object is not known here; the links work that out later, and
- * {@code Demanded} turns what is read off a void into a demand on whatever
- * fills it. So two rows that look alike, with the same name read off the same
- * head, are not duplicates: thousands of rows read {@code bytes} off a bare
+ * <p>A row is about a place in the program. Which places hold the same
+ * object is not known here, and the walk works that out copy by copy. So
+ * two rows that look alike, with the same name read off the same head, are
+ * not duplicates: thousands of rows read {@code bytes} off a bare
  * {@code Φ}, and each one is the only fact about its own place.</p>
  *
  * <p>The receiver is the child that is not an argument: {@code x.plus 5}
@@ -50,17 +49,16 @@ import org.xembly.Directives;
  * without an {@code @as}, and it is always there: a name written by itself
  * gets a bare {@code ξ} as its receiver, a name the whole program knows gets
  * a bare {@code Φ}, and every other name gets the read it is written after.
- * Nothing here
- * tries to work out what the receiver actually is, or whether it really has
- * the name — asking is all this section does. Comparing the answer with
- * what {@link Provides} wrote down is the job of the checking loop, once the
- * links between copies are known.</p>
+ * Nothing here works out what the receiver is or whether it has the name.
+ * {@link Places} answers a read in every copy by reading the name off each
+ * object the receiver can be, and {@link Reads} looks for it among the
+ * attributes {@link Provides} wrote down.</p>
  *
  * <p>This is the one place that reads the dispatches off the XMIR, and the
- * rows go into the {@code reads} section of the facts. Everything after it
- * reads them from there, each as a {@code Site}, in the order the dispatches
- * appear in the code: the rows keep that order, and the answers depend on
- * it.</p>
+ * rows go into the {@code reads} section of the facts. {@link FactsStream}
+ * reads each row back as a {@link Read}. The rows keep the order the
+ * dispatches have in the code, and the walk goes over the places of a
+ * formation in that order.</p>
  *
  * @since 0.68.0
  */

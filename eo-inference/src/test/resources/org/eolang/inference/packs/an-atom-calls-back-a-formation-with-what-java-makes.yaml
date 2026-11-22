@@ -27,8 +27,8 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.memory.use.scope']/is[@loc='Φ.app.φ.α1']
-  - /answers/o[@loc='Φ.app.φ.α1' and @lands='scope']/reduced[@copies='2']
-  - /answers/o[@loc='Φ.app.φ.α1.b']/is[@loc='Φ.block']
+  - /answers/o[@loc='Φ.memory.use.v🌵scope']/is[@loc='Φ.app.φ.α1']
+  - /answers/o[@loc='Φ.app.φ.α1' and @lands='v🌵scope']/reduced[@copies='2']
+  - /answers/o[@loc='Φ.app.φ.α1.v🌵b']/is[@loc='Φ.block']
   - /answers/o[@loc='Φ.app.φ.α1.φ.ρ']/is[@loc='Φ.block']
   - /answers/o[@loc='Φ.app.φ.α1.φ']/is[@loc='Φ.number']

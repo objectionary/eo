@@ -162,7 +162,7 @@ final class MjTranspileTest {
                 "    42 > @"
             )
         ).with("tracking", true);
-        maven.execute(MjParse.class).execute(MjInference.class).execute(MjTranspile.class);
+        maven.execute(MjParse.class).execute(MjInfer.class).execute(MjTranspile.class);
         MatcherAssert.assertThat(
             "a formation that takes nothing and copies nothing but a literal must be marked as safe to cache, but it wasnt",
             new XMLDocument(
@@ -181,7 +181,7 @@ final class MjTranspileTest {
         MatcherAssert.assertThat(
             "a formation marked as safe to cache must be wrapped in PhSticky in the generated Java, but it wasnt",
             new TextOf(
-                MjTranspileTest.pure(temp).execute(MjParse.class).execute(MjInference.class)
+                MjTranspileTest.pure(temp).execute(MjParse.class).execute(MjInfer.class)
                     .execute(MjTranspile.class).result()
                     .get("target/generated/org/eolang/EO_examples/EOx.java")
             ).asString(),
@@ -194,7 +194,7 @@ final class MjTranspileTest {
         MatcherAssert.assertThat(
             "a top-level formation marked as safe to cache must implement Pure in the generated Java, so PhPackage can wrap it in PhSticky, but it didnt",
             new TextOf(
-                MjTranspileTest.pure(temp).execute(MjParse.class).execute(MjInference.class)
+                MjTranspileTest.pure(temp).execute(MjParse.class).execute(MjInfer.class)
                     .execute(MjTranspile.class).result()
                     .get("target/generated/org/eolang/EO_examples/EOx.java")
             ).asString(),
@@ -220,7 +220,7 @@ final class MjTranspileTest {
                     )
                 )
                 .execute(MjParse.class)
-                .execute(MjInference.class)
+                .execute(MjInfer.class)
                 .execute(MjTranspile.class)
                 .result()
                 .get("target/generated/org/eolang/EO_examples/EOx.java")
@@ -390,7 +390,11 @@ final class MjTranspileTest {
                     .result()
                     .get(MjTranspileTest.compiled())
             ).asString(),
-            Matchers.not(Matchers.containsString("new PhDefault"))
+            Matchers.not(
+                Matchers.matchesPattern(
+                    "(?s).*(?:new PhDefault|new PhApplication\\([^,]+, new byte\\[\\]).*"
+                )
+            )
         );
     }
 
@@ -434,7 +438,7 @@ final class MjTranspileTest {
                     )
                 )
             ).asString(),
-            Matchers.containsString("eo.phiDefaultClass")
+            Matchers.containsString("eo.transpile.superclass")
         );
     }
 
@@ -442,7 +446,7 @@ final class MjTranspileTest {
     void writesNoTimeoutWhenDeadlineIsZero(@Mktmp final Path temp)
         throws Exception {
         MatcherAssert.assertThat(
-            "a zero eo.deadline must take the deadline away from a generated test, while keeping its budget, since JUnit refuses a timeout of zero",
+            "a zero eo.transpile.deadline must take the deadline away from a generated test, while keeping its budget, since JUnit refuses a timeout of zero",
             new TextOf(
                 new FakeMaven(temp)
                     .withProgram(MjTranspileTest.truthy())
@@ -461,7 +465,7 @@ final class MjTranspileTest {
     @Test
     void rejectsNegativeDeadline(@Mktmp final Path temp) {
         MatcherAssert.assertThat(
-            "a negative eo.deadline must be refused by naming the option, instead of emitting a timeout that JUnit refuses",
+            "a negative eo.transpile.deadline must be refused by naming the option, instead of emitting a timeout that JUnit refuses",
             new UncheckedText(
                 new TextOf(
                     Assertions.assertThrows(
@@ -470,11 +474,11 @@ final class MjTranspileTest {
                             .withProgram(MjTranspileTest.truthy())
                             .with("deadline", -1L)
                             .execute(new PpTranspile()),
-                        "a negative eo.deadline must not reach the generated tests"
+                        "a negative eo.transpile.deadline must not reach the generated tests"
                     )
                 )
             ).asString(),
-            Matchers.containsString("eo.deadline")
+            Matchers.containsString("eo.transpile.deadline")
         );
     }
 
@@ -488,13 +492,16 @@ final class MjTranspileTest {
                         IllegalStateException.class,
                         () -> new FakeMaven(temp)
                             .withProgram("# Absent.")
-                            .execute(new PpTranspile()),
+                            .execute(MjParse.class)
+                            .execute(MjTranspile.class),
                         "TranspileMojo should throw an exception on invalid EO code"
                     )
                 )
             ).asString(),
             Matchers.allOf(
-                Matchers.containsString("Expected 1 child nodes, but found 0"),
+                Matchers.containsString(
+                    "XMIR should have either '/object/o/@name' or '/object/class/@name' attribute"
+                ),
                 Matchers.containsString("main.xmir' encountered some problems, broken syntax?")
             )
         );
@@ -960,8 +967,6 @@ final class MjTranspileTest {
         ).xpath("//@java-name").get(0);
     }
 
-    // A workspace with an object and a member of its package, where the
-    // member holds an atom.
     private static FakeMaven withMember(final Path temp) throws IOException {
         return new FakeMaven(temp).withProgram(
             String.join(

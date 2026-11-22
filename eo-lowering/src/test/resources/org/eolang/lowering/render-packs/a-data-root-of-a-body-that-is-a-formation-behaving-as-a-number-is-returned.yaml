@@ -26,7 +26,7 @@ eo:
     [] > app
       (dozen 3).as-bytes > used
 voids:
-  - "𝜎1\t1\tk\tnumber"
+  - "𝜎1\t1\tv🌵k\tnumber"
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e1">
@@ -71,14 +71,14 @@ java: |
 
       @Override
       public Phi lambda() {
-          return new Data.ToPhi(java.nio.ByteBuffer.wrap(this.𝜎2()).getDouble());
+          return new Data.ToPhi(new Dataized(new Data.ToPhi(this.𝜎2())).asNumber());
       }
 
       private byte[] 𝜎1() {
-          return new Dataized(this.take("ρ").take("k")).take();
+          return new Dataized(this.take("ρ").take("v🌵k")).take();
       }
 
       private byte[] 𝜎2() {
-          return java.nio.ByteBuffer.allocate(8).putDouble(java.nio.ByteBuffer.wrap(this.𝜎1()).getDouble() * 12.0d).array();
+          return java.nio.ByteBuffer.allocate(8).putDouble(new Dataized(new Data.ToPhi(this.𝜎1())).asNumber() * 12.0d).array();
       }
   }

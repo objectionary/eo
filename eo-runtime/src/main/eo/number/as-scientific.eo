@@ -36,13 +36,14 @@
                     num.abs.lt (1.div boost)
                     not. (num.eq 0)
                 num.times
-                  10.power 300 >> boost!
+                  number (10.power 300)! >> boost
                 num
               10.power
                 number raw
             6
           "10.000000".as-bytes
-        mantissa.eq "-10.000000".as-bytes >> carried!
+        as-bool.
+          mantissa.eq "-10.000000".as-bytes >> carried!
       concat.
         concat.
           carried.as-bool.if "-1.000000".as-bytes "1.000000".as-bytes >> normalized!
@@ -60,7 +61,7 @@
         mantissa.concat "e".as-bytes
         as-decimal.
           number exponent
-  if. > [^ m count] >> rec-exponent
+  if. > [^num m count] >> rec-exponent
     or.
       m.eq 0
       and.
@@ -69,11 +70,11 @@
     count
     if.
       m.lt 1
-      ^.rec-exponent
+      num.rec-exponent
         m.times 10
         as-number.
           count.minus 1
-      ^.rec-exponent
+      num.rec-exponent
         m.div 10
         as-number.
           count.plus 1

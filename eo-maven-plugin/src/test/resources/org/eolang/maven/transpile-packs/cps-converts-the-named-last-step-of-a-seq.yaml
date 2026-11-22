@@ -6,7 +6,7 @@ sheets:
   - /org/eolang/maven/transpile/recursion-to-cps.xsl
 asserts:
   - /object[not(errors)]
-  - //o[@name='rec']/o[@name='φ' and @base='Φ.seq']/o[@as='steps' and @base='Φ.tuple']/o[@as='head' and @base='ξ.ρ.rec' and @again='true']/o[@as='α1' and @base='ξ.c🌵1']
+  - //o[@name='rec']/o[@name='φ' and @base='Φ.seq']/o[@as='v🌵steps' and @base='Φ.tuple']/o[@as='v🌵head' and @base='ξ.ρ.rec' and @again='true']/o[@as='α1' and @base='ξ.c🌵1']
 input: |
   [] > main
     [i] > rec

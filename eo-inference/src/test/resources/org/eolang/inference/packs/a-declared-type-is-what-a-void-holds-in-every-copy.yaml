@@ -18,6 +18,6 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.number.plus.b' and not(set)]/is[@loc='Φ.number']
-  - /answers/o[@loc='Φ.app.φ.α0' and @lands='b']/is[@loc='Φ.string']
-  - /answers/o[@loc='Φ.number.plus.b']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.number.plus.v🌵b' and not(set)]/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵b']/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.number.plus.v🌵b']/is[@loc='Φ.string']

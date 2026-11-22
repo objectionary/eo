@@ -13,7 +13,7 @@
     renamed.code.eq 0
     file target
     T
-      "Cant move the file '%s' to '%s': %s".printf
+      "Can't move the file '%s' to '%s': %s".printf
         *
           entry.path
           target

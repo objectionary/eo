@@ -19,12 +19,11 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.cactoos.Proc;
 import org.cactoos.Text;
-import org.cactoos.io.Directory;
 import org.cactoos.iterable.Filtered;
 import org.cactoos.iterable.Mapped;
-import org.cactoos.iterable.Sorted;
 import org.cactoos.list.ListOf;
 import org.cactoos.text.Split;
 import org.cactoos.text.TextOf;
@@ -45,7 +44,7 @@ import org.cactoos.text.TextOf;
  * now a taint, or whose object was renamed or deleted, would otherwise be
  * compiled again and again (#9267).</p>
  *
- * <p>The Java files are written into the directory of atoms, next to the
+ * <p>The Java files are written into a numbered {@code atoms}, next to the
  * directory of protocols, so that a reader of the build can compare every
  * atom with the protocol it was made from. The Maven goal gives this
  * directory to javac as one more directory of sources. The file name of
@@ -91,7 +90,7 @@ import org.cactoos.text.TextOf;
  * Plain data has no object around it, so a string or an {@code i16}, for
  * example, would lose every attribute of its own. This is why, when the
  * result is plain data the protocol names no object around, this stage
- * asks the tables of {@code eo:inference} what the body gives, and an
+ * asks the tables of {@code eo:infer} what the body gives, and an
  * entry whose body is not a number, a bool or bytes is a taint. The tables
  * must be there before the stage starts, even though most entries never
  * ask them.</p>
@@ -101,7 +100,12 @@ import org.cactoos.text.TextOf;
  * answers it, and the protocol keeps the message that copy got. So when
  * the root of an entry is such a copy, the atom only throws that message,
  * through {@code ExFailure}, which is what {@code T} does in eo-runtime,
- * and {@code recovered} catches it the same way.</p>
+ * and {@code recovered} catches it the same way. A message phino could
+ * not write as a string literal, like the one of {@code T (string b)}, is
+ * an object, which the atom builds and dataizes into the reason it
+ * throws, the way {@code PhTerminator} dataizes its own reason. An object
+ * the protocol names through anything but a chain of objects of the world
+ * is a taint, since this stage never parses a phi-expression.</p>
  *
  * <p>A fork is an {@code if} whose condition nobody worked out, such as
  * the check of {@code bytes.xor} that its operands have one length. phino
@@ -114,8 +118,8 @@ import org.cactoos.text.TextOf;
  * every fork, with the statements only one side needs inside that side,
  * and a {@code return} or a {@code throw} at the end of every flow. A flow
  * whose side is a copy of {@code throw} ends in the throw of its message,
- * the way the root of a whole entry does, and an entry that throws a
- * message it would have to compute is a taint.</p>
+ * the way the root of a whole entry does, computing the message first
+ * where the message is an object.</p>
  *
  * @since 0.64.0
  * @todo #9248:45min Put the object around a root that comes out of an
@@ -128,21 +132,11 @@ import org.cactoos.text.TextOf;
  *  parts}, is a taint now for the same reason. Once phino names, in the
  *  dataization of the entry, the object each root reduced to, read the
  *  object around the root there as well.
- * @todo #9373:45min Write an atom for an entry that throws a message it
- *  computes. When the message of a {@code T} is not a string literal, like
- *  {@code T (string FF-FE)} or {@code T (x.as-string)}, phino writes it as
- *  an object, and the entry is a taint now. But its atom could compute the
- *  message first, and then throw it.
  */
 final class Rendering implements Proc<Path> {
 
     /**
-     * The directory where the Java atoms are written.
-     */
-    private final Path atoms;
-
-    /**
-     * The directory with the tables of {@code eo:inference},
+     * The directory with the tables of {@code eo:infer},
      * {@code facts.xml} and {@code answers.xml}, which say what the body of
      * an entry gives.
      */
@@ -151,21 +145,20 @@ final class Rendering implements Proc<Path> {
     /**
      * Ctor.
      *
-     * @param dir The directory where the Java atoms are written
-     * @param tbls The directory with the tables of {@code eo:inference}
+     * @param tbls The directory with the tables of {@code eo:infer}
      */
-    Rendering(final Path dir, final Path tbls) {
-        this.atoms = dir;
+    Rendering(final Path tbls) {
         this.tables = tbls;
     }
 
     @Override
     public void exec(final Path home) throws IOException {
+        final long start = System.currentTimeMillis();
         for (final String table : new ListOf<>("facts.xml", "answers.xml")) {
             if (!Files.exists(this.tables.resolve(table))) {
                 throw new IllegalStateException(
                     String.format(
-                        "There is no '%s' in '%s', while rendering needs the tables of eo:inference to say what a body gives",
+                        "There is no '%s' in '%s', while rendering needs the tables of eo:infer to say what a body gives",
                         table, this.tables
                     )
                 );
@@ -199,7 +192,8 @@ final class Rendering implements Proc<Path> {
             .with("voids", home.resolve("voids.tsv").toUri().toString())
             .with("rows", home.resolve("rows.tsv").toUri().toString())
             .with("inference", this.tables.toUri().toString());
-        this.clean();
+        final Path atoms = new Seqdir(home, 1).dirs().once("atoms");
+        Rendering.clean(atoms);
         final Collection<String> rendered = new ArrayList<>(0);
         final Map<String, Collection<String>> claims = new HashMap<>(0);
         final Collection<String> tainted = new ArrayList<>(0);
@@ -225,7 +219,7 @@ final class Rendering implements Proc<Path> {
                         cells[0], cells[1], out.xpath("/rendered/taint/text()").get(0)
                     );
                 } else {
-                    final Path file = this.atoms.resolve(
+                    final Path file = atoms.resolve(
                         out.xpath("/rendered/atom/@file").get(0)
                     );
                     Files.createDirectories(file.getParent());
@@ -254,47 +248,54 @@ final class Rendering implements Proc<Path> {
                 );
             }
         }
-        tainted.addAll(this.unshared(claims, rendered));
+        tainted.addAll(this.unshared(atoms, claims, rendered));
         Files.write(
             home.resolve("rendered.tsv"),
             String.join("", rendered).getBytes(StandardCharsets.UTF_8)
         );
-        this.summarize(rendered, tainted);
+        this.summarize(atoms, rendered, tainted, System.currentTimeMillis() - start);
     }
 
-    private void summarize(final Collection<String> rendered, final Collection<String> tainted) {
+    private void summarize(
+        final Path atoms, final Collection<String> rendered,
+        final Collection<String> tainted, final long msec
+    ) {
         if (tainted.isEmpty()) {
             Logger.info(
                 this,
-                "Rendered %d atoms into %[file]s, while no entries were taints",
-                rendered.size(), this.atoms
+                "Rendered %d atoms into %[file]s in %[ms]s, while no entries were taints",
+                rendered.size(), atoms, msec
             );
         } else {
             Logger.info(
                 this,
-                "Rendered %d atoms into %[file]s, while %d entries were taints: %s",
-                rendered.size(), this.atoms, tainted.size(), new Shortlist(tainted, 6).asString()
+                "Rendered %d atoms into %[file]s in %[ms]s, while %d entries were taints: %s",
+                rendered.size(), atoms, msec, tainted.size(), new Shortlist(tainted, 6).asString()
             );
         }
     }
 
-    private void clean() throws IOException {
-        if (Files.exists(this.atoms)) {
-            for (final Path stale
-                : new Sorted<>(Comparator.reverseOrder(), new Directory(this.atoms))) {
+    private static void clean(final Path atoms) throws IOException {
+        try (Stream<Path> inside = Files.walk(atoms)) {
+            for (final Path stale : new ListOf<>(
+                inside.filter(path -> !path.equals(atoms))
+                    .sorted(Comparator.reverseOrder())
+                    .iterator()
+            )) {
                 Files.delete(stale);
             }
         }
     }
 
     private Collection<String> unshared(
-        final Map<String, Collection<String>> claims, final Collection<String> rendered
+        final Path atoms, final Map<String, Collection<String>> claims,
+        final Collection<String> rendered
     ) throws IOException {
         final Collection<String> dropped = new ArrayList<>(0);
         for (final Map.Entry<String, Collection<String>> claim : claims.entrySet()) {
             if (claim.getValue().size() > 1) {
                 rendered.removeAll(claim.getValue());
-                Files.delete(this.atoms.resolve(claim.getKey()));
+                Files.delete(atoms.resolve(claim.getKey()));
                 for (final String row : claim.getValue()) {
                     dropped.add(row.split("\t", -1)[1].trim().replaceFirst("^Φ\\.", ""));
                 }

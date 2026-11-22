@@ -1,25 +1,54 @@
 # Sine of `num` radians as `number`.
-# The argument is reduced into the [-pi, pi] range and the Taylor series is
-# summed over the reduced angle through Horner's scheme.
 #
-# The reduction takes `turns` whole turns off the angle, and the accuracy of
-# the answer is the accuracy of that one subtraction: at `1e15` the reduced
-# angle is what survives of a number sixteen digits long, so a product of
-# `turns` and two pi rounded into a single double keeps none of the digits
-# that decide the sine. The product is therefore carried in two doubles.
+# The angle is reduced twice: whole turns come off it first, which leaves
+# it in [-pi, pi], and then quarter turns, which leaves it in
+# [-pi/4, pi/4]. The answer is the sine or the cosine of what is left, with
+# the sign the quarter asks for. One reduction is not enough: an angle near
+# a multiple of pi lands at the edge of [-pi, pi], where the Taylor series
+# of the sine cancels its leading digits and keeps almost none of them, so
+# `pi.sine` came back as `6.98e-16` against the `1.22e-16` it is, and
+# `355.sine` was two hundred thousand of its last places out (#9279).
 #
-# `tau` is the nearest double to two pi and `tail` is what that double
-# misses. `turns times tau` is taken exactly by Dekker's method: `gap` is
-# two to the 27th plus one, and multiplying by it and subtracting back splits
-# a double into halves narrow enough that their pairwise products round
-# nowhere: `turns` into `top` and `foot`, `tau` into `crown` and `stub`.
-# The four partials `high`, `mid`, `cross` and `low` then say what the single
-# rounded `product` dropped, and `slip` is that dropped part. The `angle` is
-# the argument less `product`, less `slip`, less `turns times tail`, taken
-# once and read back by the series as the `reduced` number.
+# What is reduced is the magnitude, and the sign of the argument is put
+# back on the answer, so that the sine of a negative angle is exactly the
+# negation of the sine of its magnitude. Reducing the argument itself is
+# not odd, because `floor` is not: `pi` lost a whole turn where `-pi` lost
+# none, and the two were summed at opposite ends of the range.
 #
-# The attributes below stand in alphabetical order, which is not the order
-# they are computed in; the paragraph above is the order.
+# The reduction takes `turns` whole turns off the magnitude, and the
+# accuracy of the answer is the accuracy of that one subtraction: at `1e15`
+# the reduced angle is what survives of a number sixteen digits long, so a
+# product of `turns` and two pi rounded into a single double keeps none of
+# the digits that decide the sine. The product is therefore carried in two
+# doubles.
+#
+# `tau` is the nearest double to two pi, and `2.4492935982947064e-16` is
+# what that double misses. `turns times tau` is taken exactly by Dekker's
+# method: `134217729` is two to the 27th plus one, and multiplying by it
+# and subtracting back splits a double into halves narrow enough that their
+# pairwise products round nowhere: `turns` into `top` and `foot`, `tau`
+# into `crown` and `stub`. The four partial products of those halves then
+# say what the single rounded `product` dropped, and `slip` is that
+# dropped part.
+#
+# What the whole turns leave is carried in two doubles as well, rather than
+# folded into one. `coarse` is the magnitude less the rounded product,
+# which is exact, since the two stand a few units apart; `fine` is
+# everything the correction still owes it. `angle` is their difference and
+# is read for one thing only, to say which quarter the angle is in, as
+# `steps`. The quarter turn itself comes off `coarse`, before `fine` is
+# paid: that subtraction is exact too, by Sterbenz, so `rest` keeps every
+# digit of an angle near a multiple of pi/2, while a single rounded `angle`
+# would have left it with the width of its own last place, which is all of
+# a sine of `1e-5`. `quarter` is a quarter of `tau`, and what `tau` misses
+# is divided by four the same way, both exact, since dividing by four only
+# moves an exponent.
+#
+# `sined` is the Taylor series of the sine over `rest` and `cosined` that
+# of the cosine, both summed through Horner's scheme, and `picked` reads
+# one of the two off `steps`: the sine in the quarter around zero, the
+# cosine in the one above it, and the negation of either on the far side,
+# since a sine shifted by two quarters is the negation of itself.
 #
 # Two doubles carry about 106 bits, so the reduction holds to a few ULP for
 # as long as `turns times two pi` needs no more than that, which is |num| up
@@ -43,59 +72,105 @@
     arg.is-finite.and
       arg.abs.gt 1000000000000000
     T "Can't take a sine of an angle above 1e15, the reduction cannot hold it"
-    times.
-      number >> reduced
-        minus. >> angle!
-          minus.
-            minus.
-              number num.as-bytes >> arg
-              turns.times tau >> product
-            plus.
-              plus.
+    if.
+      arg.as-bytes.eq 80-00-00-00-00-00-00-00
+      arg
+      if.
+        lt.
+          number num.as-bytes >> arg
+          0
+        neg.
+          if. >> picked
+            eq.
+              floor. >> steps
                 plus.
-                  minus.
+                  div.
+                    number
+                      minus. >> angle!
+                        minus. >> coarse
+                          arg.abs >> magnitude
+                          turns.times tau >> product
+                        plus. >> fine
+                          plus. >> slip
+                            plus.
+                              plus.
+                                minus.
+                                  times. >>
+                                    minus. >> top
+                                      turns.times 134217729 >> wide
+                                      wide.minus turns
+                                    minus. >> crown
+                                      tau.times 134217729 >> spread
+                                      spread.minus tau
+                                  product
+                                top.times
+                                  tau.minus crown >> stub
+                              times.
+                                turns.minus top >> foot
+                                crown
+                            foot.times stub
+                          times.
+                            floor. ((magnitude.div tau).plus 0.5) >> turns
+                            2.4492935982947064e-16
+                    quarter
+                  0.5
+              0
+            sined
+            if.
+              steps.eq 1
+              cosined
+              if.
+                steps.eq -1
+                neg.
+                  1.minus >> cosined
                     times.
-                      minus. >> top
-                        turns.times 134217729 >> wide
-                        wide.minus turns
-                      minus. >> crown
-                        times. >> spread
-                          pi.times 2 >> tau
-                          134217729
-                        spread.minus tau
-                    product
-                  top.times
-                    tau.minus crown >> stub
-                times.
-                  turns.minus top >> foot
-                  crown
-              foot.times stub
-          times.
-            floor. >> turns
-              plus.
-                arg.div tau
-                0.5
-            2.4492935982947064e-16
-      if. > [^ depth] >> factor
-        depth.gt 15
-        1
-        1.minus
-          times.
-            div.
-              reduced.times reduced
-              times.
-                depth.times 2
-                plus.
-                  depth.times 2
-                  1
-            ^.factor
-              depth.plus 1
-      | 1
+                      div.
+                        times.
+                          number >> small
+                            minus. >> rest!
+                              minus.
+                                coarse.minus
+                                  steps.times
+                                    div. >> quarter
+                                      pi.times 2 >> tau
+                                      4
+                                fine
+                              steps.times (2.4492935982947064e-16.div 4)
+                          small
+                        2
+                      if. > [^num depth] >> cosine
+                        depth.gt 15
+                        1
+                        1.minus
+                          times.
+                            div.
+                              small.times small
+                              ((depth.times 2).minus 1).times
+                                depth.times 2
+                            num.cosine (depth.plus 1)
+                      | 2
+                neg.
+                  small.times >> sined
+                    if. > [^num depth] >> factor
+                      depth.gt 15
+                      1
+                      1.minus
+                        times.
+                          div.
+                            small.times small
+                            times.
+                              depth.times 2
+                              plus. (depth.times 2) 1
+                          num.factor (depth.plus 1)
+                    | 1
+        picked
 
   lt. ++> can-be-accurate-near-the-documented-four-hundred-million-boundary
     abs.
       400000000.sine.minus 0.9965407850188008
     1.0e-9
+
+  pi.sine.eq pi.neg.sine.neg ++> can-be-exactly-odd-at-pi
 
   lt. ++> can-behave-as-an-odd-function-when-taking-sine
     abs.
@@ -132,6 +207,16 @@
 
   pinf.sine.is-nan ++> can-return-nan-for-a-sine-of-positive-infinity
 
+  lt. ++> can-take-a-sine-just-below-pi
+    abs.
+      minus.
+        div.
+          sine.
+            pi.minus 1.0e-6
+          1.000000000262076e-6
+        1
+    1.0e-14
+
   lt. ++> can-take-a-sine-of-a-quadrillion
     abs.
       1000000000000000.sine.minus 0.8582727931702359
@@ -148,6 +233,10 @@
         times. (pi.div 2).neg.sine 1000
         -1000
     1
+
+  eq. ++> can-take-a-sine-of-minus-zero-preserving-sign
+    0.neg.sine.as-bytes
+    80-00-00-00-00-00-00-00
 
   lt. ++> can-take-a-sine-of-pi
     abs.
@@ -174,12 +263,24 @@
         500
     1
 
+  lt. ++> can-take-a-sine-of-pi-to-its-last-places
+    abs.
+      pi.sine.minus 1.2246467991473532e-16
+    1.0e-31
+
   lt. ++> can-take-a-sine-of-seventeen-radians
     abs.
       minus.
         17.sine.times 1000
         -961
     1
+
+  lt. ++> can-take-a-sine-of-three-hundred-and-fifty-five
+    abs.
+      minus.
+        355.sine.div -3.014435335948845e-5
+        1
+    1.0e-14
 
   lt. ++> can-take-a-sine-of-three-pi-halves
     abs.

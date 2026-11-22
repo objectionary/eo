@@ -89,6 +89,56 @@ final class EntriesTest {
     }
 
     @Test
+    void saysAVoidNobodyFillsIsFilledByNobody() throws ParserConfigurationException {
+        MatcherAssert.assertThat(
+            "a void nobody fills must be said to be filled by nobody, but it wasnt",
+            EntriesTest.told(
+                "<answers><o loc='Φ.kiln.v🌵fuel' copies='4'><unknown kind='empty'/></o></answers>",
+                "kiln.eo",
+                "Φ.kiln.v🌵fuel"
+            ),
+            XhtmlMatchers.hasXPath(
+                "/bit/told/said[@kind='words' and .='unknown, filled by nobody']"
+            )
+        );
+    }
+
+    @Test
+    void saysTheKindOfAnUnknownNextToAName() throws ParserConfigurationException {
+        MatcherAssert.assertThat(
+            "an unknown next to a name must be said by its kind, but it wasnt",
+            EntriesTest.told(
+                String.join(
+                    "",
+                    "<answers><o loc='Φ.kiln.v🌵coal' copies='9'>",
+                    "<set copies='5'><unknown kind='study'/><is loc='Φ.number'/></set>",
+                    "<set copies='4'><is loc='Φ.number'/></set></o></answers>"
+                ),
+                "kiln.eo",
+                "Φ.kiln.v🌵coal"
+            ),
+            XhtmlMatchers.hasXPath(
+                "/bit/told/said[@kind='words' and .='unknown, nobody calls this object']"
+            )
+        );
+    }
+
+    @Test
+    void saysAReadNothingAnswersByItsKind() throws ParserConfigurationException {
+        MatcherAssert.assertThat(
+            "a read nothing ever answers must be said by its kind, but it wasnt",
+            EntriesTest.told(
+                "<answers><o loc='Φ.kiln.smoke' copies='7'><unknown kind='loop'/></o></answers>",
+                "kiln.eo",
+                "Φ.kiln.smoke"
+            ),
+            XhtmlMatchers.hasXPath(
+                "/bit/told/said[@kind='words' and .='unknown, nothing ever answers']"
+            )
+        );
+    }
+
+    @Test
     void joinsFormationsOfOneShapeIntoOneEntry() throws ParserConfigurationException {
         MatcherAssert.assertThat(
             "two formations of one shape must be one entry, but they were two",

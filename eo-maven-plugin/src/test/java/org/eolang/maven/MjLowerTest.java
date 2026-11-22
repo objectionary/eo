@@ -37,7 +37,7 @@ final class MjLowerTest {
     @Test
     void doesNothingWhenDisabled(@Mktmp final Path temp) throws IOException {
         new FakeMaven(temp)
-            .with("lowering", false)
+            .with("bypass", true)
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "a disabled goal must leave no folder behind, but it made one",
@@ -53,13 +53,13 @@ final class MjLowerTest {
             Assertions.assertThrows(
                 IllegalStateException.class,
                 () -> new FakeMaven(temp)
-                    .with("lowering", true)
+                    .with("bypass", false)
                     .with("optional", false)
                     .with("binary", temp.resolve("absent").toString())
                     .execute(MjLower.class),
                 "a binary that is not there must fail the build"
             ).getCause().getCause().getMessage(),
-            Matchers.containsString("0.0.160")
+            Matchers.containsString("0.0.165")
         );
     }
 
@@ -67,7 +67,7 @@ final class MjLowerTest {
     void skipsWhenTheBinaryIsMissingAndThatIsAllowed(@Mktmp final Path temp)
         throws IOException {
         new FakeMaven(temp)
-            .with("lowering", true)
+            .with("bypass", false)
             .with("optional", true)
             .with("binary", temp.resolve("absent").toString())
             .execute(MjLower.class);
@@ -84,7 +84,7 @@ final class MjLowerTest {
         throws IOException {
         final Path home = new Seqdir(temp.resolve("target"), 2).dirs().once("lowering");
         MjLowerTest.inferred(temp)
-            .with("lowering", true)
+            .with("bypass", false)
             .with("binary", MjLowerTest.binary(temp))
             .execute(MjLower.class);
         MatcherAssert.assertThat(
@@ -102,7 +102,7 @@ final class MjLowerTest {
         project.setCompileSourceRoots(new ArrayList<>(0));
         MjLowerTest.inferred(temp)
             .with("project", project)
-            .with("lowering", true)
+            .with("bypass", false)
             .with("binary", MjLowerTest.binary(temp))
             .execute(MjLower.class);
         MatcherAssert.assertThat(
@@ -119,20 +119,41 @@ final class MjLowerTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void handsJavacTheAtomsUnderTheNumberAnEarlierBuildGaveThem(@Mktmp final Path temp)
+        throws IOException {
+        final Path atoms = Files.createDirectories(
+            new Seqdir(temp.resolve("target"), 2).dirs().once("lowering").resolve("5-atoms")
+        );
+        final MavenProjectStub project = new MavenProjectStub();
+        project.setCompileSourceRoots(new ArrayList<>(0));
+        MjLowerTest.inferred(temp)
+            .with("project", project)
+            .with("bypass", false)
+            .with("binary", MjLowerTest.binary(temp))
+            .execute(MjLower.class);
+        MatcherAssert.assertThat(
+            "the goal must hand javac the atoms where the lowering keeps them, but it didnt",
+            project.getCompileSourceRoots(),
+            Matchers.hasItem(atoms.toAbsolutePath().toString())
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void pointsTheTranspilerAtTheSourceItPatched(@Mktmp final Path temp) throws IOException {
+        final Path home = new Seqdir(temp.resolve("target"), 2).dirs().once("lowering");
+        Files.createDirectories(home.resolve("9-patched"));
         MatcherAssert.assertThat(
             "the goal must hand the transpiler the source with the atom in it, but it didnt",
             MjLowerTest.inferred(temp)
-                .with("lowering", true)
+                .with("bypass", false)
                 .with("binary", MjLowerTest.binary(temp, 0, MjLowerTest.rooted()))
                     .execute(MjLower.class)
                 .foreignTojos()
                 .find("foo.x.main")
                 .xmir(),
             Matchers.equalTo(
-                new Seqdir(temp.resolve("target"), 2).dirs().once("lowering")
-                    .resolve("4-patched/main.xmir")
-                    .toAbsolutePath()
+                home.resolve("9-patched/main.xmir").toAbsolutePath()
             )
         );
     }
@@ -150,7 +171,7 @@ final class MjLowerTest {
         MatcherAssert.assertThat(
             "the goal must not hand the transpiler a copy it did not patch now, but it did",
             maven
-                .with("lowering", true)
+                .with("bypass", false)
                 .with("binary", MjLowerTest.binary(temp))
                     .execute(MjLower.class)
                 .foreignTojos()
@@ -171,9 +192,9 @@ final class MjLowerTest {
     void keepsTheProtocolOfARunOutOfTheBudgetItWasGiven(@Mktmp final Path temp)
         throws IOException {
         MjLowerTest.inferred(temp)
-            .with("lowering", true)
+            .with("bypass", false)
             .with("budget", 1)
-            .with("binary", MjLowerTest.binary(temp, 1, MjLowerTest.expired()))
+            .with("binary", MjLowerTest.binary(temp, 0, MjLowerTest.expired()))
             .execute(MjLower.class);
         MatcherAssert.assertThat(
             "a run out of its budget must keep its protocol for study, but it doesnt",
@@ -186,16 +207,18 @@ final class MjLowerTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
-    void savesTheTextOfEveryEntryWhenAsked(@Mktmp final Path temp) throws IOException {
+    void savesTheMinutesOfEveryEntryWhenAsked(@Mktmp final Path temp) throws IOException {
         MjLowerTest.inferred(temp)
-            .with("lowering", true)
-            .with("texts", true)
+            .with("bypass", false)
+            .with("minutes", true)
             .with("binary", MjLowerTest.binary(temp))
             .execute(MjLower.class);
         MatcherAssert.assertThat(
-            "the goal must save the text of an entry when asked, but it didnt",
-            new Seqdir(temp.resolve("target"), 2).dirs().once("lowering")
-                .resolve("texts/gap.txt")
+            "the goal must save the minutes of an entry when asked, but it didnt",
+            new Seqdir(
+                new Seqdir(temp.resolve("target"), 2).dirs().find("lowering").orElseThrow(), 1
+            ).dirs().find("minutes").orElseThrow()
+                .resolve("gap.txt")
                 .toFile(),
             FileMatchers.anExistingFile()
         );
@@ -206,7 +229,7 @@ final class MjLowerTest {
     void morphsNoEntryTheFilterOfTheIncludedDoesntMatch(@Mktmp final Path temp)
         throws IOException {
         MjLowerTest.inferred(temp)
-            .with("lowering", true)
+            .with("bypass", false)
             .with("only", "Φ\\.gapped")
             .with("binary", MjLowerTest.binary(temp))
             .execute(MjLower.class);
@@ -222,7 +245,7 @@ final class MjLowerTest {
     void morphsNoEntryTheFilterOfTheExcludedMatches(@Mktmp final Path temp)
         throws IOException {
         MjLowerTest.inferred(temp)
-            .with("lowering", true)
+            .with("bypass", false)
             .with("never", ".*gap")
             .with("binary", MjLowerTest.binary(temp))
             .execute(MjLower.class);
@@ -238,7 +261,7 @@ final class MjLowerTest {
     void handsPhinoTheNumberOfStepsItWasGiven(@Mktmp final Path temp) throws IOException {
         final int steps = new SecureRandom().nextInt(1000) + 1;
         MjLowerTest.inferred(temp)
-            .with("lowering", true)
+            .with("bypass", false)
             .with("steps", steps)
             .with("binary", MjLowerTest.binary(temp))
             .execute(MjLower.class);
@@ -253,7 +276,7 @@ final class MjLowerTest {
     @DisabledOnOs(OS.WINDOWS)
     void pinsPhinoToTheVersionItWasGiven(@Mktmp final Path temp) throws IOException {
         MjLowerTest.inferred(temp)
-            .with("lowering", true)
+            .with("bypass", false)
             .with("pin", "0.7.33")
             .with("binary", MjLowerTest.binary(temp, "0.7.33"))
             .execute(MjLower.class);
@@ -266,10 +289,26 @@ final class MjLowerTest {
 
     @Test
     @DisabledOnOs(OS.WINDOWS)
+    void handsPhinoTheLimitOfMemoryItWasGiven(@Mktmp final Path temp) throws IOException {
+        final String memory = String.format("%dM", new SecureRandom().nextInt(900) + 100);
+        MjLowerTest.inferred(temp)
+            .with("bypass", false)
+            .with("memory", memory)
+            .with("binary", MjLowerTest.binary(temp))
+            .execute(MjLower.class);
+        MatcherAssert.assertThat(
+            "the goal must hand phino the limit of memory it was given, but it didnt",
+            Files.readString(temp.resolve("dataize.txt"), StandardCharsets.UTF_8),
+            Matchers.containsString(String.format("--max-memory=%s", memory))
+        );
+    }
+
+    @Test
+    @DisabledOnOs(OS.WINDOWS)
     void handsPhinoTheNumberOfLoopsItWasGiven(@Mktmp final Path temp) throws IOException {
         final int loops = new SecureRandom().nextInt(50) + 1;
         MjLowerTest.inferred(temp)
-            .with("lowering", true)
+            .with("bypass", false)
             .with("loops", loops)
             .with("binary", MjLowerTest.binary(temp))
             .execute(MjLower.class);
@@ -285,7 +324,7 @@ final class MjLowerTest {
     void plantsTheEntriesOfTheProgramItCompiled(@Mktmp final Path temp) throws IOException {
         final Path home = new Seqdir(temp.resolve("target"), 2).dirs().once("lowering");
         MjLowerTest.inferred(temp)
-            .with("lowering", true)
+            .with("bypass", false)
             .with("binary", MjLowerTest.binary(temp))
             .execute(MjLower.class);
         MatcherAssert.assertThat(
@@ -304,7 +343,7 @@ final class MjLowerTest {
             Assertions.assertThrows(
                 IllegalStateException.class,
                 () -> new FakeMaven(temp)
-                    .with("lowering", true)
+                    .with("bypass", false)
                     .with("binary", MjLowerTest.binary(temp))
                     .with("tables", absent.toFile())
                     .execute(MjLower.class),
@@ -329,12 +368,12 @@ final class MjLowerTest {
             Assertions.assertThrows(
                 IllegalStateException.class,
                 () -> new FakeMaven(temp)
-                    .with("lowering", true)
+                    .with("bypass", false)
                     .with("binary", binary.toString())
                     .execute(MjLower.class),
                 "a binary of another version must fail the build"
             ).getCause().getCause().getMessage(),
-            Matchers.stringContainsInOrder("0.0.1", "0.0.160")
+            Matchers.stringContainsInOrder("0.0.1", "0.0.165")
         );
     }
 
@@ -354,7 +393,7 @@ final class MjLowerTest {
 
     private static String binary(final Path temp, final int code, final String protocol)
         throws IOException {
-        return MjLowerTest.binary(temp, code, protocol, "0.0.160");
+        return MjLowerTest.binary(temp, code, protocol, "0.0.165");
     }
 
     private static String binary(
@@ -370,7 +409,13 @@ final class MjLowerTest {
                 String.format("--version) echo %s;;", version),
                 "merge) while [ $# -gt 0 ]; do [ \"$1\" = --target ] && : > \"$2\"; shift; done;;",
                 String.format(
-                    "dataize) echo \"$p $@\" >> '%s'; for a; do case $a in --protocol=*) cp '%s' \"${a#--protocol=}\";; esac; done; exit %d;;",
+                    String.join(
+                        " ",
+                        "dataize) echo \"$p $@\" >> '%1$s'; for a; do case $a in",
+                        "--protocol=*) cp '%2$s' \"${a#--protocol=}\";;",
+                        "--minutes=*) cp '%2$s' \"${a#--minutes=}\";;",
+                        "esac; done; exit %3$d;;"
+                    ),
                     temp.resolve("dataize.txt"),
                     Files.write(
                         temp.resolve("protocol.xml"), protocol.getBytes(StandardCharsets.UTF_8)
@@ -408,7 +453,7 @@ final class MjLowerTest {
             .withProgram(String.format("[@] > bytes%n"))
             .withProgram(MjLowerTest.number())
             .execute(MjParse.class)
-            .execute(MjInference.class);
+            .execute(MjInfer.class);
     }
 
     private static String number() {

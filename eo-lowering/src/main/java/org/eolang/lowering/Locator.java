@@ -17,8 +17,8 @@ import java.nio.file.Path;
  * and adds {@code .xml} at the end. So, the protocol of
  * {@code Φ.bytes.as-hex} is the file {@code bytes/as-hex.xml}. phino may
  * also write the same protocol as indented text, for a person to read
- * without any tool. That file is called the "text" of the entry, and it
- * gets {@code .txt} at the end instead, as {@code bytes/as-hex.txt}.</p>
+ * without any tool. That file is called the "minutes" of the entry, and
+ * it gets {@code .txt} at the end instead, as {@code bytes/as-hex.txt}.</p>
  *
  * <p>Two stages use this class: {@link Morphing}, which writes the
  * protocols, and {@link Rendering}, which reads them. Because both use
@@ -52,11 +52,11 @@ final class Locator {
     }
 
     /**
-     * The path of the text file, inside the directory of all texts.
+     * The path of the minutes, inside the directory of all minutes.
      *
-     * @return The path of the text file
+     * @return The path of the minutes
      */
-    Path text() {
+    Path minutes() {
         return this.path(".txt");
     }
 

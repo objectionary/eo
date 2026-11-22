@@ -25,9 +25,9 @@ sources:
     [@] > string
 answers:
   - /answers/o[@loc='Φ.grip.φ.α0']/is[@loc='Φ.oak']
-  - /answers/o[@loc='Φ.app.φ.α0' and @lands='scope']/is[@loc='Φ.app.hold']
-  - /answers/o[@loc='Φ.app.twin.α0' and @lands='scope']/is[@loc='Φ.app.pick']
-  - /answers/o[@loc='Φ.app.hold.k']/is[@loc='Φ.oak']
-  - /answers/o[@loc='Φ.app.pick.j']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵scope']/is[@loc='Φ.app.hold']
+  - /answers/o[@loc='Φ.app.twin.α0' and @lands='v🌵scope']/is[@loc='Φ.app.pick']
+  - /answers/o[@loc='Φ.app.hold.v🌵k']/is[@loc='Φ.oak']
+  - /answers/o[@loc='Φ.app.pick.v🌵j']/is[@loc='Φ.oak']
   - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.app.hold']
   - /answers/o[@loc='Φ.app.twin']/is[@loc='Φ.app.pick']

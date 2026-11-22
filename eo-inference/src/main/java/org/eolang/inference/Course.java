@@ -4,13 +4,12 @@
  */
 package org.eolang.inference;
 
-import java.util.List;
 import java.util.Set;
 
 /**
  * The course of the walk (design doc 4): the passes (4.1), reduction
- * (4.2), the rules that wait for a stop (4.3), the stops (4.4), the pool
- * (4.5) and the end step (4.6).
+ * (4.2), the rules that wait for a stop (4.3), the stops (4.4) and the end
+ * step (4.6).
  *
  * <p>The {@link State} keeps these parts here, so that no class of the walk
  * couples to all of them at once, and passes each call it gets for them on
@@ -41,11 +40,6 @@ final class Course {
     private final Stops stops;
 
     /**
-     * The pool (4.5).
-     */
-    private final Pool pool;
-
-    /**
      * The end step (4.6).
      */
     private final EndStep end;
@@ -61,8 +55,7 @@ final class Course {
         this.reduction = new Reduction(walk, world);
         this.rules = new Rules(walk);
         this.stops = new Stops(walk);
-        this.pool = new Pool(walk, world);
-        this.end = new EndStep(walk, world);
+        this.end = new EndStep(walk);
     }
 
     /**
@@ -173,6 +166,18 @@ final class Course {
     }
 
     /**
+     * Mark a value, keeping the copy whose voids a call must fill.
+     *
+     * @param base The reduced value
+     * @param count The number of empty voids
+     * @param origin The source copy, or -1
+     * @return The marked value
+     */
+    int mark(final int base, final int count, final int origin) {
+        return this.reduction.mark(base, count, origin);
+    }
+
+    /**
      * Rule b's head, kept as is.
      *
      * @param head The head
@@ -263,96 +268,9 @@ final class Course {
     }
 
     /**
-     * Read an empty void of a copy Java made, from its pool.
-     *
-     * @param copy The copy
-     * @param name The void
-     * @param site The site of the read, under the tag of the reader
-     * @return What it holds
-     */
-    Ints read(final int copy, final String name, final Site site) {
-        return this.pool.read(copy, name, site);
-    }
-
-    /**
-     * Put what a call hands to a void of what Java makes into its pool.
-     *
-     * @param form The formation
-     * @param name The void
-     * @param values The values
-     */
-    void fill(final String form, final String name, final int... values) {
-        this.pool.fill(form, name, values);
-    }
-
-    /**
-     * Change a: the voids read with nothing in their pool, not decided yet.
-     *
-     * @return The voids, as formation and void, in order
-     */
-    List<List<String>> waiting() {
-        return this.pool.waiting();
-    }
-
-    /**
-     * Decide that Java alone fills these voids.
-     *
-     * @param pairs The voids, as formation and void
-     */
-    void decide(final List<List<String>> pairs) {
-        this.pool.decide(pairs);
-    }
-
-    /**
-     * Whether nobody fills a void: it was read with nothing in the pool and
-     * never decided.
-     *
-     * @param form The formation
-     * @param name The void
-     * @return TRUE if nobody fills it
-     */
-    boolean unfilled(final String form, final String name) {
-        return this.pool.unfilled(form, name);
-    }
-
-    /**
-     * Mark the reads with no answer, keep aside what holds a decided open
-     * void, and make it a plain one everywhere else.
+     * Tell which study copies no longer count.
      */
     void step() {
         this.end.step();
-    }
-
-    /**
-     * The mark of a read with no answer.
-     *
-     * @param place The place
-     * @param ctx The copy
-     * @return The mark, empty when there is none
-     */
-    String token(final String place, final int ctx) {
-        return this.end.mark(place, ctx);
-    }
-
-    /**
-     * An answer as it was before the end step.
-     *
-     * @param key The question
-     * @param answer The answer now
-     * @return The answer it had
-     */
-    Ints untidy(final Key key, final Ids answer) {
-        return this.end.untidy(key, answer);
-    }
-
-    /**
-     * A row as it was before the end step.
-     *
-     * @param copy The copy
-     * @param name The void
-     * @return The row it was
-     */
-    Ints untidy(final int copy, final String name) {
-        return this.end.untidy(copy, name);
     }
 }

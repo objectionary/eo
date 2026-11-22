@@ -16,14 +16,15 @@ eo:
         [left right]
           left > @
   choice.eo: |
-    [if] > choice
+    [fork] > choice
+      fork > if
   app.eo: |
     [] > app
       yes.if 1 2 > used
 dealpha:
-  Φ.yes.φ.α0: if
+  Φ.yes.φ.α0: v🌵fork
 xmir:
   - "//o[@name='e1' and @base='Φ.yes']"
-  - "//o[@name='e2' and @base='Φ.yes.φ.if']"
+  - "//o[@name='e2' and @base='Φ.yes.φ.v🌵fork']"
 entries:
   - "2\tΦ.yes.φ.α0"

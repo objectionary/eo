@@ -20,7 +20,8 @@ package org.eolang.inference;
  * backslash inside it takes the next character with it, so that
  * {@code "a\"b"} is one string and not two. A dispatch takes its dot along
  * with what follows it, be that a name or the {@code ^} of {@code .^}, since a
- * dot alone marks nothing a reader can read. Anything else is one character,
+ * dot alone marks nothing a reader can read. The void literal is its two
+ * dashes, since one dash alone is not a literal. Anything else is one character,
  * which is the honest answer for a glyph nobody taught this about.</p>
  *
  * @since 0.70.0
@@ -62,8 +63,9 @@ final class Reach {
         final int found;
         if (head == '"') {
             found = this.quoted(column);
-        } else if (Character.isDigit(head)
-            || head == '-' && Character.isDigit(this.after(column))) {
+        } else if (head == '-') {
+            found = this.dashed(column);
+        } else if (Character.isDigit(head)) {
             found = this.numbered(column);
         } else if (Character.isLetterOrDigit(head) || head == '_') {
             found = this.named(column);
@@ -76,7 +78,29 @@ final class Reach {
         return found;
     }
 
+    private int dashed(final int column) {
+        final int found;
+        if (this.after(column) == '-') {
+            found = 2;
+        } else if (Character.isDigit(this.after(column))) {
+            found = this.numbered(column);
+        } else {
+            found = 1;
+        }
+        return found;
+    }
+
     private int quoted(final int column) {
+        final int found;
+        if (this.line.startsWith("\"\"\"", column)) {
+            found = 3;
+        } else {
+            found = this.string(column);
+        }
+        return found;
+    }
+
+    private int string(final int column) {
         int cursor = column + 1;
         int found = this.line.length() - column;
         while (cursor < this.line.length()) {

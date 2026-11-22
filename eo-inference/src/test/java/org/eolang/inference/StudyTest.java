@@ -29,7 +29,7 @@ final class StudyTest {
         MatcherAssert.assertThat(
             "the copy as written of a formation nobody calls must be kept, but it wasnt",
             new Settled(world).state().kept(
-                world.intern(new Value('O', "Φ.kite", "Φ.kite", Formation.RHO, "", -1, 0))
+                world.intern(new Value('O', "Φ.kite", "Φ.kite", 0L, "", -1, 0))
             ),
             Matchers.is(true)
         );
@@ -45,7 +45,7 @@ final class StudyTest {
         MatcherAssert.assertThat(
             "the copy as written of a formation someone calls must not be kept, but it was",
             new Settled(world).state().kept(
-                world.intern(new Value('O', "Φ.kite", "Φ.kite", Formation.RHO, "", -1, 0))
+                world.intern(new Value('O', "Φ.kite", "Φ.kite", 0L, "", -1, 0))
             ),
             Matchers.is(false)
         );
@@ -68,12 +68,12 @@ final class StudyTest {
                             world.full(
                                 world.intern(
                                     new Value(
-                                        'O', "Φ.kite", "Φ.beach.φ", 1L | Formation.RHO, "", -1, 0
+                                        'O', "Φ.kite", "Φ.beach.φ", 1L, "", -1, 0
                                     )
                                 )
                             )
                         ),
-                        Formation.RHO, "", -1, 0
+                        0L, "", -1, 0
                     )
                 )
             ),

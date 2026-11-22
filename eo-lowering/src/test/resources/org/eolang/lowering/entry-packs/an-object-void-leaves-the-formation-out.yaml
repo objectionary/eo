@@ -12,7 +12,8 @@ eo:
     [p] > uses
       p.fmt > @
   printf.eo: |
-    [fmt] > printf
+    [pattern] > printf
+      pattern > fmt
   app.eo: |
     [] > app
       uses (printf "%d") > used

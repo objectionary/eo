@@ -1,0 +1,42 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# latest reads group off its marks, which are T, an unmarked with no group,
+# or a marked whose group is a number. group read off T is T, off unmarked it
+# is T as well, since unmarked lacks it, and off marked it is the number, so
+# the @ of latest is T or a number and no read of it fails, as at
+# string/regex.eo:506 (#9806). plain hands latest only the unmarked, so its @
+# is T.
+sources:
+  latest.eo: |
+    [marks] > latest
+      marks.group > @
+  unmarked.eo: |
+    [] > unmarked
+      0 > some
+  marked.eo: |
+    [] > marked
+      7 > group
+  dead.eo: |
+    [] > dead
+      latest T > @
+  plain.eo: |
+    [] > plain
+      latest unmarked > @
+  found.eo: |
+    [] > found
+      latest marked > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts:
+  - /facts/objects/type[@id='Φ.unmarked' and @complete='true']
+answers:
+  - /answers/o[@loc='Φ.latest.φ.ρ' and set/terminator and set/is[@loc='Φ.unmarked']]/set/is[@loc='Φ.marked']
+  - /answers/o[@loc='Φ.latest.φ' and set/terminator and count(set/*)=2]/set/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.plain.φ' and count(*)=1]/terminator
+  - /answers[not(o//fails)]

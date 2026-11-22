@@ -34,7 +34,10 @@ import org.w3c.dom.Element;
  * for a step the source never wrote, such as the {@code dataized} a trailing
  * {@code !} slips into the middle of a chain. A formation is marked on the
  * name the arrow binds it to, since a bracket names nothing, and only a
- * formation bound to no name keeps its bracket marked.</p>
+ * formation bound to no name keeps its bracket marked. A formation written
+ * after its {@code @}, as in {@code if. > [x] > foo}, has the column of the
+ * {@code @}, so it is placed at the first bracket after that column and
+ * marked from there, while the {@code @} keeps its own mark.</p>
  *
  * <p>A mark over several objects tells only the one the source spells, as
  * {@link Written} chooses it, and takes its colour from that one alone.</p>
@@ -125,7 +128,8 @@ final class Pieces {
         final Map<Integer, List<Written>> grouped = new LinkedHashMap<>(0);
         for (final Written object : this.objects) {
             if (object.at() >= 0 && object.at() < this.line.length()) {
-                grouped.computeIfAbsent(object.at(), key -> new ArrayList<>(1)).add(object);
+                grouped.computeIfAbsent(this.column(object), key -> new ArrayList<>(1))
+                    .add(object);
             }
         }
         final Map<Integer, List<Written>> found = new LinkedHashMap<>(0);
@@ -139,6 +143,14 @@ final class Pieces {
                 }
                 found.computeIfAbsent(place, key -> new ArrayList<>(1)).add(chain.get(step));
             }
+        }
+        return found;
+    }
+
+    private int column(final Written object) {
+        int found = object.at();
+        if (object.formation() && this.line.charAt(found) != '[') {
+            found = Math.max(this.line.indexOf('[', found), found);
         }
         return found;
     }

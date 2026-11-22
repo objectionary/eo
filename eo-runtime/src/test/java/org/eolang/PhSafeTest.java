@@ -220,7 +220,7 @@ final class PhSafeTest {
     void doesNotLetRecoveredInterceptError() {
         final EOrecovered recovered = new EOrecovered();
         recovered.put(
-            "value",
+            Attr.veiled("value"),
             new PhSafe(
                 new PhDefault() {
                     @Override
@@ -231,7 +231,7 @@ final class PhSafeTest {
                 "file.eo", 42, 7
             )
         );
-        recovered.put("alternative", new Data.ToPhi(42L));
+        recovered.put(Attr.veiled("alternative"), new Data.ToPhi(42L));
         Assertions.assertThrows(
             OutOfMemoryError.class,
             recovered::lambda,
@@ -243,7 +243,7 @@ final class PhSafeTest {
     void doesNotLetRecoveredInterceptInterrupted() {
         final EOrecovered recovered = new EOrecovered();
         recovered.put(
-            "value",
+            Attr.veiled("value"),
             new PhSafe(
                 new PhDefault() {
                     @Override
@@ -254,7 +254,7 @@ final class PhSafeTest {
                 "file.eo", 42, 7
             )
         );
-        recovered.put("alternative", new Data.ToPhi(42L));
+        recovered.put(Attr.veiled("alternative"), new Data.ToPhi(42L));
         Assertions.assertThrows(
             ExInterrupted.class,
             recovered::lambda,

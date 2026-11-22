@@ -9,8 +9,9 @@
 # copy and a dial in the other.
 sources:
   choice.eo: |
-    [pick] > choice
+    [fork] > choice
       pick > @
+      fork > pick
       [] > not
         ^.pick no yes > @
   yes.eo: |
@@ -49,9 +50,9 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.cabinet.made.φ.α0.α0' and @lands='left']/is[@loc='Φ.cabinet']
+  - /answers/o[@loc='Φ.cabinet.made.φ.α0.α0' and @lands='v🌵left']/is[@loc='Φ.cabinet']
   - /answers/o[@loc='Φ.cabinet.made.φ.α0']/set/is[@loc='Φ.cabinet']
   - /answers/o[@loc='Φ.held.φ']/is[@loc='Φ.cabinet']
-  - /answers/o[@loc='Φ.cabinet.made.φ.α1' and @lands='right']/is[@loc='Φ.dial']
+  - /answers/o[@loc='Φ.cabinet.made.φ.α1' and @lands='v🌵right']/is[@loc='Φ.dial']
   - /answers/o[@loc='Φ.other.φ']/is[@loc='Φ.dial']
   - /answers/o[@loc='Φ.cabinet.made' and @copies='2']/reduced[set/is[@loc='Φ.cabinet'] and set/is[@loc='Φ.dial']]

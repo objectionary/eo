@@ -15,7 +15,7 @@ concurrency:
 jobs:
   telegram:
     timeout-minutes: 15
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
         with:
@@ -26,13 +26,13 @@ jobs:
       - run: sudo apt-get update --yes --fix-missing && sudo apt-get install --yes jq bc
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 4.0.9
+          ruby-version: 4.0.10
           bundler-cache: true
       - run: gem install hoc
       - env:
           REF_NAME: ${{ github.ref_name }}
         run: .github/telegram.sh "${REF_NAME}"
-      - uses: appleboy/telegram-action@390cf7345777cd821dba28c72f436a78bce19cc5 # master
+      - uses: appleboy/telegram-action@68ac04bda0e0f4755e24649161566b4b6732cc83 # master
         with:
           to: -1001381878846
           token: ${{ secrets.TELEGRAM_TOKEN }}

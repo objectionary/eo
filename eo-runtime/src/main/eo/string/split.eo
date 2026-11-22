@@ -1,6 +1,6 @@
 # Returns a `tuple` of `strings`: the string separated by `delimiter`.
-# If `delimiter` is empty, the `cant-split` fallback is returned, or the
-# terminator when unbound.
+# If `delimiter` is empty, `cant-split` takes an error message.
+# When unbound, it terminates with that message.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -19,7 +19,7 @@
           text >> bts!
         0
       * ""
-      [^ accum start current] >> rec-split
+      [^text accum start current] >> rec-split
         if. > @
           len.eq current
           accum.with >> appended
@@ -33,7 +33,7 @@
               gt.
                 current.plus size
                 len
-            ^.rec-split
+            text.rec-split
               accum
               start
               as-number.
@@ -41,13 +41,13 @@
             if.
               delim.eq
                 bts.slice current size
-              ^.rec-split
+              text.rec-split
                 appended
                 as-number.
                   current.plus size
                 as-number.
                   current.plus size
-              ^.rec-split accum start (current.plus 1).as-number
+              text.rec-split accum start (current.plus 1).as-number
       |
         *
         0
@@ -62,6 +62,14 @@
       ""
       * > [message]
         "recovered"
+
+  eq. ++> can-split-a-string-with-a-terminator-for-the-error
+    "a-b".split
+      "-"
+      T
+    *
+      "a"
+      "b"
 
   eq. ++> can-split-a-text-into-empty-strings
     "-a-b-".split "-"

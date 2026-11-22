@@ -24,7 +24,7 @@ final class PassesTest {
     @Test
     void walksFormationAsWrittenInsideCopiesAround(@Mktmp final Path temp) throws IOException {
         final World world = new Sources(temp)
-            .with("house.eo", "[] > house", "  [] > room", "    42 > @")
+            .with("house.eo", "[] > house", "  [^] > room", "    42 > @")
             .world();
         MatcherAssert.assertThat(
             "a nested formation must be walked as written, inside the copy of the one around, but it wasnt",

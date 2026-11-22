@@ -8,11 +8,11 @@
   Here we mark every formation that is safe to cache with @pure="true", so
   that a later step of #5165 can let "PhSticky" keep the result of dataizing
   it instead of working it out again.
-  Nothing is worked out here: the two tables that "eo:inference" leaves in
+  Nothing is worked out here: the two tables that "eo:infer" leaves in
   its directory already say what a program knows about itself, and this
   stylesheet only reads them. The "inference" parameter names that
   directory, and when it names nothing, or the tables are not there - a
-  build that skips the "inference" goal - every question below is
+  build that skips the "infer" goal - every question below is
   unanswerable and the stylesheet is an identity transform.
   "facts.xml" says what the text of the program states, and among it, in
   its "objects", the voids every formation declares:
@@ -32,13 +32,12 @@
   &lt;/set&gt;
   &lt;/o&gt;
   A row says its place is decided by bytes when its labels, every set of
-  them taken together, with a termination ("terminator"), an open void
-  ("open") and a failing read ("fails") left out, are at least one, and
+  them taken together, with a termination ("terminator") and an unknown
+  ("unknown") left out, are at least one, and
   each of them is a datum ("data") or a copy of "Φ.number", "Φ.string" or
-  "Φ.bytes". The three left out are gaps: a copy that stops or waits there
+  "Φ.bytes". The two left out are gaps: a copy that stops or waits there
   gives no bytes at all, so it never hands a cache a wrong answer. Anything
-  else - another formation, a label the engine could not tell ("unknown") -
-  keeps the label off.
+  else, such as another formation, keeps the label off.
   A formation earns the label when three things are true of it:
   1. Every void it declares is filled with a number, a string or bytes:
   the row of the place of the void, "Φ.socket.htons.port" above, is
@@ -46,14 +45,17 @@
   a void is an object, and "PhSticky" takes an object as a key only when
   it is a number, a string or bytes. A void nobody fills has nothing but
   gaps in its row and does not qualify.
-  The "ρ" a formation declares as "[^ x]" is one of those voids, though its
-  row is not read: the engine names the copy in "^" by what its "@" gives,
-  so the row may say "Φ.number" where "^" holds a decorator of one. A
-  declared "^" holds the formation it is written in, which the locator of
-  the formation tells, and it qualifies when that is "Φ.number",
-  "Φ.string" or "Φ.bytes". That also settles what a body climbing further
-  out reads - "ξ.ρ.ρ" is an attribute of whatever came in as "ρ", and once
-  that is data everything taken from it is decided by those same bytes.
+  The "ρ" a formation declares as "[^ x]" is one of those voids, but its
+  row is not read. That row names the formation of each copy in "^" and
+  keeps what those copies reduce to in a "reduced" beside it. The "^" of
+  a named formation holds the formation it is written in, which the
+  locator of the formation tells, and it qualifies when that is
+  "Φ.number", "Φ.string" or "Φ.bytes". That also settles what a body
+  climbing further out reads - "ξ.ρ.ρ" is an attribute of whatever came
+  in as "ρ", and once that is data everything taken from it is decided by
+  those same bytes. A formation with no name takes the object it goes
+  into as its "^", and its locator points into the call it is written in,
+  so it never qualifies this way.
   2. No object in its body copies anything from the root of the program,
   since such an object is shared by the whole program and its bytes are not
   part of what a caller passes in. The data literals are the exception: the
@@ -87,7 +89,7 @@
   <xsl:key name="eo:object" match="objects/type" use="@id"/>
   <xsl:key name="eo:answer" match="answers/o" use="@loc"/>
   <!--
-  The directory with the tables of "eo:inference", as a URI. Empty when
+  The directory with the tables of "eo:infer", as a URI. Empty when
   nothing was worked out, and then nothing is labeled.
   -->
   <xsl:param name="inference" as="xs:string" select="''"/>
@@ -222,7 +224,7 @@
   <xsl:function name="eo:bytes" as="xs:boolean">
     <xsl:param name="row" as="element()?"/>
     <xsl:param name="datum" as="xs:boolean"/>
-    <xsl:variable name="labels" as="element()*" select="$row/(* | set/*)[not(self::set or self::reduced or self::terminator or self::open or self::fails)]"/>
+    <xsl:variable name="labels" as="element()*" select="$row/(* | set/*)[not(self::set or self::reduced or self::terminator or self::unknown)]"/>
     <xsl:sequence select="exists($labels) and (every $l in $labels satisfies (exists($l/self::is[@loc = $eo:data]) or ($datum and exists($l/self::data))))"/>
   </xsl:function>
   <!--

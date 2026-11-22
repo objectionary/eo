@@ -39,7 +39,7 @@ create a file `pom.xml` with this content (it's just a sample):
       <plugin>
         <groupId>org.eolang</groupId>
         <artifactId>eo-maven-plugin</artifactId>
-        <version>0.63.2</version>
+        <version>0.63.3</version>
         <executions>
           <execution>
             <goals>
@@ -97,11 +97,12 @@ one after another:
     module. It takes the source code in a plain text format and parses into
     XML document, using [ANTLR4](https://www.antlr.org/) and
     [Xembly](https://www.xembly.org). The output of the parser you can find
-    in the `target/eo/parse` directory. The result of parsing every source,
-    the ones of the project included, is also kept in `~/.eo/parsed`, or
-    under the directory `eo.cache` names, keyed by the version of the plugin
-    and by the hash of the source. Set `eo.cacheEnabled` to `false` to turn
-    that off.
+    in the `target/eo/NN-raw` directory, where `NN` is the number the stage
+    got when it first ran, like `02-raw`, unless the program was taken from
+    the cache. Parsing results for all sources,
+    including project sources, are cached under the `parsed` subdirectory of
+    `eo.cache` (`~/.eo/parsed` by default). Cache keys include the plugin
+    version and the source hash. Set `eo.cache.bypass=true` to disable caching.
 
 * **Optimization**.
     There are a number of [XSL transformations](https://en.wikipedia.org/wiki/XSLT)
@@ -112,8 +113,8 @@ one after another:
     transformations and the list of them is stored in the
     `org.eolang.parser.Canonical` class. Some of XLST files are sanity checks
     (or linters).
-    The output of each transformation you can find in the `target/eo/optimize`
-    directory.
+    The XMIR they all produce you can find in the `target/eo/NN-parse`
+    directory, like `01-parse`.
 
 * **Compilation**.
     The class `org.eolang.maven.MjTranspile` in the `eo-maven-plugin` module
@@ -139,24 +140,25 @@ required objects
 and only download (and cache) them in case they are not found locally.
 
 This behaviour can be changed to always download objects from remote by
-setting `eo.overWrite`:
+setting `eo.overwrite`:
 
 ```shell
-mvn clean install -Deo.overWrite=true
+mvn clean install -Deo.overwrite=true
 ```
 
-Setting `eo.cacheEnabled=false` does the same, by taking the cache out of
+Setting `eo.cache.bypass=true` does the same, by taking the cache out of
 the picture altogether.
 
-If you want to build your project or run your tests, which use eo-maven-plugin,
-you can change stack size for your purposes by stack-size option:
+If you want to run the tests of this repository with another stack size,
+you can change it by the stack-size option:
 
 ```shell
 mvn clean install -Pqulice -Dstack-size=1M
 ```
 
-where 1M is size of stack. By default stack-size = 256M in eo-maven-plugin,
-maximum size is 1G.
+where 1M is size of stack. By default stack-size = 512M, set in the root
+`pom.xml`. It only goes to the tests of this repository, not to a project
+that uses eo-maven-plugin.
 
 ## How To Build Plugin
 

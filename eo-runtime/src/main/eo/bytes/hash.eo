@@ -14,10 +14,10 @@
 [^data] > hash
   size. >> length!
     data.as-bytes >> b!
-  if. > [^ acc index] >> rec-hash-code
+  if. > [^data acc index] >> rec-hash-code
     index.eq length
     acc.as-number
-    ^.rec-hash-code
+    data.rec-hash-code
       plus.
         31.as-i64.times acc
         as-i64.

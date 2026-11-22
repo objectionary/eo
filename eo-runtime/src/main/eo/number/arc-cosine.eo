@@ -19,17 +19,18 @@
 
 [^num] > arc-cosine
   if. > @
-    arg.gt 0.5
-    2.times half
+    gt.
+      number num.as-bytes >> arg
+      0.5
+    2.times
+      arc-sine.
+        sqrt.
+          div.
+            1.minus arg
+            2
     minus.
       pi.div 2
       arg.arc-sine
-  number num.as-bytes > arg
-  arc-sine. > half
-    sqrt.
-      div.
-        1.minus arg
-        2
 
   2.arc-cosine.is-nan ++> can-return-nan-for-an-arc-cosine-above-one
 

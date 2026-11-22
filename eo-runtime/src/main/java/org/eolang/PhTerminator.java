@@ -65,10 +65,23 @@ public final class PhTerminator implements Phi {
     private final Phi fallback;
 
     /**
+     * The attribute whose absence this terminator reports, empty when it
+     * reports anything else.
+     *
+     * <p>The object a program asks for an attribute is not the one that
+     * discovers that nobody declares it: the discovery happens at the end of
+     * the decoration chain, where the name of the object asked is already
+     * lost. A terminator born of such a discovery remembers the attribute,
+     * so that every object the question passed through recognizes its own
+     * question and replaces the message with one that names itself.</p>
+     */
+    private final String missing;
+
+    /**
      * Ctor.
      */
     public PhTerminator() {
-        this(null, PhTerminator.DEFAULT);
+        this(null, PhTerminator.DEFAULT, "");
     }
 
     /**
@@ -79,7 +92,18 @@ public final class PhTerminator implements Phi {
      * @param reason The default reason for the termination
      */
     public PhTerminator(final String reason) {
-        this(null, reason);
+        this(null, reason, "");
+    }
+
+    /**
+     * Make a terminator for an attribute that nothing in the decoration
+     * chain declares.
+     *
+     * @param reason The default reason for the termination
+     * @param attribute The attribute nobody declares
+     */
+    PhTerminator(final String reason, final String attribute) {
+        this(null, reason, attribute);
     }
 
     /**
@@ -91,7 +115,7 @@ public final class PhTerminator implements Phi {
      * @param cause The reason for the termination
      */
     public PhTerminator(final Phi cause) {
-        this(cause, PhTerminator.DEFAULT);
+        this(cause, PhTerminator.DEFAULT, "");
     }
 
     /**
@@ -99,10 +123,13 @@ public final class PhTerminator implements Phi {
      *
      * @param cse The cause already carried, or {@code null} for none
      * @param reason The default reason for the termination
+     * @param attribute The attribute nobody declares, empty when the
+     *  termination is about anything else
      */
-    private PhTerminator(final Phi cse, final String reason) {
+    private PhTerminator(final Phi cse, final String reason, final String attribute) {
         this.cause = new AtomicReference<>(cse);
         this.fallback = new Data.ToPhi(reason);
+        this.missing = attribute;
     }
 
     @Override
@@ -161,6 +188,17 @@ public final class PhTerminator implements Phi {
     @Override
     public String φTerm() {
         return "⊥";
+    }
+
+    /**
+     * Does this terminator report that the given attribute is declared
+     * nowhere, and nothing more specific?
+     *
+     * @param attribute The name of the attribute
+     * @return TRUE if the termination is about that very attribute
+     */
+    boolean absence(final String attribute) {
+        return attribute.equals(this.missing) && this.cause.get() == null;
     }
 
     private Phi reason() {

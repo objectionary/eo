@@ -46,6 +46,11 @@ final class World {
     private final Tags tags;
 
     /**
+     * What EO code puts into each void, before any walk.
+     */
+    private final Fillings fillings;
+
+    /**
      * Ctor.
      *
      * @param prog The program
@@ -57,6 +62,7 @@ final class World {
         this.roles = new Roles(prog);
         this.values = new Values(prog);
         this.tags = new Tags(this);
+        this.fillings = new Fillings(prog, this.values);
     }
 
     /**
@@ -159,6 +165,16 @@ final class World {
     }
 
     /**
+     * The formation a place reads as an attribute.
+     *
+     * @param place The place
+     * @return The formation, empty when it reads none
+     */
+    String copied(final String place) {
+        return this.program.copied(place);
+    }
+
+    /**
      * The places answered in each copy of a formation, in the order of the
      * facts.
      *
@@ -196,6 +212,18 @@ final class World {
      */
     boolean scalar(final String form) {
         return this.names.scalar(form);
+    }
+
+    /**
+     * What EO code puts into a void of a formation, as the facts say it
+     * before any walk.
+     *
+     * @param form The formation
+     * @param name The void
+     * @return The fillings, none when no call fills it
+     */
+    List<Filling> fillings(final String form, final String name) {
+        return this.fillings.of(form, name);
     }
 
     /**
@@ -250,26 +278,6 @@ final class World {
     }
 
     /**
-     * Whether a formation is one an atom returns.
-     *
-     * @param form The formation
-     * @return TRUE if it is
-     */
-    boolean returned(final String form) {
-        return this.roles.returned(form);
-    }
-
-    /**
-     * The voids of the formations atoms return that have no declared type,
-     * as formation and void, in order.
-     *
-     * @return The pairs
-     */
-    List<List<String>> javaVoids() {
-        return this.roles.javaVoids();
-    }
-
-    /**
      * Whether a read is inner: it reads into a formation of the copy's own.
      *
      * @param place The place of the read
@@ -306,36 +314,6 @@ final class World {
      */
     int size() {
         return this.values.size();
-    }
-
-    /**
-     * An unknown, for a reason.
-     *
-     * @param why The reason
-     * @return Its number
-     */
-    int unknown(final String why) {
-        return this.values.unknown(why);
-    }
-
-    /**
-     * A failing read.
-     *
-     * @param label What fails
-     * @return Its number
-     */
-    int conflict(final String label) {
-        return this.values.conflict(label);
-    }
-
-    /**
-     * Whether a value is an open void, decided or not.
-     *
-     * @param num The number
-     * @return TRUE if it is
-     */
-    boolean gap(final int num) {
-        return this.values.vacant(num);
     }
 
     /**

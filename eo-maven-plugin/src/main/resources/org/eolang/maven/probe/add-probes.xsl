@@ -65,9 +65,7 @@
   -->
   <xsl:template name="eo:candidates" as="element()*">
     <xsl:apply-templates select="//o[not(eo:abstract(.)) and not(eo:void(.))]" mode="create"/>
-    <xsl:apply-templates select="//o[eo:void(.) and @args]" mode="args"/>
-    <xsl:apply-templates select="//o[@type]" mode="type"/>
-    <xsl:apply-templates select="//o[@atom]" mode="atom"/>
+    <xsl:apply-templates select="//o[eo:void(.)]/@args | //o/@type | //o/@atom" mode="typed"/>
   </xsl:template>
   <!-- ENTRY POINT 1 - no metas -->
   <xsl:template match="/object[not(metas)]">
@@ -114,37 +112,21 @@
       </a>
     </xsl:for-each>
   </xsl:template>
-  <!-- Callback arg-types annotation on a void attribute -->
-  <!-- The `@args` value is a single-space separated list of type atoms; -->
-  <!-- homed formas start with `Φ`, generic type variables (A-F) do not -->
-  <!-- and must be skipped, since they are not real objects to probe. -->
-  <xsl:template match="o" mode="args" as="element()*">
-    <xsl:for-each select="tokenize(@args, ' ')[starts-with(., 'Φ')]">
+  <!--
+  Every name of a type annotation: the return of an atom in "@atom", the
+  own type of a void in "@type", or the members of a callback list in
+  "@args". A type is a tree such as "Φ.pair(Φ.number,A)?", so the text is
+  cut at the brackets, the commas, the question mark and the spaces
+  between "@args" members, and each name between them is probed with its
+  dotted prefixes. Homed names start with "Φ"; a type variable, A to F,
+  does not and is skipped, since it names no object.
+  -->
+  <xsl:template match="@atom|@type|@args" mode="typed" as="element()*">
+    <xsl:for-each select="tokenize(., '[(),? ]+')[starts-with(., 'Φ')]">
       <xsl:call-template name="eo:dotted-prefixes">
         <xsl:with-param name="forma" select="."/>
       </xsl:call-template>
     </xsl:for-each>
-  </xsl:template>
-  <!-- A void's own type annotation (`? > name /Q.foo`, optionally `/Q.foo?`). -->
-  <!-- Homed formas start with `Φ`; generic type variables (A-F) do not and -->
-  <!-- must be skipped, since they are not real objects to probe. -->
-  <xsl:template match="o" mode="type" as="element()*">
-    <xsl:variable name="forma" select="replace(@type, '\?$', '')"/>
-    <xsl:if test="starts-with($forma, 'Φ')">
-      <xsl:call-template name="eo:dotted-prefixes">
-        <xsl:with-param name="forma" select="$forma"/>
-      </xsl:call-template>
-    </xsl:if>
-  </xsl:template>
-  <!-- An atom's own return signature (`[] > name /Q.foo`). -->
-  <!-- Homed formas start with `Φ`; generic type variables (A-F) do not and -->
-  <!-- must be skipped, since they are not real objects to probe. -->
-  <xsl:template match="o" mode="atom" as="element()*">
-    <xsl:if test="starts-with(@atom, 'Φ')">
-      <xsl:call-template name="eo:dotted-prefixes">
-        <xsl:with-param name="forma" select="@atom"/>
-      </xsl:call-template>
-    </xsl:if>
   </xsl:template>
   <!-- Composite base -->
   <xsl:template match="o[not(starts-with(@base, '.'))]" mode="create" as="element()*">

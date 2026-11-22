@@ -6,7 +6,6 @@ package org.eolang.sys.win32;
 
 import java.util.function.Supplier;
 import org.eolang.Data;
-import org.eolang.PhDefault;
 import org.eolang.Phi;
 
 /**
@@ -17,8 +16,8 @@ import org.eolang.Phi;
  * leaving the real cause in the CRT's per-thread {@code errno}. This object
  * reads it straight away through {@link Msvcrt#_errno()} — before any other CRT
  * call can overwrite it — and turns it into a human-readable message with
- * {@code strerror}. On success it stays an empty {@link PhDefault}, exactly what
- * the wrappers put there before.</p>
+ * {@code strerror}. On success the message is an empty string, so EO reads a
+ * string out of it whether the call worked or not.</p>
  *
  * @since 0.64.0
  */
@@ -46,7 +45,7 @@ public final class Errno implements Supplier<Phi> {
                 Msvcrt.INSTANCE.strerror(Msvcrt.INSTANCE._errno().getInt(0))
             );
         } else {
-            output = new PhDefault();
+            output = new Data.ToPhi("");
         }
         return output;
     }

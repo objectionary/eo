@@ -71,6 +71,26 @@ final class SignaturesTest {
     }
 
     @Test
+    void takesTheHeadOfTheTreeTheAtomReturns() {
+        MatcherAssert.assertThat(
+            "the body that is an atom returning a tree must come out as the name before its brackets, but it doesnt",
+            new Signatures(
+                () -> new XMLDocument(
+                    String.join(
+                        "",
+                        "<facts><objects><type id='Φ.os.check' ",
+                        "returns='Φ.os.status(Φ.number,Φ.string(Φ.bytes))'/></objects></facts>"
+                    )
+                ),
+                () -> new XMLDocument(
+                    "<answers><o loc='Φ.gq.φ' copies='6'><is loc='Φ.os.check'/></o></answers>"
+                )
+            ).of("Φ.gq"),
+            Matchers.equalTo("gq()→ Φ.os.status")
+        );
+    }
+
+    @Test
     void takesWhatTheFormationTheBodyIsReducesTo() {
         MatcherAssert.assertThat(
             "the body that is a decorator must come out as what that decorator reduces to, but it doesnt",

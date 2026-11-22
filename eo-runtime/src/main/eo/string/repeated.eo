@@ -1,7 +1,7 @@
 # Returns the string repeated `times` times.
 # If `times` is not a finite non-negative integer (negative, fractional, nan
-# or infinite), the `cant-repeat` fallback is returned,
-# or the terminator when unbound.
+# or infinite), `cant-repeat` takes an error message.
+# When unbound, it terminates with that message.
 # If `times` == 0, empty text is returned.
 
 +architect yegor256@gmail.com
@@ -24,7 +24,7 @@
           *
             string times.as-scientific
     string
-      [^ n] >> rec-repeated
+      [^text n] >> rec-repeated
         if. > @
           0.eq n
           --
@@ -34,8 +34,8 @@
             twice
             concat.
               half.concat >> twice
-                ^.rec-repeated (n.div 2).floor >> half!
-              ^.text.as-bytes
+                text.rec-repeated (n.div 2).floor >> half!
+              text.text.as-bytes
       | times
 
   eq. ++> can-format-the-error-message-of-a-negative-count
@@ -81,6 +81,12 @@
     size.
       as-bytes.
         "x".repeated 20000
+
+  eq. ++> can-repeat-a-text-with-a-terminator-for-the-error
+    "xxx"
+    "x".repeated
+      3
+      T
 
   eq. ++> can-repeat-a-text-zero-times
     ""

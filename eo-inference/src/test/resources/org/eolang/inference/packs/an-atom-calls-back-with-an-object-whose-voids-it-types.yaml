@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The atom use calls back what goes into its scope with a block whose size is
+# a number, as its annotation says. So the block handed in has a number in its
+# size, and the length read off it is a number.
+sources:
+  memory.eo: |
+    [] > memory
+      [] > use /Q.number
+        ? > scope /{Q.block(Q.number)}
+  block.eo: |
+    [size] > block
+      size > length
+  app.eo: |
+    [] > app
+      memory.use > @
+        [b]
+          b.length > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts:
+  - /facts/objects/type[@id='Φ.memory.use']/attr[@name='v🌵scope' and @args='Φ.block(Φ.number)']
+answers:
+  - /answers/o[@loc='Φ.app.φ.α0.v🌵b']/is[@loc='Φ.block']
+  - /answers/o[@loc='Φ.block.v🌵size' and count(*)=1]/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ.α0.φ']/is[@loc='Φ.number']

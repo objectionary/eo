@@ -29,29 +29,29 @@ eo:
     [] > app
       twolen "ab" > used
 voids:
-  - "𝜎4\t5\tt\tstring"
+  - "𝜎4\t5\tv🌵t\tstring"
 rows:
-  - "L_len\tΦ.len\tΦ.len\ts:string"
+  - "L_len\tΦ.len\tΦ.len\tv🌵s:string"
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e5">
       <morph at="Φ.l🌵.e5">
         <applied meta="𝑒·0·1" of="Φ.bytes"><symbol attr="φ">𝜎4</symbol></applied>
         <applied meta="𝑒·0·2" of="Φ.string"><meta attr="φ">𝑒·0·1</meta></applied>
-        <applied meta="𝑛·0·1" by="morph" at="Φ.l🌵.e5" of="Φ.twolen"><meta attr="t">𝑒·0·2</meta></applied>
-        <formed meta="𝑛·0·2" of="Φ.twolen"><meta attr="t">𝑒·0·2</meta></formed>
+        <applied meta="𝑛·0·1" by="morph" at="Φ.l🌵.e5" of="Φ.twolen"><meta attr="v🌵t">𝑒·0·2</meta></applied>
+        <formed meta="𝑛·0·2" of="Φ.twolen"><meta attr="v🌵t">𝑒·0·2</meta></formed>
         <morphed meta="𝑛·0·3">𝑛·0·2</morphed>
       </morph>
       <boxed meta="𝑛·0·4">𝑛·0·3.φ</boxed>
       <morph at="𝑛·0·4">
-        <formed meta="𝑒·0·3"><meta attr="t">𝑒·0·2</meta></formed>
+        <formed meta="𝑒·0·3"><meta attr="v🌵t">𝑒·0·2</meta></formed>
         <applied meta="𝑒·0·4" of="𝑒·0·2"><meta attr="ρ">𝑒·0·3</meta></applied>
-        <applied meta="𝑛·0·5" by="morph" at="𝑛·0·4" of="Φ.len"><meta attr="s">𝑒·0·4</meta></applied>
-        <formed meta="𝑛·0·6" of="Φ.len"><meta attr="s">𝑒·0·4</meta></formed>
+        <applied meta="𝑛·0·5" by="morph" at="𝑛·0·4" of="Φ.len"><meta attr="v🌵s">𝑒·0·4</meta></applied>
+        <formed meta="𝑛·0·6" of="Φ.len"><meta attr="v🌵s">𝑒·0·4</meta></formed>
         <evaluate λ="L_len" by="morph" at="𝑛·0·4">
-          <dataize at="ξ.s">
-            <morph at="ξ.s">
-              <applied meta="𝑛·1·1" by="morph" at="ξ.s" of="Φ.string"><meta attr="φ">𝑒·0·1</meta></applied>
+          <dataize at="ξ.v🌵s">
+            <morph at="ξ.v🌵s">
+              <applied meta="𝑛·1·1" by="morph" at="ξ.v🌵s" of="Φ.string"><meta attr="φ">𝑒·0·1</meta></applied>
               <formed meta="𝑛·1·2" of="Φ.string"><meta attr="φ">𝑒·0·1</meta></formed>
               <morphed meta="𝑛·1·3">𝑛·1·2</morphed>
             </morph>
@@ -78,8 +78,8 @@ protocol: |
         </evaluate>
         <applied meta="𝑒·0·5" of="Φ.bytes"><datum attr="φ">3F-F0-00-00-00-00-00-00</datum></applied>
         <applied meta="𝑒·0·6" of="Φ.number"><meta attr="φ">𝑒·0·5</meta></applied>
-        <applied meta="𝑛·0·7" by="morph" at="𝑛·0·4" of="𝑛·1·10.plus"><meta attr="b">𝑒·0·6</meta></applied>
-        <formed meta="𝑛·0·8" of="𝑛·1·10.plus"><meta attr="b">𝑒·0·6</meta></formed>
+        <applied meta="𝑛·0·7" by="morph" at="𝑛·0·4" of="𝑛·1·10.plus"><meta attr="v🌵b">𝑒·0·6</meta></applied>
+        <formed meta="𝑛·0·8" of="𝑛·1·10.plus"><meta attr="v🌵b">𝑒·0·6</meta></formed>
         <morphed meta="𝑛·0·9">𝑛·0·8</morphed>
       </morph>
       <evaluate λ="L_number_plus" by="dataize" at="𝑛·0·4">
@@ -99,9 +99,9 @@ protocol: |
           <manufactured meta="𝛿·2·1">𝜎5</manufactured>
         </dataize>
         <bound meta="𝛿1·2">𝛿·2·1</bound>
-        <dataize at="ξ.b">
-          <morph at="ξ.b">
-            <applied meta="𝑛·2·9" by="morph" at="ξ.b" of="Φ.number"><meta attr="φ">𝑒·0·5</meta></applied>
+        <dataize at="ξ.v🌵b">
+          <morph at="ξ.v🌵b">
+            <applied meta="𝑛·2·9" by="morph" at="ξ.v🌵b" of="Φ.number"><meta attr="φ">𝑒·0·5</meta></applied>
             <formed meta="𝑛·2·10" of="Φ.number"><meta attr="φ">𝑒·0·5</meta></formed>
             <morphed meta="𝑛·2·11">𝑛·2·10</morphed>
           </morph>
@@ -163,18 +163,18 @@ java: |
 
       @Override
       public Phi lambda() {
-          return new Data.ToPhi(java.nio.ByteBuffer.wrap(this.𝜎6()).getDouble());
+          return new Data.ToPhi(new Dataized(new Data.ToPhi(this.𝜎6())).asNumber());
       }
 
       private byte[] 𝜎4() {
-          return new Dataized(this.take("ρ").take("t")).take();
+          return new Dataized(this.take("ρ").take("v🌵t")).take();
       }
 
       private byte[] 𝜎5() {
-          return new Dataized(new PhApplication(Phi.Φ.take("len"), new Bind("s", new PhApplication(Phi.Φ.take("string"), "φ", new Data.ToPhi(this.𝜎4()))))).take();
+          return new Dataized(new PhApplication(Phi.Φ.take("len"), new Bind("s", new PhLazy(() -> new PhApplication(Phi.Φ.take("string"), "φ", new Data.ToPhi(this.𝜎4())))))).take();
       }
 
       private byte[] 𝜎6() {
-          return java.nio.ByteBuffer.allocate(8).putDouble(java.nio.ByteBuffer.wrap(this.𝜎5()).getDouble() + 1.0d).array();
+          return java.nio.ByteBuffer.allocate(8).putDouble(new Dataized(new Data.ToPhi(this.𝜎5())).asNumber() + 1.0d).array();
       }
   }

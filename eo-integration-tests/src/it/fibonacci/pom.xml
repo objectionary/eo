@@ -8,7 +8,7 @@
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.73.4</version>
+    <version>0.73.5</version>
   </parent>
   <groupId>org.eolang</groupId>
   <artifactId>examples</artifactId>
@@ -42,10 +42,10 @@
           </execution>
         </executions>
         <configuration>
-          <transpileTests>false</transpileTests>
-          <ignoreRuntime>true</ignoreRuntime>
-          <failOnWarning>false</failOnWarning>
-          <skipLinting>true</skipLinting>
+          <transpile.tests>false</transpile.tests>
+          <runtime.bypass>true</runtime.bypass>
+          <lint.strict>false</lint.strict>
+          <lint.bypass>true</lint.bypass>
         </configuration>
       </plugin>
       <plugin>
@@ -57,7 +57,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>3.6.4</version>
+        <version>3.7.0</version>
         <executions>
           <execution>
             <id>run-eo-fibonacci-app</id>

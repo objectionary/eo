@@ -19,9 +19,11 @@ import java.util.Map;
  * count.</p>
  *
  * <p>A <b>stamp</b> puts a value read out of a row onto its holder: a copy
- * with no {@code ρ} becomes a new copy at the place of the read, with the
- * holder as its {@code ρ} and the rows of the copy it came from, which it
- * takes again on every pass.</p>
+ * whose declared {@code ^} is empty becomes a new copy at the place of the
+ * read, with the holder as its {@code ρ} and the rows of the copy it came
+ * from, which it takes again on every pass. A copy of a formation that
+ * declares no {@code ^} has no {@code ρ} to fill and stays itself
+ * (#9785).</p>
  *
  * @since 0.76.0
  */
@@ -128,15 +130,6 @@ final class Rows {
     }
 
     /**
-     * Every row, by copy and void.
-     *
-     * @return The rows
-     */
-    Map<Slot, Ints> all() {
-        return this.table;
-    }
-
-    /**
      * Put a value read out of a row onto its holder.
      *
      * @param item The value
@@ -150,10 +143,15 @@ final class Rows {
         if (value.kind() == 'B') {
             result = this.state.await(this.stamp(value.base(), holder, site));
         } else if (value.kind() == 'A') {
+            int origin = value.origin();
+            if (origin >= 0) {
+                origin = this.stamp(origin, holder, site);
+            }
             result = this.state.mark(
-                this.stamp(value.base(), holder, site), value.count()
+                this.stamp(value.base(), holder, site), value.count(), origin
             );
-        } else if (value.kind() == 'O' && (value.bound() & Formation.RHO) == 0) {
+        } else if (value.kind() == 'O' && (value.bound() & Formation.RHO) == 0
+            && this.world.form(value.form()).open("ρ")) {
             final Map<String, int[]> rows = new LinkedHashMap<>(0);
             for (final String name : this.world.bound(value)) {
                 rows.put(name, this.cell(item, name));

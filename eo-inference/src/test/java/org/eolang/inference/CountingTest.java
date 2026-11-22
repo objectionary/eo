@@ -27,7 +27,7 @@ final class CountingTest {
         MatcherAssert.assertThat(
             "a copy with no empty void must count, but it didnt",
             new Settled(world).state().counts(
-                world.intern(new Value('O', "Φ.app", "Φ.app", Formation.RHO, "", -1, 0))
+                world.intern(new Value('O', "Φ.app", "Φ.app", 0L, "", -1, 0))
             ),
             Matchers.is(true)
         );
@@ -39,7 +39,7 @@ final class CountingTest {
         MatcherAssert.assertThat(
             "a copy with an empty void that nobody uses must not count, but it did",
             new Settled(world).state().counts(
-                world.intern(new Value('O', "Φ.box", "Φ.box", Formation.RHO, "", -1, 0))
+                world.intern(new Value('O', "Φ.box", "Φ.box", 0L, "", -1, 0))
             ),
             Matchers.is(false)
         );
@@ -52,7 +52,7 @@ final class CountingTest {
             "a copy read from outside must count, but it didnt",
             new Settled(world).state().counts(
                 world.intern(
-                    new Value('O', "Φ.box", "Φ.app.φ.ρ", 1L | Formation.RHO, "", -1, 0)
+                    new Value('O', "Φ.box", "Φ.app.φ.ρ", 1L, "", -1, 0)
                 )
             ),
             Matchers.is(true)

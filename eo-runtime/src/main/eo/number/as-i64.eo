@@ -2,13 +2,17 @@
 # zero. The exponent and the mantissa are pulled out of its IEEE 754 layout
 # and the magnitude is shifted into place, with the two's complement taken
 # when it is negative. When it does not fit into the bounds of an `i64`,
-# the caller-supplied `cant-convert` fallback is returned.
+# the `cant-convert` fallback takes an error message.
+# When unbound, it terminates with that message.
+#
+# The message names a magnitude in `[2^63, 2^64)` exactly, like `i64/as-decimal` (#9725).
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint invalid-name-notation
 +version 0.0.0
 
 [^num cant-convert] > as-i64
@@ -38,7 +42,25 @@
     cant-convert
       "Can't convert number %s to i64 because it's out of i64 bounds".printf
         *
-          string num.as-scientific
+          string
+            if.
+              exp.eq 1086
+              negative.if
+                "-".as-bytes.concat
+                  digits >> written
+                    high
+                    times.
+                      mant.minus
+                        times.
+                          floor. >> high
+                            div.
+                              mantissa.as-i64.as-number >> mant
+                              2097152
+                          2097152
+                      2048
+                    --
+                written
+              num.as-scientific
     if.
       exp.lt 1023
       00-00-00-00-00-00-00-00.as-i64
@@ -54,6 +76,36 @@
                 exp.minus 1075
               mantissa.right
                 1075.minus exp
+  [^num upper lower acc] >> digits
+    if. > @
+      and.
+        upper.eq 0
+        lower.eq 0
+      acc
+      num.digits
+        number
+          floor. >> upperq!
+            upper.div 10
+        number
+          floor. >> lowerq!
+            div.
+              number rem
+              10
+        concat.
+          as-char.
+            plus.
+              minus.
+                number
+                  plus. >> rem!
+                    times.
+                      upper.minus ((number upperq).times 10)
+                      4294967296
+                    lower
+                times.
+                  number lowerq
+                  10
+              48
+          acc
 
   eq. ++> can-convert-a-fraction-below-one-to-zero
     0.5.as-i64.as-bytes
@@ -73,10 +125,30 @@
 
   42.as-i64.as-bytes.eq 00-00-00-00-00-00-00-2A ++> can-convert-the-origin-number
 
+  eq. ++> can-convert-the-origin-number-with-a-terminator-for-the-error
+    as-bytes.
+      42.as-i64 T
+    00-00-00-00-00-00-00-2A
+
+  eq. ++> can-recover-from-a-negative-past-the-boundary
+    i64 5C-13-A8-07-E1-94-3B-6D
+    -9.223372036854778e18.as-i64
+      i64 5C-13-A8-07-E1-94-3B-6D > [message]
+
+  eq. ++> can-recover-from-a-non-finite-number
+    i64 C4-6E-19-B2-07-F5-8D-31
+    nan.as-i64
+      i64 C4-6E-19-B2-07-F5-8D-31 > [message]
+
   eq. ++> can-recover-from-an-out-of-range-number
     i64 00-00-00-00-00-00-00-2A
     1.0e30.as-i64
       i64 00-00-00-00-00-00-00-2A > [message]
+
+  eq. ++> can-recover-from-the-long-maximum-boundary
+    i64 71-0B-E6-2D-94-C7-38-5A
+    9.223372036854776e18.as-i64
+      i64 71-0B-E6-2D-94-C7-38-5A > [message]
 
   eq. ++> can-truncate-a-negative-toward-zero
     -3.7.as-i64.as-bytes

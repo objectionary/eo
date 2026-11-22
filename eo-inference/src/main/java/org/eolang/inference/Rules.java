@@ -11,14 +11,14 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * The rules that wait for a stop (design doc 4.3): b, e and 3.
+ * The rules that wait for a stop (design doc 4.3): b and e.
  *
- * <p>A call whose argument is only an open void, an object whose {@code @}
- * gives nothing typed, and an argument whose every value fails give nothing
- * until a stop decides them; a decision is never taken back. What waits
- * belongs to the answer that found it waiting, and leaves when that answer
- * is worked out again or loses its answer, so what waits after a pass is
- * what the answers of that pass found.</p>
+ * <p>A call whose argument holds only unknowns and an object whose
+ * {@code @} gives nothing typed give nothing until a stop decides them; a
+ * decision is never taken back. What waits belongs to the answer that found
+ * it waiting, and leaves when that answer is worked out again or loses its
+ * answer, so what waits after a pass is what the answers of that pass
+ * found.</p>
  *
  * @since 0.76.0
  */

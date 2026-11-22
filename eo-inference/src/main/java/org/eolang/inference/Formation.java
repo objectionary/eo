@@ -115,6 +115,17 @@ final class Formation {
     }
 
     /**
+     * The voids carrying a type variable.
+     *
+     * @param letter The variable
+     * @return The voids
+     */
+    List<String> carrying(final String letter) {
+        return this.order.stream().filter(name -> letter.equals(this.attrs.get(name).variable()))
+            .toList();
+    }
+
+    /**
      * The names of its attributes, in the order written.
      *
      * @return The names
@@ -160,6 +171,17 @@ final class Formation {
      */
     String parent() {
         return this.said.getOrDefault("rho", "");
+    }
+
+    /**
+     * Whether its declared {@code ^} is the object it goes into: it has no
+     * name of its own, so no formation around it holds it, and where it is
+     * written has nothing to do with its {@code ^}.
+     *
+     * @return TRUE if it declares {@code ^} and nothing around holds it
+     */
+    boolean applied() {
+        return this.open("ρ") && this.parent().isEmpty();
     }
 
     /**

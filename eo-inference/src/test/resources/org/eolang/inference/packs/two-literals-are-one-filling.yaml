@@ -19,10 +19,10 @@ sources:
   string.eo: |
     [@] > string
 answers:
-  - /answers/o[@loc='Φ.app.first.α0' and @lands='x']/is[@loc='Φ.number']
-  - /answers/o[@loc='Φ.app.second.α0' and @lands='x']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.first.α0' and @lands='v🌵x']/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.second.α0' and @lands='v🌵x']/is[@loc='Φ.number']
   - /answers/o[@loc='Φ.inc' and @copies='2']
-  - /answers/o[@loc='Φ.inc.x' and @copies='2']/is[@loc='Φ.number']
-  - /answers[not(o[@loc='Φ.inc.x']/set)]
+  - /answers/o[@loc='Φ.inc.v🌵x' and @copies='2']/is[@loc='Φ.number']
+  - /answers[not(o[@loc='Φ.inc.v🌵x']/set)]
   - /answers/o[@loc='Φ.app.first.α0.α0.α0' and @lands='φ']/data
   - /answers/o[@loc='Φ.app.second.α0.α0.α0' and @lands='φ']/data

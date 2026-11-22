@@ -30,7 +30,7 @@ final class FactsStream {
 
     /**
      * The spaces between the types of the arguments an atom calls a void
-     * back with.
+     * back with, each of them a whole type tree with no space inside.
      */
     private static final Pattern SPACES = Pattern.compile("\\s+");
 
@@ -115,13 +115,11 @@ final class FactsStream {
     ) {
         final String name = this.attr("name");
         final boolean open = "true".equals(this.attr("void"));
-        attrs.put(name, new Attribute(open, this.attr("holds")));
+        attrs.put(name, new Attribute(open, this.attr("holds"), this.attr("variable")));
         if (open && !this.attr("args").isEmpty()) {
             back.put(
                 name,
-                Arrays.asList(
-                    FactsStream.SPACES.split(this.attr("args").replace(',', ' ').trim())
-                )
+                Arrays.asList(FactsStream.SPACES.split(this.attr("args").trim()))
             );
         }
         if ("ρ".equals(name)) {

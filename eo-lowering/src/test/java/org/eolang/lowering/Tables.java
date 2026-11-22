@@ -14,7 +14,7 @@ import java.util.Map;
 import org.cactoos.Scalar;
 
 /**
- * The tables of {@code eo:inference} that one YAML pack of the tests reads.
+ * The tables of {@code eo:infer} that one YAML pack of the tests reads.
  *
  * <p>Most packs get what the engine itself writes for their EO sources,
  * the key {@code eo}, as {@link Inferred} runs it. A pack that writes the

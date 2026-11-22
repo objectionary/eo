@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import com.yegor256.OnlineMeans;
 import com.yegor256.WeAreOnline;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @since 0.28.11
  */
+@OnlineMeans(url = "https://repo.maven.apache.org/maven2/org/eolang/eo-runtime/maven-metadata.xml")
 final class DpsWithRuntimeTest {
 
     @Test

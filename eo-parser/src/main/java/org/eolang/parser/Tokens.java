@@ -186,7 +186,7 @@ final class Tokens {
         final int start = this.cursor;
         if (this.atEnd()) {
             throw new ParseError(
-                this.span.line(), Tokens.clamped(this.span.indent() + start, this.span),
+                this.span.line(), Suffix.clamped(this.span.indent() + start, this.span),
                 "expected identifier"
             );
         }
@@ -202,19 +202,7 @@ final class Tokens {
             idx = idx + 1;
         }
         final String raw = this.body.substring(start, idx);
-        if (Tokens.cactus(raw)) {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + start,
-                "cactus emoji is reserved for auto-names; not allowed in identifiers"
-            );
-        }
-        final int control = new Scrubbed(raw).found();
-        if (control >= 0) {
-            throw new ParseError(
-                this.span.line(), this.span.indent() + start + control,
-                "control character is not allowed in an identifier"
-            );
-        }
+        Suffix.checkGlyphs(raw, this.span.line(), this.span.indent() + start);
         this.cursor = idx;
         return new Value(Value.Kind.IDENTIFIER, raw, this.span.indent() + start);
     }
@@ -385,18 +373,14 @@ final class Tokens {
     List<MethodChain> readChain() {
         final List<MethodChain> chain = new ArrayList<>(0);
         while (!this.atEnd() && this.dispatchAhead()) {
-            final boolean fragile = Tokens.fragileAhead(this.body, this.cursor);
-            int dot = this.span.indent() + this.cursor;
-            if (fragile) {
-                dot = dot + 1;
-            }
+            final boolean fragile = this.consumeDispatch();
+            final int dot = this.span.indent() + this.cursor - 1;
             if (chain.size() >= Stack.DEEPEST) {
                 throw new ParseError(
                     this.span.line(), dot,
                     String.format("object nested deeper than %d levels", Stack.DEEPEST)
                 );
             }
-            this.consumeDispatch();
             final Value name = this.readMethodName();
             chain.add(new MethodChain(name.raw(), dot, fragile));
         }
@@ -519,7 +503,7 @@ final class Tokens {
         }
         if (this.cursor == start) {
             throw new ParseError(
-                this.span.line(), Tokens.clamped(this.span.indent() + start, this.span),
+                this.span.line(), Suffix.clamped(this.span.indent() + start, this.span),
                 "expected binding label after `:`"
             );
         }
@@ -638,7 +622,8 @@ final class Tokens {
      * @return Opening flag
      */
     static boolean opensString(final String text, final int idx) {
-        return idx == 0 || Tokens.terminates(text.charAt(idx - 1));
+        return text.charAt(idx) == '"'
+            && (idx == 0 || Tokens.terminates(text.charAt(idx - 1)));
     }
 
     /**
@@ -683,6 +668,17 @@ final class Tokens {
      */
     static boolean terminates(final char glyph) {
         return " \t,.|':;!?*/[]{}()".indexOf(glyph) >= 0;
+    }
+
+    /**
+     * Whether a fragile dispatch starts at the given position.
+     *
+     * @param body Source text
+     * @param idx Position in the text
+     * @return True if the next two characters are {@code ?.}
+     */
+    static boolean fragileAhead(final String body, final int idx) {
+        return idx + 1 < body.length() && body.charAt(idx) == '?' && body.charAt(idx + 1) == '.';
     }
 
     private ParseError malformed(final int start) {
@@ -755,10 +751,6 @@ final class Tokens {
             && Tokens.digitAt(this.body, idx + 1);
     }
 
-    private static int clamped(final int pos, final Span source) {
-        return Math.min(pos, source.text().length() - 1);
-    }
-
     private static boolean singleToken(final String inside) {
         boolean single = true;
         int idx = 0;
@@ -773,10 +765,6 @@ final class Tokens {
             idx = idx + 1;
         }
         return single;
-    }
-
-    private static boolean fragileAhead(final String body, final int idx) {
-        return idx + 1 < body.length() && body.charAt(idx) == '?' && body.charAt(idx + 1) == '.';
     }
 
     private static boolean hexDigit(final char glyph) {
@@ -833,10 +821,6 @@ final class Tokens {
     private static boolean opensPhi(final String text, final int idx) {
         return text.charAt(idx) == '>' && text.charAt(idx + 1) == ' '
             && text.charAt(idx + 2) == '[';
-    }
-
-    private static boolean cactus(final String text) {
-        return text.codePoints().anyMatch(cp -> cp == 0x1F335);
     }
 
     private static boolean validBinding(final String text) {

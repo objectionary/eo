@@ -40,7 +40,7 @@ final class ReductionTest {
         MatcherAssert.assertThat(
             "a decorator must reduce to what its @ gives, but it didnt",
             state.kind(
-                world.intern(new Value('O', "Φ.five", "Φ.five", Formation.RHO, "", -1, 0))
+                world.intern(new Value('O', "Φ.five", "Φ.five", 0L, "", -1, 0))
             ),
             Matchers.hasToString(new Ids(state.shared("Φ.number")).toString())
         );
@@ -60,12 +60,12 @@ final class ReductionTest {
     }
 
     @Test
-    void reducesUnknownArgumentToOneCantTell(@Mktmp final Path temp) throws IOException {
-        final World world = ReductionTest.world(temp);
+    void keepsTheKindOfEveryUnknownGoingIntoAVoid(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
-            "every unknown going into a void must be one can't tell, but it wasnt",
-            new Settled(world).state().reduced(new int[] {Values.GAP, world.unknown("odd")}),
-            Matchers.equalTo(new int[] {world.unknown("can't tell")})
+            "every unknown going into a void must keep its kind, but it didnt",
+            new Settled(ReductionTest.world(temp)).state()
+                .reduced(new int[] {Values.JGAP, Values.GAP}),
+            Matchers.equalTo(new int[] {Values.GAP, Values.JGAP})
         );
     }
 

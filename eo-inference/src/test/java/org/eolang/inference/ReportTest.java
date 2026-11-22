@@ -40,6 +40,32 @@ final class ReportTest {
     }
 
     @Test
+    void keepsFilesItDidNotWrite(@Mktmp final Path temp) throws IOException {
+        final Path out = temp.resolve("out");
+        Files.createDirectories(out);
+        Files.write(out.resolve("notes.txt"), new byte[] {1});
+        new Report(ReportTest.program(temp), ReportTest.answers(temp)).written(out);
+        MatcherAssert.assertThat(
+            "A file the report did not write must stay in its directory, but it was deleted",
+            Files.exists(out.resolve("notes.txt")),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void removesPageOfSourceThatIsGone(@Mktmp final Path temp) throws IOException {
+        final Path out = temp.resolve("out");
+        Files.createDirectories(out);
+        Files.write(out.resolve("gone.eo.html"), new byte[] {1});
+        new Report(ReportTest.program(temp), ReportTest.answers(temp)).written(out);
+        MatcherAssert.assertThat(
+            "A page of an earlier run must go, but it stayed",
+            Files.exists(out.resolve("gone.eo.html")),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void writesAPageAnyBrowserCanOpen(@Mktmp final Path temp) throws IOException {
         new Report(ReportTest.program(temp), ReportTest.answers(temp)).written(temp.resolve("out"));
         MatcherAssert.assertThat(
@@ -76,6 +102,62 @@ final class ReportTest {
             "the name the author wrote must be marked green, but it wasnt",
             Files.readString(temp.resolve("out/cup.eo.html")),
             Matchers.containsString("<span class=\"mark named\" data-band=\"named\">lid<span")
+        );
+    }
+
+    @Test
+    void saysUnderTheNameOfAFormationOnlyStudiedThatNobodyCallsIt(@Mktmp final Path temp)
+        throws IOException {
+        Files.writeString(
+            temp.resolve("answers.xml"),
+            String.join(
+                "",
+                "<answers><o loc='Φ.cup' copies='1'><is loc='Φ.cup'/></o>",
+                "<o loc='Φ.cup.lid' copies='1' study='1'><is loc='Φ.cup.lid'/></o></answers>"
+            )
+        );
+        new Report(ReportTest.program(temp), temp.resolve("answers.xml"))
+            .written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "the name of a formation only studied must say that nobody calls it, but it didnt",
+            Files.readString(temp.resolve("out/cup.eo.html")),
+            Matchers.containsString(
+                String.join(
+                    "",
+                    "<code>Φ.cup.lid</code></span>",
+                    "<span class=\"said\">studied: nobody calls this object</span></span>"
+                )
+            )
+        );
+    }
+
+    @Test
+    void saysHowManyCopiesOfAFormationAreStudyCopiesWhenNotAll(@Mktmp final Path temp)
+        throws IOException {
+        Files.writeString(
+            temp.resolve("answers.xml"),
+            String.join(
+                "",
+                "<answers><o loc='Φ.cup' copies='4'><is loc='Φ.cup'/></o>",
+                "<o loc='Φ.cup.lid' copies='7' study='3'><is loc='Φ.cup.lid'/></o></answers>"
+            )
+        );
+        new Report(ReportTest.program(temp), temp.resolve("answers.xml"))
+            .written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "the note on a formation partly studied must count its study copies, but it didnt",
+            Files.readString(temp.resolve("out/cup.eo.html")),
+            Matchers.containsString("studied: nobody calls this object (3 of 7 copies)</span>")
+        );
+    }
+
+    @Test
+    void keepsFiveLinesAroundEveryMarkOfAPickedColour(@Mktmp final Path temp) throws IOException {
+        new Report(ReportTest.program(temp), ReportTest.answers(temp)).written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "a page must keep five lines around every mark of a picked colour, but it didnt",
+            Files.readString(temp.resolve("out/cup.eo.html")),
+            Matchers.containsString("var around = 5;")
         );
     }
 
@@ -146,7 +228,48 @@ final class ReportTest {
             "the tally must count both objects of the program as named, but it didnt",
             new Report(ReportTest.program(temp), ReportTest.answers(temp))
                 .written(temp.resolve("out")),
-            Matchers.allOf(Matchers.hasEntry("named", 2), Matchers.hasEntry("unreached", 0))
+            Matchers.hasEntry("named", 2)
+        );
+    }
+
+    @Test
+    void printsAHiddenFormationByTheNameItsAuthorGaveIt(@Mktmp final Path temp)
+        throws IOException {
+        new Report(ReportTest.helper(temp, " local='spout'"), ReportTest.poured(temp))
+            .written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "a hidden formation must be printed by the name its author gave it, but it wasnt",
+            Files.readString(temp.resolve("out/jug.eo.html")),
+            Matchers.containsString(
+                String.join(
+                    "",
+                    "<code><span class=\"nm\" title=\"Φ.jug.a🌵2-2.lip\">Φ.jug.",
+                    "<span class=\"hid\" title=\"a🌵2-2\">spout</span>.lip</span></code>"
+                )
+            )
+        );
+    }
+
+    @Test
+    void drawsTheNameAnAuthorGaveInGreyItalics(@Mktmp final Path temp) throws IOException {
+        new Report(ReportTest.helper(temp, " local='spout'"), ReportTest.poured(temp))
+            .written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "a name the author gave a hidden formation must be grey and italic, but it wasnt",
+            Files.readString(temp.resolve("out/jug.eo.html")),
+            Matchers.containsString(".hid { color: #888; font-style: italic; }")
+        );
+    }
+
+    @Test
+    void keepsTheMadeNameOfAFormationItsAuthorDidntName(@Mktmp final Path temp)
+        throws IOException {
+        new Report(ReportTest.helper(temp, ""), ReportTest.poured(temp))
+            .written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "a formation its author didnt name must keep the name the parser made, but it didnt",
+            Files.readString(temp.resolve("out/jug.eo.html")),
+            Matchers.containsString("<code>Φ.jug.a🌵2-2.lip</code>")
         );
     }
 
@@ -198,6 +321,33 @@ final class ReportTest {
                 "",
                 "<answers><o loc='Φ.cup' copies='1'><is loc='Φ.cup'/></o>",
                 "<o loc='Φ.cup.lid' copies='1'><is loc='Φ.cup.lid'/></o></answers>"
+            )
+        );
+        return temp.resolve("answers.xml");
+    }
+
+    private static Path helper(final Path temp, final String local) throws IOException {
+        Files.writeString(
+            Files.createDirectories(temp.resolve("xmirs")).resolve("jug.xmir"),
+            String.join(
+                "",
+                "<object><listing>[] &gt; jug&#10;  [] &gt;&gt; spout&#10;    [] &gt; lip&#10;",
+                "</listing><o line='1' loc='Φ.jug' name='jug' pos='0'>",
+                "<o line='2' loc='Φ.jug.a🌵2-2'", local, " name='a🌵2-2' pos='2'>",
+                "<o line='3' loc='Φ.jug.a🌵2-2.lip' name='lip' pos='4'/></o></o></object>"
+            )
+        );
+        return temp.resolve("xmirs");
+    }
+
+    private static Path poured(final Path temp) throws IOException {
+        Files.writeString(
+            temp.resolve("answers.xml"),
+            String.join(
+                "",
+                "<answers><o loc='Φ.jug' copies='1'><is loc='Φ.jug'/></o>",
+                "<o loc='Φ.jug.a🌵2-2' copies='1'><is loc='Φ.jug.a🌵2-2'/></o>",
+                "<o loc='Φ.jug.a🌵2-2.lip' copies='1'><is loc='Φ.jug.a🌵2-2.lip'/></o></answers>"
             )
         );
         return temp.resolve("answers.xml");

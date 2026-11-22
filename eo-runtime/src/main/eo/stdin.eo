@@ -45,12 +45,12 @@
 [] > stdin
   all-lines > @
   [^stream] > all-lines
-    [^ scan buffer is-first] >> rec-read
+    [^stream scan buffer is-first] >> rec-read
       scan.eof.if > @
         string buffer
         seq *
           scan.line
-          ^.rec-read
+          stream.rec-read
             stdin.line-or-eof
             is-first.if
               buffer.concat scan.line
@@ -68,7 +68,7 @@
       console.read 1
     eof.if > line
       ""
-      [^ input buffer] >> rec-read
+      [^probe input buffer] >> rec-read
         if. > @
           or.
             char.eq --
@@ -78,7 +78,7 @@
                 next.as-bytes.eq "\n"
               char.eq "\n"
           string buffer
-          ^.rec-read
+          probe.rec-read
             next
             buffer.concat char
         input.as-bytes > char

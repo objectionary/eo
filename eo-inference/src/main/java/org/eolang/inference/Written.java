@@ -76,6 +76,15 @@ final class Written {
     }
 
     /**
+     * Whether it is a formation, which has no base.
+     *
+     * @return TRUE when it has no base
+     */
+    boolean formation() {
+        return this.base.isEmpty();
+    }
+
+    /**
      * How many receivers deep it sits, which is how many times its locator
      * steps into a {@code ρ}.
      *

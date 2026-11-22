@@ -9,8 +9,9 @@
 # lone is called only with odd, so it reduces to a number, and so does single.
 sources:
   choice.eo: |
-    [pick] > choice
+    [fork] > choice
       pick > @
+      fork > pick
       [] > not
         ^.pick no yes > @
   yes.eo: |
@@ -64,7 +65,7 @@ answers:
   - /answers/o[@loc='Φ.odd.φ.α0.φ']/is[@loc='Φ.number']
   - /answers/o[@loc='Φ.yes.φ.α0.φ']/is[@loc='Φ.oak']
   - /answers/o[@loc='Φ.no.φ.α0.φ']/is[@loc='Φ.elm']
-  - /answers/o[@loc='Φ.sock.flag' and @copies='3']/is[@loc='Φ.choice']
+  - /answers/o[@loc='Φ.sock.v🌵flag' and @copies='3']/is[@loc='Φ.choice']
   - /answers/o[@loc='Φ.sock.φ' and @copies='3' and set[@copies='1']/is[@loc='Φ.oak'] and set[@copies='1']/is[@loc='Φ.elm'] and set[@copies='1']/is[@loc='Φ.number']]
   - /answers/o[@loc='Φ.lone' and @copies='1']/reduced/is[@loc='Φ.number']
   - /answers/o[@loc='Φ.single.φ']/is[@loc='Φ.number']

@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# blob has no as-bytes of its own, so app reads it off the @ of blob, the
+# bytes 01-02. The row of the blob as-bytes is read off names what that @
+# gives, bytes, the way a decorator is named anywhere else, and says nothing
+# more.
+sources:
+  blob.eo: |
+    [] > blob
+      01-02 > @
+  app.eo: |
+    [] > app
+      blob.as-bytes > @
+  bytes.eo: |
+    [@] > bytes
+      [] > as-bytes /Q.bytes
+        ? > ^
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.ρ' and @copies='1' and not(reduced) and count(*)=1]/is[@loc='Φ.bytes']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.bytes']
+  - /answers[not(//fails)]

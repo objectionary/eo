@@ -162,6 +162,25 @@ final class Eo implements Iterable<Directive> {
         return Eo.topLevelMarker(body, idx -> Eo.spacedMarker(body, idx, "-->"));
     }
 
+    /**
+     * The §4.5 check for a level that has just been given a name: reject
+     * it when the level sits in argument position of an only-phi
+     * formation's φ. Run at the point of naming — {@link Transition} for
+     * a head-line suffix, {@link LnMethod} for a same-indent
+     * {@code .method} continuation's suffix — rather than deferred to
+     * close time, since only that call site knows the line the name
+     * actually appeared on.
+     *
+     * @param level The freshly named level
+     * @param emit Directive sink
+     * @param naming Span of the line that named it
+     */
+    static void checkArgumentNaming(final Level level, final Emit emit, final Span naming) {
+        if (level.argument() && level.named()) {
+            emit.error(naming.line(), naming.indent(), level.onlyPhiNamingError());
+        }
+    }
+
     private static boolean spacedMarker(
         final String body, final int idx, final String marker
     ) {
@@ -177,7 +196,7 @@ final class Eo implements Iterable<Directive> {
         int idx = 0;
         while (idx < body.length() - 2 && found < 0) {
             final char glyph = body.charAt(idx);
-            if (glyph == '"' && Tokens.opensString(body, idx)) {
+            if (Tokens.opensString(body, idx)) {
                 idx = Tokens.closingQuote(body, idx);
             } else if (glyph == '(') {
                 depth = depth + 1;
@@ -602,17 +621,12 @@ final class Eo implements Iterable<Directive> {
 
     private static Line questioned(final Span span) {
         final Line line;
-        if (Eo.qdot(span.body(), 0)) {
+        if (Tokens.fragileAhead(span.body(), 0)) {
             line = new LnMethod(span);
         } else {
             line = new LnVoid(span);
         }
         return line;
-    }
-
-    private static boolean qdot(final String body, final int idx) {
-        return idx + 1 < body.length()
-            && body.charAt(idx) == '?' && body.charAt(idx + 1) == '.';
     }
 
     private static boolean onlyPhi(final Span span) {
@@ -697,7 +711,7 @@ final class Eo implements Iterable<Directive> {
                 reversed = idx + 1 >= body.length() || body.charAt(idx + 1) == ' ';
                 break;
             }
-            if (Eo.qdot(body, idx)) {
+            if (Tokens.fragileAhead(body, idx)) {
                 reversed = idx + 2 >= body.length() || body.charAt(idx + 2) == ' ';
                 break;
             }
@@ -716,7 +730,7 @@ final class Eo implements Iterable<Directive> {
         final boolean reversed;
         if (root && body.length() >= 2 && body.charAt(1) == '.') {
             reversed = body.length() == 2 || body.charAt(2) == ' ';
-        } else if (root && Eo.qdot(body, 1)) {
+        } else if (root && Tokens.fragileAhead(body, 1)) {
             reversed = body.length() == 3 || body.charAt(3) == ' ';
         } else {
             reversed = false;
@@ -763,12 +777,6 @@ final class Eo implements Iterable<Directive> {
                 message = "object inside formation must have a name";
             }
             emit.error(level.start(), level.indent(), message);
-        }
-        if (naming && level.argument() && level.named()) {
-            emit.error(
-                level.start(), level.indent(),
-                level.onlyPhiNamingError()
-            );
         }
     }
 

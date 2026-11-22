@@ -7,7 +7,7 @@ asserts:
   - /object[not(errors)]
   - //o[@base='ξ.outer' and count(o)=1]
   - //o[@base='ξ.outer']/o[@base='ξ.result']
-  - //o[@name='app']/o[@name='inner' and not(@base) and o[@base='∅' and @name='b']]
+  - //o[@name='app']/o[@name='inner' and not(@base) and o[@base='∅' and @name='v🌵b']]
   - //o[@name='app']/o[starts-with(@base,'ξ.inner') and o[@base='Φ.number']]
   - //o[@name='app']/o[@name='result'][@base = concat('ξ.', //o[@name='app']/o[starts-with(@base,'ξ.inner')]/@name)]
 input: |

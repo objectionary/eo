@@ -79,10 +79,12 @@ final class LnApplication implements Line {
         final Openness openness;
         if (kind == Kind.HAPPLICATION) {
             openness = Openness.HCOMPLETED;
+        } else if (kind == Kind.IDENTITY_OBJECT) {
+            openness = Openness.VCOMPLETED;
         } else {
             openness = Openness.OPEN;
         }
-        this.transition(stack, suffix, kind, openness);
+        this.transition(stack, suffix, kind, openness, emit);
         stack.hop(chain.size(), this.span.line(), this.span.indent());
         Bindings.observeChild(stack, outer, this.span);
         globals.clearBlanks();
@@ -180,9 +182,10 @@ final class LnApplication implements Line {
     }
 
     private void transition(
-        final Stack stack, final Suffix suffix, final Kind kind, final Openness openness
+        final Stack stack, final Suffix suffix, final Kind kind, final Openness openness,
+        final Emit emit
     ) {
-        new Transition(stack, this.span).apply(
+        new Transition(stack, this.span, emit).apply(
             kind, openness, new Admission(suffix.named(), suffix.test(), suffix.test())
         );
     }
@@ -191,7 +194,11 @@ final class LnApplication implements Line {
         final Emit emit, final Suffix suffix, final Value head,
         final List<MethodChain> chain, final List<Value> args
     ) {
-        new ChainEmission(emit, this.span, head, chain, suffix).run();
+        new ChainEmission(
+            emit, this.span.line(), chain,
+            suffix.attribute(this.span.line(), this.span.indent())
+        ).run(head);
+        new Marked(emit, suffix).apply();
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, this.span.line());
         }

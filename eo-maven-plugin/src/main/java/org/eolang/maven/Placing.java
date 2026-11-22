@@ -98,12 +98,12 @@ final class Placing implements Step {
             if (copied == 0) {
                 Logger.info(
                     this, "No binary files placed from %d dependencies into %[file]s",
-                    deps.size(), this.home
+                    deps.size(), this.classes
                 );
             } else {
                 Logger.info(
                     this, "Placed %d binary file(s) found in %d dependencies, into %[file]s",
-                    copied, deps.size(), this.home
+                    copied, deps.size(), this.classes
                 );
             }
         } else {

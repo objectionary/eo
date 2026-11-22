@@ -6,8 +6,8 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@base='ξ.app.bar']/o[@base='Φ.a' and @as='x']
-  - //o[@base='ξ.app.bar']/o[@base='Φ.b' and @as='y']
+  - //o[@base='ξ.app.bar']/o[@base='Φ.a' and @as='v🌵x']
+  - //o[@base='ξ.app.bar']/o[@base='Φ.b' and @as='v🌵y']
 input: |
   [] > main
     foo > app

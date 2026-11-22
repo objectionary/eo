@@ -56,7 +56,7 @@ final class Population {
         this.rows = new Rows(walk, world);
         this.counting = new Counting(walk, world);
         this.study = new Study(walk, world);
-        this.callbacks = new Callbacks(walk, world);
+        this.callbacks = new Callbacks(walk, world, this.copies);
     }
 
     /**
@@ -90,13 +90,25 @@ final class Population {
     }
 
     /**
-     * The copy of a formation Java makes, with Java's own {@code ρ}.
+     * The copy Java makes of a type, its voids typed by the brackets of the
+     * type, or filled by EO code when it has none.
      *
-     * @param form The formation
+     * @param type The type
      * @return The copy
      */
-    int java(final String form) {
-        return this.copies.java(form);
+    int java(final Annotation type) {
+        return this.copies.java(type);
+    }
+
+    /**
+     * The copy of the type a void declares, born at a read of that void.
+     *
+     * @param type The type
+     * @param born Where it is born, with its tag
+     * @return The copy
+     */
+    int declared(final Annotation type, final Site born) {
+        return this.copies.declared(type, born);
     }
 
     /**
@@ -205,15 +217,6 @@ final class Population {
     }
 
     /**
-     * Every row, by copy and void.
-     *
-     * @return The rows
-     */
-    Map<Slot, Ints> table() {
-        return this.rows.all();
-    }
-
-    /**
      * Put a value read out of a row onto its holder.
      *
      * @param item The value
@@ -273,6 +276,17 @@ final class Population {
     }
 
     /**
+     * Note the copy containing a new copy, independently of its receiver.
+     *
+     * @param copy The new copy
+     * @param outer The containing copy
+     * @return The new copy
+     */
+    int enclose(final int copy, final int outer) {
+        return this.counting.enclose(copy, outer);
+    }
+
+    /**
      * Whether a count told before has turned since.
      *
      * @param told The count, with what it was
@@ -314,7 +328,25 @@ final class Population {
     }
 
     /**
-     * Stop w: pick the formations no copy calls with a void no copy fills.
+     * Whether a study copy does not count once the walk is over.
+     *
+     * @param num The copy
+     * @return TRUE if it does not
+     */
+    boolean retired(final int num) {
+        return this.study.retired(num);
+    }
+
+    /**
+     * Decide, once the walk is over, which study copies still count.
+     */
+    void conclude() {
+        this.study.conclude();
+    }
+
+    /**
+     * Stop w: pick, for this round, the formations no copy calls whose
+     * copy as written does not count.
      *
      * @return TRUE if it picked any
      */
@@ -338,26 +370,7 @@ final class Population {
      * @param types The types the atom calls it back with
      * @param site The site of the call, under the tag of the caller
      */
-    void called(final int num, final List<String> types, final Site site) {
+    void called(final int num, final List<Annotation> types, final Site site) {
         this.callbacks.called(num, types, site);
-    }
-
-    /**
-     * Note a value handed to an atom.
-     *
-     * @param num The value
-     */
-    void handed(final int num) {
-        this.callbacks.handed(num);
-    }
-
-    /**
-     * Whether only Java fills the {@code ρ} of a copy handed to an atom.
-     *
-     * @param num The copy
-     * @return TRUE if only Java does
-     */
-    boolean handedToJava(final int num) {
-        return this.callbacks.handedToJava(num);
     }
 }

@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A void can be read only in the file that declares it (#9788). A member is a
+# file of its own, so it reads what its object holds through a getter, like
+# any other object does. The getter is a plain attribute of the object, so
+# the merge leaves every name as the parser wrote it: the read of the getter
+# keeps its name, and the member's read of its own void stays hidden.
+eo:
+  number.eo: |
+    [bts] > number
+      bts > as-bytes
+      as-bytes > @
+  number/lt.eo: |
+    +package number
+
+    [^num x] > lt
+      num.as-bytes.lt x > @
+xmir:
+  number.eo:
+    - "/object/o[@name='number']\
+      /o[@base='∅' and @name='v🌵bts' and @loc='Φ.number.v🌵bts']"
+    - "/object/o[@name='number']/o[@name='as-bytes' and @base='ξ.v🌵bts']"
+    - "//o[@name='lt']/o[@name='φ' and @base='ξ.ρ.as-bytes.lt']"
+    - "//o[@name='lt']/o[@name='φ']/o[@as='α0' and @base='ξ.v🌵x']"

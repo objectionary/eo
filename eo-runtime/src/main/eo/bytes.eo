@@ -49,36 +49,73 @@
     ? > len /Q.number
     ? > cant-slice /{Q.string}
 
-  eq. ++> can-and-negative-bytes-with-leading-zeroes
+  eq. ++> can-apply-and-to-negative-bytes-with-leading-zeroes
     as-number.
       00-00-00-00-8E-EA-4C-B1.and FF-FF-FF-FF-00-00-00-00
     0
 
-  eq. ++> can-and-negative-bytes-without-leading-zeroes
+  eq. ++> can-apply-and-to-negative-bytes-without-leading-zeroes
     as-number.
       00-00-00-00-FF-FF-FF-FF.and FF-FF-FF-FF-00-00-00-00
     0
 
-  eq. ++> can-and-one-negative-with-one-positive
+  eq. ++> can-apply-and-to-one-negative-with-one-positive
     -7.as-bytes.and 7.as-bytes
     40-1C-00-00-00-00-00-00
 
-  eq. ++> can-and-two-negatives
+  eq. ++> can-apply-and-to-two-negatives
     -6.as-bytes.and -4.as-bytes
     C0-10-00-00-00-00-00-00
 
-  eq. ++> can-and-two-positives
+  eq. ++> can-apply-and-to-two-positives
     5.as-bytes.and 10.as-bytes
     40-04-00-00-00-00-00-00
 
-  eq. ++> can-and-two-single-byte-numbers
+  eq. ++> can-apply-and-to-two-single-byte-numbers
     as-number.
       1.as-bytes.and 1.as-bytes
     1
 
-  eq. ++> can-and-with-zero
+  eq. ++> can-apply-and-with-zero
     0.as-bytes.and 32.as-bytes
     00-00-00-00-00-00-00-00
+
+  eq. ++> can-apply-or-negative-bytes-with-leading-zeroes
+    00-00-00-00-8E-EA-4C-B1.or FF-FF-FF-FF-00-00-00-00
+    FF-FF-FF-FF-8E-EA-4C-B1
+
+  eq. ++> can-apply-or-negative-bytes-with-one
+    FF-FF-FF-FF-00-00-00-00.or 00-00-00-00-00-00-00-01
+    FF-FF-FF-FF-00-00-00-01
+
+  eq. ++> can-apply-or-negative-bytes-with-positive-ones
+    FF-FF-FF-FF-FF-FF-FF-81.as-bytes.or 00-00-00-00-00-00-00-7F.as-bytes
+    FF-FF-FF-FF-FF-FF-FF-FF
+
+  eq. ++> can-apply-or-negative-bytes-with-zero
+    as-number.
+      -4294967296.as-bytes.or 0.as-bytes
+    -4294967296
+
+  eq. ++> can-apply-or-negative-bytes-without-leading-zeroes
+    00-00-00-00-FF-FF-FF-FF.or FF-FF-FF-FF-00-00-00-00
+    FF-FF-FF-FF-FF-FF-FF-FF
+
+  eq. ++> can-apply-or-one-negative-with-one-positive
+    -7.as-bytes.or 23.as-bytes
+    C0-3F-00-00-00-00-00-00
+
+  eq. ++> can-apply-or-two-negatives
+    -27.as-bytes.or -13.as-bytes
+    C0-3B-00-00-00-00-00-00
+
+  eq. ++> can-apply-or-two-positives
+    5.as-bytes.or 14.as-bytes
+    40-3C-00-00-00-00-00-00
+
+  eq. ++> can-apply-or-with-zero
+    -11.as-bytes.or 0.as-bytes
+    C0-26-00-00-00-00-00-00
 
   CA-FE-BE-BE.size.eq 4 ++> can-be-written-in-several-lines
 
@@ -132,43 +169,6 @@
 
   not. ++> can-invert-zero-bytes
     0.as-bytes.eq 0.as-bytes.not
-
-  eq. ++> can-or-negative-bytes-with-leading-zeroes
-    00-00-00-00-8E-EA-4C-B1.or FF-FF-FF-FF-00-00-00-00
-    FF-FF-FF-FF-8E-EA-4C-B1
-
-  eq. ++> can-or-negative-bytes-with-one
-    FF-FF-FF-FF-00-00-00-00.or 00-00-00-00-00-00-00-01
-    FF-FF-FF-FF-00-00-00-01
-
-  eq. ++> can-or-negative-bytes-with-positive-ones
-    FF-FF-FF-FF-FF-FF-FF-81.as-bytes.or 00-00-00-00-00-00-00-7F.as-bytes
-    FF-FF-FF-FF-FF-FF-FF-FF
-
-  eq. ++> can-or-negative-bytes-with-zero
-    as-number.
-      -4294967296.as-bytes.or 0.as-bytes
-    -4294967296
-
-  eq. ++> can-or-negative-bytes-without-leading-zeroes
-    00-00-00-00-FF-FF-FF-FF.or FF-FF-FF-FF-00-00-00-00
-    FF-FF-FF-FF-FF-FF-FF-FF
-
-  eq. ++> can-or-one-negative-with-one-positive
-    -7.as-bytes.or 23.as-bytes
-    C0-3F-00-00-00-00-00-00
-
-  eq. ++> can-or-two-negatives
-    -27.as-bytes.or -13.as-bytes
-    C0-3B-00-00-00-00-00-00
-
-  eq. ++> can-or-two-positives
-    5.as-bytes.or 14.as-bytes
-    40-3C-00-00-00-00-00-00
-
-  eq. ++> can-or-with-zero
-    -11.as-bytes.or 0.as-bytes
-    C0-26-00-00-00-00-00-00
 
   eq. ++> can-recover-from-a-slice-whose-start-plus-length-overflows
     2A-
@@ -254,7 +254,9 @@
       3
     1F-EE-B5
 
-  "你好, друг!".eq "你好, друг!" ++> can-turn-bytes-into-a-string
+  eq. ++> can-turn-bytes-into-a-string
+    "你好, друг!"
+    E4-BD-A0-E5-A5-BD-2C-20-D0-B4-D1-80-D1-83-D0-B3-21
 
   slice. --> stops-on-a-slice-offset-exceeding-the-int-range
     20-1F-EE-B5-90

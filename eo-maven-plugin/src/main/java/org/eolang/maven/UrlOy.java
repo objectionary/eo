@@ -15,7 +15,7 @@ import java.net.URL;
  * 2nd for program or directory name, for
  * <a href="https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo">programExample</a>
  * or
- * <a href="https://github.com/objectionary/home/tree/%s/objects/%s">directoryExample</a>.</p>
+ * <a href="https://api.github.com/repos/objectionary/home/contents/objects/%2$s?ref=%1$s">directoryExample</a>.</p>
  *
  * @since 0.1.0
  */
@@ -29,7 +29,7 @@ final class UrlOy {
      * 2nd for program or directory name, for
      * <a href="https://raw.githubusercontent.com/objectionary/home/%s/objects/%s.eo">programExample</a>
      * or
-     * <a href="https://github.com/objectionary/home/tree/%s/objects/%s">directoryExample</a>.</p>
+     * <a href="https://api.github.com/repos/objectionary/home/contents/objects/%2$s?ref=%1$s">directoryExample</a>.</p>
      */
     private final String template;
 

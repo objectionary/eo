@@ -68,13 +68,13 @@
     malloc.of > @
       size.
         object >> bts!
-      seq * > [^ m] >>
+      seq * > [^task m] >>
         m.write 0 bts
-        ^.scope m
+        task.scope m
   [] > of /Q.bytes
     ? > ^
     ? > size /Q.number
-    ? > scope /{Q.chunk}
+    ? > scope /{Q.chunk(Q.number)}
 
   ++> can-allocate-a-block-of-the-right-size
     malloc.of > @

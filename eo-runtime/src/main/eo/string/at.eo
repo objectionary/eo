@@ -2,7 +2,8 @@
 # A negative `index` counts from the end of the string (`length + index`).
 # If `index` is not a finite integer (fractional, nan or infinite), or the
 # resolved index is still negative or is >= the string's `length`, the
-# `fallback` value is returned, or the terminator when unbound.
+# `fallback` takes an error message.
+# When unbound, it terminates with that message.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -89,6 +90,12 @@
   eq. ++> can-return-a-character-at-a-negative-index
     "m"
     "some".at -2
+
+  eq. ++> can-return-a-character-with-a-terminator-for-the-fallback
+    "m"
+    "some".at
+      2
+      T
 
   eq. ++> can-return-the-first-character
     "s"

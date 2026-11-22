@@ -48,6 +48,11 @@ import javax.management.ObjectName;
  * ends.</p>
  *
  * @since 0.75.0
+ * @todo #9708:60min Stop charging a group for a thread of another group.
+ *  The bytes of the threads that died between two readings are counted over
+ *  the whole JVM, so {@link Watched} can abort a test for a thread it never
+ *  started. The JVM can not narrow that tally to a group, so the way out is
+ *  to learn when a thread of the group ends, for example through a factory.
  */
 final class Consumed {
 

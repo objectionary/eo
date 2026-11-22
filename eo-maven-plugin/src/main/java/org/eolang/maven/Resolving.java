@@ -254,7 +254,7 @@ final class Resolving implements Step {
     private Collection<Dep> deps(final DpsDefault defaults) {
         Dependencies result = defaults;
         if (this.noruntime) {
-            Logger.info(this, "Runtime dependency is ignored because eo:ignoreRuntime=TRUE");
+            Logger.info(this, "Runtime dependency is ignored because eo.runtime.bypass=TRUE");
             result = new DpsWithoutRuntime(result);
         } else {
             result = new DpsWithRuntime(result, this.runtime);

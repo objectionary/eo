@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link MjMerge}.
@@ -104,12 +105,13 @@ final class MjMergeTest {
         );
     }
 
-    @Test
-    void leavesAPackageWithoutAnObjectAlone(@Mktmp final Path temp) throws Exception {
-        final FakeMaven maven = new FakeMaven(temp).withProgram(
-            MjMergeTest.program("+package foo", "", "[] > bar", "  42 > @"),
-            "foo.bar",
-            "foo/bar.eo"
+    @ParameterizedTest
+    @ValueSource(strings = {"foo", "foo.gap"})
+    void leavesAPackageWithoutAnObjectAlone(final String pkg) throws Exception {
+        final FakeMaven maven = new FakeMaven(this.dir).withProgram(
+            MjMergeTest.program(String.format("+package %s", pkg), "", "[] > bar", "  42 > @"),
+            String.format("%s.bar", pkg),
+            String.format("%s/bar.eo", pkg.replace('.', '/'))
         );
         maven.execute(new PpMerge());
         try (Stream<Path> kids = Files.list(maven.targetPath())) {
@@ -140,6 +142,31 @@ final class MjMergeTest {
                 )
             ),
             Matchers.stringContainsInOrder("bar", "foo")
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"gap", "gap.deeper"})
+    void refusesAnUnreachableMember(final String gap) {
+        final String pkg = String.format("foo.%s", gap);
+        final String member = String.format("%s.bar", pkg);
+        MatcherAssert.assertThat(
+            "a missing intermediate object must stop the merge and name the unreachable member",
+            MjMergeTest.root(
+                Assertions.assertThrows(
+                    IllegalStateException.class,
+                    () -> new FakeMaven(this.dir).withProgram(
+                        MjMergeTest.program("[n] > foo", "  n > @"), "foo", "foo.eo"
+                    ).withProgram(
+                        MjMergeTest.program(
+                            String.format("+package %s", pkg), "", "[] > bar", "  42 > @"
+                        ),
+                        member,
+                        String.format("%s.eo", member.replace('.', '/'))
+                    ).execute(new PpMerge())
+                )
+            ),
+            Matchers.stringContainsInOrder(member, pkg, "foo")
         );
     }
 

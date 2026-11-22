@@ -77,7 +77,7 @@ final class Transpilation {
         "/org/eolang/parser/_funcs.xsl",
         "/org/eolang/parser/_specials.xsl",
         "/org/eolang/maven/transpile/_recursion.xsl",
-        "/org/eolang/maven/transpile/_java-names.xsl",
+        "/org/eolang/lowering/_java-names.xsl",
     };
 
     /**
@@ -134,7 +134,7 @@ final class Transpilation {
     private final Path target;
 
     /**
-     * The directory with the tables of {@link MjInference}, which
+     * The directory with the tables of {@link MjInfer}, which
      * {@code purify.xsl} reads to find out which formations are safe to
      * cache.
      */
@@ -157,7 +157,7 @@ final class Transpilation {
      * @param size How much memory a single generated test may allocate
      * @param measures Path to the file where XSL measurements are stored
      * @param dir The target directory of the build
-     * @param tables The directory with the tables of {@link MjInference}
+     * @param tables The directory with the tables of {@link MjInfer}
      */
     Transpilation(
         final Tracking diagnostics,

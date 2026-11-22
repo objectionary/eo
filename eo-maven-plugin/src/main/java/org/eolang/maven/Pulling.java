@@ -188,7 +188,7 @@ final class Pulling implements Step {
                     if (this.overwrite) {
                         Logger.debug(
                             this,
-                            "Pulling sources again because \"eo.overWrite=TRUE\""
+                            "Pulling sources again because \"eo.overwrite=TRUE\""
                         );
                     }
                     return this.overwrite;

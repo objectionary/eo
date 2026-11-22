@@ -32,8 +32,8 @@ answers: |
     </o>
   </answers>
 voids:
-  - "𝜎1\t1\tm\tnumber"
-  - "𝜎2\t1\tn\tnumber"
+  - "𝜎1\t1\tv🌵m\tnumber"
+  - "𝜎2\t1\tv🌵n\tnumber"
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e1">
@@ -78,18 +78,18 @@ java: |
 
       @Override
       public Phi lambda() {
-          return new Data.ToPhi(java.nio.ByteBuffer.wrap(this.𝜎3()).getDouble());
+          return new Data.ToPhi(new Dataized(new Data.ToPhi(this.𝜎3())).asNumber());
       }
 
       private byte[] 𝜎1() {
-          return new Dataized(this.take("ρ").take("m")).take();
+          return new Dataized(this.take("ρ").take("v🌵m")).take();
       }
 
       private byte[] 𝜎2() {
-          return new Dataized(this.take("ρ").take("n")).take();
+          return new Dataized(this.take("ρ").take("v🌵n")).take();
       }
 
       private byte[] 𝜎3() {
-          return java.nio.ByteBuffer.allocate(8).putDouble(java.nio.ByteBuffer.wrap(this.𝜎1()).getDouble() + java.nio.ByteBuffer.wrap(this.𝜎2()).getDouble()).array();
+          return java.nio.ByteBuffer.allocate(8).putDouble(new Dataized(new Data.ToPhi(this.𝜎1())).asNumber() + new Dataized(new Data.ToPhi(this.𝜎2())).asNumber()).array();
       }
   }

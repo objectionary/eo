@@ -8,7 +8,7 @@ asserts:
   - /object[not(errors)]
   - //o[@name='rec']/o[@name='φ' and @base='ξ.ρ.rec' and @again='true']/o[@as='α1' and @base='ξ.c🌵1']/ancestor::o[not(@base)][1]/o[@name='c🌵1']/o[@name='φ' and @base='.if' and not(@again)]/o[not(@as) and @base='ξ.r🌵']
   - //o[starts-with(@name,'c🌵')]/o[@name='φ' and @base='.if']/o[@as='α0' and @base='ξ.ρ.k🌵' and @again='true']/o[@as='α0' and @base='Φ.number']
-  - //o[starts-with(@name,'c🌵')]/o[@name='φ' and @base='.if']/o[@as='α1' and @base='ξ.ρ.k🌵' and @again='true']/o[@as='α0' and @base='ξ.ρ.i']
+  - //o[starts-with(@name,'c🌵')]/o[@name='φ' and @base='.if']/o[@as='α1' and @base='ξ.ρ.k🌵' and @again='true']/o[@as='α0' and @base='ξ.ρ.v🌵i']
 input: |
   [] > main
     [i] > rec

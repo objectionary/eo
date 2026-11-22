@@ -5,10 +5,10 @@
 -->
 <!--
 The index of the inference report: a bar per file with its objects in the
-colours of ten bands; a folder's bar adds up its files. A click on
+colours of nine bands; a folder's bar adds up its files. A click on
 a colour in the tally keeps only the files and folders with objects of the
 chosen colours; the file pages share the choice and keep only the lines with
-such marks. Under the tally, a glossary says what the words of the report
+such marks, plus five lines around each. Under the tally, a glossary says what the words of the report
 mean.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="index" version="3.0">
@@ -39,29 +39,25 @@ mean.
             <xsl:value-of select="@mixed"/>
             <xsl:text> two or more names, maybe with gaps</xsl:text>
           </span>
-          <span class="lost" data-band="lost">
-            <xsl:value-of select="@lost"/>
-            <xsl:text> lost track</xsl:text>
+          <span class="loop" data-band="loop">
+            <xsl:value-of select="@loop"/>
+            <xsl:text> unknown, nothing ever answers</xsl:text>
           </span>
           <span class="atom" data-band="atom">
             <xsl:value-of select="@atom"/>
-            <xsl:text> open void, filled by an atom</xsl:text>
+            <xsl:text> unknown, filled by an atom</xsl:text>
           </span>
-          <span class="unfilled" data-band="unfilled">
-            <xsl:value-of select="@unfilled"/>
-            <xsl:text> open void, filled by nobody</xsl:text>
+          <span class="study" data-band="study">
+            <xsl:value-of select="@study"/>
+            <xsl:text> unknown, nobody calls this object</xsl:text>
+          </span>
+          <span class="empty" data-band="empty">
+            <xsl:value-of select="@empty"/>
+            <xsl:text> unknown, filled by nobody</xsl:text>
           </span>
           <span class="error" data-band="error">
             <xsl:value-of select="@error"/>
             <xsl:text> only an error</xsl:text>
-          </span>
-          <span class="unreached" data-band="unreached">
-            <xsl:value-of select="@unreached"/>
-            <xsl:text> not reached</xsl:text>
-          </span>
-          <span class="fails" data-band="fails">
-            <xsl:value-of select="@fails"/>
-            <xsl:text> a read fails</xsl:text>
           </span>
         </p>
         <dl class="terms">
@@ -73,12 +69,10 @@ mean.
           <dd>In a shape, → is what an @ gives, and ↺ is the object the shape is of: [^] → Φ.bytes with a line [^ ∅] &gt; read ↺ is an object of bytes whose read gives the object back.</dd>
           <dt>error</dt>
           <dd>The copy gives T.</dd>
-          <dt>lost track</dt>
-          <dd>The engine can't tell what the copy gives.</dd>
-          <dt>open void</dt>
-          <dd>A void that no copy fills. An atom fills it when the object it sits on was returned by an atom, since Java fills that object.</dd>
+          <dt>unknown</dt>
+          <dd>The engine can't name what the copy gives, and says which of four kinds of unknown it is. Filled by nobody: a void of a copy a call made that left it empty; a read of it gives T. Nobody calls this object: a void of a copy that stands for a caller who is not there; what is read off it or handed on from it is that unknown too. Filled by an atom: a void of an object an atom returned, since Java fills that object; it carries on the same way. Nothing ever answers: a read in a loop where nothing ever answers, and what is read off it.</dd>
           <dt>gap</dt>
-          <dd>An error, lost track, or an open void.</dd>
+          <dd>An error or an unknown.</dd>
         </dl>
         <xsl:apply-templates select="dir|file"/>
         <xsl:call-template name="filter"/>
@@ -86,7 +80,7 @@ mean.
     </html>
   </xsl:template>
   <xsl:template match="dir">
-    <details data-named="{@named}" data-gaps="{@gaps}" data-pair="{@pair}" data-mixed="{@mixed}" data-lost="{@lost}" data-atom="{@atom}" data-unfilled="{@unfilled}" data-error="{@error}" data-unreached="{@unreached}" data-fails="{@fails}">
+    <details data-named="{@named}" data-gaps="{@gaps}" data-pair="{@pair}" data-mixed="{@mixed}" data-loop="{@loop}" data-atom="{@atom}" data-study="{@study}" data-empty="{@empty}" data-error="{@error}">
       <summary>
         <xsl:value-of select="@name"/>
         <xsl:call-template name="bar"/>
@@ -97,7 +91,7 @@ mean.
     </details>
   </xsl:template>
   <xsl:template match="file">
-    <div class="row" data-named="{@named}" data-gaps="{@gaps}" data-pair="{@pair}" data-mixed="{@mixed}" data-lost="{@lost}" data-atom="{@atom}" data-unfilled="{@unfilled}" data-error="{@error}" data-unreached="{@unreached}" data-fails="{@fails}">
+    <div class="row" data-named="{@named}" data-gaps="{@gaps}" data-pair="{@pair}" data-mixed="{@mixed}" data-loop="{@loop}" data-atom="{@atom}" data-study="{@study}" data-empty="{@empty}" data-error="{@error}">
       <a href="{@href}">
         <xsl:value-of select="@name"/>
       </a>
@@ -105,17 +99,16 @@ mean.
     </div>
   </xsl:template>
   <xsl:template name="bar">
-    <span class="bar" title="{@named} named, {@gaps} one name with gaps, {@pair} two names, {@mixed} two or more names maybe with gaps, {@lost} lost track, {@atom} filled by an atom, {@unfilled} filled by nobody, {@error} only an error, {@unreached} not reached, {@fails} a read fails">
+    <span class="bar" title="{@named} named, {@gaps} one name with gaps, {@pair} two names, {@mixed} two or more names maybe with gaps, {@loop} unknown nothing ever answers, {@atom} unknown filled by an atom, {@study} unknown nobody calls this object, {@empty} unknown filled by nobody, {@error} only an error">
       <span class="named" style="flex: {@named}"/>
       <span class="gaps" style="flex: {@gaps}"/>
       <span class="pair" style="flex: {@pair}"/>
       <span class="mixed" style="flex: {@mixed}"/>
-      <span class="lost" style="flex: {@lost}"/>
+      <span class="loop" style="flex: {@loop}"/>
       <span class="atom" style="flex: {@atom}"/>
-      <span class="unfilled" style="flex: {@unfilled}"/>
+      <span class="study" style="flex: {@study}"/>
+      <span class="empty" style="flex: {@empty}"/>
       <span class="error" style="flex: {@error}"/>
-      <span class="unreached" style="flex: {@unreached}"/>
-      <span class="fails" style="flex: {@fails}"/>
     </span>
   </xsl:template>
   <xsl:template name="style">
@@ -129,12 +122,11 @@ mean.
       .tally .gaps { background: #eef3c2; }
       .tally .pair { background: #d3eff2; }
       .tally .mixed { background: #d9e5fb; }
-      .tally .lost { background: #fbeecc; }
+      .tally .loop { background: #fadce9; }
       .tally .atom { background: #e6dcf5; }
-      .tally .unfilled { background: #dfe6e9; }
+      .tally .study { background: #dfe6e9; }
+      .tally .empty { background: #fbeecc; }
       .tally .error { background: #efe2dc; }
-      .tally .unreached { background: #eeeeee; }
-      .tally .fails { background: #f7d4d4; }
       .terms { display: grid; grid-template-columns: max-content 1fr; gap: .3em 1.2em; margin: 0 0 1.6em; color: #555; font-family: system-ui, sans-serif; }
       .terms dt { color: #1a1a1a; font-weight: 600; }
       .terms dd { margin: 0; }
@@ -151,12 +143,11 @@ mean.
       .bar .gaps { background: #c3cf3e; }
       .bar .pair { background: #3fb3c2; }
       .bar .mixed { background: #5b8def; }
-      .bar .lost { background: #e8b64c; }
+      .bar .loop { background: #e88bb4; }
       .bar .atom { background: #9b7fd4; }
-      .bar .unfilled { background: #90a4ae; }
+      .bar .study { background: #90a4ae; }
+      .bar .empty { background: #e8b64c; }
       .bar .error { background: #a1887f; }
-      .bar .unreached { background: #cfcfcf; }
-      .bar .fails { background: #d76b6b; }
     </style>
   </xsl:template>
   <xsl:template name="filter">

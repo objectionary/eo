@@ -83,7 +83,7 @@ final class LnPipe implements Line {
         } else {
             openness = Openness.VCOMPLETED;
         }
-        new Transition(stack, this.span).apply(
+        new Transition(stack, this.span, emit).apply(
             Kind.PIPE_APPLICATION, openness, new Admission(suffix.named(), false)
         );
         globals.clearBlanks();
@@ -92,13 +92,8 @@ final class LnPipe implements Line {
             suffix.attribute(this.span.line(), this.span.indent()),
             this.span.line(), this.span.indent()
         );
-        if (!suffix.handle().isEmpty()) {
-            emit.local(suffix.handle());
-        }
+        new Marked(emit, suffix).apply();
         emit.pipe();
-        if (suffix.constant()) {
-            emit.constant();
-        }
         for (final Value arg : args) {
             Emissions.emitArg(emit, arg, this.span.line());
         }

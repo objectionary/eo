@@ -17,7 +17,6 @@ package org.eolang.inference;
  *   tested at a place, {@code how} saying which;</li>
  *   <li>{@code w}, the walk of a copy in a pass;</li>
  *   <li>{@code r}, the row of a void of a copy;</li>
- *   <li>{@code p}, the pool of a void of a formation Java makes;</li>
  *   <li>{@code c}, whether a value counts, {@code how} saying what it was
  *   told.</li>
  * </ul>
@@ -25,7 +24,7 @@ package org.eolang.inference;
  * @param kind The letter of the kind
  * @param value The value or copy
  * @param name The name read, or the void
- * @param place The place, or the formation of a pool
+ * @param place The place
  * @param tag The tag, empty when none
  * @param how What a walk does, or what a count was
  * @since 0.76.0

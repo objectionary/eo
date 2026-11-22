@@ -25,7 +25,7 @@ import org.eolang.inference.Walk;
  * one file is used by objects in others and no single file can be read on
  * its own. The XMIR files are named by the caller, prepared and left in the
  * second directory, while {@code facts.xml} goes to the third.
- * {@link MjInference} names them from the registered tojos, and not from
+ * {@link MjInfer} names them from the registered tojos, and not from
  * whatever the parse directory still holds: a source that was deleted
  * leaves its XMIR behind, and reading that XMIR would put the facts of an
  * object nobody wrote any more into the document (#9271).</p>

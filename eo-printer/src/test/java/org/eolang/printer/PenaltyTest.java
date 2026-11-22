@@ -170,6 +170,42 @@ final class PenaltyTest {
     }
 
     @Test
+    void chargesNothingForBracketInsideStringLiteral() {
+        MatcherAssert.assertThat(
+            "Code inside a string literal must cost what plain text costs, but it didnt",
+            new Penalty("\"(((\"").points(),
+            Matchers.equalTo(new Penalty("\"xxx\"").points())
+        );
+    }
+
+    @Test
+    void chargesNothingForPhiInsideStringLiteral() {
+        MatcherAssert.assertThat(
+            "Code inside a string literal must cost what plain text costs, but it didnt",
+            new Penalty("\"@@@\"").points(),
+            Matchers.equalTo(new Penalty("\"xxx\"").points())
+        );
+    }
+
+    @Test
+    void chargesNothingForIfInsideStringLiteral() {
+        MatcherAssert.assertThat(
+            "Code inside a string literal must cost what plain text costs, but it didnt",
+            new Penalty("\".if .if\"").points(),
+            Matchers.equalTo(new Penalty("\"xxx xxx\"").points())
+        );
+    }
+
+    @Test
+    void chargesForBracketOutsideStringLiteral() {
+        MatcherAssert.assertThat(
+            "A bracket next to a string literal must still cost more than plain text, but it didnt",
+            new Penalty("(\"(\") x").points(),
+            Matchers.greaterThan(new Penalty("x\"x\"x x").points())
+        );
+    }
+
+    @Test
     void chargesNothingForEmptyCode() {
         MatcherAssert.assertThat(
             "Empty code should have zero penalty",

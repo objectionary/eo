@@ -9,7 +9,7 @@ locator: Φ.bool.flag
 number: 3
 eo:
   bool.eo: |
-    [if] > bool
+    [fork] > bool
       [^ b] > masked
         ^.and b > @
       [^] > flag
@@ -17,13 +17,14 @@ eo:
       [] > and /Q.bytes
         ? > ^
         ? > b
+      fork > if
   app.eo: |
     [] > app
       true.flag > used
 voids:
   - "𝜎1\t3\tρ\tbool"
 rows:
-  - "L_bool_masked\tΦ.bool.masked\tΦ.bool.masked\tρ:bool\tb:bytes"
+  - "L_bool_masked\tΦ.bool.masked\tΦ.bool.masked\tρ:bool\tv🌵b:bytes"
 protocol: |
   <protocol>
     <dataize at="Φ.l🌵.e3">
@@ -34,7 +35,7 @@ protocol: |
             <manufactured meta="𝛿·1·1">𝜎1</manufactured>
           </dataize>
           <bound meta="𝛿1·1">𝛿·1·1</bound>
-          <dataize at="ξ.b">
+          <dataize at="ξ.v🌵b">
             <dataized meta="𝛿·1·2">01-</dataized>
           </dataize>
           <bound meta="𝛿2·1">𝛿·1·2</bound>

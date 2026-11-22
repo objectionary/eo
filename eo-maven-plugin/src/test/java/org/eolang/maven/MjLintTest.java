@@ -158,7 +158,7 @@ final class MjLintTest {
             );
         maven.execute(new PpLint());
         MatcherAssert.assertThat(
-            "an experimental lint stays unreported while eo.skipExperimentalLints is FALSE",
+            "an experimental lint stays unreported while eo.experimental.bypass is FALSE",
             new Xnav(
                 maven.programTojo().linted()
             ).path("/object/errors/error[@check='no-attribute-formation/S']").count(),
@@ -185,7 +185,7 @@ final class MjLintTest {
             );
         maven.execute(new PpLint());
         MatcherAssert.assertThat(
-            "an experimental lint is still reported while eo.skipExperimentalLints is TRUE",
+            "an experimental lint is still reported while eo.experimental.bypass is TRUE",
             new Xnav(
                 maven.programTojo().linted()
             ).path("/object/errors/error[@check='no-attribute-formation/S']").count(),

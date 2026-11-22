@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -168,6 +169,22 @@ final class ShapesTest {
                 )
             ).folded("Φ.mill.sack"),
             Matchers.contains("[∅]")
+        );
+    }
+
+    @Test
+    void refusesToFoldAPlaceTheAnswersSayNothingOf() {
+        MatcherAssert.assertThat(
+            "a place with no row must stop the report and be named, but it wasnt",
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> ShapesTest.shapes(
+                    "<object><o loc='Φ.mill.wheel' line='4'/></object>",
+                    "<answers><o loc='Φ.mill.axle' copies='3'><is loc='Φ.number'/></o></answers>"
+                ).folded("Φ.mill.grain"),
+                "a place with no row must stop the report"
+            ).getMessage(),
+            Matchers.containsString("Φ.mill.grain")
         );
     }
 
