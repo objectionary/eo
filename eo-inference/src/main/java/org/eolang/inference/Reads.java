@@ -75,7 +75,7 @@ final class Reads {
         final Value value = this.world.value(num);
         final Ints out = new Ints();
         final char kind = value.kind();
-        if (kind == 'A' || kind == 'B') {
+        if (kind == 'A') {
             out.addAll(this.attr(value.base(), name, site));
         } else if (kind == 'Φ') {
             out.addAll(this.root(name, site));
