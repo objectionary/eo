@@ -1,6 +1,6 @@
 # Bytes as a signed 64-bit integer `i64`: an 8-byte chain reinterpreted
 # as two's complement. For any other length the `cant-convert` fallback
-# is returned.
+# takes an error message. When unbound, it terminates with that message.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -23,6 +23,10 @@
   eq. ++> can-convert-bytes-to-i64-and-back
     00-00-00-00-00-00-00-33.as-i64.as-bytes
     00-00-00-00-00-00-00-33
+
+  eq. ++> can-convert-bytes-to-i64-with-a-terminator-for-the-error
+    00-00-00-00-00-00-00-2A.as-i64 T
+    42.as-i64
 
   eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-i64
     i64 00-00-00-00-00-00-00-2A

@@ -174,6 +174,34 @@
     <xsl:variable name="decimal" select="sum(for $i in 1 to $length return (index-of($hex-digits, string-to-codepoints(substring($hex-upper, $i, 1))) - 1) * math:pow(16, $length - $i))"/>
     <xsl:value-of select="xs:int($decimal)"/>
   </xsl:function>
+  <!--
+  The deepest nesting the `too-deep-object` lint accepts: an object with more
+  ancestors than this, counted the way `eo:lint-depth` counts them, is reported.
+  The printer folds a helper into the place that reads it, so a helper read deep
+  inside an expression can land past this limit; it asks these functions whether
+  it would, and leaves the helper standing when it would, since a formatter that
+  writes a file its own linter refuses leaves no spelling to keep (#9891).
+  -->
+  <xsl:variable name="eo:depth-limit" as="xs:integer" select="12"/>
+  <!--
+  The nesting depth of `$o` as the `too-deep-object` lint measures it: its
+  ancestors, without the literal wrappers ("Φ.tuple", "Φ.bytes", "Φ.number",
+  "Φ.string"), which the lint does not count either.
+  -->
+  <xsl:function name="eo:lint-depth" as="xs:integer">
+    <xsl:param name="o" as="element()"/>
+    <xsl:sequence select="count($o/ancestor::o[not(@base = ('Φ.tuple', 'Φ.bytes', 'Φ.number', 'Φ.string'))])"/>
+  </xsl:function>
+  <!--
+  How many levels the body of `$o` reaches below `$o` itself, as the lint counts
+  them: zero for an object with no children. The data of a literal is not an
+  object the lint reports, so it does not count.
+  -->
+  <xsl:function name="eo:lint-height" as="xs:integer" cache="yes">
+    <xsl:param name="o" as="element()"/>
+    <xsl:variable name="top" select="eo:lint-depth($o)"/>
+    <xsl:sequence select="max((0, for $n in $o//o[not(empty(@base) and parent::o/@base = 'Φ.bytes') and not(@base = 'Φ.bytes' and parent::o/@base = ('Φ.number', 'Φ.string'))] return eo:lint-depth($n) - $top))"/>
+  </xsl:function>
   <!-- Strip the test marker prefix out of a name or of a locator. -->
   <xsl:function name="eo:unmarked" as="xs:string">
     <xsl:param name="name" as="xs:string"/>

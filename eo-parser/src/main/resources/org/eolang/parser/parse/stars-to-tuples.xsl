@@ -45,7 +45,13 @@
   of a tuple over the limit are left out, so that the sheets after this one
   survive to let the error out.
   -->
+  <!--
+  R-6.6.6: tuple elements have positions, not argument bindings. Such a
+  binding cannot round-trip through the tuple encoding, so "lossy" keeps
+  the formatter from rewriting the source from this erroneous tree.
+  -->
   <xsl:template match="/object">
+    <xsl:variable name="bound" select=".//o[@star]/o[@as and not(@float-up)]"/>
     <xsl:variable name="errors" as="element()*">
       <xsl:for-each select=".//o[@star and count(o[not(@float-up)]) &gt; 256]">
         <error>
@@ -59,12 +65,6 @@
         </error>
       </xsl:for-each>
     </xsl:variable>
-    <!--
-    R-6.6.6: tuple elements have positions, not argument bindings. Such a
-    binding cannot round-trip through the tuple encoding, so "lossy" keeps
-    the formatter from rewriting the source from this erroneous tree.
-    -->
-    <xsl:variable name="bound" select=".//o[@star]/o[@as and not(@float-up)]"/>
     <xsl:copy>
       <xsl:apply-templates select="(node() except errors)|@*"/>
       <xsl:if test="exists($errors) or exists($bound) or exists(errors)">

@@ -376,7 +376,7 @@ final class State {
      * @param types The types the atom calls it back with
      * @param site The site of the call, under the tag of the caller
      */
-    void called(final int num, final List<String> types, final Site site) {
+    void called(final int num, final List<Annotation> types, final Site site) {
         this.population.called(num, types, site);
     }
 
@@ -488,13 +488,15 @@ final class State {
     }
 
     /**
-     * Rule b's head, kept as is.
+     * Mark a value, keeping the copy whose voids a call must fill.
      *
-     * @param head The head
-     * @return The value
+     * @param base The reduced value
+     * @param count The number of empty voids
+     * @param origin The source copy, or -1
+     * @return The marked value
      */
-    int await(final int head) {
-        return this.course.await(head);
+    int mark(final int base, final int count, final int origin) {
+        return this.course.mark(base, count, origin);
     }
 
     /**
@@ -579,22 +581,10 @@ final class State {
     }
 
     /**
-     * Tell which study copies no longer count, and mark the reads with no
-     * answer.
+     * Tell which study copies no longer count.
      */
     void step() {
         this.course.step();
-    }
-
-    /**
-     * The mark of a read with no answer.
-     *
-     * @param place The place
-     * @param ctx The copy
-     * @return The mark, empty when there is none
-     */
-    String token(final String place, final int ctx) {
-        return this.course.token(place, ctx);
     }
 
     /**

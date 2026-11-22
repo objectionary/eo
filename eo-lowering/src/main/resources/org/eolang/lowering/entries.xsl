@@ -239,7 +239,7 @@
   <!-- The answer of a row, as the library shapes the carrier it is wrapped in: a fresh symbol where the bytes of a literal would be. -->
   <xsl:function name="eo:shape" as="xs:string">
     <xsl:param name="carrier" as="xs:string"/>
-    <xsl:sequence select="map {'number': 'Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )', 'string': 'Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )', 'bytes': 'Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )', 'bool': '⟦ φ ↦ Φ.bool( v🌵fork ↦ ⟦ λ ⤍ L_fork, left ↦ ∅, right ↦ ∅, on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.left, right🌵 ↦ ξ.right ⟧ ) ⟧'}($carrier)"/>
+    <xsl:sequence select="map {'number': 'Φ.number( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )', 'string': 'Φ.string( φ ↦ Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ ) )', 'bytes': 'Φ.bytes( φ ↦ ⟦ λ ⤍ 𝜎 ⟧ )', 'bool': '⟦ φ ↦ Φ.bool( v🌵fork ↦ ⟦ λ ⤍ L_fork, v🌵left ↦ ∅, v🌵right ↦ ∅, on🌵 ↦ ⟦ λ ⤍ 𝜎 ⟧, left🌵 ↦ ξ.v🌵left, right🌵 ↦ ξ.v🌵right ⟧ ) ⟧'}($carrier)"/>
   </xsl:function>
   <!--
   The plan for one void: what is planted in it and which symbols that
@@ -456,15 +456,15 @@
       </xsl:if>
       <o as="v🌵fork">
         <o name="λ">L_fork</o>
-        <o base="∅" name="left"/>
-        <o base="∅" name="right"/>
+        <o base="∅" name="v🌵left"/>
+        <o base="∅" name="v🌵right"/>
         <o name="on🌵">
           <o name="λ">
             <xsl:value-of select="concat('𝜎', index-of($eo:symbols, generate-id(sym[1])))"/>
           </o>
         </o>
-        <o base="ξ.left" name="left🌵"/>
-        <o base="ξ.right" name="right🌵"/>
+        <o base="ξ.v🌵left" name="left🌵"/>
+        <o base="ξ.v🌵right" name="right🌵"/>
       </o>
     </o>
   </xsl:template>

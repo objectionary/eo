@@ -160,12 +160,7 @@ final class LnOnlyPhi implements Line {
             suffix.attribute(this.span.line(), this.span.indent()),
             this.span.line(), this.span.indent()
         );
-        if (!suffix.handle().isEmpty()) {
-            emit.local(suffix.handle());
-        }
-        if (suffix.constant()) {
-            emit.constant();
-        }
+        new Marked(emit, suffix).apply();
         this.emitVoids(emit, params, origin);
         this.emitPhi(emit, tokens, stack.top().openness() == Openness.OPEN);
     }

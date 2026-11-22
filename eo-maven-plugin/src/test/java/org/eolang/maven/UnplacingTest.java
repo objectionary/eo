@@ -9,9 +9,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.log4j.Appender;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
@@ -118,6 +121,33 @@ final class UnplacingTest {
         );
     }
 
+    @Test
+    void readsEachAvailableBinaryOnceForAllPlacedOnes(@TempDir final Path temp)
+        throws IOException {
+        final Path classes = temp.resolve("classes");
+        final TjsPlaced placed = new TjsPlaced(temp.resolve("placed.json"));
+        for (int idx = 0; idx < 16; ++idx) {
+            final Path binary = classes.resolve(String.format("Foo%d.class", idx));
+            this.write(binary);
+            placed.placeClass(binary, binary.getFileName().toString(), "dep");
+        }
+        for (int idx = 0; idx < 8; ++idx) {
+            this.write(classes.resolve(String.format("Bar%d.class", idx)));
+        }
+        final AtomicInteger reads = new AtomicInteger(0);
+        new Unplacing(
+            placed,
+            classes,
+            new SetOf<>(),
+            dir -> new UnplacingTest.Counted(new WkDefault(dir), reads)
+        ).exec();
+        MatcherAssert.assertThat(
+            "Unplacing 16 binaries must read each of 24 available ones once, not once per binary",
+            reads.get(),
+            Matchers.equalTo(24)
+        );
+    }
+
     private void write(final Path file) throws IOException {
         Files.createDirectories(file.getParent());
         Files.write(file, "class-bytes".getBytes(StandardCharsets.UTF_8));
@@ -169,5 +199,56 @@ final class UnplacingTest {
             Files.setPosixFilePermissions(dir, PosixFilePermissions.fromString("rwxr-xr-x"));
         }
         return protects;
+    }
+
+    /**
+     * Walk that counts how many of its paths are read.
+     *
+     * @since 0.76.0
+     */
+    private static final class Counted extends AbstractList<Path> implements Walk {
+
+        /**
+         * The walk that holds the paths.
+         */
+        private final Walk origin;
+
+        /**
+         * Paths read so far.
+         */
+        private final AtomicInteger reads;
+
+        /**
+         * Ctor.
+         *
+         * @param walk The walk that holds the paths
+         * @param counter Paths read so far
+         */
+        Counted(final Walk walk, final AtomicInteger counter) {
+            super();
+            this.origin = walk;
+            this.reads = counter;
+        }
+
+        @Override
+        public Path get(final int index) {
+            this.reads.incrementAndGet();
+            return this.origin.get(index);
+        }
+
+        @Override
+        public int size() {
+            return this.origin.size();
+        }
+
+        @Override
+        public Walk includes(final Collection<String> globs) {
+            return new UnplacingTest.Counted(this.origin.includes(globs), this.reads);
+        }
+
+        @Override
+        public Walk excludes(final Collection<String> globs) {
+            return new UnplacingTest.Counted(this.origin.excludes(globs), this.reads);
+        }
     }
 }

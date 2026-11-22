@@ -44,6 +44,12 @@ import org.w3c.dom.NodeList;
  * the strict flag set, the build fails when there is one, after every file is
  * written and the numbers are in the log.</p>
  *
+ * <p>The arguments of <code>&#x22A5;</code> are not judged at all: <code>&#x22A5;</code> has no
+ * voids, so its message has no name to take. It keeps its {@code αN} and is
+ * counted apart, as a message of <code>&#x22A5;</code>, not as lost. The objects inside
+ * the message are still walked, so the arguments of a call that makes the
+ * message are named as usual.</p>
+ *
  * @since 0.69.0
  */
 final class Dealphaing implements Step {
@@ -100,17 +106,18 @@ final class Dealphaing implements Step {
         } else {
             final Path dir = new Seqdir(this.target, 2).dirs().once("dealpha");
             final Map<String, String> names = this.landings.names();
-            final Map<String, Collection<String>> verdicts = new HashMap<>(3);
+            final Map<String, Collection<String>> verdicts = new HashMap<>(4);
             for (final TjForeign tojo : this.tojos) {
                 Dealphaing.renamed(tojo, dir, names, verdicts);
             }
             final Collection<String> lost = verdicts.getOrDefault("lost", new ArrayList<>(0));
             Logger.info(
                 this,
-                "Named %d of %d positional argument(s) in %d XMIR(s), %d found no void to be named after",
+                "Named %d of %d positional argument(s) in %d XMIR(s), %d are messages of ⊥, %d found no void to be named after",
                 verdicts.getOrDefault("named", new ArrayList<>(0)).size(),
                 verdicts.values().stream().mapToInt(Collection::size).sum(),
                 this.tojos.size(),
+                verdicts.getOrDefault("bottom", new ArrayList<>(0)).size(),
                 lost.size()
             );
             try (Stream<Path> found = Files.walk(dir)) {
@@ -167,7 +174,14 @@ final class Dealphaing implements Step {
                 }
             }
         }
-        Dealphaing.judged(args, names, verdicts);
+        if ("⊥".equals(Dealphaing.attr(node, "base"))) {
+            for (final Node arg : args) {
+                verdicts.computeIfAbsent("bottom", key -> new ArrayList<>(1))
+                    .add(Dealphaing.attr(arg, "loc"));
+            }
+        } else {
+            Dealphaing.judged(args, names, verdicts);
+        }
         for (int idx = 0; idx < kids.getLength(); ++idx) {
             Dealphaing.walked(kids.item(idx), names, verdicts);
         }

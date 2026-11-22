@@ -12,9 +12,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.eolang.inference.Annotation;
+import org.w3c.dom.Node;
 
 /**
  * The arguments of the calls whose head the code alone fixes.
@@ -34,7 +36,23 @@ import org.eolang.inference.Annotation;
  * argument passed by name then finds no void to fill. An argument is
  * grounded only when {@link Origins} follows the head of its call to one
  * formation from {@code facts.xml} alone, since then no caller can change the
- * void it lands in.</p>
+ * void it lands in. There are two exceptions, and {@link Origins} explains
+ * both. A void that every call of the program fills with a formation written
+ * right there, all with the same voids in the same order, holds one of them,
+ * as {@code true} and {@code false} fill the {@code fork} of {@code bool}. A
+ * void {@code φ} that the engine, in {@code answers.xml} beside
+ * {@code facts.xml}, saw hold one formation and nothing else holds that
+ * formation, as the {@code φ} of a {@code number} holds {@code Φ.bytes}.</p>
+ *
+ * <p>A head that {@code facts.xml} marks with {@code <terminator/>}, such as
+ * {@code T "it broke"}, is where the program stops. {@link Origins} leaves it
+ * out when it agrees on the sides of an {@code .if}, so a name read off
+ * {@code x.if (T "too big") 42} is found in {@code 42} (#9982).</p>
+ *
+ * <p>A void that some places leave empty is unknown, unless a call of the
+ * program, such as a test, puts {@code T} into it, as {@link Fillers} says.
+ * The voids that would be known with such a test are written to the log, so
+ * that the missing tests may be added (#9997).</p>
  *
  * <p>What an atom returns is a type, such as
  * {@code Φ.posix.status-return(Φ.number,Φ.string)}. The formation it fixes is
@@ -55,12 +73,31 @@ final class Grounded {
     private final Path facts;
 
     /**
+     * The path of {@code answers.xml}, where a row of a place that holds a
+     * single {@code is} and nothing else, no terminator, no datum, no
+     * unknown and no second option, tells the one formation the engine saw
+     * the place hold.
+     */
+    private final Path answers;
+
+    /**
      * Ctor.
      *
      * @param path The path of {@code facts.xml}
      */
     Grounded(final Path path) {
+        this(path, path.resolveSibling("answers.xml"));
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param path The path of {@code facts.xml}
+     * @param rows The path of {@code answers.xml}, which may be absent
+     */
+    Grounded(final Path path, final Path rows) {
         this.facts = path;
+        this.answers = rows;
     }
 
     /**
@@ -137,6 +174,17 @@ final class Grounded {
                         type -> new Annotation(type.attribute("returns").text().get()),
                         (first, second) -> first
                     )
+                ),
+                table.element("objects").elements(Filter.withName("type")).filter(
+                    type -> type.elements(Filter.withName("return")).findAny().isPresent()
+                ).collect(
+                    Collectors.toMap(
+                        type -> type.attribute("id").text().get(),
+                        type -> type.elements(Filter.withName("return")).map(
+                            slot -> slot.attribute("loc").text().get()
+                        ).collect(Collectors.toList()),
+                        (first, second) -> first
+                    )
                 )
             ),
             table.element("reads").elements(Filter.withName("read")).collect(
@@ -157,13 +205,54 @@ final class Grounded {
                     type -> type.element("ref").attribute("loc").text().get(),
                     (first, second) -> first
                 )
-            )
+            ),
+            this.sole(),
+            table.element("heads").elements(Filter.withName("type")).filter(
+                type -> type.elements(Filter.withName("terminator")).findAny().isPresent()
+            ).map(type -> type.attribute("id").text().get()).collect(Collectors.toSet())
         );
-        return table.element("calls").elements(Filter.withName("call"))
+        final Collection<String> found = table.element("calls")
+            .elements(Filter.withName("call"))
             .filter(call -> origins.formation(call.attribute("loc").text().get()).isPresent())
             .flatMap(call -> call.elements(Filter.withName("arg")))
             .map(arg -> arg.attribute("loc").text().get())
             .collect(Collectors.toSet());
+        if (!origins.vacant().isEmpty()) {
+            Logger.info(
+                this,
+                "%d void(s) are left empty by some of their callers, while no call puts T into them, so the arguments read through them may find no void to be named after: %s; if such a void may indeed be left empty, add a test that passes T to it",
+                origins.vacant().size(),
+                origins.vacant().stream().map(
+                    hole -> String.format("'%s' of '%s'", hole.getValue(), hole.getKey())
+                ).sorted().collect(Collectors.joining(", "))
+            );
+        }
+        return found;
+    }
+
+    private Map<String, String> sole() throws IOException {
+        final Map<String, String> found;
+        if (Files.exists(this.answers)) {
+            found = new Xnav(new XMLDocument(this.answers).inner())
+                .element("answers")
+                .elements(Filter.withName("o"))
+                .filter(Grounded::single)
+                .filter(row -> row.elements(Filter.withName("is")).count() == 1L).collect(
+                    Collectors.toMap(
+                        row -> row.attribute("loc").text().get(),
+                        row -> row.element("is").attribute("loc").text().get(),
+                        (first, second) -> first
+                    )
+                );
+        } else {
+            found = Collections.emptyMap();
+        }
+        return found;
+    }
+
+    private static boolean single(final Xnav row) {
+        return row.elements(node -> node.node().getNodeType() == Node.ELEMENT_NODE)
+            .count() == 1L;
     }
 
     private static Map<String, String> targets(final Xnav type) {

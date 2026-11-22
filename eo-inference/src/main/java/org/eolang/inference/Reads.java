@@ -75,7 +75,7 @@ final class Reads {
         final Value value = this.world.value(num);
         final Ints out = new Ints();
         final char kind = value.kind();
-        if (kind == 'A' || kind == 'B') {
+        if (kind == 'A') {
             out.addAll(this.attr(value.base(), name, site));
         } else if (kind == 'Φ') {
             out.addAll(this.root(name, site));
@@ -244,7 +244,7 @@ final class Reads {
 
     private Ints returned(final int num, final String name, final Site site) {
         final String form = this.world.value(num).form();
-        final Annotation type = new Annotation(this.world.form(form).returns());
+        final Annotation type = new Annotation(this.world.form(form).returns(), num);
         if (!this.world.formation(type.head()) && this.world.own(form).isEmpty()) {
             throw new IllegalStateException(
                 String.format(

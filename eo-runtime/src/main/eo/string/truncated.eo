@@ -5,8 +5,8 @@
 # from `slice`, where a `limit` beyond the end of the string terminates the
 # computation.
 # If `limit` is not a finite non-negative integer (negative, fractional, nan
-# or infinite), the `cant-truncate` fallback is returned, or the terminator
-# when unbound.
+# or infinite), `cant-truncate` takes an error message.
+# When unbound, it terminates with that message.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -73,6 +73,12 @@
   eq. ++> can-return-a-text-of-the-exact-limit-unchanged
     "hey"
     "hey".truncated 3
+
+  eq. ++> can-truncate-a-text-with-a-terminator-for-the-error
+    "Je"
+    "Jeff".truncated
+      2
+      T
 
   eq. ++> can-truncate-to-an-empty-text
     ""

@@ -312,7 +312,7 @@
                                       0
                                   6
                               T
-                                "The argument %x is not a number, the %%f conversion takes one".printf
+                                "The argument %x is not a number, the %%f conversion takes an eight-byte number".printf
                                   * datum
                             if.
                               78-.eq conv
@@ -362,6 +362,11 @@
                       number width
                       " "
                       I
+
+  eq. ++> can-align-bytes-to-the-left
+    "40-45-00-00-00-00-00-00  "
+    "%-25x".printf
+      * 42.as-bytes
 
   eq. ++> can-answer-the-length-of-the-formatted-text
     2
@@ -496,11 +501,6 @@
     "Hey"
     "%s".printf
       * "Hey" "Jeff"
-
-  eq. ++> can-left-align-bytes
-    "40-45-00-00-00-00-00-00  "
-    "%-25x".printf
-      * 42.as-bytes
 
   eq. ++> can-preserve-an-escaped-bytes-format
     "%x"

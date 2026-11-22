@@ -4,8 +4,8 @@
 # becomes `+0042` and not `00+42`. Characters are counted, and not bytes.
 # A string of `width` characters or longer is returned unchanged.
 # If `width` is not a finite non-negative integer (negative, fractional, nan
-# or infinite), the `cant-pad` fallback is returned, or the terminator
-# when unbound.
+# or infinite), `cant-pad` takes an error message.
+# When unbound, it terminates with that message.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -87,6 +87,12 @@
   eq. ++> can-pad-an-empty-text
     "000"
     "".padded-zeros 3
+
+  eq. ++> can-pad-with-zeros-with-a-terminator-for-the-error
+    "-007"
+    "-7".padded-zeros
+      4
+      T
 
   eq. ++> can-recover-from-a-negative-width-when-padding-with-zeros
     "recovered"

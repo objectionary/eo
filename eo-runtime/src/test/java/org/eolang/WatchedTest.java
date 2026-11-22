@@ -106,7 +106,7 @@ final class WatchedTest {
         try {
             Assertions.assertThrows(
                 InterruptedException.class,
-                () -> new Watched(64L * 1024L * 1024L, 100L).through(
+                () -> new Watched(Long.MAX_VALUE, 100L).through(
                     () -> {
                         while (!release.get()) {
                             WatchedTest.rest(1L);
@@ -312,7 +312,7 @@ final class WatchedTest {
     private static boolean lingering() {
         final AtomicBoolean stopped = new AtomicBoolean(false);
         Assertions.assertDoesNotThrow(
-            () -> new Watched(64L * 1024L * 1024L).through(
+            () -> new Watched(Long.MAX_VALUE).through(
                 () -> {
                     final Thread extra = new Thread(
                         () -> {
@@ -345,7 +345,7 @@ final class WatchedTest {
         bell.start();
         Assertions.assertThrows(
             InterruptedException.class,
-            () -> new Watched(64L * 1024L * 1024L).through(
+            () -> new Watched(Long.MAX_VALUE).through(
                 () -> {
                     while (!Thread.currentThread().isInterrupted()) {
                         WatchedTest.rest(1L);

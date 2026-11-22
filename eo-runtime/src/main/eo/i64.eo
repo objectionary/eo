@@ -250,6 +250,12 @@
 
   234.as-i64.eq 234.as-i64.as-i32.as-i64 ++> can-convert-to-i32-and-back
 
+  eq. ++> can-convert-to-i32-with-a-terminator-for-the-error
+    i32 00-00-00-EA
+    as-i32.
+      i64 00-00-00-00-00-00-00-EA
+      T
+
   123.@.eq 123.@ ++> can-equal-the-same-i64
 
   0.@.eq 0.@ ++> can-equal-zero-to-zero

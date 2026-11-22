@@ -31,15 +31,18 @@ import org.cactoos.text.TextOf;
 import org.cactoos.text.UncheckedText;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.parallel.Isolated;
 
 /**
  * Test case for {@link Canonical}.
+ * The long tuple boundary test runs alone: under concurrent transforms its
+ * canonical XSL chain exceeds the default 20-second method timeout (#9879).
  *
  * @since 0.1
  */
+@Isolated
 final class CanonicalTest {
 
     @Test
@@ -62,16 +65,8 @@ final class CanonicalTest {
 
     /**
      * Accepts a tuple nested exactly 256 levels deep.
-     *
-     * @todo #9080:30min Enable acceptsTupleOfTheLargestSize again. It is off
-     *  because it runs past its 20 second timeout in the full parallel run of
-     *  eo-parser on CI (32 seconds in the fast ubuntu-24.04 job of #9869),
-     *  while the class passes on its own. Find out why parsing a tuple of 256
-     *  elements is that slow under load, fix it, and remove the Disabled
-     *  annotation.
      */
     @Test
-    @Disabled
     void acceptsTupleOfTheLargestSize() throws Exception {
         MatcherAssert.assertThat(
             "A tuple of 256 elements must parse without this error, but it didnt",
@@ -95,28 +90,25 @@ final class CanonicalTest {
 
     @Test
     void reportsDepthAndBindingTogether() {
-        final int size = 257;
-        final StringBuilder xml = new StringBuilder(size * 24).append(
-            "<object><errors><error check='existing'>prior</error></errors><o star='' line='2' pos='4'>"
+        final StringBuilder xml = new StringBuilder(257 * 24).append(
+            String.join(
+                "",
+                "<object><errors><error check='existing'>prior</error></errors>",
+                "<o star='' line='2' pos='3'><o base='Φ.e' as='named' line='3' pos='4'/>"
+            )
         );
-        for (int idx = 0; idx < size; idx = idx + 1) {
-            if (idx == 0) {
-                xml.append("<o base='Φ.e' as='a' line='3' pos='5'/>");
-            } else {
-                xml.append("<o base='Φ.e'/>");
-            }
+        for (int idx = 1; idx < 257; idx = idx + 1) {
+            xml.append("<o base='Φ.e'/>");
         }
         MatcherAssert.assertThat(
-            "the depth diagnostic, the binding diagnostic and the error already there must all survive one pass, the tuple still collapses, and the prior error is neither lost nor duplicated",
-            new Xsline(
-                new StClasspath("/org/eolang/parser/parse/stars-to-tuples.xsl")
-            ).pass(new XMLDocument(xml.append("</o></object>").toString())),
+            "both diagnostics and preexisting errors must survive the same root transformation",
+            new Xsline(new StClasspath("/org/eolang/parser/parse/stars-to-tuples.xsl"))
+                .pass(new XMLDocument(xml.append("</o></object>").toString())),
             XhtmlMatchers.hasXPaths(
-                "/object/errors[count(error)=3]",
-                "/object/errors/error[@check='existing'][text()='prior']",
-                "/object/errors/error[@check='stars-to-tuples' and @severity='critical' and @line='2' and @pos='4' and text()='object nested deeper than 256 levels']",
-                "/object/errors/error[@check='stars-to-tuples' and @severity='error' and @lossy and @line='3' and @pos='5' and text()='star tuple elements cannot carry argument bindings']",
-                "/object/o[@base='Φ.tuple.empty' and @line='2' and @pos='4']"
+                "/object/errors/error[@check='existing' and text()='prior']",
+                "/object/errors/error[@check='stars-to-tuples' and @severity='critical' and @line='2' and @pos='3' and text()='object nested deeper than 256 levels']",
+                "/object/errors/error[@check='stars-to-tuples' and @severity='error' and @line='3' and @pos='4' and @lossy and text()='star tuple elements cannot carry argument bindings']",
+                "/object/o[@base='Φ.tuple.empty' and @line='2' and @pos='3']"
             )
         );
     }

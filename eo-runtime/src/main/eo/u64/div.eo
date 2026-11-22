@@ -1,7 +1,8 @@
 # Unsigned division of a `u64` number by the `u64` number `b`. The
 # dividend is halved first, so the signed `i64` division underneath never
 # sees a negative operand, and the quotient is corrected back afterwards.
-# When `b` is zero, the caller-supplied `cant-divide` fallback is returned.
+# When `b` is zero, `cant-divide` takes an error message.
+# When unbound, it terminates with that message.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo

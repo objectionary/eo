@@ -19,6 +19,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 /**
  * Test case for {@link PhTerminator}.
  *
+ * <p>A {@code printf} refusal is a terminator, and the message is its cause.
+ * EO cannot read a cause, so the wording of {@code %d} and {@code %f}
+ * refusals is checked here, by forcing the terminator.</p>
+ *
  * @since 0.73.1
  */
 final class PhTerminatorTest {
@@ -192,6 +196,69 @@ final class PhTerminatorTest {
     }
 
     @Test
+    void reportsAStringAsNotANumber() {
+        MatcherAssert.assertThat(
+            "printf must identify a short datum as not a number",
+            PhTerminatorTest.failure(new Data.ToPhi("x")),
+            Matchers.allOf(
+                Matchers.endsWith(PhTerminatorTest.notNumber("78")),
+                Matchers.not(Matchers.containsString("non-finite"))
+            )
+        );
+    }
+
+    @Test
+    void reportsAnEmptyDatumAsNotANumber() {
+        MatcherAssert.assertThat(
+            "printf must identify an empty datum as not a number",
+            PhTerminatorTest.failure(new Data.ToPhi("")),
+            Matchers.endsWith(PhTerminatorTest.notNumber(""))
+        );
+    }
+
+    @Test
+    void reportsANineByteDatumAsNotANumber() {
+        MatcherAssert.assertThat(
+            "printf must identify a nine-byte datum as not a number",
+            PhTerminatorTest.failure(new Data.ToPhi("xxxxxxxxx")),
+            Matchers.endsWith(
+                PhTerminatorTest.notNumber(
+                    "78-78-78-78-78-78-78-78-78"
+                )
+            )
+        );
+    }
+
+    @Test
+    void keepsFormattingAFiniteNumber() {
+        MatcherAssert.assertThat(
+            "printf must keep formatting an eight-byte finite number",
+            new Dataized(
+                PhTerminatorTest.formatted(new Data.ToPhi(1.25))
+            ).take(String.class),
+            Matchers.equalTo("1.250000")
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+        doubles = {
+            Double.NaN,
+            Double.POSITIVE_INFINITY,
+            Double.NEGATIVE_INFINITY
+        }
+    )
+    void keepsTheNonFiniteReason(final double number) {
+        MatcherAssert.assertThat(
+            "printf must preserve the reason for a non-finite number",
+            PhTerminatorTest.failure(new Data.ToPhi(number)),
+            Matchers.endsWith(
+                "Can't write a non-finite number as a fixed-point decimal"
+            )
+        );
+    }
+
+    @Test
     void keepsDispatchArgumentsOutOfTheCause() {
         MatcherAssert.assertThat(
             "a terminator reached by a dispatch names the argument it got, not the termination",
@@ -275,6 +342,27 @@ final class PhTerminatorTest {
             "a lazy dispatch that yields a terminator must resolve to a PhTerminator lazily",
             new PhDispatch(new PhDefault(), "missing").normalized(),
             Matchers.instanceOf(PhTerminator.class)
+        );
+    }
+
+    private static Phi formatted(final Phi argument) {
+        return new PhApplication(
+            new Data.ToPhi("%f").take("printf").copy(),
+            "args", new Data.ToPhi(new Phi[]{argument})
+        );
+    }
+
+    private static String failure(final Phi argument) {
+        return Assertions.assertThrows(
+            ExAbstract.class,
+            new Dataized(PhTerminatorTest.formatted(argument))::take
+        ).getMessage();
+    }
+
+    private static String notNumber(final String bytes) {
+        return String.format(
+            "The argument %s is not a number, the %%f conversion takes an eight-byte number",
+            bytes
         );
     }
 }

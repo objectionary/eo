@@ -1,0 +1,67 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The deep read is of `r`, a bare alias of the based `>> p` helper, so folding
+# `r` lands the whole value of `p` there. Measured by the alias alone, which
+# has no body, the fold looked shallow, and the value landed as an anonymous
+# argument past the twelve levels the `too-deep-object` lint allows (#9891).
+# Measured by the value at the end of the chain, it keeps its handle, which
+# the parser hoists back to `deep`.
+penalties: {}
+origin: |
+  +package x
+
+  [a] > deep
+    plus. > @
+      plus.
+        plus.
+          plus.
+            plus.
+              plus.
+                plus.
+                  plus.
+                    plus.
+                      plus.
+                        a
+                        r
+                      1
+                    1
+                  1
+                1
+              1
+            1
+          1
+        1
+      1
+    eq. >> p
+      a.plus (a.plus (a.plus 1))
+      0
+    p >> r
+printed: |
+  +package x
+
+  [a] > deep
+    plus. > @
+      plus.
+        plus.
+          plus.
+            plus.
+              plus.
+                plus.
+                  plus.
+                    plus.
+                      a.plus
+                        eq. >> r
+                          a.plus
+                            a.plus (a.plus 1)
+                          0
+                      1
+                    1
+                  1
+                1
+              1
+            1
+          1
+        1
+      1

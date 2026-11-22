@@ -115,6 +115,17 @@ final class Formation {
     }
 
     /**
+     * The voids carrying a type variable.
+     *
+     * @param letter The variable
+     * @return The voids
+     */
+    List<String> carrying(final String letter) {
+        return this.order.stream().filter(name -> letter.equals(this.attrs.get(name).variable()))
+            .toList();
+    }
+
+    /**
      * The names of its attributes, in the order written.
      *
      * @return The names

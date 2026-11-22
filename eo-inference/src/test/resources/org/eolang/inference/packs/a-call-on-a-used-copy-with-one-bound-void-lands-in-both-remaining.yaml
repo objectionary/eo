@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# The mark of foo 1 must keep x bound. The next call fills y and z in order.
+sources:
+  foo.eo: |
+    [x y z] > foo
+      x > @
+  fin.eo: |
+    [f] > fin
+      f 2 3 > @
+      f.plus 0 > read
+  app.eo: |
+    [] > app
+      fin (foo 1) > @
+  number.eo: |
+    [@] > number
+      [^ item] > plus
+        ^ > @
+answers:
+  - /answers/o[@loc='Φ.app.φ.α0.α0' and @lands='v🌵x']
+  - /answers/o[@loc='Φ.fin.φ.α0' and @lands='v🌵y']
+  - /answers/o[@loc='Φ.fin.φ.α1' and @lands='v🌵z']
+  - /answers/o[@loc='Φ.foo.v🌵y']//is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.foo.v🌵z']//is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.fin.φ']/is[@loc='Φ.number']

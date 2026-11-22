@@ -2222,6 +2222,10 @@
     "/(?i)a|b/".regex.compiled
     "B"
 
+  matches. ++> can-compile-a-regex-with-a-terminator-for-the-error
+    "/^a{2,3}$/".regex.compile T
+    "aaa"
+
   eq. ++> can-count-groups-without-a-non-capturing-one
     2
     count.

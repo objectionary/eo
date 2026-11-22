@@ -166,13 +166,15 @@ final class Course {
     }
 
     /**
-     * Rule b's head, kept as is.
+     * Mark a value, keeping the copy whose voids a call must fill.
      *
-     * @param head The head
-     * @return The value
+     * @param base The reduced value
+     * @param count The number of empty voids
+     * @param origin The source copy, or -1
+     * @return The marked value
      */
-    int await(final int head) {
-        return this.reduction.await(head);
+    int mark(final int base, final int count, final int origin) {
+        return this.reduction.mark(base, count, origin);
     }
 
     /**
@@ -256,21 +258,9 @@ final class Course {
     }
 
     /**
-     * Tell which study copies no longer count, and mark the reads with no
-     * answer.
+     * Tell which study copies no longer count.
      */
     void step() {
         this.end.step();
-    }
-
-    /**
-     * The mark of a read with no answer.
-     *
-     * @param place The place
-     * @param ctx The copy
-     * @return The mark, empty when there is none
-     */
-    String token(final String place, final int ctx) {
-        return this.end.mark(place, ctx);
     }
 }
