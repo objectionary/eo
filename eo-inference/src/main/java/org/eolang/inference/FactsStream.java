@@ -115,7 +115,7 @@ final class FactsStream {
     ) {
         final String name = this.attr("name");
         final boolean open = "true".equals(this.attr("void"));
-        attrs.put(name, new Attribute(open, this.attr("holds")));
+        attrs.put(name, new Attribute(open, this.attr("holds"), this.attr("variable")));
         if (open && !this.attr("args").isEmpty()) {
             back.put(
                 name,

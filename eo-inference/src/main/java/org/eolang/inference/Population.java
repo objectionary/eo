@@ -56,7 +56,7 @@ final class Population {
         this.rows = new Rows(walk, world);
         this.counting = new Counting(walk, world);
         this.study = new Study(walk, world);
-        this.callbacks = new Callbacks(walk, world);
+        this.callbacks = new Callbacks(walk, world, this.copies);
     }
 
     /**
@@ -370,7 +370,7 @@ final class Population {
      * @param types The types the atom calls it back with
      * @param site The site of the call, under the tag of the caller
      */
-    void called(final int num, final List<String> types, final Site site) {
+    void called(final int num, final List<Annotation> types, final Site site) {
         this.callbacks.called(num, types, site);
     }
 }

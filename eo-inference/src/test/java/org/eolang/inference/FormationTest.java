@@ -51,7 +51,7 @@ final class FormationTest {
         MatcherAssert.assertThat(
             "an attribute that is not there must hold nothing, but it held something",
             new Formation(
-                Map.of("size", new Attribute(true, "Φ.number")), List.of("size"),
+                Map.of("size", new Attribute(true, "Φ.number", "")), List.of("size"),
                 Map.of(), Map.of(), List.of()
             ).holds("weight"),
             Matchers.emptyString()

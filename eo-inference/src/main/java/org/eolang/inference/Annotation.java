@@ -35,12 +35,28 @@ public final class Annotation {
     private final String text;
 
     /**
+     * The origin used to resolve variables. Textual equality ignores it.
+     */
+    private final int atom;
+
+    /**
      * Ctor.
      *
      * @param type The type, as the XMIR writes it
      */
     public Annotation(final String type) {
+        this(type, Copies.NO_RHO);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param type The type, as the XMIR writes it
+     * @param atom The atom copy that supplies variables
+     */
+    Annotation(final String type, final int atom) {
         this.text = type;
+        this.atom = atom;
     }
 
     @Override
@@ -96,7 +112,8 @@ public final class Annotation {
         if (open < 0) {
             found = new ArrayList<>(0);
         } else {
-            found = new Annotation(bare.substring(open + 1, bare.length() - 1)).split();
+            found = new Annotation(bare.substring(open + 1, bare.length() - 1), this.atom)
+                .split();
         }
         return found;
     }
@@ -109,6 +126,24 @@ public final class Annotation {
     boolean variable() {
         final String head = this.head();
         return head.length() == 1 && head.charAt(0) >= 'A' && head.charAt(0) <= 'F';
+    }
+
+    /**
+     * Whether any part of the type needs the originating atom.
+     *
+     * @return TRUE if the type contains a variable
+     */
+    boolean contextual() {
+        return this.variable() || this.members().stream().anyMatch(Annotation::contextual);
+    }
+
+    /**
+     * The atom that supplies the type variables.
+     *
+     * @return The atom copy, or none
+     */
+    int origin() {
+        return this.atom;
     }
 
     private String bare() {
@@ -133,11 +168,11 @@ public final class Annotation {
             } else if (glyph == ')') {
                 depth -= 1;
             } else if (glyph == ',' && depth == 0) {
-                found.add(new Annotation(type.substring(start, pos)));
+                found.add(new Annotation(type.substring(start, pos), this.atom));
                 start = pos + 1;
             }
         }
-        found.add(new Annotation(type.substring(start)));
+        found.add(new Annotation(type.substring(start), this.atom));
         return found;
     }
 }
