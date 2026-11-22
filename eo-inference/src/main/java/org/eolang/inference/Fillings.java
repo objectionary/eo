@@ -4,131 +4,276 @@
  */
 package org.eolang.inference;
 
-import com.jcabi.xml.XML;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
- * What the program puts into every void, read back from the links.
+ * What EO code puts into each void of each formation, as {@code facts.xml}
+ * says it before any walk (#9657).
  *
- * <p>Every application says what it fills, and says it in its own row, where
- * {@link Bound} wrote it: a {@code bind} names the void and what went into it.
- * So the fact is in the tables already and lies the wrong way round — to learn
- * what one void is ever given, a reader walks the row of every object that
- * ever filled anything, and eo-runtime has 23,871 of those bindings.</p>
+ * <p>An atom whose type has no brackets, such as {@code /Q.bool}, leaves
+ * the voids of the object Java makes to the EO code that makes such
+ * objects: a {@code bool} an atom returns holds in its {@code fork} what
+ * {@code true} and {@code false} put there. So every call whose head the
+ * facts alone fix to a fresh copy of a formation puts each of its arguments
+ * into a void of that formation, where the same call would put it in the
+ * walk. An argument is a {@link Filling} the facts fix too when it is a
+ * formation written right there, a path that reads a formation from
+ * {@code Φ} down through nested formations and bound attributes, a call on
+ * a fresh copy of a formation, a datum, a termination or {@code Φ}. Any
+ * other argument reads a void, or the copy around, on its way, so only the
+ * walk can answer it, and it stands in its void as such. A call on a copy
+ * of a formation that is not fresh, such as the copy around, may put an
+ * argument into any void from its slot on, and it stands in each of them as
+ * one only the walk can answer. A call whose head the facts do not fix puts
+ * nothing anywhere.</p>
  *
- * <p>What goes in is gathered as a type rather than as a locator, which is
- * what makes the answer worth reading: the {@code φ} of {@code Φ.bytes} is
- * filled 7,752 times and all but a handful of those fillings are literals. As
- * types there are two of them, a datum and a {@code Φ.bytes}; as locators
- * there are 7,752. The handful arrive as a {@code Φ.bytes.as-bytes}, which is
- * a {@code Φ.bytes} and is counted as one by {@link Counted}, once the walk is
- * over.</p>
+ * <p>The table is worked out once and from the facts alone, so it does not
+ * depend on the order in which the walk meets the files or the
+ * objects.</p>
  *
- * <p>Which type a filling is counted as is {@link Landed}'s question, and it
- * has to be asked of the links rather than of {@link Ends} alone. An argument
- * is written afresh at every call site, so the same expression passed at
- * eleven places is eleven locators no chain of copies joins, and counting them
- * apart makes a void look filled eleven ways when it is filled one way eleven
- * times. Settling each of them first leaves {@code Φ.number.as-bytes} with
- * five members where it had more than a cap's worth, and the five are worth
- * reading.</p>
+ * <p>A void of an object Java makes from a type with no brackets may hold
+ * the unknown only Java fills, and that is the decision of #9864, where the
+ * puzzle stood. A filling only the walk can answer, as the {@code cde}
+ * {@code getenv-return} in {@code posix.eo} hands on, cannot enter such a
+ * copy: one copy per type, from {@code facts.xml} alone, serves every
+ * caller, so a value found for one caller would make it depend on the order
+ * the walk meets the files, the defect #9657 removed, and a second walk
+ * would still tell it to callers that never put it there. So such a void
+ * holds the unknown next to the fillings {@link Copies} can name, a fresh
+ * formation, a call on a kind of the canon, {@code Φ}, a datum and a
+ * termination, and drops none of them; a call on any other formation it
+ * cannot name, even where the facts fix it, stands as the unknown instead.
+ * An atom that needs the voids of its result typed writes the brackets, as
+ * {@code getenv /Q.posix.getenv-return(Q.bool,Q.string)} does in
+ * {@code posix.eo}; demanding them would make an open type a hard error for
+ * programs that do not need the value. A place only the walk answers, an
+ * error among them, reads as that unknown as well.</p>
  *
- * <p>A filling whose walk runs into a void has no type of its own to give, and
- * it is not thereby nothing: what fills that void reaches this one too, a hop
- * further along. {@link Carried} walks the hop, so a void filled with an
- * {@code oak} by one caller and handed on from a void filled with a number is
- * seen to hold both, and a void whose every caller passes on a void of its own
- * is described by that rather than by silence.</p>
- *
- * <p>An atom fills a void too, and says so in a brace list {@link Handed}
- * reads. That is spent here and not later, because the two rules feed each
- * other: a hop says which formation an atom is handed, the atom says what
- * lands in that formation, and a hop carries it on from there. So the walk is
- * made again for as long as the atoms have anything left to add, and what they
- * add is put among the fillings a call site names rather than among the
- * answers, so that a void left holding the far end of a hop gives that up as
- * soon as a forma arrives for it (#8396).</p>
- *
- * @since 0.69.0
+ * @since 0.76.0
  */
 final class Fillings {
 
     /**
-     * What the links table says.
+     * The program, as {@code facts.xml} states it.
      */
-    private final Said table;
+    private final Program program;
 
     /**
-     * The provides table.
+     * The values, which tell the void each argument of a call lands in.
      */
-    private final XML given;
+    private final Values values;
 
     /**
-     * The locator of every void.
+     * What goes into each void, by formation and void, worked out once.
      */
-    private final Collection<String> hollows;
+    private final Map<Boolean, Map<List<String>, Set<Filling>>> table;
 
     /**
-     * Ctor.
-     *
-     * @param links The links table, as {@link Resolved} left it
-     * @param provides The provides table, which says where a filling can land
+     * What each place gives before the call there, worked out once.
      */
-    Fillings(final XML links, final XML provides) {
-        this(new Said(new Pairs(links)), provides, new Hollows(provides).all());
-    }
+    private final Map<String, Filling> heads;
 
     /**
      * Ctor.
      *
-     * @param links What the links table says, as {@link Resolved} left it
-     * @param provides The provides table, which says where a filling can land
-     * @param voids The locator of every void, from {@link Hollows}
+     * @param prog The program
+     * @param vals The values
      */
-    Fillings(final Said links, final XML provides, final Collection<String> voids) {
-        this.table = links;
-        this.given = provides;
-        this.hollows = voids;
+    Fillings(final Program prog, final Values vals) {
+        this.program = prog;
+        this.values = vals;
+        this.table = new HashMap<>(1);
+        this.heads = new HashMap<>(0);
     }
 
     /**
-     * What is ever put into every void.
+     * What EO code puts into a void of a formation.
      *
-     * @return The types put in, by the locator of the void, without the voids
-     *  nobody ever fills
+     * @param form The formation
+     * @param name The void
+     * @return The fillings, in the order of the facts, none when no call
+     *  fills it
      */
-    Map<String, Collection<Type>> all() {
-        final Map<String, String> names = new Ends(this.table.all()).names();
-        final Map<String, String> landings = new Landed(this.table, this.given).all();
-        final Forms forms = new Forms(this.table.forms());
-        final Map<String, Map<String, Type>> placed = new LinkedHashMap<>(0);
-        final Map<String, Map<String, Type>> handed = new LinkedHashMap<>(0);
-        for (final Map.Entry<String, Collection<String>> bound : this.table.puts().entrySet()) {
-            for (final String put : bound.getValue()) {
-                final String end = landings.get(put);
-                if (end == null) {
-                    final String stopped = names.getOrDefault(put, put);
-                    handed.computeIfAbsent(bound.getKey(), key -> new LinkedHashMap<>(0))
-                        .putIfAbsent(forms.name(stopped), forms.type(stopped));
-                } else {
-                    placed.computeIfAbsent(bound.getKey(), key -> new LinkedHashMap<>(0))
-                        .putIfAbsent(forms.name(end), forms.type(end));
-                }
+    List<Filling> of(final String form, final String name) {
+        return new ArrayList<>(
+            this.table.computeIfAbsent(true, key -> this.collected())
+                .getOrDefault(List.of(form, name), Collections.emptySet())
+        );
+    }
+
+    private Map<List<String>, Set<Filling>> collected() {
+        final Map<List<String>, Set<Filling>> found = new LinkedHashMap<>(0);
+        for (final String place : this.program.calls()) {
+            final Filling head = this.head(place);
+            if (head.kind() == 'O') {
+                this.fresh(place, head.loc(), found);
+            } else if (head.kind() == 'C' || head.kind() == 'X') {
+                this.unnamed(place, head.loc(), found);
             }
         }
-        final Handed atoms = new Handed(
-            this.given, new Provided(this.given, names, this.hollows)
+        return found;
+    }
+
+    private void fresh(
+        final String place, final String form, final Map<List<String>, Set<Filling>> found
+    ) {
+        final List<Argument> args = this.program.args(place);
+        final List<String> voids = this.values.voids(
+            new Value(form, new Site(place, ""), 0L), args
         );
-        Map<String, Map<String, Type>> walked = new Carried(placed, handed).all();
-        while (atoms.fills(placed, walked)) {
-            walked = new Carried(placed, handed).all();
+        for (int idx = 0; idx < voids.size(); ++idx) {
+            found.computeIfAbsent(
+                List.of(form, voids.get(idx)), key -> new LinkedHashSet<>(1)
+            ).add(this.filling(args.get(idx).loc()));
         }
-        final Map<String, String> behaves = new Behaviours(this.given).all();
-        final Map<String, Collection<Type>> found = new LinkedHashMap<>(0);
-        for (final Map.Entry<String, Map<String, Type>> hollow : walked.entrySet()) {
-            found.put(hollow.getKey(), new Counted(hollow.getValue(), behaves).all());
+    }
+
+    private void unnamed(
+        final String place, final String form, final Map<List<String>, Set<Filling>> found
+    ) {
+        final List<String> order = this.program.form(form).order();
+        for (final Argument arg : this.program.args(place)) {
+            final List<String> into;
+            if (arg.name().isEmpty()) {
+                into = order.subList(Math.min(arg.slot(), order.size()), order.size());
+            } else if (order.contains(arg.name())) {
+                into = List.of(arg.name());
+            } else {
+                into = Collections.emptyList();
+            }
+            for (final String name : into) {
+                found.computeIfAbsent(
+                    List.of(form, name), key -> new LinkedHashSet<>(1)
+                ).add(new Filling('W', arg.loc()));
+            }
+        }
+    }
+
+    private Filling filling(final String place) {
+        final Filling got = this.value(place);
+        final Filling found;
+        if (got.kind() == 'X' || got.kind() == 'W') {
+            found = new Filling('W', place);
+        } else {
+            found = got;
+        }
+        return found;
+    }
+
+    private Filling value(final String place) {
+        final Filling head = this.head(place);
+        final Filling found;
+        if (this.program.calls(place) && head.kind() == 'O') {
+            found = new Filling('C', head.loc());
+        } else if (this.program.calls(place)) {
+            found = new Filling('W', place);
+        } else {
+            found = head;
+        }
+        return found;
+    }
+
+    private Filling head(final String place) {
+        if (!this.heads.containsKey(place)) {
+            this.heads.put(place, new Filling('W', place));
+            this.heads.put(place, this.started(place));
+        }
+        return this.heads.get(place);
+    }
+
+    private Filling started(final String place) {
+        final Filling found;
+        if (this.program.formation(place)) {
+            found = new Filling('O', place);
+        } else if (this.program.starts(place)) {
+            found = this.start(place);
+        } else if (this.program.reads(place)) {
+            final Read read = this.program.read(place);
+            found = this.member(this.value(read.of()), read.name());
+        } else {
+            found = new Filling('W', place);
+        }
+        return found;
+    }
+
+    private Filling start(final String place) {
+        final List<Head> starts = this.program.heads(place);
+        Filling found = new Filling('W', place);
+        if (starts.size() == 1) {
+            final Head head = starts.get(0);
+            if ("data".equals(head.tag())) {
+                found = new Filling('D', "");
+            } else if ("terminator".equals(head.tag())) {
+                found = new Filling('T', "");
+            } else if ("Φ".equals(head.loc())) {
+                found = new Filling('Φ', "Φ");
+            } else if (this.program.formation(head.loc())) {
+                found = new Filling('X', head.loc());
+            }
+        }
+        return found;
+    }
+
+    private Filling member(final Filling owner, final String name) {
+        final String target = String.join(".", owner.loc(), name);
+        final Filling found;
+        if ("ΦOCX".indexOf(owner.kind()) < 0) {
+            found = new Filling('W', target);
+        } else if (this.program.formation(target)) {
+            found = new Filling('O', target);
+        } else if (owner.kind() == 'Φ' || !this.program.formation(owner.loc())) {
+            found = new Filling('W', target);
+        } else {
+            found = this.attribute(owner.loc(), name);
+        }
+        return found;
+    }
+
+    private Filling attribute(final String form, final String name) {
+        final Formation shape = this.program.form(form);
+        final Filling found;
+        if ("ρ".equals(name)) {
+            found = this.parent(form);
+        } else if (shape.open(name)) {
+            found = new Filling('W', String.join(".", form, name));
+        } else if (shape.has(name)) {
+            found = this.value(String.join(".", form, name));
+        } else {
+            found = this.behind(form, name);
+        }
+        return found;
+    }
+
+    private Filling parent(final String form) {
+        final String rho = this.program.form(form).parent();
+        final Filling found;
+        if ("Φ".equals(rho)) {
+            found = new Filling('Φ', "Φ");
+        } else if (rho.isEmpty()) {
+            found = new Filling('W', String.join(".", form, "ρ"));
+        } else {
+            found = new Filling('X', rho);
+        }
+        return found;
+    }
+
+    private Filling behind(final String form, final String name) {
+        final Formation shape = this.program.form(form);
+        final String back = new Annotation(shape.returns()).head();
+        final Filling found;
+        if (shape.has("φ") && !shape.open("φ")) {
+            found = this.member(this.value(String.join(".", form, "φ")), name);
+        } else if (this.program.formation(back)) {
+            found = this.member(new Filling('X', back), name);
+        } else {
+            found = new Filling('W', String.join(".", form, name));
         }
         return found;
     }

@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.cactoos.Func;
+import org.eolang.cache.Footprint;
+import org.eolang.cache.FpEnvelope;
+import org.eolang.cache.FpFork;
 
 /**
  * Footprint that behaves like one of the given wrapped footprints depending on

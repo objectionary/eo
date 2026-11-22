@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="atoms-table" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" id="atoms-table" version="3.0">
   <!--
   For each lambda atom (`<o name="λ" atom="...">`) emit an `<atom>` element
   whose `forma` attribute is the dotted name of the atom's enclosing

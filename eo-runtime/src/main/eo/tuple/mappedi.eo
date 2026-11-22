@@ -10,11 +10,11 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^ func] > mappedi
-  ^.reducedi > @
+[^list func] > mappedi
+  list.reducedi > @
     *
-    accum.with > [^ accum item idx] >>
-      ^.func item idx
+    accum.with > [^list accum item idx] >>
+      list.func item idx
 
   eq. ++> can-map-a-list-with-indexes
     mappedi.

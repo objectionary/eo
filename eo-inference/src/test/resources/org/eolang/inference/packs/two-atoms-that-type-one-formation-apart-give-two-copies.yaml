@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# check and alarm both return a status, and type its note apart: a string for
+# check and a number for alarm. Java makes one copy of status for each, so the
+# text app reads off what check returns is a string alone, and the text siren
+# reads off what alarm returns is a number alone.
+sources:
+  os.eo: |
+    [] > os
+      [] > check /Q.os.status(Q.number,Q.string)
+      [] > alarm /Q.os.status(Q.number,Q.number)
+      [code note] > status
+        code > @
+        note > text
+  app.eo: |
+    [] > app
+      os.check.text > @
+  siren.eo: |
+    [] > siren
+      os.alarm.text > @
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.os.check.λ']/is[@loc='Φ.os.status(Φ.number,Φ.string)']
+  - /answers/o[@loc='Φ.os.alarm.λ']/is[@loc='Φ.os.status(Φ.number,Φ.number)']
+  - /answers/o[@loc='Φ.os.status' and @copies='2']
+  - /answers/o[@loc='Φ.os.status.v🌵note']/set[@copies='1' and count(*)=1]/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.os.status.v🌵note']/set[@copies='1' and count(*)=1]/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.φ' and count(*)=1]/is[@loc='Φ.string']
+  - /answers/o[@loc='Φ.siren.φ' and count(*)=1]/is[@loc='Φ.number']

@@ -534,7 +534,7 @@ final class SuffixTest {
     @Test
     void mapsAtAttributeNameToPhi() {
         MatcherAssert.assertThat(
-            "an explicit `> @` suffix must surface as the φ attribute per R-9.3.1",
+            "an explicit `> @` suffix must surface as the φ attribute per R-3.10.8 / §9.3",
             new Suffix(" > @", new Span("foo > @", 1), 3).attribute(1, 0),
             Matchers.equalTo("φ")
         );

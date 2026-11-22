@@ -1,0 +1,21 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# lid has nothing in it, so the facts call it complete, and the answers name it
+# lid and nothing else.
+sources:
+  lid.eo: |
+    [] > lid
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+facts:
+  - /facts/objects/type[@id='Φ.lid' and not(attr)]
+  - /facts/objects/type[@id='Φ.lid' and @complete='true']
+answers:
+  - /answers/o[@loc='Φ.lid']/is[@loc='Φ.lid']
+  - /answers[not(o[@loc='Φ.lid']/*[not(self::is[@loc='Φ.lid'])])]

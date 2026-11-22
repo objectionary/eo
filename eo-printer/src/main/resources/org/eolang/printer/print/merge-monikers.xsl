@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs eo" id="merge-monikers" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="xs eo" id="merge-monikers" version="3.0">
   <!--
   Merges a standalone named binding back onto its bare-reference use site,
   restoring the shorter "moniker" spelling. The parser hoists a `> name`
@@ -58,13 +58,14 @@
   arguments and no name of its own — indexed by owning formation and receiver
   name, the applied twin of `moniker-ref` above.
   -->
-  <xsl:key name="applied-ref" match="o[exists(@base) and starts-with(@base, $eo:xi-dot) and exists(o) and not(exists(@name))]" use="concat(generate-id(ancestor::o[eo:abstract(.)][1]), ' ', substring-after(@base, $eo:xi-dot))"/>
+  <xsl:key name="applied-ref" match="o[exists(@base) and starts-with(@base, $eo:xi-dot) and exists(o) and (not(exists(@name)) or eo:anonymous-pipe(.))]" use="concat(generate-id(ancestor::o[eo:abstract(.)][1]), ' ', substring-after(@base, $eo:xi-dot))"/>
   <!--
   Every eligible binding (`eo:moniker-binding`) indexed by its owning formation
   and name, so a reference reaches the binding it resolves to without scanning
   the formation's attributes.
   -->
   <xsl:key name="moniker-binding" match="o[eo:moniker-binding(.)]" use="concat(generate-id(..), ' ', @name)"/>
+  <xsl:key name="anonymous-pipe-binding" match="o[eo:anonymous-pipe(.)]" use="concat(generate-id(..), ' ', @name)"/>
   <!--
   The same bindings indexed by name alone, for the two "kept reference"
   lookups, which climb the ancestor formations looking for whichever one
@@ -146,6 +147,10 @@
     <xsl:param name="attr" as="element()"/>
     <xsl:sequence select="exists($attr/@name) and (starts-with($attr/@name, $eo:cactus-name) or eo:recursive-handle($attr)) and (exists($attr/@base) or eo:abstract($attr)) and not(exists($attr/@pipe)) and not(eo:void($attr)) and $attr/@name != $eo:phi and not(eo:test-attr($attr)) and eo:abstract($attr/..)"/>
   </xsl:function>
+  <xsl:function name="eo:anonymous-pipe" as="xs:boolean">
+    <xsl:param name="attr" as="element()"/>
+    <xsl:sequence select="exists($attr/@pipe) and exists($attr/@name) and starts-with($attr/@name, $eo:cactus-name) and empty($attr/@local) and empty($attr/@const)"/>
+  </xsl:function>
   <!--
   The key `to-eo-tree.xsl` sorts a reference's own top-level binding under:
   an alphabetical run by `(@local, @name)[1]`, with a non-sortable, void, `φ`
@@ -221,7 +226,11 @@
   <!--
   The binding that a reference `$ref` should be replaced with, or the empty
   sequence when `$ref` hosts no binding (not a bare reference, no eligible
-  binding, or not the first hosting reference).
+  binding, or not the first hosting reference). A binding an applied reference
+  already hosts as a "| args" pipe (`eo:applied-hosted`) is not hosted here too,
+  or it would be printed twice, once at each reference, with the same handle
+  name, which the parser refuses as a duplicate (#9166); its bare readers keep
+  the readable handle instead (`eo:kept-local-ref`).
   -->
   <xsl:function name="eo:hosted-binding" as="element()*">
     <xsl:param name="ref" as="element()"/>
@@ -237,7 +246,7 @@
       <xsl:otherwise>
         <xsl:variable name="owner" select="$ref/ancestor::o[eo:abstract(.)][1]"/>
         <xsl:variable name="binding" select="key('moniker-binding', concat(generate-id($owner), ' ', $name), root($ref))[1]"/>
-        <xsl:sequence select="if (exists($binding) and (eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
+        <xsl:sequence select="if (exists($binding) and not(eo:applied-hosted($binding)) and (eo:moniker-refs($binding)[1] is $ref)) then $binding else ()"/>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:function>
@@ -282,6 +291,66 @@
     <xsl:sequence select="if (empty($attr)) then () else key('applied-ref', concat(generate-id($owner), ' ', $attr/@name), root($attr))[not(ancestor::o[. is $attr])]"/>
   </xsl:function>
   <!--
+  The single-segment receiver a pipe names after `ξ.`, or the empty string
+  when `$node` is missing or its base is not `ξ.&lt;name&gt;`.
+  `eo:pipe-chain-terminal`, `eo:pipe-chain-from-binding` and
+  `eo:pipe-chain-from-ref` all ask for this name before they call `key(...)`,
+  so the admission test lives here and the three cannot drift apart (#9298).
+  -->
+  <xsl:function name="eo:pipe-receiver-name" as="xs:string">
+    <xsl:param name="node" as="element()?"/>
+    <xsl:variable name="name" select="substring-after($node/@base, $eo:xi-dot)"/>
+    <xsl:sequence select="if (exists($node) and starts-with($node/@base, $eo:xi-dot) and $name != '' and not(contains($name, '.'))) then $name else ''"/>
+  </xsl:function>
+  <xsl:function name="eo:pipe-chain-terminal" as="xs:boolean">
+    <xsl:param name="binding" as="element()?"/>
+    <xsl:param name="seen" as="element()*"/>
+    <xsl:choose>
+      <xsl:when test="empty($binding) or not(eo:anonymous-pipe($binding)) or (some $node in $seen satisfies $binding is $node)">
+        <xsl:sequence select="false()"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:variable name="refs" select="eo:applied-refs($binding)"/>
+        <xsl:variable name="ref" select="$refs[1]"/>
+        <xsl:variable name="name" select="eo:pipe-receiver-name($ref)"/>
+        <xsl:sequence select="if (count($refs) != 1 or exists(eo:moniker-refs($binding)) or empty($ref) or not($ref/ancestor::o[eo:abstract(.)][1] is $binding/..)) then false() else if (not(exists($ref/@name))) then exists($ref/o) and $name != '' else eo:pipe-chain-terminal($ref, ($seen, $binding))"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+  <xsl:function name="eo:pipe-chain-from-binding" as="element()*">
+    <xsl:param name="binding" as="element()?"/>
+    <xsl:param name="seen" as="element()*"/>
+    <xsl:choose>
+      <xsl:when test="empty($binding) or not(eo:anonymous-pipe($binding)) or (some $node in $seen satisfies $binding is $node)"/>
+      <xsl:otherwise>
+        <xsl:variable name="owner" select="$binding/.."/>
+        <xsl:variable name="name" select="eo:pipe-receiver-name($binding)"/>
+        <xsl:variable name="predecessor" as="element()?">
+          <xsl:sequence select="if ($name != '') then (let $lookup := concat(generate-id($owner), ' ', $name) return (key('moniker-binding', $lookup, root($binding)), key('anonymous-pipe-binding', $lookup, root($binding))))[1] else ()"/>
+        </xsl:variable>
+        <xsl:choose>
+          <xsl:when test="empty($predecessor) or not(eo:pipe-chain-terminal($binding, ()))"/>
+          <xsl:when test="eo:abstract($predecessor) and empty($predecessor/@local) and empty($predecessor/@const) and count(eo:applied-refs($predecessor)) = 1 and eo:applied-refs($predecessor)[1] is $binding and empty(eo:moniker-refs($predecessor))">
+            <xsl:sequence select="($predecessor, $binding)"/>
+          </xsl:when>
+          <xsl:when test="eo:anonymous-pipe($predecessor)">
+            <xsl:variable name="chain" select="eo:pipe-chain-from-binding($predecessor, ($seen, $binding))"/>
+            <xsl:sequence select="if (exists($chain)) then ($chain, $binding) else ()"/>
+          </xsl:when>
+        </xsl:choose>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+  <xsl:function name="eo:pipe-chain-from-ref" as="element()*">
+    <xsl:param name="ref" as="element()"/>
+    <xsl:variable name="name" select="eo:pipe-receiver-name($ref)"/>
+    <xsl:variable name="owner" select="$ref/ancestor::o[eo:abstract(.)][1]"/>
+    <xsl:variable name="binding" as="element()?">
+      <xsl:sequence select="if ($name != '' and not(exists($ref/@name)) and exists($ref/o)) then key('anonymous-pipe-binding', concat(generate-id($owner), ' ', $name), root($ref))[1] else ()"/>
+    </xsl:variable>
+    <xsl:sequence select="eo:pipe-chain-from-binding($binding, ())"/>
+  </xsl:function>
+  <!--
   Whether the applied reference `$ref` sits in a dispatch-receiver slot: the
   first child (the "ρ" receiver) of a reversed dispatch ("@base" starting with a
   dot), as in "(handle args).read" (#5844/#5848). "unnecessary-as" strips the
@@ -303,12 +372,20 @@
   #5983). Recursion plays no part: #5848 folded recursive handles only because
   those were the sole ones "inline-cactoos" left standing to reach here; a plain
   formation handle now reaches here too (kept standing by #5983's
-  `eo:arg-applied`) and folds by the very same rule (#6008).
+  `eo:arg-applied`) and folds by the very same rule (#6008). An anonymous
+  formation (`[x] &gt;&gt;` with no "@local") folds onto its first reference too,
+  when that reference carries no positional "@as": no handle name is there for
+  the reference to read the formation back by, so leaving it standing prints
+  the reference against a synthetic "vL_P" that nothing declares (#9164).
+  A const reference (`scan 0!`, carrying the "@const" that "dataized-to-const"
+  put there) never folds: the pipe node the fold builds takes only the
+  reference's "@as", so the "!" would stay behind and the printed file would
+  recompute at every use what it asks to be dataized once and cached (#9607).
   -->
   <xsl:function name="eo:applied-hosted" as="xs:boolean">
     <xsl:param name="attr" as="element()"/>
     <xsl:variable name="refs" select="eo:applied-refs($attr)"/>
-    <xsl:sequence select="exists($refs) and eo:abstract($attr) and (eo:receiver-ref($refs[1]) or eo:block-handle($attr))"/>
+    <xsl:sequence select="exists($refs) and eo:abstract($attr) and empty($refs[1]/@const) and (if (eo:anonymous-pipe($refs[1])) then eo:pipe-chain-terminal($refs[1], ()) and exists(eo:pipe-chain-from-binding($refs[1], ())) else eo:receiver-ref($refs[1]) or eo:block-handle($attr) or (empty($attr/@local) and empty($refs[1]/@as)))"/>
   </xsl:function>
   <xsl:function name="eo:applied-handle" as="element()*">
     <xsl:param name="ref" as="element()"/>
@@ -419,7 +496,7 @@
     <xsl:param name="ref" as="element()"/>
     <xsl:variable name="candidates" select="key('moniker-name', tokenize($ref/@base, '\.'), root($ref))[not(eo:const-handle(.)) and exists(@local)][some $scope in $ref/ancestor::o satisfies $scope is ..]"/>
     <xsl:variable name="binding" select="$candidates[last()]"/>
-    <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and (exists($binding/@pipe) or not(eo:moniker-refs($binding)[1] is $ref))) then $binding else ()"/>
+    <xsl:sequence select="if (exists($binding) and not($ref is $binding) and not($ref/ancestor::o[. is $binding]) and (exists($binding/@pipe) or eo:applied-hosted($binding) or not(eo:moniker-refs($binding)[1] is $ref))) then $binding else ()"/>
   </xsl:function>
   <!--
   The binding, out of those candidates, that a reference actually keeps: not
@@ -602,6 +679,20 @@
   kept on the pipe so an argument slot survives; the standalone binding is
   dropped below.
   -->
+  <xsl:template match="o[starts-with(@base, $eo:xi-dot)][exists(o)][not(exists(@name))][exists(eo:pipe-chain-from-ref(.))]" priority="3">
+    <xsl:variable name="chain" select="eo:pipe-chain-from-ref(.)"/>
+    <xsl:for-each select="$chain">
+      <xsl:copy>
+        <xsl:apply-templates select="node()|@*"/>
+      </xsl:copy>
+    </xsl:for-each>
+    <o>
+      <xsl:apply-templates select="@as"/>
+      <xsl:attribute name="pipe"/>
+      <xsl:attribute name="base" select="@base"/>
+      <xsl:apply-templates select="o"/>
+    </o>
+  </xsl:template>
   <xsl:template match="o[starts-with(@base, $eo:xi-dot)][exists(o)][not(exists(@name))][exists(eo:applied-handle(.))]" priority="2">
     <xsl:variable name="binding" select="eo:applied-handle(.)"/>
     <xsl:for-each select="$binding">
@@ -642,6 +733,7 @@
   whenever the binding is a host site itself: what it hosts travels with it to the
   reference in the "merged" mode, so here it only has to go (#5918).
   -->
+  <xsl:template match="o[eo:anonymous-pipe(.) and exists(eo:pipe-chain-from-binding(., ()))]" priority="3"/>
   <xsl:template match="o[eo:moniker-binding(.) and (exists(eo:moniker-refs(.)) or eo:applied-hosted(.))]" priority="3"/>
   <xsl:template match="node()|@*">
     <xsl:copy>

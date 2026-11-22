@@ -29,9 +29,30 @@ import java.util.List;
 final class Stack {
 
     /**
+     * How deep the walk nests before it refuses to go deeper — §5.
+     *
+     * <p>The stack itself costs one entry per level, but the XSL chain
+     * behind the walk recurses once per level of the tree it is handed,
+     * and a few hundred levels overflow it: the walk would hand over a
+     * document that kills the process instead of an error the caller can
+     * report. Real EO stays far below this — the deepest object in
+     * eo-runtime sits at level 41.</p>
+     */
+    static final int DEEPEST = 256;
+
+    /**
      * The levels, bottom-to-top.
      */
     private final List<Level> levels;
+
+    /**
+     * How many dispatch hops the chain standing on the top entry holds
+     * — the ones the line that opened the entry spelled on itself, plus
+     * one for every {@code .method} continuation line that followed
+     * (R-3.5.3c). A chain ends where the top entry does, so a push, a
+     * replace and a pop all start the count again.
+     */
+    private int hops;
 
     /**
      * Close-time check hook, invoked whenever a level is popped or
@@ -81,6 +102,7 @@ final class Stack {
      */
     Stack(final Closer closer, final Opener opener) {
         this.levels = new ArrayList<>(8);
+        this.hops = 0;
         this.closer = closer;
         this.opener = opener;
         this.bottom = new Level(0, 0, Kind.TOP_LEVEL, Openness.OPEN, Kind.TOP_LEVEL, false);
@@ -102,6 +124,28 @@ final class Stack {
      */
     int depth() {
         return this.levels.size();
+    }
+
+    /**
+     * Count dispatch hops into the chain standing on the top entry, and
+     * refuse the line that takes it past {@link #DEEPEST} hops
+     * (R-3.5.3c). Every hop becomes one more level of the emitted tree,
+     * however the chain is spelled, so a chain written as {@code .method}
+     * continuation lines reaches the same limit as one written on a
+     * single line (#9301).
+     *
+     * @param more How many hops the line just read brings
+     * @param line Line to blame
+     * @param pos Position to blame
+     */
+    void hop(final int more, final int line, final int pos) {
+        if (this.hops + more > Stack.DEEPEST) {
+            throw new ParseError(
+                line, pos,
+                String.format("object nested deeper than %d levels", Stack.DEEPEST)
+            );
+        }
+        this.hops = this.hops + more;
     }
 
     /**
@@ -198,6 +242,11 @@ final class Stack {
      * {@code parent} is read from the entry below; if the stack was
      * empty, the parent is {@link Kind#TOP_LEVEL}.</p>
      *
+     * <p>A push that would take the stack past {@link #DEEPEST} entries
+     * is refused with a {@link ParseError}, so the caller reports the
+     * line and skips the block under it instead of emitting a tree the
+     * XSL chain cannot walk.</p>
+     *
      * @param indent New indent
      * @param line Start line
      * @param kind Initial outer kind
@@ -208,6 +257,13 @@ final class Stack {
     Level push(
         final int indent, final int line, final Kind kind, final Openness openness
     ) {
+        if (this.levels.size() >= Stack.DEEPEST) {
+            throw new ParseError(
+                line, indent,
+                String.format("object nested deeper than %d levels", Stack.DEEPEST)
+            );
+        }
+        this.hops = 0;
         final Kind parent;
         final boolean patom;
         final boolean argues;
@@ -264,8 +320,11 @@ final class Stack {
             stepped = true;
             this.closer.onClose(last, true);
         }
-        if (stepped && !this.levels.isEmpty() && this.top().openness() == Openness.OPEN) {
-            this.top().close(Openness.VCOMPLETED);
+        if (stepped) {
+            this.hops = 0;
+            if (!this.levels.isEmpty() && this.top().openness() == Openness.OPEN) {
+                this.top().close(Openness.VCOMPLETED);
+            }
         }
     }
 
@@ -284,6 +343,7 @@ final class Stack {
             throw new IllegalStateException("cannot replace top of empty stack");
         }
         final Level old = this.levels.remove(this.levels.size() - 1);
+        this.hops = 0;
         this.closer.onClose(old, true);
         final int indent = old.indent();
         final Kind parent;

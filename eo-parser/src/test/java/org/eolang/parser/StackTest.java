@@ -262,10 +262,51 @@ final class StackTest {
         );
     }
 
+    @Test
+    void rejectsLevelBelowTheDeepestOne() {
+        Assertions.assertThrows(
+            ParseError.class,
+            () -> StackTest.deepened(Stack.DEEPEST),
+            "a level below the deepest one cannot be pushed — the walk must stop before the XSL chain overflows"
+        );
+    }
+
+    @Test
+    void acceptsTheDeepestLevel() {
+        MatcherAssert.assertThat(
+            "the deepest level itself must still be pushed",
+            StackTest.deepened(Stack.DEEPEST - 1).depth(),
+            Matchers.equalTo(Stack.DEEPEST)
+        );
+    }
+
+    @Test
+    void capturesMessageOfDepthViolation() {
+        MatcherAssert.assertThat(
+            "the error message must name the depth the walk allows",
+            Assertions.assertThrows(
+                ParseError.class,
+                () -> StackTest.deepened(Stack.DEEPEST)
+            ).getMessage(),
+            Matchers.equalTo(
+                String.format("object nested deeper than %d levels", Stack.DEEPEST)
+            )
+        );
+    }
+
     private static ParseError firstPushIndentViolation() {
         return Assertions.assertThrows(
             ParseError.class,
             () -> new Stack().push(2, 1, Kind.HEAD, Openness.OPEN)
         );
+    }
+
+    private static Stack deepened(final int steps) {
+        final Stack stack = new Stack();
+        stack.push(0, 1, Kind.BARE_FORMATION, Openness.OPEN);
+        for (int step = 1; step <= steps; step = step + 1) {
+            stack.push(step * 2, step + 1, Kind.BARE_FORMATION, Openness.OPEN);
+        }
+        return stack;
     }
 }

@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# outer.held.deep is answered step by step: outer, then held read off it, then
+# deep read off held.
+sources:
+  app.eo: |
+    [] > app
+      outer.held.deep > @
+  outer.eo: |
+    [] > outer
+      [] > held
+        [] > deep
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.ρ.ρ']/is[@loc='Φ.outer']
+  - /answers/o[@loc='Φ.app.φ.ρ']/is[@loc='Φ.outer.held']
+  - /answers/o[@loc='Φ.app.φ']/is[@loc='Φ.outer.held.deep']

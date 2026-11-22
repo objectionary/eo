@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Supplier;
+import org.eolang.cache.Sha;
 
 /**
  * Fingerprint of XMIR inputs, skip flags and the WPA artifact version that

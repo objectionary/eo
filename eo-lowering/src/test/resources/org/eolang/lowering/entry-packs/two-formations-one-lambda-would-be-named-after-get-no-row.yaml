@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# A dot and a dash of a path both become an underscore of the λ, so two
+# formations may ask for one name, and then neither gets a row, since one
+# λ cannot answer in two shapes.
+# The body of each of them is a number, so each of them could have a row
+# on its own.
+eo:
+  a.eo: |
+    [] > a
+      [] > b-c
+        1 > @
+      [] > b
+        [] > c
+          2 > @
+xmir:
+  - "//o[@name='e1' and @base='Φ.a.b-c'][not(o[@name='φ'])]"
+  - "//o[@name='e2' and @base='Φ.a.b.c'][not(o[@name='φ'])]"
+copies:
+  - "//o[@loc='Φ.a.b-c'][not(o[@name='λ'])]/o[@name='φ']"
+  - "//o[@loc='Φ.a.b.c'][not(o[@name='λ'])]/o[@name='φ']"

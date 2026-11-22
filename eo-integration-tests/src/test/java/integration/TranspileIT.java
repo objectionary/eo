@@ -34,6 +34,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * {@code org.eolang.EO_string.EOfoo$EObar} that the runtime jar, merged when
  * it was built, does not carry.</p>
  *
+ * <p>The build stops at {@code process-sources}, right after transpilation,
+ * since the tests look only at the Java sources generated. The sources are
+ * pulled from the remote objectionary, and so are the binaries of the
+ * released runtime they belong to, which the plugin places into
+ * {@code target/classes}; those binaries are not what the transpiler of this
+ * reactor writes its sources against, so {@code javac} is not run.</p>
+ *
  * @since 0.62
  */
 @SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
@@ -83,9 +90,9 @@ final class TranspileIT {
             .execution("transpile-it")
             .goals("register", "compile", "merge", "transpile")
             .configuration()
-            .set("failOnWarning", "false")
-            .set("skipLinting", "true");
-        farea.exec("clean", "compile");
+            .set("lint.strict", "false")
+            .set("lint.bypass", "true");
+        farea.exec("clean", "process-sources");
     }
 
     private static List<String> generatedNames(final Path temp) throws IOException {

@@ -17,7 +17,8 @@
 # When you dataize `socket.connect`, it creates new socket, connects to the given
 # IP on given port, dataizes provided scope, closes the socket and returns bytes
 # retrieved from scope dataization. On failure at any of the described steps, the fallback of the
-# corresponding operation is returned (or the terminator when it is left unbound).
+# corresponding operation takes an error message.
+# When unbound, it terminates with that message.
 #
 # To listen to the incoming connections as server you should do:
 #
@@ -40,7 +41,7 @@
 # and returns `bytes` retrieved from scope dataization. When `s.accept` is dataized - it dataizes
 # given scope, closes client socket and returns `bytes` retrieved from scope dataization.
 # On failure at any of the described steps, the fallback of the corresponding operation is
-# returned (or the terminator when it is left unbound).
+# applied to an error message. When unbound, it terminates with that message.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -51,256 +52,261 @@
 
 [address port] > socket
   os.is-windows.if > @
-    [^ sys] >> impl
-      code. > addr
-        sys.raw *1
-          "inet_addr"
-          ^.address
+    [^sock kernel] >> impl
+      as-number. > addr
+        sys.inet-addr >>!
+          sock.address
       as-i32. > addrint
         if.
           addr.gt 2147483647
           addr.minus 4294967296
           addr
-      [^ descriptor] > closed-socket
-        if. > @
-          closed.eq -1
-          T
-            "Couldn't close the socket #%d because %s".printf
-              * descriptor ^.sys.message
-          true
-        code. > closed
-          ^.sys.raw *1
-            ^.sys.close
-            descriptor
-      [^ scope cant-connect] > connect
-        ^.safe-socket > @
-          [^] >>
+      if. > [^sock descriptor] > closed-socket
+        eq.
+          sock.sys.close descriptor
+          -1
+        T
+          "Couldn't close the socket #%d because %s".printf
+            * descriptor sock.sys.message
+        true
+      [^conn scope cant-connect] > connect
+        conn.safe-socket > @
+          [^attempt] >>
             if. > @
-              connected.eq -1
-              ^.cant-connect
+              eq.
+                as-number.
+                  attempt.conn.sock.sys.connect >>!
+                    attempt.conn.sock.sd
+                    attempt.conn.sock.sockaddr
+                    attempt.conn.sock.sockaddr.size
+                -1
+              attempt.cant-connect
                 "Couldn't connect to %s:%d on socket #%d because %s".printf
-                  * ^.^.^.address ^.^.^.port ^.^.^.sd ^.^.^.sys.message
-              ^.scope
-                ^.^.^.scoped-socket ^.^.^.sd
-            code. > connected
-              ^.^.^.sys.raw *1
-                "connect"
-                ^.^.^.sd
-                ^.^.^.sockaddr
-                ^.^.^.sockaddr.size
+                  *
+                    attempt.conn.sock.address
+                    attempt.conn.sock.port
+                    attempt.conn.sock.sd
+                    attempt.conn.sock.sys.message
+              attempt.scope
+                attempt.conn.sock.scoped-socket attempt.conn.sock.sd
           cant-connect
-      [^ scope cant-listen] > listen
-        ^.safe-socket > @
-          [^] >>
+      [^host scope cant-listen] > listen
+        host.safe-socket > @
+          [^setup] >>
             if. > @
-              bound.eq -1
-              ^.cant-listen
+              eq.
+                as-number.
+                  setup.host.sock.sys.bind >>!
+                    setup.host.sock.sd
+                    setup.host.sock.sockaddr
+                    setup.host.sock.sockaddr.size
+                -1
+              setup.cant-listen
                 "Couldn't bind the socket #%d to %s:%d because %s".printf
-                  * ^.^.^.sd ^.^.^.address ^.^.^.port ^.^.^.sys.message
+                  *
+                    setup.host.sock.sd
+                    setup.host.sock.address
+                    setup.host.sock.port
+                    setup.host.sock.sys.message
               if.
-                listened.eq -1
-                ^.cant-listen
+                eq.
+                  as-number.
+                    setup.host.sock.sys.listen setup.host.sock.sd 2048 >>!
+                  -1
+                setup.cant-listen
                   "Failed to listen to %s:%d on the socket #%d because %s".printf
-                    * ^.^.^.address ^.^.^.port ^.^.^.sd ^.^.^.sys.message
-                ^.scope
-                  [^] >>
-                    ^.^.^.^.scoped-socket ^.^.^.^.sd > @
-                    [^ scope cant-accept] > accept
+                    *
+                      setup.host.sock.address
+                      setup.host.sock.port
+                      setup.host.sock.sd
+                      setup.host.sock.sys.message
+                setup.scope
+                  [^ready] >>
+                    ready.setup.host.sock.scoped-socket ready.setup.host.sock.sd > @
+                    [^incoming scope cant-accept] > accept
                       if. > @
-                        client.eq -1
+                        eq.
+                          number (incoming.ready.setup.host.sock.sys.accept incoming.ready.setup.host.sock.sd incoming.ready.setup.host.sock.sockaddr incoming.ready.setup.host.sock.sockaddr.size)! >> client
+                          -1
                         cant-accept
                           "Failed to accept a connection on the socket #%d because %s".printf
-                            * ^.^.^.^.^.sd ^.^.^.^.^.sys.message
-                        ^.^.^.^.^.guarded
-                          scope (^.^.^.^.^.scoped-socket client)
-                          ^.^.^.^.^.closed-socket client
-                      code. > client
-                        ^.^.^.^.^.sys.raw *1
-                          "accept"
-                          ^.^.^.^.^.sd
-                          ^.^.^.^.^.sockaddr
-                          ^.^.^.^.^.sockaddr.size
-            code. > bound
-              ^.^.^.sys.raw *1
-                "bind"
-                ^.^.^.sd
-                ^.^.^.sockaddr
-                ^.^.^.sockaddr.size
-            code. > listened
-              ^.^.^.sys.raw *1
-                "listen"
-                ^.^.^.sd
-                2048
+                            * incoming.ready.setup.host.sock.sd incoming.ready.setup.host.sock.sys.message
+                        incoming.ready.setup.host.sock.guarded
+                          scope
+                            incoming.ready.setup.host.sock.scoped-socket client
+                          incoming.ready.setup.host.sock.closed-socket client
           cant-listen
-      [^ scope cant] > safe-socket
-        if. > @
-          not.
-            ^.sys.startup.eq 0
-          cant
-            "Couldn't start up the sockets subsystem because %s".printf
-              * ^.sys.message
-          ^.^.guarded opened ^.sys.cleanup
-        if. > converted
-          and.
-            ^.addr.eq ^.sys.unresolved
-            not.
-              ^.^.address.eq "255.255.255.255"
-          cant
-            "Couldn't convert an IPv4 address '%s' into a 32-bit integer because %s".printf
-              * ^.^.address ^.sys.message
-          scope
-        if. > opened
-          ^.sd.eq -1
-          cant
-            "Couldn't create a socket because %s".printf
-              * ^.sys.message
-          ^.^.guarded
-            converted
-            ^.closed-socket ^.sd
-      [^ descriptor] > scoped-socket
-        ^.^.as-input recv > as-input
-        ^.^.as-output send > as-output
-        [^ size cant-receive] > recv
+      if. > [^prep scope cant] > safe-socket
+        not.
+          prep.sys.startup.eq 0
+        cant
+          "Couldn't start up the sockets subsystem because %s".printf
+            * prep.sys.message
+        prep.sock.guarded
+          if.
+            prep.sd.eq -1
+            cant
+              "Couldn't create a socket because %s".printf
+                * prep.sys.message
+            prep.sock.guarded
+              if.
+                and.
+                  prep.addr.eq prep.sys.unresolved
+                  not.
+                    prep.sock.address.eq "255.255.255.255"
+                cant
+                  "Couldn't convert an IPv4 address '%s' into a 32-bit integer because %s".printf
+                    * prep.sock.address prep.sys.message
+                scope
+              prep.closed-socket prep.sd
+          prep.sys.cleanup
+      [^peer descriptor] > scoped-socket
+        peer.sock.as-input recv > as-input
+        peer.sock.as-output send > as-output
+        [^inlet size cant-receive] > recv
           if. > @
             received.code.eq -1
             cant-receive
               "Failed to receive data from the socket #%d because %s".printf
-                * ^.descriptor ^.^.sys.message
-            received.output
+                * inlet.descriptor inlet.peer.sys.message
+            received.data
           called. > received
-            ^.^.sys.raw *1
-              "recv"
-              ^.descriptor
-              size
-              0
-        [^ buffer cant-send] > send
+            inlet.peer.sys.recv inlet.descriptor size 0
+        [^outlet buffer cant-send] > send
           if. > @
-            sent.eq -1
+            eq.
+              number >> sent
+                outlet.peer.sys.send >>!
+                  outlet.descriptor
+                  buffer >> buff!
+                  buff.size
+                  0
+              -1
             cant-send
               "Failed to send a message through the socket #%d because %s".printf
-                * ^.descriptor ^.^.sys.message
+                * outlet.descriptor outlet.peer.sys.message
             sent
-          code. > sent
-            ^.^.sys.raw *1
-              "send"
-              ^.descriptor
-              buffer >> buff!
-              buff.size
-              0
-      code. > sd
-        sys.raw *1
-          "socket"
+      as-number. > sd
+        sys.socket >>!
           sys.inet
           sys.stream
           sys.tcp
       sys.sockaddr-in > sockaddr
         sys.inet.as-i16
-        ^.htons ^.checked-port
+        sock.htons sock.checked-port
         addrint
+      kernel > sys
     |
       []
         raw > @
+        win32.accept > accept
+        win32.bind > bind
         if. > cleanup
           eq.
-            code.
-              win32
-                "WSACleanup"
-                *
+            as-number.
+              win32.wsa-cleanup >>!
             win32.failure
-          T
-            "Couldn't clean up the sockets subsystem"
+          T "Couldn't clean up the sockets subsystem"
           true
-        "closesocket" > close
+        win32.closesocket > close
+        win32.connect > connect
+        win32.listen > listen
         "WSA error code %d".printf > message
-          *
-            code.
-              win32
-                "WSAGetLastError"
-                *
+          * win32.wsa-get-last-error
         win32 > raw
-        code. > startup
-          win32 *1
-            "WSAStartup"
-            win32.version
+        win32.recv > recv
+        win32.send > send
+        win32.socket > socket
+        as-number. > startup
+          win32.wsa-startup win32.version >>!
     impl
       []
         raw > @
+        posix.accept > accept
+        posix.bind > bind
         true > cleanup
-        "close" > close
-        code. > message
-          posix *1
-            "strerror"
-            code.
-              posix
-                "errno"
-                *
+        posix.close > close
+        posix.connect > connect
+        posix.listen > listen
+        posix.strerror posix.errno > message
         posix > raw
+        posix.recv > recv
+        posix.send > send
+        posix.socket > socket
         0 > startup
   [recv] > as-input
-    [^ size] > read
+    [^stream size] > read
       @. > @
         read.
           input-block --
           size
-      [^ buffer] > input-block
+      [^block buffer] > input-block
         buffer > @
-        [^ size] > read
+        [^cursor size] > read
           seq * > @
-            chunk
-            ^.^.input-block chunk
-          as-bytes. > chunk
-            ^.^.^.recv size
+            as-bytes. >> chunk
+              cursor.block.stream.recv size
+            cursor.block.input-block chunk
   [send] > as-output
-    [^ buffer] > write
+    [^sink buffer] > write
       @. > @
         output-block.write buffer
-      [^] > output-block
+      [^block] > output-block
         true > @
-        [^ buffer] > write
-          seq > @
-            * sent remainder
-          if. > remainder
-            sent.lt buffer.size
-            ^.^.output-block.write
-              buffer.slice
-                sent
-                buffer.size.minus sent
-            ^.^.output-block
-          ^.^.^.send buffer > sent
-  ^.port.is-integer.not.if > [^] > checked-port
+        [^tail buffer] > write
+          seq * > @
+            sent
+            if.
+              lt.
+                tail.block.sink.send buffer >> sent
+                buffer.size
+              tail.block.output-block.write
+                buffer.slice
+                  sent
+                  buffer.size.minus sent
+              tail.block.output-block
+  endpoint.port.is-integer.not.if > [^endpoint] > checked-port
     T
-      ^.port.is-finite.if
+      endpoint.port.is-finite.if
         "Port must be an integer in 0 to 65535, but was %f".printf
-          * ^.port
+          * endpoint.port
         "Port must be an integer in 0 to 65535, but was %s".printf
           *
-            string ^.port.as-scientific
+            string endpoint.port.as-scientific
     if.
       or.
-        ^.port.lt 0
-        ^.port.gt 65535
+        endpoint.port.lt 0
+        endpoint.port.gt 65535
       T
         "Port %d is out of range; it must be 0 to 65535".printf
-          * ^.port
-      ^.port
+          * endpoint.port
+      endpoint.port
   [scope cleanup] > guarded
     seq * > @
-      recovered value true
+      recovered
+        scope >> value!
+        true
       cleanup
       value
-    scope > value!
   [port] > htons
     as-i16. > @
       or.
         left.
-          b.and 00-FF
+          and.
+            port.as-i32.as-bytes.slice 2 2 >> b
+            00-FF
           8
         and.
           b.right 8
           00-FF
-    port.as-i32.as-bytes.slice > b
-      2
-      2
+
+  ++> can-bind-and-listen-on-an-ephemeral-loopback-port
+    os.is-windows.or > @
+      as-bool.
+        listen.
+          socket "127.0.0.1" 0
+          accepting
+    true > [client] > accepting
 
   eq. ++> can-convert-a-port-above-the-signed-short-limit-in-htons
     40-9C
@@ -322,6 +328,37 @@
       42
       true
     42
+
+  ++> can-recover-from-binding-to-an-address-of-another-host
+    os.is-windows.or > @
+      as-bool.
+        listen.
+          socket "203.0.113.7" 0
+          serving
+          unbound
+    false > [server] > serving
+    true > [message] > unbound
+
+  ++> can-recover-from-receiving-on-a-socket-that-only-listens
+    os.is-windows.or > @
+      eq.
+        listen.
+          socket "127.0.0.1" 0
+          receiving
+        6D-0E-B3
+    server.recv > [server] > receiving
+      9
+      6D-0E-B3 > [message]
+
+  ++> can-report-a-connection-nobody-accepts
+    os.is-windows.or > @
+      as-bool.
+        connect.
+          socket "127.0.0.1" 1
+          talking
+          refused
+    true > [message] > refused
+    false > [client] > talking
 
   ++> can-resend-the-remaining-bytes-after-a-short-send
     eq. > @

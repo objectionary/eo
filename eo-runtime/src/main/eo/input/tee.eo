@@ -22,22 +22,24 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^ output] > tee
-  [^ size] > read
+[^source output] > tee
+  [^tee size] > read
     read. > @
       input-block
-        ^.^
-        ^.output
+        tee.source
+        tee.output
         --
       size
-    [^ input output buffer] > input-block
+    [^op input output buffer] > input-block
       buffer > @
-      [^ size] > read
+      [^block size] > read
         seq * > @
-          written
-          ^.^.input-block chunk written chunk.as-bytes
-        ^. (^.input.read size).read > chunk
-        ^. (^.output.write chunk).write > written
+          ^. (block.output.write chunk).write >> written
+          block.op.input-block
+            chunk
+            written
+            as-bytes.
+              ^. (block.input.read size).read >> chunk
 
   eq. ++> can-read-from-bytes-and-write-to-memory
     malloc.of
@@ -72,12 +74,14 @@
         [m1]
           malloc.of > @
             5
-            seq * > [^ m2] >>
-              read.
-                tee.
-                  input ((input 01-02-03-04-05.as-input).tee m2.to-output)
-                  ^.m1.to-output
-                5
-              ^.m1.write 5 2A-
-              ^.m1
+            [^ m2] >>
+              seq * > @
+                read.
+                  tee.
+                    input (source.tee m2.to-output)
+                    ^.m1.to-output
+                  5
+                ^.m1.write 5 2A-
+                ^.m1
+              input 01-02-03-04-05.as-input > source
       01-02-03-04-05-2A

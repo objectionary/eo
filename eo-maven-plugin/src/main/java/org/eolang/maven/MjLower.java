@@ -1,0 +1,287 @@
+/*
+ * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+ * SPDX-License-Identifier: MIT
+ */
+package org.eolang.maven;
+
+import com.jcabi.log.Logger;
+import io.github.sekator778.seqdir.Seqdir;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.util.Collection;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.cactoos.Text;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.list.ListOf;
+import org.cactoos.text.Split;
+import org.cactoos.text.TextOf;
+import org.eolang.lowering.Lowering;
+import org.eolang.lowering.Scope;
+
+/**
+ * Fold the formations of a program into Java atoms.
+ *
+ * <p>A formation whose behaviour is decided at compile time pays the full
+ * cost of the object graph at runtime, for an answer the compiler could
+ * have known. Lowering computes such a formation through the external
+ * {@code phino} binary, which is the only thing here that knows the
+ * calculus, and keeps the answer as the body of a Java atom, so that the
+ * graph is never built while the program runs.</p>
+ *
+ * <p>This goal is the entry point of that pipeline. It runs after
+ * {@code render}, by which time a program has said everything
+ * the lowering needs to hear about it, and before {@code transpile}, the
+ * last moment at which the Java of a program can still be changed.</p>
+ *
+ * <p>The goal folds by default; {@code -Deo.lower.bypass=true} turns it off.
+ * When phino cannot be started on this computer, the goal prints a warning
+ * and does nothing, so the build goes on without atoms. With
+ * {@code -Deo.lower.optional=false} the goal fails the build instead.
+ * When it runs it makes sure that the binary on this machine is the one
+ * the pin names, since an answer of another version cannot be trusted,
+ * and then plants the entries of the build. It hands the lowering the
+ * XMIR of every standalone object, the directory where {@code eo:infer}
+ * left its tables, because an entry is a formation applied to what the
+ * tables say its voids hold, and one home directory, which {@code Seqdir}
+ * numbers as {@code NN-lowering}. There the lowering keeps the world, the
+ * sources with their tests cut out in {@code 1-planting}, and the protocol
+ * of every object morphed in {@code 2-protocols}. The atoms the lowering
+ * renders land in the numbered {@code atoms} directory, which this goal finds and hands to javac
+ * as a source root, and every XMIR file with an atom in the place of a body
+ * lands in the numbered {@code patched} directory, where this goal points
+ * the tojo of that object, so the transpiler reads the patched copy and every other object
+ * stays where it was. The copies stay
+ * from build to build, so only a copy listed in {@code patched.tsv}, one
+ * patched in this very build, is handed to the transpiler.</p>
+ *
+ * <p>With {@code -Deo.lower.minutes=true} the lowering also keeps the
+ * protocol of every entry as indented text, called its "minutes", in the
+ * numbered {@code minutes} directory, beside {@code 2-protocols}, so a person
+ * can read why an entry stopped where it did without any tool. The same run
+ * of phino writes both, so no entry is computed twice.</p>
+ *
+ * @since 0.64.0
+ */
+@Mojo(
+    name = "lower",
+    defaultPhase = LifecyclePhase.PROCESS_SOURCES,
+    threadSafe = true
+)
+public final class MjLower extends MjSafe {
+
+    /**
+     * Whether the goal is bypassed, lowering no formation at all.
+     */
+    @Parameter(
+        alias = "lower.bypass",
+        property = "eo.lower.bypass",
+        defaultValue = "false"
+    )
+    private boolean bypass;
+
+    /**
+     * The name or path of the phino executable.
+     */
+    @Parameter(
+        alias = "lower.binary",
+        property = "eo.lower.binary",
+        defaultValue = "phino"
+    )
+    private String binary;
+
+    /**
+     * The only version of phino that the goal accepts, which phino also
+     * gets through its {@code --pin} option.
+     */
+    @Parameter(
+        alias = "lower.pin",
+        property = "eo.lower.pin",
+        defaultValue = "0.0.165"
+    )
+    private String pin;
+
+    /**
+     * Whether the goal skips, instead of failing the build, when phino
+     * cannot be started on this computer.
+     */
+    @Parameter(
+        alias = "lower.optional",
+        property = "eo.lower.optional",
+        defaultValue = "true"
+    )
+    private boolean optional;
+
+    /**
+     * The seconds one run of phino may take on one entry, after which it
+     * stops itself and closes the protocol with a {@code timeout} element.
+     * Nothing kills phino, so the protocol of an entry that ran out of
+     * time is whole and can be read.
+     */
+    @Parameter(
+        alias = "lower.budget",
+        property = "eo.lower.budget",
+        defaultValue = "10"
+    )
+    private int budget;
+
+    /**
+     * The largest number of steps inside one another that one run of phino
+     * on one entry may take.
+     */
+    @Parameter(
+        alias = "lower.steps",
+        property = "eo.lower.steps",
+        defaultValue = "32"
+    )
+    private int steps;
+
+    /**
+     * How many times one run of phino may enter the same formation again,
+     * with other data, before it decides that the run loops and cuts it.
+     */
+    @Parameter(
+        alias = "lower.loops",
+        property = "eo.lower.loops",
+        defaultValue = "2"
+    )
+    private int loops;
+
+    /**
+     * The largest memory one run of phino may take, such as {@code 4G} or
+     * {@code 512M}, after which phino stops itself and closes the protocol
+     * with a {@code blown} element. The default {@code 0} means no limit,
+     * because a run of phino on a computer with plenty of memory needs
+     * none.
+     */
+    @Parameter(
+        alias = "lower.memory",
+        property = "eo.lower.memory",
+        defaultValue = "0"
+    )
+    private String memory;
+
+    /**
+     * Whether the lowering keeps the minutes of every entry too, which are
+     * its protocol as indented text, beside the XML one.
+     */
+    @Parameter(
+        alias = "lower.minutes",
+        property = "eo.lower.minutes",
+        defaultValue = "false"
+    )
+    private boolean minutes;
+
+    /**
+     * The regular expression that the whole locator of an entry, such as
+     * {@code Φ.string.printf}, must match for phino to run on it.
+     */
+    @Parameter(
+        alias = "lower.only",
+        property = "eo.lower.only",
+        defaultValue = ".*"
+    )
+    private String only;
+
+    /**
+     * The regular expression that the whole locator of an entry must not
+     * match for phino to run on it. By default it matches nothing.
+     */
+    @Parameter(
+        alias = "lower.never",
+        property = "eo.lower.never",
+        defaultValue = "(?!)"
+    )
+    private String never;
+
+    /**
+     * The directory with the tables of {@code eo:infer}. When it is not
+     * set, the goal uses the directory that {@code Seqdir} gives to the name
+     * "inference", which is where {@code eo:infer} saves the tables.
+     */
+    @Parameter(alias = "lower.tables", property = "eo.lower.tables")
+    private File tables;
+
+    /**
+     * Ctor.
+     */
+    public MjLower() {
+        // nothing
+    }
+
+    @Override
+    void exec() throws IOException {
+        if (this.bypass) {
+            Logger.info(
+                this,
+                "Lowering is bypassed with -Deo.lower.bypass=true"
+            );
+        } else {
+            final Path home = new Seqdir(this.target.toPath(), 2)
+                .dirs().once("lowering").toAbsolutePath();
+            final Path inference;
+            if (this.tables == null) {
+                inference = new Seqdir(this.target.toPath(), 2).dirs().once("inference");
+            } else {
+                inference = this.tables.toPath();
+            }
+            try (TjsForeign tojos = this.tojos()) {
+                final Lowering pipeline = new Lowering(
+                    new ListOf<>(new Mapped<>(TjForeign::xmir, tojos.standalone())),
+                    inference,
+                    home,
+                    this.binary,
+                    this.pin,
+                    this.memory,
+                    this.caching("lowered"),
+                    new Scope(this.only, this.never),
+                    this.steps,
+                    this.loops,
+                    Duration.ofSeconds(this.budget),
+                    this.minutes
+                );
+                if (this.optional && !pipeline.available()) {
+                    Logger.warn(
+                        this,
+                        "Lowering is skipped, since phino '%s' cannot be started, set -Deo.lower.optional=false to fail instead",
+                        this.binary
+                    );
+                } else {
+                    pipeline.exec();
+                    final Path atoms = new Seqdir(home, 1).dirs().find("atoms").orElseThrow(
+                        () -> new IllegalStateException(
+                            String.format(
+                                "There are no atoms in '%s', while the lowering always makes them",
+                                home
+                            )
+                        )
+                    );
+                    MjLower.repoint(tojos, home);
+                    this.project.addCompileSourceRoot(atoms.toString());
+                    Logger.info(
+                        this, "The directory added to Maven 'compile-source-root': %[file]s", atoms
+                    );
+                }
+            }
+        }
+    }
+
+    private static void repoint(final TjsForeign tojos, final Path home) throws IOException {
+        final Path patched = new Seqdir(home, 1).dirs().find("patched").orElseThrow();
+        final Collection<String> fresh = new ListOf<>(
+            new Mapped<>(
+                Text::asString,
+                new Split(new TextOf(home.resolve("patched.tsv")), "\\R")
+            )
+        );
+        for (final TjForeign tojo : tojos.standalone()) {
+            final String name = tojo.xmir().getFileName().toString();
+            if (fresh.contains(name)) {
+                tojo.withXmir(patched.resolve(name));
+            }
+        }
+    }
+}

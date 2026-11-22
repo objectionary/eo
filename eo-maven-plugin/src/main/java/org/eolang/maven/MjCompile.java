@@ -4,6 +4,7 @@
  */
 package org.eolang.maven;
 
+import io.github.sekator778.seqdir.Seqdir;
 import java.io.IOException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -18,11 +19,17 @@ import org.apache.maven.plugins.annotations.Mojo;
  * the need to call each goal separately.</p>
  *
  * <p>The merge happens right after the lint, so that every goal between this
- * one and {@link MjTranspile}, such as {@link MjInference}, reads the object
- * in the shape it will be compiled in and not in the shape
- * the parser left. A project therefore never has to name {@code merge}
- * between them, and naming it changes nothing: a member already inside its
- * object is not moved again.</p>
+ * one and {@link MjTranspile} that reads an object through its tojo, such as
+ * {@link MjDealpha} and {@link MjLower}, reads it in the shape it will be
+ * compiled in and not in the shape the parser left. A project therefore
+ * never has to name {@code merge} between them, and naming it changes
+ * nothing: a member already inside its object is not moved again.</p>
+ *
+ * <p>{@link MjInfer} reads the files the parser wrote, one per source,
+ * and not the merged ones, for the reasons its own documentation gives. Its
+ * tables still fit the merged objects: the parser gives every object the
+ * locator it will carry once it is inside its package object, and the merge
+ * moves none of them.</p>
  *
  * @since 0.52
  */
@@ -47,54 +54,44 @@ public final class MjCompile extends MjSafe {
             TjsForeign compile = this.compileTojos();
             TjsPlaced placed = this.placed()
         ) {
-            new Timed(
-                new Compiling(
-                    new Timed(this.assembling(tojos)),
-                    new Timed(
-                        new Linting(
-                            tojos,
-                            compile,
-                            this.targetDir.toPath(),
-                            this.cache.toPath(),
-                            this.cacheEnabled,
-                            this.plugin.getVersion(),
-                            this.skipSourceLints,
-                            this.skipProgramLints,
-                            this.skipExperimental,
-                            this.failOnWarning,
-                            this.lintAsPackage,
-                            this.skipLinting
-                        )
-                    ),
-                    new Timed(
-                        new Merging(
-                            tojos,
-                            this.targetDir.toPath().resolve(Merging.DIR)
-                        )
-                    ),
-                    new Timed(
-                        new Resolving(
-                            tojos,
-                            this.targetDir.toPath().resolve(MjResolve.DIR),
-                            new CentralMaven(this.system, this.session, this.repositories),
-                            this.discoverSelf,
-                            this.skipZeroVersions,
-                            this.resolveJna,
-                            this.ignoreRuntime,
-                            this.runtime(),
-                            this.ignoreConflicts
-                        )
-                    ),
-                    new Timed(
-                        new Placing(
-                            placed,
-                            this.targetDir.toPath().resolve(MjResolve.DIR),
-                            this.classesDir.toPath(),
-                            this.placeBinaries,
-                            this.skipBinaries,
-                            this.rewriteBinaries
-                        )
-                    )
+            new Compiling(
+                this.assembling(tojos),
+                new Linting(
+                    tojos,
+                    compile,
+                    this.target.toPath(),
+                    this.cache.toPath(),
+                    !this.uncached,
+                    this.plugin.getVersion(),
+                    this.skipSourceLints,
+                    this.skipProgramLints,
+                    this.experimental,
+                    this.failOnWarning,
+                    this.lintAsPackage,
+                    this.skipLinting
+                ),
+                new Merging(
+                    tojos,
+                    this.target.toPath()
+                ),
+                new Resolving(
+                    tojos,
+                    this.target.toPath(),
+                    new CentralMaven(this.system, this.session, this.repositories),
+                    this.discover,
+                    this.zeros,
+                    this.jna,
+                    this.ignoreRuntime,
+                    this.runtime(),
+                    this.conflicts
+                ),
+                new Placing(
+                    placed,
+                    new Seqdir(this.target.toPath(), 2).dirs().once("resolve"),
+                    this.classes.toPath(),
+                    this.placeBinaries,
+                    this.skipBinaries,
+                    !this.preserved
                 )
             ).exec();
         }

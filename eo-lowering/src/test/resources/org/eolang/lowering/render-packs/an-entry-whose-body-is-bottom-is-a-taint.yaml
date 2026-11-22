@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# phino reduced the body of the entry to ⊥ before it computed anything, so
+# the run stopped right after it took the "φ" of the entry.
+locator: Φ.wide.as-number
+number: 11
+taint: The body of the entry 11 reduced to ⊥ before phino computed anything
+eo:
+  wide.eo: |
+    [as-bytes] > wide
+      as-bytes.size > as-number
+protocol: |
+  <protocol>
+    <dataize at="Φ.l🌵.e11">
+      <morph at="Φ.l🌵.e11">
+        <morphed meta="𝑛·0·1">Φ.l🌵.e11</morphed>
+      </morph>
+      <boxed meta="𝑛·0·2">Φ.l🌵.e11.φ</boxed>
+      <unanswered λ="⊥" by="dataize">⊥</unanswered>
+    </dataize>
+    <msec>225</msec>
+    <firings>0</firings>
+    <fps>0</fps>
+  </protocol>

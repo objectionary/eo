@@ -9,9 +9,16 @@ import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
@@ -24,66 +31,143 @@ final class ReportTest {
 
     @Test
     void writesAPageForEverySourceFile(@Mktmp final Path temp) throws IOException {
+        new Report(ReportTest.program(temp), ReportTest.answers(temp)).written(temp.resolve("out"));
         MatcherAssert.assertThat(
             "every file of the program must get a page of its own, but it didnt",
-            new Report(ReportTest.program(temp), ReportTest.tables(temp))
-                .written(temp.resolve("out")),
-            Matchers.equalTo(1)
+            Files.exists(temp.resolve("out/cup.eo.html")),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void keepsFilesItDidNotWrite(@Mktmp final Path temp) throws IOException {
+        final Path out = temp.resolve("out");
+        Files.createDirectories(out);
+        Files.write(out.resolve("notes.txt"), new byte[] {1});
+        new Report(ReportTest.program(temp), ReportTest.answers(temp)).written(out);
+        MatcherAssert.assertThat(
+            "A file the report did not write must stay in its directory, but it was deleted",
+            Files.exists(out.resolve("notes.txt")),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void removesPageOfSourceThatIsGone(@Mktmp final Path temp) throws IOException {
+        final Path out = temp.resolve("out");
+        Files.createDirectories(out);
+        Files.write(out.resolve("gone.eo.html"), new byte[] {1});
+        new Report(ReportTest.program(temp), ReportTest.answers(temp)).written(out);
+        MatcherAssert.assertThat(
+            "A page of an earlier run must go, but it stayed",
+            Files.exists(out.resolve("gone.eo.html")),
+            Matchers.is(false)
         );
     }
 
     @Test
     void writesAPageAnyBrowserCanOpen(@Mktmp final Path temp) throws IOException {
-        new Report(ReportTest.program(temp), ReportTest.tables(temp))
-            .written(temp.resolve("out"));
+        new Report(ReportTest.program(temp), ReportTest.answers(temp)).written(temp.resolve("out"));
         MatcherAssert.assertThat(
             "a page must say what it is before anything else, but it didnt",
-            Files.readString(temp.resolve("out").resolve("cup.eo.html")),
-            Matchers.startsWithIgnoringCase("<!DOCTYPE html")
+            Files.readString(temp.resolve("out/cup.eo.html")),
+            Matchers.startsWith("<!DOCTYPE HTML><html lang=\"en\"><head><meta charset=\"utf-8\">")
+        );
+    }
+
+    @Test
+    void putsNoContentTypeIntoTheHead(@Mktmp final Path temp) throws IOException {
+        new Report(ReportTest.program(temp), ReportTest.answers(temp)).written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "a page must carry no Content-Type meta, which the Python report leaves out, but it did",
+            Files.readString(temp.resolve("out/cup.eo.html")),
+            Matchers.not(Matchers.containsString("Content-Type"))
+        );
+    }
+
+    @Test
+    void endsAPageWithALineFeed(@Mktmp final Path temp) throws IOException {
+        new Report(ReportTest.program(temp), ReportTest.answers(temp)).written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "a page must end with a line feed, as the Python report ends it, but it didnt",
+            Files.readString(temp.resolve("out/cup.eo.html")),
+            Matchers.endsWith("</html>".concat(String.valueOf('\n')))
         );
     }
 
     @Test
     void marksTheSourceAsItsAuthorWroteIt(@Mktmp final Path temp) throws IOException {
-        new Report(ReportTest.program(temp), ReportTest.tables(temp))
-            .written(temp.resolve("out"));
+        new Report(ReportTest.program(temp), ReportTest.answers(temp)).written(temp.resolve("out"));
         MatcherAssert.assertThat(
-            "the page must show the name the author wrote, but it didnt",
-            Files.readString(temp.resolve("out").resolve("cup.eo.html")),
-            Matchers.containsString("lid")
+            "the name the author wrote must be marked green, but it wasnt",
+            Files.readString(temp.resolve("out/cup.eo.html")),
+            Matchers.containsString("<span class=\"mark named\" data-band=\"named\">lid<span")
         );
     }
 
     @Test
-    void countsTheVoidsAnAtomFillsApart(@Mktmp final Path temp) throws IOException {
-        new Report(ReportTest.program(temp), ReportTest.tables(temp))
+    void saysUnderTheNameOfAFormationOnlyStudiedThatNobodyCallsIt(@Mktmp final Path temp)
+        throws IOException {
+        Files.writeString(
+            temp.resolve("answers.xml"),
+            String.join(
+                "",
+                "<answers><o loc='Φ.cup' copies='1'><is loc='Φ.cup'/></o>",
+                "<o loc='Φ.cup.lid' copies='1' study='1'><is loc='Φ.cup.lid'/></o></answers>"
+            )
+        );
+        new Report(ReportTest.program(temp), temp.resolve("answers.xml"))
             .written(temp.resolve("out"));
         MatcherAssert.assertThat(
-            "the tally must count the voids an atom fills apart from the rest, but it didnt",
-            Files.readString(temp.resolve("out").resolve("cup.eo.html")),
-            Matchers.containsString("filled by an atom")
+            "the name of a formation only studied must say that nobody calls it, but it didnt",
+            Files.readString(temp.resolve("out/cup.eo.html")),
+            Matchers.containsString(
+                String.join(
+                    "",
+                    "<code>Φ.cup.lid</code></span>",
+                    "<span class=\"said\">studied: nobody calls this object</span></span>"
+                )
+            )
         );
     }
 
     @Test
-    void countsTheVoidsNobodyFillsApart(@Mktmp final Path temp) throws IOException {
-        new Report(ReportTest.program(temp), ReportTest.tables(temp))
+    void saysHowManyCopiesOfAFormationAreStudyCopiesWhenNotAll(@Mktmp final Path temp)
+        throws IOException {
+        Files.writeString(
+            temp.resolve("answers.xml"),
+            String.join(
+                "",
+                "<answers><o loc='Φ.cup' copies='4'><is loc='Φ.cup'/></o>",
+                "<o loc='Φ.cup.lid' copies='7' study='3'><is loc='Φ.cup.lid'/></o></answers>"
+            )
+        );
+        new Report(ReportTest.program(temp), temp.resolve("answers.xml"))
             .written(temp.resolve("out"));
         MatcherAssert.assertThat(
-            "the tally must count the voids nobody fills apart from the rest, but it didnt",
-            Files.readString(temp.resolve("out").resolve("cup.eo.html")),
-            Matchers.containsString("filled by nobody")
+            "the note on a formation partly studied must count its study copies, but it didnt",
+            Files.readString(temp.resolve("out/cup.eo.html")),
+            Matchers.containsString("studied: nobody calls this object (3 of 7 copies)</span>")
+        );
+    }
+
+    @Test
+    void keepsFiveLinesAroundEveryMarkOfAPickedColour(@Mktmp final Path temp) throws IOException {
+        new Report(ReportTest.program(temp), ReportTest.answers(temp)).written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "a page must keep five lines around every mark of a picked colour, but it didnt",
+            Files.readString(temp.resolve("out/cup.eo.html")),
+            Matchers.containsString("var around = 5;")
         );
     }
 
     @Test
     void listsEveryPageOnTheIndex(@Mktmp final Path temp) throws IOException {
-        new Report(ReportTest.program(temp), ReportTest.tables(temp))
-            .written(temp.resolve("out"));
+        new Report(ReportTest.program(temp), ReportTest.answers(temp)).written(temp.resolve("out"));
         MatcherAssert.assertThat(
             "the index must lead to the page of every file, but it didnt",
-            Files.readString(temp.resolve("out").resolve("index.html")),
-            Matchers.containsString("cup.eo.html")
+            Files.readString(temp.resolve("out/index.html")),
+            Matchers.containsString("<a href=\"cup.eo.html\">cup.eo</a>")
         );
     }
 
@@ -94,47 +178,126 @@ final class ReportTest {
             xmirs.resolve("cup.xmir"),
             Files.createDirectories(xmirs.resolve("deep")).resolve("cup.xmir")
         );
-        new Report(xmirs, ReportTest.tables(temp)).written(temp.resolve("out"));
+        new Report(xmirs, ReportTest.answers(temp)).written(temp.resolve("out"));
         MatcherAssert.assertThat(
             "a nested page must be linked with URL separators, but it wasnt",
-            Files.readString(temp.resolve("out").resolve("index.html")),
-            Matchers.containsString("deep/cup.eo.html")
+            Files.readString(temp.resolve("out/index.html")),
+            Matchers.containsString("<a href=\"deep/cup.eo.html\">cup.eo</a>")
         );
     }
 
     @Test
     void writesAnIndexForAnEmptyProgram(@Mktmp final Path temp) throws IOException {
-        final Path xmirs = Files.createDirectories(temp.resolve("xmirs"));
-        final Path tables = temp.resolve("tables");
-        new Resolved(new Clues()).follow(xmirs, tables);
-        new Report(xmirs, tables).written(temp.resolve("out"));
+        new Report(
+            Files.createDirectories(temp.resolve("xmirs")), ReportTest.answers(temp)
+        ).written(temp.resolve("out"));
         MatcherAssert.assertThat(
-            "the index must be written even when there are no source pages",
-            Files.exists(temp.resolve("out").resolve("index.html")),
-            Matchers.equalTo(true)
+            "the index must be written even when there are no source pages, but it wasnt",
+            Files.exists(temp.resolve("out/index.html")),
+            Matchers.is(true)
         );
     }
 
     @Test
     void ignoresADirectoryNamedLikeAnXmirFile(@Mktmp final Path temp) throws IOException {
-        final Path program = ReportTest.program(temp);
-        final Path tables = ReportTest.tables(temp);
-        Files.createDirectories(program.resolve("stale.xmir"));
+        final Path xmirs = ReportTest.program(temp);
+        Files.createDirectories(xmirs.resolve("stale.xmir"));
+        new Report(xmirs, ReportTest.answers(temp)).written(temp.resolve("out"));
         MatcherAssert.assertThat(
             "a folder whose name ends with .xmir must not become a page, but it did",
-            new Report(program, tables).written(temp.resolve("out")),
-            Matchers.equalTo(1)
+            Files.exists(temp.resolve("out/stale.eo.html")),
+            Matchers.is(false)
         );
     }
 
     @Test
-    void saysNothingOfTheBytesOfALiteral(@Mktmp final Path temp) throws IOException {
-        new Report(ReportTest.literal(temp), ReportTest.tables(temp))
+    void wipesThePagesOfAnEarlierRun(@Mktmp final Path temp) throws IOException {
+        final Path old = Files.createDirectories(temp.resolve("out/gone")).resolve("pot.eo.html");
+        Files.writeString(old, "<html/>");
+        new Report(ReportTest.program(temp), ReportTest.answers(temp)).written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "the page of a source that is gone must go with it, but it stayed",
+            Files.exists(old),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
+    void talliesTheObjectsOfTheProgramByBand(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "the tally must count both objects of the program as named, but it didnt",
+            new Report(ReportTest.program(temp), ReportTest.answers(temp))
+                .written(temp.resolve("out")),
+            Matchers.hasEntry("named", 2)
+        );
+    }
+
+    @Test
+    void printsAHiddenFormationByTheNameItsAuthorGaveIt(@Mktmp final Path temp)
+        throws IOException {
+        new Report(ReportTest.helper(temp, " local='spout'"), ReportTest.poured(temp))
             .written(temp.resolve("out"));
         MatcherAssert.assertThat(
-            "the page must not name the bytes of a literal after the literal, but it did",
-            Files.readString(temp.resolve("out").resolve("cup.eo.html")),
-            Matchers.not(Matchers.containsString("Φ.cup.lid.α0"))
+            "a hidden formation must be printed by the name its author gave it, but it wasnt",
+            Files.readString(temp.resolve("out/jug.eo.html")),
+            Matchers.containsString(
+                String.join(
+                    "",
+                    "<code><span class=\"nm\" title=\"Φ.jug.a🌵2-2.lip\">Φ.jug.",
+                    "<span class=\"hid\" title=\"a🌵2-2\">spout</span>.lip</span></code>"
+                )
+            )
+        );
+    }
+
+    @Test
+    void drawsTheNameAnAuthorGaveInGreyItalics(@Mktmp final Path temp) throws IOException {
+        new Report(ReportTest.helper(temp, " local='spout'"), ReportTest.poured(temp))
+            .written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "a name the author gave a hidden formation must be grey and italic, but it wasnt",
+            Files.readString(temp.resolve("out/jug.eo.html")),
+            Matchers.containsString(".hid { color: #888; font-style: italic; }")
+        );
+    }
+
+    @Test
+    void keepsTheMadeNameOfAFormationItsAuthorDidntName(@Mktmp final Path temp)
+        throws IOException {
+        new Report(ReportTest.helper(temp, ""), ReportTest.poured(temp))
+            .written(temp.resolve("out"));
+        MatcherAssert.assertThat(
+            "a formation its author didnt name must keep the name the parser made, but it didnt",
+            Files.readString(temp.resolve("out/jug.eo.html")),
+            Matchers.containsString("<code>Φ.jug.a🌵2-2.lip</code>")
+        );
+    }
+
+    /**
+     * Draws the pages of a whole run, the prepared XMIR in the folder that the
+     * system property {@code report.xmirs} names and the table in the file
+     * {@code report.answers} names, and compares them byte for byte with the
+     * pages the Python report drew of the same run, in the folder
+     * {@code report.html} names. Skipped when the properties are not set:
+     * <pre>mvn test -pl eo-inference -Dtest=ReportTest \
+     *   -Dreport.xmirs=pre -Dreport.answers=answers.xml -Dreport.html=html</pre>
+     *
+     * @param temp Temporary folder
+     * @throws IOException If a file cannot be read or written
+     */
+    @Test
+    @EnabledIfSystemProperty(named = "report.xmirs", matches = ".+")
+    void drawsTheBytesThePythonReportDraws(@Mktmp final Path temp) throws IOException {
+        new Report(
+            Paths.get(System.getProperty("report.xmirs")),
+            Paths.get(System.getProperty("report.answers"))
+        ).written(temp.resolve("html"));
+        MatcherAssert.assertThat(
+            "the pages of the run must be the bytes the Python report drew, but these arent",
+            ReportTest.differing(
+                temp.resolve("html"), Paths.get(System.getProperty("report.html"))
+            ),
+            Matchers.empty()
         );
     }
 
@@ -143,11 +306,7 @@ final class ReportTest {
             Files.createDirectories(temp.resolve("xmirs")).resolve("cup.xmir"),
             String.join(
                 "",
-                "<object><listing>",
-                String.join(
-                    System.lineSeparator(), "[] &gt; cup", "  [] &gt; lid", ""
-                ),
-                "</listing>",
+                "<object><listing>[] &gt; cup&#10;  [] &gt; lid&#10;</listing>",
                 "<o line='1' loc='Φ.cup' name='cup' pos='0'>",
                 "<o line='2' loc='Φ.cup.lid' name='lid' pos='2'/></o></object>"
             )
@@ -155,27 +314,65 @@ final class ReportTest {
         return temp.resolve("xmirs");
     }
 
-    private static Path literal(final Path temp) throws IOException {
+    private static Path answers(final Path temp) throws IOException {
         Files.writeString(
-            Files.createDirectories(temp.resolve("xmirs")).resolve("cup.xmir"),
+            temp.resolve("answers.xml"),
             String.join(
                 "",
-                "<object><listing>",
-                String.join(
-                    System.lineSeparator(), "[] &gt; cup", "  cup 42 &gt; lid", ""
-                ),
-                "</listing>",
-                "<o line='1' loc='Φ.cup' name='cup' pos='0'>",
-                "<o base='Φ.cup' line='2' loc='Φ.cup.lid' name='lid' pos='2'>",
-                "<o as='α0' line='2' loc='Φ.cup.lid.α0' pos='6'>2A-</o>",
-                "</o></o></object>"
+                "<answers><o loc='Φ.cup' copies='1'><is loc='Φ.cup'/></o>",
+                "<o loc='Φ.cup.lid' copies='1'><is loc='Φ.cup.lid'/></o></answers>"
+            )
+        );
+        return temp.resolve("answers.xml");
+    }
+
+    private static Path helper(final Path temp, final String local) throws IOException {
+        Files.writeString(
+            Files.createDirectories(temp.resolve("xmirs")).resolve("jug.xmir"),
+            String.join(
+                "",
+                "<object><listing>[] &gt; jug&#10;  [] &gt;&gt; spout&#10;    [] &gt; lip&#10;",
+                "</listing><o line='1' loc='Φ.jug' name='jug' pos='0'>",
+                "<o line='2' loc='Φ.jug.a🌵2-2'", local, " name='a🌵2-2' pos='2'>",
+                "<o line='3' loc='Φ.jug.a🌵2-2.lip' name='lip' pos='4'/></o></o></object>"
             )
         );
         return temp.resolve("xmirs");
     }
 
-    private static Path tables(final Path temp) throws IOException {
-        new Resolved(new Clues()).follow(temp.resolve("xmirs"), temp.resolve("tables"));
-        return temp.resolve("tables");
+    private static Path poured(final Path temp) throws IOException {
+        Files.writeString(
+            temp.resolve("answers.xml"),
+            String.join(
+                "",
+                "<answers><o loc='Φ.jug' copies='1'><is loc='Φ.jug'/></o>",
+                "<o loc='Φ.jug.a🌵2-2' copies='1'><is loc='Φ.jug.a🌵2-2'/></o>",
+                "<o loc='Φ.jug.a🌵2-2.lip' copies='1'><is loc='Φ.jug.a🌵2-2.lip'/></o></answers>"
+            )
+        );
+        return temp.resolve("answers.xml");
+    }
+
+    private static Set<String> differing(final Path made, final Path drawn) throws IOException {
+        final Set<String> all = new TreeSet<>(ReportTest.files(made));
+        all.addAll(ReportTest.files(drawn));
+        final Set<String> found = new TreeSet<>();
+        for (final String file : all) {
+            if (!Files.exists(made.resolve(file)) || !Files.exists(drawn.resolve(file))
+                || !Arrays.equals(
+                    Files.readAllBytes(made.resolve(file)), Files.readAllBytes(drawn.resolve(file))
+                )) {
+                found.add(file);
+            }
+        }
+        return found;
+    }
+
+    private static Set<String> files(final Path dir) throws IOException {
+        try (Stream<Path> walked = Files.walk(dir)) {
+            return walked.filter(Files::isRegularFile)
+                .map(path -> dir.relativize(path).toString())
+                .collect(Collectors.toSet());
+        }
     }
 }

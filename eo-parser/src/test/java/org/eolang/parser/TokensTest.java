@@ -4,10 +4,14 @@
  */
 package org.eolang.parser;
 
+import java.util.List;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test case for {@link Tokens}.
@@ -15,6 +19,36 @@ import org.junit.jupiter.api.Test;
  * @since 0.1
  */
 final class TokensTest {
+
+    @ParameterizedTest
+    @ValueSource(
+        strings = {
+            "f (g a\"b) > x",
+            "* a\"b > x",
+            "f (a\"b > []) > x",
+            "f (g \"a(b)\") > x"
+        }
+    )
+    void distinguishesNamesFromStringLiterals(final String expression) throws Exception {
+        MatcherAssert.assertThat(
+            "a quote inside a name must not start a string, while real strings keep their parentheses",
+            new EoSyntax(
+                String.format("+package foo%n%n[] > foo%n  %s%n  x > @%n", expression)
+            ).parsed().xpath("/object/errors/error/text()"),
+            Matchers.empty()
+        );
+    }
+
+    @Test
+    void reportsRedundantParentheses() throws Exception {
+        MatcherAssert.assertThat(
+            "a grouped name must report redundant parentheses instead of an unterminated string",
+            new EoSyntax(
+                String.format("+package foo%n%n[] > foo%n  f (a\"b) > x%n  x > @%n")
+            ).parsed().xpath("/object/errors/error/text()"),
+            Matchers.hasItem(Matchers.containsString("redundant parentheses"))
+        );
+    }
 
     @Test
     void readsIdentifierWithHyphen() {
@@ -62,6 +96,42 @@ final class TokensTest {
     }
 
     @Test
+    void rejectsUnsignedDigitRunGluedToALetter() {
+        MatcherAssert.assertThat(
+            "readInt must not take an unsigned digit run glued to a letter for a number",
+            Assertions.assertThrows(
+                ParseError.class,
+                new Tokens("1foo", new Span("1foo", 1))::readInt
+            ).getMessage(),
+            Matchers.containsString("invalid number literal")
+        );
+    }
+
+    @Test
+    void hintsAtADotWhenADigitRunIsGluedToAnExponent() {
+        MatcherAssert.assertThat(
+            "readInt must tell that a float needs a dot before its exponent",
+            Assertions.assertThrows(
+                ParseError.class,
+                new Tokens("1e5", new Span("1e5", 1))::readInt
+            ).getMessage(),
+            Matchers.containsString("a float needs a dot before the exponent, as in 1.0e5")
+        );
+    }
+
+    @Test
+    void rejectsAFloatWhoseExponentHasNoDigits() {
+        MatcherAssert.assertThat(
+            "readNumber must blame the number itself when the exponent is empty",
+            Assertions.assertThrows(
+                ParseError.class,
+                new Tokens("1.5e", new Span("1.5e", 1))::readNumber
+            ).getMessage(),
+            Matchers.containsString("invalid number literal")
+        );
+    }
+
+    @Test
     void readsStarValue() {
         MatcherAssert.assertThat(
             "readValue must recognise the `*` star token",
@@ -78,6 +148,22 @@ final class TokensTest {
             "readChain must produce one MethodChain per .NAME segment after the head",
             tokens.readChain(),
             Matchers.hasSize(2)
+        );
+    }
+
+    @ParameterizedTest
+    @CsvSource({"., 7, false", "?., 8, true"})
+    void preservesDispatchPositionAndFragility(
+        final String operator, final int column, final boolean fragile
+    ) {
+        final Span span = new Span(String.format("    foo%sbar", operator), 1);
+        final Tokens tokens = new Tokens(span.body(), span);
+        tokens.readName();
+        final MethodChain link = tokens.readChain().get(0);
+        MatcherAssert.assertThat(
+            "The dispatch link lost its method, dot position, or fragile flag",
+            List.of(link.name(), link.dot(), link.fragile()),
+            Matchers.equalTo(List.of("bar", column, fragile))
         );
     }
 
@@ -246,6 +332,24 @@ final class TokensTest {
             "a signed FLOAT must round-trip the sign in raw()",
             new Tokens("-2.4E3", new Span("-2.4E3", 1)).readNumber().raw(),
             Matchers.equalTo("-2.4E3")
+        );
+    }
+
+    @Test
+    void readsFloatWhoseIntegerPartLeadsWithZero() {
+        MatcherAssert.assertThat(
+            "R-9.8.2 asks nothing of the integer part of a FLOAT, so `00.5` must read whole",
+            new Tokens("00.5", new Span("00.5", 1)).readNumber().raw(),
+            Matchers.equalTo("00.5")
+        );
+    }
+
+    @Test
+    void readsSignedFloatWhoseIntegerPartLeadsWithZeros() {
+        MatcherAssert.assertThat(
+            "a sign and an exponent cannot turn a leading zero into an INT error, but they did",
+            new Tokens("-007.25e2", new Span("-007.25e2", 1)).readNumber().raw(),
+            Matchers.equalTo("-007.25e2")
         );
     }
 
@@ -483,6 +587,24 @@ final class TokensTest {
             ParseError.class,
             () -> new Tokens("0x", new Span("0x", 1)).readHex(),
             "a `0x` with no following hex digits must be rejected"
+        );
+    }
+
+    @Test
+    void rejectsHexWithFullwidthLetters() {
+        Assertions.assertThrows(
+            ParseError.class,
+            new Tokens("0xＦＦ", new Span("0xＦＦ", 1))::readHex,
+            "a HEX literal spelled with fullwidth letters must be rejected"
+        );
+    }
+
+    @Test
+    void rejectsHexWithFullwidthDigits() {
+        Assertions.assertThrows(
+            ParseError.class,
+            new Tokens("0x１２", new Span("0x１２", 1))::readHex,
+            "a HEX literal spelled with fullwidth digits must be rejected"
         );
     }
 

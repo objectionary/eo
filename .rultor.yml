@@ -27,4 +27,6 @@ release:
     sed -i "s/npm install -g eolang@[0-9]\+\.[0-9]\+\.[0-9]\+/npm install -g eolang@${tag}/g" README.md
     git commit -am "${tag}"
     mvn clean install -ntp -DskipTests -DskipITs -Dinvoker.skip
+    # The "objectionary" profile lives in ../settings.xml, not in any pom.xml:
+    # it sets gpg.keyname, which turns on GPG signing in com.jcabi:parent.
     mvn clean deploy -ntp -DskipTests -DskipITs -Dinvoker.skip -Pobjectionary -Psonatype --errors --settings ../settings.xml -Dstyle.color=never

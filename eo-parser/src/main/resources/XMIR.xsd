@@ -84,25 +84,30 @@
     <xs:annotation>
       <xs:appinfo>An atom return-type signature</xs:appinfo>
       <xs:documentation>
-        The declared return type of an atom: a fully qualified name (fqn) of a concrete
-        forma, or a single-letter generic type variable A-F (universally quantified over
-        the atom). Used on the lambda marker (name="λ").
+        The declared return type of an atom, as one string with no spaces. A type is a
+        name or a tree of names: a fully qualified name (fqn) of a concrete forma, or a
+        single-letter generic type variable A-F (universally quantified over the atom);
+        a name may take a bracket list of types for the voids of the object it names,
+        separated by commas, as in "Φ.posix.status-return(Φ.number,Φ.string)". A type
+        variable takes no brackets, and no type is a union, so a "|" is rejected. The
+        pattern checks the shape of the names and of the glyphs between them; the parser
+        alone checks that the brackets balance. Used on the lambda marker (name="λ").
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="[A-F]|⊥|∅|\.(ρ|φ|[a-z][^\s.]*|α[0-9]*)|([Φξ])(\.(ρ|φ|[a-z][^\s.]*|α[0-9]*))*|[a-z][^\s.]*(\.[a-z][^\s.]*)*"/>
+      <xs:pattern value="([A-F]|⊥|∅|\.(ρ|φ|[a-z][^\s.(),|?]*|α[0-9]*)|[Φξ](\.(ρ|φ|[a-z][^\s.(),|?]*|α[0-9]*))*|[a-z][^\s.(),|?]*(\.[a-z][^\s.(),|?]*)*)(([(,]|\)+,)([A-F]|⊥|∅|\.(ρ|φ|[a-z][^\s.(),|?]*|α[0-9]*)|[Φξ](\.(ρ|φ|[a-z][^\s.(),|?]*|α[0-9]*))*|[a-z][^\s.(),|?]*(\.[a-z][^\s.(),|?]*)*))*\)*"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="type-anno">
     <xs:annotation>
       <xs:appinfo>A void attribute type annotation</xs:appinfo>
       <xs:documentation>
-        The declared type of a void attribute of an atom: a concrete forma or a generic
-        type variable A-F, with an optional trailing "?" marking a maybe-⊥ value.
+        The declared type of a void attribute of an atom: a type as in "signature", with
+        an optional trailing "?" marking a maybe-⊥ value, as in "Φ.pair(Φ.number,Φ.string)?".
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:string">
-      <xs:pattern value="([A-F]|⊥|∅|([Φξ])(\.(ρ|φ|[a-z][^\s.]*|α[0-9]*))*)[?]?"/>
+      <xs:pattern value="(([A-F]|⊥|∅|\.(ρ|φ|[a-z][^\s.(),|?]*|α[0-9]*)|[Φξ](\.(ρ|φ|[a-z][^\s.(),|?]*|α[0-9]*))*|[a-z][^\s.(),|?]*(\.[a-z][^\s.(),|?]*)*)(([(,]|\)+,)([A-F]|⊥|∅|\.(ρ|φ|[a-z][^\s.(),|?]*|α[0-9]*)|[Φξ](\.(ρ|φ|[a-z][^\s.(),|?]*|α[0-9]*))*|[a-z][^\s.(),|?]*(\.[a-z][^\s.(),|?]*)*))*\)*)[?]?"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="locator">
@@ -170,14 +175,15 @@
     <xs:attribute name="as" type="attribute-name"/>
     <xs:attribute name="local" type="attribute-name">
       <xs:annotation>
-        <xs:appinfo>The file-local handle of an anonymous "&gt;&gt; name" object</xs:appinfo>
+        <xs:appinfo>The file-local handle of an anonymous "&gt;&gt; name" object or of a "^name" receiver</xs:appinfo>
         <xs:documentation>
           The readable file-local handle declared with the "&gt;&gt; name" suffix
           (R-3.10.12). The object's externally visible "name" is a synthetic
           cactus identifier, unreachable from outside the file; this attribute
           preserves the human-written handle so that references to it can be
           resolved within the file and the object can be printed back to EO
-          under its original name.
+          under its original name. A receiver void written as "^name"
+          (R-3.4.13) carries it as well, while its "name" stays "ρ".
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
@@ -214,8 +220,10 @@
         <xs:appinfo>The return-type signature of an atom</xs:appinfo>
         <xs:documentation>
           Used only on the lambda marker (name="λ") of an atom. Holds the
-          fully qualified name of the object that the atom returns, or a
-          single-letter generic type variable A-F (§3.10.10).
+          type of the object that the atom returns (R-3.10.10), as one string:
+          a fully qualified name, a single-letter generic type variable A-F,
+          or a tree of them with brackets, such as
+          "Φ.posix.status-return(Φ.number,Φ.string)".
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
@@ -224,8 +232,8 @@
         <xs:appinfo>The declared type of an atom's void attribute</xs:appinfo>
         <xs:documentation>
           Used on a void attribute of an atom (the bare "/type" annotation, R-3.4.8).
-          Holds the FQN of a concrete forma or a generic type variable A-F, with an
-          optional trailing "?" marking a maybe-⊥ value.
+          Holds a type written the same way as in "atom", with an optional
+          trailing "?" marking a maybe-⊥ value, such as "Φ.pair(Φ.number,Φ.string)?".
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
@@ -234,8 +242,9 @@
         <xs:appinfo>Space-separated argument types of an atom void callback branch</xs:appinfo>
         <xs:documentation>
           Used on a void callback attribute of an atom (the "/{…}" argument list, R-3.4.8).
-          Holds the space-separated types (concrete FQNs or generic variables A-F) of the
-          arguments the atom supplies to that branch.
+          Holds the space-separated types of the arguments the atom supplies to that
+          branch, each written the same way as in "atom" and with no "?", such as
+          "Φ.string Φ.pair(A,Φ.bytes)".
         </xs:documentation>
       </xs:annotation>
     </xs:attribute>
@@ -269,7 +278,7 @@
           <xs:annotation>
             <xs:appinfo>The name of the checker that found the error</xs:appinfo>
             <xs:documentation>
-              The element contains the name of the style checker or
+              The attribute contains the name of the style checker or
               any other submodule that found the error in the program.
             </xs:documentation>
           </xs:annotation>
@@ -278,7 +287,7 @@
           <xs:annotation>
             <xs:appinfo>The number of the line of code where the error was found</xs:appinfo>
             <xs:documentation>
-              The element contains the number of the code line (starting from 1),
+              The attribute contains the number of the code line (starting from 1),
               where the error was found. If the element is omitted, the problem
               is related to the entire program, not to any particular line in it.
             </xs:documentation>
@@ -298,7 +307,7 @@
           <xs:annotation>
             <xs:appinfo>The severity of the error</xs:appinfo>
             <xs:documentation>
-              The element contains the severity of the error, thus providing
+              The attribute contains the severity of the error, thus providing
               advice to the processor of the document on whether the error
               may be ignored (when it is a "warning") or the processing must
               stop immediately (when it is a "critical").
@@ -339,7 +348,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:simpleContent>
-      <xs:extension base="non-empty">
+      <xs:extension base="xs:string">
         <xs:attribute name="line" use="required" type="whole"/>
       </xs:extension>
     </xs:simpleContent>
@@ -480,7 +489,7 @@
       <xs:annotation>
         <xs:appinfo>The amount of milliseconds that were spent on walking the source into directives</xs:appinfo>
         <xs:documentation>
-          The element contains a positive integer, which is the number of milliseconds
+          The attribute contains a whole number, which is the number of milliseconds
           that were spent by the parser to walk the source into directives. It excludes
           building this document from them and transforming it afterwards. This information
           is valuable for debugging purposes and may be omitted in production systems.
@@ -491,7 +500,7 @@
       <xs:annotation>
         <xs:appinfo>The date and time when the document was created</xs:appinfo>
         <xs:documentation>
-          The element contains the date and time of the moment when the
+          The attribute contains the date and time of the moment when the
           document was generated by the parser. This information
           is valuable for debugging purposes and may be omitted in production systems.
         </xs:documentation>
@@ -501,7 +510,7 @@
       <xs:annotation>
         <xs:appinfo>The version of the parser that created the document</xs:appinfo>
         <xs:documentation>
-          The element contains the version of the parser that created
+          The attribute contains the version of the parser that created
           the document, preferably in SemVer format. This information
           is valuable for debugging purposes and may be omitted in production systems.
         </xs:documentation>
@@ -511,7 +520,7 @@
       <xs:annotation>
         <xs:appinfo>The Git SHA of the release of the parser that created the document</xs:appinfo>
         <xs:documentation>
-          The element contains the Git SHA of the release of the parser that created
+          The attribute contains the Git SHA of the release of the parser that created
           the document. This information
           is valuable for debugging purposes and may be omitted in production systems.
         </xs:documentation>
@@ -526,7 +535,7 @@
       <xs:annotation>
         <xs:appinfo>The date-of-birth of the parser that created the document</xs:appinfo>
         <xs:documentation>
-          The element contains the date and time of the release of the parser
+          The attribute contains the date and time of the release of the parser
           that created the document. This information
           is valuable for debugging purposes and may be omitted in production systems.
         </xs:documentation>

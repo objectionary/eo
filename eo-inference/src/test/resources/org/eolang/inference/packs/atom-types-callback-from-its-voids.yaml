@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sources:
+  deliver.eo: |
+    [] > deliver /Q.number
+      ? > scope /{A}
+      ? > item /A
+  app.eo: |
+    [] > app
+      deliver > @
+        [x]
+          x > @
+        "one"
+answers:
+  - /answers/o[@loc='Φ.app.φ.α0.φ' and count(is)=1]/is[@loc='Φ.string']

@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.IntFunction;
+import org.eolang.sys.Buffer;
 
 /**
  * Dynamic memory.
@@ -105,12 +106,14 @@ final class Heaps {
         try {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
-                    "Block in memory by identifier '%d' is not allocated, can't get size",
+                    "Block in memory by identifier '%d' is not allocated, can't resize",
                     identifier
                 );
             }
             final byte[] bytes = this.blocks.get(identifier);
-            final byte[] resized = new byte[size];
+            final byte[] resized = new Buffer(
+                String.format("the new size of the block '%d'", identifier), size
+            ).it();
             System.arraycopy(bytes, 0, resized, 0, Math.min(bytes.length, size));
             this.blocks.put(identifier, resized);
         } finally {
@@ -164,43 +167,6 @@ final class Heaps {
     }
 
     /**
-     * Get data from the block in memory by identifier.
-     *
-     * @param identifier Identifier of the pointer
-     * @param offset Offset to start reading from
-     * @param length Length of bytes to read
-     * @return Bytes from the block in memory
-     */
-    byte[] read(final int identifier, final int offset, final int length) {
-        this.lock.lock();
-        try {
-            if (offset < 0) {
-                throw new ExFailure(
-                    "Block '%d': can't read at negative offset '%d'",
-                    identifier, offset
-                );
-            }
-            if (length < 0) {
-                throw new ExFailure(
-                    "Block '%d': can't read a negative number of bytes '%d'",
-                    identifier, length
-                );
-            }
-            final Fetched data = this.fetched(identifier, offset, length);
-            return data.bytes().orElseThrow(
-                () -> new ExFailure(
-                    "Can't read '%d' bytes from offset '%d', because only '%d' are allocated",
-                    length,
-                    offset,
-                    data.size()
-                )
-            );
-        } finally {
-            this.lock.unlock();
-        }
-    }
-
-    /**
      * Write given data to the block in memory by given identifier.
      *
      * @param identifier Identifier of the pointer
@@ -212,7 +178,7 @@ final class Heaps {
         try {
             if (!this.blocks.containsKey(identifier)) {
                 throw new ExFailure(
-                    "Can't read a block in memory with identifier '%d' because it's not allocated",
+                    "Can't write a block in memory with identifier '%d' because it's not allocated",
                     identifier
                 );
             }
@@ -261,7 +227,7 @@ final class Heaps {
         }
         this.lock.lock();
         try {
-            this.blocks.put(identifier, new byte[size]);
+            this.blocks.put(identifier, new Buffer("a new block in memory", size).it());
         } finally {
             this.lock.unlock();
         }

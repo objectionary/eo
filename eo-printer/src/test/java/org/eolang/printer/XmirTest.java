@@ -106,6 +106,102 @@ final class XmirTest {
     }
 
     @Test
+    void printsPhiArgumentsWithoutAnInvalidAtSuffix() {
+        MatcherAssert.assertThat(
+            "The printer must not add an '@' suffix to φ arguments",
+            new Xmir(
+                new XMLDocument(
+                    "<object><o base='Φ.foo' name='x'><o base='Φ.bar' as='φ'/></o></object>"
+                )
+            ).toEO(),
+            Matchers.not(Matchers.containsString("bar:@"))
+        );
+    }
+
+    @Test
+    void parsesPrintedPhiArgumentsWithoutErrors() throws IOException {
+        MatcherAssert.assertThat(
+            "A φ-bound argument must be emitted as a positional argument, not '@'",
+            new EoSyntax(
+                String.format(
+                    "%s%n",
+                    new Xmir(
+                        new XMLDocument(
+                            "<object><o base='Φ.foo' name='x'><o base='Φ.bar' as='φ'/></o></object>"
+                        )
+                    ).toEO()
+                ),
+                new TrDefault<>()
+            ).parsed(),
+            Matchers.not(XhtmlMatchers.hasXPath("//errors/error"))
+        );
+    }
+
+    @Test
+    void parsesPrintedDataizedReceiverWithoutErrors() throws IOException {
+        MatcherAssert.assertThat(
+            "a dataized const receiver must still parse after printing",
+            new EoSyntax(new InputOf(this.printedReceiver())).parsed(),
+            Matchers.not(XhtmlMatchers.hasXPath("//errors/error"))
+        );
+    }
+
+    @Test
+    void keepsOneConstAndOnePayload() throws IOException {
+        final XML xml = new Xsline(
+            new StClasspath("/org/eolang/printer/print/dataized-to-const.xsl")
+        ).pass(new EoSyntax(new InputOf(this.printedReceiver())).parsed());
+        MatcherAssert.assertThat(
+            "the round trip must keep one const and one payload",
+            List.of(
+                xml.xpath("count(//o[@base='Φ.number' and @const])"),
+                xml.xpath(
+                    "count(//o[@base='Φ.number' and @const]/o[@base='Φ.bytes']/o)"
+                )
+            ),
+            Matchers.everyItem(Matchers.equalTo(List.of("1")))
+        );
+    }
+
+    @Test
+    void reprintsDataizedReceiverUnchanged() throws IOException {
+        final String printed = this.printedReceiver();
+        MatcherAssert.assertThat(
+            "printing the reparsed receiver again must reproduce the first print",
+            new Xmir(new EoSyntax(new InputOf(printed)).parsed()).toEO(),
+            Matchers.equalTo(printed)
+        );
+    }
+
+    @Test
+    void keepsHeadWhenPipeChainHasNoTerminalHost() {
+        MatcherAssert.assertThat(
+            "the head remains in the incomplete chain",
+            new Xsline(
+                new StClasspath("/org/eolang/printer/print/merge-monikers.xsl")
+            ).pass(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<object><o name='app'><o base='Φ.foo' name='φ'/>",
+                        "<o name='a🌵1'><o name='φ'/><o name='q'/></o>",
+                        "<o base='ξ.a🌵1' name='a🌵2' pipe=''><o base='Φ.number'>40-00-00-00-00-00-00-00</o></o>",
+                        "<o base='ξ.a🌵2' name='a🌵3' pipe=''><o base='Φ.number'>40-08-00-00-00-00-00-00</o></o>",
+                        "<o base='Φ.number' name='a🌵4' const='' local='root'>42</o>",
+                        "<o base='ξ.a🌵4' name='a🌵5' pipe=''><o base='Φ.number'>40-10-00-00-00-00-00-00</o></o>",
+                        "<o base='Φ.foo' name='ρ'><o as='α0' base='ξ.a🌵5' pipe=''><o base='Φ.number'>40-18-00-00-00-00-00-00</o></o></o>",
+                        "</o></object>"
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object/o[@name='app']/o[@name='a🌵1']",
+                "/object/o[@name='app']/o[@name='a🌵5' and @pipe]"
+            )
+        );
+    }
+
+    @Test
     void keepsArgumentsOfAnIdentityShapedFormation() {
         MatcherAssert.assertThat(
             "a formation that decorates its own void but also carries arguments cannot fold into the I glyph, which leaves nowhere for those arguments to go",
@@ -123,6 +219,25 @@ final class XmirTest {
                 )
             ),
             XhtmlMatchers.hasXPath("//line[@base='[m]']")
+        );
+    }
+
+    @Test
+    void printsAFilledHiddenVoidAsAVoidWithANamedFill() {
+        MatcherAssert.assertThat(
+            "a formation that holds a filled hidden void must print with the void and a named fill of it, but it doesnt",
+            new Xmir(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<object><metas/><o name='main'><o name='bar'>",
+                        "<o base='Φ.number' name='v🌵left'>5</o>",
+                        "<o base='ξ.v🌵left' name='value'/>",
+                        "</o></o></object>"
+                    )
+                )
+            ).toEO().lines().toList(),
+            Matchers.contains("[] > main", "  [left] > bar", "    5:left", "    left > value")
         );
     }
 
@@ -150,7 +265,7 @@ final class XmirTest {
             "The hosted template must not repeat the full first-host lookup",
             this.mergeMonikers(),
             XhtmlMatchers.hasXPaths(
-                "/*[local-name()='stylesheet' and @version='2.0']",
+                "/*[local-name()='stylesheet' and @version='3.0']",
                 "/*/*[local-name()='function' and @name='eo:moniker-refs' and not(@cache)]",
                 "/*/*[local-name()='function' and @name='eo:hosted-binding' and not(@cache)]",
                 "/*/*[local-name()='template' and @priority='1']/*[local-name()='variable' and @name='owner' and @select='ancestor::o[eo:abstract(.)][1]']",
@@ -167,6 +282,17 @@ final class XmirTest {
             XhtmlMatchers.hasXPaths(
                 "/*/*[local-name()='template' and @match=\"o[starts-with(@base, $eo:xi-dot)][exists(eo:hosted-binding(.))]\"]",
                 "/*/*[local-name()='template' and @match=\"o[starts-with(@base, $eo:xi-dot)][exists(o)][not(exists(@name))][exists(eo:applied-handle(.))]\"]"
+            )
+        );
+    }
+
+    @Test
+    void walksArgumentsOneByOne() {
+        MatcherAssert.assertThat(
+            "The canonical run of labels must be read one argument at a time, not against the whole tail of siblings",
+            this.sheet("unnecessary-as.xsl"),
+            XhtmlMatchers.hasXPath(
+                "/*/*[local-name()='function' and @name='eo:all-alphas']//*[local-name()='variable' and @name='next' and @select='$elem/following-sibling::o[1]']"
             )
         );
     }
@@ -360,11 +486,15 @@ final class XmirTest {
     }
 
     private XML mergeMonikers() {
+        return this.sheet("merge-monikers.xsl");
+    }
+
+    private XML sheet(final String name) {
         return new XMLDocument(
             new UncheckedText(
                 new TextOf(
                     new ResourceOf(
-                        "org/eolang/printer/print/merge-monikers.xsl",
+                        String.format("org/eolang/printer/print/%s", name),
                         XmirTest.class
                     )
                 )
@@ -387,5 +517,23 @@ final class XmirTest {
             );
         }
         return weights;
+    }
+
+    private String printedReceiver() throws IOException {
+        return new Xmir(
+            new EoSyntax(
+                new InputOf(
+                    String.join(
+                        String.valueOf('\n'),
+                        "[] > foo",
+                        "",
+                        "  eq. ++> can-x",
+                        "    as-bytes.",
+                        "      dataized 5",
+                        "    40-14-00-00-00-00-00-00"
+                    )
+                )
+            ).parsed()
+        ).toEO();
     }
 }

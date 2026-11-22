@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="set-locators" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="set-locators" version="3.0">
   <!--
   Here we go through all objects and add @loc attributes
   to all of them. The value of the attribute is a unique locator
@@ -26,6 +26,15 @@
   single-argument. Nothing here reads the global context item either,
   since that item is absent when the stylesheet is driven through
   xsl:apply-templates rather than through a whole-document transform.
+  An object that already carries a locator keeps it, and only the ones
+  a later step of the build has added are given one. The transpile
+  train runs this stylesheet a second time, after "dealpha" has put the
+  name of its void on every positional argument, and a segment worked
+  out again would read that name and move the argument, together with
+  everything under it, away from the row the inference tables hold for
+  it - a formation inside such an argument is then looked up by a
+  locator nobody wrote and never marked as pure (#8301). A locator is
+  therefore given once, by the parser, and nothing later moves it.
   -->
   <xsl:output encoding="UTF-8" method="xml"/>
   <xsl:import href="/org/eolang/parser/_specials.xsl"/>
@@ -64,7 +73,7 @@
   </xsl:template>
   <xsl:template match="o">
     <xsl:param name="eo:parent" as="xs:string" select="$eo:program" tunnel="yes"/>
-    <xsl:variable name="loc" as="xs:string" select="concat($eo:parent, '.', eo:segment(.))"/>
+    <xsl:variable name="loc" as="xs:string" select="if (@loc) then string(@loc) else concat($eo:parent, '.', eo:segment(.))"/>
     <xsl:copy>
       <xsl:attribute name="loc" select="$loc"/>
       <xsl:apply-templates select="node()|@* except @loc">

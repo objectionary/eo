@@ -1,0 +1,40 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The hidden formation must have its own legal name; phi stays on the const.
+sheets:
+  - /org/eolang/parser/parse/wrap-method-calls.xsl
+  - /org/eolang/parser/parse/const-to-dataized.xsl
+  - /org/eolang/parser/parse/vars-float-up.xsl
+asserts:
+  - /object[not(errors/error)]
+  - /object/o/o[@name='φ' and @base='.as-bytes']/o[@base='Φ.dataized']/o[@base='a🌵2-2']
+  - /object/o/o[@name='a🌵2-2' and not(@base)]/o[@name='φ' and @base='Φ.number']
+  - /object/o/o[@name='a🌵4-2' and not(@base)]
+  - /object/o/o[@name='a2-2' and not(@base)]
+  - /object/o/o[@name='nested']/o[@name='φ' and @base='.as-bytes']/o[@base='Φ.dataized']/o[@base='a🌵8-4']
+  - /object/o/o[@name='nested']/o[@name='a🌵8-4' and not(@base)]/o[@name='φ']
+  - /object/o/o[@name='value' and @base='.as-bytes']/o[@base='Φ.dataized']/o[@base='value-1']
+  - /object/o/o[@name='value-1' and not(@base)]/o[@name='φ']
+  - /object/o/o[@name='plain']/o[@name='φ' and not(@base)]/o[@name='φ']
+  - /object/o/o[@name='literal']/o[@name='φ' and @base='.as-bytes']/o[@base='Φ.dataized']/o[@base='Φ.number' and not(@name)]
+  - /object[count(//o[@name='φ-1' or @base='φ-1' or @const])=0]
+  - /object[count(//o[@name = preceding-sibling::o/@name])=0]
+input: |
+  [] > foo
+    [] > @!
+      1 > @
+    [] >>
+    [] > a2-2
+    [] > phi
+    [] > nested
+      [] > @!
+        2 > @
+    [] > value!
+      3 > @
+    [] > plain
+      [] > @
+        4 > @
+    [] > literal
+      5 > @!

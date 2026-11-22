@@ -22,7 +22,7 @@ eo:
       n.times -1 > @
 xmir:
   number.eo:
-    - "/object/o[@name='number']/o[1][@base='∅' and @name='as-bytes']"
-    - "/object/o[@name='number']/o[@name='as-bytes']/following-sibling::o[@name='lt']"
-    - "/object/o[@name='number']/o[@name='as-bytes']/following-sibling::o[@name='neg']"
+    - "/object/o[@name='number']/o[1][@base='∅' and @name='v🌵as-bytes']"
+    - "/object/o[@name='number']/o[@name='v🌵as-bytes']/following-sibling::o[@name='lt']"
+    - "/object/o[@name='number']/o[@name='v🌵as-bytes']/following-sibling::o[@name='neg']"
     - "/object/o[@name='number']/o[last()][@name='neg']"

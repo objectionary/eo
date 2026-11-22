@@ -5,9 +5,7 @@
 
 package org.eolang;
 
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -26,9 +24,10 @@ import java.util.function.Supplier;
  * and {@code Object.equals} requires the two to agree.</p>
  *
  * @since 0.1
- * @checkstyle DesignForExtensionCheck (200 lines)
+ * @checkstyle RegexpSinglelineCheck (200 lines)
  */
-public class PhOnce implements Phi {
+@SuppressWarnings("PMD.AvoidSynchronizedStatement")
+public abstract class PhOnce implements Phi {
 
     /**
      * The object fetched.
@@ -36,129 +35,134 @@ public class PhOnce implements Phi {
     private final Supplier<Phi> object;
 
     /**
-     * Reference.
+     * Reference, {@code null} until the object is fetched. The first fetch
+     * happens under the monitor of this very object, and not under a lock of
+     * its own, because there are millions of these in the heap of a program
+     * that runs for a while: a lock costs two objects each, while a monitor
+     * costs nothing until two threads want it at the same time.
      */
-    private final AtomicReference<Phi> ref;
+    private volatile Phi ref;
 
     /**
-     * Supplier of the φ-term, or {@code null} to delegate to the wrapped object.
+     * Supplier of the φ-term, empty when the wrapped object renders itself.
      */
-    private final Supplier<String> term;
-
-    /**
-     * Lock guarding the first load of the reference.
-     */
-    private final Lock lock;
+    private final Optional<Supplier<String>> phrase;
 
     /**
      * Ctor.
      *
      * @param obj The object
      */
-    public PhOnce(final Supplier<Phi> obj) {
-        this(obj, null);
+    protected PhOnce(final Supplier<Phi> obj) {
+        this(obj, Optional.empty());
     }
 
     /**
      * Ctor.
      *
      * @param obj The object
-     * @param term Supplier of the φ-term
+     * @param phrase Supplier of the φ-term, empty to render the wrapped object
      */
-    public PhOnce(final Supplier<Phi> obj, final Supplier<String> term) {
-        this.ref = new AtomicReference<>(null);
-        this.term = term;
-        this.lock = new ReentrantLock();
+    protected PhOnce(final Supplier<Phi> obj, final Optional<Supplier<String>> phrase) {
+        this.phrase = phrase;
         this.object = () -> this.loaded(obj);
     }
 
     @Override
-    public boolean equals(final Object obj) {
+    public final boolean equals(final Object obj) {
         return this == obj;
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return System.identityHashCode(this) + 1;
     }
 
     @Override
-    public Phi copy() {
-        return new PhOnce(
-            () -> this.object.get().copy(),
-            this.term
-        );
+    public final Phi copy() {
+        return this.wrapped(() -> this.object.get().copy(), this.phrase);
     }
 
     @Override
-    public boolean needsRho() {
+    public final boolean needsRho() {
         return false;
     }
 
     @Override
-    public Phi take(final String name) {
+    public final Phi take(final String name) {
         return this.object.get().take(name);
     }
 
     @Override
-    public void put(final int pos, final Phi obj) {
+    public final void put(final int pos, final Phi obj) {
         this.object.get().put(pos, obj);
     }
 
     @Override
-    public void put(final String name, final Phi obj) {
+    public final void put(final String name, final Phi obj) {
         this.object.get().put(name, obj);
     }
 
     @Override
-    public String locator() {
+    public final String locator() {
         return this.object.get().locator();
     }
 
     @Override
-    public String forma() {
+    public final String forma() {
         return this.object.get().forma();
     }
 
     @Override
-    public byte[] delta() {
-        return this.object.get().delta();
+    public final byte[] delta() {
+        return this.dataized();
     }
 
     @Override
-    public Phi normalized() {
+    public final Phi normalized() {
         final Phi result = this.object.get().normalized();
         final Phi normalized;
         if (result instanceof PhTerminator) {
             normalized = result;
         } else {
-            normalized = new PhOnce(() -> result, this.term);
+            normalized = this.wrapped(() -> result, this.phrase);
         }
         return normalized;
     }
 
     @Override
-    public String φTerm() {
-        final String result;
-        if (this.term == null) {
-            result = this.object.get().φTerm();
-        } else {
-            result = this.term.get();
-        }
-        return result;
+    public final String φTerm() {
+        return this.phrase.map(Supplier::get).orElseGet(() -> this.object.get().φTerm());
     }
 
+    /**
+     * Dataizes the origin; overrides must return equivalent known data.
+     *
+     * @return Data bytes
+     */
+    protected byte[] dataized() {
+        return this.object.get().delta();
+    }
+
+    /**
+     * Wrap the given object into an object of the same type as this one.
+     *
+     * @param obj The object to wrap
+     * @param text Supplier of the φ-term, empty to render the wrapped object
+     * @return The wrapper
+     */
+    protected abstract Phi wrapped(Supplier<Phi> obj, Optional<Supplier<String>> text);
+
     private Phi loaded(final Supplier<Phi> obj) {
-        if (this.ref.get() == null) {
-            this.lock.lock();
-            try {
-                if (this.ref.get() == null) {
-                    this.ref.set(obj.get());
+        Phi ret = this.ref;
+        if (ret == null) {
+            synchronized (this) {
+                if (this.ref == null) {
+                    this.ref = obj.get();
                 }
-            } finally {
-                this.lock.unlock();
+                ret = this.ref;
             }
         }
-        return this.ref.get();
+        return ret;
     }
 }

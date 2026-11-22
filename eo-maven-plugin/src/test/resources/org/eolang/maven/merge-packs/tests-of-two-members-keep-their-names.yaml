@@ -1,0 +1,39 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# Two members of one package name a test alike. Each file names its tests on
+# its own, and the parser takes both, so the merge has to put both into the
+# object the package names. The name of the member goes in front of the name
+# of the test, so the two arrive apart and the build goes on (#9292).
+eo:
+  box.eo: |
+    [] > box
+      42 > @
+
+      1.eq 1 ++> can-hold-a-number
+  box/left.eo: |
+    +package box
+
+    [] > left
+      1 > @
+
+      1.eq 1 ++> works
+  box/right.eo: |
+    +package box
+
+    [] > right
+      2 > @
+
+      2.eq 2 ++> works
+xmir:
+  box.eo:
+    - "/object/o[@name='box']/o[@name='p🌵can-hold-a-number']"
+    - "/object/o[@name='box']/o[@name='p🌵left-works']"
+    - "/object/o[@name='box']/o[@name='p🌵right-works']"
+    - "/object/o[@name='box'][count(o[starts-with(@name,'p🌵')])=3]"
+tests:
+  box.eo:
+    - 'class TestEObox'
+    - 'void can_hold_a_number()'
+    - 'void left_works()'
+    - 'void right_works()'

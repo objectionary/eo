@@ -21,6 +21,8 @@ eo:
       as-bytes > @
       [x] > div
         x > @
+  bytes.eo: |
+    [@] > bytes
 pure:
   - "//o[@name='hidden' and not(@pure)]"
   - "//o[@name='halved' and @pure='true']"

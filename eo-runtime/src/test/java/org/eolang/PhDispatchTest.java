@@ -25,6 +25,15 @@ final class PhDispatchTest {
     }
 
     @Test
+    void keepsItsOwnTypeAfterCopy() {
+        MatcherAssert.assertThat(
+            "copy() of a dispatch must stay a dispatch, but it didnt",
+            new PhDispatch(Phi.Φ, "foo").copy(),
+            Matchers.instanceOf(PhDispatch.class)
+        );
+    }
+
+    @Test
     void comparesTwoObjects() {
         final Phi num = new Data.ToPhi(1L);
         MatcherAssert.assertThat(

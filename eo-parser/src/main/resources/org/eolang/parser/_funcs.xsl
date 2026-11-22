@@ -3,7 +3,7 @@
 * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 * SPDX-License-Identifier: MIT
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:math="http://www.w3.org/2005/xpath-functions/math" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="_funcs" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:math="http://www.w3.org/2005/xpath-functions/math" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="_funcs" version="3.0">
   <xsl:import href="/org/eolang/parser/_specials.xsl"/>
   <xsl:function name="eo:has-data" as="xs:boolean">
     <xsl:param name="o" as="element()"/>
@@ -28,6 +28,57 @@
   <xsl:function name="eo:test-attr" as="xs:boolean">
     <xsl:param name="o" as="element()"/>
     <xsl:sequence select="starts-with($o/@name, $eo:positive) or starts-with($o/@name, $eo:negative)"/>
+  </xsl:function>
+  <!--
+  The formation that an object made of nothing but "ξ" and "ρ" hops lands
+  in, rolled as "ξ.ρ.ρ" or not as ".ρ" on top of "ξ", or nothing when the
+  object is anything else or climbs above the top of the document.
+  -->
+  <xsl:function name="eo:landing" as="element(o)?">
+    <xsl:param name="o" as="element(o)?"/>
+    <xsl:variable name="base" select="string($o/@base)"/>
+    <xsl:choose>
+      <xsl:when test="matches($base, concat('^', $eo:xi, '(\.', $eo:rho, ')*$'))">
+        <xsl:sequence select="$o/ancestor::o[eo:abstract(.)][count(tokenize($base, '\.'))]"/>
+      </xsl:when>
+      <xsl:when test="$base = concat('.', $eo:rho)">
+        <xsl:sequence select="eo:landing($o/o[1])/ancestor::o[eo:abstract(.)][1]"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="()"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+  <!--
+  The formation that an own read lands in, or nothing when the object is no
+  own read or climbs above the top of the document. An own read goes from
+  "ξ" through nothing but "ρ" hops to a name: a base rolled as "ξ.x",
+  "ξ.ρ.x" or "ξ.ρ.ρ.x.plus", or a dispatch ".x" made on an object that is
+  nothing but such hops. Each hop climbs to the formation around.
+  -->
+  <xsl:function name="eo:own-formation" as="element(o)?">
+    <xsl:param name="o" as="element(o)"/>
+    <xsl:variable name="segments" select="tokenize(string($o/@base), '\.')"/>
+    <xsl:choose>
+      <xsl:when test="$segments[1] = $eo:xi">
+        <xsl:sequence select="$o/ancestor::o[eo:abstract(.)][index-of(for $segment in $segments return $segment = $eo:rho, false())[2] - 1]"/>
+      </xsl:when>
+      <xsl:when test="$segments[1] = '' and count($segments) = 2">
+        <xsl:sequence select="eo:landing($o/o[1])"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:sequence select="()"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+  <!--
+  The name that an own read takes in the formation it lands in, which is
+  "x" in "ξ.ρ.x.plus" and in ".x". The "plus" that follows is read from the
+  value of "x".
+  -->
+  <xsl:function name="eo:own-name" as="xs:string">
+    <xsl:param name="o" as="element(o)"/>
+    <xsl:sequence select="string(tokenize(string($o/@base), '\.')[. != $eo:rho][2])"/>
   </xsl:function>
   <!-- BYTES TO STRING -->
   <xsl:function name="eo:bytes-to-string" as="xs:string">
@@ -122,6 +173,34 @@
     <xsl:variable name="hex-digits" select="string-to-codepoints('0123456789ABCDEF')"/>
     <xsl:variable name="decimal" select="sum(for $i in 1 to $length return (index-of($hex-digits, string-to-codepoints(substring($hex-upper, $i, 1))) - 1) * math:pow(16, $length - $i))"/>
     <xsl:value-of select="xs:int($decimal)"/>
+  </xsl:function>
+  <!--
+  The deepest nesting the `too-deep-object` lint accepts: an object with more
+  ancestors than this, counted the way `eo:lint-depth` counts them, is reported.
+  The printer folds a helper into the place that reads it, so a helper read deep
+  inside an expression can land past this limit; it asks these functions whether
+  it would, and leaves the helper standing when it would, since a formatter that
+  writes a file its own linter refuses leaves no spelling to keep (#9891).
+  -->
+  <xsl:variable name="eo:depth-limit" as="xs:integer" select="12"/>
+  <!--
+  The nesting depth of `$o` as the `too-deep-object` lint measures it: its
+  ancestors, without the literal wrappers ("Φ.tuple", "Φ.bytes", "Φ.number",
+  "Φ.string"), which the lint does not count either.
+  -->
+  <xsl:function name="eo:lint-depth" as="xs:integer">
+    <xsl:param name="o" as="element()"/>
+    <xsl:sequence select="count($o/ancestor::o[not(@base = ('Φ.tuple', 'Φ.bytes', 'Φ.number', 'Φ.string'))])"/>
+  </xsl:function>
+  <!--
+  How many levels the body of `$o` reaches below `$o` itself, as the lint counts
+  them: zero for an object with no children. The data of a literal is not an
+  object the lint reports, so it does not count.
+  -->
+  <xsl:function name="eo:lint-height" as="xs:integer" cache="yes">
+    <xsl:param name="o" as="element()"/>
+    <xsl:variable name="top" select="eo:lint-depth($o)"/>
+    <xsl:sequence select="max((0, for $n in $o//o[not(empty(@base) and parent::o/@base = 'Φ.bytes') and not(@base = 'Φ.bytes' and parent::o/@base = ('Φ.number', 'Φ.string'))] return eo:lint-depth($n) - $top))"/>
   </xsl:function>
   <!-- Strip the test marker prefix out of a name or of a locator. -->
   <xsl:function name="eo:unmarked" as="xs:string">

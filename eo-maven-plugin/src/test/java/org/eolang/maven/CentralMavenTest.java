@@ -6,6 +6,7 @@ package org.eolang.maven;
 
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
+import com.yegor256.OnlineMeans;
 import com.yegor256.WeAreOnline;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -33,6 +34,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @since 0.55
  */
+@OnlineMeans(
+    url = "https://repo1.maven.org/maven2/org/eolang/eo-runtime/0.7.0/"
+        + "eo-runtime-0.7.0.jar"
+)
 @ExtendWith(MktmpResolver.class)
 final class CentralMavenTest {
 
@@ -125,27 +130,25 @@ final class CentralMavenTest {
     @Test
     @ExtendWith(WeAreOnline.class)
     void resolvesWithInjectedComponents(@Mktmp final Path temp) {
-        final RepositorySystem system = new RepositorySystemSupplier().get();
-        final DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
-        session.setLocalRepositoryManager(
-            system.newLocalRepositoryManager(
-                session,
-                new LocalRepository(temp.resolve("local-repo").toFile())
-            )
-        );
         final Path dest = temp.resolve("unpacked");
-        new CentralMaven(
-            system,
-            session,
-            Collections.singletonList(
-                new RemoteRepository.Builder(
-                    "central", "default", "https://repo1.maven.org/maven2"
-                ).build()
-            )
-        ).accept(
-            CentralMavenTest.runtime(),
-            dest
-        );
+        try (RepositorySystem system = new RepositorySystemSupplier().get()) {
+            final DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
+            session.setLocalRepositoryManager(
+                system.newLocalRepositoryManager(
+                    session,
+                    new LocalRepository(temp.resolve("local-repo").toFile())
+                )
+            );
+            new CentralMaven(
+                system,
+                session,
+                Collections.singletonList(
+                    new RemoteRepository.Builder(
+                        "central", "default", "https://repo1.maven.org/maven2"
+                    ).build()
+                )
+            ).accept(CentralMavenTest.runtime(), dest);
+        }
         MatcherAssert.assertThat(
             "Unpacked destination must contain files when using injected resolver components",
             dest.toFile().list(),

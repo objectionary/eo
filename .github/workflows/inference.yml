@@ -9,6 +9,8 @@ run-name: "inference report publication"
     tags:
       - '*'
   workflow_dispatch:
+permissions:
+  contents: write
 concurrency:
   group: inference-${{ github.ref }}
   cancel-in-progress: false
@@ -16,7 +18,7 @@ jobs:
   inference:
     if: github.repository_owner == 'objectionary'
     timeout-minutes: 30
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-java@v6
@@ -31,7 +33,7 @@ jobs:
       - uses: JesseTG/rm@v1.0.3
         with:
           path: ~/.m2/repository/org/eolang
-      # One pass over the whole reactor, so the `inference-report` goal that
+      # One pass over the whole reactor, so the `render` goal that
       # eo-runtime's own pom asks for writes the pages while eo-runtime is
       # being built, rather than inferring the same program twice.
       - run: mvn install -ntp --errors --batch-mode -DskipTests -Dinvoker.skip

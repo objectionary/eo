@@ -1,7 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "automerge": true,
   "extends": [
-    "config:base"
+    "config:recommended"
   ],
   "ignoreDeps": [
     "org.apache.maven.plugins:maven-compiler-plugin",
@@ -15,12 +16,20 @@
       ]
     },
     {
-      "description": "Maven Resolver 2.x has no maven-resolver-supplier artifact and targets Maven 4, while eo-maven-plugin runs inside Maven 3.9",
       "allowedVersions": "<2",
+      "description": "Maven Resolver 2.x has no maven-resolver-supplier artifact and targets Maven 4, while eo-maven-plugin runs inside Maven 3.9",
       "matchPackageNames": [
         "org.apache.maven.resolver:maven-resolver-api",
         "org.apache.maven.resolver:maven-resolver-supplier"
       ]
+    },
+    {
+      "allowedVersions": "!/\\+1\\d{8,}/",
+      "description": "Temurin publishes placeholder builds such as 21.0.13+100000002.0.LTS that actions/setup-java cannot resolve",
+      "matchPackageNames": [
+        "java-jdk"
+      ]
     }
-  ]
+  ],
+  "platformAutomerge": false
 }

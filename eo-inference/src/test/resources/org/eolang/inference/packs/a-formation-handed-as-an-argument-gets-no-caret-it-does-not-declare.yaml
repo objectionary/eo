@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The formation app hands to box goes into item. It declares no ^, so its
+# up is T and not the box it went into, and so is the up that box reads off
+# item.
+sources:
+  box.eo: |
+    [item] > box
+      item.up > @
+  app.eo: |
+    [] > app
+      box > @
+        []
+          ^ > up
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.app.φ.α0' and @lands='v🌵item']/is[@loc='Φ.app.φ.α0']
+  - /answers/o[@loc='Φ.app.φ.α0.up']/terminator
+  - /answers/o[@loc='Φ.box.φ']/terminator

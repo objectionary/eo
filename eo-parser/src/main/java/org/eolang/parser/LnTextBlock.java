@@ -46,14 +46,7 @@ final class LnTextBlock implements Line {
 
     @Override
     public void into(final Stack stack, final Globals globals, final Emit emit) {
-        final String body = this.span.body();
-        if (!body.startsWith("\"\"\"")) {
-            throw new ParseError(
-                this.span.line(), this.span.indent(),
-                "text block closer must start with triple-quote"
-            );
-        }
-        final Tokens tokens = new Tokens(body, this.span);
+        final Tokens tokens = new Tokens(this.span.body(), this.span);
         tokens.seek(3);
         final List<MethodChain> chain = tokens.readChain();
         final String outer = LnApplication.readOuterBinding(tokens, this.span);
@@ -67,7 +60,8 @@ final class LnTextBlock implements Line {
             Blanks.checkPlain(this.span, globals, emit);
         }
         final byte[] joined = this.decoded(globals.tbody());
-        this.transition(stack, suffix);
+        this.transition(stack, suffix, emit);
+        stack.hop(chain.size(), this.span.line(), this.span.indent());
         Bindings.observeChild(stack, outer, this.span);
         this.emit(emit, suffix, chain, joined);
         if (!outer.isEmpty()) {
@@ -93,8 +87,8 @@ final class LnTextBlock implements Line {
         return out.toByteArray();
     }
 
-    private void transition(final Stack stack, final Suffix suffix) {
-        new Transition(stack, this.span).apply(
+    private void transition(final Stack stack, final Suffix suffix, final Emit emit) {
+        new Transition(stack, this.span, emit).apply(
             Kind.TEXT_BLOCK,
             Openness.VCOMPLETED,
             new Admission(suffix.named(), suffix.test(), suffix.test())
@@ -116,19 +110,10 @@ final class LnTextBlock implements Line {
         } else {
             emit.unnamedObject("Φ.string", this.span.line(), this.span.indent());
             Emissions.bytesCarrier(emit, this.span.line(), this.span.indent(), hex);
-            emit.close();
-            for (int idx = 0; idx < chain.size() - 1; idx = idx + 1) {
-                final MethodChain link = chain.get(idx);
-                emit.unnamedObject(".".concat(link.name()), this.span.line(), link.dot());
-                emit.method(link.fragile());
-                emit.close();
-            }
-            final MethodChain last = chain.get(chain.size() - 1);
-            emit.object(
-                suffix.attribute(this.span.line(), this.span.indent()),
-                ".".concat(last.name()), this.span.line(), last.dot()
-            );
-            emit.method(last.fragile());
+            new ChainEmission(
+                emit, this.span.line(), chain,
+                suffix.attribute(this.span.line(), this.span.indent())
+            ).append();
             new Marked(emit, suffix).apply();
         }
     }

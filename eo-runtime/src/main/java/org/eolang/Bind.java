@@ -53,14 +53,17 @@ public final class Bind {
     /**
      * Ctor.
      *
-     * @param name The name of the attribute
+     * <p>A named binding fills a void, so it fills it under the name
+     * {@link Attr#veiled(String)} gives the void.</p>
+     *
+     * @param name The name of the void, as the EO source spells it
      * @param obj The object to bind
      */
     public Bind(final String name, final Phi obj) {
         this(
-            false,
-            target -> target.put(name, obj),
-            () -> String.format("%s->%s", name, obj.φTerm())
+            "φ".equals(name),
+            target -> target.put(Attr.veiled(name), obj),
+            () -> String.format("%s->%s", Attr.veiled(name), obj.φTerm())
         );
     }
 
@@ -85,9 +88,13 @@ public final class Bind {
      * <p>A literal is an object applied to its bytes in that slot and
      * nothing else, so whoever renders one has to tell that application
      * from a named binding of the same object, which is no literal and
-     * cannot even be dataized (#7692).</p>
+     * cannot even be dataized (#7692). The only slot of {@code number},
+     * {@code string} and {@code bytes} is their {@code φ}, and once the
+     * compiler binds arguments by the names of their voids (#8301), a
+     * literal fills it by that name instead of by position.</p>
      *
-     * @return True if the binding is positional and fills slot zero
+     * @return True if the binding is positional and fills slot zero, or
+     *  fills the {@code φ} by name
      */
     boolean first() {
         return this.zero;

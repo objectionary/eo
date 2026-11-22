@@ -10,16 +10,12 @@
 
 [name cant-get] > getenv
   result.code.if > @
-    result.output
+    result.value
     cant-get
   called. > result
     os.is-windows.if
-      win32 *1
-        "getenv"
-        name
-      posix *1
-        "getenv"
-        name
+      win32.getenv name
+      posix.getenv name
 
   not. ++> can-distinguish-different-fallbacks-for-different-missing-variables
     eq.
@@ -36,9 +32,7 @@
 
   not. ++> can-read-an-existing-variable
     eq.
-      getenv
-        "PATH"
-        "not found"
+      getenv "PATH" "not found"
       "not found"
 
   eq. ++> can-return-fallback-for-a-name-containing-an-equals-sign
@@ -74,12 +68,8 @@
   os.is-windows.or ++> can-treat-variable-names-case-sensitively
     not.
       eq.
-        getenv
-          "path"
-          "not found"
-        getenv
-          "PATH"
-          "not found"
+        getenv "path" "not found"
+        getenv "PATH" "not found"
 
   eq. ++> can-use-a-boolean-fallback-when-variable-does-not-exist
     getenv

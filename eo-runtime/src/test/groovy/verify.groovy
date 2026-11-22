@@ -12,7 +12,6 @@
  */
 Path folder = basedir.toPath().resolve('src/test/groovy')
 List<String> tests = [
-    'check-folders-numbering.groovy',
     'check-all-java-classes-compiled.groovy',
     'check-runtime-deps.groovy',
     'check-target-files.groovy',

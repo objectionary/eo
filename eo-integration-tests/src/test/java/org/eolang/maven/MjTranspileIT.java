@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.stream.Stream;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -98,16 +99,31 @@ final class MjTranspileIT {
                 new AppendedPlugin(f).value()
                     .goals("register", "parse", "transpile")
                     .configuration()
-                    .set("trackTransformationSteps", "true")
-                    .set("cacheEnabled", "false");
+                    .set("track", "true")
+                    .set("cache.bypass", "true");
                 f.exec("process-sources");
             }
         );
         MatcherAssert.assertThat(
             "the plugin must still understand the old name of the tracking option",
-            temp.resolve("target/eo/5-pre-transpile").toFile().exists(),
+            temp.resolve(
+                String.format("target/eo/%s", MjTranspileIT.subdir(temp, "-pre-transpile"))
+            ).toFile().exists(),
             Matchers.is(true)
         );
+    }
+
+    private static String subdir(final Path home, final String suffix) throws IOException {
+        try (Stream<Path> kids = Files.list(home.resolve("target/eo"))) {
+            return kids
+                .map(kid -> kid.getFileName().toString())
+                .filter(name -> name.endsWith(suffix))
+                .findFirst().orElseThrow(
+                    () -> new IllegalStateException(
+                        String.format("No '*%s' directory found under %s", suffix, home)
+                    )
+                );
+        }
     }
 
     private static void transpile(

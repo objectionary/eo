@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The atom stat says it gives os.stat-return, and Java fills its voids, so
+# code and amount are unknown, filled by an atom, and info.size reads the
+# amount.
+sources:
+  os.eo: |
+    [] > os
+      [] > stat /Q.os.stat-return
+        ? > path /Q.string
+      [code amount] > stat-return
+        code > @
+        amount > size
+  app.eo: |
+    [] > app
+      info.size > @
+      os.stat "/tmp" > info
+  bytes.eo: |
+    [@] > bytes
+  number.eo: |
+    [@] > number
+  string.eo: |
+    [@] > string
+answers:
+  - /answers/o[@loc='Φ.os.stat.λ']/is[@loc='Φ.os.stat-return']
+  - /answers/o[@loc='Φ.os.stat-return.v🌵code']/unknown[@kind='java']
+  - /answers/o[@loc='Φ.os.stat-return.v🌵amount']/unknown[@kind='java']
+  - /answers/o[@loc='Φ.app.φ']/unknown[@kind='java']

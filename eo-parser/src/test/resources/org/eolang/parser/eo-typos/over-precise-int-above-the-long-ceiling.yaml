@@ -1,0 +1,16 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The other end of the long range, which was right as it stood. 2^63 is one
+# past the largest long, so no INT spells the double this literal rounds to
+# and the advice has to leave the integers. The boundary is asymmetric and the
+# advice follows it on both sides.
+line: 2
+message: |-
+  [2:2] error: '9223372036854775807 is over-precise, write 9.223372036854776E18 instead'
+    9223372036854775807 > n
+    ^
+input: |
+  [] > app
+    9223372036854775807 > n

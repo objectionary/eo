@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A receiver handle (`[^me n] >> rec`, R-3.4.11) names the parent formation
+# just as `^` does, so `me.rec` written inside `rec` must bind to the handle
+# `rec` of exactly that parent, the same way `^.rec` does. A chain of such
+# handles (`in.out.rec`) climbs one formation per handle, the same way `^.^`
+# does. Before, a dispatch on a receiver handle pinned no scope, so `rec`
+# kept its readable name, which nothing owns once the handle takes a cactus
+# one: the printer dropped the name and the call dataized to ⊥ (#9245).
+sheets:
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+asserts:
+  - /object[not(errors)]
+  - /object[count(//o[@method and @base=concat('.', //o[@local='rec']/@name)])=2]
+input: |
+  [] > foo
+    [^me n] >> rec
+      if. > @
+        n.eq 0
+        n
+        me.rec n
+      [^in] > deep
+        in.me.rec 1 > @
+    | > @
+      5

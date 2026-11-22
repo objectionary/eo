@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sheets:
+  - /org/eolang/parser/parse/resolve-local-names.xsl
+asserts:
+  - /object[not(errors)]
+  - //o[@name='x' and @base=concat('.', //o[@local='b']/@name) and @line='5' and @pos='6']/o[@base='.ρ' and @line='5' and @pos='6']/o[@base='.ρ' and @line='5' and @pos='6']/o[@base='ξ' and @line='5' and @pos='6']
+  - /object[count(//o[@name='x']/descendant::o[@base='.ρ'])=2]
+  - /object[count(//o[@name='x']/descendant::o[@base='ξ'])=1]
+  - /object[count(//o[@name='x']/descendant::o[(@base='.ρ' or @base='ξ') and @line='5' and @pos='6'])=3]
+input: |
+  [a] > foo
+    a >> b!
+    [] > mid
+      [] > deep
+        b > x

@@ -5,6 +5,7 @@
 
 package org.eolang;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
@@ -18,7 +19,8 @@ import java.util.regex.Pattern;
 public final class PhApplication extends PhOnce {
 
     /**
-     * Matcher of the whole body of a literal, like {@code 0->Φ.bytes(0->[D> 40-45])}.
+     * Matcher of the whole body of a literal, like {@code 0->Φ.bytes(0->[D> 40-45])}
+     * or {@code φ->Φ.bytes(0->[D> 40-45])} when its bytes are bound by name.
      *
      * <p>It is the shape the transpiler emits for a literal and nothing
      * else, so it is matched against the entire body rather than searched
@@ -29,13 +31,18 @@ public final class PhApplication extends PhOnce {
      * parsed back into bytes.</p>
      */
     private static final Pattern DATA = Pattern.compile(
-        "0->Φ\\.bytes\\(0->\\[D> (--|[0-9A-F]{2}-|(?:[0-9A-F]{2}-)+[0-9A-F]{2})]\\)"
+        "(?:0|φ)->Φ\\.bytes\\(0->\\[D> (--|[0-9A-F]{2}-|(?:[0-9A-F]{2}-)+[0-9A-F]{2})]\\)"
     );
 
     /**
      * The dashes that separate the hex pairs of a data block.
      */
     private static final Pattern DASHES = Pattern.compile("-");
+
+    /**
+     * Known bytes, absent in regular applications.
+     */
+    private final Snapshot data;
 
     /**
      * Ctor.
@@ -52,7 +59,8 @@ public final class PhApplication extends PhOnce {
                 }
                 return copy;
             },
-            () -> PhApplication.applied(phi, binds)
+            Optional.of(() -> PhApplication.applied(phi, binds)),
+            null
         );
     }
 
@@ -70,8 +78,11 @@ public final class PhApplication extends PhOnce {
     /**
      * Ctor.
      *
+     * <p>It fills the void by its name, through a {@link Bind}, which puts
+     * the mark in front of the name.</p>
+     *
      * @param phi The object
-     * @param name The name of attr
+     * @param name The name of the void, as the EO source spells it
      * @param attr The value
      */
     public PhApplication(final Phi phi, final String name, final Phi attr) {
@@ -79,13 +90,49 @@ public final class PhApplication extends PhOnce {
     }
 
     /**
+     * Ctor with known data.
+     *
+     * @param phi The object graph
+     * @param data The known bytes
+     */
+    public PhApplication(final Phi phi, final byte[] data) {
+        this(() -> phi, Optional.empty(), new Snapshot(Objects.requireNonNull(data)));
+    }
+
+    /**
      * Ctor.
      *
      * @param sup Supplier of the wrapped object
-     * @param term Supplier of the φ-term
+     * @param phrase Supplier of the φ-term
+     * @param data Known bytes, or {@code null}
      */
-    private PhApplication(final Supplier<Phi> sup, final Supplier<String> term) {
-        super(sup, term);
+    private PhApplication(
+        final Supplier<Phi> sup, final Optional<Supplier<String>> phrase,
+        final Snapshot data
+    ) {
+        super(sup, phrase);
+        this.data = data;
+    }
+
+    @Override
+    public Phi wrapped(final Supplier<Phi> sup, final Optional<Supplier<String>> phrase) {
+        return new PhApplication(sup, phrase, this.data);
+    }
+
+    @Override
+    public byte[] dataized() {
+        final byte[] result;
+        if (this.data == null) {
+            result = super.dataized();
+        } else {
+            if (Thread.currentThread().isInterrupted()) {
+                throw new ExInterrupted(
+                    "Can't dataize an application, because the thread was interrupted"
+                );
+            }
+            result = this.data.bytes();
+        }
+        return result;
     }
 
     private static String applied(final Phi phi, final Bind... binds) {

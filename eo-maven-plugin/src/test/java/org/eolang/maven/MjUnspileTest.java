@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Set;
+import org.eolang.cache.Saved;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -64,6 +65,7 @@ final class MjUnspileTest {
 
     @Test
     void deletesInnerGeneratedClasses(@Mktmp final Path temp) throws IOException {
+        new Naming(temp.getFileSystem(), "EOnumber$EOΦ$org$eolang$inner.class").exec();
         final FakeMaven maven = new FakeMaven(temp);
         new Saved("outer", maven.generatedPath().resolve("org/EOnumber.java")).value();
         new Saved(

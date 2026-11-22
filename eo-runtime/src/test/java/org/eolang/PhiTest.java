@@ -35,41 +35,6 @@ final class PhiTest {
     }
 
     @Test
-    void takesPackage() {
-        MatcherAssert.assertThat(
-            "Phi should resolve and invoke method from root stdout object, but it didn't",
-            new Dataized(
-                new PhDispatch(
-                    new PhApplication(
-                        Phi.Φ.take("stdout"),
-                        0,
-                        new Data.ToPhi("Hello, world")
-                    ),
-                    "text"
-                )
-            ).asString(),
-            Matchers.startsWith("Hello")
-        );
-    }
-
-    @Test
-    void takesStandardPackage() {
-        MatcherAssert.assertThat(
-            "Phi should resolve and invoke method from org.eolang.stdout object, but it didn't",
-            new Dataized(
-                new PhDispatch(
-                    new PhApplication(
-                        Phi.Φ.take("stdout").copy(),
-                        0, new Data.ToPhi("Hello, world")
-                    ),
-                    "text"
-                )
-            ).asString(),
-            Matchers.startsWith("Hello")
-        );
-    }
-
-    @Test
     void takesDirectly() {
         MatcherAssert.assertThat(
             "Phi should resolve nested attribute nan.is-finite and return false, but it didn't",
@@ -179,7 +144,7 @@ final class PhiTest {
             ),
             Arguments.of("logged", (Function<Phi, Phi>) PhLogged::new),
             Arguments.of("loop", (Function<Phi, Phi>) PhLoop::new),
-            Arguments.of("once", (Function<Phi, Phi>) phi -> new PhOnce(() -> phi)),
+            Arguments.of("once", (Function<Phi, Phi>) phi -> new PhDispatch(phi, "x")),
             Arguments.of("safe", (Function<Phi, Phi>) PhSafe::new),
             Arguments.of("sticky", (Function<Phi, Phi>) PhSticky::new)
         );

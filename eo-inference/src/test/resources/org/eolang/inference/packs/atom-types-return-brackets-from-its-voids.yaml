@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+sources:
+  box.eo: |
+    [value] > box
+      value > actual
+  wrap.eo: |
+    [] > wrap /Q.box(A)
+      ? > item /A
+  app.eo: |
+    [] > app
+      (wrap 1).actual > first
+      (wrap "one").actual > second
+answers:
+  - /answers/o[@loc='Φ.app.first' and count(is)=1]/is[@loc='Φ.number']
+  - /answers/o[@loc='Φ.app.second' and count(is)=1]/is[@loc='Φ.string']

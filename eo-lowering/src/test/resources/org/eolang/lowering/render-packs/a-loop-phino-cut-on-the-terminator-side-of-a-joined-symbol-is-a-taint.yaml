@@ -1,0 +1,101 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# The right side of the fork calls the object again, phino cut that loop,
+# and the morph of the side came to ⊥, which phino joined as the terminator.
+# That ⊥ only marks where phino stopped looking, while the object goes on and
+# returns what the recursion computes, so throwing there would be wrong: the
+# entry stays in EO.
+locator: Φ.bytes.xor
+number: 7
+taint: The entry 7 came to ⊥ on the right side of 𝜎140, because phino cut a loop at Φ.bytes.xor there
+eo:
+  bytes.eo: |
+    [@] > bytes
+      [^ b] > xor
+        if. > @
+          ^.size.as-bytes.eq b.size.as-bytes
+          ^.or b
+          ^.xor b
+      [] > eq /Q.bool
+        ? > ^
+        ? > b
+      [] > or /Q.bytes
+        ? > ^
+        ? > b /Q.bytes
+      [] > size /Q.number
+        ? > ^
+  number.eo: |
+    [@] > number
+      [] > as-bytes /Q.bytes
+        ? > ^
+voids:
+  - "𝜎7\t7\tρ\tbytes"
+  - "𝜎8\t7\tv🌵b\tbytes"
+protocol: |
+  <protocol>
+    <dataize at="Φ.l🌵.e7">
+      <boxed meta="𝑛·0·1">Φ.l🌵.e7.φ</boxed>
+      <morph at="𝑛·0·1">
+        <evaluate λ="L_bytes_size" by="morph" at="Φ.a🌵1">
+          <dataize at="Φ.a🌵12">
+            <manufactured meta="𝛿·2·1">𝜎7</manufactured>
+          </dataize>
+          <bound meta="𝛿1·2">𝛿·2·1</bound>
+          <minted symbol="𝜎135">𝜎7</minted>
+        </evaluate>
+        <evaluate λ="L_bytes_eq" by="morph" at="Φ.a🌵1">
+          <dataize at="Φ.a🌵13">
+            <manufactured meta="𝛿·3·1">𝜎135</manufactured>
+          </dataize>
+          <bound meta="𝛿1·3">𝛿·3·1</bound>
+          <evaluate λ="L_bytes_size" by="morph" at="Φ.a🌵4">
+            <dataize at="Φ.a🌵15">
+              <manufactured meta="𝛿·4·1">𝜎8</manufactured>
+            </dataize>
+            <bound meta="𝛿1·4">𝛿·4·1</bound>
+            <minted symbol="𝜎136">𝜎8</minted>
+          </evaluate>
+          <dataize at="Φ.a🌵14">
+            <manufactured meta="𝛿·3·2">𝜎136</manufactured>
+          </dataize>
+          <bound meta="𝛿2·3">𝛿·3·2</bound>
+          <minted symbol="𝜎137">𝜎135 𝜎136</minted>
+        </evaluate>
+        <morphed meta="𝑛·0·2">𝑛·1·30</morphed>
+      </morph>
+      <evaluate λ="L_fork" by="dataize" at="Φ.a🌵7">
+        <dataize at="ξ.on🌵">
+          <manufactured meta="𝛿·7·1">𝜎137</manufactured>
+        </dataize>
+        <bound meta="𝛿1·7">𝛿·7·1</bound>
+        <morph at="ξ.left🌵">
+          <evaluate λ="L_bytes_or" by="morph" at="ξ.left🌵">
+            <dataize at="Φ.a🌵18">
+              <manufactured meta="𝛿·8·1">𝜎7</manufactured>
+            </dataize>
+            <bound meta="𝛿1·8">𝛿·8·1</bound>
+            <dataize at="Φ.a🌵19">
+              <manufactured meta="𝛿·8·2">𝜎8</manufactured>
+            </dataize>
+            <bound meta="𝛿2·8">𝛿·8·2</bound>
+            <minted symbol="𝜎138">𝜎7 𝜎8</minted>
+          </evaluate>
+          <morphed meta="𝑛·7·2">𝑛·7·1</morphed>
+        </morph>
+        <bound meta="𝑛1·7">𝜎138</bound>
+        <morph at="ξ.right🌵">
+          <looped symbol="𝜎141" by="morph" match="plausible" at="ξ.right🌵" of="Φ.bytes.xor" object="Φ.bytes.xor"><with><meta attr="b">𝑛·7·3</meta></with></looped>
+          <morphed meta="𝑛·7·4">⊥</morphed>
+        </morph>
+        <bound meta="𝑛2·7">⊥</bound>
+        <joined symbol="𝜎140" on="𝛿1·7" left="𝜎138" right="𝜎139" terminator="𝜎139"/>
+        <answered meta="𝑛·7·5">𝜎140</answered>
+      </evaluate>
+      <manufactured meta="𝛿·0·1">𝜎140</manufactured>
+    </dataize>
+    <msec>32</msec>
+    <firings>8</firings>
+    <fps>281</fps>
+  </protocol>

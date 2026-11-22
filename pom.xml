@@ -8,7 +8,7 @@
   <parent>
     <groupId>com.jcabi</groupId>
     <artifactId>parent</artifactId>
-    <version>0.73.4</version>
+    <version>0.73.5</version>
   </parent>
   <groupId>org.eolang</groupId>
   <artifactId>eo-parent</artifactId>
@@ -19,6 +19,8 @@
     <module>eo-parser</module>
     <module>eo-printer</module>
     <module>eo-inference</module>
+    <module>eo-cache</module>
+    <module>eo-lowering</module>
     <module>eo-maven-plugin</module>
     <module>eo-runtime</module>
     <module>eo-integration-tests</module>
@@ -78,15 +80,6 @@
     <stack-size>512M</stack-size>
     <!-- This is the size of the heap, which you can modify from command line -->
     <heap-size>8G</heap-size>
-    <sonar.projectKey>com.objectionary:${project.name}</sonar.projectKey>
-    <sonar.organization>objectionary</sonar.organization>
-    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-    <!--
-    The EOsm layer is thin, repetitive syscall glue (JNA bindings, per-OS
-    dispatchers, near-identical stat structs); exclude it from duplication
-    detection
-    -->
-    <sonar.cpd.exclusions>**/org/eolang/posix/**,**/org/eolang/win32/**</sonar.cpd.exclusions>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
     <maven.compiler.source>17</maven.compiler.source>
@@ -103,12 +96,12 @@
       <dependency>
         <groupId>org.cactoos</groupId>
         <artifactId>cactoos</artifactId>
-        <version>0.62.0</version>
+        <version>0.63.0</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi.incubator</groupId>
         <artifactId>xembly</artifactId>
-        <version>0.32.2</version>
+        <version>0.32.3</version>
       </dependency>
       <dependency>
         <groupId>xml-apis</groupId>
@@ -127,14 +120,24 @@
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
+        <artifactId>commons-collections4</artifactId>
+        <version>4.6.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.20.0</version>
+        <version>3.22.0</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-text</artifactId>
         <version>1.15.0</version>
         <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>1.23.0</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
@@ -151,12 +154,6 @@
         <artifactId>junit-bom</artifactId>
         <version>6.1.3</version>
         <type>pom</type>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-launcher</artifactId>
-        <version>5.12.0</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -225,13 +222,13 @@
       <dependency>
         <groupId>net.sf.saxon</groupId>
         <artifactId>Saxon-HE</artifactId>
-        <version>13.0</version>
+        <version>13.1</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
         <artifactId>jcabi-xml</artifactId>
-        <version>0.37.1</version>
+        <version>0.37.3</version>
       </dependency>
       <dependency>
         <groupId>com.jcabi</groupId>
@@ -241,7 +238,7 @@
       <dependency>
         <groupId>com.yegor256</groupId>
         <artifactId>jaxec</artifactId>
-        <version>0.6.0</version>
+        <version>0.6.1</version>
       </dependency>
       <dependency>
         <groupId>com.yegor256</groupId>
@@ -256,9 +253,19 @@
         <scope>test</scope>
       </dependency>
       <dependency>
+        <groupId>org.jspecify</groupId>
+        <artifactId>jspecify</artifactId>
+        <version>1.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>2.0.20</version>
+      </dependency>
+      <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-reload4j</artifactId>
-        <version>2.0.19</version>
+        <version>2.0.20</version>
       </dependency>
       <dependency>
         <groupId>log4j</groupId>
@@ -303,7 +310,7 @@
       <dependency>
         <groupId>com.yegor256</groupId>
         <artifactId>together</artifactId>
-        <version>0.2.0</version>
+        <version>0.2.1</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -324,13 +331,13 @@
     <dependency>
       <groupId>org.apache.groovy</groupId>
       <artifactId>groovy</artifactId>
-      <version>5.1.2</version>
+      <version>6.0.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.groovy</groupId>
       <artifactId>groovy-xml</artifactId>
-      <version>5.1.2</version>
+      <version>6.0.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -344,7 +351,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>license-maven-plugin</artifactId>
-        <version>2.7.1</version>
+        <version>2.9.0</version>
         <executions>
           <execution>
             <id>check-licenses</id>
@@ -361,7 +368,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
-        <version>1.8.0</version>
+        <version>1.9.0</version>
         <executions>
           <execution>
             <goals>
@@ -381,7 +388,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>3.6.3</version>
+          <version>3.7.0</version>
           <executions>
             <execution>
               <id>enforce-java</id>
@@ -407,6 +414,16 @@
               <arg>-Xpkginfo:always</arg>
             </compilerArgs>
           </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-site-plugin</artifactId>
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.maven.doxia</groupId>
+              <artifactId>doxia-module-markdown</artifactId>
+              <version>2.2.0</version>
+            </dependency>
+          </dependencies>
         </plugin>
         <plugin>
           <groupId>com.github.github</groupId>
@@ -475,6 +492,7 @@
       <activation>
         <property>
           <name>skipTests</name>
+          <value>true</value>
         </property>
       </activation>
       <properties>
@@ -487,6 +505,7 @@
       <activation>
         <property>
           <name>skipITs</name>
+          <value>true</value>
         </property>
       </activation>
       <properties>
@@ -498,6 +517,7 @@
       <activation>
         <property>
           <name>skipUTs</name>
+          <value>true</value>
         </property>
       </activation>
       <properties>
@@ -533,7 +553,7 @@
           <plugin>
             <groupId>com.qulice</groupId>
             <artifactId>qulice-maven-plugin</artifactId>
-            <version>0.36.0</version>
+            <version>0.36.1</version>
             <configuration>
               <excludes combine.children="append">
                 <exclude>duplicatefinder:.*</exclude>
@@ -574,17 +594,17 @@
               <dependency>
                 <groupId>com.jcabi</groupId>
                 <artifactId>jcabi-xml</artifactId>
-                <version>0.37.1</version>
+                <version>0.37.3</version>
               </dependency>
               <dependency>
                 <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy-xml</artifactId>
-                <version>5.1.2</version>
+                <version>6.0.0</version>
               </dependency>
               <dependency>
                 <groupId>net.sf.saxon</groupId>
                 <artifactId>Saxon-HE</artifactId>
-                <version>13.0</version>
+                <version>13.1</version>
               </dependency>
             </dependencies>
           </plugin>

@@ -7,11 +7,10 @@ package org.eolang.posix;
 import com.sun.jna.Native;
 import java.util.function.Supplier;
 import org.eolang.Data;
-import org.eolang.PhDefault;
 import org.eolang.Phi;
 
 /**
- * The {@code output} of a file syscall's {@code return}, carrying the OS error
+ * The message of a file call's answer, carrying the OS error
  * reason when the native call failed.
  *
  * <p>libc reports a failure by returning {@code -1} and leaving the real cause
@@ -20,12 +19,12 @@ import org.eolang.Phi;
  * returns, and turns it into a human-readable message through {@link Strerror},
  * which keeps the number readable for the {@code errno} syscall that comes next.
  * That is why the wrapper builds it immediately after the call, before any other
- * native call can overwrite the value. On success it stays an empty
- * {@link PhDefault}, exactly what the wrappers put there before.</p>
+ * native call can overwrite the value. On success the message is an empty
+ * string, so EO reads a string out of it whether the call worked or not.</p>
  *
- * @since 0.74.0
+ * @since 0.64.0
  */
-final class Errno implements Supplier<Phi> {
+public final class Errno implements Supplier<Phi> {
 
     /**
      * The code the native call returned.
@@ -37,7 +36,7 @@ final class Errno implements Supplier<Phi> {
      *
      * @param status The code the native call returned
      */
-    Errno(final int status) {
+    public Errno(final int status) {
         this.code = status;
     }
 
@@ -49,7 +48,7 @@ final class Errno implements Supplier<Phi> {
                 new Strerror(Native.getLastError()).it()
             );
         } else {
-            output = new PhDefault();
+            output = new Data.ToPhi("");
         }
         return output;
     }

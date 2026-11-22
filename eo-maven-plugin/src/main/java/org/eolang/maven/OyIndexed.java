@@ -88,7 +88,28 @@ final class OyIndexed implements Objectionary {
                             name,
                             ex
                         );
-                        return !this.delegate.contains(name) && this.delegate.isDirectory(name);
+                        return !this.delegate.isProgram(name) && this.delegate.isDirectory(name);
+                    }
+                )
+            )
+        ).value();
+    }
+
+    @Override
+    public boolean isProgram(final String name) throws IOException {
+        return new IoChecked<>(
+            new ScalarWithFallback<>(
+                () -> this.index.contains(name),
+                new Fallback.From<>(
+                    Exception.class,
+                    ex -> {
+                        Logger.warn(
+                            this,
+                            "Failed to check program %s in objectionary index: %[exception]s",
+                            name,
+                            ex
+                        );
+                        return this.delegate.isProgram(name);
                     }
                 )
             )

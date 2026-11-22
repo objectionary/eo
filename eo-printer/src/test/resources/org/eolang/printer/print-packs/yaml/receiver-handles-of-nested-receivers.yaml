@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# Two nested formations, each with a receiver handle: a reference to the
+# inner receiver prints as "t", and one to the outer receiver as "t.s",
+# climbing through the handle of every formation it leaves rather than
+# through a bare "^" (#8227, #9245).
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [^s] > a
+    [^t] > b
+      t.s.foo > x
+      t.foo > y
