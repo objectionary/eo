@@ -49,6 +49,11 @@ import org.w3c.dom.Node;
  * out when it agrees on the sides of an {@code .if}, so a name read off
  * {@code x.if (T "too big") 42} is found in {@code 42} (#9982).</p>
  *
+ * <p>A void that some places leave empty is unknown, unless a call of the
+ * program, such as a test, puts {@code T} into it, as {@link Fillers} says.
+ * The voids that would be known with such a test are written to the log, so
+ * that the missing tests may be added (#9997).</p>
+ *
  * <p>What an atom returns is a type, such as
  * {@code Φ.posix.status-return(Φ.number,Φ.string)}. The formation it fixes is
  * the name before the brackets, and the brackets fix what Java puts into the
@@ -206,11 +211,23 @@ final class Grounded {
                 type -> type.elements(Filter.withName("terminator")).findAny().isPresent()
             ).map(type -> type.attribute("id").text().get()).collect(Collectors.toSet())
         );
-        return table.element("calls").elements(Filter.withName("call"))
+        final Collection<String> found = table.element("calls")
+            .elements(Filter.withName("call"))
             .filter(call -> origins.formation(call.attribute("loc").text().get()).isPresent())
             .flatMap(call -> call.elements(Filter.withName("arg")))
             .map(arg -> arg.attribute("loc").text().get())
             .collect(Collectors.toSet());
+        if (!origins.vacant().isEmpty()) {
+            Logger.info(
+                this,
+                "%d void(s) are left empty by some of their callers, while no call puts T into them, so the arguments read through them may find no void to be named after: %s; if such a void may indeed be left empty, add a test that passes T to it",
+                origins.vacant().size(),
+                origins.vacant().stream().map(
+                    hole -> String.format("'%s' of '%s'", hole.getValue(), hole.getKey())
+                ).sorted().collect(Collectors.joining(", "))
+            );
+        }
+        return found;
     }
 
     private Map<String, String> sole() throws IOException {

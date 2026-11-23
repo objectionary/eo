@@ -28,6 +28,10 @@
       "Can't convert non 8 length bytes to a number, bytes are %x".printf
         * data
 
+  eq. ++> can-convert-bytes-to-a-number-with-a-terminator-for-the-error
+    40-45-00-00-00-00-00-00.as-number T
+    42
+
   eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-a-number
     42
     01-01-01-01.as-number

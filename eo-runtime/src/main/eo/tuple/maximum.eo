@@ -65,4 +65,13 @@
         25
     25
 
+  eq. ++> can-take-a-maximum-with-a-terminator-for-the-error
+    25
+    maximum.
+      *
+        12
+        25
+        -2
+      T
+
   tuple.empty.maximum --> stops-on-an-empty-list-when-taking-the-maximum

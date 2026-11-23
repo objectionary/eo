@@ -203,6 +203,15 @@
         f.write "!" > [f]
     13
 
+  is-directory. ++> can-check-a-directory-with-a-terminator-for-the-error
+    file "."
+    T
+
+  not. ++> can-check-a-symbolic-link-with-a-terminator-for-the-error
+    is-symlink.
+      file "."
+      T
+
   ++> can-close-a-descriptor-when-the-scope-fails
     os.is-windows.or > @
       seq *
@@ -280,6 +289,15 @@
           f.write "Hello, world" > [f]
         "a+"
         true > [f]
+    12
+
+  eq. ++> can-open-a-file-with-a-terminator-for-the-error
+    size.
+      open.
+        file mktemp.tmpfile.path
+        "w"
+        f.write "Hello, world" > [f]
+        T
     12
 
   ++> can-read-from-a-file

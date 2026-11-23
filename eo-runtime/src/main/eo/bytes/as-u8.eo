@@ -20,6 +20,10 @@
 
   2A-.as-u8.as-bytes.eq 2A- ++> can-convert-bytes-to-u8-and-back
 
+  eq. ++> can-convert-bytes-to-u8-with-a-terminator-for-the-error
+    2A-.as-u8 T
+    u8 2A-
+
   eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-u8
     u8 9C-
     41-06-D2.as-u8

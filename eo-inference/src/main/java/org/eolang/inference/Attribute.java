@@ -14,7 +14,8 @@ package org.eolang.inference;
  *
  * @param open Whether it is a void
  * @param holds The formation it is declared to hold, empty when none
+ * @param variable The type variable it carries, empty when none
  * @since 0.76.0
  */
-record Attribute(boolean open, String holds) {
+record Attribute(boolean open, String holds, String variable) {
 }

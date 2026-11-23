@@ -125,6 +125,11 @@
 
   42.as-i64.as-bytes.eq 00-00-00-00-00-00-00-2A ++> can-convert-the-origin-number
 
+  eq. ++> can-convert-the-origin-number-with-a-terminator-for-the-error
+    as-bytes.
+      42.as-i64 T
+    00-00-00-00-00-00-00-2A
+
   eq. ++> can-recover-from-a-negative-past-the-boundary
     i64 5C-13-A8-07-E1-94-3B-6D
     -9.223372036854778e18.as-i64

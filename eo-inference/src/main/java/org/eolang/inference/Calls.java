@@ -144,10 +144,6 @@ final class Calls {
     private Ints head(final int num, final Call call, final Set<Landing> landed) {
         int head = num;
         Value value = this.world.value(head);
-        if (value.kind() == 'B') {
-            head = value.base();
-            value = this.world.value(head);
-        }
         if (value.kind() == 'A' && value.origin() >= 0) {
             head = value.origin();
             value = this.world.value(head);
@@ -269,7 +265,7 @@ final class Calls {
             );
             this.state.enclose(copy, call.ctx());
             this.applied(copy, call);
-            this.bind(value, voids, call);
+            this.bind(copy, voids, call);
             this.state.remember(copy);
             if (!narrowed) {
                 out.add(copy);
@@ -297,12 +293,12 @@ final class Calls {
             && (value.bound() & Formation.RHO) != 0;
     }
 
-    private void bind(final Value value, final List<String> voids, final Call call) {
-        final String form = value.form();
+    private void bind(final int copy, final List<String> voids, final Call call) {
+        final String form = this.world.value(copy).form();
         final Formation shape = this.world.form(form);
         for (int arg = 0; arg < voids.size(); ++arg) {
             if (shape.back(voids.get(arg))) {
-                this.back(voids.get(arg), arg, shape, call);
+                this.back(shape.args(voids.get(arg)), copy, arg, call);
             }
         }
         if (this.world.atom(form)) {
@@ -314,9 +310,11 @@ final class Calls {
         }
     }
 
-    private void back(final String name, final int arg, final Formation shape, final Call call) {
+    private void back(final List<String> types, final int copy, final int arg, final Call call) {
+        final List<Annotation> annotations = types.stream()
+            .map(type -> new Annotation(type, copy)).toList();
         for (final int val : call.raw().get(arg)) {
-            this.state.called(val, shape.args(name), call.site());
+            this.state.called(val, annotations, call.site());
         }
     }
 

@@ -22,6 +22,10 @@
     00-00-00-00-00-00-00-33.as-u64.as-bytes
     00-00-00-00-00-00-00-33
 
+  eq. ++> can-convert-bytes-to-u64-with-a-terminator-for-the-error
+    00-00-00-00-00-00-00-2A.as-u64 T
+    u64 00-00-00-00-00-00-00-2A
+
   eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-u64
     u64 00-00-00-00-00-00-00-2A
     01-01-01-01.as-u64

@@ -195,7 +195,12 @@ final class Provides implements Section {
                 .set("type", attr.says("loc"));
             if ("∅".equals(attr.says("base"))) {
                 row.set("void", "true");
-                final String held = Provides.held(attr.says("type"));
+                final String declared = attr.says("type");
+                final String held = Provides.held(declared);
+                final Annotation type = new Annotation(declared);
+                if (type.variable()) {
+                    row.set("variable", type.head());
+                }
                 if (!held.isEmpty()) {
                     row.set("holds", held);
                 }

@@ -120,6 +120,13 @@
       dividend
     -235.as-i64 > dividend
 
+  eq. ++> can-divide-i64-with-a-terminator-for-the-error
+    div.
+      i64 00-00-00-00-00-00-00-0D
+      i64 FF-FF-FF-FF-FF-FF-FF-FB
+      T
+    i64 FF-FF-FF-FF-FF-FF-FF-FE
+
   lt. ++> can-divide-into-less-than-one
     1.as-i64.div 5.as-i64
     1.as-i64

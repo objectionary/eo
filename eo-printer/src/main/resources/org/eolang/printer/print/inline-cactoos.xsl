@@ -140,7 +140,7 @@
     <xsl:variable name="target" select="ancestor::o/o[@name=$name][1]"/>
     <xsl:variable name="keep-name" as="xs:boolean" select="exists($target) and (eo:abstract($target) or ($target/@base = '.as-bytes' and $target/o[1]/@base = 'Φ.dataized' and eo:abstract($target/o[1]/o[1])))"/>
     <xsl:choose>
-      <xsl:when test="exists($target) and not(eo:recursive($target, $name)) and not(eo:vertical-const($target)) and not(eo:nested-const($target, $name)) and not(eo:multi-referenced($target, $name) and eo:rebuilt($target)) and not(eo:reapplied($target, $name))">
+      <xsl:when test="exists($target) and not(eo:recursive($target, $name)) and not(eo:vertical-const($target)) and not(eo:nested-const($target, $name)) and not(eo:multi-referenced($target, $name) and eo:rebuilt($target)) and not(eo:reapplied($target, $name)) and not(eo:too-deep($target, $name))">
         <xsl:choose>
           <!--
           The reference is the base of an application — it carries its own
@@ -633,7 +633,27 @@
   <xsl:function name="eo:kept-binding" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string"/>
-    <xsl:sequence select="eo:recursive($target, $name) or eo:dispatched($target, $name) or eo:vertical-const($target) or eo:nested-const($target, $name) or eo:unreferenced($target, $name) or (eo:multi-referenced($target, $name) and eo:rebuilt($target)) or eo:piped($target, $name) or eo:arg-applied($target, $name) or eo:nested-applied($target, $name) or eo:reapplied($target, $name)"/>
+    <xsl:sequence select="eo:recursive($target, $name) or eo:dispatched($target, $name) or eo:vertical-const($target) or eo:nested-const($target, $name) or eo:unreferenced($target, $name) or (eo:multi-referenced($target, $name) and eo:rebuilt($target)) or eo:piped($target, $name) or eo:arg-applied($target, $name) or eo:nested-applied($target, $name) or eo:reapplied($target, $name) or eo:too-deep($target, $name)"/>
+  </xsl:function>
+  <!--
+  Whether folding the based binding `$target` into one of its bare references
+  would put some object of its body deeper than the `too-deep-object` lint
+  accepts (`eo:depth-limit`). Such a fold drops the handle and lands the value
+  as an anonymous argument, which the parser leaves where it is written, so the
+  body sits as deep below the reference as it sits below the binding now. A
+  value written with its `&gt;&gt; name` instead is hoisted back to its owner by
+  the parser wherever it stands, so the binding is kept here, "restore-local-names"
+  keeps its readable handle, and "merge-monikers" hosts it at the reference with
+  that name: a spelling the lint accepts (#9891). An abstract formation keeps its
+  name when folded (see "keep-name" above) and is never too deep for that reason.
+  The body measured is the one that lands, at the end of the alias chain (see
+  `eo:alias-target`): a bare alias `p &gt;&gt; r` has no body of its own, yet
+  folding it lands the whole value of `p`.
+  -->
+  <xsl:function name="eo:too-deep" as="xs:boolean">
+    <xsl:param name="target" as="element()"/>
+    <xsl:param name="name" as="xs:string"/>
+    <xsl:sequence select="not(eo:abstract($target)) and (let $height := eo:lint-height(eo:alias-target($target, ())) return some $ref in eo:references($target, $name)[eo:resolved-name(@base) = $name] satisfies eo:lint-depth($ref) + $height gt $eo:depth-limit)"/>
   </xsl:function>
   <!--
   The references in the binding's owner that reach the auto-name `$name`

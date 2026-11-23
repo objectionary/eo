@@ -88,6 +88,12 @@
     "000"
     "".padded-zeros 3
 
+  eq. ++> can-pad-with-zeros-with-a-terminator-for-the-error
+    "-007"
+    "-7".padded-zeros
+      4
+      T
+
   eq. ++> can-recover-from-a-negative-width-when-padding-with-zeros
     "recovered"
     "7".padded-zeros

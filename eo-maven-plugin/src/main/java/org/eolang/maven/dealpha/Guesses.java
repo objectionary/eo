@@ -41,11 +41,18 @@ final class Guesses {
     private final Deque<Set<String>> touched;
 
     /**
+     * The voids each lookup in progress opened itself, the innermost lookup
+     * on top.
+     */
+    private final Deque<Set<String>> opened;
+
+    /**
      * Ctor.
      */
     Guesses() {
         this.held = new HashMap<>(0);
         this.touched = new ArrayDeque<>(0);
+        this.opened = new ArrayDeque<>(0);
     }
 
     /**
@@ -91,6 +98,9 @@ final class Guesses {
      * @param guess What it is taken to hold, or nothing
      */
     void guess(final String place, final Optional<Copy> guess) {
+        if (!this.held.containsKey(place) && !this.opened.isEmpty()) {
+            this.opened.peek().add(place);
+        }
         this.held.put(place, guess);
     }
 
@@ -110,13 +120,56 @@ final class Guesses {
      * @return What it found, and the voids it ran into
      */
     Map.Entry<Optional<Copy>, Set<String>> tracked(final Supplier<Optional<Copy>> lookup) {
-        this.touched.push(new HashSet<>(0));
-        final Optional<Copy> found = lookup.get();
-        final Set<String> ran = this.touched.pop();
-        if (!this.touched.isEmpty()) {
-            this.touched.peek().addAll(ran);
+        final Map.Entry<Optional<Copy>, Map.Entry<Set<String>, Set<String>>> run =
+            this.framed(lookup);
+        return Map.entry(run.getKey(), run.getValue().getKey());
+    }
+
+    /**
+     * Run a lookup and tell in what situation it ran: which of the open voids
+     * it leaned on, with their guesses, and which voids it opened itself.
+     *
+     * @param lookup The lookup
+     * @return What it found, and the situation
+     */
+    Map.Entry<Optional<Copy>, Situation> situated(final Supplier<Optional<Copy>> lookup) {
+        final Map.Entry<Optional<Copy>, Map.Entry<Set<String>, Set<String>>> run =
+            this.framed(lookup);
+        final Map<String, Optional<Copy>> leaned = new HashMap<>(0);
+        for (final String place : run.getValue().getKey()) {
+            if (this.held.containsKey(place)) {
+                leaned.put(place, this.held.get(place));
+            }
         }
-        return Map.entry(found, ran);
+        return Map.entry(run.getKey(), new Situation(leaned, run.getValue().getValue()));
+    }
+
+    /**
+     * Whether a lookup that ran in the situation would run the same way now:
+     * every open void it leaned on is still open with the same guess, and no
+     * void it opened itself is open now.
+     *
+     * @param situation The situation
+     * @return TRUE if it would
+     */
+    boolean holds(final Situation situation) {
+        return situation.leaned().entrySet().stream().allMatch(
+            entry -> this.held.containsKey(entry.getKey())
+                && this.held.get(entry.getKey()).equals(entry.getValue())
+        ) && situation.opened().stream().noneMatch(this.held::containsKey);
+    }
+
+    /**
+     * Note that the lookup in progress leaned on the voids and opened the
+     * voids that an earlier lookup did, when it reuses what that one found.
+     *
+     * @param situation The situation of the earlier lookup
+     */
+    void replay(final Situation situation) {
+        this.replay(situation.leaned().keySet());
+        if (!this.opened.isEmpty()) {
+            this.opened.peek().addAll(situation.opened());
+        }
     }
 
     /**
@@ -142,5 +195,20 @@ final class Guesses {
      */
     boolean leaning(final Set<String> places) {
         return places.stream().anyMatch(this.held::containsKey);
+    }
+
+    private Map.Entry<Optional<Copy>, Map.Entry<Set<String>, Set<String>>> framed(
+        final Supplier<Optional<Copy>> lookup
+    ) {
+        this.touched.push(new HashSet<>(0));
+        this.opened.push(new HashSet<>(0));
+        final Optional<Copy> found = lookup.get();
+        final Set<String> ran = this.touched.pop();
+        final Set<String> own = this.opened.pop();
+        if (!this.touched.isEmpty()) {
+            this.touched.peek().addAll(ran);
+            this.opened.peek().addAll(own);
+        }
+        return Map.entry(found, Map.entry(ran, own));
     }
 }

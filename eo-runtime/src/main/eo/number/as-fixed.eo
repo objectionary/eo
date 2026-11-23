@@ -167,6 +167,11 @@
     string
       3.14159.as-fixed 2
 
+  eq. ++> can-honour-custom-places-with-a-terminator-for-the-error
+    "3.14"
+    string
+      3.14159.as-fixed 2 T
+
   eq. ++> can-omit-the-decimal-point-with-zero-places
     "3"
     string

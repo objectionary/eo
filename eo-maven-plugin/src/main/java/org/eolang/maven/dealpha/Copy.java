@@ -48,6 +48,14 @@ import org.eolang.inference.Annotation;
  * {@link #terminator()} says. A name read off it, or a call on it, is a
  * terminator too, since the program never gets that far (#9982).</p>
  *
+ * <p>A copy may also end: it is of its formations, or else it is the
+ * terminator, as a void is that one call fills with {@code T} and another
+ * with {@code [message]} (#9997). A name read off it is looked up in its
+ * formations, since the terminator never gets that far. A call on it, though,
+ * may land in the terminator, which takes its message by position only, so
+ * the code does not fix where its arguments land, and the copy a call on it
+ * makes ends too.</p>
+ *
  * @since 0.76.0
  */
 final class Copy {
@@ -71,6 +79,11 @@ final class Copy {
     private final Set<String> forms;
 
     /**
+     * Whether it may be the terminator instead of any of its formations.
+     */
+    private final boolean end;
+
+    /**
      * Ctor.
      *
      * @param kind The type: the formation, and the types an atom gives its
@@ -89,7 +102,7 @@ final class Copy {
     Copy(final Collection<String> candidates) {
         this(
             new Annotation(new TreeSet<>(candidates).first()), Optional.empty(),
-            new TreeSet<>(candidates)
+            new TreeSet<>(candidates), false
         );
     }
 
@@ -101,7 +114,7 @@ final class Copy {
      * @param maker The call that made the copy, when the code shows one
      */
     Copy(final Annotation kind, final Optional<Map.Entry<String, Annotation>> maker) {
-        this(kind, maker, new TreeSet<>(Set.of(kind.head())));
+        this(kind, maker, new TreeSet<>(Set.of(kind.head())), false);
     }
 
     /**
@@ -112,14 +125,16 @@ final class Copy {
      * @param maker The call that made the copy, when the code shows one
      * @param candidates The formations the copy may be of, which nobody
      *  changes afterwards
+     * @param ends Whether it may be the terminator instead
      */
     private Copy(
         final Annotation kind, final Optional<Map.Entry<String, Annotation>> maker,
-        final SortedSet<String> candidates
+        final SortedSet<String> candidates, final boolean ends
     ) {
         this.type = kind;
         this.call = maker;
         this.forms = candidates;
+        this.end = ends;
     }
 
     @Override
@@ -132,14 +147,15 @@ final class Copy {
         } else {
             result = this.type.equals(((Copy) other).type)
                 && this.call.equals(((Copy) other).call)
-                && this.forms.equals(((Copy) other).forms);
+                && this.forms.equals(((Copy) other).forms)
+                && this.end == ((Copy) other).end;
         }
         return result;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.type, this.call, this.forms);
+        return Objects.hash(this.type, this.call, this.forms, this.end);
     }
 
     /**
@@ -149,7 +165,7 @@ final class Copy {
      * @return The copy
      */
     static Copy terminator() {
-        return new Copy(new Annotation("⊥"), Optional.empty(), new TreeSet<>());
+        return new Copy(new Annotation("⊥"), Optional.empty(), new TreeSet<>(), false);
     }
 
     /**
@@ -160,7 +176,7 @@ final class Copy {
      * @return The copy
      */
     static Copy looped() {
-        return new Copy(new Annotation("↺"), Optional.empty(), new TreeSet<>());
+        return new Copy(new Annotation("↺"), Optional.empty(), new TreeSet<>(), false);
     }
 
     /**
@@ -181,6 +197,26 @@ final class Copy {
      */
     boolean loops() {
         return this.forms.isEmpty() && "↺".equals(this.type.head());
+    }
+
+    /**
+     * Whether it may be the terminator instead of any of its formations, so
+     * that a call on it fixes nothing about where its arguments land.
+     *
+     * @return TRUE if it may
+     */
+    boolean ends() {
+        return this.end;
+    }
+
+    /**
+     * The same copy, which may be the terminator instead, or not.
+     *
+     * @param ends Whether it may be the terminator instead
+     * @return The copy
+     */
+    Copy ending(final boolean ends) {
+        return new Copy(this.type, this.call, new TreeSet<>(this.forms), ends);
     }
 
     /**
@@ -222,7 +258,9 @@ final class Copy {
      */
     Collection<Copy> candidates() {
         return this.forms.stream().map(
-            form -> new Copy(new Annotation(form), this.call, new TreeSet<>(Set.of(form)))
+            form -> new Copy(
+                new Annotation(form), this.call, new TreeSet<>(Set.of(form)), false
+            )
         ).collect(Collectors.toList());
     }
 
@@ -237,7 +275,7 @@ final class Copy {
     Copy applied(final String place, final Copy outer) {
         return new Copy(
             new Annotation(this.formation()), Optional.of(Map.entry(place, outer.type)),
-            new TreeSet<>(this.forms)
+            new TreeSet<>(this.forms), this.end
         );
     }
 
@@ -332,10 +370,10 @@ final class Copy {
             || forms.stream().map(calls::voids).distinct().count() > 1L) {
             found = Optional.empty();
         } else if (known.size() == 1) {
-            found = known.stream().findFirst();
+            found = known.stream().findFirst().map(copy -> copy.ending(false));
         } else if (makers.size() == 1) {
             found = Optional.of(
-                new Copy(new Annotation(forms.first()), makers.iterator().next(), forms)
+                new Copy(new Annotation(forms.first()), makers.iterator().next(), forms, false)
             );
         } else {
             found = Optional.of(new Copy(forms));

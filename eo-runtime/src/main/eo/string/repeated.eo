@@ -82,6 +82,12 @@
       as-bytes.
         "x".repeated 20000
 
+  eq. ++> can-repeat-a-text-with-a-terminator-for-the-error
+    "xxx"
+    "x".repeated
+      3
+      T
+
   eq. ++> can-repeat-a-text-zero-times
     ""
     "some".repeated 0

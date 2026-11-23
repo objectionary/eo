@@ -281,6 +281,38 @@
     <xsl:param name="ref" as="element()"/>
     <xsl:sequence select="exists($ref/following-sibling::o[@name = eo:resolved-name($ref/@base)][@local][eo:recursive(., @name/string())])"/>
   </xsl:function>
+  <!--
+  The based handle whose value "$target" lands when folded, chasing a chain of
+  bare-reference aliases (`p &gt;&gt; r` over `a.plus 1 &gt;&gt; p`) to its end, the
+  same chain "inline-cactoos" follows in its "eo:alias-target". A target that is
+  not such an alias is its own end. "$seen" ends a cycle of aliases.
+  -->
+  <xsl:function name="eo:alias-end" as="element()">
+    <xsl:param name="target" as="element()"/>
+    <xsl:param name="seen" as="element()*"/>
+    <xsl:variable name="inner" select="$target/ancestor::o/o[@name=eo:resolved-name($target/@base)][1]"/>
+    <xsl:sequence select="if (contains($target/@base, $auto-dot) and not($target/o) and exists($inner) and not(eo:abstract($inner)) and (every $node in $seen satisfies not($inner is $node))) then eo:alias-end($inner, ($seen, $target)) else $target"/>
+  </xsl:function>
+  <!--
+  Whether folding the based binding "$target" into one of its references without
+  its handle would nest its body deeper than the `too-deep-object` lint accepts
+  (#9891). Without "@local" the value lands at the reference anonymously, either
+  inlined by "inline-cactoos" into a bare reference or hosted by "merge-monikers"
+  as the receiver of a dispatch "ξ.&lt;name&gt;.&lt;seg&gt;", one level below every
+  reversed dispatch the segments turn into; the parser leaves such a value where
+  it is written. With "@local" kept, the value lands as `... &gt;&gt; name`, which
+  the parser hoists back to its owner, and its references read the handle, so the
+  marker is kept here. "inline-cactoos" asks the same of a bare reference and
+  leaves the binding to "merge-monikers"; the sheets must agree, or the binding
+  survives with no readable handle and its references print as a synthetic
+  "vL_P" placeholder. The body measured is the one that lands, at the end of the
+  alias chain (see `eo:alias-end`).
+  -->
+  <xsl:function name="eo:too-deep" as="xs:boolean">
+    <xsl:param name="target" as="element()"/>
+    <xsl:param name="name" as="xs:string?"/>
+    <xsl:sequence select="not(eo:abstract($target)) and (let $height := eo:lint-height(eo:alias-end($target, ())) return some $ref in eo:references($target, $name) satisfies eo:lint-depth($ref) + count(tokenize(substring-after(eo:resolved-name($ref/@base), concat($name, '.')), '\.')[. != '']) + $height gt $eo:depth-limit)"/>
+  </xsl:function>
   <xsl:key name="kept-handle" match="o[@local and (eo:recursive(., @name/string()) or @pipe)]" use="@name"/>
   <!--
   Whether some formation of this file names its receiver, "[^s …]"
@@ -370,7 +402,7 @@
   with its name, so the handle reaches "to-eo-tree" there; drop it on the other
   non-void formations, whose handle is inlined away by "inline-cactoos".
   -->
-  <xsl:template match="o[not(@base=$eo:empty) and not(@pipe) and not(eo:recursive(., @name/string())) and not(eo:dispatched(., @name/string())) and not(eo:applied-receiver(., @name/string())) and not(eo:multi-referenced(., @name/string())) and not(eo:unreferenced(., @name/string())) and not(eo:nested-referenced(., @name/string())) and not(eo:reapplied(., @name/string())) and not(eo:const-valued(., @name/string())) and not(eo:const-handle(parent::o/parent::o))]/@local"/>
+  <xsl:template match="o[not(@base=$eo:empty) and not(@pipe) and not(eo:recursive(., @name/string())) and not(eo:dispatched(., @name/string())) and not(eo:applied-receiver(., @name/string())) and not(eo:multi-referenced(., @name/string())) and not(eo:unreferenced(., @name/string())) and not(eo:nested-referenced(., @name/string())) and not(eo:reapplied(., @name/string())) and not(eo:const-valued(., @name/string())) and not(eo:const-handle(parent::o/parent::o)) and not(eo:too-deep(., @name/string()))]/@local"/>
   <!--
   When a recursive "&gt;&gt; name" handle is restored, its cactus name is
   promoted to the visible "@name" and every reference is rewritten from the

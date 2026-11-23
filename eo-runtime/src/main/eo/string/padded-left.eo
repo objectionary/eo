@@ -66,6 +66,13 @@
       5
       " "
 
+  eq. ++> can-pad-left-with-a-terminator-for-the-error
+    "0042"
+    "42".padded-left
+      4
+      "0"
+      T
+
   eq. ++> can-pad-with-leading-zeros
     "0042"
     "42".padded-left

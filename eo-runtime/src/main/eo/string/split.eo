@@ -63,6 +63,14 @@
       * > [message]
         "recovered"
 
+  eq. ++> can-split-a-string-with-a-terminator-for-the-error
+    "a-b".split
+      "-"
+      T
+    *
+      "a"
+      "b"
+
   eq. ++> can-split-a-text-into-empty-strings
     "-a-b-".split "-"
     *

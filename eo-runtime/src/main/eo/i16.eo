@@ -103,6 +103,13 @@
       dividend
     -32768.as-i64.as-i32.as-i16 > dividend
 
+  eq. ++> can-divide-i16-with-a-terminator-for-the-error
+    div.
+      i16 00-0D
+      i16 FF-FB
+      T
+    i16 FF-FE
+
   lt. ++> can-divide-into-less-than-one
     1.as-i64.as-i32.as-i16.div 5.as-i64.as-i32.as-i16
     1.as-i64.as-i32.as-i16

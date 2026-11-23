@@ -20,6 +20,10 @@
 
   2A-.as-i8.as-bytes.eq 2A- ++> can-convert-bytes-to-i8-and-back
 
+  eq. ++> can-convert-bytes-to-i8-with-a-terminator-for-the-error
+    2A-.as-i8 T
+    i8 2A-
+
   eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-i8
     i8 E5-
     7C-03.as-i8
