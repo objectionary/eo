@@ -21,9 +21,11 @@
 # a `!` attribute keeps is the bytes and not the object they came from.
 #
 # When the dividend is `nan` or infinite, the result is `nan`, regardless
-# of the divisor. `b` is always read through `checked`; the receiver only
-# on the path that subtracts, since every earlier answer returns it as it
-# stands, width unexamined.
+# of the divisor. Both the number and `b` have to be eight bytes wide, as
+# `plus` and `div` ask of theirs, but the zero comparison and the two
+# `is-finite` predicates read the raw bytes, so a zero divisor answers
+# `cant-mod`, and a non-finite dividend answers `nan`, before the other
+# operand is looked at. `checked` stands only where the inline guard stood.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -35,19 +37,23 @@
 [^num b cant-mod] > mod
   if. > @
     eq.
-      b.checked >> divisor
+      number b.as-bytes >> divisor
       0
     cant-mod "cannot calculate mod by zero"
     dividend.is-finite.not.if
-      nan
+      seq *
+        num.checked
+        nan
       divisor.is-finite.not.if
-        divisor.is-nan.if nan num
+        seq *
+          b.checked
+          divisor.is-nan.if nan num
         if.
           num.as-bytes.eq 80-00-00-00-00-00-00-00
           num
           if.
             gte.
-              num.checked >> dividend
+              number num.as-bytes >> dividend
               0
             [^num] >> abs-mod
               [^num chunk rest] >> shrink
@@ -77,8 +83,19 @@
       0
       42 > [message]
 
+  eq. ++> can-recover-from-a-modulo-by-zero-of-a-not-a-number-dividend
+    42
+    mod.
+      number 01-02
+      0
+      42 > [message]
+
   is-nan. ++> can-return-nan-when-the-dividend-is-infinite
     pinf.mod 5
+
+  is-nan. ++> can-return-nan-when-the-dividend-is-infinite-and-the-divisor-is-not-a-number
+    pinf.mod
+      number 01-02
 
   is-nan. ++> can-return-nan-when-the-dividend-is-nan
     nan.mod 5

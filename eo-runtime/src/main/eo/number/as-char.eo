@@ -68,6 +68,9 @@
 
   128.as-char --> stops-on-a-code-past-the-ascii-range
 
+  as-char. --> stops-on-a-code-that-is-not-a-number
+    number "abc"
+
   3.5.as-char --> stops-on-a-fractional-code
 
   -1.as-char --> stops-on-a-negative-code
