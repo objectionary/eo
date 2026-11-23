@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.eolang.maven.dealpha.Dealphaing;
 
 /**
  * Mojo that gives the positional arguments of a program the names of the
@@ -77,7 +78,7 @@ public final class MjDealpha extends MjSafe {
         try (TjsForeign tojos = this.tojos()) {
             new Dealphaing(
                 tojos.standalone(),
-                new Landings(inference),
+                inference,
                 this.target.toPath(),
                 this.rigid
             ).exec();
