@@ -867,8 +867,19 @@
       initial.eq --
       [position cause] >> no
         position > at
+        T > from
+        T > groups
+        T > least
+        T > letter
+        T > mode
+        T > most
+        T > negated
+        T > node
         false > ok
+        T > preset
         cause > reason
+        T > text
+        T > to
       | -1 "The flags must be a sequence of 'd', 'i', 'm', 's', 'u' and 'x'"
       outcome.ok.if
         if.
@@ -895,39 +906,97 @@
             "'".as-bytes
     [position tally options root content] >> yes
       position > at
+      T > from
       tally > groups
+      T > least
+      T > letter
       options > mode
+      T > most
+      T > negated
       root > node
       true > ok
+      T > preset
+      T > reason
       content > text
+      T > to
     [position content] >> read
       position > at
+      T > from
+      T > groups
+      T > least
+      T > letter
+      T > mode
+      T > most
+      T > negated
+      T > node
       true > ok
+      T > preset
+      T > reason
       content > text
+      T > to
     [position since till] >> span
       position > at
       since > from
+      T > groups
+      T > least
+      T > letter
+      T > mode
+      T > most
+      T > negated
+      T > node
       true > ok
       false > preset
+      T > reason
+      T > text
       till > to
     [position symbol inverted] >> named
       position > at
+      T > from
+      T > groups
+      T > least
       symbol > letter
+      T > mode
+      T > most
       inverted > negated
+      T > node
       true > ok
       true > preset
+      T > reason
+      T > text
+      T > to
     [position minimum maximum] >> bounds
       position > at
+      T > from
+      T > groups
       minimum > least
+      T > letter
+      T > mode
       maximum > most
+      T > negated
+      T > node
       true > ok
+      T > preset
+      T > reason
+      T > text
+      T > to
     [position amount] >> numeral
       position > at
       amount > value
     [position options] >> switched
       position > at
+      T > from
+      T > groups
+      T > least
+      T > letter
       options > mode
+      T > most
+      T > negated
+      T > node
       true > ok
+      T > preset
+      T > reason
+      T > text
+      T > to
     bit.eq > [bit mode] >> flagged
       mode.and bit
     or. > [b] >> halts
