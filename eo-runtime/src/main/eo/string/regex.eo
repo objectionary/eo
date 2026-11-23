@@ -1107,16 +1107,18 @@
     [^regex acc] >> alternate
       if. > @
         eq.
-          byte acc.at
+          byte
+            number acc.at
           7C-
         n.ok.if
           regex.alternate
             yes
-              at.
-                pieces >> n
-                  acc.at.plus 1
-                  acc.groups
-                  acc.mode
+              number
+                at.
+                  pieces >> n
+                    plus. (number acc.at) 1
+                    acc.groups
+                    acc.mode
               n.groups
               n.mode
               choice acc.node n.node
@@ -1148,7 +1150,9 @@
         halts
           byte
             number
-              skip acc.at acc.mode >> here!
+              skip >> here!
+                number acc.at
+                acc.mode
         yes
           number here
           acc.groups
@@ -1158,11 +1162,12 @@
         p.ok.if
           regex.more
             yes
-              at.
-                piece >> p
-                  number here
-                  acc.groups
-                  acc.mode
+              number
+                at.
+                  piece >> p
+                    number here
+                    acc.groups
+                    acc.mode
               p.groups
               p.mode
               sequence acc.node p.node
@@ -1189,28 +1194,29 @@
                     3F-
                   g.eq 2B-
                 plus.
-                  skip b.at a.mode >> gat
+                  skip (number b.at) a.mode >> gat
                   1
-                at.
-                  if. >> b
-                    q.eq 7B-
-                    braces
-                      plus.
-                        skip a.at a.mode >> qat
-                        1
-                    if.
-                      q.eq 2A-
-                      bounds
-                        qat.plus 1
-                        0
-                        number 7F-F0-00-00-00-00-00-00
+                number
+                  at.
+                    if. >> b
+                      q.eq 7B-
+                      braces
+                        plus.
+                          skip (number a.at) a.mode >> qat
+                          1
                       if.
-                        q.eq 2B-
+                        q.eq 2A-
                         bounds
                           qat.plus 1
-                          1
+                          0
                           number 7F-F0-00-00-00-00-00-00
-                        bounds (qat.plus 1) 0 1
+                        if.
+                          q.eq 2B-
+                          bounds
+                            qat.plus 1
+                            1
+                            number 7F-F0-00-00-00-00-00-00
+                          bounds (qat.plus 1) 0 1
               groups.
                 atom index opened bits >> a
               a.mode
@@ -1361,7 +1367,12 @@
     [^regex index opened bits] >> braced
       r.ok.if > @
         if.
-          r.at.as-bytes.eq index.as-bytes
+          eq.
+            as-bytes.
+              number
+                at.
+                  scanned index bits -- >> r
+            index.as-bytes
           escaped
             index.plus 1
             opened
@@ -1372,21 +1383,24 @@
               or.
                 eq.
                   byte
-                    at.
-                      scanned index bits -- >> r
+                    number r.at
                   2A-
                 or.
-                  eq. (byte r.at) 2B-
-                  eq. (byte r.at) 3F-
+                  eq.
+                    byte (number r.at)
+                    2B-
+                  eq.
+                    byte (number r.at)
+                    3F-
             no
               index
               string
                 concat.
                   "Dangling meta character '".as-bytes.concat
-                    byte r.at
+                    byte (number r.at)
                   "'".as-bytes
             yes
-              r.at
+              number r.at
               opened
               bits
               plain bits r.text
@@ -1420,8 +1434,9 @@
                 e.eq 78-
                 h.ok.if
                   regex.scanned
-                    at.
-                      hexed (index.plus 2) >> h
+                    number
+                      at.
+                        hexed (index.plus 2) >> h
                     mode
                     acc.concat h.text
                   h
@@ -1519,8 +1534,9 @@
               no start "Character class intersections are not supported"
               e.ok.if
                 regex.members
-                  at.
-                    entry start bits >> e
+                  number
+                    at.
+                      entry start bits >> e
                   opened
                   bits
                   e.preset.if
@@ -1539,21 +1555,21 @@
           if.
             eq.
               byte
-                at.
-                  single index mode >> s
+                number
+                  at.
+                    single index mode >> s
               2D-
             if.
               or.
                 eq.
-                  byte >> n
-                    s.at.plus 1
+                  byte ((number s.at).plus 1) >> n
                   5D-
                 n.eq 5B-
               s
               if.
                 n.eq --
                 no
-                  s.at.plus 1
+                  plus. (number s.at) 1
                   "Illegal character range"
                 ranged s mode
             s
@@ -1566,11 +1582,18 @@
               key low.from
               key
                 from.
-                  single (low.at.plus 1) mode >> u
+                  single >> u
+                    plus. (number low.at) 1
+                    mode
           no
-            u.at.plus -1
+            plus.
+              number u.at
+              -1
             "Illegal character range"
-          span u.at low.from u.from
+          span
+            number u.at
+            low.from
+            u.from
         u
     [^regex index mode] >> single
       if. > @
@@ -1595,9 +1618,10 @@
           e.eq 78-
           h.ok.if
             span
-              at.
-                hexed >> h
-                  index.plus 1
+              number
+                at.
+                  hexed >> h
+                    index.plus 1
               h.text
               h.text
             h
@@ -1810,17 +1834,22 @@
         if.
           eq.
             byte
-              at.
-                modifiers index bits true >> m
+              number
+                at.
+                  modifiers index bits true >> m
             29-
           yes
-            m.at.plus 1
+            plus.
+              number m.at
+              1
             opened
             m.mode
             empty
             --
           closed
-            m.at.plus 1
+            plus.
+              number m.at
+              1
             opened
             m.mode
             bits
@@ -1863,11 +1892,14 @@
         if.
           eq.
             byte
-              at.
-                alternatives from opened bits >> r
+              number
+                at.
+                  alternatives from opened bits >> r
             29-
           yes
-            r.at.plus 1
+            plus.
+              number r.at
+              1
             r.groups
             outer
             if.
@@ -1881,26 +1913,34 @@
       if. > @
         n.value.eq -2
         no
-          at.
-            counted -1 index >> n
+          number
+            at.
+              counted -1 index >> n
           "Illegal repetition range"
         if.
           0.gt n.value
           no index "Illegal repetition"
           if.
             eq.
-              byte n.at >> c
+              byte >> c
+                number n.at
               7D-
             bounds
-              n.at.plus 1
+              plus.
+                number n.at
+                1
               n.value
               n.value
             if.
               c.eq 2C-
               capped
-                n.at.plus 1
+                plus.
+                  number n.at
+                  1
                 n.value
-              no n.at "Unclosed counted closure"
+              no
+                number n.at
+                "Unclosed counted closure"
     [^regex start least] >> capped
       if. > @
         eq.
@@ -1913,24 +1953,30 @@
         if.
           m.value.eq -2
           no
-            at.
-              counted -1 start >> m
+            number
+              at.
+                counted -1 start >> m
             "Illegal repetition range"
           if.
             0.gt m.value
             no start "Unclosed counted closure"
             if.
               eq.
-                byte m.at
+                byte
+                  number m.at
                 7D-
               if.
                 least.gt m.value
-                no m.at "Illegal repetition range"
+                no
+                  number m.at
+                  "Illegal repetition range"
                 bounds
-                  m.at.plus 1
+                  plus. (number m.at) 1
                   least
                   m.value
-              no m.at "Unclosed counted closure"
+              no
+                number m.at
+                "Unclosed counted closure"
   [^regex child least most] >> possessive
     [^node s at caps k] > run
       [^rep n at caps] >> drain
