@@ -47,6 +47,54 @@ import org.junit.jupiter.params.ParameterizedTest;
  */
 final class XmirTest {
 
+    @Test
+    void restoresOnlyTheReferencedRecursiveHandle() {
+        MatcherAssert.assertThat(
+            "the inner reference must keep its own cactus binding",
+            new Xsline(
+                new StClasspath("/org/eolang/printer/print/restore-local-names.xsl")
+            ).pass(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<object><o name='app'><o name='a🌵rec' local='rec'>",
+                        "<o base='ξ.ρ.a🌵rec' name='φ'/></o>",
+                        "<o name='inner'><o base='Φ.number' name='a🌵rec' local='rec'>42</o>",
+                        "<o base='ξ.a🌵rec' name='result'/></o></o></object>"
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object/o[@name='app']/o[@name='rec']/o[@base='ξ.ρ.rec']",
+                "/object/o[@name='app']/o[@name='inner']/o[@name='result' and @base='ξ.a🌵rec']"
+            )
+        );
+    }
+
+    @Test
+    void inlinesTheDeclarationOfTheReferencedOwner() {
+        MatcherAssert.assertThat(
+            "each same-named cactus reference must inline its own declaration",
+            new Xsline(
+                new StClasspath("/org/eolang/printer/print/inline-cactoos.xsl")
+            ).pass(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<object><o name='app'><o base='Φ.number' name='a🌵same'>42</o>",
+                        "<o base='ξ.a🌵same' name='outer-result'/>",
+                        "<o name='inner'><o base='Φ.number' name='a🌵same'>43</o>",
+                        "<o base='ξ.a🌵same' name='inner-result'/></o></o></object>"
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object/o/o[@name='outer-result' and @base='Φ.number' and text()='42']",
+                "/object/o/o[@name='inner']/o[@name='inner-result' and @base='Φ.number' and text()='43']"
+            )
+        );
+    }
+
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/printer/print-packs/yaml", glob = "**.yaml")
     void printsToEo(final String pack) throws IOException {

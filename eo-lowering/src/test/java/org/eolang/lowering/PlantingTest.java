@@ -4,7 +4,9 @@
  */
 package org.eolang.lowering;
 
+import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSLDocument;
 import com.yegor256.Mktmp;
 import com.yegor256.MktmpResolver;
 import java.io.IOException;
@@ -74,6 +76,49 @@ final class PlantingTest {
             "every demand of the pack must be met by what the planting wrote, but some werent",
             new PlantingTest.Pack(new XtSticky(new XtYaml(yaml)), this.dir).unmet(),
             Matchers.empty()
+        );
+    }
+
+    @Test
+    void suffixesOnlyReferencesToTheRowedOwner() {
+        final XML copy = new XSLDocument(
+            String.join(
+                "",
+                "<xsl:stylesheet xmlns:xsl='http://www.w3.org/1999/XSL/Transform' ",
+                "xmlns:eo='https://www.eolang.org' version='3.0'>",
+                "<xsl:import href='/org/eolang/lowering/entries.xsl'/>",
+                "<xsl:function name='eo:rowed'><xsl:param name='o'/>",
+                "<xsl:sequence select='exists($o/@rowed)'/></xsl:function>",
+                "<xsl:function name='eo:lambda'><xsl:param name='o'/>",
+                "<xsl:sequence select='&quot;L_outer&quot;'/></xsl:function>",
+                "<xsl:template match='/'><xsl:apply-templates select='node()' ",
+                "mode='eo:rowing'/></xsl:template></xsl:stylesheet>"
+            )
+        ).with(new Hrefs()).transform(
+            new XMLDocument(
+                String.join(
+                    "",
+                    "<object><o name='outer' rowed=''><o name='a🌵same' base='Φ.number'>5</o>",
+                    "<o base='ξ.a🌵same' name='φ'/><o name='inner'>",
+                    "<o name='a🌵same' base='Φ.number'>6</o>",
+                    "<o base='ξ.a🌵same' name='self'/>",
+                    "<o base='ξ.ρ.a🌵same' name='outer-ref'/>",
+                    "<o base='ξ.ρ.a🌵same.a🌵same' name='method'/>",
+                    "</o></o></object>"
+                )
+            )
+        );
+        MatcherAssert.assertThat(
+            "only the outer helper is renamed in the rowed copy",
+            List.of(
+                "/object/o/o[@name='a🌵same🌵']",
+                "/object/o/o[@name='body🌵' and @base='ξ.a🌵same🌵']",
+                "/object/o/o[@name='inner']/o[@name='a🌵same']",
+                "/object/o/o[@name='inner']/o[@name='self' and @base='ξ.a🌵same']",
+                "/object/o/o[@name='inner']/o[@name='outer-ref' and @base='ξ.ρ.a🌵same🌵']",
+                "/object/o/o[@name='inner']/o[@name='method' and @base='ξ.ρ.a🌵same🌵.a🌵same']"
+            ).stream().allMatch(path -> !copy.nodes(path).isEmpty()),
+            Matchers.is(true)
         );
     }
 

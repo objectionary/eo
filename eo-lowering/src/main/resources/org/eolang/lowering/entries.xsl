@@ -93,6 +93,7 @@
   copy of by now. Its λ is in no table of operations, so the calculus
   stops there, with the message the copy was given still in its protocol.
   -->
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <!--
   The directory with the tables of "eo:infer", as a URI. The stage that
@@ -398,8 +399,10 @@
   </xsl:template>
   <!-- A reference to a helper of a formation with a row ends in a 🌵 too. -->
   <xsl:template match="o[ancestor::o[eo:formation(.)][eo:rowed(.)]]/@base" mode="eo:rowing">
-    <xsl:variable name="helpers" select="ancestor::o[eo:formation(.)][eo:rowed(.)]/o/@name[starts-with(., 'a🌵')] ! string(.)"/>
-    <xsl:attribute name="base" select="string-join(tokenize(., '\.') ! (if (. = $helpers) then concat(., '🌵') else .), '.')"/>
+    <xsl:variable name="owner" select="eo:own-formation(..)"/>
+    <xsl:variable name="helper" select="let $name := eo:own-name(..) return string($owner[eo:rowed(.)]/o[@name=$name][starts-with(@name, 'a🌵')]/@name)"/>
+    <xsl:variable name="parts" select="tokenize(., '\.')"/>
+    <xsl:attribute name="base" select="string-join(for $pos in 1 to count($parts) return if ($helper != '' and $pos = index-of($parts, $helper)[1]) then concat($parts[$pos], '🌵') else $parts[$pos], '.')"/>
   </xsl:template>
   <xsl:template match="o[eo:formation(.)][eo:rowed(.)]/o[@name = 'φ']" mode="eo:rowing">
     <xsl:copy>
