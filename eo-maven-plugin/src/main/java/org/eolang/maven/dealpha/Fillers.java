@@ -4,7 +4,6 @@
  */
 package org.eolang.maven.dealpha;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,10 +20,18 @@ import org.eolang.inference.Annotation;
  *
  * <p>Every call that copies the formation puts an argument into the void,
  * and every atom that returns a copy of it with brackets puts there the type
- * its brackets give. The void holds one of the formations these copy, when each of them
- * copies a formation the code fixes, all those formations have the same
- * voids in the same order, and no place copies the formation without a call.
- * With one formation the copy is sharp, and with several it is blurred.</p>
+ * its brackets give. The void holds one of the formations these copy, when
+ * each of them copies a formation the code fixes, and no place copies the
+ * formation without a call. With one formation the copy is sharp, and with
+ * several it is blurred. Those formations do not have to have the same voids:
+ * a name read off the void is looked up in each of them, while a call on the
+ * void is refused when their voids differ, as {@link Copy#uniform} says
+ * (#9978).</p>
+ *
+ * <p>A call that puts a terminator into the void adds nothing to what the
+ * void holds, since the program stops before the copy is made (#9982).
+ * Neither does an argument that is the very lookup still running, as
+ * {@link Copy#looped()} says (#9983).</p>
  *
  * <p>An argument may lead back to the void itself, when a helper passes its
  * own void to itself. In the first round the void is taken to hold nothing,
@@ -66,7 +73,7 @@ final class Fillers {
     /**
      * The copy a place makes, looked up with the lookups of one round.
      */
-    private final BiFunction<String, Map<Map.Entry<?, ?>, Optional<Copy>>, Optional<Copy>> lookup;
+    private final BiFunction<String, Lookups, Optional<Copy>> lookup;
 
     /**
      * Ctor.
@@ -82,7 +89,7 @@ final class Fillers {
         final Calls applications,
         final Map<String, List<String>> made,
         final Set<String> empty,
-        final BiFunction<String, Map<Map.Entry<?, ?>, Optional<Copy>>, Optional<Copy>> copy
+        final BiFunction<String, Lookups, Optional<Copy>> copy
     ) {
         this.attributes = places;
         this.calls = applications;
@@ -111,6 +118,16 @@ final class Fillers {
      */
     Optional<Copy> hit(final String place) {
         return this.guesses.hit(place);
+    }
+
+    /**
+     * A fresh cache of lookups, aware of the voids whose fillers are being
+     * looked at.
+     *
+     * @return The lookups
+     */
+    Lookups lookups() {
+        return new Lookups(this.guesses);
     }
 
     /**
@@ -154,7 +171,7 @@ final class Fillers {
     }
 
     private Optional<Copy> shape(final Map.Entry<String, String> hole) {
-        final Map<Map.Entry<?, ?>, Optional<Copy>> seen = new HashMap<>(0);
+        final Lookups seen = this.lookups();
         final List<Optional<Copy>> found = this.copies.getOrDefault(
             hole.getKey(), List.of()
         ).stream().flatMap(call -> this.filler(call, hole, seen)).collect(Collectors.toList());
@@ -162,15 +179,11 @@ final class Fillers {
             found.add(this.calls.member(type, hole.getValue()).map(Copy::new));
         }
         final Set<String> forms = found.stream().flatMap(Optional::stream)
+            .flatMap(copy -> copy.candidates().stream())
             .map(Copy::formation).collect(Collectors.toCollection(TreeSet::new));
         final Optional<Copy> held;
         if (!this.bare.contains(hole.getKey()) && this.known(found, forms)) {
-            held = Optional.of(
-                new Copy(
-                    new Annotation(forms.iterator().next()),
-                    forms.size() == 1 && found.stream().allMatch(copy -> copy.get().sole())
-                )
-            );
+            held = Optional.of(new Copy(forms));
         } else {
             held = Optional.empty();
         }
@@ -180,20 +193,20 @@ final class Fillers {
     private boolean known(final List<Optional<Copy>> found, final Set<String> forms) {
         return !forms.isEmpty()
             && found.stream().allMatch(Optional::isPresent)
-            && forms.stream().allMatch(this.attributes::containsKey)
-            && forms.stream().map(this.calls::voids).distinct().count() == 1L;
+            && forms.stream().allMatch(this.attributes::containsKey);
     }
 
     private Stream<Optional<Copy>> filler(
         final String call, final Map.Entry<String, String> hole,
-        final Map<Map.Entry<?, ?>, Optional<Copy>> seen
+        final Lookups seen
     ) {
         final Optional<String> arg = this.calls.argument(call, hole.getKey(), hole.getValue());
         final Map.Entry<Optional<Copy>, Set<String>> run = this.guesses.tracked(
             () -> arg.flatMap(place -> this.lookup.apply(place, seen))
         );
         final Stream<Optional<Copy>> found;
-        if (run.getKey().isEmpty() && arg.isPresent() && this.guesses.blind(run.getValue())) {
+        if (run.getKey().filter(copy -> copy.stops() || copy.loops()).isPresent()
+            || run.getKey().isEmpty() && arg.isPresent() && this.guesses.blind(run.getValue())) {
             found = Stream.empty();
         } else {
             found = Stream.of(run.getKey());

@@ -5,6 +5,7 @@
 package org.eolang.maven.dealpha;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -581,48 +582,17 @@ final class OriginsTest {
     void followsVoidOfHelperThatPassesItToItself() {
         MatcherAssert.assertThat(
             "a void a helper passes to itself must copy what its outside caller puts there, but it doesnt",
-            OriginsTest.recursive(true).formation("Φ.rec.out"),
+            OriginsTest.recursive(true, false).formation("Φ.rec.out"),
             Matchers.equalTo(Optional.of("Φ.app.α0.go"))
         );
     }
 
     @Test
-    void findsNothingBehindVoidHelperFillsWithWhatItReadsOffIt() {
+    void followsVoidOfHelperThatPassesItToItselfTwice() {
         MatcherAssert.assertThat(
-            "a void a helper fills with a read off it, which copies a formation with other voids, must copy nothing, but it does",
-            new Origins(
-                Map.of(
-                    "Φ", Map.of("rec", "Φ.rec"),
-                    "Φ.rec", Map.of("v", "Φ.rec.v", "φ", "Φ.rec.φ", "out", "Φ.rec.out"),
-                    "Φ.app.α0", Map.of("wrap", "Φ.app.α0.wrap", "go", "Φ.app.α0.go"),
-                    "Φ.app.α0.go", Map.of(),
-                    "Φ.app.α0.wrap", Map.of("z", "Φ.app.α0.wrap.z")
-                ),
-                new Calls(
-                    Map.of("Φ.rec", List.of("v"), "Φ.app.α0.wrap", List.of("z")),
-                    Map.of(
-                        "Φ.rec.φ", Map.of(0, "Φ.rec.φ.α0"),
-                        "Φ.app", Map.of(0, "Φ.app.α0")
-                    ),
-                    Map.of(),
-                    Map.of()
-                ),
-                Map.of(
-                    "Φ.rec.φ", Map.entry("Φ.rec.φ.ρ", "rec"),
-                    "Φ.rec.φ.α0", Map.entry("Φ.rec.φ.α0.ρ", "wrap"),
-                    "Φ.rec.φ.α0.ρ", Map.entry("Φ.rec.φ.α0.ρ.ρ", "v"),
-                    "Φ.rec.out", Map.entry("Φ.rec.out.ρ", "go"),
-                    "Φ.rec.out.ρ", Map.entry("Φ.rec.out.ρ.ρ", "v"),
-                    "Φ.app", Map.entry("Φ.app.ρ", "rec")
-                ),
-                Map.of(
-                    "Φ.rec.φ.ρ", "Φ",
-                    "Φ.rec.φ.α0.ρ.ρ", "Φ.rec",
-                    "Φ.rec.out.ρ.ρ", "Φ.rec",
-                    "Φ.app.ρ", "Φ"
-                )
-            ).formation("Φ.rec.out"),
-            Matchers.equalTo(Optional.empty())
+            "a void a helper passes to itself twice must copy what its outside caller puts there, but it doesnt",
+            OriginsTest.recursive(true, true).formation("Φ.rec.out"),
+            Matchers.equalTo(Optional.of("Φ.app.α0.go"))
         );
     }
 
@@ -630,7 +600,7 @@ final class OriginsTest {
     void findsNothingBehindVoidOnlyItsOwnHelperFills() {
         MatcherAssert.assertThat(
             "a void only its own helper fills must copy no formation the code fixes, but it does",
-            OriginsTest.recursive(false).formation("Φ.rec.out"),
+            OriginsTest.recursive(false, false).formation("Φ.rec.out"),
             Matchers.equalTo(Optional.empty())
         );
     }
@@ -713,6 +683,69 @@ final class OriginsTest {
         );
     }
 
+    @Test
+    void readsNameOffForkWhenEverySideAgrees() {
+        MatcherAssert.assertThat(
+            "a name read off what a fork returns must be found when both sides give the same copy, but it isnt",
+            OriginsTest.forked("Φ.yes", "Φ.yes", false).formation("Φ.app"),
+            Matchers.equalTo(Optional.of("Φ.yes.foo"))
+        );
+    }
+
+    @Test
+    void readsNothingOffForkWhenSidesDisagree() {
+        MatcherAssert.assertThat(
+            "a name read off what a fork returns must copy nothing when the sides disagree, but it does",
+            OriginsTest.forked("Φ.yes", "Φ.no", false).formation("Φ.app"),
+            Matchers.equalTo(Optional.empty())
+        );
+    }
+
+    @Test
+    void readsNameOffNestedFork() {
+        MatcherAssert.assertThat(
+            "a name read off a fork whose side is another fork must be found when all sides agree, but it isnt",
+            OriginsTest.forked("Φ.yes", "Φ.yes", true).formation("Φ.app"),
+            Matchers.equalTo(Optional.of("Φ.yes.foo"))
+        );
+    }
+
+    @Test
+    void namesArgumentsOfCallOnFork() {
+        MatcherAssert.assertThat(
+            "a void of a fork call must still copy its argument, but it doesnt",
+            OriginsTest.forked("Φ.yes", "Φ.no", false).formation("Φ.got"),
+            Matchers.equalTo(Optional.of("Φ.no"))
+        );
+    }
+
+    @Test
+    void followsCallOnNameReadOffVoidFilledByFormationsWithOtherVoids() {
+        MatcherAssert.assertThat(
+            "a call on a name that every formation filling a void binds to one formation must be followed, even when their voids differ, but it isnt",
+            OriginsTest.counter(false).formation("Φ.rec.out"),
+            Matchers.equalTo(Optional.of("Φ.num.eq"))
+        );
+    }
+
+    @Test
+    void findsNothingBehindCallOnVoidFilledByFormationsWithOtherVoids() {
+        MatcherAssert.assertThat(
+            "a call made right on a void filled by formations with other voids must not be followed, yet it is",
+            OriginsTest.counter(false).formation("Φ.rec.go"),
+            Matchers.equalTo(Optional.empty())
+        );
+    }
+
+    @Test
+    void readsNothingOffVoidWhenFormationsWithOtherVoidsDisagree() {
+        MatcherAssert.assertThat(
+            "a name that formations with other voids filling a void bind differently must copy nothing, but it does",
+            OriginsTest.counter(true).formation("Φ.rec.out"),
+            Matchers.equalTo(Optional.empty())
+        );
+    }
+
     private static Origins generic(final String second) {
         return new Origins(
             Map.of(
@@ -724,7 +757,11 @@ final class OriginsTest {
                 "Φ.string.eq", Map.of()
             ),
             new Calls(
-                Map.of("Φ.g", List.of("v", "a")),
+                Map.of(
+                    "Φ.g", List.of("v", "a"),
+                    "Φ.number.eq", List.of("x"),
+                    "Φ.string.eq", List.of("y")
+                ),
                 Map.of("Φ.app.φ.ρ", Map.of(0, "Φ.app.φ.ρ.α0", 1, "Φ.app.φ.ρ.α1")),
                 Map.of(),
                 Map.of("Φ.g", new Annotation("Φ.g.v")),
@@ -769,17 +806,25 @@ final class OriginsTest {
         );
     }
 
-    private static Origins recursive(final boolean outside) {
+    private static Origins recursive(final boolean outside, final boolean twice) {
+        final List<String> own = new ArrayList<>(List.of("φ"));
+        if (twice) {
+            own.add("two");
+        }
         final Map<String, Map<Integer, String>> slots = new HashMap<>(0);
-        slots.put("Φ.rec.φ", Map.of(0, "Φ.rec.φ.α0"));
         final Map<String, Map.Entry<String, String>> reads = new HashMap<>(0);
-        reads.put("Φ.rec.φ", Map.entry("Φ.rec.φ.ρ", "rec"));
-        reads.put("Φ.rec.φ.α0", Map.entry("Φ.rec.φ.α0.ρ", "v"));
+        final Map<String, String> refs = new HashMap<>(0);
+        for (final String name : own) {
+            final String call = String.format("Φ.rec.%s", name);
+            final String arg = String.format("%s.α0", call);
+            slots.put(call, Map.of(0, arg));
+            reads.put(call, Map.entry(String.format("%s.ρ", call), "rec"));
+            reads.put(arg, Map.entry(String.format("%s.ρ", arg), "v"));
+            refs.put(String.format("%s.ρ", call), "Φ");
+            refs.put(String.format("%s.ρ", arg), "Φ.rec");
+        }
         reads.put("Φ.rec.out", Map.entry("Φ.rec.out.ρ", "go"));
         reads.put("Φ.rec.out.ρ", Map.entry("Φ.rec.out.ρ.ρ", "v"));
-        final Map<String, String> refs = new HashMap<>(0);
-        refs.put("Φ.rec.φ.ρ", "Φ");
-        refs.put("Φ.rec.φ.α0.ρ", "Φ.rec");
         refs.put("Φ.rec.out.ρ.ρ", "Φ.rec");
         if (outside) {
             slots.put("Φ.app", Map.of(0, "Φ.app.α0"));
@@ -789,13 +834,126 @@ final class OriginsTest {
         return new Origins(
             Map.of(
                 "Φ", Map.of("rec", "Φ.rec"),
-                "Φ.rec", Map.of("v", "Φ.rec.v", "φ", "Φ.rec.φ", "out", "Φ.rec.out"),
+                "Φ.rec", Map.of(
+                    "v", "Φ.rec.v", "φ", "Φ.rec.φ", "out", "Φ.rec.out", "two", "Φ.rec.two"
+                ),
                 "Φ.app.α0", Map.of("go", "Φ.app.α0.go"),
                 "Φ.app.α0.go", Map.of()
             ),
             new Calls(Map.of("Φ.rec", List.of("v")), slots, Map.of(), Map.of()),
             reads,
             refs
+        );
+    }
+
+    private static Origins forked(
+        final String left, final String right, final boolean nested
+    ) {
+        final Map<String, String> refs = new HashMap<>(0);
+        refs.put("Φ.true.φ", "Φ.bool");
+        refs.put("Φ.false.φ", "Φ.bool");
+        refs.put("Φ.true.φ.α0.φ.ρ", "Φ.true.φ.α0");
+        refs.put("Φ.false.φ.α0.φ.ρ", "Φ.false.φ.α0");
+        refs.put("Φ.bool.and.φ.ρ", "Φ.bool");
+        refs.put("Φ.bool.if.ρ", "Φ.bool");
+        refs.put("Φ.bool.and.φ.α1", right);
+        final Map<String, Map.Entry<String, String>> reads = new HashMap<>(0);
+        reads.put("Φ.true.φ.α0.φ", Map.entry("Φ.true.φ.α0.φ.ρ", "left"));
+        reads.put("Φ.false.φ.α0.φ", Map.entry("Φ.false.φ.α0.φ.ρ", "right"));
+        reads.put("Φ.bool.and.φ", Map.entry("Φ.bool.and.φ.ρ", "if"));
+        reads.put("Φ.bool.if", Map.entry("Φ.bool.if.ρ", "fork"));
+        reads.put("Φ.app", Map.entry("Φ.bool.and.φ", "foo"));
+        reads.put("Φ.got", Map.entry("Φ.bool.and.φ", "right"));
+        final Map<String, Map<Integer, String>> slots = new HashMap<>(0);
+        slots.put("Φ.true.φ", Map.of(0, "Φ.true.φ.α0"));
+        slots.put("Φ.false.φ", Map.of(0, "Φ.false.φ.α0"));
+        slots.put("Φ.bool.and.φ", Map.of(0, "Φ.bool.and.φ.α0", 1, "Φ.bool.and.φ.α1"));
+        if (nested) {
+            reads.put("Φ.bool.and.φ.α0", Map.entry("Φ.bool.and.φ.α0.ρ", "if"));
+            refs.put("Φ.bool.and.φ.α0.ρ", "Φ.bool");
+            refs.put("Φ.bool.and.φ.α0.α0", left);
+            refs.put("Φ.bool.and.φ.α0.α1", left);
+            slots.put(
+                "Φ.bool.and.φ.α0",
+                Map.of(0, "Φ.bool.and.φ.α0.α0", 1, "Φ.bool.and.φ.α0.α1")
+            );
+        } else {
+            refs.put("Φ.bool.and.φ.α0", left);
+        }
+        return new Origins(
+            Map.of(
+                "Φ.bool", Map.of("fork", "Φ.bool.fork", "if", "Φ.bool.if"),
+                "Φ.true.φ.α0", Map.of("φ", "Φ.true.φ.α0.φ"),
+                "Φ.false.φ.α0", Map.of("φ", "Φ.false.φ.α0.φ"),
+                "Φ.yes", Map.of("foo", "Φ.yes.foo"),
+                "Φ.yes.foo", Map.of(),
+                "Φ.no", Map.of("foo", "Φ.no.foo"),
+                "Φ.no.foo", Map.of()
+            ),
+            new Calls(
+                Map.of(
+                    "Φ.bool", List.of("fork"),
+                    "Φ.true.φ.α0", List.of("left", "right"),
+                    "Φ.false.φ.α0", List.of("left", "right"),
+                    "Φ.yes.foo", List.of("a"),
+                    "Φ.no.foo", List.of("b")
+                ),
+                slots,
+                Map.of(),
+                Map.of()
+            ),
+            reads,
+            refs
+        );
+    }
+
+    private static Origins counter(final boolean own) {
+        final Map<String, String> plus = new HashMap<>(
+            Map.of("y", "Φ.num.plus.y", "φ", "Φ.num.plus.φ")
+        );
+        if (own) {
+            plus.put("eq", "Φ.num.plus.eq");
+        }
+        return new Origins(
+            Map.of(
+                "Φ", Map.of("rec", "Φ.rec", "num", "Φ.num"),
+                "Φ.rec", Map.of(
+                    "v", "Φ.rec.v", "φ", "Φ.rec.φ", "out", "Φ.rec.out", "go", "Φ.rec.go"
+                ),
+                "Φ.num", Map.of("d", "Φ.num.d", "eq", "Φ.num.eq", "plus", "Φ.num.plus"),
+                "Φ.num.eq", Map.of("x", "Φ.num.eq.x"),
+                "Φ.num.plus", plus,
+                "Φ.num.plus.eq", Map.of("z", "Φ.num.plus.eq.z")
+            ),
+            new Calls(
+                Map.of(
+                    "Φ.rec", List.of("v"), "Φ.num", List.of("d"), "Φ.num.eq", List.of("x"),
+                    "Φ.num.plus", List.of("y"), "Φ.num.plus.eq", List.of("z")
+                ),
+                Map.of(
+                    "Φ.rec.φ", Map.of(0, "Φ.rec.φ.α0"), "Φ.app", Map.of(0, "Φ.app.α0"),
+                    "Φ.rec.φ.α0", Map.of(0, "Φ.rec.φ.α0.α0"),
+                    "Φ.rec.out", Map.of(0, "Φ.rec.out.α0"),
+                    "Φ.rec.go", Map.of(0, "Φ.rec.go.α0")
+                ),
+                Map.of(),
+                Map.of()
+            ),
+            Map.of(
+                "Φ.rec.φ", Map.entry("Φ.rec.φ.ρ", "rec"),
+                "Φ.rec.φ.α0", Map.entry("Φ.rec.φ.α0.ρ", "plus"),
+                "Φ.rec.φ.α0.ρ", Map.entry("Φ.rec.φ.α0.ρ.ρ", "v"),
+                "Φ.rec.out", Map.entry("Φ.rec.out.ρ", "eq"),
+                "Φ.rec.out.ρ", Map.entry("Φ.rec.out.ρ.ρ", "v"),
+                "Φ.rec.go", Map.entry("Φ.rec.go.ρ", "v"),
+                "Φ.app", Map.entry("Φ.app.ρ", "rec")
+            ),
+            Map.of(
+                "Φ.rec.φ.ρ", "Φ", "Φ.rec.φ.α0.ρ.ρ", "Φ.rec", "Φ.rec.φ.α0.α0", "Φ.num",
+                "Φ.rec.out.ρ.ρ", "Φ.rec", "Φ.rec.out.α0", "Φ.num", "Φ.rec.go.ρ", "Φ.rec",
+                "Φ.rec.go.α0", "Φ.num", "Φ.app.ρ", "Φ", "Φ.app.α0", "Φ.num",
+                "Φ.num.plus.φ", "Φ.num"
+            )
         );
     }
 
@@ -823,7 +981,9 @@ final class OriginsTest {
                 Map.of(
                     "Φ.bool", List.of("fork"),
                     "Φ.true.φ.α0", List.of("left", "right"),
-                    "Φ.false.φ.α0", voids
+                    "Φ.false.φ.α0", voids,
+                    "Φ.yes", List.of("a"),
+                    "Φ.no", List.of("b")
                 ),
                 Map.of(
                     "Φ.true.φ", Map.of(0, "Φ.true.φ.α0"),
