@@ -77,7 +77,7 @@
       touched.
         mktemp.tmpfile.open
           "w"
-          f.write "Hello, world!" > [^ f]
+          x.write "Hello, world!" > [^ x]
 
   ++> can-return-itself-after-touching
     temp.deleted.touched.path.eq temp.path > @
@@ -113,7 +113,7 @@
       seq *
         target.as-file.open
           "w"
-          f.write "seed-content" > [^ f]
+          x.write "seed-content" > [^ x]
         code.
           posix.symlink target link
         link.as-file.touched.exists.and

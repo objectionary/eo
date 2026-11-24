@@ -97,15 +97,15 @@
 
   ++> can-calculate-only-once
     eq. > @
-      malloc.for 0 x
+      malloc.for 0 once
       1
-    [m] > x
+    [x] > once
       seq * > @
         a.neg.neg.neg.neg.eq 42
-        m
+        x
       seq * > [^] > a
-        ^.m.put
-          ^.m.as-number.plus 1
+        ^.x.put
+          ^.x.as-number.plus 1
         42
 
   ++> can-concat-strings-with-an-offset
@@ -124,42 +124,42 @@
 
   malloc.for ++> can-copy-and-resize-to-a-target
     0
-    seq * > [m]
-      m.copy
+    seq * > [x]
+      x.copy
         3
         9
         1
-      m.size.eq 10
+      x.size.eq 10
 
   malloc.for ++> can-copy-data-from-start-to-end
     01-02-03-04-05-06
-    seq * > [m]
-      m.copy
+    seq * > [x]
+      x.copy
         0
         3
         3
-      m.get.eq 01-02-03-01-02-03
+      x.get.eq 01-02-03-01-02-03
 
   malloc.for ++> can-copy-data-inside-itself
     01-02-03-04-05
-    seq * > [m]
-      m.copy
+    seq * > [x]
+      x.copy
         1
         2
         2
-      m.get.eq 01-02-02-03-05
+      x.get.eq 01-02-02-03-05
 
   ++> can-dataize-a-scope-twice
     2.eq > @
       malloc.for
         0
-        [f]
+        [x]
           seq > @
             * second second
           malloc.of > second
             1
-            ^.f.put > [^ s] >>
-              ^.f.as-number.plus 1
+            ^.x.put > [^ s] >>
+              ^.x.as-number.plus 1
 
   ++> can-decrease-the-block-size
     malloc.of > @
@@ -167,19 +167,19 @@
       [b]
         malloc.for > @
           01-02-03-04-05
-          ^.b.put > [^ m] >>
+          ^.b.put > [^ x] >>
             and.
-              eq. (m.resized 3).size 3
-              m.get.eq 01-02-03
+              eq. (x.resized 3).size 3
+              x.get.eq 01-02-03
 
   ++> can-defend-a-constant-against-side-effects
     eq. > @
       malloc.for
         7
-        [^ m] >>
-          m.put > @
+        [^ x] >>
+          x.put > @
             num.times num
-          number (^.inc m)! > num
+          number (^.inc x)! > num
       64
     seq * > [x] > inc
       x.put
@@ -202,38 +202,38 @@
       [b]
         malloc.for > @
           01-02-03-04
-          ^.b.put > [^ m] >>
+          ^.b.put > [^ x] >>
             and.
-              eq. (m.resized 6).size 6
-              m.get.eq 01-02-03-04-00-00
+              eq. (x.resized 6).size 6
+              x.get.eq 01-02-03-04-00-00
 
   malloc.for ++> can-keep-the-size-of-a-bool-block
     false
-    m.put true > [m]
+    x.put true > [x]
 
   eq. ++> can-keep-the-size-of-a-float-block
     malloc.for
       245.88
-      m.put 82.22 > [m]
+      x.put 82.22 > [x]
     82.22
 
   eq. ++> can-keep-the-size-of-a-string-block
     malloc.for
       "Hello"
-      m.put "Prot" > [m]
+      x.put "Prot" > [x]
     "Proto"
 
   eq. ++> can-keep-the-size-of-an-integer-block
     malloc.for
       12248
-      m.put 2556 > [m]
+      x.put 2556 > [x]
     2556
 
   ++> can-put-into-a-block-made-by-for
     mem.eq 10 > @
     malloc.for > mem
       0
-      m.put 10 > [m]
+      x.put 10 > [x]
 
   ++> can-put-over-the-previous-data
     eq. > @
@@ -271,7 +271,7 @@
     eq. > @
       malloc.for
         4
-        func m > [^ m] >>
+        func x > [^ x] >>
       0
     if. > [^ n] >> func
       n.as-number.gt 0
@@ -346,29 +346,29 @@
 
   malloc.for --> stops-on-copying-with-a-wrong-length
     0
-    m.copy > [m]
+    x.copy > [x]
       3
       1
       9
 
   malloc.for --> stops-on-copying-with-a-wrong-source
     0
-    m.copy > [m]
+    x.copy > [x]
       9
       1
       1
 
   malloc.for --> stops-on-overflowing-a-bool-block
     false
-    m.put 8.612486788e7 > [m]
+    x.put 8.612486788e7 > [x]
 
   malloc.for --> stops-on-overflowing-a-string-block
     "Hello"
-    m.put "Much longer string!" > [m]
+    x.put "Much longer string!" > [x]
 
   malloc.for --> stops-on-reading-over-the-limit
     10
-    m.read > [m]
+    x.read > [x]
       0
       100
 

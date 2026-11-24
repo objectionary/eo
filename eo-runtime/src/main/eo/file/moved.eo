@@ -46,10 +46,10 @@
       seq *
         source.open
           "w"
-          f.write "first" > [f]
+          x.write "first" > [x]
         target.open
           "w"
-          f.write "second" > [f]
+          x.write "second" > [x]
         source.moved dest
         "first".eq
           malloc.of
@@ -59,8 +59,8 @@
                 open.
                   file ^.dest
                   "r"
-                  ^.m.put > [^ f] >>
-                    f.read 5
+                  ^.m.put > [^ x] >>
+                    x.read 5
                 m
     target.path > dest
     mktemp.tmpfile > source
@@ -70,7 +70,7 @@
     seq * > @
       temp.open
         "w"
-        f.write "Hello, world" > [f]
+        x.write "Hello, world" > [x]
       temp.moved dest
       "Hello, world".eq
         malloc.of
@@ -80,8 +80,8 @@
               open.
                 file ^.dest
                 "r"
-                ^.m.put > [^ f] >>
-                  f.read 12
+                ^.m.put > [^ x] >>
+                  x.read 12
               m
     "%s.dest".printf > dest
       * temp.path

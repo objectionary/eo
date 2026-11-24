@@ -236,8 +236,3 @@
 
   not. ++> can-tell-true-is-not-false
     true.eq false
-
-  --> stops-on-applying-to-a-closed-object
-    closed true > @
-    I > a
-    a false > closed

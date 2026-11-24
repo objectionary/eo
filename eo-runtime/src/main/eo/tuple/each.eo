@@ -7,6 +7,7 @@
 +package tuple
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
++unlint redundant-attachment
 +version 0.0.0
 
 [^list func] > each
@@ -17,11 +18,11 @@
     eq. > @
       malloc.for
         0
-        [m]
+        [x]
           each. > @
             * 1 2 3
-            ^.m.put > [^ x] >>
-              ^.m.as-number.plus x
+            ^.x.put > [^ x] >>
+              ^.x.as-number.plus x
       6
 
   eq. ++> can-return-the-result-of-the-last-call
@@ -37,22 +38,22 @@
     eq. > @
       malloc.for
         0
-        [m]
+        [x]
           each. > @
             * 10 20 30
-            ^.m.put > [^ x] >>
-              ^.m.as-number.plus x
+            ^.x.put > [^ x] >>
+              ^.x.as-number.plus x
       60
 
   ++> can-walk-a-single-element-list
     eq. > @
       malloc.for
         0
-        [m]
+        [x]
           each. > @
             * 7
-            ^.m.put > [^ x] >>
-              ^.m.as-number.plus x
+            ^.x.put > [^ x] >>
+              ^.x.as-number.plus x
       7
 
   tuple.empty.each ++> can-walk-an-empty-list
