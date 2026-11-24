@@ -448,10 +448,10 @@
             caps
           nothing
         nothing
-  [finish captures] >> found
-    finish > end
+  [at caps] >> found
+    at > end
     true > exists
-    captures > marks
+    caps > marks
   if. > [^regex e] >> glyph
     alnum e
     control e
