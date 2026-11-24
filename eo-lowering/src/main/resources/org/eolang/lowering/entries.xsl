@@ -4,6 +4,7 @@
 * SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="entries" version="3.0">
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <!--
   Here we write the entries of the whole build: one object, "l🌵", holding an
   application of every formation that has a body to a symbol for each of its
@@ -93,7 +94,6 @@
   copy of by now. Its λ is in no table of operations, so the calculus
   stops there, with the message the copy was given still in its protocol.
   -->
-  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <xsl:output encoding="UTF-8" method="xml"/>
   <!--
   The directory with the tables of "eo:infer", as a URI. The stage that

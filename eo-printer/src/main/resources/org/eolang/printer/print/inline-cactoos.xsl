@@ -68,6 +68,16 @@
     <xsl:variable name="text" as="xs:string" select="string($base)"/>
     <xsl:sequence select="substring-after($text, substring-before($text, $auto))"/>
   </xsl:function>
+  <!-- Select an owned candidate only when cactus names collide. -->
+  <xsl:function name="eo:owned-target" as="element(o)?">
+    <xsl:param name="ref" as="element(o)"/>
+    <xsl:variable name="name" select="eo:resolved-name($ref/@base)"/>
+    <xsl:variable name="candidates" select="$ref/ancestor::o/o[@name=$name]"/>
+    <xsl:variable name="owner" select="eo:own-formation($ref)"/>
+    <xsl:variable name="owned-name" select="eo:own-name($ref)"/>
+    <xsl:variable name="owned" select="$candidates[.. is $owner][@name=$owned-name]"/>
+    <xsl:sequence select="(if (count($candidates) gt 1 and exists($owned)) then $owned else $candidates)[1]"/>
+  </xsl:function>
   <!--
   The based `&gt;&gt; name` handle that `$target` ultimately denotes, chasing a
   chain of bare-reference aliases to its end. A handle whose value is a plain
@@ -90,9 +100,7 @@
   <xsl:function name="eo:alias-target" as="element()">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="seen" as="element()*"/>
-    <xsl:variable name="owner" select="eo:own-formation($target)"/>
-    <xsl:variable name="candidates" select="$target/ancestor::o/o[@name=eo:resolved-name($target/@base)]"/>
-    <xsl:variable name="inner" select="(if (count($candidates) gt 1 and exists($owner/o[@name=eo:own-name($target)])) then $owner/o[@name=eo:own-name($target)] else $candidates)[1]"/>
+    <xsl:variable name="inner" select="eo:owned-target($target)"/>
     <xsl:sequence select="if (contains($target/@base, $auto-dot) and not($target/o) and exists($inner) and not(eo:abstract($inner)) and (every $node in $seen satisfies not($inner is $node))) then eo:alias-target($inner, ($seen, $target)) else $target"/>
   </xsl:function>
   <!--
@@ -139,10 +147,7 @@
   -->
   <xsl:template match="o[contains(@base, $auto-dot)]" priority="0">
     <xsl:variable name="name" select="eo:resolved-name(@base)"/>
-    <xsl:variable name="owner" select="eo:own-formation(.)"/>
-    <xsl:variable name="owned-name" select="eo:own-name(.)"/>
-    <xsl:variable name="candidates" select="ancestor::o/o[@name=$name]"/>
-    <xsl:variable name="target" select="(if (count($candidates) gt 1 and exists($owner/o[@name=$owned-name])) then $owner/o[@name=$owned-name] else $candidates)[1]"/>
+    <xsl:variable name="target" select="eo:owned-target(.)"/>
     <xsl:variable name="keep-name" as="xs:boolean" select="exists($target) and (eo:abstract($target) or ($target/@base = '.as-bytes' and $target/o[1]/@base = 'Φ.dataized' and eo:abstract($target/o[1]/o[1])))"/>
     <xsl:choose>
       <xsl:when test="exists($target) and not(eo:recursive($target, $name)) and not(eo:vertical-const($target)) and not(eo:nested-const($target, $name)) and not(eo:multi-referenced($target, $name) and eo:rebuilt($target)) and not(eo:reapplied($target, $name)) and not(eo:too-deep($target, $name))">
@@ -438,10 +443,7 @@
       and is handled by the ordinary reference path instead.
       -->
       <xsl:variable name="ref-name" select="if (contains(@base, $auto-dot)) then eo:resolved-name(@base) else ()"/>
-      <xsl:variable name="owner" select="eo:own-formation(.)"/>
-      <xsl:variable name="owned-name" select="eo:own-name(.)"/>
-      <xsl:variable name="candidates" select="ancestor::o/o[@name=$ref-name]"/>
-      <xsl:variable name="ref-target" select="if (exists($ref-name)) then (if (count($candidates) gt 1 and exists($owner/o[@name=$owned-name])) then $owner/o[@name=$owned-name] else $candidates)[1] else ()"/>
+      <xsl:variable name="ref-target" select="if (exists($ref-name)) then eo:owned-target(.) else ()"/>
       <xsl:choose>
         <xsl:when test="exists($ref-target) and not(eo:abstract($ref-target)) and not(eo:kept-binding($ref-target, $ref-name))">
           <xsl:variable name="alias" select="eo:alias-target($ref-target, ())"/>

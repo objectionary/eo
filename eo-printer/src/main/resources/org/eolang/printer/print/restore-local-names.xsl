@@ -103,7 +103,12 @@
   <xsl:function name="eo:recursive" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string?"/>
-    <xsl:sequence select="exists(key('local-ref', $name, root($target))[contains(@base, $auto-dot)][ancestor::*[. is $target]][empty(eo:own-formation(.)) or eo:own-formation(.) is $target/..])"/>
+    <xsl:sequence select="exists(key('local-ref', $name, root($target))[contains(@base, $auto-dot)][ancestor::*[. is $target]][eo:owned-by(., $target/..)])"/>
+  </xsl:function>
+  <xsl:function name="eo:owned-by" as="xs:boolean">
+    <xsl:param name="ref" as="element(o)"/>
+    <xsl:param name="scope" as="element()"/>
+    <xsl:sequence select="empty(eo:own-formation($ref)) or eo:own-formation($ref) is $scope"/>
   </xsl:function>
   <!--
   The references in the binding's owner that resolve to the auto-name "$name"
@@ -113,7 +118,7 @@
   <xsl:function name="eo:references" as="element()*">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string?"/>
-    <xsl:sequence select="key('local-head', $name, root($target))[contains(@base, $auto-dot)][ancestor::*[. is $target/..]][not(ancestor-or-self::o[. is $target])][empty(eo:own-formation(.)) or eo:own-formation(.) is $target/..]"/>
+    <xsl:sequence select="key('local-head', $name, root($target))[contains(@base, $auto-dot)][ancestor::*[. is $target/..]][not(ancestor-or-self::o[. is $target])][eo:owned-by(., $target/..)]"/>
   </xsl:function>
   <!--
   Whether more than one reference in the binding's owner resolves to the
@@ -191,7 +196,7 @@
   <xsl:function name="eo:applied-receiver" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string?"/>
-    <xsl:sequence select="eo:abstract($target) and exists(key('local-ref', $name, root($target))[contains(@base, $auto-dot)][ancestor::*[. is $target/..]][o or @name][not(ancestor-or-self::o[. is $target])][not(preceding-sibling::o[. is $target])][empty(eo:own-formation(.)) or eo:own-formation(.) is $target/..])"/>
+    <xsl:sequence select="eo:abstract($target) and exists(key('local-ref', $name, root($target))[contains(@base, $auto-dot)][ancestor::*[. is $target/..]][o or @name][not(ancestor-or-self::o[. is $target])][not(preceding-sibling::o[. is $target])][eo:owned-by(., $target/..)])"/>
   </xsl:function>
   <!--
   Whether the based "&gt;&gt; name" handle "$target" is itself an application
@@ -210,7 +215,7 @@
   <xsl:function name="eo:reapplied" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string?"/>
-    <xsl:sequence select="not(eo:abstract($target)) and not(exists($target/@const)) and not($target/@base = '.as-bytes') and exists($target/o) and exists(key('local-ref', $name, root($target))[contains(@base, $auto-dot)][ancestor::*[. is $target/..]][o][not(ancestor-or-self::o[. is $target])][empty(eo:own-formation(.)) or eo:own-formation(.) is $target/..])"/>
+    <xsl:sequence select="not(eo:abstract($target)) and not(exists($target/@const)) and not($target/@base = '.as-bytes') and exists($target/o) and exists(key('local-ref', $name, root($target))[contains(@base, $auto-dot)][ancestor::*[. is $target/..]][o][not(ancestor-or-self::o[. is $target])][eo:owned-by(., $target/..)])"/>
   </xsl:function>
   <!--
   Whether a reference in the auto-named binding's owner reaches it through a
@@ -225,7 +230,7 @@
   <xsl:function name="eo:dispatched" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string?"/>
-    <xsl:sequence select="exists(key('local-head', $name, root($target))[contains(@base, concat($name, '.'))][.. is $target/..][not(. is $target)][empty(eo:own-formation(.)) or eo:own-formation(.) is $target/..])"/>
+    <xsl:sequence select="exists(key('local-head', $name, root($target))[contains(@base, concat($name, '.'))][.. is $target/..][not(. is $target)][eo:owned-by(., $target/..)])"/>
   </xsl:function>
   <!--
   Whether "$wrapper" is a dataized-const file-local handle (`a &gt;&gt; b!`,
@@ -249,7 +254,7 @@
   <xsl:function name="eo:const-handle" as="xs:boolean">
     <xsl:param name="wrapper" as="element()*"/>
     <xsl:variable name="value" select="$wrapper/o[@base='Φ.dataized']/o[1]"/>
-    <xsl:sequence select="if (empty($wrapper) or not($wrapper/@base='.as-bytes') or empty($wrapper/@name) or empty($value/@local)) then false() else exists(key('local-head', $wrapper/@name/string(), root($wrapper))[contains(@base, $auto-dot)][ancestor::*[. is $wrapper/..]][not(ancestor-or-self::o[. is $wrapper])][empty(eo:own-formation(.)) or eo:own-formation(.) is $wrapper/..][2])"/>
+    <xsl:sequence select="if (empty($wrapper) or not($wrapper/@base='.as-bytes') or empty($wrapper/@name) or empty($value/@local)) then false() else exists(key('local-head', $wrapper/@name/string(), root($wrapper))[contains(@base, $auto-dot)][ancestor::*[. is $wrapper/..]][not(ancestor-or-self::o[. is $wrapper])][eo:owned-by(., $wrapper/..)][2])"/>
   </xsl:function>
   <!--
   Whether the binding "$target" is the value of a const file-local handle that
@@ -279,7 +284,7 @@
   -->
   <xsl:function name="eo:relocated" as="xs:boolean">
     <xsl:param name="ref" as="element()"/>
-    <xsl:sequence select="exists($ref/following-sibling::o[@name = eo:resolved-name($ref/@base)][@local][eo:recursive(., @name/string())][empty(eo:own-formation($ref)) or eo:own-formation($ref) is ..])"/>
+    <xsl:sequence select="exists($ref/following-sibling::o[@name = eo:resolved-name($ref/@base)][@local][eo:recursive(., @name/string())][eo:owned-by($ref, ..)])"/>
   </xsl:function>
   <!--
   The based handle whose value "$target" lands when folded, chasing a chain of
@@ -422,7 +427,7 @@
   that already carries "@pipe" (an already-piped handle round-tripping) is
   left as is.
   -->
-  <xsl:template match="o[contains(@base, $auto-dot) and (o or @name) and preceding-sibling::o[1][@local and eo:recursive(., @name/string())] and eo:resolved-name(@base) = preceding-sibling::o[1]/@name and (empty(eo:own-formation(.)) or eo:own-formation(.) is preceding-sibling::o[1]/..)]">
+  <xsl:template match="o[contains(@base, $auto-dot) and (o or @name) and preceding-sibling::o[1][@local and eo:recursive(., @name/string())] and eo:resolved-name(@base) = preceding-sibling::o[1]/@name and (eo:owned-by(., preceding-sibling::o[1]/..))]">
     <xsl:copy>
       <xsl:if test="not(@pipe)">
         <xsl:attribute name="pipe"/>
@@ -462,7 +467,7 @@
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
     </xsl:copy>
-    <xsl:for-each select="preceding-sibling::o[contains(@base, $auto-dot) and (o or @name) and eo:resolved-name(@base) = current()/@name and (empty(eo:own-formation(.)) or eo:own-formation(.) is current()/..)]">
+    <xsl:for-each select="preceding-sibling::o[contains(@base, $auto-dot) and (o or @name) and eo:resolved-name(@base) = current()/@name and (eo:owned-by(., current()/..))]">
       <xsl:copy>
         <xsl:if test="not(@pipe)">
           <xsl:attribute name="pipe"/>

@@ -95,6 +95,29 @@ final class XmirTest {
         );
     }
 
+    @Test
+    void doesNotInlineAReceiverInsteadOfACactusCandidate() {
+        MatcherAssert.assertThat(
+            "the receiver segment is not a cactus declaration",
+            new Xsline(
+                new StClasspath("/org/eolang/printer/print/inline-cactoos.xsl")
+            ).pass(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<object><o name='app'><o base='Φ.number' name='a🌵same'>42</o>",
+                        "<o name='inner'><o base='Φ.string' name='receiver'>R</o>",
+                        "<o base='Φ.number' name='a🌵same'>43</o>",
+                        "<o base='ξ.receiver.a🌵same' name='result'/></o></o></object>"
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath(
+                "/object/o/o[@name='inner']/o[@name='result' and @base='Φ.number']"
+            )
+        );
+    }
+
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/printer/print-packs/yaml", glob = "**.yaml")
     void printsToEo(final String pack) throws IOException {
