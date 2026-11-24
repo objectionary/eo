@@ -133,7 +133,7 @@ final class EOsocketTest {
         socket.put(0, new Data.ToPhi("255.255.255.255"));
         socket.put(1, new Data.ToPhi(port));
         final Phi listen = socket.take("listen").copy();
-        listen.put(0, new EOsocketTest.Simple("s"));
+        listen.put(0, new EOsocketTest.Simple("x"));
         listen.put(1, new EOsocketTest.Told());
         MatcherAssert.assertThat(
             "the limited-broadcast address 255.255.255.255 must be accepted as a valid IPv4 conversion, not rejected as unparsable",
@@ -892,13 +892,13 @@ final class EOsocketTest {
          * @param received Reseived message size
          */
         Server(final int received) {
-            super(new Attrs(new Attr("s")));
+            super(new Attrs(new Attr("x")));
             this.received = received;
         }
 
         @Override
         public Phi lambda() {
-            final Phi accept = this.free("s").take("accept").copy();
+            final Phi accept = this.free("x").take("accept").copy();
             accept.put(0, new EOsocketTest.Receiver(this.received));
             return accept;
         }
