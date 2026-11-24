@@ -13,18 +13,12 @@
 # points above U+10FFFF (`F4` with a `90`-`BF` second byte, and `F5`-`FF` leads)
 # are rejected. A malformed sequence terminates the computation, exactly like a
 # truncated character does.
-#
-# @todo #9891:30min Stop skipping 'too-deep-object' here. The formatter folds
-#  the hidden `>>` helpers of `slice` onto their first reads and nests them
-#  deeper than the linter allows. Remove the `+unlint too-deep-object` meta once
-#  the formatter keeps them shallow.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint too-deep-object
 +version 0.0.0
 
 [^text start len] > slice
@@ -94,7 +88,11 @@
                         index
                         2
                         ((byte.and FE-).eq C0-).not.and
-                          eq. (b1.and C0-) 80- >> b1cont
+                          eq. >> b1cont
+                            and.
+                              ctx.text.as-bytes.slice (index.plus 1) 1 >> b1
+                              C0-
+                            80-
                       accum.plus 1
                       result
                       cause
@@ -105,22 +103,14 @@
                           index
                           3
                           and.
-                            eq. >> b2cont
-                              and.
-                                ctx.text.as-bytes.slice (index.plus 2) 1
-                                C0-
-                              80-
-                            if.
+                            if. >> triplet
                               byte.eq E0-
-                              eq.
-                                and.
-                                  ctx.text.as-bytes.slice (index.plus 1) 1 >> b1
-                                  E0-
-                                A0-
+                              eq. (b1.and E0-) A0-
                               if.
                                 byte.eq ED-
                                 eq. (b1.and E0-) 80-
                                 b1cont
+                            b2cont
                         accum.plus 1
                         result
                         cause
@@ -130,14 +120,14 @@
                           increase
                             index
                             4
-                            b2cont.and
+                            and.
+                              eq. >> b2cont
+                                and.
+                                  ctx.text.as-bytes.slice (index.plus 2) 1
+                                  C0-
+                                80-
                               and.
-                                eq.
-                                  and.
-                                    ctx.text.as-bytes.slice (index.plus 3) 1
-                                    C0-
-                                  80-
-                                if.
+                                if. >> quartet
                                   byte.eq F0-
                                   ((b1.and F0-).eq 90-).or
                                     eq. (b1.and E0-) A0-
@@ -150,6 +140,11 @@
                                         or. (byte.eq F2-) (byte.eq F3-)
                                       b1cont
                                       false
+                                eq. >> fourth
+                                  and.
+                                    ctx.text.as-bytes.slice (index.plus 3) 1
+                                    C0-
+                                  80-
                           accum.plus 1
                           result
                           cause
