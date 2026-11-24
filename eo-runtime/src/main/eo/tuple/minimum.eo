@@ -14,11 +14,11 @@
     cant-min "cannot get the minimum number from an empty sequence"
     list.reduced
       pinf
-      if. > [min item]
-        item.as-number.is-nan.or
-          min.gt item.as-number
-        item
-        min
+      if. > [a x]
+        x.as-number.is-nan.or
+          a.gt x.as-number
+        x
+        a
 
   is-nan. ++> can-be-nan-when-taking-the-minimum-of-a-lone-nan
     minimum.

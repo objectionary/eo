@@ -18,7 +18,7 @@
   | > @
     map
       lst.mapped
-        map.entry item true > [item]
+        map.entry x true > [x]
 
   has. ++> can-append-a-new-item
     with.

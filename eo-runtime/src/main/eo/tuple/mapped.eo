@@ -11,7 +11,7 @@
 
 [^list func] > mapped
   list.mappedi > @
-    list.func item > [^list item idx] >>
+    list.func x > [^list x i] >>
 
   eq. ++> can-map-a-list
     mapped.
