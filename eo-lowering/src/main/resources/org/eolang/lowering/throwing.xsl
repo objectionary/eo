@@ -7,7 +7,8 @@
   <!--
   Here every "T" of one XMIR file becomes a copy of "throw", the formation
   the lowering keeps in "Φ.l🌵" next to the entries, and the
-  argument of the "T" becomes the "message" of that copy. The parser writes
+  argument of the "T" becomes the "message" of that copy, unless the
+  "dealpha" goal has already named it so. The parser writes
   a "T" as the terminator "⊥" of the calculus, and phino stops at "⊥" with
   nothing left of the message, so an error of EO could never reach the Java
   of an atom. A copy of "throw" carries its message instead, and phino stops
