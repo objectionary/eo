@@ -40,7 +40,7 @@
         4
         2
         5
-      v.lt 3 > [v i]
+      x.lt 3 > [x i]
     *
       1
       2
@@ -52,12 +52,12 @@
         "Name"
         "EO"
         "List"
-      v.length.gt 4 > [v i]
+      x.length.gt 4 > [x i]
     * "Hello"
 
   is-empty. ++> can-filter-an-empty-list
     tuple.empty.filteredi
-      v.lt 3 > [v i]
+      x.lt 3 > [x i]
 
   eq. ++> can-filter-by-index
     filteredi.
@@ -65,7 +65,7 @@
         3
         1
         4
-      i.gt 0 > [v i]
+      i.gt 0 > [x i]
     *
       1
       4
@@ -76,5 +76,5 @@
         true
         false
         true
-      v.not > [v i]
+      x.not > [x i]
     * false

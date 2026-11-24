@@ -13,8 +13,8 @@
 [^list func] > mappedi
   list.reducedi > @
     *
-    accum.with > [^list accum item idx] >>
-      list.func item idx
+    a.with > [^list a x i] >>
+      list.func x i
 
   eq. ++> can-map-a-list-with-indexes
     mappedi.

@@ -23,37 +23,37 @@
     string > @
       text.as-bytes.array.reduced
         --
-        [^text accum byte] >>
-          accum.concat > @
+        [^text a x] >>
+          a.concat > @
             if.
               and.
                 lte.
                   as-ascii. >> code
-                    string byte
+                    string x
                   number "Z".as-ascii!
                 code.gte mincode
               (code.plus ("a".as-ascii.minus mincode)).as-i64.as-bytes.slice
                 7
                 1
-              byte
+              x
     number "A".as-ascii! >> mincode
   [^text] > upper
     string > @
       text.as-bytes.array.reduced
         --
-        [^text accum byte] >>
-          accum.concat > @
+        [^text a x] >>
+          a.concat > @
             if.
               and.
                 lte.
                   as-ascii. >> code
-                    string byte
+                    string x
                   number "z".as-ascii!
                 code.gte mincode
               (code.minus (mincode.minus "A".as-ascii)).as-i64.as-bytes.slice
                 7
                 1
-              byte
+              x
     number "a".as-ascii! >> mincode
 
   5.eq "hello".english.length ++> can-behave-like-the-wrapped-english-string

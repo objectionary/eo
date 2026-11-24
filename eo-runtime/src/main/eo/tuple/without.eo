@@ -10,10 +10,10 @@
 [^list element] > without
   list.reduced > @
     *
-    if. > [^list accum item] >>
-      list.element.eq item
-      accum
-      accum.with item
+    if. > [^list a x] >>
+      list.element.eq x
+      a
+      a.with x
 
   eq. ++> can-drop-an-item
     without.

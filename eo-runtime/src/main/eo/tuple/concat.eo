@@ -11,7 +11,7 @@
 [^list passed] > concat
   passed.reducedi > @
     list
-    accum.with item > [accum item index]
+    a.with x > [a x i]
 
   ++> can-concat-two-lists
     and. > @
