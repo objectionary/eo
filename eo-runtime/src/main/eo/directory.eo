@@ -104,7 +104,8 @@
                 child.as-file >> entry
                 false > [message]
               not.
-                entry.is-symlink false
+                entry.is-symlink
+                  false > [message]
             state.folder.walked
               state.stepped rest.tail >> earlier
               if. >> sub
@@ -165,9 +166,7 @@
       false
       if.
         eq.
-          folder.glob.at
-            from
-            "" > [absent]
+          folder.glob.at from ""
           "]"
         true
         folder.closes
@@ -221,7 +220,7 @@
           eq.
             folder.glob.at
               index.plus 1
-              "" > [message]
+              ""
             "*"
       braced.if > finished
         T
@@ -232,7 +231,7 @@
         eq.
           folder.glob.at
             index.plus 1
-            "" > [missing]
+            ""
           "!"
       classed.not.and > opening
         and.
@@ -243,7 +242,7 @@
         eq.
           folder.glob.at
             index.plus 2
-            "" > [space]
+            ""
           "/"
       classed.if > token
         if.

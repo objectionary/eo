@@ -16,7 +16,8 @@
         win32.access entry.path 0
         posix.access entry.path 0
       0
-    entry.is-symlink false
+    entry.is-symlink
+      false > [message]
   [^entry cant-check] > is-directory
     if. > @
       info.code.eq 0
@@ -36,25 +37,31 @@
   [^entry cant-check] > is-symlink
     os.is-windows.if > @
       if.
-        eq.
-          win32.get-file-attributes entry.path >> attributes
-          win32.invalid
+        attributes.code.eq win32.invalid
         cant-check
+          "Can't check whether '%s' is a symbolic link: %s".printf
+            *
+              entry.path
+              message.
+                called. >> attributes
+                  win32.get-file-attributes entry.path
         not.
           eq.
-            attributes.as-i64.as-bytes.and win32.reparse
+            attributes.code.as-i64.as-bytes.and win32.reparse
             00-00-00-00-00-00-00-00
       if.
-        eq.
-          code.
-            called. >> info
-              posix.lstat entry.path
-          0
+        info.code.eq 0
         eq.
           floor.
             info.mode.div 4096
           10
         cant-check
+          "Can't check whether '%s' is a symbolic link: %s".printf
+            *
+              entry.path
+              message.
+                called. >> info
+                  posix.lstat entry.path
   [^entry mode scope cant-open] > open
     if. > @
       not.
@@ -354,7 +361,8 @@
     mktemp.tmpfile > temp
 
   ++> can-recover-from-checking-a-symbolic-link-of-an-absent-file
-    mktemp.tmpfile.deleted.is-symlink true > @
+    mktemp.tmpfile.deleted.is-symlink > @
+      true > [message]
 
   mktemp.tmpfile.deleted.is-directory ++> can-recover-from-checking-an-absent-file
     true > [message]
@@ -365,6 +373,13 @@
       "r"
       I
       file "recovered" > [reason]
+
+  ++> can-report-the-error-message-when-checking-a-symbolic-link-of-an-absent-file
+    starts-with. > @
+      absent.is-symlink I
+      "Can't check whether '%s' is a symbolic link: ".printf
+        * absent.path
+    mktemp.tmpfile.deleted > absent
 
   eq. ++> can-represent-a-file-as-a-path
     as-path.
@@ -407,20 +422,23 @@
             d
             d.resolved "ссылка"
         not.
-          d.as-file.is-symlink true
+          d.as-file.is-symlink
+            true > [message]
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
 
   mktemp.tmpfile.is-directory.not ++> can-tell-that-a-regular-file-is-not-a-directory
 
   not. ++> can-tell-that-a-regular-file-is-not-a-symbolic-link
-    mktemp.tmpfile.is-symlink true
+    mktemp.tmpfile.is-symlink
+      true > [message]
 
   ++> can-tell-that-a-symbolic-link-is-one
     os.is-windows.or > @
       seq *
         code.
           posix.symlink d link
-        link.as-file.is-symlink false
+        link.as-file.is-symlink
+          false > [message]
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
     d.resolved "ссылка" > link
 
@@ -532,6 +550,9 @@
     mktemp.tmpfile > temp
 
   mktemp.tmpfile.deleted.is-directory --> stops-on-checking-the-directory-of-an-absent-file
+
+  --> stops-on-checking-the-symbolic-link-of-an-absent-file
+    mktemp.tmpfile.deleted.is-symlink > @
 
   seq * --> stops-on-opening-with-a-wrong-mode
     mktemp.tmpfile.open

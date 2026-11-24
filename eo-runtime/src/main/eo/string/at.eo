@@ -1,9 +1,8 @@
 # Retrieve symbol by given index as `string`.
 # A negative `index` counts from the end of the string (`length + index`).
-# If `index` is not a finite integer (fractional, nan or infinite), or the
-# resolved index is still negative or is >= the string's `length`, the
-# `fallback` takes an error message.
-# When unbound, it terminates with that message.
+# If `index` is not a finite integer (fractional, nan or infinite),
+# it terminates. If the resolved index is negative or is >= the string's
+# `length`, `fallback` is returned.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -13,79 +12,42 @@
 +version 0.0.0
 
 [^text i fallback] > at
-  if. > @
-    not.
-      index.floor.eq index
-    fallback
-      i.is-finite.if
+  idx.is-integer.not.if > @
+    T
+      idx.is-finite.if
         "Index must be an integer, but was %f".printf
-          * i
+          * idx
         "Index must be an integer, but was %s".printf
           *
-            string i.as-scientific
+            string
+              as-scientific.
+                number i! >> idx
     if.
       or.
         0.gt index
         gte.
           number >> index
             if. >>!
-              0.gt
-                number i! >> idx
+              0.gt idx
               plus.
                 number text.length! >> len
                 idx
               idx
           len
       fallback
-        i.is-finite.if
-          "Given index %f is out of text bounds".printf
-            * i
-          "Given index %s is out of text bounds".printf
-            *
-              string i.as-scientific
       text.slice index 1
 
-  eq. ++> can-format-the-error-message-of-a-fractional-index-in-bounds
-    "Index must be an integer, but was 1.500000"
-    "some".at
-      1.5
-      I
-
-  eq. ++> can-format-the-error-message-of-a-negatively-infinite-index
-    "Given index -infinity is out of text bounds"
-    "some".at
-      ninf
-      I
-
-  eq. ++> can-format-the-error-message-of-a-non-finite-index
-    "Index must be an integer, but was nan"
-    "some".at
-      nan
-      I
-
-  eq. ++> can-format-the-error-message-of-a-positively-infinite-index
-    "Given index infinity is out of text bounds"
-    "some".at
-      pinf
-      I
-
-  eq. ++> can-recover-from-a-fractional-index-in-bounds
+  eq. ++> can-recover-from-a-negative-out-of-bounds-index
     "recovered"
     "some".at
-      1.5
-      "recovered" > [message]
-
-  eq. ++> can-recover-from-a-negative-fractional-index-in-bounds
-    "recovered"
-    "some".at
-      -1.5
-      "recovered" > [message]
+      -10
+      "recovered"
 
   eq. ++> can-recover-from-an-out-of-bounds-index
     "recovered"
     "some".at
       10
-      "recovered" > [message]
+      "recovered"
 
   eq. ++> can-return-a-character-at-a-negative-index
     "m"
@@ -104,5 +66,30 @@
   eq. ++> can-return-the-third-character
     "m"
     "some".at 2
+
+  at. --> stops-on-a-fractional-index
+    "some"
+    1.5
+    "recovered"
+
+  at. --> stops-on-a-nan-index
+    "some"
+    nan
+    "recovered"
+
+  at. --> stops-on-a-negative-fractional-index
+    "some"
+    -1.5
+    "recovered"
+
+  at. --> stops-on-a-negatively-infinite-index
+    "some"
+    ninf
+    "recovered"
+
+  at. --> stops-on-a-positively-infinite-index
+    "some"
+    pinf
+    "recovered"
 
   "some".at 10 --> stops-on-an-index-beyond-the-length
