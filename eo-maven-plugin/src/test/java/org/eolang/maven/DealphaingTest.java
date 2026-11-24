@@ -61,7 +61,7 @@ final class DealphaingTest {
             "the log must count every argument of the application that found no void, but it doesnt",
             DealphaingTest.logged(temp),
             Matchers.hasItem(
-                "Named 0 of 2 positional argument(s) in 1 XMIR(s), 0 are messages of ⊥, 2 found no void to be named after"
+                "Named 0 of 2 positional argument(s) in 1 XMIR(s), 2 found no void to be named after"
             )
         );
     }
@@ -80,13 +80,13 @@ final class DealphaingTest {
     }
 
     @Test
-    void keepsAlphaOfBottomMessage(@Mktmp final Path temp) throws IOException {
+    void namesMessageOfBottom(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
-            "the message of ⊥ must keep its αN without failing the build, but it doesnt",
+            "the argument of ⊥ must be named 'message' without failing the build, but it isnt",
             new XMLDocument(
                 DealphaingTest.dealphaed(temp, true, DealphaingTest.bottom(), Map.of())
             ),
-            XhtmlMatchers.hasXPath("/object/o[@base='⊥']/o[@as='α0']")
+            XhtmlMatchers.hasXPath("/object/o[@base='⊥']/o[@as='message']")
         );
     }
 
@@ -103,23 +103,23 @@ final class DealphaingTest {
                 )
             ),
             XhtmlMatchers.hasXPaths(
-                "/object/o[@base='⊥']/o[@as='α0']",
+                "/object/o[@base='⊥']/o[@as='message']",
                 "/object/o/o[@base='.printf']/o[@as='args']"
             )
         );
     }
 
     @Test
-    void countsBottomMessageApart(@Mktmp final Path temp) throws IOException {
+    void countsMessageOfBottomAsNamed(@Mktmp final Path temp) {
         MatcherAssert.assertThat(
-            "the log must count the message of ⊥ apart from the lost ones, but it doesnt",
+            "the log must count the argument of ⊥ as named, but it doesnt",
             DealphaingTest.logged(
                 () -> DealphaingTest.dealphaed(
                     temp, true, DealphaingTest.bottom(), Map.of()
                 )
             ),
             Matchers.hasItem(
-                "Named 0 of 1 positional argument(s) in 1 XMIR(s), 1 are messages of ⊥, 0 found no void to be named after"
+                "Named 1 of 1 positional argument(s) in 1 XMIR(s), 0 found no void to be named after"
             )
         );
     }
