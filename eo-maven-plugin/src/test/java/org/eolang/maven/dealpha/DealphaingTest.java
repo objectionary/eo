@@ -86,7 +86,7 @@ final class DealphaingTest {
             "the message of ⊥ must keep its αN without failing the build, but it doesnt",
             new XMLDocument(
                 DealphaingTest.dealphaed(
-                    temp, true, DealphaingTest.bottom(), LandingsTest.grounded("Φ.k.φ.α0")
+                    temp, true, DealphaingTest.bottom()
                 )
             ),
             XhtmlMatchers.hasXPath("/object/o[@base='⊥']/o[@as='α0']")
@@ -102,7 +102,6 @@ final class DealphaingTest {
                     temp,
                     true,
                     "<object><o base='⊥' loc='Φ.k.φ'><o base='.printf' loc='Φ.k.φ.α0' as='α0'><o/><o loc='Φ.k.φ.α0.α1' as='α1'/></o></o></object>",
-                    LandingsTest.grounded("Φ.k.φ.α0", "Φ.k.φ.α0.α1"),
                     "<o loc='Φ.k.φ.α0.α1' copies='1' lands='args'><data/></o>"
                 )
             ),
@@ -119,7 +118,7 @@ final class DealphaingTest {
             "the log must count the message of ⊥ apart from the lost ones, but it doesnt",
             DealphaingTest.logged(
                 () -> DealphaingTest.dealphaed(
-                    temp, true, DealphaingTest.bottom(), LandingsTest.grounded("Φ.k.φ.α0")
+                    temp, true, DealphaingTest.bottom()
                 )
             ),
             Matchers.hasItem(
@@ -178,7 +177,6 @@ final class DealphaingTest {
                 "<object><o loc='%1$s'><o loc='%1$s.α0' as='α0'/><o loc='%1$s.α1' as='α1'/></o></object>",
                 call
             ),
-            LandingsTest.grounded(call, "Φ.k.φ.α0", "Φ.k.φ.α1"),
             IntStream.range(0, lands.length).mapToObj(
                 idx -> DealphaingTest.row(call, idx, lands[idx])
             ).toArray(String[]::new)
@@ -187,7 +185,7 @@ final class DealphaingTest {
 
     private static Path dealphaed(
         final Path temp, final boolean strict, final String program,
-        final String facts, final String... rows
+        final String... rows
     ) throws IOException {
         final Path xmir = temp.resolve("app.xmir");
         Files.write(xmir, program.getBytes(StandardCharsets.UTF_8));
@@ -195,7 +193,7 @@ final class DealphaingTest {
             final TjForeign tojo = tojos.add("app").withXmir(xmir);
             new Dealphaing(
                 List.of(tojo),
-                LandingsTest.tables(temp, facts, rows),
+                LandingsTest.tables(temp, rows),
                 temp.resolve("target"),
                 strict
             ).exec();

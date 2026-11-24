@@ -22,8 +22,9 @@ import org.eolang.maven.dealpha.Dealphaing;
  * {@code answers.xml} of {@link MjInfer} knows better, since the row of
  * an argument names the void it lands in whenever there is one. This goal
  * reads it and writes {@code foo (bar: k)} instead, wherever the answer is
- * certain, as described in #8301, and the {@code facts.xml} beside it says
- * that no caller can change it.</p>
+ * certain, as described in #8301. The answer holds because EO always
+ * compiles the whole program, so the applications the engine saw are all
+ * there are (#10056).</p>
  *
  * <p>An argument keeps its place where no single void is known to take it,
  * and the number of those is written to the log. With {@link #rigid} set,
@@ -42,9 +43,9 @@ import org.eolang.maven.dealpha.Dealphaing;
 public final class MjDealpha extends MjSafe {
 
     /**
-     * The directory with the {@code answers.xml} and the {@code facts.xml}
-     * that {@link MjInfer} writes, falling back to a directory
-     * {@code Seqdir} numbers "inference" when unset.
+     * The directory with the {@code answers.xml} that {@link MjInfer}
+     * writes, falling back to a directory {@code Seqdir} numbers "inference"
+     * when unset.
      */
     @Parameter(alias = "dealpha.tables", property = "eo.dealpha.tables")
     private File tables;
