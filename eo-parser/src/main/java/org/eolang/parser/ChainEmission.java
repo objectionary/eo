@@ -85,14 +85,11 @@ final class ChainEmission {
         for (int idx = 0; idx <= last; idx = idx + 1) {
             final MethodChain chained = this.chain.get(idx);
             this.emit.close();
+            String name = null;
             if (idx == last) {
-                this.emit.object(
-                    this.label, ".".concat(chained.name()), this.line, chained.dot()
-                );
-            } else {
-                this.emit.unnamedObject(".".concat(chained.name()), this.line, chained.dot());
+                name = this.label;
             }
-            this.emit.method(chained.fragile());
+            chained.emit(this.emit, this.line, name);
         }
     }
 }

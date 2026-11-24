@@ -4,7 +4,7 @@
  */
 package org.eolang.parser;
 
-import java.util.List;
+import com.jcabi.matchers.XhtmlMatchers;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.xembly.Directives;
+import org.xembly.Xembler;
 
 /**
  * Test case for {@link Tokens}.
@@ -160,10 +162,24 @@ final class TokensTest {
         final Tokens tokens = new Tokens(span.body(), span);
         tokens.readName();
         final MethodChain link = tokens.readChain().get(0);
+        final Emit emit = new Emit();
+        link.emit(emit, 1, null);
+        emit.close();
+        String marker = "not(@fragile)";
+        if (fragile) {
+            marker = "@fragile=''";
+        }
         MatcherAssert.assertThat(
-            "The dispatch link lost its method, dot position, or fragile flag",
-            List.of(link.name(), link.dot(), link.fragile()),
-            Matchers.equalTo(List.of("bar", column, fragile))
+            "The parsed dispatch link lost its method, dot position, or fragile marker",
+            new Xembler(
+                new Directives().add("object").append(emit.directives())
+            ).xmlQuietly(),
+            XhtmlMatchers.hasXPath(
+                String.format(
+                    "/object/o[@base='.bar' and @pos='%d' and @method='' and %s]",
+                    column, marker
+                )
+            )
         );
     }
 
