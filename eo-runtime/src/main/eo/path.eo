@@ -278,7 +278,7 @@
         as-bool. ("/^[a-zA-Z]:/".regex.match uri).next.exists
         uri.slice 0 2
         ""
-      [^location uri] > sanitized
+      [^location x] > sanitized
         if. > @
           eq.
             index-of.
@@ -286,7 +286,7 @@
               path.posix.separator
             -1
           string
-            uri >> ubts!
+            x >> ubts!
           string (pth.replaced "/\\//".regex location.separator)!
       location.separator > separator
 

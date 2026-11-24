@@ -322,7 +322,7 @@
                                 62-.eq conv
                                 if.
                                   or. (FF-.eq datum) (00-.eq datum)
-                                  capped (arg.as-bool.if "true" "false")
+                                  capped (datum.as-bool.if "true" "false")
                                   T
                                     "The argument %x is not a boolean, the %%b conversion takes true or false".printf
                                       * datum
