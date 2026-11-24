@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: djdefi/cloc-action@7
+      - uses: djdefi/cloc-action@8
         with:
           options: --json --report-file=cloc.json
       - run: sudo apt-get update --yes --fix-missing && sudo apt-get install --yes jq bc
