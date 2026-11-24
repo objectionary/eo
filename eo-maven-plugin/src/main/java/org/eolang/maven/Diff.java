@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  *
  * @since 0.57.0
  */
-public final class Diff {
+final class Diff {
 
     /**
      * The line feed every line ends with.
@@ -70,7 +70,7 @@ public final class Diff {
      * @param before The text before the change
      * @param after The text after the change
      */
-    public Diff(final String before, final String after) {
+    Diff(final String before, final String after) {
         this.before = before;
         this.after = after;
     }
@@ -80,7 +80,7 @@ public final class Diff {
      *
      * @return TRUE if there is nothing to show
      */
-    public boolean same() {
+    boolean same() {
         return this.before.equals(this.after);
     }
 

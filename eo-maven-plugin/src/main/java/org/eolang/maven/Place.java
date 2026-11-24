@@ -13,7 +13,7 @@ import java.nio.file.Paths;
  *
  * @since 0.1
  */
-public final class Place {
+final class Place {
 
     /**
      * Name of the object.
@@ -25,24 +25,8 @@ public final class Place {
      *
      * @param obj The name of the object
      */
-    public Place(final String obj) {
+    Place(final String obj) {
         this.name = obj;
-    }
-
-    /**
-     * Make a full path.
-     *
-     * @param dir The dir
-     * @param ext The ext
-     * @return Full path
-     */
-    public Path make(final Path dir, final String ext) {
-        final StringBuilder out = new StringBuilder();
-        out.append(this.name.replace(".", File.separator));
-        if (!ext.isEmpty()) {
-            out.append('.').append(ext);
-        }
-        return dir.resolve(out.toString());
     }
 
     /**
@@ -53,5 +37,21 @@ public final class Place {
      */
     Path make(final String ext) {
         return this.make(Paths.get(""), ext);
+    }
+
+    /**
+     * Make a full path.
+     *
+     * @param dir The dir
+     * @param ext The ext
+     * @return Full path
+     */
+    Path make(final Path dir, final String ext) {
+        final StringBuilder out = new StringBuilder();
+        out.append(this.name.replace(".", File.separator));
+        if (!ext.isEmpty()) {
+            out.append('.').append(ext);
+        }
+        return dir.resolve(out.toString());
     }
 }

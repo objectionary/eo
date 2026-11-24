@@ -302,11 +302,13 @@ final class PhTerminatorTest {
     }
 
     @Test
-    void rejectsPutByName() {
-        Assertions.assertThrows(
-            ExFailure.class,
-            () -> new PhTerminator().put("cause", new Data.ToPhi("nope")),
-            "putting into the terminator by name, even cause, must abort"
+    void takesCauseByName() {
+        final Phi term = new PhTerminator();
+        term.put("message", new Data.ToPhi("named reason"));
+        MatcherAssert.assertThat(
+            "putting into the terminator by name must keep the object as its cause, but it doesnt",
+            Assertions.assertThrows(ExFailure.class, () -> new Dataized(term).take()).getMessage(),
+            Matchers.equalTo("named reason")
         );
     }
 

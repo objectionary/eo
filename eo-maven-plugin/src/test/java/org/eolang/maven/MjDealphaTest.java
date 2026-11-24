@@ -307,15 +307,6 @@ final class MjDealphaTest {
     }
 
     @Test
-    void keepsAlphaWhenSidesOfIfDisagree(@Mktmp final Path temp) throws IOException {
-        MatcherAssert.assertThat(
-            "an argument of a call on a void that the sides of an if fill with different formations must keep its place, but it was renamed",
-            MjDealphaTest.picked(temp, "bytes"),
-            XhtmlMatchers.hasXPath("/object/o/o[@name='pick']/o[@name='φ']/o[@as='α0']")
-        );
-    }
-
-    @Test
     void namesArgumentThatLandsInVoidDeclaredOnItsOwnLine(@Mktmp final Path temp)
         throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(

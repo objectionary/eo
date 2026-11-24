@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
  * SPDX-License-Identifier: MIT
  */
-package org.eolang.maven.dealpha;
+package org.eolang.maven;
 
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XMLDocument;
@@ -18,11 +18,6 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import org.eolang.cache.Saved;
-import org.eolang.maven.Diff;
-import org.eolang.maven.MjAssemble;
-import org.eolang.maven.MjTranspile;
-import org.eolang.maven.Place;
-import org.eolang.maven.TjForeign;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -31,7 +26,7 @@ import org.w3c.dom.NodeList;
  *
  * <p>The XMIR of every object this build compiles is read from wherever its
  * tojo points, and every {@code @as} of the {@code αN} form is replaced with
- * the name {@link Landings} knows for the {@code @loc} of the argument. The
+ * the name {@link MjDealpha} read for the {@code @loc} of the argument. The
  * {@code @loc} stays as it is, so the rows of the inference tables still
  * point at the argument. The result goes to a directory {@code Seqdir}
  * numbers "dealpha" and the tojo points there, which is where
@@ -57,7 +52,7 @@ import org.w3c.dom.NodeList;
  *
  * @since 0.69.0
  */
-public final class Dealphaing {
+final class Dealphaing {
 
     /**
      * The positional name of an argument.
@@ -70,9 +65,9 @@ public final class Dealphaing {
     private final Collection<TjForeign> tojos;
 
     /**
-     * The names of the voids the arguments land in.
+     * The names of the voids the arguments land in, by their locators.
      */
-    private final Landings landings;
+    private final Map<String, String> names;
 
     /**
      * Base target directory.
@@ -88,18 +83,19 @@ public final class Dealphaing {
      * Ctor.
      *
      * @param objects The tojos of the objects to rename arguments in
-     * @param tables The directory with inference tables
+     * @param lands The names of the voids the arguments land in, by their
+     *  locators
      * @param tgt Base target directory
      * @param fail Whether to fail when an argument has no name to take
      */
-    public Dealphaing(
+    Dealphaing(
         final Collection<TjForeign> objects,
-        final Path tables,
+        final Map<String, String> lands,
         final Path tgt,
         final boolean fail
     ) {
         this.tojos = objects;
-        this.landings = new Landings(tables);
+        this.names = lands;
         this.target = tgt;
         this.strict = fail;
     }
@@ -107,47 +103,42 @@ public final class Dealphaing {
     /**
      * Rename positional arguments in every XMIR.
      *
-     * @throws IOException If XMIR or inference tables cannot be read or written
+     * @throws IOException If XMIR cannot be read or written
      */
-    public void exec() throws IOException {
-        if (this.tojos.isEmpty()) {
-            Logger.debug(this, "No XMIR to name the arguments in");
-        } else {
-            final Path dir = new Seqdir(this.target, 2).dirs().once("dealpha");
-            final Map<String, String> names = this.landings.names();
-            final Map<String, Collection<String>> verdicts = new HashMap<>(4);
-            for (final TjForeign tojo : this.tojos) {
-                Dealphaing.renamed(tojo, dir, names, verdicts);
-            }
-            final Collection<String> lost = verdicts.getOrDefault("lost", new ArrayList<>(0));
+    void exec() throws IOException {
+        final Path dir = new Seqdir(this.target, 2).dirs().once("dealpha");
+        final Map<String, Collection<String>> verdicts = new HashMap<>(4);
+        for (final TjForeign tojo : this.tojos) {
+            Dealphaing.renamed(tojo, dir, this.names, verdicts);
+        }
+        final Collection<String> lost = verdicts.getOrDefault("lost", new ArrayList<>(0));
+        Logger.info(
+            this,
+            "Named %d of %d positional argument(s) in %d XMIR(s), %d are messages of ⊥, %d found no void to be named after",
+            verdicts.getOrDefault("named", new ArrayList<>(0)).size(),
+            verdicts.values().stream().mapToInt(Collection::size).sum(),
+            this.tojos.size(),
+            verdicts.getOrDefault("bottom", new ArrayList<>(0)).size(),
+            lost.size()
+        );
+        try (Stream<Path> found = Files.walk(dir)) {
             Logger.info(
                 this,
-                "Named %d of %d positional argument(s) in %d XMIR(s), %d are messages of ⊥, %d found no void to be named after",
-                verdicts.getOrDefault("named", new ArrayList<>(0)).size(),
-                verdicts.values().stream().mapToInt(Collection::size).sum(),
-                this.tojos.size(),
-                verdicts.getOrDefault("bottom", new ArrayList<>(0)).size(),
-                lost.size()
+                "%d XMIR files are in %[file]s",
+                found
+                    .filter(path -> path.toString().endsWith(".xmir"))
+                    .filter(Files::isRegularFile)
+                    .count(),
+                dir
             );
-            try (Stream<Path> found = Files.walk(dir)) {
-                Logger.info(
-                    this,
-                    "%d XMIR files are in %[file]s",
-                    found
-                        .filter(path -> path.toString().endsWith(".xmir"))
-                        .filter(Files::isRegularFile)
-                        .count(),
-                    dir
-                );
-            }
-            if (this.strict && !lost.isEmpty()) {
-                throw new IllegalStateException(
-                    String.format(
-                        "%d positional argument(s) found no void to be named after, such as '%s', while eo.dealpha.rigid demands a name for every one",
-                        lost.size(), lost.iterator().next()
-                    )
-                );
-            }
+        }
+        if (this.strict && !lost.isEmpty()) {
+            throw new IllegalStateException(
+                String.format(
+                    "%d positional argument(s) found no void to be named after, such as '%s', while eo.dealpha.rigid demands a name for every one",
+                    lost.size(), lost.iterator().next()
+                )
+            );
         }
     }
 
