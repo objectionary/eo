@@ -27,6 +27,6 @@
   eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-i8
     i8 E5-
     7C-03.as-i8
-      i8 E5- > [message]
+      i8 E5- > [x]
 
   01-01.as-i8 --> stops-on-bytes-of-wrong-size-when-converting-to-i8

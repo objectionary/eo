@@ -357,14 +357,14 @@
     mktemp.tmpfile.deleted.is-symlink true > @
 
   mktemp.tmpfile.deleted.is-directory ++> can-recover-from-checking-an-absent-file
-    true > [message]
+    true > [x]
 
   eq. ++> can-recover-from-opening-a-missing-file
     file "recovered"
     mktemp.tmpfile.deleted.open
       "r"
       I
-      file "recovered" > [reason]
+      file "recovered" > [x]
 
   eq. ++> can-represent-a-file-as-a-path
     as-path.

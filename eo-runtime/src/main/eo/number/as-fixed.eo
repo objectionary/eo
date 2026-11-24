@@ -196,61 +196,61 @@
     CA-FE
     9.223372036854776e18.as-fixed
       2
-      CA-FE > [message]
+      CA-FE > [x]
 
   eq. ++> can-recover-from-a-negative-number-with-a-non-decrementable-precision
     3B-91-0D
     -1.25.as-fixed
       9007199254740992
-      3B-91-0D > [message]
+      3B-91-0D > [x]
 
   eq. ++> can-recover-from-a-non-finite-number
     E7-24
     nan.as-fixed
       2
-      E7-24 > [message]
+      E7-24 > [x]
 
   eq. ++> can-recover-from-a-precision-far-above-the-non-decrementable-bound
     52-A4-1C-F0
     1.25.as-fixed
       18014398509481984
-      52-A4-1C-F0 > [message]
+      52-A4-1C-F0 > [x]
 
   eq. ++> can-recover-from-a-precision-just-above-the-non-decrementable-bound
     09-6B
     1.25.as-fixed
       9007199254740994
-      09-6B > [message]
+      09-6B > [x]
 
   eq. ++> can-recover-from-a-precision-that-cannot-be-decremented
     D1-38-7E-05-B2
     1.25.as-fixed
       9007199254740992
-      D1-38-7E-05-B2 > [message]
+      D1-38-7E-05-B2 > [x]
 
   eq. ++> can-recover-from-an-infinite-number
     4F-C2-99
     pinf.as-fixed
       2
-      4F-C2-99 > [message]
+      4F-C2-99 > [x]
 
   eq. ++> can-recover-from-infinite-places
     A0-17
     1.25.as-fixed
       pinf
-      A0-17 > [message]
+      A0-17 > [x]
 
   eq. ++> can-recover-from-negative-places
     6E-D5-3A-8C
     3.14159.as-fixed
       -2
-      6E-D5-3A-8C > [message]
+      6E-D5-3A-8C > [x]
 
   eq. ++> can-recover-from-non-integer-places
     F3-0B-61
     3.14159.as-fixed
       2.5
-      F3-0B-61 > [message]
+      F3-0B-61 > [x]
 
   eq. ++> can-round-to-the-last-place
     "0.123457"

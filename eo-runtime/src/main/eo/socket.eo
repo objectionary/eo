@@ -337,7 +337,7 @@
           serving
           unbound
     false > [server] > serving
-    true > [message] > unbound
+    true > [x] > unbound
 
   ++> can-recover-from-receiving-on-a-socket-that-only-listens
     os.is-windows.or > @
@@ -348,7 +348,7 @@
         6D-0E-B3
     server.recv > [server] > receiving
       9
-      6D-0E-B3 > [message]
+      6D-0E-B3 > [x]
 
   ++> can-report-a-connection-nobody-accepts
     os.is-windows.or > @
@@ -357,7 +357,7 @@
           socket "127.0.0.1" 1
           talking
           refused
-    true > [message] > refused
+    true > [x] > refused
     false > [client] > talking
 
   ++> can-resend-the-remaining-bytes-after-a-short-send

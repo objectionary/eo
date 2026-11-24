@@ -62,7 +62,7 @@
   eq. ++> can-recover-from-an-out-of-range-number
     u64 00-00-00-00-00-00-00-2A
     1.0e30.as-u64
-      u64 00-00-00-00-00-00-00-2A > [message]
+      u64 00-00-00-00-00-00-00-2A > [x]
 
   eq. ++> can-truncate-a-positive-toward-zero
     3.7.as-u64.as-bytes
