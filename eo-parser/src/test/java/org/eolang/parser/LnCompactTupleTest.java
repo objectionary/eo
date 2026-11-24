@@ -188,7 +188,7 @@ final class LnCompactTupleTest {
         MatcherAssert.assertThat(
             "an I head must open a baseless formation holding a void and a phi bound to it",
             LnCompactTupleTest.render(emit),
-            XhtmlMatchers.hasXPath("/object/o[@name='x' and not(@base)]/o[@name='φ' and @base='x']")
+            XhtmlMatchers.hasXPath("/object/o[@name='x' and not(@base)]/o[@name='φ' and @base='complaint']")
         );
     }
 

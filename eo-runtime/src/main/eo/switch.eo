@@ -43,7 +43,7 @@
     "recovered"
     switch
       *
-      "recovered" > [message]
+      "recovered" > [complaint]
 
   ++> can-switch-on-a-complex-case
     eq. > @
@@ -74,7 +74,7 @@
       *
         * false "false1"
         * false "false2"
-      "fallback" > [message]
+      "fallback" > [complaint]
 
   ++> can-switch-on-strings
     eq. > @

@@ -129,14 +129,14 @@
     i8 2A-
     02-.as-i8.div
       00-.as-i8
-      i8 2A- > [message]
+      i8 2A- > [complaint]
 
   eq. ++> can-recover-from-min-divided-by-minus-one
     i8 2A-
     div.
       i8 80-
       i8 FF-
-      i8 2A- > [message]
+      i8 2A- > [complaint]
 
   eq. ++> can-subtract-one-from-one
     01-.as-i8.minus 01-.as-i8

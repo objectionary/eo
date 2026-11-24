@@ -46,7 +46,7 @@ import org.w3c.dom.NodeList;
  * written and the numbers are in the log.</p>
  *
  * <p>The argument of {@code T}, written <code>&#x22A5;</code> in XMIR, is
- * named {@code message}. The terminator has no voids, so no row of the
+ * named {@code complaint}. The terminator has no voids, so no row of the
  * inference names it, while the calculus keeps it a terminator whatever the
  * name of the argument is, and the runtime keeps that argument as the reason
  * of the termination. The objects inside the message are still walked, so
@@ -177,7 +177,7 @@ final class Dealphaing {
         }
         final Function<String, String> known;
         if ("⊥".equals(Dealphaing.attr(node, "base"))) {
-            known = loc -> "message";
+            known = loc -> "complaint";
         } else {
             known = names::get;
         }

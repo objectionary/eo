@@ -105,7 +105,7 @@ final class EOsocketTest {
         socket.put(1, new Data.ToPhi(port));
         final Phi connect = socket.take("connect").copy();
         connect.put(0, new EOsocketTest.Simple("client"));
-        connect.put(1, new EOsocketTest.Simple("message"));
+        connect.put(1, new EOsocketTest.Simple("complaint"));
         MatcherAssert.assertThat(
             "connecting to a refused port should have yielded the cant-connect fallback instead of terminating, but it didnt",
             new Dataized(connect).take(),
@@ -967,9 +967,9 @@ final class EOsocketTest {
     }
 
     /**
-     * The fallback that hands back the message it is told, as the
+     * The fallback that hands back the complaint it is told, as the
      * {@code cant-*} voids of {@code socket} get it.
-     * message > [message]
+     * complaint > [complaint]
      *
      * @since 0.76.0
      */
@@ -979,12 +979,12 @@ final class EOsocketTest {
          * Ctor.
          */
         Told() {
-            super(new Attrs(new Attr("message")));
+            super(new Attrs(new Attr("complaint")));
         }
 
         @Override
         public Phi lambda() {
-            return new Data.ToPhi(new Dataized(this.free("message")).take());
+            return new Data.ToPhi(new Dataized(this.free("complaint")).take());
         }
     }
 }

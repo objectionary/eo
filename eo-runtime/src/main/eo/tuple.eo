@@ -225,7 +225,7 @@
         "one"
         "two"
       1.5
-      "recovered" > [message]
+      "recovered" > [complaint]
 
   eq. ++> can-recover-from-an-out-of-bounds-index
     "recovered"
@@ -236,7 +236,7 @@
         3
         4
       20
-      "recovered" > [message]
+      "recovered" > [complaint]
 
   eq. ++> can-reject-a-fractional-index-without-reading-the-tail
     "recovered"
@@ -246,7 +246,7 @@
         "last"
         3
       1.5
-      "recovered" > [message]
+      "recovered" > [complaint]
 
   ++> can-report-the-length-of-a-non-empty-tuple
     eq. > @

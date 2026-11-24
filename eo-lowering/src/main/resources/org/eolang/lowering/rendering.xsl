@@ -486,7 +486,7 @@
   <xsl:function name="eo:raising" as="xs:string">
     <xsl:param name="copy" as="xs:string"/>
     <xsl:param name="prefix" as="xs:string"/>
-    <xsl:variable name="message" select="normalize-space(($eo:doc//(applied | formed)[@meta = $copy]/*[@attr = 'message'])[1])"/>
+    <xsl:variable name="message" select="normalize-space(($eo:doc//(applied | formed)[@meta = $copy]/*[@attr = 'complaint'])[1])"/>
     <xsl:variable name="bytes" select="eo:octets($message)"/>
     <xsl:choose>
       <xsl:when test="$message = ''">
@@ -700,7 +700,7 @@
   <!-- The symbols the message of a copy of "throw" is built from, where the copy is named by its meta. -->
   <xsl:function name="eo:carried" as="xs:string*">
     <xsl:param name="copy" as="xs:string"/>
-    <xsl:sequence select="eo:borne(normalize-space(($eo:doc//(applied | formed)[@meta = $copy]/*[@attr = 'message'])[1]))"/>
+    <xsl:sequence select="eo:borne(normalize-space(($eo:doc//(applied | formed)[@meta = $copy]/*[@attr = 'complaint'])[1]))"/>
   </xsl:function>
   <!-- The code points of bytes read as text in UTF-8, with -1 where they are no such text. -->
   <xsl:function name="eo:text" as="xs:integer*">

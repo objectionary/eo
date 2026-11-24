@@ -38,9 +38,13 @@ final class Emissions {
     static final String NO_IDENTITY_ARGS = "the identity object takes no arguments";
 
     /**
-     * The void the identity object {@code I} binds and decorates.
+     * The void the identity object {@code I} binds and decorates. It is
+     * named {@code complaint}, as the void of every {@code cant-*} fallback
+     * is, since {@code I} is passed as one so often: when every formation
+     * that reaches a void names its own void the same, its argument gets
+     * that name (#10061).
      */
-    private static final String IDENTITY = "x";
+    private static final String IDENTITY = "complaint";
 
     /**
      * A valid void parameter name, other than the {@code @} and {@code ^}

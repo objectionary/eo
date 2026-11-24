@@ -296,19 +296,19 @@
   eq. ++> can-recover-from-an-out-of-bounds-conversion-to-i32
     i32 00-00-00-2A
     3147483647.as-i64.as-i32
-      i32 00-00-00-2A > [message]
+      i32 00-00-00-2A > [complaint]
 
   eq. ++> can-recover-from-converting-the-maximum-i64-to-i32
     i32 00-00-00-2A
     as-i32.
       i64 7F-FF-FF-FF-FF-FF-FF-FF
-      i32 00-00-00-2A > [message]
+      i32 00-00-00-2A > [complaint]
 
   eq. ++> can-recover-from-converting-the-minimum-i64-to-i32
     i32 00-00-00-2A
     as-i32.
       i64 80-00-00-00-00-00-00-00
-      i32 00-00-00-2A > [message]
+      i32 00-00-00-2A > [complaint]
 
   eq. ++> can-round-a-tie-to-even-when-converting-to-a-number
     as-number.

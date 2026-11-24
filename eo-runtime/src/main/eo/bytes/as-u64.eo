@@ -29,6 +29,6 @@
   eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-u64
     u64 00-00-00-00-00-00-00-2A
     01-01-01-01.as-u64
-      u64 00-00-00-00-00-00-00-2A > [message]
+      u64 00-00-00-00-00-00-00-2A > [complaint]
 
   01-01-01-01.as-u64 --> stops-on-bytes-of-wrong-size-when-converting-to-u64

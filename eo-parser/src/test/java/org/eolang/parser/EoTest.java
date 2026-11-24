@@ -415,7 +415,7 @@ final class EoTest {
             "a bare I glyph inside a formation must expand into a formation binding one void and decorating it",
             EoTest.render("[] > main", "  I > x"),
             XhtmlMatchers.hasXPath(
-                "/object/o[@name='main']/o[@name='x' and not(@base)][o[@base='∅' and @name='x']][o[@name='φ' and @base='x']]"
+                "/object/o[@name='main']/o[@name='x' and not(@base)][o[@base='∅' and @name='complaint']][o[@name='φ' and @base='complaint']]"
             )
         );
     }
@@ -423,10 +423,10 @@ final class EoTest {
     @Test
     void parsesIdentityObjectAsHorizontalArgument() {
         MatcherAssert.assertThat(
-            "an I glyph in argument position must expand into the same formation the spelled-out x > [x] emits",
+            "an I glyph in argument position must expand into the same formation the spelled-out complaint > [complaint] emits",
             EoTest.render("[] > main", "  foo I > x"),
             XhtmlMatchers.hasXPath(
-                "/object/o[@name='main']/o[@name='x']/o[not(@base)][o[@base='∅' and @name='x']][o[@name='φ' and @base='x']]"
+                "/object/o[@name='main']/o[@name='x']/o[not(@base)][o[@base='∅' and @name='complaint']][o[@name='φ' and @base='complaint']]"
             )
         );
     }
