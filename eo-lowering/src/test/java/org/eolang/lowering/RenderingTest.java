@@ -230,7 +230,7 @@ final class RenderingTest {
         Files.write(
             protocol,
             String.format(
-                "<protocol><dataize at=\"Φ.l🌵.e4\"><boxed meta=\"𝑛·0·1\">Φ.l🌵.e4.φ</boxed><morph at=\"𝑛·0·1\">%s<applied meta=\"𝑛·0·2\" of=\"Φ.tuple\">%s</applied><applied meta=\"𝑛·0·3\" of=\"Φ.l🌵.throw\"><meta attr=\"complaint\">𝑛·0·2</meta></applied><morphed meta=\"𝑛·0·4\">𝑛·0·3</morphed></morph><unanswered λ=\"L_throw\" by=\"dataize\">𝑛·0·3</unanswered><stuck λ=\"L_throw\"/></dataize></protocol>",
+                "<protocol><dataize at=\"Φ.l🌵.e4\"><boxed meta=\"𝑛·0·1\">Φ.l🌵.e4.φ</boxed><morph at=\"𝑛·0·1\">%s<applied meta=\"𝑛·0·2\" of=\"Φ.tuple\">%s</applied><applied meta=\"𝑛·0·3\" of=\"Φ.l🌵.throw\"><meta attr=\"x\">𝑛·0·2</meta></applied><morphed meta=\"𝑛·0·4\">𝑛·0·3</morphed></morph><unanswered λ=\"L_throw\" by=\"dataize\">𝑛·0·3</unanswered><stuck λ=\"L_throw\"/></dataize></protocol>",
                 records, binds
             ).getBytes(StandardCharsets.UTF_8)
         );

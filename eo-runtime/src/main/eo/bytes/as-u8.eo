@@ -27,6 +27,6 @@
   eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-u8
     u8 9C-
     41-06-D2.as-u8
-      u8 9C- > [complaint]
+      u8 9C- > [x]
 
   01-01.as-u8 --> stops-on-bytes-of-wrong-size-when-converting-to-u8

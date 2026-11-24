@@ -27,6 +27,6 @@
   eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-u16
     u16 B2-07
     5F-.as-u16
-      u16 B2-07 > [complaint]
+      u16 B2-07 > [x]
 
   01-01-01.as-u16 --> stops-on-bytes-of-wrong-size-when-converting-to-u16

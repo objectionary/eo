@@ -82,11 +82,11 @@ final class DealphaingTest {
     @Test
     void namesMessageOfBottom(@Mktmp final Path temp) throws IOException {
         MatcherAssert.assertThat(
-            "the argument of ⊥ must be named 'complaint' without failing the build, but it isnt",
+            "the argument of ⊥ must be named 'x' without failing the build, but it isnt",
             new XMLDocument(
                 DealphaingTest.dealphaed(temp, true, DealphaingTest.bottom(), Map.of())
             ),
-            XhtmlMatchers.hasXPath("/object/o[@base='⊥']/o[@as='complaint']")
+            XhtmlMatchers.hasXPath("/object/o[@base='⊥']/o[@as='x']")
         );
     }
 
@@ -103,7 +103,7 @@ final class DealphaingTest {
                 )
             ),
             XhtmlMatchers.hasXPaths(
-                "/object/o[@base='⊥']/o[@as='complaint']",
+                "/object/o[@base='⊥']/o[@as='x']",
                 "/object/o/o[@base='.printf']/o[@as='args']"
             )
         );

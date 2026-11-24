@@ -185,7 +185,7 @@
     2.eq > @
       get.
         mp.found 1
-        42 > [complaint]
+        42 > [x]
     map * > mp
       map.entry 1 1
       map.entry 1 2
@@ -219,7 +219,7 @@
     eq. > @
       get.
         mp.found "three"
-        42 > [complaint]
+        42 > [x]
       42
     map * > mp
       map.entry "one" 1
@@ -232,13 +232,13 @@
         map *
           map.entry "Aa" 1
         "BB"
-      42 > [complaint]
+      42 > [x]
 
   ++> can-recover-from-getting-a-missing-key
     42.eq > @
       get.
         mp.found "absent"
-        42 > [complaint]
+        42 > [x]
     map * > mp
       map.entry "one" 1
 

@@ -102,7 +102,7 @@
             and.
               is-directory.
                 child.as-file >> entry
-                false > [complaint]
+                false > [x]
               not.
                 entry.is-symlink false
             state.folder.walked
@@ -146,9 +146,9 @@
                           "/^"
                           translated 0 "" false false
                           "$/s"
-                T > [^folder complaint] >>
+                T > [^folder x] >>
                   "Can't parse '%s' as a glob pattern, %s".printf
-                    * folder.folder.glob complaint
+                    * folder.folder.glob x
               text
     "".joined >> single
       *
@@ -167,7 +167,7 @@
         eq.
           folder.glob.at
             from
-            "" > [complaint]
+            "" > [x]
           "]"
         true
         folder.closes
@@ -221,7 +221,7 @@
           eq.
             folder.glob.at
               index.plus 1
-              "" > [complaint]
+              "" > [x]
             "*"
       braced.if > finished
         T
@@ -232,7 +232,7 @@
         eq.
           folder.glob.at
             index.plus 1
-            "" > [complaint]
+            "" > [x]
           "!"
       classed.not.and > opening
         and.
@@ -243,7 +243,7 @@
         eq.
           folder.glob.at
             index.plus 2
-            "" > [complaint]
+            "" > [x]
           "/"
       classed.if > token
         if.
@@ -359,7 +359,7 @@
 
   is-directory. ++> can-recover-from-checking-an-absent-directory
     directory mktemp.tmpfile.deleted
-    true > [complaint]
+    true > [x]
 
   ++> can-retry-tmpfile-creation-after-a-collision
     seq * > @
@@ -401,7 +401,7 @@
   ++> can-tell-that-a-deleted-directory-is-no-longer-a-directory
     not. > @
       d.deleted.is-directory
-        false > [complaint]
+        false > [x]
     made. > d
       as-dir.
         mktemp.tmpfile.deleted.as-path.resolved "gone"
@@ -409,12 +409,12 @@
   is-directory. ++> can-tell-that-a-directory-is-a-directory
     directory
       Q.file "."
-    false > [complaint]
+    false > [x]
 
   not. ++> can-tell-that-a-regular-file-is-not-a-directory
     is-directory.
       directory mktemp.tmpfile
-      true > [complaint]
+      true > [x]
 
   ++> can-walk-a-directory-before-its-children
     seq * > @

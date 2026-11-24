@@ -133,22 +133,22 @@
   eq. ++> can-recover-from-a-negative-past-the-boundary
     i64 5C-13-A8-07-E1-94-3B-6D
     -9.223372036854778e18.as-i64
-      i64 5C-13-A8-07-E1-94-3B-6D > [complaint]
+      i64 5C-13-A8-07-E1-94-3B-6D > [x]
 
   eq. ++> can-recover-from-a-non-finite-number
     i64 C4-6E-19-B2-07-F5-8D-31
     nan.as-i64
-      i64 C4-6E-19-B2-07-F5-8D-31 > [complaint]
+      i64 C4-6E-19-B2-07-F5-8D-31 > [x]
 
   eq. ++> can-recover-from-an-out-of-range-number
     i64 00-00-00-00-00-00-00-2A
     1.0e30.as-i64
-      i64 00-00-00-00-00-00-00-2A > [complaint]
+      i64 00-00-00-00-00-00-00-2A > [x]
 
   eq. ++> can-recover-from-the-long-maximum-boundary
     i64 71-0B-E6-2D-94-C7-38-5A
     9.223372036854776e18.as-i64
-      i64 71-0B-E6-2D-94-C7-38-5A > [complaint]
+      i64 71-0B-E6-2D-94-C7-38-5A > [x]
 
   eq. ++> can-truncate-a-negative-toward-zero
     -3.7.as-i64.as-bytes

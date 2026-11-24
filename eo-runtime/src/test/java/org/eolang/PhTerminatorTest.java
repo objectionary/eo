@@ -304,7 +304,7 @@ final class PhTerminatorTest {
     @Test
     void takesCauseByName() {
         final Phi term = new PhTerminator();
-        term.put("complaint", new Data.ToPhi("named reason"));
+        term.put("x", new Data.ToPhi("named reason"));
         MatcherAssert.assertThat(
             "putting into the terminator by name must keep the object as its cause, but it doesnt",
             Assertions.assertThrows(ExFailure.class, () -> new Dataized(term).take()).getMessage(),

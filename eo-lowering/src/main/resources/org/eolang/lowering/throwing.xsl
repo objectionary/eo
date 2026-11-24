@@ -7,7 +7,7 @@
   <!--
   Here every "T" of one XMIR file becomes a copy of "throw", the formation
   the lowering keeps in "Φ.l🌵" next to the entries, and the
-  argument of the "T" becomes the "complaint" of that copy, unless the
+  argument of the "T" becomes the "x" of that copy, unless the
   "dealpha" goal has already named it so. The parser writes
   a "T" as the terminator "⊥" of the calculus, and phino stops at "⊥" with
   nothing left of the message, so an error of EO could never reach the Java
@@ -20,7 +20,7 @@
     <xsl:attribute name="base" select="'Φ.l🌵.throw'"/>
   </xsl:template>
   <xsl:template match="o[@base = '⊥']/o[@as = 'α0']/@as">
-    <xsl:attribute name="as" select="'complaint'"/>
+    <xsl:attribute name="as" select="'x'"/>
   </xsl:template>
   <xsl:template match="node()|@*">
     <xsl:copy>

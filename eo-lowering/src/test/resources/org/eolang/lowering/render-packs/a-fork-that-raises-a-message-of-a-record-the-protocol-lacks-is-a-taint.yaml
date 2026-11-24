@@ -70,7 +70,7 @@ protocol: |
         <applied meta="𝑛·1·20" of="Φ.number"><meta attr="φ">𝑛·1·19</meta></applied>
         <applied meta="𝑛·1·21" of="Φ.tuple"><ref attr="tail">Φ.tuple.empty</ref><meta attr="head">𝑛·1·12.size</meta><meta attr="length">𝑛·1·20</meta></applied>
         <applied meta="𝑛·1·25" of="𝑛·1·18.printf"><meta attr="args">𝑛·1·21</meta></applied>
-        <applied meta="𝑛·1·26" of="Φ.l🌵.throw"><meta attr="complaint">𝑛·1·25</meta></applied>
+        <applied meta="𝑛·1·26" of="Φ.l🌵.throw"><meta attr="x">𝑛·1·25</meta></applied>
         <morphed meta="𝑛·0·2">𝑛·1·30</morphed>
       </morph>
       <evaluate λ="L_fork" by="dataize" at="Φ.a🌵7">

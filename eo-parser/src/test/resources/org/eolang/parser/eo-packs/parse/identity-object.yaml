@@ -2,12 +2,11 @@
 # SPDX-License-Identifier: MIT
 ---
 # yamllint disable rule:line-length
-# The `I` glyph (#6834) is the one-character spelling of
-# `complaint > [complaint]`, the
+# The `I` glyph (#6834) is the one-character spelling of `x > [x]`, the
 # identity object. It expands into an anonymous formation binding a single
 # void and decorating it, wherever a value may stand: as a whole body line,
 # as a horizontal argument, and as a vertical one. Its void is always named
-# `complaint`, and a sibling attribute of that same name in the enclosing formation
+# `x`, and a sibling attribute of that same name in the enclosing formation
 # does not capture it — the φ resolves to the identity's own void.
 sheets:
   - /org/eolang/parser/parse/wrap-method-calls.xsl
@@ -20,16 +19,16 @@ sheets:
   - /org/eolang/parser/parse/mandatory-as.xsl
 asserts:
   - /object[not(errors)]
-  - /object[count(//o[@base='∅' and @name='complaint'])=3]
-  - /object[count(//o[@name='φ' and @base='ξ.complaint'])=3]
-  - /object/o[@name='main']/o[@name='a' and not(@base)]/o[@base='ξ.complaint' and @name='φ']
-  - /object/o[@name='main']/o[@name='b' and @base='Φ.foo']/o[not(@base)]/o[@base='ξ.complaint' and @name='φ']
-  - /object/o[@name='main']/o[@name='c' and @base='Φ.bar']/o[not(@base)]/o[@base='ξ.complaint' and @name='φ']
-  - /object/o[@name='main']/o[@name='complaint' and @base='Φ.number']
+  - /object[count(//o[@base='∅' and @name='x'])=3]
+  - /object[count(//o[@name='φ' and @base='ξ.x'])=3]
+  - /object/o[@name='main']/o[@name='a' and not(@base)]/o[@base='ξ.x' and @name='φ']
+  - /object/o[@name='main']/o[@name='b' and @base='Φ.foo']/o[not(@base)]/o[@base='ξ.x' and @name='φ']
+  - /object/o[@name='main']/o[@name='c' and @base='Φ.bar']/o[not(@base)]/o[@base='ξ.x' and @name='φ']
+  - /object/o[@name='main']/o[@name='x' and @base='Φ.number']
 input: |
   [] > main
     I > a
     foo I > b
     bar > c
       I
-    42 > complaint
+    42 > x

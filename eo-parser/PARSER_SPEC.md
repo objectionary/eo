@@ -172,7 +172,7 @@ The parser recognises the following lexical tokens:
 | `ROOT` | `Q` |
 | `XI` | `$` |
 | `TERM` | `T` — the terminator term (§9.3), similar to `⊥` in 𝜑-calculus. A value: it may carry arguments, horizontal (`T 42`) or vertical, which are the cause of the terminator, the way `T "why it failed"` is used across the runtime, and a `.method` chain (`T.foo` parses as `⊥.foo`), like any other head. |
-| `IDENTITY` | `I` — the identity object (§3.16), the one-character spelling of `complaint > [complaint]`. A value accepted as a line head or argument; it takes no direct arguments, but supports a `.method` chain and same-indent `.method` continuation (R-3.16.1). |
+| `IDENTITY` | `I` — the identity object (§3.16), the one-character spelling of `x > [x]`. A value accepted as a line head or argument; it takes no direct arguments, but supports a `.method` chain and same-indent `.method` continuation (R-3.16.1). |
 | `VOID` | `?` — the vertical-void marker (§3.4). A `? > name` body line declares a void attribute, equivalent to listing `name` in `[…]`. |
 | `QDOT` | `?.` — the fragile-dispatch operator (§3.5). Accepted in every position the plain `.` dispatch is, recorded as `@fragile` in XMIR. A `?` immediately followed by `.` is `QDOT`; a `?` followed by space (`? > name`) is `VOID`. |
 | `INT` | optional sign, then `0` or non-zero digit string. |
@@ -738,7 +738,7 @@ Illegal:
 
 ### 3.16 Identity object — `I`
 
-An `I` token is *the one-character spelling of the identity object* `complaint > [complaint]` — the formation that binds a single void and decorates it, so that dataizing it dataizes whatever was applied to it. It is the object counterpart of the [identity function](https://mathworld.wolfram.com/IdentityFunction.html), and it reads best where a callback is asked for but nothing is to be done with the value:
+An `I` token is *the one-character spelling of the identity object* `x > [x]` — the formation that binds a single void and decorates it, so that dataizing it dataizes whatever was applied to it. It is the object counterpart of the [identity function](https://mathworld.wolfram.com/IdentityFunction.html), and it reads best where a callback is asked for but nothing is to be done with the value:
 
 ```
 "hello".at 1.5 I                      ← the error branch hands the message back
@@ -757,9 +757,9 @@ I
   5                                   ← the method, not `I`, receives the argument
 ```
 
-R-3.16.2. **The void.** The void `I` binds is always named `complaint`, and nothing but the φ ever reads it. A same-named attribute of an enclosing formation does not capture that φ: the void is the nearest declaration of `complaint`, so scope resolution binds to it.
+R-3.16.2. **The void.** The void `I` binds is always named `x`, since nothing but the φ ever reads it. A same-named attribute of an enclosing formation does not capture that φ: the void is the nearest declaration of `x`, so scope resolution binds to it.
 
-R-3.16.3. **Emission / XMIR.** The parser emits a base-less `<o>` with two children in this order — the void `<o name='complaint' base='∅'/>` and the decoratee `<o name='φ' base='complaint'/>` — which is exactly what the spelled-out `complaint > [complaint]` emits. The void is named `complaint` because `I` is so often passed as a `cant-*` fallback, whose every other filler names its void `complaint` too.
+R-3.16.3. **Emission / XMIR.** The parser emits a base-less `<o>` with two children in this order — the void `<o name='x' base='∅'/>` and the decoratee `<o name='φ' base='x'/>` — which is exactly what the spelled-out `x > [x]` emits.
 
 R-3.16.4. **Outer kind.** A bare `I` line is an `identity-object` (Appendix A) with `vertical-completed` openness: it cannot receive direct deeper-indent children, but a same-indent `.method` may wrap it. A pipe may still apply arguments to a named identity object (R-3.14.2). An `I` carrying a chain takes the outer kind of the underlying application (§3.6).
 

@@ -27,6 +27,6 @@
   eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-i32
     i32 FF-FE-4C-17
     03-5A-E1.as-i32
-      i32 FF-FE-4C-17 > [complaint]
+      i32 FF-FE-4C-17 > [x]
 
   01-01-01-01-01.as-i32 --> stops-on-bytes-of-wrong-size-when-converting-to-i32

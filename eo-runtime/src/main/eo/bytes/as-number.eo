@@ -35,7 +35,7 @@
   eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-a-number
     42
     01-01-01-01.as-number
-      42 > [complaint]
+      42 > [x]
 
   is-nan. ++> can-route-non-canonical-nan-bytes-to-nan
     FF-F8-00-00-00-00-00-00.as-number

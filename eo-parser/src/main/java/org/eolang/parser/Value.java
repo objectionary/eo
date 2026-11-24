@@ -398,7 +398,7 @@ final class Value {
 
         /**
          * {@code I} — the identity object (§3.16), the one-glyph
-         * spelling of {@code complaint > [complaint]}. {@link Emissions} expands it
+         * spelling of {@code x > [x]}. {@link Emissions} expands it
          * into an anonymous formation binding a single void and
          * decorating it.
          */

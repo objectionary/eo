@@ -99,7 +99,7 @@
     u8 2A-
     02-.as-u8.div
       00-.as-u8
-      u8 2A- > [complaint]
+      u8 2A- > [x]
 
   eq. ++> can-subtract
     05-.as-u8.minus 03-.as-u8

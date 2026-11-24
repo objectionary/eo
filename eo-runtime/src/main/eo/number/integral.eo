@@ -57,9 +57,9 @@
     close-to > @
       as-number.
         0.integral
-          times. > [complaint]
-            complaint.times complaint
-            complaint
+          times. > [x]
+            x.times x
+            x
           1
           10
           100
@@ -93,7 +93,7 @@
     close-to > @
       as-number.
         0.integral
-          complaint.times complaint > [complaint]
+          x.times x > [x]
           1
           10
           100

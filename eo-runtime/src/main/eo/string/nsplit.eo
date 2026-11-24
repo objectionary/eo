@@ -103,7 +103,7 @@
     "a-b-c".nsplit
       "-"
       1.5
-      * > [complaint]
+      * > [x]
         "recovered"
 
   eq. ++> can-recover-from-an-empty-delimiter-when-nsplitting
@@ -111,7 +111,7 @@
     "abc".nsplit
       ""
       3
-      * > [complaint]
+      * > [x]
         "recovered"
 
   eq. ++> can-recover-from-an-infinite-limit-when-splitting
@@ -119,7 +119,7 @@
     "a-b-c".nsplit
       "-"
       pinf
-      * > [complaint]
+      * > [x]
         "recovered"
 
   eq. ++> can-recover-from-an-invalid-limit
@@ -127,7 +127,7 @@
     "text".nsplit
       "-"
       0
-      * > [complaint]
+      * > [x]
         "fallback"
 
   eq. ++> can-split-into-empty-strings

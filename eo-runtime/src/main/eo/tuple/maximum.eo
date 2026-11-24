@@ -34,7 +34,7 @@
   eq. ++> can-recover-from-an-empty-list-when-taking-the-maximum
     42
     tuple.empty.maximum
-      42 > [complaint]
+      42 > [x]
 
   eq. ++> can-take-a-maximum-of-one-item
     maximum.
