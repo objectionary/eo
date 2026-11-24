@@ -27,6 +27,6 @@
   eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-u32
     u32 0D-61-F0-3A
     88-1E-47-C9-02.as-u32
-      u32 0D-61-F0-3A > [message]
+      u32 0D-61-F0-3A > [x]
 
   01-01-01-01-01.as-u32 --> stops-on-bytes-of-wrong-size-when-converting-to-u32

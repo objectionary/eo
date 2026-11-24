@@ -14,11 +14,11 @@
     fallback
     list.reduced
       ninf
-      if. > [max item]
-        item.as-number.is-nan.or
-          item.as-number.gt max
-        item
-        max
+      if. > [a x]
+        x.as-number.is-nan.or
+          x.as-number.gt a
+        x
+        a
 
   is-nan. ++> can-be-nan-when-taking-the-maximum-of-a-lone-nan
     maximum.

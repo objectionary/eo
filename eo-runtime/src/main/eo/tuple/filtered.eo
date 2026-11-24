@@ -13,7 +13,7 @@
 
 [^list func] > filtered
   list.filteredi > @
-    list.func item > [^list item index] >>
+    list.func x > [^list x i] >>
 
   eq. ++> can-filter-a-list
     filtered.
@@ -23,7 +23,7 @@
         4
         2
         5
-      v.gt 2 > [v]
+      x.gt 2 > [x]
     *
       3
       4
@@ -35,5 +35,5 @@
         true
         false
         true
-      v.not > [v]
+      x.not > [x]
     * false

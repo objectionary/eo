@@ -102,10 +102,10 @@
             and.
               is-directory.
                 child.as-file >> entry
-                false > [message]
+                false > [x]
               not.
                 entry.is-symlink
-                  false > [message]
+                  false > [x]
             state.folder.walked
               state.stepped rest.tail >> earlier
               if. >> sub
@@ -147,9 +147,9 @@
                           "/^"
                           translated 0 "" false false
                           "$/s"
-                T > [^folder message] >>
+                T > [^folder x] >>
                   "Can't parse '%s' as a glob pattern, %s".printf
-                    * folder.folder.glob message
+                    * folder.folder.glob x
               text
     "".joined >> single
       *
@@ -358,7 +358,7 @@
 
   is-directory. ++> can-recover-from-checking-an-absent-directory
     directory mktemp.tmpfile.deleted
-    true > [message]
+    true > [x]
 
   ++> can-retry-tmpfile-creation-after-a-collision
     seq * > @
@@ -400,7 +400,7 @@
   ++> can-tell-that-a-deleted-directory-is-no-longer-a-directory
     not. > @
       d.deleted.is-directory
-        false > [message]
+        false > [x]
     made. > d
       as-dir.
         mktemp.tmpfile.deleted.as-path.resolved "gone"
@@ -408,12 +408,12 @@
   is-directory. ++> can-tell-that-a-directory-is-a-directory
     directory
       Q.file "."
-    false > [message]
+    false > [x]
 
   not. ++> can-tell-that-a-regular-file-is-not-a-directory
     is-directory.
       directory mktemp.tmpfile
-      true > [message]
+      true > [x]
 
   ++> can-walk-a-directory-before-its-children
     seq * > @

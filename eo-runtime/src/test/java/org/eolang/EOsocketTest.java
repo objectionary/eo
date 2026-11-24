@@ -83,7 +83,7 @@ final class EOsocketTest {
             socket.put(0, new Data.ToPhi(this.localhost()));
             socket.put(1, new Data.ToPhi(server.port()));
             final Phi connected = socket.take("connect").copy();
-            connected.put(0, new EOsocketTest.Simple());
+            connected.put(0, new EOsocketTest.Simple("client"));
             final byte[] actual = new Dataized(connected).take();
             MatcherAssert.assertThat(
                 String.format(
@@ -104,8 +104,8 @@ final class EOsocketTest {
         socket.put(0, new Data.ToPhi(this.localhost()));
         socket.put(1, new Data.ToPhi(port));
         final Phi connect = socket.take("connect").copy();
-        connect.put(0, new EOsocketTest.Simple());
-        connect.put(1, new EOsocketTest.Simple());
+        connect.put(0, new EOsocketTest.Simple("client"));
+        connect.put(1, new EOsocketTest.Simple("x"));
         MatcherAssert.assertThat(
             "connecting to a refused port should have yielded the cant-connect fallback instead of terminating, but it didnt",
             new Dataized(connect).take(),
@@ -119,7 +119,7 @@ final class EOsocketTest {
         socket.put(0, new Data.ToPhi(this.localhost()));
         socket.put(1, new Data.ToPhi(port));
         final Phi connect = socket.take("connect").copy();
-        connect.put(1, Phi.Φ.take("dataized").copy());
+        connect.put(1, new EOsocketTest.Told());
         MatcherAssert.assertThat(
             "the refused connection should have told the fallback which address it failed to reach, but it didnt",
             new Dataized(connect).asString(),
@@ -133,8 +133,8 @@ final class EOsocketTest {
         socket.put(0, new Data.ToPhi("255.255.255.255"));
         socket.put(1, new Data.ToPhi(port));
         final Phi listen = socket.take("listen").copy();
-        listen.put(0, new EOsocketTest.Simple());
-        listen.put(1, Phi.Φ.take("dataized").copy());
+        listen.put(0, new EOsocketTest.Simple("s"));
+        listen.put(1, new EOsocketTest.Told());
         MatcherAssert.assertThat(
             "the limited-broadcast address 255.255.255.255 must be accepted as a valid IPv4 conversion, not rejected as unparsable",
             new String(new Dataized(listen).take(), StandardCharsets.UTF_8),
@@ -150,7 +150,7 @@ final class EOsocketTest {
             socket.put(0, new Data.ToPhi(this.localhost()));
             socket.put(1, new Data.ToPhi(taken.port()));
             final Phi listen = socket.take("listen").copy();
-            listen.put(1, Phi.Φ.take("dataized").copy());
+            listen.put(1, new EOsocketTest.Told());
             MatcherAssert.assertThat(
                 "the taken port should have told the fallback which address it failed to bind to, but it didnt",
                 new Dataized(listen).asString(),
@@ -847,7 +847,8 @@ final class EOsocketTest {
     }
 
     /**
-     * Simple scoped object.
+     * Simple scoped object, with one void named as the program names the
+     * argument it gets.
      * true > [s]
      *
      * @since 0.40.0
@@ -856,9 +857,11 @@ final class EOsocketTest {
 
         /**
          * Ctor.
+         *
+         * @param name The name of its only void
          */
-        Simple() {
-            super(new Attrs(new Attr("s")));
+        Simple(final String name) {
+            super(new Attrs(new Attr(name)));
         }
 
         @Override
@@ -934,7 +937,7 @@ final class EOsocketTest {
 
     /**
      * Scoped client socket.
-     * s.send "Hello, Socket!" > [s]
+     * client.send "Hello, Socket!" > [client]
      *
      * @since 0.40.0
      */
@@ -951,15 +954,37 @@ final class EOsocketTest {
          * @param msg Message to send
          */
         Client(final String msg) {
-            super(new Attrs(new Attr("s")));
+            super(new Attrs(new Attr("client")));
             this.message = msg;
         }
 
         @Override
         public Phi lambda() {
-            final Phi sent = this.free("s").take("send").copy();
+            final Phi sent = this.free("client").take("send").copy();
             sent.put(0, new Data.ToPhi(this.message));
             return sent;
+        }
+    }
+
+    /**
+     * The fallback that hands back what it is told, as the
+     * {@code cant-*} voids of {@code socket} get it.
+     * x > [x]
+     *
+     * @since 0.76.0
+     */
+    private static final class Told extends PhDefault implements Atom {
+
+        /**
+         * Ctor.
+         */
+        Told() {
+            super(new Attrs(new Attr("x")));
+        }
+
+        @Override
+        public Phi lambda() {
+            return new Data.ToPhi(new Dataized(this.free("x")).take());
         }
     }
 }

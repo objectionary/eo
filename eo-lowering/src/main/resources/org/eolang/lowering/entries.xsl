@@ -315,7 +315,7 @@
       <object author="eo-lowering">
         <o name="l🌵">
           <o name="throw">
-            <o base="∅" name="message"/>
+            <o base="∅" name="x"/>
             <o name="λ">L_throw</o>
           </o>
           <xsl:apply-templates select="$eo:plan/entry" mode="eo:xmir"/>

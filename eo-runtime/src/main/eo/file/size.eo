@@ -27,13 +27,13 @@
   eq. ++> can-ignore-the-fallback-when-a-file-exists
     0
     mktemp.tmpfile.touched.size
-      -1 > [message]
+      -1 > [x]
 
   ++> can-measure-a-directory-without-falling-back
     not. > @
       eq.
         d.as-file.size
-          -1 > [message]
+          -1 > [x]
         -1
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
 
@@ -87,6 +87,6 @@
   eq. ++> can-recover-from-sizing-an-absent-file
     -1
     mktemp.tmpfile.deleted.size
-      -1 > [message]
+      -1 > [x]
 
   mktemp.tmpfile.deleted.size --> stops-on-sizing-an-absent-file

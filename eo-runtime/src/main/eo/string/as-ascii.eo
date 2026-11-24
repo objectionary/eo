@@ -47,12 +47,12 @@
   eq. ++> can-recover-from-a-multi-byte-character
     42
     "Ж".as-ascii
-      42 > [message]
+      42 > [x]
 
   eq. ++> can-recover-from-an-empty-string
     42
     "".as-ascii
-      42 > [message]
+      42 > [x]
 
   "Ж".as-ascii --> stops-on-a-multi-byte-character
 

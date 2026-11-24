@@ -27,7 +27,9 @@ import java.util.concurrent.atomic.AtomicReference;
  * listens to that slot, and a dispatch hands one to the terminator it yields, so the
  * arguments that follow a propagated terminator, as in {@code (T).if a b}, are
  * dropped instead of being read as the reason it terminated. A {@code put} by
- * name other than ρ aborts — a terminator has no named attributes. The ρ-binding the
+ * name other than ρ goes into that same slot, since a terminator applied to
+ * any attribute stays a terminator (rule "dc"), and the name of a void the
+ * program meant to fill tells nothing more about it. The ρ-binding the
  * runtime attempts on every take (via {@link AtWithRho}) is silently ignored,
  * since a terminator has no ρ; this keeps its cause from being masked by a
  * ρ-rejection while it propagates. The cause is write-once and never handed back
@@ -159,9 +161,7 @@ public final class PhTerminator implements Phi {
     @Override
     public void put(final String name, final Phi object) {
         if (!Phi.RHO.equals(name)) {
-            throw new ExFailure(
-                "the ⊥ object does not accept attributes by name, but got '%s'", name
-            );
+            this.put(0, object);
         }
     }
 

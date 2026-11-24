@@ -47,9 +47,9 @@
     T "Can't get tail from the empty tuple"
     T "Can't get head from the empty tuple"
     0
-  [^list other] > eq
+  [^list b] > eq
     and. > @
-      list.length.eq other.length
+      list.length.eq b.length
       if. > [^list first second] >> receq
         first.length.eq 0
         true
@@ -57,7 +57,7 @@
           first.head.eq second.head
           list.receq first.tail second.tail
           false
-      | list other
+      | list b
   last > head
   count > length
   prior > tail
@@ -225,7 +225,7 @@
         "one"
         "two"
       1.5
-      "recovered" > [message]
+      "recovered" > [x]
 
   eq. ++> can-recover-from-an-out-of-bounds-index
     "recovered"
@@ -236,7 +236,7 @@
         3
         4
       20
-      "recovered" > [message]
+      "recovered" > [x]
 
   eq. ++> can-reject-a-fractional-index-without-reading-the-tail
     "recovered"
@@ -246,7 +246,7 @@
         "last"
         3
       1.5
-      "recovered" > [message]
+      "recovered" > [x]
 
   ++> can-report-the-length-of-a-non-empty-tuple
     eq. > @

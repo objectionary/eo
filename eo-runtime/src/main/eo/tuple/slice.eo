@@ -38,14 +38,14 @@
       *
       list.reducedi
         *
-        if. > [^list accum item index] >>
+        if. > [^list a x i] >>
           and.
-            index.gte
+            i.gte
               number s
-            index.lt
+            i.lt
               number e
-          accum.with item
-          accum
+          a.with x
+          a
     T "Given slice start and end must both be integers"
 
   eq. ++> can-slice-a-list

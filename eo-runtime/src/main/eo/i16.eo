@@ -140,14 +140,14 @@
     i16 00-2A
     2.as-i64.as-i32.as-i16.div
       0.as-i64.as-i32.as-i16
-      i16 00-2A > [message]
+      i16 00-2A > [x]
 
   eq. ++> can-recover-from-min-divided-by-minus-one
     i16 00-2A
     div.
       i16 80-00
       i16 FF-FF
-      i16 00-2A > [message]
+      i16 00-2A > [x]
 
   eq. ++> can-subtract-one-from-one
     1.as-i64.as-i32.as-i16.minus 1.as-i64.as-i32.as-i16

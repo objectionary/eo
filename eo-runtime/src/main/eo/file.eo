@@ -17,7 +17,7 @@
         posix.access entry.path 0
       0
     entry.is-symlink
-      false > [message]
+      false > [x]
   [^entry cant-check] > is-directory
     if. > @
       info.code.eq 0
@@ -362,17 +362,17 @@
 
   ++> can-recover-from-checking-a-symbolic-link-of-an-absent-file
     mktemp.tmpfile.deleted.is-symlink > @
-      true > [message]
+      true > [x]
 
   mktemp.tmpfile.deleted.is-directory ++> can-recover-from-checking-an-absent-file
-    true > [message]
+    true > [x]
 
   eq. ++> can-recover-from-opening-a-missing-file
     file "recovered"
     mktemp.tmpfile.deleted.open
       "r"
       I
-      file "recovered" > [reason]
+      file "recovered" > [x]
 
   ++> can-report-the-error-message-when-checking-a-symbolic-link-of-an-absent-file
     starts-with. > @
@@ -423,14 +423,14 @@
             d.resolved "ссылка"
         not.
           d.as-file.is-symlink
-            true > [message]
+            true > [x]
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
 
   mktemp.tmpfile.is-directory.not ++> can-tell-that-a-regular-file-is-not-a-directory
 
   not. ++> can-tell-that-a-regular-file-is-not-a-symbolic-link
     mktemp.tmpfile.is-symlink
-      true > [message]
+      true > [x]
 
   ++> can-tell-that-a-symbolic-link-is-one
     os.is-windows.or > @
@@ -438,7 +438,7 @@
         code.
           posix.symlink d link
         link.as-file.is-symlink
-          false > [message]
+          false > [x]
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
     d.resolved "ссылка" > link
 

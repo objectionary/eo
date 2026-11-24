@@ -16,10 +16,10 @@
       list
       list.reducedi
         *
-        if. > [^list accum item idx] >>
-          idx.gte start
-          accum.with item
-          accum
+        if. > [^list a x i] >>
+          i.gte start
+          a.with x
+          a
     T "Given index must be an integer"
 
   eq. ++> can-take-a-back-slice

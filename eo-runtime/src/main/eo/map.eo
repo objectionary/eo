@@ -33,10 +33,10 @@
               filtered.
                 @.
                   raw.rec-rebuild tup.tail
-                not. > [^step ent] >>
+                not. > [^step x] >>
                   and.
-                    ent.hash.eq hash
-                    ent.kbts.eq kbts
+                    x.hash.eq hash
+                    x.kbts.eq kbts
               [^step] >>
                 step.hash > hash
                 step.kbts > kbts
@@ -76,18 +76,18 @@
     exists. > [^store key] > has
       store.found key
     entries.mapped > keys
-      entry.key > [entry]
+      x.key > [x]
     entries.length > size
     entries.mapped > values
-      entry.value > [entry]
+      x.value > [x]
     [^store key value] > with
       map.ctor > @
         with.
           store.entries.filtered
-            not. > [^merge entry] >>
+            not. > [^merge x] >>
               and.
-                hash.eq entry.hash
-                kbts.eq entry.kbts
+                hash.eq x.hash
+                kbts.eq x.kbts
           [^merge] >>
             merge.hash > hash
             merge.kbts > kbts
@@ -98,10 +98,10 @@
     [^store key] > without
       map.ctor > @
         store.entries.filtered
-          not. > [^drop entry] >>
+          not. > [^drop x] >>
             and.
-              hash.eq entry.hash
-              kbts.eq entry.kbts
+              hash.eq x.hash
+              kbts.eq x.kbts
       hash. >> hash!
         key.as-bytes >> kbts!
   [label content] > entry
@@ -185,7 +185,7 @@
     2.eq > @
       get.
         mp.found 1
-        42 > [message]
+        42 > [x]
     map * > mp
       map.entry 1 1
       map.entry 1 2
@@ -219,7 +219,7 @@
     eq. > @
       get.
         mp.found "three"
-        42 > [message]
+        42 > [x]
       42
     map * > mp
       map.entry "one" 1
@@ -232,13 +232,13 @@
         map *
           map.entry "Aa" 1
         "BB"
-      42 > [message]
+      42 > [x]
 
   ++> can-recover-from-getting-a-missing-key
     42.eq > @
       get.
         mp.found "absent"
-        42 > [message]
+        42 > [x]
     map * > mp
       map.entry "one" 1
 
