@@ -16,7 +16,7 @@ import org.eolang.cache.Sha;
  *
  * @since 0.30
  */
-public final class TjForeign {
+final class TjForeign {
 
     /**
      * The delegate.
@@ -28,7 +28,7 @@ public final class TjForeign {
      *
      * @param original The delegate
      */
-    public TjForeign(final Tojo original) {
+    TjForeign(final Tojo original) {
         this.delegate = original;
     }
 
@@ -60,7 +60,7 @@ public final class TjForeign {
      *
      * @return The id of the tojo
      */
-    public String identifier() {
+    String identifier() {
         return this.attribute(TjsForeign.Attribute.ID);
     }
 
@@ -69,19 +69,8 @@ public final class TjForeign {
      *
      * @return The xmir
      */
-    public Path xmir() {
+    Path xmir() {
         return Paths.get(this.attribute(TjsForeign.Attribute.XMIR));
-    }
-
-    /**
-     * Set the xmir.
-     *
-     * @param xmir The xmir
-     * @return The tojo itself
-     */
-    public TjForeign withXmir(final Path xmir) {
-        this.delegate.set(TjsForeign.Attribute.XMIR.getKey(), xmir.toString());
-        return this;
     }
 
     /**
@@ -277,6 +266,17 @@ public final class TjForeign {
      */
     TjForeign withMerged(final String object) {
         this.delegate.set(TjsForeign.Attribute.MERGED.getKey(), object);
+        return this;
+    }
+
+    /**
+     * Set the xmir.
+     *
+     * @param xmir The xmir
+     * @return The tojo itself
+     */
+    TjForeign withXmir(final Path xmir) {
+        this.delegate.set(TjsForeign.Attribute.XMIR.getKey(), xmir.toString());
         return this;
     }
 

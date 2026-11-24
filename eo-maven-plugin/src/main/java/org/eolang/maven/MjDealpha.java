@@ -4,14 +4,21 @@
  */
 package org.eolang.maven;
 
+import com.github.lombrozo.xnav.Filter;
+import com.github.lombrozo.xnav.Xnav;
+import com.jcabi.log.Logger;
+import com.jcabi.xml.XMLDocument;
 import io.github.sekator778.seqdir.Seqdir;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.eolang.maven.dealpha.Dealphaing;
 
 /**
  * Mojo that gives the positional arguments of a program the names of the
@@ -22,9 +29,22 @@ import org.eolang.maven.dealpha.Dealphaing;
  * {@code answers.xml} of {@link MjInfer} knows better, since the row of
  * an argument names the void it lands in whenever there is one. This goal
  * reads it and writes {@code foo (bar: k)} instead, wherever the answer is
- * certain, as described in #8301. The answer holds because EO always
- * compiles the whole program, so the applications the engine saw are all
- * there are (#10056).</p>
+ * certain, as described in #8301:</p>
+ *
+ * <pre> &lt;o loc="Φ.app.φ.α0" copies="1" lands="bar"&gt;
+ *   &lt;is loc="Φ.number"/&gt;
+ * &lt;/o&gt;</pre>
+ *
+ * <p>The row says that {@code Φ.app.φ.α0} is {@code bar}. The engine writes
+ * the name only when every application it saw puts the argument into one
+ * void and nowhere else. An argument has no {@code lands} when it lands in
+ * two voids, or when the engine cannot tell which formation the application
+ * is made on, such as an unknown or an object made in Java.</p>
+ *
+ * <p>The engine sees only the applications written in the program, and that
+ * is enough: EO always compiles the whole program, so there is no other
+ * program that could attach something else to a void. When another program
+ * appears, the compiler and the engine run again (#10056).</p>
  *
  * <p>An argument keeps its place where no single void is known to take it,
  * and the number of those is written to the log. With {@link #rigid} set,
@@ -77,12 +97,37 @@ public final class MjDealpha extends MjSafe {
             inference = this.tables.toPath();
         }
         try (TjsForeign tojos = this.tojos()) {
-            new Dealphaing(
-                tojos.standalone(),
-                inference,
-                this.target.toPath(),
-                this.rigid
-            ).exec();
+            final Collection<TjForeign> objects = tojos.standalone();
+            if (objects.isEmpty()) {
+                Logger.debug(this, "No XMIR to name the arguments in");
+            } else {
+                new Dealphaing(
+                    objects,
+                    MjDealpha.names(inference.resolve("answers.xml")),
+                    this.target.toPath(),
+                    this.rigid
+                ).exec();
+            }
         }
+    }
+
+    private static Map<String, String> names(final Path answers) throws IOException {
+        if (!Files.exists(answers)) {
+            throw new IOException(
+                Logger.format(
+                    "The table %[file]s is absent, while the arguments can be named only after the 'infer' goal has written it",
+                    answers
+                )
+            );
+        }
+        return new Xnav(new XMLDocument(answers).inner())
+            .element("answers")
+            .elements(Filter.withName("o"))
+            .filter(row -> row.attribute("lands").text().isPresent()).collect(
+                Collectors.toMap(
+                    row -> row.attribute("loc").text().get(),
+                    row -> row.attribute("lands").text().get()
+                )
+            );
     }
 }
