@@ -583,6 +583,11 @@ R-3.10.11. Every `Q` root in a concrete `sig`, at its head and inside its bracke
 
 R-3.10.12. **File-local handles — `>> name`.** A `>>` auto-name suffix may carry an optional trailing `NAME`: a *file-local handle*. The object stays **anonymous** — it still receives its cactus `@name` (§9.2) and never enters the visible namespace — but `name` becomes a typeable alias for that cactus name, usable anywhere in the same `.eo` file (`resolve-local-names`, §9.2, rewrites references to the cactus name). So an anonymous helper can recurse by its handle or be reached from a sibling — unlike plain `> name`, which would expose `name` on the enclosing object's public surface. Accepted uniformly wherever bare `>>` is (bare formation, inline-phi formation, application, method continuation R-3.5, reversed dispatch R-3.8, compact tuple R-3.9, text block R-3.11.4, pipe R-3.14), but never on a vertical void (R-3.4.7), and a receiver bracket parameter carries one too, written `^name` (R-3.4.13), where the handle names the `ρ` void rather than a cactus one; `!` const stays allowed (`>>! name`), `/sig` stays forbidden (R-3.10.2). A handle declared twice within one enclosing formation is a compile-time error (`duplicate local name 'name'`), while two sibling formations may each declare a handle of the same name; a reference with no matching handle is left untouched for later scope resolution. See §9.2 for the emission and the `handle → cactus-name` rewrite.
 
+A file-local handle (`>> name` or `^name`) that shares its name with a void or
+bound attribute of its declaring formation is a compile-time error
+(`local name 'name' hides the attribute 'name'`). The handle and attribute may
+share a name when they belong to different formations.
+
 ### 3.11 Triple-quoted text block — `"""`
 
 R-3.11.1. An opening `"""` with nothing else on the line opens a block.
@@ -1528,6 +1533,7 @@ R-9.9.1. Every error condition in this spec has a single canonical text — **in
 | Atom signature on a line shape that is not a formation (R-3.10.10) | `only a formation can declare an atom signature` |
 | Type with a leading, trailing or empty dotted segment (R-3.10.10) | `type must be a dotted name with no leading, trailing, or empty segment` |
 | File-local handle after `>>` that is a scope token rather than an identifier (R-3.10.12) | `file-local handle must be an identifier, not <token>` (token substituted) |
+| File-local handle with the same name as a void or bound attribute in its declaring formation (R-3.10.12) | `local name 'name' hides the attribute 'name'` (name substituted) |
 | `+` with no meta name after it (§3.2) | `meta directive requires a name` |
 | Meta name that is not lowercase letters and digits opening with a letter (§3.2) | `meta name must be lowercase letters and digits, starting with a letter` |
 | Anything but a single plain space between meta parts — a second space, a tab, an ideographic space (R-3.2.4) | `meta parts must be separated by a single ASCII space` |
