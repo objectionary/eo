@@ -111,9 +111,11 @@ The engine knows three lists of names of the program, which are parameters of
 the goal: `infer.canon` (the kinds that are one shared copy each, `Φ.bytes`,
 `Φ.number` and `Φ.string`), `infer.roots` (the packages of list code,
 `Φ.tuple`, `Φ.map` and `Φ.set`) and `infer.scalars` (the packages whose
-objects give back new data). A list left unset holds the names of eo-runtime,
-which almost every program is compiled with. A program with other names sets
-its own lists, and a program that wants none sets an empty one.
+objects give back new data). A list left unset or empty holds the names of
+eo-runtime, which almost every program is compiled with, and a program with
+other names sets its own lists. The names of eo-runtime do no harm to a program
+that has none of these objects: the canon is made only when every kind of it is
+there, and the other names then match nothing.
 
 Before the facts are read, each file is made ready by `Prepared`: every chain
 of names is split into one read per name, the first one too, so `x.next.foo`

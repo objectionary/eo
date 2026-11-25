@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Objects;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -56,9 +55,12 @@ import org.eolang.inference.Names;
  * program. It has to know three lists of names of the program, which are
  * parameters here: {@link #canon}, {@link #roots} and {@link #scalars}.
  * Almost every program is compiled together with eo-runtime, so a list
- * left unset holds the names of eo-runtime (#10079); a program that has
- * other names sets its own, and a program that wants none sets an empty
- * list.</p>
+ * left unset or empty holds the names of eo-runtime (#10079), and a program
+ * that has other names sets its own. Maven gives an empty list, not
+ * {@code null}, to a list parameter nobody sets, so empty means unset here.
+ * The names of eo-runtime do no harm to a program that has none of these
+ * objects: the canon is made only when every kind of it is there, and the
+ * other names then match nothing.</p>
  *
  * <p>The prepared XMIR is saved in {@link #prepared}, and {@code facts.xml}
  * and {@code answers.xml} in {@link #tables}. Nothing of it fails the
@@ -74,19 +76,20 @@ import org.eolang.inference.Names;
 public final class MjInfer extends MjSafe {
 
     /**
-     * The canon of eo-runtime, taken when {@link #canon} is unset.
+     * The canon of eo-runtime, taken when {@link #canon} is unset
+     * or empty.
      */
     private static final List<String> RUNTIME_CANON = List.of("Φ.bytes", "Φ.number", "Φ.string");
 
     /**
      * The packages of list code of eo-runtime, taken when {@link #roots}
-     * is unset.
+     * is unset or empty.
      */
     private static final List<String> RUNTIME_ROOTS = List.of("Φ.tuple", "Φ.map", "Φ.set");
 
     /**
      * The scalar packages of eo-runtime, taken when {@link #scalars} is
-     * unset.
+     * unset or empty.
      */
     private static final List<String> RUNTIME_SCALARS = List.of(
         "Φ.number", "Φ.bytes", "Φ.string", "Φ.bool", "Φ.true", "Φ.false",
@@ -112,7 +115,8 @@ public final class MjInfer extends MjSafe {
     /**
      * The kinds that are one shared copy each, born {@code canon}: the first
      * holds the data, and every other one holds the first. Each must have
-     * one void, {@code @}. Unless set, these are the canon of eo-runtime.
+     * one void, {@code @}. Unless set, or empty, these are the canon
+     * of eo-runtime.
      */
     @Parameter(alias = "infer.canon", property = "eo.infer.canon")
     private List<String> canon;
@@ -120,16 +124,16 @@ public final class MjInfer extends MjSafe {
     /**
      * The packages of list code: a copy that other code makes of a
      * formation under one of them starts a tag, which keeps apart what list
-     * code does for different places of user code. Unless set, these are
-     * the packages of list code of eo-runtime.
+     * code does for different places of user code. Unless set, or
+     * empty, these are the packages of list code of eo-runtime.
      */
     @Parameter(alias = "infer.roots", property = "eo.infer.roots")
     private List<String> roots;
 
     /**
      * The packages whose formations give back new data, so that a copy of
-     * one of them takes no tag. Unless set, these are the scalar packages
-     * of eo-runtime.
+     * one of them takes no tag. Unless set, or empty, these are the
+     * scalar packages of eo-runtime.
      */
     @Parameter(alias = "infer.scalars", property = "eo.infer.scalars")
     private List<String> scalars;
@@ -166,11 +170,28 @@ public final class MjInfer extends MjSafe {
                 prepped,
                 inference,
                 new Names(
-                    Objects.requireNonNullElse(this.canon, MjInfer.RUNTIME_CANON),
-                    Objects.requireNonNullElse(this.roots, MjInfer.RUNTIME_ROOTS),
-                    Objects.requireNonNullElse(this.scalars, MjInfer.RUNTIME_SCALARS)
+                    MjInfer.orElse(this.canon, MjInfer.RUNTIME_CANON),
+                    MjInfer.orElse(this.roots, MjInfer.RUNTIME_ROOTS),
+                    MjInfer.orElse(this.scalars, MjInfer.RUNTIME_SCALARS)
                 )
             ).exec();
         }
+    }
+
+    /**
+     * The list, or the fallback when the list is unset or empty.
+     *
+     * @param list The list, maybe {@code null}
+     * @param fallback The names of eo-runtime
+     * @return The list or the fallback
+     */
+    private static List<String> orElse(final List<String> list, final List<String> fallback) {
+        final List<String> names;
+        if (list == null || list.isEmpty()) {
+            names = fallback;
+        } else {
+            names = list;
+        }
+        return names;
     }
 }

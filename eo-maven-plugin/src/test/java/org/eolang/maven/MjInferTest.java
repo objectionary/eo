@@ -11,6 +11,7 @@ import com.yegor256.MktmpResolver;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import org.eolang.parser.EoSyntax;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -120,6 +121,30 @@ final class MjInferTest {
         maven.execute(MjParse.class).execute(MjInfer.class);
         MatcherAssert.assertThat(
             "a number must hold bytes and nothing else, as in the canon of eo-runtime, but it didnt",
+            new XMLDocument(
+                maven.targetPath()
+                    .resolve(maven.dirName("inference"))
+                    .resolve("answers.xml")
+            ),
+            XhtmlMatchers.hasXPath(
+                "/answers/o[@loc='Φ.number.φ' and count(*)=1]/is[@loc='Φ.bytes']"
+            )
+        );
+    }
+
+    @Test
+    void takesCanonOfRuntimeWhenEmpty(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .withProgram(String.join(System.lineSeparator(), "[] > app", "  number 5 > five", ""))
+            .withProgram("[@] > bytes", "bytes")
+            .withProgram("[@] > number", "number")
+            .withProgram("[@] > string", "string")
+            .with("canon", List.of())
+            .with("roots", List.of())
+            .with("scalars", List.of());
+        maven.execute(MjParse.class).execute(MjInfer.class);
+        MatcherAssert.assertThat(
+            "empty lists, which Maven gives when nothing is set, must mean the canon of eo-runtime, but they didnt",
             new XMLDocument(
                 maven.targetPath()
                     .resolve(maven.dirName("inference"))
