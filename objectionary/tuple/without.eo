@@ -5,15 +5,15 @@
 +package tuple
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.3
++version 0.63.4
 
 [^list element] > without
   list.reduced > @
     *
-    if. > [^list accum item] >>
-      list.element.eq item
-      accum
-      accum.with item
+    if. > [^list a x] >>
+      list.element.eq x
+      a
+      a.with x
 
   eq. ++> can-drop-an-item
     without.

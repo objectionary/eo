@@ -14,11 +14,11 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.63.3
++rt jvm org.eolang:eo-runtime:0.63.4
 +rt node eo2js-runtime:0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.3
++version 0.63.4
 
 [@] > bytes
   [] > and /Q.bytes
@@ -80,6 +80,43 @@
     0.as-bytes.and 32.as-bytes
     00-00-00-00-00-00-00-00
 
+  eq. ++> can-apply-or-negative-bytes-with-leading-zeroes
+    00-00-00-00-8E-EA-4C-B1.or FF-FF-FF-FF-00-00-00-00
+    FF-FF-FF-FF-8E-EA-4C-B1
+
+  eq. ++> can-apply-or-negative-bytes-with-one
+    FF-FF-FF-FF-00-00-00-00.or 00-00-00-00-00-00-00-01
+    FF-FF-FF-FF-00-00-00-01
+
+  eq. ++> can-apply-or-negative-bytes-with-positive-ones
+    FF-FF-FF-FF-FF-FF-FF-81.as-bytes.or 00-00-00-00-00-00-00-7F.as-bytes
+    FF-FF-FF-FF-FF-FF-FF-FF
+
+  eq. ++> can-apply-or-negative-bytes-with-zero
+    as-number.
+      -4294967296.as-bytes.or 0.as-bytes
+    -4294967296
+
+  eq. ++> can-apply-or-negative-bytes-without-leading-zeroes
+    00-00-00-00-FF-FF-FF-FF.or FF-FF-FF-FF-00-00-00-00
+    FF-FF-FF-FF-FF-FF-FF-FF
+
+  eq. ++> can-apply-or-one-negative-with-one-positive
+    -7.as-bytes.or 23.as-bytes
+    C0-3F-00-00-00-00-00-00
+
+  eq. ++> can-apply-or-two-negatives
+    -27.as-bytes.or -13.as-bytes
+    C0-3B-00-00-00-00-00-00
+
+  eq. ++> can-apply-or-two-positives
+    5.as-bytes.or 14.as-bytes
+    40-3C-00-00-00-00-00-00
+
+  eq. ++> can-apply-or-with-zero
+    -11.as-bytes.or 0.as-bytes
+    C0-26-00-00-00-00-00-00
+
   CA-FE-BE-BE.size.eq 4 ++> can-be-written-in-several-lines
 
   eq. ++> can-concat-bools-as-bytes
@@ -133,56 +170,19 @@
   not. ++> can-invert-zero-bytes
     0.as-bytes.eq 0.as-bytes.not
 
-  eq. ++> can-or-negative-bytes-with-leading-zeroes
-    00-00-00-00-8E-EA-4C-B1.or FF-FF-FF-FF-00-00-00-00
-    FF-FF-FF-FF-8E-EA-4C-B1
-
-  eq. ++> can-or-negative-bytes-with-one
-    FF-FF-FF-FF-00-00-00-00.or 00-00-00-00-00-00-00-01
-    FF-FF-FF-FF-00-00-00-01
-
-  eq. ++> can-or-negative-bytes-with-positive-ones
-    FF-FF-FF-FF-FF-FF-FF-81.as-bytes.or 00-00-00-00-00-00-00-7F.as-bytes
-    FF-FF-FF-FF-FF-FF-FF-FF
-
-  eq. ++> can-or-negative-bytes-with-zero
-    as-number.
-      -4294967296.as-bytes.or 0.as-bytes
-    -4294967296
-
-  eq. ++> can-or-negative-bytes-without-leading-zeroes
-    00-00-00-00-FF-FF-FF-FF.or FF-FF-FF-FF-00-00-00-00
-    FF-FF-FF-FF-FF-FF-FF-FF
-
-  eq. ++> can-or-one-negative-with-one-positive
-    -7.as-bytes.or 23.as-bytes
-    C0-3F-00-00-00-00-00-00
-
-  eq. ++> can-or-two-negatives
-    -27.as-bytes.or -13.as-bytes
-    C0-3B-00-00-00-00-00-00
-
-  eq. ++> can-or-two-positives
-    5.as-bytes.or 14.as-bytes
-    40-3C-00-00-00-00-00-00
-
-  eq. ++> can-or-with-zero
-    -11.as-bytes.or 0.as-bytes
-    C0-26-00-00-00-00-00-00
-
   eq. ++> can-recover-from-a-slice-whose-start-plus-length-overflows
     2A-
     20-1F-EE-B5-90.slice
       2000000000
       2000000000
-      2A- > [message]
+      2A- > [x]
 
   eq. ++> can-recover-from-an-out-of-bounds-slice
     2A-
     20-1F-EE-B5-90.slice
       3
       10
-      2A- > [message]
+      2A- > [x]
 
   eq. ++> can-shift-left-an-even-negative
     FF-FF-FF-FF-FF-FF-FF-EE.left 2

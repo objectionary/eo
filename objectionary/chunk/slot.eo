@@ -5,7 +5,7 @@
 +package chunk
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.3
++version 0.63.4
 
 [^ start length] > slot
   window > @
@@ -30,19 +30,19 @@
         "Can't put %d bytes into a chunk sized %d bytes; call .resized first to grow it".printf
           * object.size ^.size
       ^.write 0 object
-    if. > [^ offset count cant-read] > read
+    if. > [^ offset length cant-read] > read
       ^.valid.and
         and.
           0.lte offset
           lte.
-            offset.plus count
+            offset.plus length
             ^.length
       ^.parent.read
         ^.start.plus offset
-        count
+        length
       cant-read
         "Can't read %f bytes from slot offset %f, because the slot has length %f".printf
-          * count offset ^.length
+          * length offset ^.length
     T > [^ capacity] > resized
       "Can't resize a chunk slot of length %f".printf
         * ^.length
@@ -95,6 +95,19 @@
           outer.slot 2 12 > middle
           mem.slot 4 20 > outer
       0A-0B-0C-0D
+
+  ++> can-copy-bytes-inside-a-slot
+    eq. > @
+      malloc.of
+        8
+        [mem]
+          seq * > @
+            part
+            part.write 0 01-02
+            part.copy 0 2 2
+            part.read 0 4
+          mem.slot 2 4 > part
+      01-02-01-02
 
   ++> can-create-a-slot-with-parent-id
     malloc.of > @
@@ -189,7 +202,7 @@
         mem.slot 2 5
         4
         3
-        C3-1F-08 > [message]
+        C3-1F-08 > [x]
     C3-1F-08
 
   ++> can-reject-child-that-exceeds-its-direct-parent

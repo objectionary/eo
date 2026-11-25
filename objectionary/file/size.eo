@@ -10,7 +10,7 @@
 +package file
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.3
++version 0.63.4
 
 [^entry cant-measure] > size
   if. > @
@@ -27,13 +27,13 @@
   eq. ++> can-ignore-the-fallback-when-a-file-exists
     0
     mktemp.tmpfile.touched.size
-      -1 > [message]
+      -1 > [x]
 
   ++> can-measure-a-directory-without-falling-back
     not. > @
       eq.
         d.as-file.size
-          -1 > [message]
+          -1 > [x]
         -1
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
 
@@ -43,9 +43,9 @@
       open.
         mktemp.tmpfile.open
           "w"
-          f.write "Hello" > [^ f]
+          x.write "Hello" > [^ x]
         "a"
-        f.write ", world" > [^ f]
+        x.write ", world" > [^ x]
 
   eq. ++> can-measure-a-file-after-truncating-it
     0
@@ -53,16 +53,16 @@
       open.
         mktemp.tmpfile.open
           "w"
-          f.write "Hello, world" > [^ f]
+          x.write "Hello, world" > [^ x]
         "w"
-        true > [^ f]
+        true > [^ x]
 
   eq. ++> can-measure-a-file-with-content
     12
     size.
       mktemp.tmpfile.open
         "w"
-        f.write "Hello, world" > [^ f]
+        x.write "Hello, world" > [^ x]
 
   ++> can-measure-a-symbolic-link-by-its-target-size
     os.is-windows.or > @
@@ -87,6 +87,6 @@
   eq. ++> can-recover-from-sizing-an-absent-file
     -1
     mktemp.tmpfile.deleted.size
-      -1 > [message]
+      -1 > [x]
 
   mktemp.tmpfile.deleted.size --> stops-on-sizing-an-absent-file

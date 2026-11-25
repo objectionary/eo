@@ -5,11 +5,12 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.63.3
++rt jvm org.eolang:eo-runtime:0.63.4
 +rt node eo2js-runtime:0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.3
++unlint no-attribute-formation
++version 0.63.4
 
 [] > posix
   [] > accept /Q.number
@@ -310,14 +311,12 @@
     0
 
   --> stops-on-write-size-being-negative
-    os.is-windows.if > @
-      T "posix.write is not available on Windows"
-      seq *
-        posix.write
-          fd
-          "ab"
-          -1
-        true
+    seq * > @
+      posix.write
+        fd
+        "ab"
+        -1
+      true
     code. > fd
       posix.open
         "/dev/null"
@@ -325,14 +324,12 @@
         0
 
   --> stops-on-write-size-exceeding-buffer-length
-    os.is-windows.if > @
-      T "posix.write is not available on Windows"
-      seq *
-        posix.write
-          fd
-          "ab"
-          4096
-        true
+    seq * > @
+      posix.write
+        fd
+        "ab"
+        4096
+      true
     code. > fd
       posix.open
         "/dev/null"

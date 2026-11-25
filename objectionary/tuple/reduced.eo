@@ -8,14 +8,14 @@
 +package tuple
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.3
++version 0.63.4
 
 [^list start func] > reduced
   list.reducedi > @
     start
-    list.func > [^list accum item index] >>
-      accum
-      item
+    list.func > [^list a x i] >>
+      a
+      x
 
   eq. ++> can-reduce-a-list
     reduced.
@@ -32,7 +32,7 @@
     reduced.
       * 0 1
       ""
-      acc.concat > [acc item]
+      a.concat > [a x]
         "%d".printf
-          * item
+          * x
     "01"

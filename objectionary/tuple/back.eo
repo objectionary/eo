@@ -6,7 +6,7 @@
 +package tuple
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.3
++version 0.63.4
 
 [^list index] > back
   index.is-integer.if > @
@@ -16,10 +16,10 @@
       list
       list.reducedi
         *
-        if. > [^list accum item idx] >>
-          idx.gte start
-          accum.with item
-          accum
+        if. > [^list a x i] >>
+          i.gte start
+          a.with x
+          a
     T "Given index must be an integer"
 
   eq. ++> can-take-a-back-slice

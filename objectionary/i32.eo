@@ -5,8 +5,7 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint invalid-name-notation
-+version 0.63.3
++version 0.63.4
 
 [bts] > i32
   if. > @
@@ -152,20 +151,20 @@
   eq. ++> can-recover-from-an-out-of-bounds-conversion-to-i16
     i16 00-2A
     247483647.as-i64.as-i32.as-i16
-      i16 00-2A > [message]
+      i16 00-2A > [x]
 
   eq. ++> can-recover-from-division-by-zero
     i32 00-00-00-2A
     2.as-i64.as-i32.div
       0.as-i64.as-i32
-      i32 00-00-00-2A > [message]
+      i32 00-00-00-2A > [x]
 
   eq. ++> can-recover-from-min-divided-by-minus-one
     i32 00-00-00-2A
     div.
       i32 80-00-00-00
       i32 FF-FF-FF-FF
-      i32 00-00-00-2A > [message]
+      i32 00-00-00-2A > [x]
 
   eq. ++> can-subtract-one-from-one
     1.as-i64.as-i32.minus 1.as-i64.as-i32

@@ -8,7 +8,7 @@
 +package tuple
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.3
++version 0.63.4
 
 [^list start func] > reducedi
   list.is-empty.if > @
@@ -102,11 +102,11 @@
       reducedi.
         * 10 500
         0
-        [acc x i]
+        [a x i]
           check x > @
           if. > [^ el] > check
             ^.x.lt 100
-            ^.acc.plus ^.x
-            ^.acc.minus ^.x
+            ^.a.plus ^.x
+            ^.a.minus ^.x
       10.plus
         0.minus 500

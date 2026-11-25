@@ -9,7 +9,7 @@
 +package string
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.3
++version 0.63.4
 
 [^text times cant-repeat] > repeated
   if. > @
@@ -54,19 +54,19 @@
     "recovered"
     "x".repeated
       -1
-      "recovered" > [message]
+      "recovered" > [x]
 
   eq. ++> can-recover-from-a-non-integer-count
     "recovered"
     "x".repeated
       2.5
-      "recovered" > [message]
+      "recovered" > [x]
 
   eq. ++> can-recover-from-an-infinite-count
     "recovered"
     "x".repeated
       pinf
-      "recovered" > [message]
+      "recovered" > [x]
 
   eq. ++> can-repeat-a-text-five-times
     "heyheyheyheyhey"

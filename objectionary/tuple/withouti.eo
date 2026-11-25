@@ -8,7 +8,7 @@
 +package tuple
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.3
++version 0.63.4
 
 [^list i] > withouti
   i.is-integer.if > @
@@ -19,10 +19,10 @@
       T "Given index is out of tuple bounds"
       list.reducedi
         *
-        if. > [^list accum item position] >>
-          list.index.eq position
-          accum
-          accum.with item
+        if. > [^list a x i] >>
+          list.index.eq i
+          a
+          a.with x
     T "Given index must be an integer"
   if. > index
     0.gt i

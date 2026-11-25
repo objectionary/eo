@@ -7,8 +7,7 @@
 +package bytes
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint invalid-name-notation
-+version 0.63.3
++version 0.63.4
 
 [^data cant-convert] > as-u8
   if. > @
@@ -27,6 +26,6 @@
   eq. ++> can-recover-from-bytes-of-wrong-size-when-converting-to-u8
     u8 9C-
     41-06-D2.as-u8
-      u8 9C- > [message]
+      u8 9C- > [x]
 
   01-01.as-u8 --> stops-on-bytes-of-wrong-size-when-converting-to-u8

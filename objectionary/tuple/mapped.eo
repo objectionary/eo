@@ -7,11 +7,11 @@
 +package tuple
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.3
++version 0.63.4
 
 [^list func] > mapped
   list.mappedi > @
-    list.func item > [^list item idx] >>
+    list.func x > [^list x i] >>
 
   eq. ++> can-map-a-list
     mapped.

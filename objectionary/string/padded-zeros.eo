@@ -12,7 +12,7 @@
 +package string
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.3
++version 0.63.4
 
 [^text width cant-pad] > padded-zeros
   if. > @
@@ -98,19 +98,19 @@
     "recovered"
     "7".padded-zeros
       -4
-      "recovered" > [message]
+      "recovered" > [x]
 
   eq. ++> can-recover-from-a-non-integer-width-when-padding-with-zeros
     "recovered"
     "7".padded-zeros
       3.5
-      "recovered" > [message]
+      "recovered" > [x]
 
   eq. ++> can-recover-from-an-infinite-width-when-padding-with-zeros
     "recovered"
     "7".padded-zeros
       pinf
-      "recovered" > [message]
+      "recovered" > [x]
 
   eq. ++> can-return-a-longer-text-unchanged-when-padding-with-zeros
     "12345"

@@ -9,8 +9,7 @@
 +package number
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint invalid-name-notation
-+version 0.63.3
++version 0.63.4
 
 [^num cant-convert] > as-u64
   if. > @
@@ -62,7 +61,7 @@
   eq. ++> can-recover-from-an-out-of-range-number
     u64 00-00-00-00-00-00-00-2A
     1.0e30.as-u64
-      u64 00-00-00-00-00-00-00-2A > [message]
+      u64 00-00-00-00-00-00-00-2A > [x]
 
   eq. ++> can-truncate-a-positive-toward-zero
     3.7.as-u64.as-bytes

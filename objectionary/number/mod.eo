@@ -29,7 +29,7 @@
 +package number
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.3
++version 0.63.4
 
 [^num b cant-mod] > mod
   if. > @
@@ -80,7 +80,7 @@
     42
     5.mod
       0
-      42 > [message]
+      42 > [x]
 
   is-nan. ++> can-return-nan-when-the-dividend-is-infinite
     pinf.mod 5

@@ -7,21 +7,21 @@
 +package tuple
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.3
++version 0.63.4
 
 [^list func] > each
   list.eachi > @
-    list.func item > [^list item index] >>
+    list.func x > [^list x i] >>
 
   ++> can-iterate-over-a-list
     eq. > @
       malloc.for
         0
-        [m]
+        [x]
           each. > @
             * 1 2 3
-            ^.m.put > [^ i] >>
-              ^.m.as-number.plus i
+            ^.x.put > [^ x] >>
+              ^.x.as-number.plus x
       6
 
   eq. ++> can-return-the-result-of-the-last-call
@@ -37,22 +37,22 @@
     eq. > @
       malloc.for
         0
-        [m]
+        [x]
           each. > @
             * 10 20 30
-            ^.m.put > [^ i] >>
-              ^.m.as-number.plus i
+            ^.x.put > [^ x] >>
+              ^.x.as-number.plus x
       60
 
   ++> can-walk-a-single-element-list
     eq. > @
       malloc.for
         0
-        [m]
+        [x]
           each. > @
             * 7
-            ^.m.put > [^ i] >>
-              ^.m.as-number.plus i
+            ^.x.put > [^ x] >>
+              ^.x.as-number.plus x
       7
 
   tuple.empty.each ++> can-walk-an-empty-list

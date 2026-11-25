@@ -4,7 +4,8 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.3
++unlint unsorted-named-attributes
++version 0.63.4
 
 [location] > file
   path > @
@@ -198,9 +199,9 @@
       open.
         mktemp.tmpfile.open
           "w"
-          f.write "Hello, world" > [f]
+          x.write "Hello, world" > [x]
         "a"
-        f.write "!" > [f]
+        x.write "!" > [x]
     13
 
   is-directory. ++> can-check-a-directory-with-a-terminator-for-the-error
@@ -232,7 +233,7 @@
         recovered
           ^.tmp.open
             "r"
-            T "boom" > [f]
+            T "boom" > [x]
           true
         ^.drain
           n.minus 1
@@ -255,7 +256,7 @@
           posix.symlink target link
         link.as-file.open
           "w"
-          f.write "created" > [f]
+          x.write "created" > [x]
         target.as-file.exists
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
     d.resolved "dangling-link" > link
@@ -266,9 +267,9 @@
       open.
         mktemp.tmpfile.open
           "w"
-          f.write "Hello, world" > [f]
+          x.write "Hello, world" > [x]
         "a"
-        true > [f]
+        true > [x]
     12
 
   eq. ++> can-keep-the-size-of-a-file-opened-for-reading
@@ -276,9 +277,9 @@
       open.
         mktemp.tmpfile.open
           "w"
-          f.write "Hello, world" > [f]
+          x.write "Hello, world" > [x]
         "r"
-        true > [f]
+        true > [x]
     12
 
   eq. ++> can-keep-the-size-of-a-file-opened-for-reading-or-appending
@@ -286,9 +287,9 @@
       open.
         mktemp.tmpfile.open
           "w"
-          f.write "Hello, world" > [f]
+          x.write "Hello, world" > [x]
         "a+"
-        true > [f]
+        true > [x]
     12
 
   eq. ++> can-open-a-file-with-a-terminator-for-the-error
@@ -296,7 +297,7 @@
       open.
         file mktemp.tmpfile.path
         "w"
-        f.write "Hello, world" > [f]
+        x.write "Hello, world" > [x]
         T
     12
 
@@ -309,10 +310,10 @@
             open.
               mktemp.tmpfile.open
                 "w"
-                f.write "Hello, world" > [f]
+                x.write "Hello, world" > [x]
               "r"
-              ^.m.put > [^ f] >>
-                f.read 12
+              ^.m.put > [^ x] >>
+                x.read 12
             m
       "Hello, world"
 
@@ -325,11 +326,11 @@
             open.
               mktemp.tmpfile.open
                 "w"
-                f.write "Hello, world" > [f]
+                x.write "Hello, world" > [x]
               "r"
-              ^.m.put > [^ f] >>
+              ^.m.put > [^ x] >>
                 read.
-                  f.read 7
+                  x.read 7
                   5
             m
       "world"
@@ -338,7 +339,7 @@
     seq * > @
       temp.open
         "w"
-        f.write "Shrek is love" > [f]
+        x.write "Shrek is love" > [x]
       "Shrek is love".eq
         malloc.of
           13
@@ -347,8 +348,8 @@
               open.
                 file ^.source
                 "r"
-                ^.m.put > [^ f] >>
-                  f.read 13
+                ^.m.put > [^ x] >>
+                  x.read 13
               m
     temp.path > source
     mktemp.tmpfile > temp
@@ -357,14 +358,14 @@
     mktemp.tmpfile.deleted.is-symlink true > @
 
   mktemp.tmpfile.deleted.is-directory ++> can-recover-from-checking-an-absent-file
-    true > [message]
+    true > [x]
 
   eq. ++> can-recover-from-opening-a-missing-file
     file "recovered"
     mktemp.tmpfile.deleted.open
       "r"
       I
-      file "recovered" > [reason]
+      file "recovered" > [x]
 
   eq. ++> can-represent-a-file-as-a-path
     as-path.
@@ -383,9 +384,9 @@
       open.
         mktemp.tmpfile.open
           "w"
-          f.write "Hello, world" > [^ f]
+          x.write "Hello, world" > [^ x]
         "w+"
-        f.write "Hi" > [^ f]
+        x.write "Hi" > [^ x]
     2
 
   ++> can-tell-that-a-dangling-symbolic-link-exists
@@ -436,31 +437,31 @@
   exists. ++> can-touch-an-absent-file-on-opening-for-appending
     mktemp.tmpfile.deleted.open
       "a"
-      true > [f]
+      true > [x]
 
   exists. ++> can-touch-an-absent-file-on-opening-for-reading-or-appending
     mktemp.tmpfile.deleted.open
       "a+"
-      true > [f]
+      true > [x]
 
   exists. ++> can-touch-an-absent-file-on-opening-for-writing
     mktemp.tmpfile.deleted.open
       "w"
-      true > [f]
+      true > [x]
 
   exists. ++> can-touch-an-absent-file-on-opening-for-writing-or-reading
     mktemp.tmpfile.deleted.open
       "w+"
-      true > [f]
+      true > [x]
 
   eq. ++> can-truncate-a-file-opened-for-writing
     size.
       open.
         mktemp.tmpfile.open
           "w"
-          f.write "Hello, world" > [f]
+          x.write "Hello, world" > [x]
         "w"
-        true > [f]
+        true > [x]
     0
 
   eq. ++> can-truncate-a-file-opened-for-writing-or-reading
@@ -468,9 +469,9 @@
       open.
         mktemp.tmpfile.open
           "w"
-          f.write "Hello, world" > [f]
+          x.write "Hello, world" > [x]
         "w+"
-        true > [f]
+        true > [x]
     0
 
   ++> can-write-and-read-a-file-opened-with-r-plus-mode
@@ -482,12 +483,12 @@
             open.
               mktemp.tmpfile.open
                 "w"
-                f.write "Hello, world" > [^ f]
+                x.write "Hello, world" > [^ x]
               "r+"
-              ^.m.put > [^ f] >>
+              ^.m.put > [^ x] >>
                 seq *
-                  f.write "HELLO"
-                  f.read 5
+                  x.write "HELLO"
+                  x.read 5
             m
       ", wor"
 
@@ -495,15 +496,15 @@
     size.
       mktemp.tmpfile.open
         "w"
-        f.write "Hello, world" > [f]
+        x.write "Hello, world" > [x]
     12
 
   eq. ++> can-write-to-a-file-sequentially
     size.
       mktemp.tmpfile.open
         "a+"
-        write. > [f]
-          f.write "Hello, world"
+        write. > [x]
+          x.write "Hello, world"
           "!"
     13
 
@@ -511,11 +512,11 @@
     seq * > @
       temp.open
         "w"
-        f.write "Shrek is love" > [f]
+        x.write "Shrek is love" > [x]
       open.
         file source
         "a"
-        f.write "!" > [f]
+        x.write "!" > [x]
       eq.
         malloc.of
           14
@@ -524,8 +525,8 @@
               open.
                 file ^.source
                 "r"
-                ^.m.put > [^ f] >>
-                  f.read 14
+                ^.m.put > [^ x] >>
+                  x.read 14
               m
         "Shrek is love!"
     temp.path > source
@@ -536,16 +537,16 @@
   seq * --> stops-on-opening-with-a-wrong-mode
     mktemp.tmpfile.open
       "x"
-      true > [f]
+      true > [x]
     true
 
   mktemp.tmpfile.open --> stops-on-reading-a-negative-size-from-a-file
     "r"
-    f.read -5 > [f]
+    x.read -5 > [x]
 
   mktemp.tmpfile.open --> stops-on-reading-from-a-file-with-a-wrong-mode
     "w"
-    f.read 12 > [f]
+    x.read 12 > [x]
 
   mktemp.tmpfile.deleted.open --> stops-on-reading-from-a-missing-file
     "r"
@@ -560,4 +561,4 @@
 
   mktemp.tmpfile.open --> stops-on-writing-with-a-wrong-mode
     "r"
-    f.write "Hello" > [f]
+    x.write "Hello" > [x]

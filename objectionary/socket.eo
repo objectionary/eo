@@ -47,8 +47,7 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-attachment
-+version 0.63.3
++version 0.63.4
 
 [address port] > socket
   os.is-windows.if > @
@@ -300,13 +299,36 @@
           b.right 8
           00-FF
 
+  ++> can-accept-a-connection-and-receive-what-it-sent
+    os.is-windows.or > @
+      eq.
+        listen.
+          socket "127.0.0.1" 47231
+          serving
+          taken
+        01-02-03
+    00- > [x] > failed
+    x.recv > [^ x] > receiving
+      3
+      ^.failed
+    x.send > [^ x] > sending
+      01-02-03
+      ^.failed
+    seq * > [^ x] > serving
+      connect.
+        socket "127.0.0.1" 47231
+        ^.sending
+        ^.failed
+      x.accept ^.receiving ^.failed
+    01-02-03 > [x] > taken
+
   ++> can-bind-and-listen-on-an-ephemeral-loopback-port
     os.is-windows.or > @
       as-bool.
         listen.
           socket "127.0.0.1" 0
           accepting
-    true > [client] > accepting
+    true > [x] > accepting
 
   eq. ++> can-convert-a-port-above-the-signed-short-limit-in-htons
     40-9C
@@ -315,12 +337,12 @@
   eq. ++> can-dataize-a-guarded-scope-once
     malloc.for
       0
-      seq * > [m]
+      seq * > [x]
         socket.guarded
-          m.put
-            m.as-number.plus 1
+          x.put
+            x.as-number.plus 1
           true
-        m.as-number
+        x.as-number
     1
 
   eq. ++> can-guard-a-scope-and-behave-as-it
@@ -336,8 +358,8 @@
           socket "203.0.113.7" 0
           serving
           unbound
-    false > [server] > serving
-    true > [message] > unbound
+    false > [x] > serving
+    true > [x] > unbound
 
   ++> can-recover-from-receiving-on-a-socket-that-only-listens
     os.is-windows.or > @
@@ -346,9 +368,9 @@
           socket "127.0.0.1" 0
           receiving
         6D-0E-B3
-    server.recv > [server] > receiving
+    x.recv > [x] > receiving
       9
-      6D-0E-B3 > [message]
+      6D-0E-B3 > [x]
 
   ++> can-report-a-connection-nobody-accepts
     os.is-windows.or > @
@@ -357,8 +379,8 @@
           socket "127.0.0.1" 1
           talking
           refused
-    true > [message] > refused
-    false > [client] > talking
+    true > [x] > refused
+    false > [x] > talking
 
   ++> can-resend-the-remaining-bytes-after-a-short-send
     eq. > @
@@ -381,25 +403,25 @@
   eq. ++> can-run-a-guard-cleanup-after-a-successful-scope
     malloc.for
       0
-      seq * > [m]
+      seq * > [x]
         socket.guarded
           42
-          m.put
-            m.as-number.plus 1
-        m.as-number
+          x.put
+            x.as-number.plus 1
+        x.as-number
     1
 
   eq. ++> can-run-a-guard-cleanup-after-a-terminated-scope
     malloc.for
       0
-      seq * > [m]
+      seq * > [x]
         recovered
           socket.guarded
             2.as-i64.div 0.as-i64
-            m.put
-              m.as-number.plus 1
+            x.put
+              x.as-number.plus 1
           true
-        m.as-number
+        x.as-number
     1
 
   checked-port. --> rejects-a-fractional-port

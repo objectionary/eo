@@ -78,8 +78,8 @@
 +package string
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-attachment
-+version 0.63.3
++unlint unsorted-named-attributes
++version 0.63.4
 
 [^text] > regex
   compile > @
@@ -448,10 +448,10 @@
             caps
           nothing
         nothing
-  [finish captures] >> found
-    finish > end
+  [at caps] >> found
+    at > end
     true > exists
-    captures > marks
+    caps > marks
   if. > [^regex e] >> glyph
     alnum e
     control e
@@ -867,8 +867,19 @@
       initial.eq --
       [position cause] >> no
         position > at
+        T > from
+        T > groups
+        T > least
+        T > letter
+        T > mode
+        T > most
+        T > negated
+        T > node
         false > ok
+        T > preset
         cause > reason
+        T > text
+        T > to
       | -1 "The flags must be a sequence of 'd', 'i', 'm', 's', 'u' and 'x'"
       outcome.ok.if
         if.
@@ -895,39 +906,97 @@
             "'".as-bytes
     [position tally options root content] >> yes
       position > at
+      T > from
       tally > groups
+      T > least
+      T > letter
       options > mode
+      T > most
+      T > negated
       root > node
       true > ok
+      T > preset
+      T > reason
       content > text
+      T > to
     [position content] >> read
       position > at
+      T > from
+      T > groups
+      T > least
+      T > letter
+      T > mode
+      T > most
+      T > negated
+      T > node
       true > ok
+      T > preset
+      T > reason
       content > text
+      T > to
     [position since till] >> span
       position > at
       since > from
+      T > groups
+      T > least
+      T > letter
+      T > mode
+      T > most
+      T > negated
+      T > node
       true > ok
       false > preset
+      T > reason
+      T > text
       till > to
     [position symbol inverted] >> named
       position > at
+      T > from
+      T > groups
+      T > least
       symbol > letter
+      T > mode
+      T > most
       inverted > negated
+      T > node
       true > ok
       true > preset
+      T > reason
+      T > text
+      T > to
     [position minimum maximum] >> bounds
       position > at
+      T > from
+      T > groups
       minimum > least
+      T > letter
+      T > mode
       maximum > most
+      T > negated
+      T > node
       true > ok
+      T > preset
+      T > reason
+      T > text
+      T > to
     [position amount] >> numeral
       position > at
       amount > value
     [position options] >> switched
       position > at
+      T > from
+      T > groups
+      T > least
+      T > letter
       options > mode
+      T > most
+      T > negated
+      T > node
       true > ok
+      T > preset
+      T > reason
+      T > text
+      T > to
     bit.eq > [bit mode] >> flagged
       mode.and bit
     or. > [b] >> halts
@@ -1043,7 +1112,8 @@
       if. > @
         blank b
         regex.commented
-          index.plus 1
+          number
+            index.plus 1
           mode
         if.
           eq.
@@ -1051,7 +1121,8 @@
             23-
           regex.commented
             lined
-              index.plus 1
+              number
+                index.plus 1
               mode
             mode
           index
@@ -1069,7 +1140,8 @@
                 flagged 01- mode
         index
         regex.lined
-          index.plus 1
+          number
+            index.plus 1
           mode
     or. > [^regex b mode] >> special
       or.
@@ -1107,16 +1179,18 @@
     [^regex acc] >> alternate
       if. > @
         eq.
-          byte acc.at
+          byte
+            number acc.at
           7C-
         n.ok.if
           regex.alternate
             yes
-              at.
-                pieces >> n
-                  acc.at.plus 1
-                  acc.groups
-                  acc.mode
+              number
+                at.
+                  pieces >> n
+                    plus. (number acc.at) 1
+                    acc.groups
+                    acc.mode
               n.groups
               n.mode
               choice acc.node n.node
@@ -1148,7 +1222,9 @@
         halts
           byte
             number
-              skip acc.at acc.mode >> here!
+              skip >> here!
+                number acc.at
+                acc.mode
         yes
           number here
           acc.groups
@@ -1158,11 +1234,12 @@
         p.ok.if
           regex.more
             yes
-              at.
-                piece >> p
-                  number here
-                  acc.groups
-                  acc.mode
+              number
+                at.
+                  piece >> p
+                    number here
+                    acc.groups
+                    acc.mode
               p.groups
               p.mode
               sequence acc.node p.node
@@ -1189,28 +1266,32 @@
                     3F-
                   g.eq 2B-
                 plus.
-                  skip b.at a.mode >> gat
+                  skip (number b.at) a.mode >> gat
                   1
-                at.
-                  if. >> b
-                    q.eq 7B-
-                    braces
-                      plus.
-                        skip a.at a.mode >> qat
-                        1
-                    if.
-                      q.eq 2A-
-                      bounds
-                        qat.plus 1
-                        0
-                        number 7F-F0-00-00-00-00-00-00
-                      if.
-                        q.eq 2B-
-                        bounds
-                          qat.plus 1
+                number
+                  at.
+                    if. >> b
+                      q.eq 7B-
+                      braces
+                        plus.
+                          skip (number a.at) a.mode >> qat
                           1
+                      if.
+                        q.eq 2A-
+                        bounds
+                          number (qat.plus 1)
+                          0
                           number 7F-F0-00-00-00-00-00-00
-                        bounds (qat.plus 1) 0 1
+                        if.
+                          q.eq 2B-
+                          bounds
+                            number (qat.plus 1)
+                            1
+                            number 7F-F0-00-00-00-00-00-00
+                          bounds
+                            number (qat.plus 1)
+                            0
+                            1
               groups.
                 atom index opened bits >> a
               a.mode
@@ -1246,7 +1327,8 @@
             text.slice index 1
             C0-
         regex.back
-          index.plus -1
+          number
+            index.plus -1
           text
         index
     if. > [^regex greed least most node] >> repeat
@@ -1315,7 +1397,8 @@
         if.
           b.eq 2E-
           yes
-            index.plus 1
+            number
+              index.plus 1
             opened
             bits
             any
@@ -1325,7 +1408,8 @@
           if.
             b.eq 5E-
             yes
-              index.plus 1
+              number
+                index.plus 1
               opened
               bits
               begin
@@ -1335,7 +1419,8 @@
             if.
               b.eq 24-
               yes
-                index.plus 1
+                number
+                  index.plus 1
                 opened
                 bits
                 end
@@ -1345,13 +1430,14 @@
               if.
                 b.eq 28-
                 group
-                  index.plus 1
+                  number
+                    index.plus 1
                   opened
                   bits
                 if.
                   b.eq 5B-
                   bracket
-                    index.plus 1
+                    number (index.plus 1)
                     opened
                     bits
                   if.
@@ -1361,9 +1447,15 @@
     [^regex index opened bits] >> braced
       r.ok.if > @
         if.
-          r.at.as-bytes.eq index.as-bytes
+          eq.
+            as-bytes.
+              number
+                at.
+                  scanned index bits -- >> r
+            index.as-bytes
           escaped
-            index.plus 1
+            number
+              index.plus 1
             opened
             bits
           if.
@@ -1372,21 +1464,24 @@
               or.
                 eq.
                   byte
-                    at.
-                      scanned index bits -- >> r
+                    number r.at
                   2A-
                 or.
-                  eq. (byte r.at) 2B-
-                  eq. (byte r.at) 3F-
+                  eq.
+                    byte (number r.at)
+                    2B-
+                  eq.
+                    byte (number r.at)
+                    3F-
             no
               index
               string
                 concat.
                   "Dangling meta character '".as-bytes.concat
-                    byte r.at
+                    byte (number r.at)
                   "'".as-bytes
             yes
-              r.at
+              number r.at
               opened
               bits
               plain bits r.text
@@ -1405,23 +1500,28 @@
           if.
             eq.
               byte >> e
-                index.plus 1
+                number
+                  index.plus 1
               --
             no
-              index.plus 1
+              number
+                index.plus 1
               "Unescaped trailing backslash"
             if.
               e.eq 51-
               quoted
-                index.plus 2
+                number
+                  index.plus 2
                 mode
                 acc
               if.
                 e.eq 78-
                 h.ok.if
                   regex.scanned
-                    at.
-                      hexed (index.plus 2) >> h
+                    number
+                      at.
+                        hexed >> h
+                          number (index.plus 2)
                     mode
                     acc.concat h.text
                   h
@@ -1431,7 +1531,7 @@
                     --
                   read index acc
                   regex.scanned
-                    index.plus 2
+                    number (index.plus 2)
                     mode
                     acc.concat g
           regex.scanned
@@ -1451,10 +1551,12 @@
             b.eq 5C-
             eq.
               byte
-                index.plus 1
+                number
+                  index.plus 1
               45-
           scanned
-            index.plus 2
+            number
+              index.plus 2
             mode
             acc
           regex.quoted
@@ -1468,7 +1570,8 @@
         byte index
         5E-
       members
-        index.plus 1
+        number
+          index.plus 1
         opened
         bits
         none
@@ -1514,13 +1617,14 @@
                 b.eq 26-
                 eq.
                   byte
-                    start.plus 1
+                    number (start.plus 1)
                   26-
               no start "Character class intersections are not supported"
               e.ok.if
                 regex.members
-                  at.
-                    entry start bits >> e
+                  number
+                    at.
+                      entry start bits >> e
                   opened
                   bits
                   e.preset.if
@@ -1539,21 +1643,21 @@
           if.
             eq.
               byte
-                at.
-                  single index mode >> s
+                number
+                  at.
+                    single index mode >> s
               2D-
             if.
               or.
                 eq.
-                  byte >> n
-                    s.at.plus 1
+                  byte ((number s.at).plus 1) >> n
                   5D-
                 n.eq 5B-
               s
               if.
                 n.eq --
                 no
-                  s.at.plus 1
+                  plus. (number s.at) 1
                   "Illegal character range"
                 ranged s mode
             s
@@ -1566,11 +1670,18 @@
               key low.from
               key
                 from.
-                  single (low.at.plus 1) mode >> u
+                  single >> u
+                    plus. (number low.at) 1
+                    mode
           no
-            u.at.plus -1
+            plus.
+              number u.at
+              -1
             "Illegal character range"
-          span u.at low.from u.from
+          span
+            number u.at
+            low.from
+            u.from
         u
     [^regex index mode] >> single
       if. > @
@@ -1578,7 +1689,8 @@
           byte index >> b
           5C-
         classed
-          index.plus 1
+          number
+            index.plus 1
           mode
         span
           index.plus
@@ -1595,16 +1707,18 @@
           e.eq 78-
           h.ok.if
             span
-              at.
-                hexed >> h
-                  index.plus 1
+              number
+                at.
+                  hexed >> h
+                    number (index.plus 1)
               h.text
               h.text
             h
           if.
             e.eq 51-
             no
-              index.plus -1
+              number
+                index.plus -1
               "Quoting inside a character class is not supported"
             if.
               or.
@@ -1615,7 +1729,8 @@
                   l.eq 73-
                   l.eq 77-
               named
-                index.plus 1
+                number
+                  index.plus 1
                 l
                 00-.eq
                   e.and 20-
@@ -1625,7 +1740,8 @@
                   --
                 refused index e
                 span
-                  index.plus 1
+                  number
+                    index.plus 1
                   g
                   g
     [^regex index opened bits] >> escaped
@@ -1638,7 +1754,8 @@
             l.eq 73-
             l.eq 77-
         yes
-          index.plus 1
+          number
+            index.plus 1
           opened
           bits
           member
@@ -1656,7 +1773,8 @@
         if.
           e.eq 62-
           yes
-            index.plus 1
+            number
+              index.plus 1
             opened
             bits
             border false
@@ -1664,7 +1782,8 @@
           if.
             e.eq 42-
             yes
-              index.plus 1
+              number
+                index.plus 1
               opened
               bits
               border true
@@ -1672,7 +1791,8 @@
             if.
               e.eq 41-
               yes
-                index.plus 1
+                number
+                  index.plus 1
                 opened
                 bits
                 begin false false
@@ -1680,7 +1800,8 @@
               if.
                 e.eq 7A-
                 yes
-                  index.plus 1
+                  number
+                    index.plus 1
                   opened
                   bits
                   [^zed] >>
@@ -1692,7 +1813,7 @@
                 if.
                   e.eq 5A-
                   yes
-                    index.plus 1
+                    number (index.plus 1)
                     opened
                     bits
                     end
@@ -1705,22 +1826,26 @@
         e.eq 70-
         e.eq 50-
       no
-        index.plus -1
+        number
+          index.plus -1
         "Unicode property classes are not supported"
       if.
         e.eq 75-
         no
-          index.plus -1
+          number
+            index.plus -1
           "Unicode escapes are not supported"
         if.
           e.eq 63-
           no
-            index.plus -1
+            number
+              index.plus -1
             "Control escapes are not supported"
           if.
             e.eq 30-
             no
-              index.plus -1
+              number
+                index.plus -1
               "Octal escapes are not supported"
             barred index e
     if. > [^regex index e] >> barred
@@ -1730,7 +1855,8 @@
           digit e
           0
       no
-        index.plus -1
+        number
+          index.plus -1
         "Back references are not supported"
       if.
         or.
@@ -1747,7 +1873,8 @@
                   e.eq 58-
                   e.eq 4E-
         no
-          index.plus -1
+          number
+            index.plus -1
           string
             concat.
               "The escape sequence '\\".as-bytes.concat e
@@ -1762,11 +1889,13 @@
           or.
             eq.
               byte >> c
-                index.plus 1
+                number
+                  index.plus 1
               3D-
             c.eq 21-
           no
-            index.plus -1
+            number
+              index.plus -1
             "Look-ahead groups are not supported"
           if.
             c.eq 3C-
@@ -1774,53 +1903,65 @@
               or.
                 eq.
                   byte >> d
-                    index.plus 2
+                    number (index.plus 2)
                   3D-
                 d.eq 21-
               no
-                index.plus -1
+                number
+                  index.plus -1
                 "Look-behind groups are not supported"
               no
-                index.plus -1
+                number
+                  index.plus -1
                 "Named groups are not supported"
             if.
               c.eq 3E-
               no
-                index.plus -1
+                number
+                  index.plus -1
                 "Atomic groups are not supported"
               if.
                 or.
                   c.eq 24-
                   c.eq 40-
                 no
-                  index.plus 1
+                  number
+                    index.plus 1
                   "Unknown group type"
                 modified
-                  index.plus 1
+                  number
+                    index.plus 1
                   opened
                   bits
         closed
           index
-          opened.plus 1
+          number
+            opened.plus 1
           bits
           bits
-          opened.plus 1
+          number
+            opened.plus 1
     [^regex index opened bits] >> modified
       m.ok.if > @
         if.
           eq.
             byte
-              at.
-                modifiers index bits true >> m
+              number
+                at.
+                  modifiers index bits true >> m
             29-
           yes
-            m.at.plus 1
+            plus.
+              number m.at
+              1
             opened
             m.mode
             empty
             --
           closed
-            m.at.plus 1
+            plus.
+              number m.at
+              1
             opened
             m.mode
             bits
@@ -1839,7 +1980,8 @@
             b.eq 2D-
             on
           regex.modifiers
-            index.plus 1
+            number
+              index.plus 1
             bits
             false
           if.
@@ -1853,7 +1995,8 @@
                 --
               no index "Unknown inline modifier"
               regex.modifiers
-                index.plus 1
+                number
+                  index.plus 1
                 on.if
                   bits.or bit
                   bits.and bit.not
@@ -1863,11 +2006,14 @@
         if.
           eq.
             byte
-              at.
-                alternatives from opened bits >> r
+              number
+                at.
+                  alternatives from opened bits >> r
             29-
           yes
-            r.at.plus 1
+            plus.
+              number r.at
+              1
             r.groups
             outer
             if.
@@ -1881,56 +2027,71 @@
       if. > @
         n.value.eq -2
         no
-          at.
-            counted -1 index >> n
+          number
+            at.
+              counted -1 index >> n
           "Illegal repetition range"
         if.
           0.gt n.value
           no index "Illegal repetition"
           if.
             eq.
-              byte n.at >> c
+              byte >> c
+                number n.at
               7D-
             bounds
-              n.at.plus 1
+              plus.
+                number n.at
+                1
               n.value
               n.value
             if.
               c.eq 2C-
               capped
-                n.at.plus 1
+                plus.
+                  number n.at
+                  1
                 n.value
-              no n.at "Unclosed counted closure"
+              no
+                number n.at
+                "Unclosed counted closure"
     [^regex start least] >> capped
       if. > @
         eq.
           byte start
           7D-
         bounds
-          start.plus 1
+          number
+            start.plus 1
           least
           number 7F-F0-00-00-00-00-00-00
         if.
           m.value.eq -2
           no
-            at.
-              counted -1 start >> m
+            number
+              at.
+                counted -1 start >> m
             "Illegal repetition range"
           if.
             0.gt m.value
             no start "Unclosed counted closure"
             if.
               eq.
-                byte m.at
+                byte
+                  number m.at
                 7D-
               if.
                 least.gt m.value
-                no m.at "Illegal repetition range"
+                no
+                  number m.at
+                  "Illegal repetition range"
                 bounds
-                  m.at.plus 1
+                  plus. (number m.at) 1
                   least
                   m.value
-              no m.at "Unclosed counted closure"
+              no
+                number m.at
+                "Unclosed counted closure"
   [^regex child least most] >> possessive
     [^node s at caps k] > run
       [^rep n at caps] >> drain
@@ -2481,227 +2642,227 @@
 
   matches. ++> can-recover-from-a-back-reference
     "/(a)\\1/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-a-braced-hexadecimal-escape
     "/\\x{41}/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-a-character-class-intersection
     "/[a&&b]/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-a-class-as-the-end-of-a-range
     "/[a-\\d]/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-a-control-escape
     "/\\cA/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-a-dangling-quantifier
     "/a**/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-a-dangling-quantifier-after-a-multibyte-character
     "/ж**/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-a-dangling-quantifier-at-a-two-digit-offset
     "/abcdefghij**/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-a-dangling-quantifier-in-a-pattern-with-flags
     "/a**/i".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-a-flag-letter-it-does-not-read
     "/b/z".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-a-leading-unmatched-closing-parenthesis
     "/)/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-a-look-ahead-group
     "/a(?=b)/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-a-look-behind-group
     "/(?<=a)b/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-a-lowercase-horizontal-whitespace-escape
     "/ab\\h/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-a-missing-closing-slash
     "/pattern".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-a-named-group
     "/(?<n>a)/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-a-nested-character-class
     "/[a[b]]/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-a-pattern-with-a-missing-slash
     "(.)+".regex.compile
-      regex.pattern "no-slash".as-bytes -- > [message]
+      regex.pattern "no-slash".as-bytes -- > [x]
     "no-slash"
 
   matches. ++> can-recover-from-a-quantifier-after-an-empty-quote
     "/\\Q\\E*/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-a-repetition-count-past-an-int
     "/a{2147483648}/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-a-repetition-maximum-past-an-int
     "/a{1,2147483648}/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-a-trailing-backslash
     "/a\\/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-a-unicode-escape
     "/\\u0041/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-a-unicode-property-class
     "/\\p{L}/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-an-atomic-group
     "/(?>a)/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-an-escape-letter-it-does-not-read
     "/\\R/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-an-illegal-character-range
     "/[z-a]/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-an-illegal-hexadecimal-escape
     "/\\xZ1/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-an-illegal-repetition
     "/a{x}/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-an-illegal-repetition-range
     "/a{3,2}/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-an-octal-escape
     "/\\0101/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-an-unclosed-counted-closure
     "/a{2/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-an-unclosed-group
     "/(/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-an-unknown-group-type
     "/(?$/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-an-unknown-inline-modifier
     "/(?z)/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-an-unmatched-closing-parenthesis
     "/a)/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-an-unsupported-escape-letter
     "/\\g/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-an-unsupported-escape-letter-after-a-literal
     "/ab\\g/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-an-uppercase-horizontal-whitespace-escape
     "/\\H/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-an-uppercase-horizontal-whitespace-escape-after-a-literal
     "/ab\\H/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-an-uppercase-horizontal-whitespace-escape-inside-a-character-class
     "/[\\H]/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-flags-that-carry-regex-syntax
     "/b/i)|(?:a".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-invalid-regex-syntax
     "/[a-z/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-quoting-inside-a-character-class
     "/[\\Qa\\E]/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-recover-from-the-unicode-character-class-modifier
     "/(?U)a/".regex.compile
-      regex.pattern "recovered".as-bytes -- > [message]
+      regex.pattern "recovered".as-bytes -- > [x]
     "recovered"
 
   matches. ++> can-repeat-nothing-before-a-leading-brace

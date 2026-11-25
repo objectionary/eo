@@ -81,7 +81,7 @@
 +unlint sprintf-constant-args
 +unlint sprintf-without-formatters
 +unlint wrong-sprintf-arguments
-+version 0.63.3
++version 0.63.4
 
 [^text args] > printf
   string > @
@@ -322,7 +322,7 @@
                                 62-.eq conv
                                 if.
                                   or. (FF-.eq datum) (00-.eq datum)
-                                  capped (arg.as-bool.if "true" "false")
+                                  capped (datum.as-bool.if "true" "false")
                                   T
                                     "The argument %x is not a boolean, the %%b conversion takes true or false".printf
                                       * datum

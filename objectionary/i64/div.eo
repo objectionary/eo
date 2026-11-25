@@ -23,7 +23,8 @@
 +package i64
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.3
++unlint compound-name
++version 0.63.4
 
 [^num b cant-divide] > div
   if. > @
@@ -149,14 +150,14 @@
     i64 00-00-00-00-00-00-00-2A
     2.as-i64.div
       0.as-i64
-      i64 00-00-00-00-00-00-00-2A > [message]
+      i64 00-00-00-00-00-00-00-2A > [x]
 
   eq. ++> can-recover-from-min-divided-by-minus-one
     i64 00-00-00-00-00-00-00-2A
     div.
       i64 80-00-00-00-00-00-00-00
       -1.as-i64
-      i64 00-00-00-00-00-00-00-2A > [message]
+      i64 00-00-00-00-00-00-00-2A > [x]
 
   eq. ++> can-truncate-toward-zero
     -13.as-i64.div 5.as-i64

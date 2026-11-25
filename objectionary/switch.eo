@@ -22,8 +22,7 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint invalid-name-notation
-+version 0.63.3
++version 0.63.4
 
 [cases fallback] > switch
   if. > @
@@ -43,7 +42,7 @@
     "recovered"
     switch
       *
-      "recovered" > [message]
+      "recovered" > [x]
 
   ++> can-switch-on-a-complex-case
     eq. > @
@@ -74,7 +73,7 @@
       *
         * false "false1"
         * false "false2"
-      "fallback" > [message]
+      "fallback" > [x]
 
   ++> can-switch-on-strings
     eq. > @

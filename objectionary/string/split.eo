@@ -7,7 +7,7 @@
 +package string
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.3
++version 0.63.4
 
 [^text delimiter cant-split] > split
   if. > @
@@ -60,7 +60,7 @@
     * "recovered"
     "abc".split
       ""
-      * > [message]
+      * > [x]
         "recovered"
 
   eq. ++> can-split-a-string-with-a-terminator-for-the-error

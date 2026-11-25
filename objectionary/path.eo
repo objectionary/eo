@@ -5,9 +5,7 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint invalid-name-notation
-+unlint redundant-attachment
-+version 0.63.3
++version 0.63.4
 
 [uri] > path
   os.is-windows.if > @
@@ -163,21 +161,21 @@
                                           reduced.
                                             location.driveless.split location.separator
                                             *
-                                            if. > [^fold accum segment] >>
-                                              segment.eq ".."
+                                            if. > [^fold a x] >>
+                                              x.eq ".."
                                               if.
-                                                and. (accum.length.gt 0) (accum.head.eq "..").not
-                                                if. (fold.location.unc.and (accum.length.lte 2)) accum accum.tail
-                                                fold.location.is-absolute.not.if (accum.with segment) accum
+                                                and. (a.length.gt 0) (a.head.eq "..").not
+                                                if. (fold.location.unc.and (a.length.lte 2)) a a.tail
+                                                fold.location.is-absolute.not.if (a.with x) a
                                               if.
                                                 fold.location.device.and
-                                                  (accum.length.eq 0).and
-                                                    or. (segment.eq ".") (segment.eq "?")
-                                                accum.with segment
+                                                  (a.length.eq 0).and
+                                                    or. (x.eq ".") (x.eq "?")
+                                                a.with x
                                                 if.
-                                                  or. (segment.eq ".") (segment.eq "")
-                                                  accum
-                                                  accum.with segment
+                                                  or. (x.eq ".") (x.eq "")
+                                                  a
+                                                  a.with x
                                       core.size.plus -1
                                       1
                                     location.separator
@@ -254,7 +252,7 @@
             as-bytes.
               location.separator.joined
                 paths.filtered
-                  p.size.gt 0 > [p]
+                  x.size.gt 0 > [x]
         location.posix jpath
   [^location uri] > posix
     location.impl > @
@@ -278,7 +276,7 @@
         as-bool. ("/^[a-zA-Z]:/".regex.match uri).next.exists
         uri.slice 0 2
         ""
-      [^location uri] > sanitized
+      [^location x] > sanitized
         if. > @
           eq.
             index-of.
@@ -286,7 +284,7 @@
               path.posix.separator
             -1
           string
-            uri >> ubts!
+            x >> ubts!
           string (pth.replaced "/\\//".regex location.separator)!
       location.separator > separator
 
