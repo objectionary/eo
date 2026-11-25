@@ -300,6 +300,29 @@
           b.right 8
           00-FF
 
+  ++> can-accept-a-connection-and-receive-what-it-sent
+    os.is-windows.or > @
+      eq.
+        listen.
+          socket "127.0.0.1" 47231
+          serving
+          taken
+        01-02-03
+    00- > [x] > failed
+    x.recv > [^ x] > receiving
+      3
+      ^.failed
+    x.send > [^ x] > sending
+      01-02-03
+      ^.failed
+    seq * > [^ x] > serving
+      connect.
+        socket "127.0.0.1" 47231
+        ^.sending
+        ^.failed
+      x.accept ^.receiving ^.failed
+    01-02-03 > [x] > taken
+
   ++> can-bind-and-listen-on-an-ephemeral-loopback-port
     os.is-windows.or > @
       as-bool.
@@ -358,7 +381,7 @@
           talking
           refused
     true > [x] > refused
-    false > [client] > talking
+    false > [x] > talking
 
   ++> can-resend-the-remaining-bytes-after-a-short-send
     eq. > @

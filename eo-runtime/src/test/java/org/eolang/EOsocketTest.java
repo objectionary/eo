@@ -83,7 +83,7 @@ final class EOsocketTest {
             socket.put(0, new Data.ToPhi(this.localhost()));
             socket.put(1, new Data.ToPhi(server.port()));
             final Phi connected = socket.take("connect").copy();
-            connected.put(0, new EOsocketTest.Simple("client"));
+            connected.put(0, new EOsocketTest.Simple("x"));
             final byte[] actual = new Dataized(connected).take();
             MatcherAssert.assertThat(
                 String.format(
@@ -104,7 +104,7 @@ final class EOsocketTest {
         socket.put(0, new Data.ToPhi(this.localhost()));
         socket.put(1, new Data.ToPhi(port));
         final Phi connect = socket.take("connect").copy();
-        connect.put(0, new EOsocketTest.Simple("client"));
+        connect.put(0, new EOsocketTest.Simple("x"));
         connect.put(1, new EOsocketTest.Simple("x"));
         MatcherAssert.assertThat(
             "connecting to a refused port should have yielded the cant-connect fallback instead of terminating, but it didnt",
@@ -923,13 +923,13 @@ final class EOsocketTest {
          * @param received Reseived message size
          */
         Receiver(final int received) {
-            super(new Attrs(new Attr("s")));
+            super(new Attrs(new Attr("x")));
             this.received = received;
         }
 
         @Override
         public Phi lambda() {
-            final Phi recv = this.free("s").take("recv");
+            final Phi recv = this.free("x").take("recv");
             recv.put(0, new Data.ToPhi(this.received));
             return recv;
         }
@@ -954,13 +954,13 @@ final class EOsocketTest {
          * @param msg Message to send
          */
         Client(final String msg) {
-            super(new Attrs(new Attr("client")));
+            super(new Attrs(new Attr("x")));
             this.message = msg;
         }
 
         @Override
         public Phi lambda() {
-            final Phi sent = this.free("client").take("send").copy();
+            final Phi sent = this.free("x").take("send").copy();
             sent.put(0, new Data.ToPhi(this.message));
             return sent;
         }
