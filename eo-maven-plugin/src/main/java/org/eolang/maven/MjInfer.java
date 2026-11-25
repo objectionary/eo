@@ -178,13 +178,6 @@ public final class MjInfer extends MjSafe {
         }
     }
 
-    /**
-     * The list, or the fallback when the list is unset or empty.
-     *
-     * @param list The list, maybe {@code null}
-     * @param fallback The names of eo-runtime
-     * @return The list or the fallback
-     */
     private static List<String> orElse(final List<String> list, final List<String> fallback) {
         final List<String> names;
         if (list == null || list.isEmpty()) {
