@@ -13,8 +13,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -259,13 +257,32 @@ final class MjLintTest {
     void keepsLintCachePathSegmentShortWithManySkippedLints(@Mktmp final Path temp)
         throws IOException {
         final Path cache = temp.resolve("lint-cache");
-        final Collection<String> skipped = new HashSet<>(0);
-        for (int idx = 0; idx < 20; ++idx) {
-            skipped.add(String.format("unlint-non-existing-defect-number-%d", idx));
-        }
         new FakeMaven(temp)
-            .with("cache", cache.toFile())
-            .with("skipSourceLints", skipped)
+            .with("cache", cache.toFile()).with(
+                "skipSourceLints",
+                new SetOf<>(
+                    "void-attributes-not-higher-than-other",
+                    "anonymous-objects-inside-formation",
+                    "application-without-as-attributes",
+                    "package-contains-multiple-parts",
+                    "name-outside-of-abstract-object",
+                    "named-object-abstract-nested",
+                    "formation-with-as-attributes",
+                    "comment-starts-with-article",
+                    "sprintf-without-formatters",
+                    "object-line-out-of-listing",
+                    "incorrect-test-object-name",
+                    "unsorted-named-attributes",
+                    "error-line-out-of-listing",
+                    "meta-line-out-of-listing",
+                    "wrong-sprintf-arguments",
+                    "unoptimizable-recursion",
+                    "comment-not-capitalized",
+                    "no-attribute-formation",
+                    "incorrect-bytes-format",
+                    "duplicate-as-attribute"
+                )
+            )
             .withHelloWorld()
             .execute(new PpLint());
         try (Stream<Path> versions = Files.list(cache.resolve(Linting.CACHE))) {
