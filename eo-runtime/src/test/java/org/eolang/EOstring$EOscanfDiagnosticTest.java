@@ -3,17 +3,9 @@
  * SPDX-License-Identifier: MIT
  */
 
-/*
- * @checkstyle TrailingCommentCheck (3 lines)
- */
-package org.eolang.EO_string; // NOPMD
+package org.eolang;
 
 import java.util.concurrent.TimeUnit;
-import org.eolang.Data;
-import org.eolang.Dataized;
-import org.eolang.ExAbstract;
-import org.eolang.PhApplication;
-import org.eolang.Phi;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -21,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
 /**
- * Test case for {@link EOscanf} diagnostics.
+ * Diagnostics for the string attribute {@code scanf}.
  *
  * <p>One dataization of a twenty-digit {@code %d} walks the recursive digit
  * fold and costs seconds, well over the {@code eo.deadline} an ordinary run
@@ -31,10 +23,11 @@ import org.junit.jupiter.api.Timeout;
  * this class runs it with room for both.</p>
  *
  * @since 0.61.0
+ * @checkstyle IllegalIdentifierNameCheck (4 lines)
  */
-@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
+@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "PMD.AvoidDollarSigns"})
 @Timeout(value = 30L, unit = TimeUnit.SECONDS)
-final class EOscanfDiagnosticTest {
+final class EOstring$EOscanfDiagnosticTest {
 
     @Test
     void reportsSinglePercentForOversizedInteger() {
