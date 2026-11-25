@@ -45,7 +45,8 @@ public final class MjParse extends MjSafe {
                 tojos,
                 this.target.toPath(),
                 this.sourcesDir.toPath(),
-                this.caching(Parsing.CACHE)
+                this.caching(Parsing.CACHE),
+                this.parseTests
             ).exec();
         }
     }
