@@ -306,7 +306,7 @@
         listen.
           socket "127.0.0.1" 0
           accepting
-    true > [client] > accepting
+    true > [x] > accepting
 
   eq. ++> can-convert-a-port-above-the-signed-short-limit-in-htons
     40-9C
@@ -315,12 +315,12 @@
   eq. ++> can-dataize-a-guarded-scope-once
     malloc.for
       0
-      seq * > [m]
+      seq * > [x]
         socket.guarded
-          m.put
-            m.as-number.plus 1
+          x.put
+            x.as-number.plus 1
           true
-        m.as-number
+        x.as-number
     1
 
   eq. ++> can-guard-a-scope-and-behave-as-it
@@ -336,7 +336,7 @@
           socket "203.0.113.7" 0
           serving
           unbound
-    false > [server] > serving
+    false > [x] > serving
     true > [x] > unbound
 
   ++> can-recover-from-receiving-on-a-socket-that-only-listens
@@ -346,7 +346,7 @@
           socket "127.0.0.1" 0
           receiving
         6D-0E-B3
-    server.recv > [server] > receiving
+    x.recv > [x] > receiving
       9
       6D-0E-B3 > [x]
 
@@ -381,25 +381,25 @@
   eq. ++> can-run-a-guard-cleanup-after-a-successful-scope
     malloc.for
       0
-      seq * > [m]
+      seq * > [x]
         socket.guarded
           42
-          m.put
-            m.as-number.plus 1
-        m.as-number
+          x.put
+            x.as-number.plus 1
+        x.as-number
     1
 
   eq. ++> can-run-a-guard-cleanup-after-a-terminated-scope
     malloc.for
       0
-      seq * > [m]
+      seq * > [x]
         recovered
           socket.guarded
             2.as-i64.div 0.as-i64
-            m.put
-              m.as-number.plus 1
+            x.put
+              x.as-number.plus 1
           true
-        m.as-number
+        x.as-number
     1
 
   checked-port. --> rejects-a-fractional-port

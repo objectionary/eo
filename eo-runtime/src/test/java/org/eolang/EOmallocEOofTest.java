@@ -128,14 +128,14 @@ final class EOmallocEOofTest {
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         Dummy() {
             this.id = -1.0d;
-            this.add("m", new AtVoid("m"));
+            this.add(Attr.veiled("x"), new AtVoid("x"));
             this.add(
                 Phi.PHI,
                 new AtComposite(
                     this,
                     rho -> {
                         this.id = new Dataized(
-                            rho.take("m").take("id")
+                            rho.take(Attr.veiled("x")).take("id")
                         ).asNumber();
                         return new Data.ToPhi(true);
                     }
@@ -164,14 +164,14 @@ final class EOmallocEOofTest {
         @SuppressWarnings("PMD.ConstructorOnlyInitializesOrCallOtherConstructors")
         ErrorDummy() {
             this.id = -1.0d;
-            this.add("m", new AtVoid("m"));
+            this.add(Attr.veiled("x"), new AtVoid("x"));
             this.add(
                 Phi.PHI,
                 new AtComposite(
                     this,
                     rho -> {
                         this.id = new Dataized(
-                            rho.take("m").take("id")
+                            rho.take(Attr.veiled("x")).take("id")
                         ).asNumber();
                         return new PhApplication(
                             Phi.Φ.take("error").copy(),
