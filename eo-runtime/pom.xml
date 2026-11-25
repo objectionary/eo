@@ -296,6 +296,8 @@
           <lower.steps>1000</lower.steps>
           <!-- Save every phino protocol of 'eo:lower' as indented text too, for a reader to study. -->
           <lower.minutes>true</lower.minutes>
+          <!-- Every positional argument must be named by 'eo:dealpha'; none may be left. -->
+          <dealpha.rigid>true</dealpha.rigid>
           <!--
           The names of eo-runtime that the engine of 'eo:infer' has to
           know. Each kind of the canon is one shared copy, the first of them
