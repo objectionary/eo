@@ -23,11 +23,12 @@ import org.junit.jupiter.api.Timeout;
  * this class runs it with room for both.</p>
  *
  * @since 0.61.0
- * @checkstyle IllegalIdentifierNameCheck (4 lines)
+ * @checkstyle IllegalIdentifierNameCheck (5 lines)
+ * @checkstyle TrailingCommentCheck (4 lines)
  */
-@SuppressWarnings({"JTCOP.RuleAllTestsHaveProductionClass", "PMD.AvoidDollarSigns"})
+@SuppressWarnings("JTCOP.RuleAllTestsHaveProductionClass")
 @Timeout(value = 30L, unit = TimeUnit.SECONDS)
-final class EOstring$EOscanfDiagnosticTest {
+final class EOstring$EOscanfDiagnosticTest { // NOPMD (EO uses dollar signs)
 
     @Test
     void reportsSinglePercentForOversizedInteger() {
