@@ -76,19 +76,19 @@ public final class MjInfer extends MjSafe {
     /**
      * The canon of eo-runtime, taken when {@link #canon} is unset.
      */
-    private static final List<String> CANON = List.of("Φ.bytes", "Φ.number", "Φ.string");
+    private static final List<String> RUNTIME_CANON = List.of("Φ.bytes", "Φ.number", "Φ.string");
 
     /**
      * The packages of list code of eo-runtime, taken when {@link #roots}
      * is unset.
      */
-    private static final List<String> ROOTS = List.of("Φ.tuple", "Φ.map", "Φ.set");
+    private static final List<String> RUNTIME_ROOTS = List.of("Φ.tuple", "Φ.map", "Φ.set");
 
     /**
      * The scalar packages of eo-runtime, taken when {@link #scalars} is
      * unset.
      */
-    private static final List<String> SCALARS = List.of(
+    private static final List<String> RUNTIME_SCALARS = List.of(
         "Φ.number", "Φ.bytes", "Φ.string", "Φ.bool", "Φ.true", "Φ.false",
         "Φ.i8", "Φ.i16", "Φ.i32", "Φ.i64", "Φ.u8", "Φ.u16", "Φ.u32", "Φ.u64",
         "Φ.dataized"
@@ -166,9 +166,9 @@ public final class MjInfer extends MjSafe {
                 prepped,
                 inference,
                 new Names(
-                    Objects.requireNonNullElse(this.canon, MjInfer.CANON),
-                    Objects.requireNonNullElse(this.roots, MjInfer.ROOTS),
-                    Objects.requireNonNullElse(this.scalars, MjInfer.SCALARS)
+                    Objects.requireNonNullElse(this.canon, MjInfer.RUNTIME_CANON),
+                    Objects.requireNonNullElse(this.roots, MjInfer.RUNTIME_ROOTS),
+                    Objects.requireNonNullElse(this.scalars, MjInfer.RUNTIME_SCALARS)
                 )
             ).exec();
         }
