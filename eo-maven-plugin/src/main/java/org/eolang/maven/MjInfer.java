@@ -55,8 +55,10 @@ import org.eolang.inference.Names;
  * beside it: for every place, which objects it can be when Java runs the
  * program. It has to know three lists of names of the program, which are
  * parameters here: {@link #canon}, {@link #roots} and {@link #scalars}.
- * They have no defaults: a program names its own, the way the
- * {@code pom.xml} of eo-runtime does, and a list left unset is empty.</p>
+ * Almost every program is compiled together with eo-runtime, so a list
+ * left unset holds the names of eo-runtime (#10079); a program that has
+ * other names sets its own, and a program that wants none sets an empty
+ * list.</p>
  *
  * <p>The prepared XMIR is saved in {@link #prepared}, and {@code facts.xml}
  * and {@code answers.xml} in {@link #tables}. Nothing of it fails the
@@ -70,6 +72,27 @@ import org.eolang.inference.Names;
     threadSafe = true
 )
 public final class MjInfer extends MjSafe {
+
+    /**
+     * The canon of eo-runtime, taken when {@link #canon} is unset.
+     */
+    private static final List<String> CANON = List.of("Φ.bytes", "Φ.number", "Φ.string");
+
+    /**
+     * The packages of list code of eo-runtime, taken when {@link #roots}
+     * is unset.
+     */
+    private static final List<String> ROOTS = List.of("Φ.tuple", "Φ.map", "Φ.set");
+
+    /**
+     * The scalar packages of eo-runtime, taken when {@link #scalars} is
+     * unset.
+     */
+    private static final List<String> SCALARS = List.of(
+        "Φ.number", "Φ.bytes", "Φ.string", "Φ.bool", "Φ.true", "Φ.false",
+        "Φ.i8", "Φ.i16", "Φ.i32", "Φ.i64", "Φ.u8", "Φ.u16", "Φ.u32", "Φ.u64",
+        "Φ.dataized"
+    );
 
     /**
      * The directory where the prepared XMIR is saved, falling back to a
@@ -89,7 +112,7 @@ public final class MjInfer extends MjSafe {
     /**
      * The kinds that are one shared copy each, born {@code canon}: the first
      * holds the data, and every other one holds the first. Each must have
-     * one void, {@code @}.
+     * one void, {@code @}. Unless set, these are the canon of eo-runtime.
      */
     @Parameter(alias = "infer.canon", property = "eo.infer.canon")
     private List<String> canon;
@@ -97,14 +120,16 @@ public final class MjInfer extends MjSafe {
     /**
      * The packages of list code: a copy that other code makes of a
      * formation under one of them starts a tag, which keeps apart what list
-     * code does for different places of user code.
+     * code does for different places of user code. Unless set, these are
+     * the packages of list code of eo-runtime.
      */
     @Parameter(alias = "infer.roots", property = "eo.infer.roots")
     private List<String> roots;
 
     /**
      * The packages whose formations give back new data, so that a copy of
-     * one of them takes no tag.
+     * one of them takes no tag. Unless set, these are the scalar packages
+     * of eo-runtime.
      */
     @Parameter(alias = "infer.scalars", property = "eo.infer.scalars")
     private List<String> scalars;
@@ -141,9 +166,9 @@ public final class MjInfer extends MjSafe {
                 prepped,
                 inference,
                 new Names(
-                    Objects.requireNonNullElse(this.canon, List.of()),
-                    Objects.requireNonNullElse(this.roots, List.of()),
-                    Objects.requireNonNullElse(this.scalars, List.of())
+                    Objects.requireNonNullElse(this.canon, MjInfer.CANON),
+                    Objects.requireNonNullElse(this.roots, MjInfer.ROOTS),
+                    Objects.requireNonNullElse(this.scalars, MjInfer.SCALARS)
                 )
             ).exec();
         }

@@ -111,6 +111,27 @@ final class MjInferTest {
     }
 
     @Test
+    void takesCanonOfRuntimeWhenUnset(@Mktmp final Path temp) throws IOException {
+        final FakeMaven maven = new FakeMaven(temp)
+            .withProgram(String.join(System.lineSeparator(), "[] > app", "  number 5 > five", ""))
+            .withProgram("[@] > bytes", "bytes")
+            .withProgram("[@] > number", "number")
+            .withProgram("[@] > string", "string");
+        maven.execute(MjParse.class).execute(MjInfer.class);
+        MatcherAssert.assertThat(
+            "a number must hold bytes and nothing else, as in the canon of eo-runtime, but it didnt",
+            new XMLDocument(
+                maven.targetPath()
+                    .resolve(maven.dirName("inference"))
+                    .resolve("answers.xml")
+            ),
+            XhtmlMatchers.hasXPath(
+                "/answers/o[@loc='Φ.number.φ' and count(*)=1]/is[@loc='Φ.bytes']"
+            )
+        );
+    }
+
+    @Test
     void keepsPreparedXmirOfProgram(@Mktmp final Path temp) throws IOException {
         final FakeMaven maven = new FakeMaven(temp).withProgram(
             String.join(
