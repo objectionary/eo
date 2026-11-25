@@ -69,7 +69,7 @@ import org.eolang.inference.Names;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class MjInfer extends MjSafe {
+public final class MjInfer extends MjOptions {
 
     /**
      * The directory where the prepared XMIR is saved, falling back to a

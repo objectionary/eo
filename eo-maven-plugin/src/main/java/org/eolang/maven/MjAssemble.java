@@ -23,7 +23,7 @@ import org.apache.maven.plugins.annotations.Mojo;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class MjAssemble extends MjSafe {
+public final class MjAssemble extends MjOptions {
 
     /**
      * The intermediate representation extension.

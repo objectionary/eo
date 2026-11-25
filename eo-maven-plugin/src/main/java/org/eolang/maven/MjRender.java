@@ -35,7 +35,7 @@ import org.apache.maven.plugins.annotations.Parameter;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class MjRender extends MjSafe {
+public final class MjRender extends MjOptions {
 
     /**
      * The directory where the pages are written.

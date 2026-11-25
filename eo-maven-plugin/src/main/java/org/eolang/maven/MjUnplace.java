@@ -19,7 +19,7 @@ import org.apache.maven.plugins.annotations.Mojo;
     defaultPhase = LifecyclePhase.PREPARE_PACKAGE,
     threadSafe = true
 )
-public final class MjUnplace extends MjSafe {
+public final class MjUnplace extends MjOptions {
 
     /**
      * Ctor.
@@ -34,7 +34,7 @@ public final class MjUnplace extends MjSafe {
             new Unplacing(
                 placed,
                 this.classes.toPath(),
-                this.keepBinaries
+                this.binaries().keeps()
             ).exec();
         }
     }

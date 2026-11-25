@@ -344,16 +344,6 @@ abstract class MjSafe extends AbstractMojo {
     protected boolean discover;
 
     /**
-     * List of inclusion GLOB filters for finding class files while placing them from where
-     * they were resolved to classes directory.
-     *
-     * @since 0.15
-     * @checkstyle MemberNameCheck (10 lines)
-     */
-    @Parameter
-    protected Set<String> placeBinaries = new SetOf<>("**");
-
-    /**
      * List of individual lints which must be skipped during the linting.
      *
      * @since 0.57
@@ -370,26 +360,6 @@ abstract class MjSafe extends AbstractMojo {
      */
     @Parameter
     protected Set<String> skipProgramLints = new SetOf<>();
-
-    /**
-     * List of exclusion GLOB filters for finding class files while placing them from where
-     * they were resolved to classed directory.
-     *
-     * @since 0.15
-     * @checkstyle MemberNameCheck (10 lines)
-     */
-    @Parameter
-    protected Set<String> skipBinaries = new SetOf<>();
-
-    /**
-     * List of inclusion GLOB filters for unplacing and unspiling (ONLY these files will stay).
-     *
-     * @see <a href="https://news.eolang.org/2022-07-15-placing-and-unplacing.html">Placing and Unplacing in JAR Artifacts</a>
-     * @since 0.24
-     * @checkstyle MemberNameCheck (7 lines)
-     */
-    @Parameter
-    protected Set<String> keepBinaries = new SetOf<>();
 
     /**
      * Add eo-runtime dependency to the classpath.

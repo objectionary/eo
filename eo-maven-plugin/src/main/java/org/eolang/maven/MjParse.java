@@ -29,7 +29,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
     threadSafe = true,
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
-public final class MjParse extends MjSafe {
+public final class MjParse extends MjOptions {
 
     /**
      * Ctor.

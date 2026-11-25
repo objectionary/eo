@@ -33,7 +33,7 @@ import org.apache.maven.plugins.annotations.Mojo;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class MjResolve extends MjSafe {
+public final class MjResolve extends MjOptions {
 
     /**
      * The central.

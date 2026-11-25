@@ -41,7 +41,7 @@ import org.apache.maven.plugins.annotations.Mojo;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class MjMerge extends MjSafe {
+public final class MjMerge extends MjOptions {
 
     /**
      * Ctor.

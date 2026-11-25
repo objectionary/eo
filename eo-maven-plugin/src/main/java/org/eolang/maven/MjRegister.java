@@ -34,7 +34,7 @@ import org.cactoos.set.SetOf;
     defaultPhase = LifecyclePhase.GENERATE_SOURCES,
     threadSafe = true
 )
-public final class MjRegister extends MjSafe {
+public final class MjRegister extends MjOptions {
 
     /**
      * Pattern for .eo files.

@@ -22,7 +22,7 @@ import org.apache.maven.plugins.annotations.Mojo;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class MjPull extends MjSafe {
+public final class MjPull extends MjOptions {
 
     /**
      * Ctor.

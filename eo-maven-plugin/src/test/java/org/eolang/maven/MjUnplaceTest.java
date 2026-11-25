@@ -51,7 +51,9 @@ final class MjUnplaceTest {
     @Test
     @SuppressWarnings("PMD.UnnecessaryLocalRule")
     void keepsClasses(@Mktmp final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp).with("keepBinaries", Set.of("**/*.class"));
+        final FakeMaven maven = new FakeMaven(temp).with(
+            "binaries", new BinaryFilters(Set.of(), Set.of(), Set.of("**/*.class"))
+        );
         final Path clazz = MjUnplaceTest.placed(temp, maven, "class");
         final Path text = MjUnplaceTest.placed(clazz, maven, "txt");
         MatcherAssert.assertThat(

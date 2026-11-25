@@ -41,8 +41,9 @@ final class MjUnspileTest {
 
     @Test
     void keepsSpecifiedClasses(@Mktmp final Path temp) throws IOException {
-        final FakeMaven maven = new FakeMaven(temp)
-            .with("keepBinaries", Set.of("EOorg/package-info.class"));
+        final FakeMaven maven = new FakeMaven(temp).with(
+            "binaries", new BinaryFilters(Set.of(), Set.of(), Set.of("EOorg/package-info.class"))
+        );
         new Saved("gen1", maven.generatedPath().resolve("EOorg/package-info.java")).value();
         new Saved(
             "gen2", maven.generatedPath().resolve("EOorg/EOeolang/package-info.java")

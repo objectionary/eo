@@ -21,7 +21,7 @@ import org.eolang.printer.PenaltyKey;
  *
  * @since 0.75.0
  */
-abstract class MjPenalties extends MjSafe {
+abstract class MjPenalties extends MjOptions {
 
     /**
      * Points charged for each level of indentation on a line.

@@ -54,7 +54,7 @@ import org.eolang.cache.GlobalCache;
     threadSafe = true,
     requiresDependencyResolution = ResolutionScope.COMPILE
 )
-public final class MjTranspile extends MjSafe {
+public final class MjTranspile extends MjOptions {
 
     /**
      * Java class name, simple or fully qualified.

@@ -38,7 +38,7 @@ import org.apache.maven.plugins.annotations.Mojo;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class MjCompile extends MjSafe {
+public final class MjCompile extends MjOptions {
 
     /**
      * Ctor.
@@ -89,8 +89,8 @@ public final class MjCompile extends MjSafe {
                     placed,
                     new Seqdir(this.target.toPath(), 2).dirs().once("resolve"),
                     this.classes.toPath(),
-                    this.placeBinaries,
-                    this.skipBinaries,
+                    this.binaries().includes(),
+                    this.binaries().excludes(),
                     !this.preserved
                 )
             ).exec();
