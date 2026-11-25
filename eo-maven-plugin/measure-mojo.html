@@ -68,11 +68,11 @@
                             </div>
                             <ul class="badges">
                                 <li>
-                                    <strong itemprop="version">0.63.3</strong>
+                                    <strong itemprop="version">0.63.4</strong>
                                 </li>
                                 <li>
-                                    <time itemprop="datePublished" datetime="2026-11-20">
-                                        20-Nov-2026
+                                    <time itemprop="datePublished" datetime="2026-11-25">
+                                        25-Nov-2026
                                     </time>
                                 </li>
                                 <li class="menu-button">menu</li>
@@ -83,7 +83,7 @@
                             <section><a id="eo.3Ameasure"></a>
 <h1>eo:measure</h1>
 <p><strong>Full name</strong>:</p>
-<p>org.eolang:eo-maven-plugin:0.63.3:measure</p>
+<p>org.eolang:eo-maven-plugin:0.63.4:measure</p>
 <p><strong>Description</strong>:</p>
 <p>Turns the raw <code>loc:line:pos</code> coverage hits <code>PhCoverage</code> appended at runtime into an LCOV tracefile.
 <p>Bound to the <code>verify</code> phase, after the tests that actually populate the raw hits file have run (unlike <code>transpile</code>, which only decides whether locations get wrapped in <code>PhCoverage</code> in the first place, long before any test executes). Does nothing when <code>eo.measure.hits</code> is not set or the file does not exist yet, the same "no-op when disabled" contract <code>PhCoverage</code> itself follows, unless <code>eo.measure.minimum</code> is above zero: then the build fails, because a gate that measured nothing must not pass.</p>

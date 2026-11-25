@@ -68,11 +68,11 @@
                             </div>
                             <ul class="badges">
                                 <li>
-                                    <strong itemprop="version">0.63.3</strong>
+                                    <strong itemprop="version">0.63.4</strong>
                                 </li>
                                 <li>
-                                    <time itemprop="datePublished" datetime="2026-11-20">
-                                        20-Nov-2026
+                                    <time itemprop="datePublished" datetime="2026-11-25">
+                                        25-Nov-2026
                                     </time>
                                 </li>
                                 <li class="menu-button">menu</li>
@@ -83,10 +83,15 @@
                             <section><a id="eo.3Adealpha"></a>
 <h1>eo:dealpha</h1>
 <p><strong>Full name</strong>:</p>
-<p>org.eolang:eo-maven-plugin:0.63.3:dealpha</p>
+<p>org.eolang:eo-maven-plugin:0.63.4:dealpha</p>
 <p><strong>Description</strong>:</p>
 <p>Mojo that gives the positional arguments of a program the names of the voids they land in, right after the <code>inference</code> goal.
-<p>The parser has no way to know which void an argument fills, so it names them by their places: in <code>foo k</code>, the <code>k</code> is <code>α0</code>. The <code>answers.xml</code> of <code>MjInfer</code><!-- no javadoc sites associated --> knows better, since the row of an argument names the void it lands in whenever there is one. This goal reads it and writes <code>foo (bar: k)</code> instead, wherever the answer is certain, as described in #8301, and the <code>facts.xml</code> beside it says that no caller can change it.</p>
+<p>The parser has no way to know which void an argument fills, so it names them by their places: in <code>foo k</code>, the <code>k</code> is <code>α0</code>. The <code>answers.xml</code> of <code>MjInfer</code><!-- no javadoc sites associated --> knows better, since the row of an argument names the void it lands in whenever there is one. This goal reads it and writes <code>foo (bar: k)</code> instead, wherever the answer is certain, as described in #8301:</p>
+<pre> &lt;o loc="Φ.app.φ.α0" copies="1" lands="bar"&gt;
+  &lt;is loc="Φ.number"/&gt;
+&lt;/o&gt;</pre>
+<p>The row says that <code>Φ.app.φ.α0</code> is <code>bar</code>. The engine writes the name only when every application it saw puts the argument into one void and nowhere else. An argument has no <code>lands</code> when it lands in two voids, or when the engine cannot tell which formation the application is made on, such as an unknown or an object made in Java.</p>
+<p>The engine sees only the applications written in the program, and that is enough: EO always compiles the whole program, so there is no other program that could attach something else to a void. When another program appears, the compiler and the engine run again (#10056).</p>
 <p>An argument keeps its place where no single void is known to take it, and the number of those is written to the log. With <code>rigid</code><!-- no javadoc sites associated --> set, the build fails when there is one.</p>
 <p>The XMIR goes to a directory <code>Seqdir</code> numbers "dealpha", and <code>MjTranspile</code><!-- no javadoc sites associated --> reads it from there.</p></p>
 <p><strong>Attributes</strong>:</p>
@@ -265,7 +270,7 @@
 <td><a href="#tables"><code>&lt;tables&gt;</code></a></td>
 <td><code>File</code></td>
 <td><code>-</code></td>
-<td>The directory with the <code>answers.xml</code> and the <code>facts.xml</code> that <code>MjInfer</code><!-- no javadoc sites associated -->
+<td>The directory with the <code>answers.xml</code> that <code>MjInfer</code><!-- no javadoc sites associated -->
  writes, falling back to a directory <code>Seqdir</code> numbers "inference" when unset.<br /><strong>User Property</strong>: <code>eo.dealpha.tables</code><br /><strong>Alias</strong>: <code>dealpha.tables</code></td></tr>
 <tr class="a">
 <td><a href="#timeout"><code>&lt;timeout&gt;</code></a></td>
@@ -485,7 +490,7 @@
 <li><strong>Default</strong>: <code>${project.basedir}/src/main/eo</code></li>
 <li><strong>Alias</strong>: <code>sources</code></li></ul><hr /></section><a id="tables"></a><section><a id="a.3Ctables.3E"></a>
 <h3>&lt;tables&gt;</h3>
-<div>The directory with the <code>answers.xml</code> and the <code>facts.xml</code> that <code>MjInfer</code><!-- no javadoc sites associated -->
+<div>The directory with the <code>answers.xml</code> that <code>MjInfer</code><!-- no javadoc sites associated -->
  writes, falling back to a directory <code>Seqdir</code> numbers "inference" when unset.</div>
 <ul>
 <li><strong>Type</strong>: <code>java.io.File</code></li>
