@@ -9,6 +9,8 @@ import com.github.lombrozo.xnav.Xnav;
 import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.yegor256.xsline.Shift;
+import com.yegor256.xsline.StClasspath;
 import io.github.sekator778.seqdir.Seqdir;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -58,6 +60,19 @@ final class Parsing implements Step {
     static final String CACHE = "parsed";
 
     /**
+     * The stylesheet that drops every unit test from an XMIR.
+     */
+    private static final String DROP = "/org/eolang/maven/parse/drop-tests.xsl";
+
+    /**
+     * The shift that drops every unit test from an XMIR, one per thread,
+     * since {@link StClasspath} compiles its stylesheet lazily and
+     * that is not thread-safe (see {@link Transpilation}).
+     */
+    private static final ThreadLocal<Shift> UNTESTED =
+        ThreadLocal.withInitial(() -> new StClasspath(Parsing.DROP));
+
+    /**
      * Foreign tojos catalog.
      */
     private final TjsForeign tojos;
@@ -78,7 +93,12 @@ final class Parsing implements Step {
     private final GlobalCache cache;
 
     /**
-     * Constructor.
+     * Whether the unit tests stay in the XMIR.
+     */
+    private final boolean tests;
+
+    /**
+     * Constructor, which keeps the unit tests in the XMIR.
      *
      * @param srcs Foreign tojos catalog
      * @param target Target directory
@@ -91,10 +111,30 @@ final class Parsing implements Step {
         final Path sources,
         final GlobalCache store
     ) {
+        this(srcs, target, sources, store, true);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param srcs Foreign tojos catalog
+     * @param target Target directory
+     * @param sources EO sources directory
+     * @param store Where the results of earlier builds are looked for and kept
+     * @param tests Whether the unit tests stay in the XMIR
+     */
+    Parsing(
+        final TjsForeign srcs,
+        final Path target,
+        final Path sources,
+        final GlobalCache store,
+        final boolean tests
+    ) {
         this.tojos = srcs;
         this.target = target;
         this.home = sources;
         this.cache = store;
+        this.tests = tests;
     }
 
     @Override
@@ -106,10 +146,20 @@ final class Parsing implements Step {
             .distinct()
             .sorted()
             .collect(Collectors.joining(" "));
+        final Canonical canonical = new Canonical(objects);
+        final UnaryOperator<XML> pipeline;
+        final GlobalCache store;
+        if (this.tests) {
+            pipeline = canonical;
+            store = this.cache;
+        } else {
+            pipeline = xml -> canonical.apply(Parsing.UNTESTED.get().apply(0, xml));
+            store = this.cache.with(new Fingerprint(Parsing.DROP).get());
+        }
         final int total = this.parsed(
             sources,
-            new Canonical(objects),
-            this.cache.with(
+            pipeline,
+            store.with(
                 new Fingerprint(
                     Stream.concat(
                         Canonical.XSLS.stream(), Canonical.IMPORTS.stream()
