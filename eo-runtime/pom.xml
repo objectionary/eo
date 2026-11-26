@@ -318,13 +318,6 @@
             <configuration>
               <skipSourceLints>
                 <!--
-                'redundant-object' sees one file at a time and counts only the
-                references written relative to the current object, so every
-                public attribute of a library object, from 'win32.rdonly' to
-                'tuple.empty', looks unused to it (objectionary/lints#1276).
-                -->
-                <lint>redundant-object</lint>
-                <!--
                 @todo #6985:30min Stop skipping 'many-void-attributes' here.
                 The rule caps a formation at five voids to keep it callable,
                 but it counts 'ρ' among them, and 'string.regex.pattern.yes'
