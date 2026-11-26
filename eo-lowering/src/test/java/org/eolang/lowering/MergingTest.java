@@ -115,7 +115,7 @@ final class MergingTest {
 
     @Test
     void mergesAWorldThePinnedPhinoReads(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.165");
+        final Phino phino = new Phino("phino", "0.0.170");
         Assumptions.assumeTrue(
             MergingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be merged here"
@@ -128,8 +128,14 @@ final class MergingTest {
             Files.write(
                 Files.createDirectories(temp.resolve("1-planting"))
                     .resolve(source.getKey().replace(".eo", ".xmir")),
-                new EoSyntax(source.getValue()).parsed().toString()
-                    .getBytes(StandardCharsets.UTF_8)
+                new Dealphaed(
+                    new EoSyntax(source.getValue()).parsed().toString(),
+                    new MapOf<>(
+                        new MapEntry<>("Φ.gap.φ.α0", "v🌵b"),
+                        new MapEntry<>("Φ.app.used.α0", "v🌵a"),
+                        new MapEntry<>("Φ.app.used.α1", "v🌵b")
+                    )
+                ).value().getBytes(StandardCharsets.UTF_8)
             );
         }
         new Planting(new Inferred(temp.resolve("engine"), program).value()).exec(temp);

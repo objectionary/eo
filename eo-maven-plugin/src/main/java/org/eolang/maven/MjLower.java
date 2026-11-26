@@ -100,7 +100,7 @@ public final class MjLower extends MjSafe {
     @Parameter(
         alias = "lower.pin",
         property = "eo.lower.pin",
-        defaultValue = "0.0.165"
+        defaultValue = "0.0.170"
     )
     private String pin;
 
