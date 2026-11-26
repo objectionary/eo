@@ -118,11 +118,11 @@
                             </div>
                             <ul class="badges">
                                 <li>
-                                    <strong itemprop="version">0.63.4</strong>
+                                    <strong itemprop="version">0.63.5</strong>
                                 </li>
                                 <li>
-                                    <time itemprop="datePublished" datetime="2026-11-25">
-                                        25-Nov-2026
+                                    <time itemprop="datePublished" datetime="2026-11-26">
+                                        26-Nov-2026
                                     </time>
                                 </li>
                                 <li class="menu-button">menu</li>
@@ -188,7 +188,7 @@ Call <code>mvn eo:help -Ddetail=true -Dgoal=&lt;goal-name&gt;</code> to display 
 <p>One pass through the XMIR of every file parsed so far writes every formation with its attributes, every name read and what it is read off, the head of every chain, and every call with its arguments.</p>
 <p>Nothing here says whether the program is wrong. Judging it was written and taken out again in #6661, because a verdict needs the object that misses an attribute to have been seen whole, and almost none of them have been; the program has to be described before anything can read it for mistakes.</p>
 <p>The XMIR of every registered source is read, and not every file the parse directory holds: a source that was deleted leaves its XMIR behind, and the facts would go on describing an object nobody wrote any more (#9271). Where each one lies is worked out from the identifier of the tojo, and not read off its <code>xmir</code> attribute, because <code>eo:merge</code> moves that attribute of a package object into the merge directory, while the facts are made of what the parser wrote.</p>
-<p>The engine then reads <code>facts.xml</code> and writes <code>answers.xml</code> beside it: for every place, which objects it can be when Java runs the program. It has to know three lists of names of the program, which are parameters here: <code>canon</code><!-- no javadoc sites associated -->, <code>roots</code><!-- no javadoc sites associated --> and <code>scalars</code><!-- no javadoc sites associated -->. They have no defaults: a program names its own, the way the <code>pom.xml</code> of eo-runtime does, and a list left unset is empty.</p>
+<p>The engine then reads <code>facts.xml</code> and writes <code>answers.xml</code> beside it: for every place, which objects it can be when Java runs the program. It has to know three lists of names of the program, which are parameters here: <code>canon</code><!-- no javadoc sites associated -->, <code>roots</code><!-- no javadoc sites associated --> and <code>scalars</code><!-- no javadoc sites associated -->. Almost every program is compiled together with eo-runtime, so a list left unset or empty holds the names of eo-runtime (#10079), and a program that has other names sets its own. Maven gives an empty list, not <code>null</code>, to a list parameter nobody sets, so empty means unset here. The names of eo-runtime do no harm to a program that has none of these objects: the canon is made only when every kind of it is there, and the other names then match nothing.</p>
 <p>The prepared XMIR is saved in <code>prepared</code><!-- no javadoc sites associated -->, and <code>facts.xml</code> and <code>answers.xml</code> in <code>tables</code><!-- no javadoc sites associated -->. Nothing of it fails the build.</p></td></tr>
 <tr class="a">
 <td><a href="./lint-mojo.html">eo:lint</a></td>
@@ -286,7 +286,7 @@ Call <code>mvn eo:help -Ddetail=true -Dgoal=&lt;goal-name&gt;</code> to display 
 <th>Maven</th>
 <th>JDK</th></tr>
 <tr class="b">
-<td>from 0.62.0 to 0.63.4</td>
+<td>from 0.62.0 to 0.63.5</td>
 <td>-</td>
 <td>17</td></tr>
 <tr class="a">
@@ -308,7 +308,7 @@ Call <code>mvn eo:help -Ddetail=true -Dgoal=&lt;goal-name&gt;</code> to display 
         &lt;plugin&gt;
           &lt;groupId&gt;org.eolang&lt;/groupId&gt;
           &lt;artifactId&gt;eo-maven-plugin&lt;/artifactId&gt;
-          &lt;version&gt;0.63.4&lt;/version&gt;
+          &lt;version&gt;0.63.5&lt;/version&gt;
         &lt;/plugin&gt;
         ...
       &lt;/plugins&gt;

@@ -19,28 +19,26 @@
 <a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_javadoccomment"> * The names of eo-runtime the engine of {@link Inferring} has to know.</em>
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;The goal takes them from the {@code pom.xml} of eo-runtime and has no</em>
-<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> * defaults, so a test that runs the engine on its own gives them here, the</em>
-<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_javadoccomment"> * one place the tests of this module write them, besides the configuration</em>
-<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment"> * {@link FakeMaven} plays the {@code pom.xml} with.&lt;/p&gt;</em>
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment"> *</em>
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <em class="jxr_javadoccomment"> * @since 0.76.0</em>
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a name="RuntimeNames" href="../../../org/eolang/maven/RuntimeNames.html#RuntimeNames">RuntimeNames</a> <strong class="jxr_keyword">implements</strong> Supplier&lt;Names&gt; {
-<a class="jxr_linenumber" name="L22" href="#L22">22</a>  
-<a class="jxr_linenumber" name="L23" href="#L23">23</a>      @Override
-<a class="jxr_linenumber" name="L24" href="#L24">24</a>      <strong class="jxr_keyword">public</strong> Names get() {
-<a class="jxr_linenumber" name="L25" href="#L25">25</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Names(
-<a class="jxr_linenumber" name="L26" href="#L26">26</a>              List.of(<span class="jxr_string">"Φ.bytes"</span>, <span class="jxr_string">"Φ.number"</span>, <span class="jxr_string">"Φ.string"</span>),
-<a class="jxr_linenumber" name="L27" href="#L27">27</a>              List.of(<span class="jxr_string">"Φ.tuple"</span>, <span class="jxr_string">"Φ.map"</span>, <span class="jxr_string">"Φ.set"</span>),
-<a class="jxr_linenumber" name="L28" href="#L28">28</a>              List.of(
-<a class="jxr_linenumber" name="L29" href="#L29">29</a>                  <span class="jxr_string">"Φ.number"</span>, <span class="jxr_string">"Φ.bytes"</span>, <span class="jxr_string">"Φ.string"</span>, <span class="jxr_string">"Φ.bool"</span>, <span class="jxr_string">"Φ.true"</span>, <span class="jxr_string">"Φ.false"</span>,
-<a class="jxr_linenumber" name="L30" href="#L30">30</a>                  <span class="jxr_string">"Φ.i8"</span>, <span class="jxr_string">"Φ.i16"</span>, <span class="jxr_string">"Φ.i32"</span>, <span class="jxr_string">"Φ.i64"</span>, <span class="jxr_string">"Φ.u8"</span>, <span class="jxr_string">"Φ.u16"</span>, <span class="jxr_string">"Φ.u32"</span>, <span class="jxr_string">"Φ.u64"</span>,
-<a class="jxr_linenumber" name="L31" href="#L31">31</a>                  <span class="jxr_string">"Φ.dataized"</span>
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>              )
-<a class="jxr_linenumber" name="L33" href="#L33">33</a>          );
-<a class="jxr_linenumber" name="L34" href="#L34">34</a>      }
-<a class="jxr_linenumber" name="L35" href="#L35">35</a>  }
+<a class="jxr_linenumber" name="L14" href="#L14">14</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;The goal has them as its defaults, but a test that runs the engine on</em>
+<a class="jxr_linenumber" name="L15" href="#L15">15</a>  <em class="jxr_javadoccomment"> * its own, without the goal, gives them here.&lt;/p&gt;</em>
+<a class="jxr_linenumber" name="L16" href="#L16">16</a>  <em class="jxr_javadoccomment"> *</em>
+<a class="jxr_linenumber" name="L17" href="#L17">17</a>  <em class="jxr_javadoccomment"> * @since 0.76.0</em>
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <em class="jxr_javadoccomment"> */</em>
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">class</strong> <a name="RuntimeNames" href="../../../org/eolang/maven/RuntimeNames.html#RuntimeNames">RuntimeNames</a> <strong class="jxr_keyword">implements</strong> Supplier&lt;Names&gt; {
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>      @Override
+<a class="jxr_linenumber" name="L22" href="#L22">22</a>      <strong class="jxr_keyword">public</strong> Names get() {
+<a class="jxr_linenumber" name="L23" href="#L23">23</a>          <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Names(
+<a class="jxr_linenumber" name="L24" href="#L24">24</a>              List.of(<span class="jxr_string">"Φ.bytes"</span>, <span class="jxr_string">"Φ.number"</span>, <span class="jxr_string">"Φ.string"</span>),
+<a class="jxr_linenumber" name="L25" href="#L25">25</a>              List.of(<span class="jxr_string">"Φ.tuple"</span>, <span class="jxr_string">"Φ.map"</span>, <span class="jxr_string">"Φ.set"</span>),
+<a class="jxr_linenumber" name="L26" href="#L26">26</a>              List.of(
+<a class="jxr_linenumber" name="L27" href="#L27">27</a>                  <span class="jxr_string">"Φ.number"</span>, <span class="jxr_string">"Φ.bytes"</span>, <span class="jxr_string">"Φ.string"</span>, <span class="jxr_string">"Φ.bool"</span>, <span class="jxr_string">"Φ.true"</span>, <span class="jxr_string">"Φ.false"</span>,
+<a class="jxr_linenumber" name="L28" href="#L28">28</a>                  <span class="jxr_string">"Φ.i8"</span>, <span class="jxr_string">"Φ.i16"</span>, <span class="jxr_string">"Φ.i32"</span>, <span class="jxr_string">"Φ.i64"</span>, <span class="jxr_string">"Φ.u8"</span>, <span class="jxr_string">"Φ.u16"</span>, <span class="jxr_string">"Φ.u32"</span>, <span class="jxr_string">"Φ.u64"</span>,
+<a class="jxr_linenumber" name="L29" href="#L29">29</a>                  <span class="jxr_string">"Φ.dataized"</span>
+<a class="jxr_linenumber" name="L30" href="#L30">30</a>              )
+<a class="jxr_linenumber" name="L31" href="#L31">31</a>          );
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>      }
+<a class="jxr_linenumber" name="L33" href="#L33">33</a>  }
 </pre>
 <hr/>
 <div id="footer">© 2016–2026 <a href="https://github.com/objectionary/eo">EO</a></div>

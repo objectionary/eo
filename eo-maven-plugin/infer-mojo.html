@@ -68,11 +68,11 @@
                             </div>
                             <ul class="badges">
                                 <li>
-                                    <strong itemprop="version">0.63.4</strong>
+                                    <strong itemprop="version">0.63.5</strong>
                                 </li>
                                 <li>
-                                    <time itemprop="datePublished" datetime="2026-11-25">
-                                        25-Nov-2026
+                                    <time itemprop="datePublished" datetime="2026-11-26">
+                                        26-Nov-2026
                                     </time>
                                 </li>
                                 <li class="menu-button">menu</li>
@@ -83,7 +83,7 @@
                             <section><a id="eo.3Ainfer"></a>
 <h1>eo:infer</h1>
 <p><strong>Full name</strong>:</p>
-<p>org.eolang:eo-maven-plugin:0.63.4:infer</p>
+<p>org.eolang:eo-maven-plugin:0.63.5:infer</p>
 <p><strong>Description</strong>:</p>
 <p>Mojo that reads what a program says about its own objects, preferably after the <code>assemble</code> goal.
 <p>What a program says about its objects is written down into <code>facts.xml</code>, which a later goal can read. In this program, for example, <code>t</code> has <code>next</code>, the object attached to <code>next</code> has nothing, and <code>inc</code> reads <code>foo</code> off whatever it is given:</p>
@@ -96,7 +96,7 @@
 <p>One pass through the XMIR of every file parsed so far writes every formation with its attributes, every name read and what it is read off, the head of every chain, and every call with its arguments.</p>
 <p>Nothing here says whether the program is wrong. Judging it was written and taken out again in #6661, because a verdict needs the object that misses an attribute to have been seen whole, and almost none of them have been; the program has to be described before anything can read it for mistakes.</p>
 <p>The XMIR of every registered source is read, and not every file the parse directory holds: a source that was deleted leaves its XMIR behind, and the facts would go on describing an object nobody wrote any more (#9271). Where each one lies is worked out from the identifier of the tojo, and not read off its <code>xmir</code> attribute, because <code>eo:merge</code> moves that attribute of a package object into the merge directory, while the facts are made of what the parser wrote.</p>
-<p>The engine then reads <code>facts.xml</code> and writes <code>answers.xml</code> beside it: for every place, which objects it can be when Java runs the program. It has to know three lists of names of the program, which are parameters here: <code>canon</code><!-- no javadoc sites associated -->, <code>roots</code><!-- no javadoc sites associated --> and <code>scalars</code><!-- no javadoc sites associated -->. They have no defaults: a program names its own, the way the <code>pom.xml</code> of eo-runtime does, and a list left unset is empty.</p>
+<p>The engine then reads <code>facts.xml</code> and writes <code>answers.xml</code> beside it: for every place, which objects it can be when Java runs the program. It has to know three lists of names of the program, which are parameters here: <code>canon</code><!-- no javadoc sites associated -->, <code>roots</code><!-- no javadoc sites associated --> and <code>scalars</code><!-- no javadoc sites associated -->. Almost every program is compiled together with eo-runtime, so a list left unset or empty holds the names of eo-runtime (#10079), and a program that has other names sets its own. Maven gives an empty list, not <code>null</code>, to a list parameter nobody sets, so empty means unset here. The names of eo-runtime do no harm to a program that has none of these objects: the canon is made only when every kind of it is there, and the other names then match nothing.</p>
 <p>The prepared XMIR is saved in <code>prepared</code><!-- no javadoc sites associated -->, and <code>facts.xml</code> and <code>answers.xml</code> in <code>tables</code><!-- no javadoc sites associated -->. Nothing of it fails the build.</p></p>
 <p><strong>Attributes</strong>:</p>
 <ul>
@@ -173,41 +173,47 @@
 <td><code>0.10.0</code></td>
 <td>Pull again even if the .eo file is already present?<br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>eo.overwrite</code><br /><strong>Alias</strong>: <code>overwrite</code></td></tr>
 <tr class="b">
+<td><a href="#parseTests"><code>&lt;parseTests&gt;</code></a></td>
+<td><code>boolean</code></td>
+<td><code>0.63.5</code></td>
+<td>Shall the unit tests stay in the XMIR made by <code>parse</code>?
+<p>A unit test is an attribute made with <code>++&gt;</code>, <code>+&gt;</code>, <code>--&gt;</code> or <code>-&gt;</code>. When this is <code>false</code>, the <code>parse</code> goal (and <code>assemble</code>, which parses too) drops every such attribute from the XMIR it makes, so no later goal sees the tests. A tool that only reads the XMIR, and has no use for the tests, may turn it off.</p><br /><strong>Default</strong>: <code>true</code><br /><strong>User Property</strong>: <code>eo.parse.tests</code><br /><strong>Alias</strong>: <code>parse.tests</code></td></tr>
+<tr class="a">
 <td><a href="#placed"><code>&lt;placed&gt;</code></a></td>
 <td><code>File</code></td>
 <td><code>0.11.0</code></td>
 <td>The path to a text file where paths of all added .class (and maybe others) files are placed.<br /><strong>Default</strong>: <code>${project.build.directory}/eo-placed.json</code><br /><strong>User Property</strong>: <code>eo.placed</code></td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#placedFormat"><code>&lt;placedFormat&gt;</code></a></td>
 <td><code>String</code></td>
 <td><code>-</code></td>
 <td>Format of "placed" file ("json" or "csv").<br /><strong>Default</strong>: <code>json</code><br /><strong>User Property</strong>: <code>eo.placed.format</code><br /><strong>Alias</strong>: <code>placed.format</code></td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#skipLinting"><code>&lt;skipLinting&gt;</code></a></td>
 <td><code>boolean</code></td>
 <td><code>-</code></td>
 <td>Whether we should skip linting at all.<br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>eo.lint.bypass</code><br /><strong>Alias</strong>: <code>lint.bypass</code></td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#sourcesDir"><code>&lt;sourcesDir&gt;</code></a></td>
 <td><code>File</code></td>
 <td><code>-</code></td>
 <td>Directory in which .eo files are located.<br /><strong>Default</strong>: <code>${project.basedir}/src/main/eo</code><br /><strong>User Property</strong>: <code>eo.sources</code><br /><strong>Alias</strong>: <code>sources</code></td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#tag"><code>&lt;tag&gt;</code></a></td>
 <td><code>String</code></td>
 <td><code>0.21.0</code></td>
 <td>The Git tag to pull objects from, in objectionary.<br /><strong>Default</strong>: <code>master</code><br /><strong>User Property</strong>: <code>eo.tag</code></td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#target"><code>&lt;target&gt;</code></a></td>
 <td><code>File</code></td>
 <td><code>-</code></td>
 <td>Target directory.<br /><strong>Default</strong>: <code>${project.build.directory}/eo</code><br /><strong>User Property</strong>: <code>eo.target</code><br /><strong>Alias</strong>: <code>target</code></td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#tracking"><code>&lt;tracking&gt;</code></a></td>
 <td><code>boolean</code></td>
 <td><code>0.24.0</code></td>
 <td>Track optimization steps into intermediate XMIR files?<br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>eo.track</code><br /><strong>Alias</strong>: <code>track</code></td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#zeros"><code>&lt;zeros&gt;</code></a></td>
 <td><code>boolean</code></td>
 <td><code>0.9.0</code></td>
@@ -228,7 +234,7 @@
 <td><a href="#canon"><code>&lt;canon&gt;</code></a></td>
 <td><code>List&lt;String&gt;</code></td>
 <td><code>-</code></td>
-<td>The kinds that are one shared copy each, born <code>canon</code>: the first holds the data, and every other one holds the first. Each must have one void, <code>@</code>.<br /><strong>User Property</strong>: <code>eo.infer.canon</code><br /><strong>Alias</strong>: <code>infer.canon</code></td></tr>
+<td>The kinds that are one shared copy each, born <code>canon</code>: the first holds the data, and every other one holds the first. Each must have one void, <code>@</code>. Unless set, or empty, these are the canon of eo-runtime.<br /><strong>User Property</strong>: <code>eo.infer.canon</code><br /><strong>Alias</strong>: <code>infer.canon</code></td></tr>
 <tr class="b">
 <td><a href="#keepBinaries"><code>&lt;keepBinaries&gt;</code></a></td>
 <td><code>Set&lt;String&gt;</code></td>
@@ -254,12 +260,12 @@
 <td><a href="#roots"><code>&lt;roots&gt;</code></a></td>
 <td><code>List&lt;String&gt;</code></td>
 <td><code>-</code></td>
-<td>The packages of list code: a copy that other code makes of a formation under one of them starts a tag, which keeps apart what list code does for different places of user code.<br /><strong>User Property</strong>: <code>eo.infer.roots</code><br /><strong>Alias</strong>: <code>infer.roots</code></td></tr>
+<td>The packages of list code: a copy that other code makes of a formation under one of them starts a tag, which keeps apart what list code does for different places of user code. Unless set, or empty, these are the packages of list code of eo-runtime.<br /><strong>User Property</strong>: <code>eo.infer.roots</code><br /><strong>Alias</strong>: <code>infer.roots</code></td></tr>
 <tr class="a">
 <td><a href="#scalars"><code>&lt;scalars&gt;</code></a></td>
 <td><code>List&lt;String&gt;</code></td>
 <td><code>-</code></td>
-<td>The packages whose formations give back new data, so that a copy of one of them takes no tag.<br /><strong>User Property</strong>: <code>eo.infer.scalars</code><br /><strong>Alias</strong>: <code>infer.scalars</code></td></tr>
+<td>The packages whose formations give back new data, so that a copy of one of them takes no tag. Unless set, or empty, these are the scalar packages of eo-runtime.<br /><strong>User Property</strong>: <code>eo.infer.scalars</code><br /><strong>Alias</strong>: <code>infer.scalars</code></td></tr>
 <tr class="b">
 <td><a href="#scope"><code>&lt;scope&gt;</code></a></td>
 <td><code>String</code></td>
@@ -314,7 +320,7 @@
 <li><strong>Required</strong>: <code>No</code></li>
 <li><strong>User Property</strong>: <code>eo.cache</code></li></ul><hr /></section><a id="canon"></a><section><a id="a.3Ccanon.3E"></a>
 <h3>&lt;canon&gt;</h3>
-<div>The kinds that are one shared copy each, born <code>canon</code>: the first holds the data, and every other one holds the first. Each must have one void, <code>@</code>.</div>
+<div>The kinds that are one shared copy each, born <code>canon</code>: the first holds the data, and every other one holds the first. Each must have one void, <code>@</code>. Unless set, or empty, these are the canon of eo-runtime.</div>
 <ul>
 <li><strong>Type</strong>: <code>java.util.List&lt;java.lang.String&gt;</code></li>
 <li><strong>Required</strong>: <code>No</code></li>
@@ -427,7 +433,17 @@
 <li><strong>Required</strong>: <code>Yes</code></li>
 <li><strong>User Property</strong>: <code>eo.overwrite</code></li>
 <li><strong>Default</strong>: <code>false</code></li>
-<li><strong>Alias</strong>: <code>overwrite</code></li></ul><hr /></section><a id="placeBinaries"></a><section><a id="a.3CplaceBinaries.3E"></a>
+<li><strong>Alias</strong>: <code>overwrite</code></li></ul><hr /></section><a id="parseTests"></a><section><a id="a.3CparseTests.3E"></a>
+<h3>&lt;parseTests&gt;</h3>
+<div>Shall the unit tests stay in the XMIR made by <code>parse</code>?
+<p>A unit test is an attribute made with <code>++&gt;</code>, <code>+&gt;</code>, <code>--&gt;</code> or <code>-&gt;</code>. When this is <code>false</code>, the <code>parse</code> goal (and <code>assemble</code>, which parses too) drops every such attribute from the XMIR it makes, so no later goal sees the tests. A tool that only reads the XMIR, and has no use for the tests, may turn it off.</p></div>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Since</strong>: <code>0.63.5</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.parse.tests</code></li>
+<li><strong>Default</strong>: <code>true</code></li>
+<li><strong>Alias</strong>: <code>parse.tests</code></li></ul><hr /></section><a id="placeBinaries"></a><section><a id="a.3CplaceBinaries.3E"></a>
 <h3>&lt;placeBinaries&gt;</h3>
 <div>List of inclusion GLOB filters for finding class files while placing them from where they were resolved to classes directory.</div>
 <ul>
@@ -467,14 +483,14 @@
 <li><strong>Default</strong>: <code>false</code></li>
 <li><strong>Alias</strong>: <code>binaries.bypass</code></li></ul><hr /></section><a id="roots"></a><section><a id="a.3Croots.3E"></a>
 <h3>&lt;roots&gt;</h3>
-<div>The packages of list code: a copy that other code makes of a formation under one of them starts a tag, which keeps apart what list code does for different places of user code.</div>
+<div>The packages of list code: a copy that other code makes of a formation under one of them starts a tag, which keeps apart what list code does for different places of user code. Unless set, or empty, these are the packages of list code of eo-runtime.</div>
 <ul>
 <li><strong>Type</strong>: <code>java.util.List&lt;java.lang.String&gt;</code></li>
 <li><strong>Required</strong>: <code>No</code></li>
 <li><strong>User Property</strong>: <code>eo.infer.roots</code></li>
 <li><strong>Alias</strong>: <code>infer.roots</code></li></ul><hr /></section><a id="scalars"></a><section><a id="a.3Cscalars.3E"></a>
 <h3>&lt;scalars&gt;</h3>
-<div>The packages whose formations give back new data, so that a copy of one of them takes no tag.</div>
+<div>The packages whose formations give back new data, so that a copy of one of them takes no tag. Unless set, or empty, these are the scalar packages of eo-runtime.</div>
 <ul>
 <li><strong>Type</strong>: <code>java.util.List&lt;java.lang.String&gt;</code></li>
 <li><strong>Required</strong>: <code>No</code></li>

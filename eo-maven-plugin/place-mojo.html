@@ -68,11 +68,11 @@
                             </div>
                             <ul class="badges">
                                 <li>
-                                    <strong itemprop="version">0.63.4</strong>
+                                    <strong itemprop="version">0.63.5</strong>
                                 </li>
                                 <li>
-                                    <time itemprop="datePublished" datetime="2026-11-25">
-                                        25-Nov-2026
+                                    <time itemprop="datePublished" datetime="2026-11-26">
+                                        26-Nov-2026
                                     </time>
                                 </li>
                                 <li class="menu-button">menu</li>
@@ -83,7 +83,7 @@
                             <section><a id="eo.3Aplace"></a>
 <h1>eo:place</h1>
 <p><strong>Full name</strong>:</p>
-<p>org.eolang:eo-maven-plugin:0.63.4:place</p>
+<p>org.eolang:eo-maven-plugin:0.63.5:place</p>
 <p><strong>Description</strong>:</p>
 <p>Take binary files from where <code>MjResolve</code><!-- no javadoc sites associated -->
  placed them and copy to the <code>target/classes</code> directory.
@@ -164,41 +164,47 @@
 <td><code>0.10.0</code></td>
 <td>Pull again even if the .eo file is already present?<br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>eo.overwrite</code><br /><strong>Alias</strong>: <code>overwrite</code></td></tr>
 <tr class="b">
+<td><a href="#parseTests"><code>&lt;parseTests&gt;</code></a></td>
+<td><code>boolean</code></td>
+<td><code>0.63.5</code></td>
+<td>Shall the unit tests stay in the XMIR made by <code>parse</code>?
+<p>A unit test is an attribute made with <code>++&gt;</code>, <code>+&gt;</code>, <code>--&gt;</code> or <code>-&gt;</code>. When this is <code>false</code>, the <code>parse</code> goal (and <code>assemble</code>, which parses too) drops every such attribute from the XMIR it makes, so no later goal sees the tests. A tool that only reads the XMIR, and has no use for the tests, may turn it off.</p><br /><strong>Default</strong>: <code>true</code><br /><strong>User Property</strong>: <code>eo.parse.tests</code><br /><strong>Alias</strong>: <code>parse.tests</code></td></tr>
+<tr class="a">
 <td><a href="#placed"><code>&lt;placed&gt;</code></a></td>
 <td><code>File</code></td>
 <td><code>0.11.0</code></td>
 <td>The path to a text file where paths of all added .class (and maybe others) files are placed.<br /><strong>Default</strong>: <code>${project.build.directory}/eo-placed.json</code><br /><strong>User Property</strong>: <code>eo.placed</code></td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#placedFormat"><code>&lt;placedFormat&gt;</code></a></td>
 <td><code>String</code></td>
 <td><code>-</code></td>
 <td>Format of "placed" file ("json" or "csv").<br /><strong>Default</strong>: <code>json</code><br /><strong>User Property</strong>: <code>eo.placed.format</code><br /><strong>Alias</strong>: <code>placed.format</code></td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#skipLinting"><code>&lt;skipLinting&gt;</code></a></td>
 <td><code>boolean</code></td>
 <td><code>-</code></td>
 <td>Whether we should skip linting at all.<br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>eo.lint.bypass</code><br /><strong>Alias</strong>: <code>lint.bypass</code></td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#sourcesDir"><code>&lt;sourcesDir&gt;</code></a></td>
 <td><code>File</code></td>
 <td><code>-</code></td>
 <td>Directory in which .eo files are located.<br /><strong>Default</strong>: <code>${project.basedir}/src/main/eo</code><br /><strong>User Property</strong>: <code>eo.sources</code><br /><strong>Alias</strong>: <code>sources</code></td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#tag"><code>&lt;tag&gt;</code></a></td>
 <td><code>String</code></td>
 <td><code>0.21.0</code></td>
 <td>The Git tag to pull objects from, in objectionary.<br /><strong>Default</strong>: <code>master</code><br /><strong>User Property</strong>: <code>eo.tag</code></td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#target"><code>&lt;target&gt;</code></a></td>
 <td><code>File</code></td>
 <td><code>-</code></td>
 <td>Target directory.<br /><strong>Default</strong>: <code>${project.build.directory}/eo</code><br /><strong>User Property</strong>: <code>eo.target</code><br /><strong>Alias</strong>: <code>target</code></td></tr>
-<tr class="b">
+<tr class="a">
 <td><a href="#tracking"><code>&lt;tracking&gt;</code></a></td>
 <td><code>boolean</code></td>
 <td><code>0.24.0</code></td>
 <td>Track optimization steps into intermediate XMIR files?<br /><strong>Default</strong>: <code>false</code><br /><strong>User Property</strong>: <code>eo.track</code><br /><strong>Alias</strong>: <code>track</code></td></tr>
-<tr class="a">
+<tr class="b">
 <td><a href="#zeros"><code>&lt;zeros&gt;</code></a></td>
 <td><code>boolean</code></td>
 <td><code>0.9.0</code></td>
@@ -386,7 +392,17 @@
 <li><strong>Required</strong>: <code>Yes</code></li>
 <li><strong>User Property</strong>: <code>eo.overwrite</code></li>
 <li><strong>Default</strong>: <code>false</code></li>
-<li><strong>Alias</strong>: <code>overwrite</code></li></ul><hr /></section><a id="placeBinaries"></a><section><a id="a.3CplaceBinaries.3E"></a>
+<li><strong>Alias</strong>: <code>overwrite</code></li></ul><hr /></section><a id="parseTests"></a><section><a id="a.3CparseTests.3E"></a>
+<h3>&lt;parseTests&gt;</h3>
+<div>Shall the unit tests stay in the XMIR made by <code>parse</code>?
+<p>A unit test is an attribute made with <code>++&gt;</code>, <code>+&gt;</code>, <code>--&gt;</code> or <code>-&gt;</code>. When this is <code>false</code>, the <code>parse</code> goal (and <code>assemble</code>, which parses too) drops every such attribute from the XMIR it makes, so no later goal sees the tests. A tool that only reads the XMIR, and has no use for the tests, may turn it off.</p></div>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Since</strong>: <code>0.63.5</code></li>
+<li><strong>Required</strong>: <code>Yes</code></li>
+<li><strong>User Property</strong>: <code>eo.parse.tests</code></li>
+<li><strong>Default</strong>: <code>true</code></li>
+<li><strong>Alias</strong>: <code>parse.tests</code></li></ul><hr /></section><a id="placeBinaries"></a><section><a id="a.3CplaceBinaries.3E"></a>
 <h3>&lt;placeBinaries&gt;</h3>
 <div>List of inclusion GLOB filters for finding class files while placing them from where they were resolved to classes directory.</div>
 <ul>
