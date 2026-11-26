@@ -1572,22 +1572,44 @@
       eq.
         byte index
         5E-
-      members
+      element
         number
           index.plus 1
         opened
         bits
         none
         true
-        true
-      members
+      element
         index
         opened
         bits
         none
         false
-        true
-    [^regex index opened bits items negated first] >> members
+    [^regex index opened bits items negated] >> members
+      if. > @
+        eq.
+          byte start
+          5D-
+        yes
+          plus.
+            number >> start
+              skip index bits >> here!
+            1
+          opened
+          bits
+          member
+            flagged 02- bits
+            items
+            negated
+            flagged 10- bits
+          --
+        element
+          index
+          opened
+          bits
+          items
+          negated
+    [^regex index opened bits items negated] >> element
       if. > @
         eq.
           byte start >> b
@@ -1596,49 +1618,35 @@
           regex.size.plus -1
           "Unclosed character class"
         if.
-          and.
-            b.eq 5D-
-            first.not
-          yes
-            plus.
-              number >> start
-                skip index bits >> here!
-              1
-            opened
-            bits
-            member
-              flagged 02- bits
-              items
-              negated
-              flagged 10- bits
-            --
+          b.eq 5B-
+          no start "Nested character classes are not supported"
           if.
-            b.eq 5B-
-            no start "Nested character classes are not supported"
-            if.
-              and.
-                b.eq 26-
-                eq.
-                  byte
-                    number (start.plus 1)
-                  26-
-              no start "Character class intersections are not supported"
-              e.ok.if
-                regex.members
+            and.
+              b.eq 26-
+              eq.
+                byte
                   number
-                    at.
-                      entry start bits >> e
-                  opened
-                  bits
-                  e.preset.if
-                    cluster e.letter e.negated items
-                    range
-                      beyond e.to
-                      key e.from
-                      items
-                  negated
-                  false
-                e
+                    plus.
+                      number >> start
+                        skip index bits >> here!
+                      1
+                26-
+            no start "Character class intersections are not supported"
+            e.ok.if
+              members
+                number
+                  at.
+                    entry start bits >> e
+                opened
+                bits
+                e.preset.if
+                  cluster e.letter e.negated items
+                  range
+                    beyond e.to
+                    key e.from
+                    items
+                negated
+              e
     [^regex index mode] >> entry
       s.ok.if > @
         s.preset.if
