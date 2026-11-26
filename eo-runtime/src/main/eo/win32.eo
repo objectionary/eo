@@ -197,12 +197,13 @@
         win32.stream
         win32.tcp
 
-  ++> can-compute-the-size-of-a-sockaddr-in
-    addr.size.eq 16 > @
-    win32.sockaddr-in > addr
-      i16 00-00
-      i16 00-00
-      i32 00-00-00-00
+  eq. ++> can-compute-the-size-of-a-sockaddr-in
+    size.
+      win32.sockaddr-in
+        i16 00-00
+        i16 00-00
+        i32 00-00-00-00
+    16
 
   ++> can-open-a-file-with-the-append-flag
     os.is-windows.not.or > @
@@ -284,10 +285,11 @@
       D0-B6-21
     D0-B6-21
 
-  ++> can-stat-the-size-of-nul
-    os.is-windows.not.or > @
-      info.size.eq 0
-    win32.stat64 "NUL" > info
+  os.is-windows.not.or ++> can-stat-the-size-of-nul
+    eq.
+      size.
+        win32.stat64 "NUL"
+      0
 
   win32.find-close -1 --> stops-on-a-handle-nobody-opened
 

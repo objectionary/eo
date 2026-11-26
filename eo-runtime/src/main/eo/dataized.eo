@@ -72,10 +72,12 @@
           x.as-number.plus 1
 
   ++> can-dataize-a-nested-attribute
-    eq. > @
-      as-number.
-        dataized foo
-      5
+    and. > @
+      eq.
+        as-number.
+          dataized foo
+        5
+      foo.inner.five.eq 5
     [] > foo
       inner.five > @
       [] > inner

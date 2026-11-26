@@ -163,7 +163,7 @@
         a.times 134217729 >> spread
         spread.minus a
       times.
-        minus. >>
+        minus.
           times. >> broad
             a.div 268435456 >> shrunk
             134217729

@@ -346,12 +346,11 @@
           [^ m] >>
             seq * > @
               open.
-                file ^.source
+                file ^.temp.path
                 "r"
                 ^.m.put > [^ x] >>
                   x.read 13
               m
-    temp.path > source
     mktemp.tmpfile > temp
 
   ++> can-recover-from-checking-a-symbolic-link-of-an-absent-file

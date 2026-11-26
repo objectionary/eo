@@ -67,56 +67,55 @@
   not. ++> can-tell-it-does-not-equal-an-integer-when-positive-infinity
     pinf.eq 42
 
-  ++> can-tell-it-does-not-equal-nan-or-infinities-when-a-float-under-load
-    eq. > @
-      first.and again
-      true
-    and. > again
+  eq. ++> can-tell-it-does-not-equal-nan-or-infinities-when-a-float-under-load
+    and.
       and.
         and.
           and.
             and.
+              and.
+                eq.
+                  0.eq nan
+                  false
+                eq.
+                  0.eq pinf
+                  false
               eq.
-                0.eq nan
-                false
-              eq.
-                0.eq pinf
+                0.eq ninf
                 false
             eq.
-              0.eq ninf
+              42.5.eq nan
               false
           eq.
-            42.5.eq nan
+            42.5.eq pinf
             false
         eq.
-          42.5.eq pinf
+          42.5.eq ninf
           false
-      eq.
-        42.5.eq ninf
-        false
-    and. > first
       and.
         and.
           and.
             and.
+              and.
+                eq.
+                  0.eq nan
+                  false
+                eq.
+                  0.eq pinf
+                  false
               eq.
-                0.eq nan
-                false
-              eq.
-                0.eq pinf
+                0.eq ninf
                 false
             eq.
-              0.eq ninf
+              42.5.eq nan
               false
           eq.
-            42.5.eq nan
+            42.5.eq pinf
             false
         eq.
-          42.5.eq pinf
+          42.5.eq ninf
           false
-      eq.
-        42.5.eq ninf
-        false
+    true
 
   eq. ++> can-tell-it-does-not-equal-nan-or-infinities-when-an-integer
     and.

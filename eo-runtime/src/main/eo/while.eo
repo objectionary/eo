@@ -58,103 +58,101 @@
             ^.x.put i > [^ i] >>
 
   ++> can-iterate-a-tuple-with-an-external-iterator
-    data.eq array.length > @
-    * > array
-      1
-      1
-      1
-      1
-    malloc.for > data
-      0
-      [^ x] >>
-        malloc.for > @
-          0
-          [^ x] >>
-            while > @
-              ^.^.^.max.gt ^.x > [^ i] >>
-              seq * > [^ i] >>
-                ^.^.x.put
-                  ^.^.x.as-number.plus
-                    ^.^.^.array.at ^.x
-                ^.x.put
-                  ^.x.as-number.plus 1
-    array.length > max
-
-  ++> can-iterate-a-tuple-with-an-internal-iterator
-    data.eq array.length > @
-    * > array
-      1
-      1
-      1
-      1
-    malloc.for > data
-      0
-      [^ x] >>
-        malloc.for > @
-          0
-          [^ x] >>
-            if. > @
-              ^.^.max.eq 0
-              ^.x.put
-                ^.x.as-number.plus
-                  ^.^.array.at 0
-              while
-                ^.^.^.max.gt ^.x > [^ i] >>
+    eq. > @
+      malloc.for
+        0
+        [^ x] >>
+          malloc.for > @
+            0
+            [^ x] >>
+              while > @
+                ^.^.^.array.length.gt ^.x > [^ i] >>
                 seq * > [^ i] >>
                   ^.^.x.put
-                    ^.^.x.as-number.plus (^.^.^.array.at i)
+                    ^.^.x.as-number.plus (^.^.^.array.at ^.x)
                   ^.x.put
                     ^.x.as-number.plus 1
-    array.length > max
-
-  ++> can-iterate-a-tuple-without-a-body-many-times
-    data.eq array.length > @
+      array.length
     * > array
       1
       1
       1
-    malloc.for > data
-      0
-      [^ x] >>
-        malloc.for > @
-          0
-          [^ x] >>
-            seq * > @
-              while
-                if. > [^ i] >>
-                  ^.^.^.max.gt ^.x
-                  seq *
+      1
+
+  ++> can-iterate-a-tuple-with-an-internal-iterator
+    eq. > @
+      malloc.for
+        0
+        [^ x] >>
+          malloc.for > @
+            0
+            [^ x] >>
+              if. > @
+                ^.^.array.length.eq 0
+                ^.x.put
+                  ^.x.as-number.plus
+                    ^.^.array.at 0
+                while
+                  ^.^.^.array.length.gt ^.x > [^ i] >>
+                  seq * > [^ i] >>
                     ^.^.x.put
-                      ^.^.x.as-number.plus (^.^.^.array.at ^.x.as-number)
+                      ^.^.x.as-number.plus (^.^.^.array.at i)
                     ^.x.put (^.x.as-number.plus 1)
-                    true
-                  false
-                true > [i]
-              ^.x
-    array.length > max
+      array.length
+    * > array
+      1
+      1
+      1
+      1
+
+  ++> can-iterate-a-tuple-without-a-body-many-times
+    eq. > @
+      malloc.for
+        0
+        [^ x] >>
+          malloc.for > @
+            0
+            [^ x] >>
+              seq * > @
+                while
+                  if. > [^ i] >>
+                    ^.^.^.array.length.gt ^.x
+                    seq *
+                      ^.^.x.put
+                        ^.^.x.as-number.plus (^.^.^.array.at ^.x.as-number)
+                      ^.x.put (^.x.as-number.plus 1)
+                      true
+                    false
+                  true > [i]
+                ^.x
+      array.length
+    * > array
+      1
+      1
+      1
 
   ++> can-iterate-a-tuple-without-a-body-once
-    data.eq array.length > @
+    eq. > @
+      malloc.for
+        0
+        [^ x] >>
+          malloc.for > @
+            0
+            [^ x] >>
+              seq * > @
+                while
+                  if. > [^ i] >>
+                    ^.^.^.array.length.gt ^.x
+                    seq *
+                      ^.^.x.put
+                        ^.^.x.as-number.plus (^.^.^.array.at ^.x.as-number)
+                      ^.x.put (^.x.as-number.plus 1)
+                      true
+                    false
+                  true > [i]
+                ^.x
+      array.length
     * 1 > array
-    malloc.for > data
-      0
-      [^ x] >>
-        malloc.for > @
-          0
-          [^ x] >>
-            seq * > @
-              while
-                if. > [^ i] >>
-                  ^.^.^.max.gt ^.x
-                  seq *
-                    ^.^.x.put
-                      ^.^.x.as-number.plus (^.^.^.array.at ^.x.as-number)
-                    ^.x.put (^.x.as-number.plus 1)
-                    true
-                  false
-                true > [i]
-              ^.x
-    array.length > max
 
   ++> can-loop-on-a-bool-expression-kept-in-malloc
     eq. > @

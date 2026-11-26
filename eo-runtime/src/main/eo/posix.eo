@@ -186,12 +186,13 @@
         posix.stream
         posix.tcp
 
-  ++> can-compute-the-size-of-a-sockaddr-in
-    addr.size.eq 16 > @
-    posix.sockaddr-in > addr
-      i16 00-00
-      i16 00-00
-      i32 00-00-00-00
+  eq. ++> can-compute-the-size-of-a-sockaddr-in
+    size.
+      posix.sockaddr-in
+        i16 00-00
+        i16 00-00
+        i32 00-00-00-00
+    16
 
   os.is-windows.or ++> can-convert-the-limited-broadcast-address-without-an-error
     seq *
@@ -292,17 +293,19 @@
       D0-B6-21
     D0-B6-21
 
-  ++> can-stat-the-size-of-dev-null
-    os.is-windows.or > @
-      info.size.eq 0
-    posix.stat "/dev/null" > info
-
-  ++> can-store-seconds-in-a-time-return
-    tv.seconds.eq 5 > @
-    posix.time-return > tv
+  os.is-windows.or ++> can-stat-the-size-of-dev-null
+    eq.
+      size.
+        posix.stat "/dev/null"
       0
-      5
-      100
+
+  eq. ++> can-store-seconds-in-a-time-return
+    seconds.
+      posix.time-return
+        0
+        5
+        100
+    5
 
   posix.send --> stops-on-send-size-exceeding-buffer-length
     0
@@ -310,28 +313,24 @@
     4096
     0
 
-  --> stops-on-write-size-being-negative
-    seq * > @
-      posix.write
-        fd
-        "ab"
-        -1
-      true
-    code. > fd
-      posix.open
-        "/dev/null"
-        posix.wronly
-        0
+  seq * --> stops-on-write-size-being-negative
+    posix.write
+      code.
+        posix.open
+          "/dev/null"
+          posix.wronly
+          0
+      "ab"
+      -1
+    true
 
-  --> stops-on-write-size-exceeding-buffer-length
-    seq * > @
-      posix.write
-        fd
-        "ab"
-        4096
-      true
-    code. > fd
-      posix.open
-        "/dev/null"
-        posix.wronly
-        0
+  seq * --> stops-on-write-size-exceeding-buffer-length
+    posix.write
+      code.
+        posix.open
+          "/dev/null"
+          posix.wronly
+          0
+      "ab"
+      4096
+    true
