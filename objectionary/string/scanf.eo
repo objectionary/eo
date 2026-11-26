@@ -42,7 +42,7 @@
 +unlint sprintf-constant-args
 +unlint sprintf-without-formatters
 +unlint unsorted-named-attributes
-+version 0.63.4
++version 0.63.5
 
 [^text read] > scanf
   [^fmt text] >> as-float
