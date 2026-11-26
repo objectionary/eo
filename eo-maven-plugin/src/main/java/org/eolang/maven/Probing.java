@@ -161,8 +161,10 @@ final class Probing implements Step {
         final Path src,
         final Set<String> completed
     ) throws IOException {
-        final String pkg = object.substring(0, Math.max(object.lastIndexOf('.'), 0));
-        this.fill(pkg, object.startsWith(Probing.ROOT), src, completed);
+        this.fill(
+            object.substring(0, Math.max(object.lastIndexOf('.'), 0)),
+            object.startsWith(Probing.ROOT), src, completed
+        );
         this.fill(object, object.startsWith(Probing.ROOT), src, completed);
     }
 
