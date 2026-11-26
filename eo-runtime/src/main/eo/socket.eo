@@ -55,11 +55,6 @@
       as-number. > addr
         sys.inet-addr >>!
           sock.address
-      as-i32. > addrint
-        if.
-          addr.gt 2147483647
-          addr.minus 4294967296
-          addr
       if. > [^sock descriptor] > closed-socket
         eq.
           sock.sys.close descriptor
@@ -193,11 +188,15 @@
       sys.sockaddr-in > sockaddr
         sys.inet.as-i16
         sock.htons sock.checked-port
-        addrint
+        as-i32.
+          if.
+            addr.gt 2147483647
+            addr.minus 4294967296
+            addr
       kernel > sys
     |
       []
-        raw > @
+        win32 > @
         win32.accept > accept
         win32.bind > bind
         if. > cleanup
@@ -212,7 +211,6 @@
         win32.listen > listen
         "WSA error code %d".printf > message
           * win32.wsa-get-last-error
-        win32 > raw
         win32.recv > recv
         win32.send > send
         win32.socket > socket
@@ -220,7 +218,7 @@
           win32.wsa-startup win32.version >>!
     impl
       []
-        raw > @
+        posix > @
         posix.accept > accept
         posix.bind > bind
         true > cleanup
@@ -228,7 +226,6 @@
         posix.connect > connect
         posix.listen > listen
         posix.strerror posix.errno > message
-        posix > raw
         posix.recv > recv
         posix.send > send
         posix.socket > socket

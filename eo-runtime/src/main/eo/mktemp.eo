@@ -80,11 +80,9 @@
     mktemp.tmpfile > first
     mktemp.tmpfile > second
 
-  ++> can-keep-the-temp-directory-after-deleting-a-tmpfile
-    seq * > @
-      temp.deleted
-      mktemp.exists
-    mktemp.tmpfile > temp
+  seq * ++> can-keep-the-temp-directory-after-deleting-a-tmpfile
+    mktemp.tmpfile.deleted
+    mktemp.exists
 
   mktemp.is-directory ++> can-point-at-a-global-temp-directory
 

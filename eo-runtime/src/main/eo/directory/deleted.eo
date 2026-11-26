@@ -72,8 +72,7 @@
       nested.exists.and dir.deleted.exists.not
       nested.exists.not
     as-dir. (directory mktemp.tmpfile.deleted).made.as-path > dir
-    as-dir. (directory dir.tmpfile.deleted).made.as-path > inner
-    inner.tmpfile > nested
+    tmpfile. (directory dir.tmpfile.deleted).made.as-path.as-dir > nested
 
   ++> can-delete-a-directory-with-a-unicode-named-entry
     f.exists.and > @
@@ -105,18 +104,17 @@
     as-dir. (directory dir.tmpfile.deleted).made.as-path > mid
 
   ++> can-delete-an-already-absent-directory
-    d.deleted.deleted.exists.not > @
-    mktemp.tmpfile.deleted.as-path.as-dir > d
+    mktemp.tmpfile.deleted.as-path.as-dir.deleted.deleted.exists.not > @
 
   not. ++> can-delete-an-empty-directory
     exists.
       deleted. (mktemp.tmpfile.deleted.as-path.resolved "bar-empty").as-dir.made
 
   ++> can-preserve-a-sibling-file-when-deleting-a-directory
-    dir.deleted.exists.not.and sibling.exists > @
-    as-dir. (directory parent.tmpfile.deleted).made.as-path > dir
+    and. > @
+      not. (directory parent.tmpfile.deleted).made.as-path.as-dir.deleted.exists
+      parent.tmpfile.exists
     as-dir. (directory mktemp.tmpfile.deleted).made.as-path > parent
-    parent.tmpfile > sibling
 
   ++> can-return-itself-after-deleting-a-directory
     dir.deleted.path.eq dir.path > @

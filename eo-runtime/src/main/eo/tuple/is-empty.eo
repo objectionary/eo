@@ -12,18 +12,18 @@
 
   tuple.empty.is-empty ++> can-be-empty-when-built-empty
 
-  ++> can-tell-it-is-not-empty-with-one-anonymous-object
-    xs.is-empty.not > @
-    * > xs
-      [f]
+  not. ++> can-tell-it-is-not-empty-with-one-anonymous-object
+    is-empty.
+      *
+        [f]
 
   not. ++> can-tell-it-is-not-empty-with-one-item
     is-empty.
       * 1 2
 
-  ++> can-tell-it-is-not-empty-with-three-objects
-    xs.is-empty.not > @
-    * > xs
-      [x]
-      [y]
-      [z]
+  not. ++> can-tell-it-is-not-empty-with-three-objects
+    is-empty.
+      *
+        [x]
+        [y]
+        [z]

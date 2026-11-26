@@ -278,10 +278,15 @@
       rest
   [^regex cant-compile] > compile
     if. > @
-      if. >> opens
-        size.gt 0
+      if.
+        gt.
+          raw.size >> size
+          0
         2F-.eq
-          raw.slice 0 1
+          slice.
+            regex.text.as-bytes >> raw
+            0
+            1
         false
       if.
         1.gt closes
@@ -305,14 +310,12 @@
               1
           checked.
             regex.pattern
-              slice.
-                regex.text.as-bytes >> raw
+              raw.slice
                 1
                 closes.plus -1
               raw.slice >> flags
                 closes.plus 1
-                minus.
-                  raw.size >> size
+                size.minus
                   closes.plus 1
             regex.cant-compile > [^regex reason offset] >>
               worded offset reason
@@ -2405,16 +2408,16 @@
       "/./".regex.compiled.match "😀x"
     first.next > second
 
-  ++> can-expose-group-exists-for-a-non-participating-group
-    not. > @
-      first.group-exists 1
-    next. > first
-      "/(x)?y/".regex.compiled.match "y"
+  not. ++> can-expose-group-exists-for-a-non-participating-group
+    group-exists.
+      next.
+        "/(x)?y/".regex.compiled.match "y"
+      1
 
-  ++> can-expose-group-exists-for-a-participating-group
-    first.group-exists 1 > @
-    next. > first
+  group-exists. ++> can-expose-group-exists-for-a-participating-group
+    next.
       "/(x*)y/".regex.compiled.match "y"
+    1
 
   ++> can-expose-groups-on-each-matched-block
     and. > @

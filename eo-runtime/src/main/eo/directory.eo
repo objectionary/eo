@@ -289,10 +289,10 @@
       owned
       temp.deleted
       owned
-    called. > info
-      posix.stat temp.path
     os.is-windows.or > owned!
-      info.mode.eq 33152
+      eq.
+        mode. (posix.stat temp.path).called
+        33152
     mktemp.tmpfile > temp
 
   ++> can-create-an-empty-tmpfile
@@ -337,25 +337,24 @@
       gone
       parent.deleted
       gone
-    path.separator.joined > candidate
-      *
-        parent.path
-        "%d-%d-%d-%f".printf
-          *
-            42
-            8
-            1
-            0.5
-    parent.retried > created
-      parent.path
-      42
-      8
-      0.5
-    temp.exists.not.and next.exists.not > gone!
-    Q.file candidate > next
+    temp.exists.not.and > gone!
+      not.
+        exists.
+          Q.file
+            path.separator.joined
+              *
+                parent.path
+                "%d-%d-%d-%f".printf
+                  * 42 8 1 0.5
     mktemp.tmpfile.deleted.as-path.as-dir.made > parent
     Q.file > temp
-      string created.as-bytes
+      string
+        as-bytes.
+          parent.retried
+            parent.path
+            42
+            8
+            0.5
 
   is-directory. ++> can-recover-from-checking-an-absent-directory
     directory mktemp.tmpfile.deleted
@@ -365,46 +364,40 @@
     seq * > @
       collision.touched
       valid
-      actual.deleted
+      deleted.
+        Q.file
+          string created.as-bytes
       collision.deleted
       parent.deleted
       valid
-    Q.file > actual
-      string created.as-bytes
-    Q.file occupied > collision
+    Q.file > collision
+      path.separator.joined
+        *
+          parent.path
+          "%d-%d-%d-%f".printf
+            *
+              42
+              7
+              0
+              0.5
     parent.retried > created
       parent.path
       42
       7
       0.5
-    path.separator.joined > expected
-      *
-        parent.path
-        "%d-%d-%d-%f".printf
-          *
-            42
-            7
-            1
-            0.5
-    path.separator.joined > occupied
-      *
-        parent.path
-        "%d-%d-%d-%f".printf
-          *
-            42
-            7
-            0
-            0.5
     mktemp.tmpfile.deleted.as-path.as-dir.made > parent
-    created.as-bytes.eq expected.as-bytes > valid!
+    created.as-bytes.eq > valid!
+      as-bytes.
+        path.separator.joined
+          *
+            parent.path
+            "%d-%d-%d-%f".printf
+              * 42 7 1 0.5
 
-  ++> can-tell-that-a-deleted-directory-is-no-longer-a-directory
-    not. > @
-      d.deleted.is-directory
-        false > [x]
-    made. > d
-      as-dir.
-        mktemp.tmpfile.deleted.as-path.resolved "gone"
+  not. ++> can-tell-that-a-deleted-directory-is-no-longer-a-directory
+    is-directory.
+      deleted. (mktemp.tmpfile.deleted.as-path.resolved "gone").as-dir.made
+      false > [x]
 
   is-directory. ++> can-tell-that-a-directory-is-a-directory
     directory
@@ -450,23 +443,19 @@
       made.
         directory mktemp.tmpfile.deleted
 
-  ++> can-walk-an-empty-directory
-    eq. > @
-      length.
-        d.as-dir.walk "*.txt"
-      0
-    as-path. > d
-      made.
-        directory mktemp.tmpfile.deleted
+  eq. ++> can-walk-an-empty-directory
+    length.
+      walk.
+        as-dir. (directory mktemp.tmpfile.deleted).made.as-path
+        "*.txt"
+    0
 
-  ++> can-walk-an-empty-directory-with-a-glob-matching-an-empty-path
-    eq. > @
-      length.
-        d.as-dir.walk "*"
-      0
-    as-path. > d
-      made.
-        directory mktemp.tmpfile.deleted
+  eq. ++> can-walk-an-empty-directory-with-a-glob-matching-an-empty-path
+    length.
+      walk.
+        as-dir. (directory mktemp.tmpfile.deleted).made.as-path
+        "*"
+    0
 
   ++> can-walk-past-a-symbolic-link-to-its-own-parent
     os.is-windows.or > @

@@ -57,8 +57,8 @@
               eq.
                 index-of. >> eloc
                   replaced. >> esign
-                    if. >> unsigned
-                      negative.or ((text.slice 0 1).eq "+") >> signed
+                    if.
+                      negative.or ((text.slice 0 1).eq "+")
                       text.slice 1 (text.length.minus 1)
                       text
                     "/[eE]/".regex
