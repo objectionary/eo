@@ -1,0 +1,1932 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>XML Schema Documentation</title>
+    <meta http-equiv="Content-Type" content="text/xml; charset=iso-8859-1" />
+    <style type="text/css">
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/* More-configurable styles */
+
+/******** General ********/
+
+/* Document body */
+body {
+   color: Black;
+   background-color: White;
+   font-family: Arial, sans-serif;
+   font-size: 10pt;
+}
+/* Horizontal rules */
+hr {
+   color: black;
+}
+/* Document title */
+h1 {
+   font-size: 18pt;
+   letter-spacing: 2px;
+   border-bottom: 1px #ccc solid;
+   padding-top: 5px;
+   padding-bottom: 5px;
+}
+/* Main section headers */
+h2 {
+   font-size: 14pt;
+   letter-spacing: 1px;
+}
+/* Sub-section headers */
+h3, h3 a, h3 span {
+   font-size: 12pt;
+   font-weight: bold;
+   color: black;
+}
+/* Table displaying the properties of the schema components or the
+   schema document itself */
+table.properties th, table.properties th a {
+   color: black;
+   background-color: #F99; /* Pink */
+}
+table.properties td {
+   background-color: #eee; /* Gray */
+}
+
+
+/******** Table of Contents Section ********/
+
+/* Controls for switching between printing and viewing modes */
+div#printerControls {
+   color: #963; /* Orange-brown */
+}
+/* Controls that can collapse or expand all XML Instance
+   Representation and Schema Component Representation boxes */
+div#globalControls {
+   border: 2px solid #999;
+}
+
+
+/******** Schema Document Properties Section ********/
+
+/* Table displaying the namespaces declared in the schema */
+table.namespaces th {
+   background-color: #ccc;
+}
+table.namespaces td {
+   background-color: #eee;
+}
+/* Target namespace of the schema */
+span.targetNS {
+   color: #06C;
+   font-weight: bold;
+}
+
+
+/******** Schema Components' Sections ********/
+
+/* Name of schema component */
+.name {
+   color: #F93; /* Orange */
+}
+
+/* Hierarchy table */
+table.hierarchy {
+   border: 2px solid #999; /* Gray */
+}
+
+/* XML Instance Representation table */
+div.sample div.contents {
+   border: 2px dashed black;
+}
+
+/* Schema Component Representation table */
+div.schemaComponent div.contents {
+   border: 2px black solid;
+}
+
+
+/******** Glossary Section ********/
+
+/* Glossary Terms */
+.glossaryTerm {
+   color: #036; /* Blue */
+}
+
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/* Printer-version styles */
+
+@media print {
+
+/* Ensures that controls are hidden when printing */
+div#printerControls {
+   visibility: hidden;
+}
+div#globalControls {
+   visibility: hidden;
+}
+#legend {
+   display: none;
+}
+#legendTOC {
+   display: none;
+}
+#glossary {
+   display: none;
+}
+#glossaryTOC {
+   display: none;
+}
+
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/* Base styles */
+
+/******** General ********/
+
+/* Unordered lists */
+ul {
+   margin-left: 1.5em;
+   margin-bottom: 0em;
+}
+/* Tables */
+table {
+   margin-top: 10px;
+   margin-bottom: 10px;
+   margin-left: 2px;
+   margin-right: 2px;
+}
+table th, table td {
+   font-size: 10pt;
+   vertical-align: top;
+   padding-top: 3px;
+   padding-bottom: 3px;
+   padding-left: 10px;
+   padding-right: 10px;
+}
+table th {
+   font-weight: bold;
+   text-align: left;
+}
+/* Table displaying the properties of the schema components or the
+   schema document itself */
+table.properties {
+   width: 90%;
+}
+table.properties th {
+   width: 30%;
+}
+/* Boxes that can make its content appear and disappear*/
+div.box {
+   margin: 1em;
+}
+   /* Box caption */
+div.box span.caption {
+   font-weight: bold;
+}
+   /* Button to open and close the box */
+div.box input.control {
+   width: 1.4em;
+   height: 1.4em;
+   text-align: center;
+   vertical-align: middle;
+   font-size: 11pt;
+}
+   /* Box contents */
+div.box div.contents {
+   margin-top: 3px;
+}
+
+
+/******** Table of Contents Section ********/
+
+/* Controls for switching between printing and viewing modes */
+div#printerControls {
+   white-space: nowrap;
+   font-weight: bold;
+   padding: 5px;
+   margin: 5px;
+}
+/* Controls that can collapse or expand all XML Instance
+   Representation and Schema Component Representation boxes */
+div#globalControls {
+   padding: 10px;
+   margin: 5px;
+}
+
+
+/******** Schema Document Properties Section ********/
+
+/* Table displaying the namespaces declared in the schema */
+table.namespaces th {
+}
+table.namespaces td {
+}
+/* Target namespace of the schema */
+span.targetNS {
+}
+
+
+/******** Schema Components' Sections ********/
+
+/* Name of schema component */
+.name {
+}
+
+/* Hierarchy table */
+table.hierarchy {
+   width: 90%;
+}
+table.hierarchy th {
+   font-weight: normal;
+   font-style: italic;
+   width: 20%;
+}
+table.hierarchy th, table.hierarchy td {
+   padding: 5px;
+}
+
+/* XML Instance Representation table */
+div.sample {
+   width: 90%;
+}
+div.sample div.contents {
+   padding: 5px;
+   font-family: Courier New, sans-serif;
+   font-size: 10pt;
+}
+   /* Normal elements and attributes */
+div.sample div.contents, div.sample div.contents a {
+   color: black;
+}
+   /* Group Headers */
+div.sample div.contents .group, div.sample div.contents .group a {
+   color: #999; /* Light gray */
+}
+   /* Type Information */
+div.sample div.contents .type, div.sample div.contents .type a {
+   color: #999; /* Light gray */
+}
+   /* Occurrence Information */
+div.sample div.contents .occurs, div.sample div.contents .occurs a {
+   color: #999; /* Light gray */
+}
+   /* Fixed values */
+div.sample div.contents .fixed {
+   color: #063; /* Green */
+   font-weight: bold;
+}
+   /* Simple type constraints */
+div.sample div.contents .constraint, div.sample div.contents .constraint a {
+   color: #999; /* Light gray */
+}
+   /* Elements and attributes inherited from base type */
+div.sample div.contents .inherited, div.sample div.contents .inherited a {
+   color: #666; /* Dark gray */
+}
+   /* Elements and attributes added to or changed from base type */
+div.sample div.contents .newFields {
+   font-weight: bold;
+}
+   /* Other type of information */
+div.sample div.contents .other, div.sample div.contents .other a {
+   color: #369; /* Blue */
+   font-style: italic;
+}
+   /* Link to open up window displaying documentation */
+div.sample div.contents a.documentation {
+   text-decoration: none;
+   padding-left: 3px;
+   padding-right: 3px;
+   padding-top: 0px;
+   padding-bottom: 0px;
+   font-weight: bold;
+   font-size: 11pt;
+   background-color: #FFD;
+   color: #069;
+}
+   /* Invert colors when hovering over link to open up window
+      displaying documentation */
+div.sample div.contents a.documentation:hover {
+   color: #FFD;
+   background-color: #069;
+}
+
+/* Schema Component Representation table */
+div.schemaComponent {
+   width: 90%;
+}
+div.schemaComponent div.contents {
+   font-family: Courier New, sans-serif;
+   font-size: 10pt;
+   padding: 5px;
+}
+   /* Syntax characters */
+div.schemaComponent div.contents {
+   color: #00f; /* blue */
+}
+   /* Element and attribute tags */
+div.schemaComponent div.contents .scTag {
+   color: #933; /* maroon */
+}
+   /* Element and attribute content */
+div.schemaComponent div.contents .scContent, div.schemaComponent div.contents .scContent a {
+   color: black;
+   font-weight: bold;
+}
+   /* Comments */
+div.schemaComponent div.contents .comment {
+   color: #999; /* Light gray */
+}
+
+/******** Legend Section ********/
+
+div#legend table, div#legend div {
+   margin-bottom: 3px;
+}
+div#legend div.hint {
+   color: #999; /* Light gray */
+   width: 90%;
+   margin-left: 1em;
+   margin-bottom: 2em;
+}
+
+
+/******** Glossary Section ********/
+
+/* Glossary Terms */
+.glossaryTerm {
+   font-weight: bold;
+}
+
+
+/******** Footer ********/
+
+.footer {
+   font-size: 8pt;
+}
+</style>
+    <script type="text/javascript">
+<!--
+/* IDs of XML Instance Representation boxes */
+var xiBoxes = new Array('type_whole_xibox', 'type_non-empty_xibox', 'type_empty_xibox', 'type_attribute-name_xibox', 'type_fqn_xibox', 'type_signature_xibox', 'type_type-anno_xibox', 'type_locator_xibox', 'type_o_xibox', 'type_error_xibox', 'type_comment_xibox', 'type_listing_xibox', 'type_sheet_xibox', 'type_meta_xibox', 'type_object_xibox', 'element_object_xibox');
+/* IDs of Schema Component Representation boxes */
+var scBoxes = new Array('schema_scbox', 'type_whole_scbox', 'type_non-empty_scbox', 'type_empty_scbox', 'type_attribute-name_scbox', 'type_fqn_scbox', 'type_signature_scbox', 'type_type-anno_scbox', 'type_locator_scbox', 'type_o_scbox', 'type_error_scbox', 'type_comment_scbox', 'type_listing_scbox', 'type_sheet_scbox', 'type_meta_scbox', 'type_object_scbox', 'element_object_scbox');
+
+/**
+ * Can get the ID of the button controlling
+ * a collapseable box by concatenating
+ * this string onto the ID of the box itself.
+ */
+var B_SFIX = "_button";
+
+/**
+ * Counter of documentation windows
+ * Used to give each window a unique name
+ */
+var windowCount = 0;
+
+/**
+ * Returns an element in the current HTML document.
+ *
+ * @param elementID Identifier of HTML element
+ * @return               HTML element object
+ */
+function getElementObject(elementID) {
+    var elemObj = null;
+    if (document.getElementById) {
+        elemObj = document.getElementById(elementID);
+    }
+    return elemObj;
+}
+
+/**
+ * Closes a collapseable box.
+ *
+ * @param boxObj       Collapseable box
+ * @param buttonObj Button controlling box
+ */
+function closeBox(boxObj, buttonObj) {
+  if (boxObj == null || buttonObj == null) {
+     // Box or button not found
+  } else {
+     // Change 'display' CSS property of box
+     boxObj.style.display="none";
+
+     // Change text of button
+     if (boxObj.style.display=="none") {
+        buttonObj.value=" + ";
+     }
+  }
+}
+
+/**
+ * Opens a collapseable box.
+ *
+ * @param boxObj       Collapseable box
+ * @param buttonObj Button controlling box
+ */
+function openBox(boxObj, buttonObj) {
+  if (boxObj == null || buttonObj == null) {
+     // Box or button not found
+  } else {
+     // Change 'display' CSS property of box
+     boxObj.style.display="block";
+
+     // Change text of button
+     if (boxObj.style.display=="block") {
+        buttonObj.value=" - ";
+     }
+  }
+}
+
+/**
+ * Sets the state of a collapseable box.
+ *
+ * @param boxID Identifier of box
+ * @param open If true, box is "opened",
+ *             Otherwise, box is "closed".
+ */
+function setState(boxID, open) {
+  var boxObj = getElementObject(boxID);
+  var buttonObj = getElementObject(boxID+B_SFIX);
+  if (boxObj == null || buttonObj == null) {
+     // Box or button not found
+  } else if (open) {
+     openBox(boxObj, buttonObj);
+     // Make button visible
+     buttonObj.style.display="inline";
+  } else {
+     closeBox(boxObj, buttonObj);
+     // Make button visible
+     buttonObj.style.display="inline";
+  }
+}
+
+/**
+ * Switches the state of a collapseable box, e.g.
+ * if it's opened, it'll be closed, and vice versa.
+ *
+ * @param boxID Identifier of box
+ */
+function switchState(boxID) {
+  var boxObj = getElementObject(boxID);
+  var buttonObj = getElementObject(boxID+B_SFIX);
+  if (boxObj == null || buttonObj == null) {
+     // Box or button not found
+  } else if (boxObj.style.display=="none") {
+     // Box is closed, so open it
+     openBox(boxObj, buttonObj);
+  } else if (boxObj.style.display=="block") {
+     // Box is opened, so close it
+     closeBox(boxObj, buttonObj);
+  }
+}
+
+/**
+ * Closes all boxes in a given list.
+ *
+ * @param boxList Array of box IDs
+ */
+function collapseAll(boxList) {
+  var idx;
+  for (idx = 0; idx < boxList.length; idx++) {
+     var boxObj = getElementObject(boxList[idx]);
+     var buttonObj = getElementObject(boxList[idx]+B_SFIX);
+     closeBox(boxObj, buttonObj);
+  }
+}
+
+/**
+ * Open all boxes in a given list.
+ *
+ * @param boxList Array of box IDs
+ */
+function expandAll(boxList) {
+  var idx;
+  for (idx = 0; idx < boxList.length; idx++) {
+     var boxObj = getElementObject(boxList[idx]);
+     var buttonObj = getElementObject(boxList[idx]+B_SFIX);
+     openBox(boxObj, buttonObj);
+  }
+}
+
+/**
+ * Makes all the control buttons of boxes appear.
+ *
+ * @param boxList Array of box IDs
+ */
+function viewControlButtons(boxList) {
+    var idx;
+    for (idx = 0; idx < boxList.length; idx++) {
+        buttonObj = getElementObject(boxList[idx]+B_SFIX);
+        if (buttonObj != null) {
+            buttonObj.style.display = "inline";
+        }
+    }
+}
+
+/**
+ * Makes all the control buttons of boxes disappear.
+ *
+ * @param boxList Array of box IDs
+ */
+function hideControlButtons(boxList) {
+    var idx;
+    for (idx = 0; idx < boxList.length; idx++) {
+        buttonObj = getElementObject(boxList[idx]+B_SFIX);
+        if (buttonObj != null) {
+            buttonObj.style.display = "none";
+        }
+    }
+}
+
+/**
+ * Sets the page for either printing mode
+ * or viewing mode. In printing mode, the page
+ * is made to be more readable when printing it out.
+ * In viewing mode, the page is more browsable.
+ *
+ * @param isPrinterVersion If true, display in
+ *                                 printing mode; otherwise,
+ *                                 in viewing mode
+ */
+function displayMode(isPrinterVersion) {
+    var obj;
+    if (isPrinterVersion) {
+        // Hide global control buttons
+        obj = getElementObject("globalControls");
+        if (obj != null) {
+            obj.style.visibility = "hidden";
+        }
+        // Hide Legend
+        obj = getElementObject("legend");
+        if (obj != null) {
+            obj.style.display = "none";
+        }
+        obj = getElementObject("legendTOC");
+        if (obj != null) {
+            obj.style.display = "none";
+        }
+        // Hide Glossary
+        obj = getElementObject("glossary");
+        if (obj != null) {
+            obj.style.display = "none";
+        }
+        obj = getElementObject("glossaryTOC");
+        if (obj != null) {
+            obj.style.display = "none";
+        }
+
+        // Expand all XML Instance Representation tables
+        expandAll(xiBoxes);
+        // Expand all Schema Component Representation tables
+        expandAll(scBoxes);
+
+        // Hide Control buttons
+        hideControlButtons(xiBoxes);
+        hideControlButtons(scBoxes);
+    } else {
+        // View global control buttons
+        obj = getElementObject("globalControls");
+        if (obj != null) {
+            obj.style.visibility = "visible";
+        }
+        // View Legend
+        obj = getElementObject("legend");
+        if (obj != null) {
+            obj.style.display = "block";
+        }
+        obj = getElementObject("legendTOC");
+        if (obj != null) {
+            obj.style.display = "block";
+        }
+        // View Glossary
+        obj = getElementObject("glossary");
+        if (obj != null) {
+            obj.style.display = "block";
+        }
+        obj = getElementObject("glossaryTOC");
+        if (obj != null) {
+            obj.style.display = "block";
+        }
+
+        // Expand all XML Instance Representation tables
+        expandAll(xiBoxes);
+        // Collapse all Schema Component Representation tables
+        collapseAll(scBoxes);
+
+        // View Control buttons
+        viewControlButtons(xiBoxes);
+        viewControlButtons(scBoxes);
+    }
+}
+
+/**
+ * Opens up a window displaying the documentation
+ * of a schema component in the XML Instance
+ * Representation table.
+ *
+ * @param compDesc      Description of schema component
+ * @param compName      Name of schema component
+ * @param docTextArray Array containing the paragraphs
+ *                           of the new document
+ */
+function viewDocumentation(compDesc, compName, docTextArray) {
+  var width = 400;
+  var height = 200;
+  var locX = 100;
+  var locY = 200;
+
+  /* Generate content */
+  var actualText = "<html>";
+  actualText += "<head><title>";
+  actualText += compDesc;
+  if (compName != '') {
+     actualText += ": " + compName;
+  }
+  actualText += "</title></head>";
+  actualText += "<body bgcolor=\"#FFFFEE\">";
+  // Title
+  actualText += "<p style=\"font-family: Arial, sans-serif; font-size: 12pt; font-weight: bold; letter-spacing:1px;\">";
+  actualText += compDesc;
+  if (compName != '') {
+     actualText += ": <span style=\"color:#006699\">" + compName + "</span>";
+  }
+  actualText += "</p>";
+  // Documentation
+  var idx;
+  for (idx = 0; idx < docTextArray.length; idx++) {
+     actualText += "<p style=\"font-family: Arial, sans-serif; font-size: 10pt;\">" + docTextArray[idx] + "</p>";
+  }
+  // Link to close window
+  actualText += "<a href=\"javascript:void(0)\" onclick=\"window.close();\" style=\"font-family: Arial, sans-serif; font-size: 8pt;\">Close</a>";
+  actualText += "</body></html>";
+
+  /* Display window */
+  windowCount++;
+  var docWindow = window.open("", "documentation"+windowCount, "toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable,alwaysRaised,dependent,titlebar=no,width="+width+",height="+height+",screenX="+locX+",left="+locX+",screenY="+locY+",top="+locY);
+  docWindow.document.write(actualText);
+}
+
+// -->
+</script>
+  </head>
+  <body>
+    <h1>
+      <a name="top" id="top">XML Schema Documentation</a>
+    </h1>
+    <div style="float: right;">
+      <div id="printerControls" style="display:none;"><input type="checkbox" onclick="displayMode(this.checked)" />Printer-friendly Version</div>
+      <script type="text/javascript">
+<!--
+
+var pc = getElementObject("printerControls");
+if (pc != null) {
+   pc.style.display="block";
+}
+               
+// -->
+</script>
+      <div id="globalControls" style="display:none">
+        <strong>XML Instance Representation:</strong>
+        <br />
+        <span style="margin-left: 1em; white-space: nowrap">[ <a href="javascript:void(0)" onclick="expandAll(xiBoxes)">Expand All</a> | <a href="javascript:void(0)" onclick="collapseAll(xiBoxes)">Collapse All</a> ]</span>
+        <br />
+        <br />
+        <strong>Schema Component Representation:</strong>
+        <br />
+        <span style="margin-left: 1em; white-space: nowrap">[ <a href="javascript:void(0)" onclick="expandAll(scBoxes)">Expand All</a> | <a href="javascript:void(0)" onclick="collapseAll(scBoxes)">Collapse All</a> ]</span>
+      </div>
+      <script type="text/javascript">
+<!--
+
+var gc = getElementObject("globalControls");
+if (gc != null) {
+   gc.style.display="block";
+}
+               
+// -->
+</script>
+    </div>
+    <h2>Table of Contents</h2>
+    <ul>
+      <li>
+        <a href="#SchemaProperties">Schema Document Properties</a>
+      </li>
+      <li>
+        <a href="#SchemaDeclarations">Global Declarations</a>
+        <ul>
+          <li>
+            <a href="#element_object">Element: <strong>object</strong></a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#SchemaDefinitions">Global Definitions</a>
+        <ul>
+          <li>
+            <a href="#type_comment">Complex Type: <strong>comment</strong></a>
+          </li>
+          <li>
+            <a href="#type_error">Complex Type: <strong>error</strong></a>
+          </li>
+          <li>
+            <a href="#type_listing">Complex Type: <strong>listing</strong></a>
+          </li>
+          <li>
+            <a href="#type_meta">Complex Type: <strong>meta</strong></a>
+          </li>
+          <li>
+            <a href="#type_o">Complex Type: <strong>o</strong></a>
+          </li>
+          <li>
+            <a href="#type_object">Complex Type: <strong>object</strong></a>
+          </li>
+          <li>
+            <a href="#type_attribute-name">Simple Type: <strong>attribute-name</strong></a>
+          </li>
+          <li>
+            <a href="#type_empty">Simple Type: <strong>empty</strong></a>
+          </li>
+          <li>
+            <a href="#type_fqn">Simple Type: <strong>fqn</strong></a>
+          </li>
+          <li>
+            <a href="#type_locator">Simple Type: <strong>locator</strong></a>
+          </li>
+          <li>
+            <a href="#type_non-empty">Simple Type: <strong>non-empty</strong></a>
+          </li>
+          <li>
+            <a href="#type_sheet">Simple Type: <strong>sheet</strong></a>
+          </li>
+          <li>
+            <a href="#type_signature">Simple Type: <strong>signature</strong></a>
+          </li>
+          <li>
+            <a href="#type_type-anno">Simple Type: <strong>type-anno</strong></a>
+          </li>
+          <li>
+            <a href="#type_whole">Simple Type: <strong>whole</strong></a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <ul id="legendTOC" style="margin-top: 0em">
+      <li>
+        <a href="#Legend">Legend</a>
+      </li>
+    </ul>
+    <ul id="glossaryTOC" style="margin-top: 0em">
+      <li>
+        <a href="#Glossary">Glossary</a>
+      </li>
+    </ul>
+    <div style="text-align: right; clear: both;">
+      <a href="#top">top</a>
+    </div>
+    <hr />
+    <h2>
+      <a name="SchemaProperties" id="SchemaProperties">Schema Document Properties</a>
+    </h2>
+    <table class="properties">
+      <tr>
+        <th>
+          <a title="Look up 'Target Namespace' in glossary" href="#term_TargetNS">Target Namespace</a>
+        </th>
+        <td>None</td>
+      </tr>
+      <tr>
+        <th>Version</th>
+        <td>${project.version}</td>
+      </tr>
+      <tr>
+        <th>Element and Attribute Namespaces</th>
+        <td>
+          <ul>
+            <li>Global element and attribute declarations belong to this schema's target namespace.</li>
+            <li>By default, local element declarations belong to this schema's target namespace.</li>
+            <li>By default, local attribute declarations have no namespace.</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Documentation</th>
+        <td>
+      Every XMIR document is essentially an XML document that
+      contains objects found in a EOLANG program together with
+      supplementary information, such as metas, and so on.
+      The schema is used to validate the XMIR documents, which are
+      generated by the EO parser. The schema defines the structure
+      of the XMIR document, including the elements and attributes
+      that are allowed, their types, and any constraints that must
+      be satisfied. By validating the XMIR documents against this
+      schema, developers can ensure that the documents are well-formed
+      and conform to the expected structure. This validation process
+      helps maintain the integrity and consistency of the XMIR documents
+      and ensures that they can be processed correctly by other tools
+      or systems that consume them.
+    </td>
+      </tr>
+      <tr>
+        <th>Application Data</th>
+        <td>The XMIR schema is used to validate the XMIR documents, which are generated by the EO parser.</td>
+      </tr>
+    </table>
+    <h3>Declared Namespaces</h3>
+    <table class="namespaces">
+      <tr>
+        <th>Prefix</th>
+        <th>Namespace</th>
+      </tr>
+      <tr>
+        <td>
+          <a name="ns_xml" id="ns_xml">xml</a>
+        </td>
+        <td>http://www.w3.org/XML/1998/namespace</td>
+      </tr>
+      <tr>
+        <td>
+          <a name="ns_xs" id="ns_xs">xs</a>
+        </td>
+        <td>http://www.w3.org/2001/XMLSchema</td>
+      </tr>
+    </table>
+    <div class="schemaComponent box">
+      <div><input type="button" id="schema_scbox_button" class="control" onclick="switchState('schema_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
+      <div id="schema_scbox" class="contents">
+        <div style="margin-left: 0em">&lt;<span class="scTag">xs:schema</span> <span class="scTag">version</span>="<span class="scContent">${project.version}</span>" <span class="scTag">elementFormDefault</span>="<span class="scContent">qualified</span>"&gt;<div class="scContent" style="margin-left: 1.5em">...</div>&lt;/<span class="scTag">xs:schema</span>&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('schema_scbox', false);
+// -->
+</script>
+    </div>
+    <div style="text-align: right; clear: both;">
+      <a href="#top">top</a>
+    </div>
+    <hr />
+    <h2>
+      <a name="SchemaDeclarations" id="SchemaDeclarations">Global Declarations</a>
+    </h2>
+    <h3>Element: <a name="element_object" class="name" id="element_object">object</a></h3>
+    <table class="properties">
+      <tr>
+        <th>Name</th>
+        <td>object</td>
+      </tr>
+      <tr>
+        <th>Type</th>
+        <td>
+          <span class="type">
+            <a title="Jump to &quot;object&quot; type definition." href="#type_object">object</a>
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <a title="Look up 'Nillable' in glossary" href="#term_Nillable">Nillable</a>
+        </th>
+        <td>no</td>
+      </tr>
+      <tr>
+        <th>
+          <a title="Look up 'Abstract' in glossary" href="#term_Abstract">Abstract</a>
+        </th>
+        <td>no</td>
+      </tr>
+    </table>
+    <div class="sample box">
+      <div><input type="button" id="element_object_xibox_button" class="control" onclick="switchState('element_object_xibox'); return false;" style="display: none" /> <span class="caption">XML Instance Representation</span></div>
+      <div id="element_object_xibox" class="contents">
+        <div style="margin-left: 0em">&lt;object<br /><span style="margin-left: 0.5em"> ms="<span class="type"><a title="Jump to &quot;whole&quot; type definition." href="#type_whole">whole</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains a whole number, which is the number of milliseconds that were spent by the parser to walk the source into directives. It excludes building this document from them and transforming it afterwards. This information is valuable for debugging purposes and may be omitted in production systems.'); viewDocumentation('Attribute', 'ms', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> time="<span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:dateTime</span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the date and time of the moment when the document was generated by the parser. This information is valuable for debugging purposes and may be omitted in production systems.'); viewDocumentation('Attribute', 'time', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> version="<span class="type"><a title="Jump to &quot;non-empty&quot; type definition." href="#type_non-empty">non-empty</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the version of the parser that created the document, preferably in SemVer format. This information is valuable for debugging purposes and may be omitted in production systems.'); viewDocumentation('Attribute', 'version', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> revision="<span class="constraint"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> (<em>pattern</em> = [0-9a-f]{7})</span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the Git SHA of the release of the parser that created the document. This information is valuable for debugging purposes and may be omitted in production systems.'); viewDocumentation('Attribute', 'revision', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> dob="<span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:dateTime</span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the date and time of the release of the parser that created the document. This information is valuable for debugging purposes and may be omitted in production systems.'); viewDocumentation('Attribute', 'dob', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> author="<span class="constraint"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> (<em>pattern</em> = [a-z]+(-[a-z]+)*)</span> <span class="occurs">[1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the name of the author, or software, responsible for producing the XMIR file.'); viewDocumentation('Attribute', 'author', docArray);">?</a>"</span>&gt; <br /><span class="group" style="margin-left: 1.5em">Start <a title="Look up 'All' in glossary" href="#term_All">All</a> <span class="occurs">[1]</span></span><br /><div style="margin-left: 3em">&lt;listing&gt; <span class="type"><a title="Jump to &quot;listing&quot; type definition." href="#type_listing">listing</a></span> &lt;/listing&gt; <span class="occurs">[0..1]</span></div><div style="margin-left: 3em">&lt;comments&gt;  <span class="occurs">[0..1]</span>  <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The element may contain a collection of comments found in the source code attached to the highest-level EO formations. These comments provide additional context or explanations for the code, which can be useful for understanding the program\'s logic and intent. Comments are typically used to document the purpose of the code, describe complex logic, or provide other relevant information that can aid in code maintenance and readability.'); viewDocumentation('Element', 'comments', docArray);">?</a><br /><div style="margin-left: 1.5em">&lt;comment&gt; <span class="type"><a title="Jump to &quot;comment&quot; type definition." href="#type_comment">comment</a></span> &lt;/comment&gt; <span class="occurs">[1..*]</span></div>&lt;/comments&gt;</div><div style="margin-left: 3em">&lt;errors&gt;  <span class="occurs">[0..1]</span>  <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The `errors` element may contain a collection of `error` elements that have already been identified in the program. These errors can be detected by the EO parser or any other additional analyzers, such as style checkers or linters. As the XMIR document undergoes various optimization or transformation pipelines, the list of errors may expand. It is up to the consumers of the XMIR document to decide whether to address these errors or to ignore them and continue processing. Each `error` element provides detailed information about the nature of the error, including its severity, the line of code where it was found, and the specific checker that identified it. This information is crucial for debugging and ensuring the quality of the EO program. The `errors` element is designed to help developers identify and resolve issues in their EO programs. By providing detailed information about each error, developers can quickly pinpoint the source of the problem and take appropriate action. The severity attribute indicates the importance of the error, allowing developers to prioritize their efforts. Critical errors may require immediate attention, while warnings can be addressed at a later time. Additionally, the `errors` element supports the continuous improvement of EO programs. As new analyzers and checkers are introduced, they can add their findings to the `errors` element, ensuring that all potential issues are documented in a single location. This centralized approach simplifies the debugging process and helps maintain the overall quality of the program.'); viewDocumentation('Element', 'errors', docArray);">?</a><br /><div style="margin-left: 1.5em">&lt;error&gt; <span class="type"><a title="Jump to &quot;error&quot; type definition." href="#type_error">error</a></span> &lt;/error&gt; <span class="occurs">[1..*]</span></div>&lt;/errors&gt;</div><div style="margin-left: 3em">&lt;sheets&gt;  <span class="occurs">[0..1]</span>  <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The element may contain a collection of XSL stylesheets (their names) that were applied to the XMIR during its optimization or any other transformations. This element exists mostly for debugging purposes.'); viewDocumentation('Element', 'sheets', docArray);">?</a><br /><div style="margin-left: 1.5em">&lt;sheet&gt; <span class="type"><a title="Jump to &quot;sheet&quot; type definition." href="#type_sheet">sheet</a></span> &lt;/sheet&gt; <span class="occurs">[1..*]</span></div>&lt;/sheets&gt;</div><div style="margin-left: 3em">&lt;metas&gt;  <span class="occurs">[0..1]</span> <br /><div style="margin-left: 1.5em">&lt;meta&gt; <span class="type"><a title="Jump to &quot;meta&quot; type definition." href="#type_meta">meta</a></span> &lt;/meta&gt; <span class="occurs">[1..*]</span></div>&lt;/metas&gt;</div><div style="margin-left: 3em">&lt;o&gt; <span class="type"><a title="Jump to &quot;o&quot; type definition." href="#type_o">o</a></span> &lt;/o&gt; <span class="occurs">[0..1]</span></div><span class="group" style="margin-left: 1.5em">End All</span><br />&lt;/object&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('element_object_xibox', true);
+// -->
+</script>
+    </div>
+    <div class="schemaComponent box">
+      <div><input type="button" id="element_object_scbox_button" class="control" onclick="switchState('element_object_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
+      <div id="element_object_scbox" class="contents">
+        <div style="margin-left: 0em">&lt;<span class="scTag">xs:element</span> <span class="scTag">name</span>="<span class="scContent">object</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;object&quot; type definition." href="#type_object">object</a></span></span>"/&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('element_object_scbox', false);
+// -->
+</script>
+    </div>
+    <div style="text-align: right; clear: both;">
+      <a href="#top">top</a>
+    </div>
+    <hr />
+    <h2>
+      <a name="SchemaDefinitions" id="SchemaDefinitions">Global Definitions</a>
+    </h2>
+    <h3>Complex Type: <a name="type_comment" class="name" id="type_comment">comment</a></h3>
+    <table class="hierarchy">
+      <tr>
+        <th>Super-types:</th>
+        <td><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> &lt; <strong>comment</strong> (by extension)</td>
+      </tr>
+      <tr>
+        <th>Sub-types:</th>
+        <td>None</td>
+      </tr>
+    </table>
+    <table class="properties">
+      <tr>
+        <th>Name</th>
+        <td>comment</td>
+      </tr>
+      <tr>
+        <th>
+          <a title="Look up 'Abstract' in glossary" href="#term_Abstract">Abstract</a>
+        </th>
+        <td>no</td>
+      </tr>
+      <tr>
+        <th>Documentation</th>
+        <td>
+        A program may carry at most one comment block, on top of the file, before all metas and objects. It documents
+        the whole program and provides context or explanations that can be useful for understanding the program's logic
+        and intent. Every other comment is prohibited: objects are expected to be self-explanatory, and per-object
+        documentation is generated later by external tooling rather than written by hand.
+      </td>
+      </tr>
+      <tr>
+        <th>Application Data</th>
+        <td>The comment found on top of the program</td>
+      </tr>
+    </table>
+    <div class="sample box">
+      <div><input type="button" id="type_comment_xibox_button" class="control" onclick="switchState('type_comment_xibox'); return false;" style="display: none" /> <span class="caption">XML Instance Representation</span></div>
+      <div id="type_comment_xibox" class="contents">
+        <div style="margin-left: 0em">&lt;...<br /><span style="margin-left: 0.5em" class="newFields"> line="<span class="type"><a title="Jump to &quot;whole&quot; type definition." href="#type_whole">whole</a></span> <span class="occurs">[1]</span>"</span>&gt; <br /><span style="margin-left: 1.5em"> <span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> </span><br />&lt;/...&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('type_comment_xibox', true);
+// -->
+</script>
+    </div>
+    <div class="schemaComponent box">
+      <div><input type="button" id="type_comment_scbox_button" class="control" onclick="switchState('type_comment_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
+      <div id="type_comment_scbox" class="contents">
+        <div style="margin-left: 0em">&lt;<span class="scTag">xs:complexType</span> <span class="scTag">name</span>="<span class="scContent">comment</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:simpleContent</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:extension</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">line</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;whole&quot; type definition." href="#type_whole">whole</a></span></span>" <span class="scTag">use</span>="<span class="scContent">required</span>"/&gt;</div>&lt;/<span class="scTag">xs:extension</span>&gt;</div>&lt;/<span class="scTag">xs:simpleContent</span>&gt;</div>&lt;/<span class="scTag">xs:complexType</span>&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('type_comment_scbox', false);
+// -->
+</script>
+    </div>
+    <div style="text-align: right; clear: both;">
+      <a href="#top">top</a>
+    </div>
+    <hr />
+    <h3>Complex Type: <a name="type_error" class="name" id="type_error">error</a></h3>
+    <table class="hierarchy">
+      <tr>
+        <th>Super-types:</th>
+        <td><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> &lt; <span class="type"><a title="Jump to &quot;non-empty&quot; type definition." href="#type_non-empty">non-empty</a></span> (by restriction) &lt; <strong>error</strong> (by extension)</td>
+      </tr>
+      <tr>
+        <th>Sub-types:</th>
+        <td>None</td>
+      </tr>
+    </table>
+    <table class="properties">
+      <tr>
+        <th>Name</th>
+        <td>error</td>
+      </tr>
+      <tr>
+        <th>
+          <a title="Look up 'Abstract' in glossary" href="#term_Abstract">Abstract</a>
+        </th>
+        <td>no</td>
+      </tr>
+      <tr>
+        <th>Documentation</th>
+        <td>
+        The element explains what kind of problem is found
+        in the program, where exactly, and what is the severity
+        of it.
+      </td>
+      </tr>
+      <tr>
+        <th>Application Data</th>
+        <td>The error found in the program</td>
+      </tr>
+    </table>
+    <div class="sample box">
+      <div><input type="button" id="type_error_xibox_button" class="control" onclick="switchState('type_error_xibox'); return false;" style="display: none" /> <span class="caption">XML Instance Representation</span></div>
+      <div id="type_error_xibox" class="contents">
+        <div style="margin-left: 0em">&lt;...<br /><span style="margin-left: 0.5em" class="newFields"> check="<span class="type"><a title="Jump to &quot;sheet&quot; type definition." href="#type_sheet">sheet</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the name of the style checker or any other submodule that found the error in the program.'); viewDocumentation('Attribute', 'check', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em" class="newFields"> line="<span class="type"><a title="Jump to &quot;whole&quot; type definition." href="#type_whole">whole</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the number of the code line (starting from 1), where the error was found. If the element is omitted, the problem is related to the entire program, not to any particular line in it.'); viewDocumentation('Attribute', 'line', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em" class="newFields"> pos="<span class="type"><a title="Jump to &quot;whole&quot; type definition." href="#type_whole">whole</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the position in the code line (0-indexed), where the error was found. If the element is omitted, the problem is not related to any particular column in the line.'); viewDocumentation('Attribute', 'pos', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em" class="newFields"> severity="<span class="constraint"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> (<em>value</em> comes from list: {'critical'|'error'|'warning'})</span> <span class="occurs">[1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the severity of the error, thus providing advice to the processor of the document on whether the error may be ignored (when it is a \&quot;warning\&quot;) or the processing must stop immediately (when it is a \&quot;critical\&quot;).'); viewDocumentation('Attribute', 'severity', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em" class="newFields"> lossy="<span class="type"><a title="Jump to &quot;empty&quot; type definition." href="#type_empty">empty</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('Present when the parser recovered from this error by discarding the whole construct it was building (e.g. a binding line), as opposed to a purely cosmetic or informational error that leaves every construct intact. A consumer deciding whether it is safe to trust the recovered tree should treat this attribute, not severity alone, as the sign that part of the source was lost.'); viewDocumentation('Attribute', 'lossy', docArray);">?</a>"</span>&gt; <br /><span style="margin-left: 1.5em"> <span class="type"><a title="Jump to &quot;non-empty&quot; type definition." href="#type_non-empty">non-empty</a></span> </span><br />&lt;/...&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('type_error_xibox', true);
+// -->
+</script>
+    </div>
+    <div class="schemaComponent box">
+      <div><input type="button" id="type_error_scbox_button" class="control" onclick="switchState('type_error_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
+      <div id="type_error_scbox" class="contents">
+        <div style="margin-left: 0em">&lt;<span class="scTag">xs:complexType</span> <span class="scTag">name</span>="<span class="scContent">error</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:simpleContent</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:extension</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;non-empty&quot; type definition." href="#type_non-empty">non-empty</a></span></span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">check</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;sheet&quot; type definition." href="#type_sheet">sheet</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">line</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;whole&quot; type definition." href="#type_whole">whole</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">pos</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;whole&quot; type definition." href="#type_whole">whole</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">severity</span>" <span class="scTag">use</span>="<span class="scContent">required</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:simpleType</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:restriction</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:enumeration</span> <span class="scTag">value</span>="<span class="scContent">critical</span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:enumeration</span> <span class="scTag">value</span>="<span class="scContent">error</span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:enumeration</span> <span class="scTag">value</span>="<span class="scContent">warning</span>"/&gt;</div>&lt;/<span class="scTag">xs:restriction</span>&gt;</div>&lt;/<span class="scTag">xs:simpleType</span>&gt;</div>&lt;/<span class="scTag">xs:attribute</span>&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">lossy</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;empty&quot; type definition." href="#type_empty">empty</a></span></span>"/&gt;</div>&lt;/<span class="scTag">xs:extension</span>&gt;</div>&lt;/<span class="scTag">xs:simpleContent</span>&gt;</div>&lt;/<span class="scTag">xs:complexType</span>&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('type_error_scbox', false);
+// -->
+</script>
+    </div>
+    <div style="text-align: right; clear: both;">
+      <a href="#top">top</a>
+    </div>
+    <hr />
+    <h3>Complex Type: <a name="type_listing" class="name" id="type_listing">listing</a></h3>
+    <table class="hierarchy">
+      <tr>
+        <th>Super-types:</th>
+        <td><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> &lt; <span class="type"><a title="Jump to &quot;non-empty&quot; type definition." href="#type_non-empty">non-empty</a></span> (by restriction) &lt; <strong>listing</strong> (by extension)</td>
+      </tr>
+      <tr>
+        <th>Sub-types:</th>
+        <td>None</td>
+      </tr>
+    </table>
+    <table class="properties">
+      <tr>
+        <th>Name</th>
+        <td>listing</td>
+      </tr>
+      <tr>
+        <th>
+          <a title="Look up 'Abstract' in glossary" href="#term_Abstract">Abstract</a>
+        </th>
+        <td>no</td>
+      </tr>
+      <tr>
+        <th>Documentation</th>
+        <td>
+        The `listing` element contains the entire listing of the source code program, in EO language, as it was seen by
+        the scanner. This element does not have any structure and may be omitted. However, it is recommended to provide
+        the listing to simplify debugging and enable traceability. By including the full source code listing, developers
+        can easily reference the original code, which helps in understanding the context of the program and aids in
+        troubleshooting any issues that may arise during the processing or execution of the program.
+      </td>
+      </tr>
+      <tr>
+        <th>Application Data</th>
+        <td>The entire listing of the source code program, in EO</td>
+      </tr>
+    </table>
+    <div class="sample box">
+      <div><input type="button" id="type_listing_xibox_button" class="control" onclick="switchState('type_listing_xibox'); return false;" style="display: none" /> <span class="caption">XML Instance Representation</span></div>
+      <div id="type_listing_xibox" class="contents">
+        <div style="margin-left: 0em">&lt;...&gt; <br /><span style="margin-left: 1.5em"> <span class="type"><a title="Jump to &quot;non-empty&quot; type definition." href="#type_non-empty">non-empty</a></span> </span><br />&lt;/...&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('type_listing_xibox', true);
+// -->
+</script>
+    </div>
+    <div class="schemaComponent box">
+      <div><input type="button" id="type_listing_scbox_button" class="control" onclick="switchState('type_listing_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
+      <div id="type_listing_scbox" class="contents">
+        <div style="margin-left: 0em">&lt;<span class="scTag">xs:complexType</span> <span class="scTag">name</span>="<span class="scContent">listing</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:simpleContent</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:extension</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;non-empty&quot; type definition." href="#type_non-empty">non-empty</a></span></span>"/&gt;</div>&lt;/<span class="scTag">xs:simpleContent</span>&gt;</div>&lt;/<span class="scTag">xs:complexType</span>&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('type_listing_scbox', false);
+// -->
+</script>
+    </div>
+    <div style="text-align: right; clear: both;">
+      <a href="#top">top</a>
+    </div>
+    <hr />
+    <h3>Complex Type: <a name="type_meta" class="name" id="type_meta">meta</a></h3>
+    <table class="hierarchy">
+      <tr>
+        <th>Super-types:</th>
+        <td>None</td>
+      </tr>
+      <tr>
+        <th>Sub-types:</th>
+        <td>None</td>
+      </tr>
+    </table>
+    <table class="properties">
+      <tr>
+        <th>Name</th>
+        <td>meta</td>
+      </tr>
+      <tr>
+        <th>
+          <a title="Look up 'Abstract' in glossary" href="#term_Abstract">Abstract</a>
+        </th>
+        <td>no</td>
+      </tr>
+      <tr>
+        <th>Documentation</th>
+        <td>
+        The element contains information about a meta found in the source code, before all objects. A "meta" in this
+        context refers to metadata that provides additional information about the EO program. This metadata can include
+        various details such as configuration settings, annotations, or other descriptive information that is not part
+        of the main program logic but is essential for understanding, processing, or managing the program. Metas are
+        typically used to convey information that can influence how the program is compiled, optimized, or executed.
+        They can also be used for documentation purposes, to provide insights into the program's structure,
+        dependencies, or other relevant attributes.
+      </td>
+      </tr>
+      <tr>
+        <th>Application Data</th>
+        <td>The meta found in the source code</td>
+      </tr>
+    </table>
+    <div class="sample box">
+      <div><input type="button" id="type_meta_xibox_button" class="control" onclick="switchState('type_meta_xibox'); return false;" style="display: none" /> <span class="caption">XML Instance Representation</span></div>
+      <div id="type_meta_xibox" class="contents">
+        <div style="margin-left: 0em">&lt;...<br /><span style="margin-left: 0.5em"> line="<span class="type"><a title="Jump to &quot;whole&quot; type definition." href="#type_whole">whole</a></span> <span class="occurs">[0..1]</span>"</span>&gt; <br /><div style="margin-left: 1.5em">&lt;head&gt; <span class="constraint"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> (<em>pattern</em> = [a-z]+[a-z0-9]*)</span> &lt;/head&gt; <span class="occurs">[1]</span></div><div style="margin-left: 1.5em">&lt;tail&gt; <span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> &lt;/tail&gt; <span class="occurs">[1]</span></div><div style="margin-left: 1.5em">&lt;part&gt; <span class="type"><a title="Jump to &quot;non-empty&quot; type definition." href="#type_non-empty">non-empty</a></span> &lt;/part&gt; <span class="occurs">[0..*]</span></div>&lt;/...&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('type_meta_xibox', true);
+// -->
+</script>
+    </div>
+    <div class="schemaComponent box">
+      <div><input type="button" id="type_meta_scbox_button" class="control" onclick="switchState('type_meta_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
+      <div id="type_meta_scbox" class="contents">
+        <div style="margin-left: 0em">&lt;<span class="scTag">xs:complexType</span> <span class="scTag">name</span>="<span class="scContent">meta</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:sequence</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> <span class="scTag">name</span>="<span class="scContent">head</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:simpleType</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:restriction</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:pattern</span> <span class="scTag">value</span>="<span class="scContent">[a-z]+[a-z0-9]*</span>"/&gt;</div>&lt;/<span class="scTag">xs:restriction</span>&gt;</div>&lt;/<span class="scTag">xs:simpleType</span>&gt;</div>&lt;/<span class="scTag">xs:element</span>&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> <span class="scTag">name</span>="<span class="scContent">tail</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> <span class="scTag">name</span>="<span class="scContent">part</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;non-empty&quot; type definition." href="#type_non-empty">non-empty</a></span></span>" <span class="scTag">minOccurs</span>="<span class="scContent">0</span>" <span class="scTag">maxOccurs</span>="<span class="scContent">unbounded</span>"/&gt;</div>&lt;/<span class="scTag">xs:sequence</span>&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">line</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;whole&quot; type definition." href="#type_whole">whole</a></span></span>"/&gt;</div>&lt;/<span class="scTag">xs:complexType</span>&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('type_meta_scbox', false);
+// -->
+</script>
+    </div>
+    <div style="text-align: right; clear: both;">
+      <a href="#top">top</a>
+    </div>
+    <hr />
+    <h3>Complex Type: <a name="type_o" class="name" id="type_o">o</a></h3>
+    <table class="hierarchy">
+      <tr>
+        <th>Super-types:</th>
+        <td>None</td>
+      </tr>
+      <tr>
+        <th>Sub-types:</th>
+        <td>None</td>
+      </tr>
+    </table>
+    <table class="properties">
+      <tr>
+        <th>Name</th>
+        <td>o</td>
+      </tr>
+      <tr>
+        <th>
+          <a title="Look up 'Abstract' in glossary" href="#term_Abstract">Abstract</a>
+        </th>
+        <td>no</td>
+      </tr>
+      <tr>
+        <th>Documentation</th>
+        <td>
+        The element contains all necessary details about a single
+        object, including all its attributes (which are also objects).
+        The object may also contain data, as text.
+      </td>
+      </tr>
+      <tr>
+        <th>Application Data</th>
+        <td>An object, as it is seen in the EO program</td>
+      </tr>
+    </table>
+    <div class="sample box">
+      <div><input type="button" id="type_o_xibox_button" class="control" onclick="switchState('type_o_xibox'); return false;" style="display: none" /> <span class="caption">XML Instance Representation</span></div>
+      <div id="type_o_xibox" class="contents">
+        <div style="margin-left: 0em">&lt;...<br /><span style="margin-left: 0.5em"> line="<span class="type"><a title="Jump to &quot;whole&quot; type definition." href="#type_whole">whole</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the number of code line (starting from 1), where the object has been met during the scanning of the source code.'); viewDocumentation('Attribute', 'line', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> pos="<span class="type"><a title="Jump to &quot;whole&quot; type definition." href="#type_whole">whole</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the position in the code line (0-indexed), where the object has been met during the scanning of the source code.'); viewDocumentation('Attribute', 'pos', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> name="<span class="type"><a title="Jump to &quot;attribute-name&quot; type definition." href="#type_attribute-name">attribute-name</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the name of the EO object inside its scope of visibility. The name is used to reference the object from other objects or from the global scope.'); viewDocumentation('Attribute', 'name', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> base="<span class="type"><a title="Jump to &quot;fqn&quot; type definition." href="#type_fqn">fqn</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the name of the object of which this one is a copy. The base object is used to define the structure of the current object.'); viewDocumentation('Attribute', 'base', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> as="<span class="type"><a title="Jump to &quot;attribute-name&quot; type definition." href="#type_attribute-name">attribute-name</a></span> <span class="occurs">[0..1]</span>"</span><br /><span style="margin-left: 0.5em"> local="<span class="type"><a title="Jump to &quot;attribute-name&quot; type definition." href="#type_attribute-name">attribute-name</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The readable file-local handle declared with the \&quot;&gt;&gt; name\&quot; suffix (R-3.10.12). The object\'s externally visible \&quot;name\&quot; is a synthetic cactus identifier, unreachable from outside the file; this attribute preserves the human-written handle so that references to it can be resolved within the file and the object can be printed back to EO under its original name. A receiver void written as \&quot;^name\&quot; (R-3.4.13) carries it as well, while its \&quot;name\&quot; stays \&quot;&#961;\&quot;.'); viewDocumentation('Attribute', 'local', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> pipe="<span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('A cosmetic marker kept on the application node that a \&quot;|\&quot; pipe line (R-3.14.7) parses into. The \&quot;wrap-applications\&quot; pass sets the node\'s \&quot;base\&quot; to the preceding sibling\'s name so the semantics match a hand-written application, but retains this marker so the printer can round-trip the compact \&quot;| args &gt; name\&quot; continuation line instead of expanding it into a two-line vertical application (#5684). Downstream passes and the compiler read \&quot;base\&quot; and ignore this marker.'); viewDocumentation('Attribute', 'pipe', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> fragile="<span class="type"><a title="Jump to &quot;empty&quot; type definition." href="#type_empty">empty</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('Set on the dispatch node that a \&quot;?.\&quot; link parses into, in a method chain as well as in a reversed dispatch, and says that the receiver may be &#8869; and the dispatch is to answer &#8869; rather than terminate. A regular \&quot;.\&quot; dispatch straight after such a link is reported by the \&quot;fragile-dispatch\&quot; check.'); viewDocumentation('Attribute', 'fragile', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> loc="<span class="type"><a title="Jump to &quot;locator&quot; type definition." href="#type_locator">locator</a></span> <span class="occurs">[0..1]</span>"</span><br /><span style="margin-left: 0.5em"> atom="<span class="type"><a title="Jump to &quot;signature&quot; type definition." href="#type_signature">signature</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('Used only on the lambda marker (name=\&quot;&#955;\&quot;) of an atom. Holds the type of the object that the atom returns (R-3.10.10), as one string: a fully qualified name, a single-letter generic type variable A-F, or a tree of them with brackets, such as \&quot;&#934;.posix.status-return(&#934;.number,&#934;.string)\&quot;.'); viewDocumentation('Attribute', 'atom', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> type="<span class="type"><a title="Jump to &quot;type-anno&quot; type definition." href="#type_type-anno">type-anno</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('Used on a void attribute of an atom (the bare \&quot;/type\&quot; annotation, R-3.4.8). Holds a type written the same way as in \&quot;atom\&quot;, with an optional trailing \&quot;?\&quot; marking a maybe-&#8869; value, such as \&quot;&#934;.pair(&#934;.number,&#934;.string)?\&quot;.'); viewDocumentation('Attribute', 'type', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> args="<span class="type"><a title="Jump to &quot;non-empty&quot; type definition." href="#type_non-empty">non-empty</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('Used on a void callback attribute of an atom (the \&quot;/{&#8230;}\&quot; argument list, R-3.4.8). Holds the space-separated types of the arguments the atom supplies to that branch, each written the same way as in \&quot;atom\&quot; and with no \&quot;?\&quot;, such as \&quot;&#934;.string &#934;.pair(A,&#934;.bytes)\&quot;.'); viewDocumentation('Attribute', 'args', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> pure="<span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:boolean</span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('Set by \&quot;purify.xsl\&quot; on a formation whose voids the program only ever fills with data, whose body copies nothing from the root of the program besides the literals, and which is not an atom. It says \&quot;pure when the inputs are data\&quot; and nothing stronger: at run time the object still asks the actual arguments, and the context where the body reads it, what they are before it keeps the result of dataizing itself.'); viewDocumentation('Attribute', 'pure', docArray);">?</a>"</span>&gt; <br /><span class="other" style="margin-left: 1.5em">&lt;!-- Mixed content --&gt;</span><br /><div style="margin-left: 1.5em">&lt;o&gt; <span class="type"><a title="Jump to &quot;o&quot; type definition." href="#type_o">o</a></span> &lt;/o&gt; <span class="occurs">[0..*]</span></div>&lt;/...&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('type_o_xibox', true);
+// -->
+</script>
+    </div>
+    <div class="schemaComponent box">
+      <div><input type="button" id="type_o_scbox_button" class="control" onclick="switchState('type_o_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
+      <div id="type_o_scbox" class="contents">
+        <div style="margin-left: 0em">&lt;<span class="scTag">xs:complexType</span> <span class="scTag">name</span>="<span class="scContent">o</span>" <span class="scTag">mixed</span>="<span class="scContent">true</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:sequence</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> <span class="scTag">name</span>="<span class="scContent">o</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;o&quot; type definition." href="#type_o">o</a></span></span>" <span class="scTag">minOccurs</span>="<span class="scContent">0</span>" <span class="scTag">maxOccurs</span>="<span class="scContent">unbounded</span>"/&gt;</div>&lt;/<span class="scTag">xs:sequence</span>&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">line</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;whole&quot; type definition." href="#type_whole">whole</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">pos</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;whole&quot; type definition." href="#type_whole">whole</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">name</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;attribute-name&quot; type definition." href="#type_attribute-name">attribute-name</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">base</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;fqn&quot; type definition." href="#type_fqn">fqn</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">as</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;attribute-name&quot; type definition." href="#type_attribute-name">attribute-name</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">local</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;attribute-name&quot; type definition." href="#type_attribute-name">attribute-name</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">pipe</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">fragile</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;empty&quot; type definition." href="#type_empty">empty</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">loc</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;locator&quot; type definition." href="#type_locator">locator</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">atom</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;signature&quot; type definition." href="#type_signature">signature</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">type</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;type-anno&quot; type definition." href="#type_type-anno">type-anno</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">args</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;non-empty&quot; type definition." href="#type_non-empty">non-empty</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">pure</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:boolean</span></span>"/&gt;</div>&lt;/<span class="scTag">xs:complexType</span>&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('type_o_scbox', false);
+// -->
+</script>
+    </div>
+    <div style="text-align: right; clear: both;">
+      <a href="#top">top</a>
+    </div>
+    <hr />
+    <h3>Complex Type: <a name="type_object" class="name" id="type_object">object</a></h3>
+    <table class="hierarchy">
+      <tr>
+        <th>Super-types:</th>
+        <td>None</td>
+      </tr>
+      <tr>
+        <th>Sub-types:</th>
+        <td>None</td>
+      </tr>
+    </table>
+    <table class="properties">
+      <tr>
+        <th>Name</th>
+        <td>object</td>
+      </tr>
+      <tr>
+        <th>
+          <a title="Look up 'Abstract' in glossary" href="#term_Abstract">Abstract</a>
+        </th>
+        <td>no</td>
+      </tr>
+    </table>
+    <div class="sample box">
+      <div><input type="button" id="type_object_xibox_button" class="control" onclick="switchState('type_object_xibox'); return false;" style="display: none" /> <span class="caption">XML Instance Representation</span></div>
+      <div id="type_object_xibox" class="contents">
+        <div style="margin-left: 0em">&lt;...<br /><span style="margin-left: 0.5em"> ms="<span class="type"><a title="Jump to &quot;whole&quot; type definition." href="#type_whole">whole</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains a whole number, which is the number of milliseconds that were spent by the parser to walk the source into directives. It excludes building this document from them and transforming it afterwards. This information is valuable for debugging purposes and may be omitted in production systems.'); viewDocumentation('Attribute', 'ms', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> time="<span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:dateTime</span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the date and time of the moment when the document was generated by the parser. This information is valuable for debugging purposes and may be omitted in production systems.'); viewDocumentation('Attribute', 'time', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> version="<span class="type"><a title="Jump to &quot;non-empty&quot; type definition." href="#type_non-empty">non-empty</a></span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the version of the parser that created the document, preferably in SemVer format. This information is valuable for debugging purposes and may be omitted in production systems.'); viewDocumentation('Attribute', 'version', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> revision="<span class="constraint"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> (<em>pattern</em> = [0-9a-f]{7})</span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the Git SHA of the release of the parser that created the document. This information is valuable for debugging purposes and may be omitted in production systems.'); viewDocumentation('Attribute', 'revision', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> dob="<span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:dateTime</span> <span class="occurs">[0..1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the date and time of the release of the parser that created the document. This information is valuable for debugging purposes and may be omitted in production systems.'); viewDocumentation('Attribute', 'dob', docArray);">?</a>"</span><br /><span style="margin-left: 0.5em"> author="<span class="constraint"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> (<em>pattern</em> = [a-z]+(-[a-z]+)*)</span> <span class="occurs">[1]</span> <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The attribute contains the name of the author, or software, responsible for producing the XMIR file.'); viewDocumentation('Attribute', 'author', docArray);">?</a>"</span>&gt; <br /><span class="group" style="margin-left: 1.5em">Start <a title="Look up 'All' in glossary" href="#term_All">All</a> <span class="occurs">[1]</span></span><br /><div style="margin-left: 3em">&lt;listing&gt; <span class="type"><a title="Jump to &quot;listing&quot; type definition." href="#type_listing">listing</a></span> &lt;/listing&gt; <span class="occurs">[0..1]</span></div><div style="margin-left: 3em">&lt;comments&gt;  <span class="occurs">[0..1]</span>  <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The element may contain a collection of comments found in the source code attached to the highest-level EO formations. These comments provide additional context or explanations for the code, which can be useful for understanding the program\'s logic and intent. Comments are typically used to document the purpose of the code, describe complex logic, or provide other relevant information that can aid in code maintenance and readability.'); viewDocumentation('Element', 'comments', docArray);">?</a><br /><div style="margin-left: 1.5em">&lt;comment&gt; <span class="type"><a title="Jump to &quot;comment&quot; type definition." href="#type_comment">comment</a></span> &lt;/comment&gt; <span class="occurs">[1..*]</span></div>&lt;/comments&gt;</div><div style="margin-left: 3em">&lt;errors&gt;  <span class="occurs">[0..1]</span>  <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The `errors` element may contain a collection of `error` elements that have already been identified in the program. These errors can be detected by the EO parser or any other additional analyzers, such as style checkers or linters. As the XMIR document undergoes various optimization or transformation pipelines, the list of errors may expand. It is up to the consumers of the XMIR document to decide whether to address these errors or to ignore them and continue processing. Each `error` element provides detailed information about the nature of the error, including its severity, the line of code where it was found, and the specific checker that identified it. This information is crucial for debugging and ensuring the quality of the EO program. The `errors` element is designed to help developers identify and resolve issues in their EO programs. By providing detailed information about each error, developers can quickly pinpoint the source of the problem and take appropriate action. The severity attribute indicates the importance of the error, allowing developers to prioritize their efforts. Critical errors may require immediate attention, while warnings can be addressed at a later time. Additionally, the `errors` element supports the continuous improvement of EO programs. As new analyzers and checkers are introduced, they can add their findings to the `errors` element, ensuring that all potential issues are documented in a single location. This centralized approach simplifies the debugging process and helps maintain the overall quality of the program.'); viewDocumentation('Element', 'errors', docArray);">?</a><br /><div style="margin-left: 1.5em">&lt;error&gt; <span class="type"><a title="Jump to &quot;error&quot; type definition." href="#type_error">error</a></span> &lt;/error&gt; <span class="occurs">[1..*]</span></div>&lt;/errors&gt;</div><div style="margin-left: 3em">&lt;sheets&gt;  <span class="occurs">[0..1]</span>  <a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('The element may contain a collection of XSL stylesheets (their names) that were applied to the XMIR during its optimization or any other transformations. This element exists mostly for debugging purposes.'); viewDocumentation('Element', 'sheets', docArray);">?</a><br /><div style="margin-left: 1.5em">&lt;sheet&gt; <span class="type"><a title="Jump to &quot;sheet&quot; type definition." href="#type_sheet">sheet</a></span> &lt;/sheet&gt; <span class="occurs">[1..*]</span></div>&lt;/sheets&gt;</div><div style="margin-left: 3em">&lt;metas&gt;  <span class="occurs">[0..1]</span> <br /><div style="margin-left: 1.5em">&lt;meta&gt; <span class="type"><a title="Jump to &quot;meta&quot; type definition." href="#type_meta">meta</a></span> &lt;/meta&gt; <span class="occurs">[1..*]</span></div>&lt;/metas&gt;</div><div style="margin-left: 3em">&lt;o&gt; <span class="type"><a title="Jump to &quot;o&quot; type definition." href="#type_o">o</a></span> &lt;/o&gt; <span class="occurs">[0..1]</span></div><span class="group" style="margin-left: 1.5em">End All</span><br />&lt;/...&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('type_object_xibox', true);
+// -->
+</script>
+    </div>
+    <div class="schemaComponent box">
+      <div><input type="button" id="type_object_scbox_button" class="control" onclick="switchState('type_object_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
+      <div id="type_object_scbox" class="contents">
+        <div style="margin-left: 0em">&lt;<span class="scTag">xs:complexType</span> <span class="scTag">name</span>="<span class="scContent">object</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:all</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> <span class="scTag">name</span>="<span class="scContent">listing</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;listing&quot; type definition." href="#type_listing">listing</a></span></span>" <span class="scTag">minOccurs</span>="<span class="scContent">0</span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> <span class="scTag">name</span>="<span class="scContent">comments</span>" <span class="scTag">minOccurs</span>="<span class="scContent">0</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:complexType</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:sequence</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> <span class="scTag">name</span>="<span class="scContent">comment</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;comment&quot; type definition." href="#type_comment">comment</a></span></span>" <span class="scTag">maxOccurs</span>="<span class="scContent">unbounded</span>"/&gt;</div>&lt;/<span class="scTag">xs:sequence</span>&gt;</div>&lt;/<span class="scTag">xs:complexType</span>&gt;</div>&lt;/<span class="scTag">xs:element</span>&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> <span class="scTag">name</span>="<span class="scContent">errors</span>" <span class="scTag">minOccurs</span>="<span class="scContent">0</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:complexType</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:sequence</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> <span class="scTag">name</span>="<span class="scContent">error</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;error&quot; type definition." href="#type_error">error</a></span></span>" <span class="scTag">maxOccurs</span>="<span class="scContent">unbounded</span>"/&gt;</div>&lt;/<span class="scTag">xs:sequence</span>&gt;</div>&lt;/<span class="scTag">xs:complexType</span>&gt;</div>&lt;/<span class="scTag">xs:element</span>&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> <span class="scTag">name</span>="<span class="scContent">sheets</span>" <span class="scTag">minOccurs</span>="<span class="scContent">0</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:complexType</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:sequence</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> <span class="scTag">name</span>="<span class="scContent">sheet</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;sheet&quot; type definition." href="#type_sheet">sheet</a></span></span>" <span class="scTag">maxOccurs</span>="<span class="scContent">unbounded</span>"/&gt;</div>&lt;/<span class="scTag">xs:sequence</span>&gt;</div>&lt;/<span class="scTag">xs:complexType</span>&gt;</div>&lt;/<span class="scTag">xs:element</span>&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> <span class="scTag">name</span>="<span class="scContent">metas</span>" <span class="scTag">minOccurs</span>="<span class="scContent">0</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:complexType</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:sequence</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> <span class="scTag">name</span>="<span class="scContent">meta</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;meta&quot; type definition." href="#type_meta">meta</a></span></span>" <span class="scTag">maxOccurs</span>="<span class="scContent">unbounded</span>"/&gt;</div>&lt;/<span class="scTag">xs:sequence</span>&gt;</div>&lt;/<span class="scTag">xs:complexType</span>&gt;</div>&lt;/<span class="scTag">xs:element</span>&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:element</span> <span class="scTag">name</span>="<span class="scContent">o</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;o&quot; type definition." href="#type_o">o</a></span></span>" <span class="scTag">minOccurs</span>="<span class="scContent">0</span>" <span class="scTag">maxOccurs</span>="<span class="scContent">1</span>"/&gt;</div>&lt;/<span class="scTag">xs:all</span>&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">ms</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;whole&quot; type definition." href="#type_whole">whole</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">time</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:dateTime</span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">version</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a title="Jump to &quot;non-empty&quot; type definition." href="#type_non-empty">non-empty</a></span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">revision</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:simpleType</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:restriction</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:pattern</span> <span class="scTag">value</span>="<span class="scContent">[0-9a-f]{7}</span>"/&gt;</div>&lt;/<span class="scTag">xs:restriction</span>&gt;</div>&lt;/<span class="scTag">xs:simpleType</span>&gt;</div>&lt;/<span class="scTag">xs:attribute</span>&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">dob</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:dateTime</span></span>"/&gt;</div><div style="margin-left: 1.5em">&lt;<span class="scTag">xs:attribute</span> <span class="scTag">name</span>="<span class="scContent">author</span>" <span class="scTag">use</span>="<span class="scContent">required</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:simpleType</span>&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:restriction</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:pattern</span> <span class="scTag">value</span>="<span class="scContent">[a-z]+(-[a-z]+)*</span>"/&gt;</div>&lt;/<span class="scTag">xs:restriction</span>&gt;</div>&lt;/<span class="scTag">xs:simpleType</span>&gt;</div>&lt;/<span class="scTag">xs:attribute</span>&gt;</div>&lt;/<span class="scTag">xs:complexType</span>&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('type_object_scbox', false);
+// -->
+</script>
+    </div>
+    <div style="text-align: right; clear: both;">
+      <a href="#top">top</a>
+    </div>
+    <hr />
+    <h3>Simple Type: <a name="type_attribute-name" class="name" id="type_attribute-name">attribute-name</a></h3>
+    <table class="hierarchy">
+      <tr>
+        <th>Super-types:</th>
+        <td><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> &lt; <strong>attribute-name</strong> (by restriction)</td>
+      </tr>
+      <tr>
+        <th>Sub-types:</th>
+        <td>None</td>
+      </tr>
+    </table>
+    <table class="properties">
+      <tr>
+        <th>Name</th>
+        <td>attribute-name</td>
+      </tr>
+      <tr>
+        <th>Content</th>
+        <td>
+          <ul>
+            <li>Base XSD Type: string</li>
+          </ul>
+          <ul>
+            <li><em>pattern</em> = &#945;[0-9]+|&#966;|&#961;|[a-z]\S*|&#955;</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Documentation</th>
+        <td>
+        The name of an object attribute, which is used to reference the attribute from other objects or from the global scope.
+      </td>
+      </tr>
+      <tr>
+        <th>Application Data</th>
+        <td>A name of object attribute</td>
+      </tr>
+    </table>
+    <div class="schemaComponent box">
+      <div><input type="button" id="type_attribute-name_scbox_button" class="control" onclick="switchState('type_attribute-name_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
+      <div id="type_attribute-name_scbox" class="contents">
+        <div style="margin-left: 0em">&lt;<span class="scTag">xs:simpleType</span> <span class="scTag">name</span>="<span class="scContent">attribute-name</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:restriction</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:pattern</span> <span class="scTag">value</span>="<span class="scContent">&#945;[0-9]+|&#966;|&#961;|[a-z]\S*|&#955;</span>"/&gt;</div>&lt;/<span class="scTag">xs:restriction</span>&gt;</div>&lt;/<span class="scTag">xs:simpleType</span>&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('type_attribute-name_scbox', false);
+// -->
+</script>
+    </div>
+    <div style="text-align: right; clear: both;">
+      <a href="#top">top</a>
+    </div>
+    <hr />
+    <h3>Simple Type: <a name="type_empty" class="name" id="type_empty">empty</a></h3>
+    <table class="hierarchy">
+      <tr>
+        <th>Super-types:</th>
+        <td><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> &lt; <strong>empty</strong> (by restriction)</td>
+      </tr>
+      <tr>
+        <th>Sub-types:</th>
+        <td>None</td>
+      </tr>
+    </table>
+    <table class="properties">
+      <tr>
+        <th>Name</th>
+        <td>empty</td>
+      </tr>
+      <tr>
+        <th>Content</th>
+        <td>
+          <ul>
+            <li>Base XSD Type: string</li>
+          </ul>
+          <ul>
+            <li><em>length</em> = 0</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Documentation</th>
+        <td>
+        Empty string, to be used in attributes.
+      </td>
+      </tr>
+      <tr>
+        <th>Application Data</th>
+        <td>Just empty string</td>
+      </tr>
+    </table>
+    <div class="schemaComponent box">
+      <div><input type="button" id="type_empty_scbox_button" class="control" onclick="switchState('type_empty_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
+      <div id="type_empty_scbox" class="contents">
+        <div style="margin-left: 0em">&lt;<span class="scTag">xs:simpleType</span> <span class="scTag">name</span>="<span class="scContent">empty</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:restriction</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:length</span> <span class="scTag">value</span>="<span class="scContent">0</span>"/&gt;</div>&lt;/<span class="scTag">xs:restriction</span>&gt;</div>&lt;/<span class="scTag">xs:simpleType</span>&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('type_empty_scbox', false);
+// -->
+</script>
+    </div>
+    <div style="text-align: right; clear: both;">
+      <a href="#top">top</a>
+    </div>
+    <hr />
+    <h3>Simple Type: <a name="type_fqn" class="name" id="type_fqn">fqn</a></h3>
+    <table class="hierarchy">
+      <tr>
+        <th>Super-types:</th>
+        <td><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> &lt; <strong>fqn</strong> (by restriction)</td>
+      </tr>
+      <tr>
+        <th>Sub-types:</th>
+        <td>None</td>
+      </tr>
+    </table>
+    <table class="properties">
+      <tr>
+        <th>Name</th>
+        <td>fqn</td>
+      </tr>
+      <tr>
+        <th>Content</th>
+        <td>
+          <ul>
+            <li>Base XSD Type: string</li>
+          </ul>
+          <ul>
+            <li><em>pattern</em> = &#8709;|\.(&#961;|&#966;|&#958;|[a-z][^\s.]*|&#945;[0-9]*)|([&#934;&#958;&#8869;])(\.(&#961;|&#966;|[a-z][^\s.]*|&#945;[0-9]*))*</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Documentation</th>
+        <td>
+        The fully qualified name of an object, which includes the names of all the objects that are its ancestors.
+        This type is used to uniquely identify an object within the program. The FQN is typically used to reference
+        objects from other objects or from the global scope, ensuring that the correct object is accessed or modified.
+      </td>
+      </tr>
+      <tr>
+        <th>Application Data</th>
+        <td>A fully qualified name of an object</td>
+      </tr>
+    </table>
+    <div class="schemaComponent box">
+      <div><input type="button" id="type_fqn_scbox_button" class="control" onclick="switchState('type_fqn_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
+      <div id="type_fqn_scbox" class="contents">
+        <div style="margin-left: 0em">&lt;<span class="scTag">xs:simpleType</span> <span class="scTag">name</span>="<span class="scContent">fqn</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:restriction</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:pattern</span> <span class="scTag">value</span>="<span class="scContent">&#8709;|\.(&#961;|&#966;|&#958;|[a-z][^\s.]*|&#945;[0-9]*)|([&#934;&#958;&#8869;])(\.(&#961;|&#966;|[a-z][^\s.]*|&#945;[0-9]*))*</span>"/&gt;</div>&lt;/<span class="scTag">xs:restriction</span>&gt;</div>&lt;/<span class="scTag">xs:simpleType</span>&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('type_fqn_scbox', false);
+// -->
+</script>
+    </div>
+    <div style="text-align: right; clear: both;">
+      <a href="#top">top</a>
+    </div>
+    <hr />
+    <h3>Simple Type: <a name="type_locator" class="name" id="type_locator">locator</a></h3>
+    <table class="hierarchy">
+      <tr>
+        <th>Super-types:</th>
+        <td><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> &lt; <strong>locator</strong> (by restriction)</td>
+      </tr>
+      <tr>
+        <th>Sub-types:</th>
+        <td>None</td>
+      </tr>
+    </table>
+    <table class="properties">
+      <tr>
+        <th>Name</th>
+        <td>locator</td>
+      </tr>
+      <tr>
+        <th>Content</th>
+        <td>
+          <ul>
+            <li>Base XSD Type: string</li>
+          </ul>
+          <ul>
+            <li><em>pattern</em> = &#934;(\.(&#961;|&#966;|&#955;|&#945;[0-9]+|[a-z][^\s.]*))*</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Documentation</th>
+        <td>
+        The locator of an object, which specifies the location of the object within the program,
+        in the global graph of objects, starting from &#934;. The locator is used to uniquely identify
+        an object within the program and is typically used to reference objects from other objects
+        or from the global scope, ensuring that the correct object is accessed or modified.
+      </td>
+      </tr>
+      <tr>
+        <th>Application Data</th>
+        <td>A locator of an object</td>
+      </tr>
+    </table>
+    <div class="schemaComponent box">
+      <div><input type="button" id="type_locator_scbox_button" class="control" onclick="switchState('type_locator_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
+      <div id="type_locator_scbox" class="contents">
+        <div style="margin-left: 0em">&lt;<span class="scTag">xs:simpleType</span> <span class="scTag">name</span>="<span class="scContent">locator</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:restriction</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:pattern</span> <span class="scTag">value</span>="<span class="scContent">&#934;(\.(&#961;|&#966;|&#955;|&#945;[0-9]+|[a-z][^\s.]*))*</span>"/&gt;</div>&lt;/<span class="scTag">xs:restriction</span>&gt;</div>&lt;/<span class="scTag">xs:simpleType</span>&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('type_locator_scbox', false);
+// -->
+</script>
+    </div>
+    <div style="text-align: right; clear: both;">
+      <a href="#top">top</a>
+    </div>
+    <hr />
+    <h3>Simple Type: <a name="type_non-empty" class="name" id="type_non-empty">non-empty</a></h3>
+    <table class="hierarchy">
+      <tr>
+        <th>Super-types:</th>
+        <td><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> &lt; <strong>non-empty</strong> (by restriction)</td>
+      </tr>
+      <tr>
+        <th>Sub-types:</th>
+        <td>
+          <ul>
+            <li><span class="type"><a title="Jump to &quot;error&quot; type definition." href="#type_error">error</a></span> (by extension)</li>
+            <li><span class="type"><a title="Jump to &quot;listing&quot; type definition." href="#type_listing">listing</a></span> (by extension)</li>
+          </ul>
+        </td>
+      </tr>
+    </table>
+    <table class="properties">
+      <tr>
+        <th>Name</th>
+        <td>non-empty</td>
+      </tr>
+      <tr>
+        <th>Content</th>
+        <td>
+          <ul>
+            <li>Base XSD Type: string</li>
+          </ul>
+          <ul>
+            <li><em>length</em> &gt;= 1</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Documentation</th>
+        <td>
+        The value that is not empty (contains at least one character).
+        This type is used for names, etc.
+      </td>
+      </tr>
+      <tr>
+        <th>Application Data</th>
+        <td>A non-empty string</td>
+      </tr>
+    </table>
+    <div class="schemaComponent box">
+      <div><input type="button" id="type_non-empty_scbox_button" class="control" onclick="switchState('type_non-empty_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
+      <div id="type_non-empty_scbox" class="contents">
+        <div style="margin-left: 0em">&lt;<span class="scTag">xs:simpleType</span> <span class="scTag">name</span>="<span class="scContent">non-empty</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:restriction</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:minLength</span> <span class="scTag">value</span>="<span class="scContent">1</span>"/&gt;</div>&lt;/<span class="scTag">xs:restriction</span>&gt;</div>&lt;/<span class="scTag">xs:simpleType</span>&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('type_non-empty_scbox', false);
+// -->
+</script>
+    </div>
+    <div style="text-align: right; clear: both;">
+      <a href="#top">top</a>
+    </div>
+    <hr />
+    <h3>Simple Type: <a name="type_sheet" class="name" id="type_sheet">sheet</a></h3>
+    <table class="hierarchy">
+      <tr>
+        <th>Super-types:</th>
+        <td><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> &lt; <strong>sheet</strong> (by restriction)</td>
+      </tr>
+      <tr>
+        <th>Sub-types:</th>
+        <td>None</td>
+      </tr>
+    </table>
+    <table class="properties">
+      <tr>
+        <th>Name</th>
+        <td>sheet</td>
+      </tr>
+      <tr>
+        <th>Content</th>
+        <td>
+          <ul>
+            <li>Base XSD Type: string</li>
+          </ul>
+          <ul>
+            <li><em>pattern</em> = [a-z][a-z-]*</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Documentation</th>
+        <td>
+        The element contains information about the XSL stylesheet that was applied to the XMIR during its optimization
+        and/or transformation. This information is crucial for understanding the changes made to the XMIR document
+        during these processes. The XSL stylesheet can include various transformations that optimize the structure,
+        improve performance, or adapt the document for different purposes. By documenting the applied stylesheet,
+        developers can trace back the modifications and ensure the integrity and correctness of the XMIR document.
+      </td>
+      </tr>
+      <tr>
+        <th>Application Data</th>
+        <td>The XSL stylesheet that was applied to the XMIR</td>
+      </tr>
+    </table>
+    <div class="schemaComponent box">
+      <div><input type="button" id="type_sheet_scbox_button" class="control" onclick="switchState('type_sheet_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
+      <div id="type_sheet_scbox" class="contents">
+        <div style="margin-left: 0em">&lt;<span class="scTag">xs:simpleType</span> <span class="scTag">name</span>="<span class="scContent">sheet</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:restriction</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:pattern</span> <span class="scTag">value</span>="<span class="scContent">[a-z][a-z-]*</span>"/&gt;</div>&lt;/<span class="scTag">xs:restriction</span>&gt;</div>&lt;/<span class="scTag">xs:simpleType</span>&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('type_sheet_scbox', false);
+// -->
+</script>
+    </div>
+    <div style="text-align: right; clear: both;">
+      <a href="#top">top</a>
+    </div>
+    <hr />
+    <h3>Simple Type: <a name="type_signature" class="name" id="type_signature">signature</a></h3>
+    <table class="hierarchy">
+      <tr>
+        <th>Super-types:</th>
+        <td><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> &lt; <strong>signature</strong> (by restriction)</td>
+      </tr>
+      <tr>
+        <th>Sub-types:</th>
+        <td>None</td>
+      </tr>
+    </table>
+    <table class="properties">
+      <tr>
+        <th>Name</th>
+        <td>signature</td>
+      </tr>
+      <tr>
+        <th>Content</th>
+        <td>
+          <ul>
+            <li>Base XSD Type: string</li>
+          </ul>
+          <ul>
+            <li><em>pattern</em> = ([A-F]|&#8869;|&#8709;|\.(&#961;|&#966;|[a-z][^\s.(),|?]*|&#945;[0-9]*)|[&#934;&#958;](\.(&#961;|&#966;|[a-z][^\s.(),|?]*|&#945;[0-9]*))*|[a-z][^\s.(),|?]*(\.[a-z][^\s.(),|?]*)*)(([(,]|\)+,)([A-F]|&#8869;|&#8709;|\.(&#961;|&#966;|[a-z][^\s.(),|?]*|&#945;[0-9]*)|[&#934;&#958;](\.(&#961;|&#966;|[a-z][^\s.(),|?]*|&#945;[0-9]*))*|[a-z][^\s.(),|?]*(\.[a-z][^\s.(),|?]*)*))*\)*</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Documentation</th>
+        <td>
+        The declared return type of an atom, as one string with no spaces. A type is a
+        name or a tree of names: a fully qualified name (fqn) of a concrete forma, or a
+        single-letter generic type variable A-F (universally quantified over the atom);
+        a name may take a bracket list of types for the voids of the object it names,
+        separated by commas, as in "&#934;.posix.status-return(&#934;.number,&#934;.string)". A type
+        variable takes no brackets, and no type is a union, so a "|" is rejected. The
+        pattern checks the shape of the names and of the glyphs between them; the parser
+        alone checks that the brackets balance. Used on the lambda marker (name="&#955;").
+      </td>
+      </tr>
+      <tr>
+        <th>Application Data</th>
+        <td>An atom return-type signature</td>
+      </tr>
+    </table>
+    <div class="schemaComponent box">
+      <div><input type="button" id="type_signature_scbox_button" class="control" onclick="switchState('type_signature_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
+      <div id="type_signature_scbox" class="contents">
+        <div style="margin-left: 0em">&lt;<span class="scTag">xs:simpleType</span> <span class="scTag">name</span>="<span class="scContent">signature</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:restriction</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:pattern</span> <span class="scTag">value</span>="<span class="scContent">([A-F]|&#8869;|&#8709;|\.(&#961;|&#966;|[a-z][^\s.(),|?]*|&#945;[0-9]*)|[&#934;&#958;](\.(&#961;|&#966;|[a-z][^\s.(),|?]*|&#945;[0-9]*))*|[a-z][^\s.(),|?]*(\.[a-z][^\s.(),|?]*)*)(([(,]|\)+,)([A-F]|&#8869;|&#8709;|\.(&#961;|&#966;|[a-z][^\s.(),|?]*|&#945;[0-9]*)|[&#934;&#958;](\.(&#961;|&#966;|[a-z][^\s.(),|?]*|&#945;[0-9]*))*|[a-z][^\s.(),|?]*(\.[a-z][^\s.(),|?]*)*))*\)*</span>"/&gt;</div>&lt;/<span class="scTag">xs:restriction</span>&gt;</div>&lt;/<span class="scTag">xs:simpleType</span>&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('type_signature_scbox', false);
+// -->
+</script>
+    </div>
+    <div style="text-align: right; clear: both;">
+      <a href="#top">top</a>
+    </div>
+    <hr />
+    <h3>Simple Type: <a name="type_type-anno" class="name" id="type_type-anno">type-anno</a></h3>
+    <table class="hierarchy">
+      <tr>
+        <th>Super-types:</th>
+        <td><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span> &lt; <strong>type-anno</strong> (by restriction)</td>
+      </tr>
+      <tr>
+        <th>Sub-types:</th>
+        <td>None</td>
+      </tr>
+    </table>
+    <table class="properties">
+      <tr>
+        <th>Name</th>
+        <td>type-anno</td>
+      </tr>
+      <tr>
+        <th>Content</th>
+        <td>
+          <ul>
+            <li>Base XSD Type: string</li>
+          </ul>
+          <ul>
+            <li><em>pattern</em> = (([A-F]|&#8869;|&#8709;|\.(&#961;|&#966;|[a-z][^\s.(),|?]*|&#945;[0-9]*)|[&#934;&#958;](\.(&#961;|&#966;|[a-z][^\s.(),|?]*|&#945;[0-9]*))*|[a-z][^\s.(),|?]*(\.[a-z][^\s.(),|?]*)*)(([(,]|\)+,)([A-F]|&#8869;|&#8709;|\.(&#961;|&#966;|[a-z][^\s.(),|?]*|&#945;[0-9]*)|[&#934;&#958;](\.(&#961;|&#966;|[a-z][^\s.(),|?]*|&#945;[0-9]*))*|[a-z][^\s.(),|?]*(\.[a-z][^\s.(),|?]*)*))*\)*)[?]?</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Documentation</th>
+        <td>
+        The declared type of a void attribute of an atom: a type as in "signature", with
+        an optional trailing "?" marking a maybe-&#8869; value, as in "&#934;.pair(&#934;.number,&#934;.string)?".
+      </td>
+      </tr>
+      <tr>
+        <th>Application Data</th>
+        <td>A void attribute type annotation</td>
+      </tr>
+    </table>
+    <div class="schemaComponent box">
+      <div><input type="button" id="type_type-anno_scbox_button" class="control" onclick="switchState('type_type-anno_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
+      <div id="type_type-anno_scbox" class="contents">
+        <div style="margin-left: 0em">&lt;<span class="scTag">xs:simpleType</span> <span class="scTag">name</span>="<span class="scContent">type-anno</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:restriction</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:string</span></span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:pattern</span> <span class="scTag">value</span>="<span class="scContent">(([A-F]|&#8869;|&#8709;|\.(&#961;|&#966;|[a-z][^\s.(),|?]*|&#945;[0-9]*)|[&#934;&#958;](\.(&#961;|&#966;|[a-z][^\s.(),|?]*|&#945;[0-9]*))*|[a-z][^\s.(),|?]*(\.[a-z][^\s.(),|?]*)*)(([(,]|\)+,)([A-F]|&#8869;|&#8709;|\.(&#961;|&#966;|[a-z][^\s.(),|?]*|&#945;[0-9]*)|[&#934;&#958;](\.(&#961;|&#966;|[a-z][^\s.(),|?]*|&#945;[0-9]*))*|[a-z][^\s.(),|?]*(\.[a-z][^\s.(),|?]*)*))*\)*)[?]?</span>"/&gt;</div>&lt;/<span class="scTag">xs:restriction</span>&gt;</div>&lt;/<span class="scTag">xs:simpleType</span>&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('type_type-anno_scbox', false);
+// -->
+</script>
+    </div>
+    <div style="text-align: right; clear: both;">
+      <a href="#top">top</a>
+    </div>
+    <hr />
+    <h3>Simple Type: <a name="type_whole" class="name" id="type_whole">whole</a></h3>
+    <table class="hierarchy">
+      <tr>
+        <th>Super-types:</th>
+        <td><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:integer</span> &lt; <strong>whole</strong> (by restriction)</td>
+      </tr>
+      <tr>
+        <th>Sub-types:</th>
+        <td>None</td>
+      </tr>
+    </table>
+    <table class="properties">
+      <tr>
+        <th>Name</th>
+        <td>whole</td>
+      </tr>
+      <tr>
+        <th>Content</th>
+        <td>
+          <ul>
+            <li>Base XSD Type: integer</li>
+          </ul>
+          <ul>
+            <li><em>value</em> &gt;= 0</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Documentation</th>
+        <td>
+        Whole numbers, include zero. This type is used for line numbers, positions, etc.
+      </td>
+      </tr>
+      <tr>
+        <th>Application Data</th>
+        <td>Whole number</td>
+      </tr>
+    </table>
+    <div class="schemaComponent box">
+      <div><input type="button" id="type_whole_scbox_button" class="control" onclick="switchState('type_whole_scbox'); return false;" style="display: none" /> <span class="caption">Schema Component Representation</span></div>
+      <div id="type_whole_scbox" class="contents">
+        <div style="margin-left: 0em">&lt;<span class="scTag">xs:simpleType</span> <span class="scTag">name</span>="<span class="scContent">whole</span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:restriction</span> <span class="scTag">base</span>="<span class="scContent"><span class="type"><a href="#ns_xs" title="Find out namespace of 'xs' prefix">xs</a>:integer</span></span>"&gt;<div style="margin-left: 1.5em">&lt;<span class="scTag">xs:minInclusive</span> <span class="scTag">value</span>="<span class="scContent">0</span>"/&gt;</div>&lt;/<span class="scTag">xs:restriction</span>&gt;</div>&lt;/<span class="scTag">xs:simpleType</span>&gt;</div>
+      </div>
+      <script type="text/javascript">
+<!--
+setState('type_whole_scbox', false);
+// -->
+</script>
+    </div>
+    <div style="text-align: right; clear: both;">
+      <a href="#top">top</a>
+    </div>
+    <hr />
+    <div id="legend">
+      <h2>
+        <a name="Legend" id="Legend">Legend</a>
+      </h2>
+      <div style="float: left; width: 15em;">
+        <h3 style="margin-bottom: 0px;">Complex Type:</h3>
+        <div class="hint" style="margin-left: 0em;">Schema Component Type</div>
+      </div>
+      <div style="float: left; width: 15em;">
+        <h3 style="margin-bottom: 0px;">
+          <span class="name">AusAddress</span>
+        </h3>
+        <div class="hint" style="margin-left: 0em;">Schema Component Name</div>
+      </div>
+      <table class="hierarchy" style="clear : both">
+        <tr>
+          <th>Super-types:</th>
+          <td><span class="type" style="color: #0000FF; text-decoration:underline;">Address</span> &lt; <span class="current">AusAddress</span> (by extension)</td>
+        </tr>
+        <tr>
+          <th>Sub-types:</th>
+          <td>
+            <ul>
+              <li><span class="type" style="color: #0000FF; text-decoration:underline;">QLDAddress</span> (by restriction)</li>
+            </ul>
+          </td>
+        </tr>
+      </table>
+      <div class="hint">If this schema component is a type definition, its type hierarchy is shown in a gray-bordered box.</div>
+      <table class="properties">
+        <tr>
+          <th>Name</th>
+          <td>AusAddress</td>
+        </tr>
+        <tr>
+          <th>
+            <a title="Look up 'Abstract' in glossary" href="#term_Abstract">Abstract</a>
+          </th>
+          <td>no</td>
+        </tr>
+      </table>
+      <div class="hint">The table above displays the properties of this schema component.</div>
+      <div class="sample box">
+        <div>
+          <span class="caption">XML Instance Representation</span>
+        </div>
+        <div class="contents"><span style="margin-left: 0em">&lt;...</span><span class="newFields"><span> country="<span class="fixed">Australia</span>"</span></span>&gt; <br /><span style="margin-left: 1.5em" class="inherited">&lt;unitNo&gt; <span class="type">string</span> &lt;/unitNo&gt; <span class="occurs">[0..1]</span></span><br /><span style="margin-left: 1.5em" class="inherited">&lt;houseNo&gt; <span class="type">string</span> &lt;/houseNo&gt; <span class="occurs">[1]</span></span><br /><span style="margin-left: 1.5em" class="inherited">&lt;street&gt; <span class="type">string</span> &lt;/street&gt; <span class="occurs">[1]</span></span><br /><span class="group" style="margin-left: 1.5em">Start <a title="Look up 'Choice' in glossary" href="#term_Choice">Choice</a><span class="occurs">[1]</span></span><br /><span style="margin-left: 3em" class="inherited">&lt;city&gt; <span class="type">string</span> &lt;/city&gt; <span class="occurs">[1]</span></span><br /><span style="margin-left: 3em" class="inherited">&lt;town&gt; <span class="type">string</span> &lt;/town&gt; <span class="occurs">[1]</span></span><br /><span class="group" style="margin-left: 1.5em">End Choice</span><br /><span class="newFields"><span style="margin-left: 1.5em">&lt;state&gt; <span class="type" style="text-decoration:underline;">AusStates</span> &lt;/state&gt; <span class="occurs">[1]</span></span><br /><span style="margin-left: 1.5em">&lt;postcode&gt; <span class="constraint">string &lt;&lt;<em>pattern</em> = [1-9][0-9]{3}&gt;&gt;</span> &lt;/postcode&gt; <span class="occurs">[1]</span><a href="javascript:void(0)" title="View Documentation" class="documentation" onclick="docArray = new Array('Post code must be a four-digit number.'); viewDocumentation('Element', 'postcode', docArray);">?</a></span><br /></span><span style="margin-left: 0em">&lt;/...&gt;</span><br /></div>
+      </div>
+      <div class="hint">
+        <p>The XML Instance Representation table above shows the schema component's content as an XML instance.</p>
+        <ul>
+          <li>The minimum and maximum occurrence of elements and attributes are provided in square brackets, e.g. [0..1].</li>
+          <li>Model group information are shown in gray, e.g. Start Choice ... End Choice.</li>
+          <li>For type derivations, the elements and attributes that have been added to or changed from the base type's content are shown in <span style="font-weight: bold">bold</span>.</li>
+          <li>If an element/attribute has a fixed value, the fixed value is shown in green, e.g. country="Australia".</li>
+          <li>Otherwise, the type of the element/attribute is displayed.
+               <ul><li>If the element/attribute's type is in the schema, a link is provided to it.</li><li>For local simple type definitions, the constraints are displayed in angle brackets, e.g. &lt;&lt;<em>pattern</em> = [1-9][0-9]{3}&gt;&gt;.</li></ul></li>
+          <li>If a local element/attribute has documentation, it will be displayed in a window that pops up when the question mark inside the attribute or next to the element is clicked, e.g. &lt;postcode&gt;.</li>
+        </ul>
+      </div>
+      <div class="schemaComponent box">
+        <div>
+          <span class="caption">Schema Component Representation</span>
+        </div>
+        <div class="contents">
+          <span style="margin-left: 0em">&lt;<span class="scTag">complexType</span><span class="scTag">name</span>="<span class="scContent">AusAddress</span>"&gt;</span>
+          <br />
+          <span style="margin-left: 1.5em">&lt;<span class="scTag">complexContent</span>&gt;</span>
+          <br />
+          <span style="margin-left: 3em">&lt;<span class="scTag">extension</span><span class="scTag">base</span>="<span class="scContent"><span class="type" style="text-decoration:underline;">Address</span></span>"&gt;</span>
+          <br />
+          <span style="margin-left: 4.5em">&lt;<span class="scTag">sequence</span>&gt;</span>
+          <br />
+          <span style="margin-left: 6em">&lt;<span class="scTag">element</span><span class="scTag">name</span>="<span class="scContent">state</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type" style="text-decoration:underline;">AusStates</span></span>"/&gt;</span>
+          <br />
+          <span style="margin-left: 6em">&lt;<span class="scTag">element</span><span class="scTag">name</span>="<span class="scContent">postcode</span>"&gt;</span>
+          <br />
+          <span style="margin-left: 7.5em">&lt;<span class="scTag">simpleType</span>&gt;</span>
+          <br />
+          <span style="margin-left: 9em">&lt;<span class="scTag">restriction</span><span class="scTag">base</span>="<span class="scContent"><span class="type">string</span></span>"&gt;</span>
+          <br />
+          <span style="margin-left: 10.5em">&lt;<span class="scTag">pattern</span><span class="scTag">value</span>="<span class="scContent">[1-9][0-9]{3}</span>"/&gt;</span>
+          <br />
+          <span style="margin-left: 9em">&lt;/<span class="scTag">restriction</span>&gt;</span>
+          <br />
+          <span style="margin-left: 7.5em">&lt;/<span class="scTag">simpleType</span>&gt;</span>
+          <br />
+          <span style="margin-left: 6em">&lt;/<span class="scTag">element</span>&gt;</span>
+          <br />
+          <span style="margin-left: 4.5em">&lt;/<span class="scTag">sequence</span>&gt;</span>
+          <br />
+          <span style="margin-left: 4.5em">&lt;<span class="scTag">attribute</span><span class="scTag">name</span>="<span class="scContent">country</span>" <span class="scTag">type</span>="<span class="scContent"><span class="type">string</span></span>" <span class="scTag">fixed</span>="<span class="scContent">Australia</span>"/&gt;</span>
+          <br />
+          <span style="margin-left: 3em">&lt;/<span class="scTag">extension</span>&gt;</span>
+          <br />
+          <span style="margin-left: 1.5em">&lt;/<span class="scTag">complexContent</span>&gt;</span>
+          <br />
+          <span style="margin-left: 0em">&lt;/<span class="scTag">complexType</span>&gt;</span>
+          <br />
+        </div>
+      </div>
+      <div class="hint">The Schema Component Representation table above displays the underlying XML representation of the schema component. (Annotations are not shown.)</div>
+      <div style="text-align: right; clear: both;">
+        <a href="#top">top</a>
+      </div>
+      <hr />
+    </div>
+    <div id="glossary">
+      <h2>
+        <a name="Glossary" id="Glossary">Glossary</a>
+      </h2>
+      <p><span class="glossaryTerm"><a name="term_Abstract" id="term_Abstract">Abstract</a> </span>(Applies to complex type definitions and element declarations). An abstract element or complex type cannot used to validate an element instance. If there is a reference to an abstract element, only element declarations that can substitute the abstract element can be used to validate the instance. For references to abstract type definitions, only derived types can be used.</p>
+      <p><span class="glossaryTerm"><a name="term_All" id="term_All">All Model Group</a> </span>Child elements can be provided <em>in any order</em> in instances. See: <a title="http://www.w3.org/TR/xmlschema-1/#element-all" href="http://www.w3.org/TR/xmlschema-1/#element-all">http://www.w3.org/TR/xmlschema-1/#element-all</a>.</p>
+      <p><span class="glossaryTerm"><a name="term_Choice" id="term_Choice">Choice Model Group</a> </span><em>Only one</em> from the list of child elements and model groups can be provided in instances. See: <a title="http://www.w3.org/TR/xmlschema-1/#element-choice" href="http://www.w3.org/TR/xmlschema-1/#element-choice">http://www.w3.org/TR/xmlschema-1/#element-choice</a>.</p>
+      <p><span class="glossaryTerm"><a name="term_CollapseWS" id="term_CollapseWS">Collapse Whitespace Policy</a> </span>Replace tab, line feed, and carriage return characters with space character (Unicode character 32). Then, collapse contiguous sequences of space characters into single space character, and remove leading and trailing space characters.</p>
+      <p><span class="glossaryTerm"><a name="term_ElemBlock" id="term_ElemBlock">Disallowed Substitutions</a> </span>(Applies to element declarations). If <em>substitution</em> is specified, then <a title="Look up 'substitution group' in glossary" href="#term_SubGroup">substitution group</a> members cannot be used in place of the given element declaration to validate element instances. If <em>derivation methods</em>, e.g. extension, restriction, are specified, then the given element declaration will not validate element instances that have types derived from the element declaration's type using the specified derivation methods. Normally, element instances can override their declaration's type by specifying an <code>xsi:type</code> attribute.</p>
+      <p><span class="glossaryTerm"><a name="term_Key" id="term_Key">Key Constraint</a> </span>Like <a title="Look up 'Uniqueness Constraint' in glossary" href="#term_Unique">Uniqueness Constraint</a>, but additionally requires that the specified value(s) must be provided. See: <a title="http://www.w3.org/TR/xmlschema-1/#cIdentity-constraint_Definitions" href="http://www.w3.org/TR/xmlschema-1/#cIdentity-constraint_Definitions">http://www.w3.org/TR/xmlschema-1/#cIdentity-constraint_Definitions</a>.</p>
+      <p><span class="glossaryTerm"><a name="term_KeyRef" id="term_KeyRef">Key Reference Constraint</a> </span>Ensures that the specified value(s) must match value(s) from a <a title="Look up 'Key Constraint' in glossary" href="#term_Key">Key Constraint</a> or <a title="Look up 'Uniqueness Constraint' in glossary" href="#term_Unique">Uniqueness Constraint</a>. See: <a title="http://www.w3.org/TR/xmlschema-1/#cIdentity-constraint_Definitions" href="http://www.w3.org/TR/xmlschema-1/#cIdentity-constraint_Definitions">http://www.w3.org/TR/xmlschema-1/#cIdentity-constraint_Definitions</a>.</p>
+      <p><span class="glossaryTerm"><a name="term_ModelGroup" id="term_ModelGroup">Model Group</a> </span>Groups together element content, specifying the order in which the element content can occur and the number of times the group of element content may be repeated. See: <a title="http://www.w3.org/TR/xmlschema-1/#Model_Groups" href="http://www.w3.org/TR/xmlschema-1/#Model_Groups">http://www.w3.org/TR/xmlschema-1/#Model_Groups</a>.</p>
+      <p><span class="glossaryTerm"><a name="term_Nillable" id="term_Nillable">Nillable</a> </span>(Applies to element declarations). If an element declaration is nillable, instances can use the <code>xsi:nil</code> attribute. The <code>xsi:nil</code> attribute is the boolean attribute, <em>nil</em>, from the <em>http://www.w3.org/2001/XMLSchema-instance</em> namespace. If an element instance has an <code>xsi:nil</code> attribute set to true, it can be left empty, even though its element declaration may have required content.</p>
+      <p><span class="glossaryTerm"><a name="term_Notation" id="term_Notation">Notation</a> </span>A notation is used to identify the format of a piece of data. Values of elements and attributes that are of type, NOTATION, must come from the names of declared notations. See: <a title="http://www.w3.org/TR/xmlschema-1/#cNotation_Declarations" href="http://www.w3.org/TR/xmlschema-1/#cNotation_Declarations">http://www.w3.org/TR/xmlschema-1/#cNotation_Declarations</a>.</p>
+      <p><span class="glossaryTerm"><a name="term_PreserveWS" id="term_PreserveWS">Preserve Whitespace Policy</a> </span>Preserve whitespaces exactly as they appear in instances.</p>
+      <p><span class="glossaryTerm"><a name="term_TypeFinal" id="term_TypeFinal">Prohibited Derivations</a> </span>(Applies to type definitions). Derivation methods that cannot be used to create sub-types from a given type definition.</p>
+      <p><span class="glossaryTerm"><a name="term_TypeBlock" id="term_TypeBlock">Prohibited Substitutions</a> </span>(Applies to complex type definitions). Prevents sub-types that have been derived using the specified derivation methods from validating element instances in place of the given type definition.</p>
+      <p><span class="glossaryTerm"><a name="term_ReplaceWS" id="term_ReplaceWS">Replace Whitespace Policy</a> </span>Replace tab, line feed, and carriage return characters with space character (Unicode character 32).</p>
+      <p><span class="glossaryTerm"><a name="term_Sequence" id="term_Sequence">Sequence Model Group</a> </span>Child elements and model groups must be provided <em>in the specified order</em> in instances. See: <a title="http://www.w3.org/TR/xmlschema-1/#element-sequence" href="http://www.w3.org/TR/xmlschema-1/#element-sequence">http://www.w3.org/TR/xmlschema-1/#element-sequence</a>.</p>
+      <p><span class="glossaryTerm"><a name="term_SubGroup" id="term_SubGroup">Substitution Group</a> </span>Elements that are <em>members</em> of a substitution group can be used wherever the <em>head</em> element of the substitution group is referenced.</p>
+      <p><span class="glossaryTerm"><a name="term_ElemFinal" id="term_ElemFinal">Substitution Group Exclusions</a> </span>(Applies to element declarations). Prohibits element declarations from nominating themselves as being able to substitute a given element declaration, if they have types that are derived from the original element's type using the specified derivation methods.</p>
+      <p><span class="glossaryTerm"><a name="term_TargetNS" id="term_TargetNS">Target Namespace</a> </span>The target namespace identifies the namespace that components in this schema belongs to. If no target namespace is provided, then the schema components do not belong to any namespace.</p>
+      <p><span class="glossaryTerm"><a name="term_Unique" id="term_Unique">Uniqueness Constraint</a> </span>Ensures uniqueness of an element/attribute value, or a combination of values, within a specified scope. See: <a title="http://www.w3.org/TR/xmlschema-1/#cIdentity-constraint_Definitions" href="http://www.w3.org/TR/xmlschema-1/#cIdentity-constraint_Definitions">http://www.w3.org/TR/xmlschema-1/#cIdentity-constraint_Definitions</a>.</p>
+      <div style="text-align: right; clear: both;">
+        <a href="#top">top</a>
+      </div>
+      <hr />
+    </div>
+    <p class="footer">Generated by <a href="http://xml.fiforms.org/xs3p/">xs3p</a> (<a href="http://titanium.dstc.edu.au/xml/xs3p">old link</a>)
+               . Last modified: <script type="text/javascript">
+<!--
+document.write(document.lastModified);
+// -->
+</script></p>
+  </body>
+</html>
