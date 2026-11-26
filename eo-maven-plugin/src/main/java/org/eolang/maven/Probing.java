@@ -27,9 +27,22 @@ import org.cactoos.list.ListOf;
  * it. An object whose name carries no dot belongs to the root package, which
  * is completed the same way as any other.</p>
  *
+ * <p>Every object that arrives this way brings the objects of its own
+ * package too, all the way down, such as {@code i64.div} for {@code i64}.
+ * The source never names {@code Φ.i64.div}: it writes {@code x.div}, and
+ * the call reaches the object only when Java runs it, through the
+ * fallback of the dispatch to the package (#5486). Without it, the
+ * {@code infer} goal can't tell which void each argument of such a call
+ * lands in, and {@code dealpha} leaves it positional (#10083).</p>
+ *
  * @since 0.61.0
  */
 final class Probing implements Step {
+
+    /**
+     * The prefix of the names of the root package.
+     */
+    private static final String ROOT = "org.eolang.";
 
     /**
      * Tojos to probe.
@@ -149,17 +162,27 @@ final class Probing implements Step {
         final Set<String> completed
     ) throws IOException {
         final String pkg = object.substring(0, Math.max(object.lastIndexOf('.'), 0));
+        this.fill(pkg, object.startsWith(Probing.ROOT), src, completed);
+        this.fill(object, object.startsWith(Probing.ROOT), src, completed);
+    }
+
+    private void fill(
+        final String pkg,
+        final boolean rooted,
+        final Path src,
+        final Set<String> completed
+    ) throws IOException {
         if (completed.add(pkg)) {
-            final String root = "org.eolang.";
-            final boolean rooted = object.startsWith(root);
-            for (final String sibling : this.objectionary.children(pkg)) {
+            for (final String member : this.objectionary.children(pkg)) {
                 final String qualified;
-                if (rooted && !sibling.startsWith(root)) {
-                    qualified = root.concat(sibling);
+                if (rooted && !member.startsWith(Probing.ROOT)) {
+                    qualified = Probing.ROOT.concat(member);
                 } else {
-                    qualified = sibling;
+                    qualified = member;
                 }
-                this.tojos.add(qualified).withDiscoveredAt(src);
+                if (this.tojos.add(qualified).withDiscoveredAt(src).sourceless()) {
+                    this.fill(qualified, rooted, src, completed);
+                }
             }
         }
     }

@@ -88,6 +88,35 @@ final class ProbingTest {
     }
 
     @Test
+    void registersObjectsInsideSiblingThatNoSourceNames(
+        @TempDir final Path temp
+    ) throws IOException {
+        final TjsForeign tojos = new TjsForeign();
+        tojos.add("test").withXmir(this.number(temp));
+        new Probing(tojos, this.integers(), true).exec();
+        MatcherAssert.assertThat(
+            "Probe should have registered the objects deep inside a sibling, reached only by dispatch",
+            tojos.contains("org.eolang.i64.div") && tojos.contains("org.eolang.i64.div.exact"),
+            Matchers.is(true)
+        );
+    }
+
+    @Test
+    void doesNotRegisterObjectsInsideSiblingThatLocalSourcesProvide(
+        @TempDir final Path temp
+    ) throws IOException {
+        final TjsForeign tojos = new TjsForeign();
+        tojos.add("test").withXmir(this.number(temp));
+        tojos.add("org.eolang.i64").withSource(temp.resolve("i64.eo"));
+        new Probing(tojos, this.integers(), true).exec();
+        MatcherAssert.assertThat(
+            "Probe should not register the objects inside a sibling that is on disk already",
+            tojos.contains("org.eolang.i64.div"),
+            Matchers.is(false)
+        );
+    }
+
+    @Test
     void doesNotCompletePackageThatLocalSourcesProvide(
         @TempDir final Path temp
     ) throws IOException {
@@ -175,6 +204,30 @@ final class ProbingTest {
             ).parsed().toString().getBytes(StandardCharsets.UTF_8)
         );
         return xmir;
+    }
+
+    private Path number(final Path temp) throws IOException {
+        final Path xmir = temp.resolve("test.xmir");
+        Files.write(
+            xmir,
+            new EoSyntax(
+                String.join(
+                    System.lineSeparator(),
+                    "[] > test",
+                    "  Q.org.eolang.number > @"
+                )
+            ).parsed().toString().getBytes(StandardCharsets.UTF_8)
+        );
+        return xmir;
+    }
+
+    private Objectionary integers() {
+        return new OyIndexed(
+            new Objectionary.Fake(),
+            new ObjectsIndex(
+                () -> new SetOf<>("number", "i64", "i64.div", "i64.div.exact")
+            )
+        );
     }
 
     private Objectionary tuples() {
