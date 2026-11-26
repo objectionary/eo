@@ -97,7 +97,13 @@
     dir.tmpfile > second
 
   ++> can-delete-a-directory-with-nested-subdirectories
-    f.exists.and dir.deleted.exists.not > @
+    and. > @
+      and.
+        and.
+          f.exists.and dir.deleted.exists.not
+          f.exists.not
+        leaf.exists.not
+      mid.exists.not
     as-dir. (directory mktemp.tmpfile.deleted).made.as-path > dir
     leaf.tmpfile > f
     as-dir. (directory mid.tmpfile.deleted).made.as-path > leaf
