@@ -62,30 +62,17 @@ final class Dealphaed implements Scalar<String> {
         return new XMLDocument(root).toString();
     }
 
-    /**
-     * Name every positional argument under this node.
-     *
-     * @param node The node to walk
-     * @param names The names of the voids, by locators
-     */
     private static void walked(final Node node, final Map<String, String> names) {
         final NodeList kids = node.getChildNodes();
         for (int idx = 0; idx < kids.getLength(); ++idx) {
             final Node kid = kids.item(idx);
-            if (kid instanceof Element) {
-                Dealphaed.named((Element) kid, node, names);
+            if (kid instanceof Element element) {
+                Dealphaed.named(element, node, names);
                 Dealphaed.walked(kid, names);
             }
         }
     }
 
-    /**
-     * Name one argument, if its name is positional.
-     *
-     * @param kid The argument
-     * @param parent The application it belongs to
-     * @param names The names of the voids, by locators
-     */
     private static void named(
         final Element kid, final Node parent, final Map<String, String> names
     ) {
@@ -93,8 +80,8 @@ final class Dealphaed implements Scalar<String> {
             final String loc = kid.getAttribute("loc");
             if (names.containsKey(loc)) {
                 kid.setAttribute("as", names.get(loc));
-            } else if (parent instanceof Element
-                && ((Element) parent).getAttribute("base").matches("Φ\\.(number|string|bytes)")) {
+            } else if (parent instanceof Element element
+                && element.getAttribute("base").matches("Φ\\.(number|string|bytes)")) {
                 kid.setAttribute("as", "φ");
             } else {
                 throw new IllegalArgumentException(
