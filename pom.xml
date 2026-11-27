@@ -344,6 +344,11 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>buildnumber-maven-plugin</artifactId>
+        <version>3.4.0</version>
+      </plugin>
+      <plugin>
         <groupId>pw.krejci</groupId>
         <artifactId>jmh-maven-plugin</artifactId>
         <version>0.2.2</version>
@@ -381,6 +386,25 @@
     <pluginManagement>
       <plugins>
         <plugin>
+          <groupId>com.jcabi</groupId>
+          <artifactId>jcabi-maven-plugin</artifactId>
+          <version>0.17.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-plugin-plugin</artifactId>
+          <version>3.16.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>versions-maven-plugin</artifactId>
+          <version>2.25.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>0.8.16</version>
+        </plugin>
+        <plugin>
           <groupId>org.codehaus.gmaven</groupId>
           <artifactId>groovy-maven-plugin</artifactId>
           <version>2.1.1</version>
@@ -407,6 +431,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
+          <!-- Pinned for Windows Fibonacci builds; see #1178 and #1585. -->
           <version>3.8.1</version>
           <configuration combine.self="override">
             <release>${maven.compiler.source}</release>
@@ -434,6 +459,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.6.1</version>
           <configuration>
             <skipTests>${skipUTs}</skipTests>
             <systemPropertyVariables>
@@ -453,6 +479,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
+          <version>3.6.1</version>
           <configuration>
             <skipTests>${skipITs}</skipTests>
             <forkCount>1.0C</forkCount>
@@ -487,6 +514,38 @@
     </plugins>
   </reporting>
   <profiles>
+    <profile>
+      <id>site</id>
+      <reporting>
+        <plugins>
+          <plugin>
+            <artifactId>maven-surefire-report-plugin</artifactId>
+            <version>3.6.1</version>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>versions-maven-plugin</artifactId>
+            <version>2.25.1</version>
+          </plugin>
+          <plugin>
+            <artifactId>maven-plugin-report-plugin</artifactId>
+            <version>3.16.0</version>
+          </plugin>
+        </plugins>
+      </reporting>
+    </profile>
+    <profile>
+      <id>sonatype</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>0.12.0</version>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>skipTests</id>
       <activation>
