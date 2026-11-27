@@ -9,18 +9,12 @@
 # above U+10FFFF (`F4` with a `90`-`BF` second byte, and `F5`-`FF` leads) are
 # rejected. A sequence that is incomplete or malformed terminates the
 # computation, exactly like `slice` does for a truncated character.
-#
-# @todo #9891:30min Stop skipping 'too-deep-object' here. The formatter folds
-#  the hidden `>>` helpers of `length` onto their first reads and nests them
-#  deeper than the linter allows. Remove the `+unlint too-deep-object` meta once
-#  the formatter keeps them shallow.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package string
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint too-deep-object
 +version 0.0.0
 
 [^text] > length
@@ -88,12 +82,7 @@
                   4
                   b2cont.and
                     and.
-                      eq.
-                        and.
-                          text.text.as-bytes.slice (index.plus 3) 1
-                          C0-
-                        80-
-                      if.
+                      if. >> quartet
                         lead.eq F0-
                         or.
                           eq. (b1.and F0-) 90-
@@ -109,6 +98,11 @@
                                 lead.eq F3-
                             b1cont
                             false
+                      eq. >> fourth
+                        and.
+                          text.text.as-bytes.slice (index.plus 3) 1
+                          C0-
+                        80-
                   accum
                 T
                   "Unknown byte format (%x), can't recognize character".printf
