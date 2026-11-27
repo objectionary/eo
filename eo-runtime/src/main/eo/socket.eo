@@ -232,10 +232,9 @@
         0 > startup
   [recv] > as-input
     [^stream size] > read
-      @. > @
-        read.
-          input-block --
-          size
+      read. > @
+        input-block --
+        size
       [^block buffer] > input-block
         buffer > @
         [^cursor size] > read
@@ -245,8 +244,7 @@
             cursor.block.input-block chunk
   [send] > as-output
     [^sink buffer] > write
-      @. > @
-        output-block.write buffer
+      output-block.write buffer > @
       [^block] > output-block
         true > @
         [^tail buffer] > write

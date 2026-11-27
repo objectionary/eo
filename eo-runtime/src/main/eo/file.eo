@@ -9,8 +9,7 @@
 
 [location] > file
   path > @
-  @. > as-path
-    Q.path path
+  Q.path path > as-path
   or. > [^entry] > exists
     eq.
       os.is-windows.if

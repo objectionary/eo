@@ -65,8 +65,7 @@
       true
   [] > line-or-eof
     first.as-bytes.size.eq 0 > eof
-    @. > first
-      console.read 1
+    console.read 1 > first
     eof.if > line
       ""
       [^probe input buffer] >> rec-read
@@ -83,7 +82,6 @@
             next
             buffer.concat char
         input.as-bytes > char
-        @. > next
-          input.read 1
+        input.read 1 > next
       | first --
   stream.line-or-eof.line > [^stream] > next-line

@@ -255,9 +255,9 @@
       i64 00-00-00-00-00-00-00-EA
       T
 
-  123.@.eq 123.@ ++> can-equal-the-same-i64
+  123.as-i64.eq 123.as-i64 ++> can-equal-the-same-i64
 
-  0.@.eq 0.@ ++> can-equal-zero-to-zero
+  0.as-i64.eq 0.as-i64 ++> can-equal-zero-to-zero
 
   42.as-i64.as-bytes.eq 00-00-00-00-00-00-00-2A ++> can-expose-valid-bytes
 
@@ -329,7 +329,7 @@
     0.as-i64
 
   not. ++> can-tell-it-does-not-equal-a-different-i64
-    123.@.eq 42.@
+    123.as-i64.eq 42.as-i64
 
   not. ++> can-tell-it-does-not-match-the-bytes-of-the-same-number
     eq.
