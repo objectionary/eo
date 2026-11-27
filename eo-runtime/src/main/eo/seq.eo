@@ -28,16 +28,23 @@
     steps.length.eq 0
     T "Can't run a sequence of no steps"
     if.
-      steps.length.eq 1
+      gt.
+        size.
+          dataized
+            if. > [^seq rest] >> ran
+              rest.length.eq 0
+              0
+              if.
+                gt.
+                  size.
+                    dataized (seq.ran rest.tail)
+                  -1
+                rest.head
+                rest.head
+            | steps.tail
+        -1
       steps.head
-      if.
-        gt.
-          size.
-            dataized
-              seq steps.tail
-          -1
-        steps.head
-        steps.head
+      steps.head
 
   eq. ++> can-calculate-and-return
     1
