@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A single-use `[x] >> scan` helper applied by a `>> found` handle that sits
+# inside another `>> rest` handle (#10088). After hoisting, `rest` stands
+# between `scan` and `found`, so the printer used to drop `scan` and print
+# `found` as a dangling `$.v6_2 t`. Now `scan` lands right above its use and
+# `found` becomes a `| t` pipe.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [t] > uri
+    plus. > a
+      t.slice >> rest
+        scan t >> found
+      rest
+    [x] >> scan
+      x.plus 1 > @
+
+printed: |
+  [t] > uri
+    plus. > a
+      t.slice >> rest
+        x.plus 1 > [x] >>
+        | t
+      rest

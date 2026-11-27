@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A private `[] >> scan` helper reached only by a bare `scan >> found` handle,
+# which itself sits inside another `>> rest` handle (#10088). The printer used
+# to delete `scan` and leave a dangling `$.v7_2` in its place.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > uri
+    rest > a
+      slice >> rest
+        scan >> found
+    [] >> scan
+
+printed: |
+  [] > uri
+    rest > a
+      slice >> rest
+        []
