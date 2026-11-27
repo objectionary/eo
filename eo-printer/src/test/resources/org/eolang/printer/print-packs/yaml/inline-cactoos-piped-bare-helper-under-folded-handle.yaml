@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A private `[] >> scan` helper reached only by a bare `scan >> found` handle,
+# which sits inside an argument of another `>> has-port` handle (#10091). The
+# printer used to keep `scan` without a name and print `found` as a dangling
+# `v8_2`.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [t] > uri
+    if. > host
+      not. >> has-port
+        eq.
+          scan >> found
+          -1
+      t
+      ""
+    [] >> scan
+
+printed: |
+  [t] > uri
+    if. > host
+      not. >> has-port
+        eq.
+          []
+          -1
+      t
+      ""

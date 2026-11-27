@@ -1,0 +1,37 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# A single-use `[x] >> scan` helper applied by a `>> found` handle that sits
+# inside an argument of another `>> has-port` handle and is read twice, so it
+# keeps its name (#10091). The printer used to keep `scan` without a name and
+# print `found` as `v11_2 t`. Now `scan` moves right above `found`, which
+# becomes its `| t >> found` pipe.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [t] > uri
+    if. > host
+      not. >> has-port
+        eq.
+          scan t >> found
+          -1
+      found.plus 1
+      ""
+    [x] >> scan
+      x.length > @
+
+printed: |
+  [t] > uri
+    if. > host
+      not. >> has-port
+        found.eq -1
+      found.plus 1
+      ""
+    x.length > [x] >>
+    | t >> found
