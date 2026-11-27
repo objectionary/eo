@@ -1,0 +1,26 @@
+# Number of exactly eight bytes, or termination. Every attribute of the
+# package that reaches a Java atom needs an IEEE-754 double, so a receiver
+# of any other width would fail later, at `BytesRaw.whenFit`, naming an
+# attribute the caller never wrote. Stated once here, with the message form
+# of `u64` and `i64`: width is the culprit, not the attribute that happened
+# to read it first (#9893).
+
++architect yegor256@gmail.com
++home https://github.com/objectionary/eo
++package number
++spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
++spdx SPDX-License-Identifier: MIT
++version 0.0.0
+
+[^num] > checked
+  if. > @
+    num.as-bytes.size.eq 8
+    number num.as-bytes
+    T
+      "A number needs exactly 8 bytes, got %d".printf
+        * num.as-bytes.size
+
+  42.checked.eq 42 ++> can-return-a-number-of-eight-bytes
+
+  checked. --> stops-on-a-number-that-is-not-eight-bytes
+    number "abc"
