@@ -1,16 +1,10 @@
 # Generates a pseudo-random number.
-#
-# @todo #9891:30min Stop skipping 'too-deep-object' here. The formatter folds
-#  the hidden `>>` helpers of `random` onto their first reads and nests them
-#  deeper than the linter allows. Remove the `+unlint too-deep-object` meta once
-#  the formatter keeps them shallow.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +package number
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint too-deep-object
 +version 0.0.0
 
 [^num] > random
@@ -46,7 +40,7 @@
           as-bytes.
             plus.
               plus.
-                as-i64.
+                as-i64. >> shifted
                   left.
                     and.
                       as-bytes.
