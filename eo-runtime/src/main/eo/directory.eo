@@ -170,45 +170,35 @@
     [^folder index acc braced classed] >> translated
       if. > @
         index.gte folder.glob.length
-        finished
+        braced.if
+          T
+            "Can't parse '%s' as a glob pattern, Missing '}'".printf
+              * folder.glob
+          acc
         folder.translated
-          index.plus advance
+          index.plus
+            folder.step f
           "".joined
-            * acc token
-          classed.if
-            braced
-            if.
-              char.eq "{"
-              true
-              if.
-                char.eq "}"
-                false
-                braced
-          within
-      slashed.if > advance
-        3
-        if.
-          double.or negated
-          2
-          1
-      if. > alternated
-        char.eq "{"
-        "("
-        if.
-          braced.and
-            char.eq "}"
-          ")"
-          if.
-            braced.and
-              char.eq ","
-            "|"
-            escaped char
-      if. > bracketed
-        char.eq "["
-        T
-          "Can't parse '%s' as a glob pattern, Missing ']'".printf
-            * folder.glob
-        alternated
+            *
+              acc
+              classed.if
+                if.
+                  f.char.eq "]"
+                  "]"
+                  if. > [char] >> classified
+                    "\\[&".contains char
+                    "".joined
+                      * "\\" char
+                    char
+                  |
+                    char.
+                      folder.flags index classed >> f
+                f.opening.if
+                  f.negated.if "[^" "["
+                  folder.starred f braced
+          folder.rebraced f.char braced classed
+          folder.inside f.char f.opening classed
+    [^folder index classed] > flags
       folder.glob.at index > char
       classed.not.and > double
         and.
@@ -218,11 +208,6 @@
               index.plus 1
               "" > [x]
             "*"
-      braced.if > finished
-        T
-          "Can't parse '%s' as a glob pattern, Missing '}'".printf
-            * folder.glob
-        acc
       opening.and > negated
         eq.
           folder.glob.at
@@ -240,41 +225,65 @@
             index.plus 2
             "" > [x]
           "/"
-      classed.if > token
-        if.
-          char.eq "]"
-          "]"
-          if. > [char] >> classified
-            "\\[&".contains char
-            "".joined
-              * "\\" char
-            char
-          | char
-        opening.if
-          negated.if "[^" "["
-          slashed.if
-            "".joined
-              * "(?:.*" literal ")?"
-            double.if
-              ".*"
-              if.
-                char.eq "*"
-                "".joined
-                  * single "*"
-                if.
-                  char.eq "?"
-                  single
-                  if.
-                    char.eq "/"
-                    literal
-                    bracketed
-      opening.if > within
+    f.slashed.if > [^folder f] > step
+      3
+      if.
+        f.double.or f.negated
+        2
+        1
+    classed.if > [^folder char braced classed] > rebraced
+      braced
+      if.
+        char.eq "{"
         true
         if.
-          classed.and
-            char.eq "]"
+          char.eq "}"
           false
-          classed
+          braced
+    opening.if > [^folder char opening classed] > inside
+      true
+      if.
+        classed.and
+          char.eq "]"
+        false
+        classed
+    f.slashed.if > [^folder f braced] > starred
+      "".joined
+        *
+          "(?:.*"
+          literal
+          ")?"
+      f.double.if
+        ".*"
+        folder.symbol f.char braced
+    if. > [^folder char braced] > symbol
+      char.eq "*"
+      "".joined
+        * single "*"
+      if.
+        char.eq "?"
+        single
+        if.
+          char.eq "/"
+          literal
+          folder.plain char braced
+    if. > [^folder char braced] > plain
+      char.eq "["
+      T
+        "Can't parse '%s' as a glob pattern, Missing ']'".printf
+          * folder.glob
+      if.
+        char.eq "{"
+        "("
+        if.
+          braced.and
+            char.eq "}"
+          ")"
+          if.
+            braced.and
+              char.eq ","
+            "|"
+            escaped char
 
   ++> can-create-a-regular-tmpfile
     seq * > @

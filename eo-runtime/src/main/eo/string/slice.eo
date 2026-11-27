@@ -24,7 +24,6 @@
 +package string
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint too-deep-object
 +version 0.0.0
 
 [^text start len] > slice
@@ -76,96 +75,27 @@
               if.
                 index.eq size
                 T cause
-                if.
-                  eq.
-                    and.
-                      ctx.text.as-bytes.slice index 1 >> byte
-                      80-
-                    00-
-                  ctx.recidx
-                    if. > [^owner index csize valid] >> increase
-                      gt. (index.plus csize) size
+                ctx.recidx
+                  if. > [^owner index csize valid] >> increase
+                    gt. (index.plus csize) size
+                    T
+                      "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
+                        * csize index owner.ctx.text.as-bytes
+                    valid.if
+                      index.plus csize
                       T
-                        "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
-                          * csize index owner.ctx.text.as-bytes
-                      valid.if
-                        index.plus csize
-                        T
-                          "Malformed UTF-8 sequence (%x) at %d index".printf
-                            * (owner.ctx.text.as-bytes.slice index csize) index
-                    | index 1 true
-                    accum.plus 1
-                    result
-                    cause
-                  if.
-                    eq. (byte.and E0-) C0-
-                    ctx.recidx
-                      increase
-                        index
-                        2
-                        ((byte.and FE-).eq C0-).not.and
-                          eq. (b1.and C0-) 80- >> b1cont
-                      accum.plus 1
-                      result
-                      cause
-                    if.
-                      eq. (byte.and F0-) E0-
-                      ctx.recidx
-                        increase
-                          index
-                          3
-                          and.
-                            eq. >> b2cont
-                              and.
-                                ctx.text.as-bytes.slice (index.plus 2) 1
-                                C0-
-                              80-
-                            if.
-                              byte.eq E0-
-                              eq.
-                                and.
-                                  ctx.text.as-bytes.slice (index.plus 1) 1 >> b1
-                                  E0-
-                                A0-
-                              if.
-                                byte.eq ED-
-                                eq. (b1.and E0-) 80-
-                                b1cont
-                        accum.plus 1
-                        result
-                        cause
-                      if.
-                        eq. (byte.and F8-) F0-
-                        ctx.recidx
-                          increase
-                            index
-                            4
-                            b2cont.and
-                              and.
-                                eq.
-                                  and.
-                                    ctx.text.as-bytes.slice (index.plus 3) 1
-                                    C0-
-                                  80-
-                                if.
-                                  byte.eq F0-
-                                  ((b1.and F0-).eq 90-).or
-                                    eq. (b1.and E0-) A0-
-                                  if.
-                                    byte.eq F4-
-                                    eq. (b1.and F0-) 80-
-                                    if.
-                                      or. >>
-                                        byte.eq F1- >> leadf1
-                                        or. (byte.eq F2-) (byte.eq F3-)
-                                      b1cont
-                                      false
-                          accum.plus 1
-                          result
-                          cause
-                        T
-                          "Unknown byte format (%x), can't recognize character".printf
-                            * byte
+                        "Malformed UTF-8 sequence (%x) at %d index".printf
+                          * (owner.ctx.text.as-bytes.slice index csize) index
+                  |
+                    index
+                    ctx.width byte >> csize
+                    ctx.checked
+                      ctx.text.as-bytes.slice index 1 >> byte
+                      index
+                      csize
+                  accum.plus 1
+                  result
+                  cause
           |
             bstart
             0
@@ -180,7 +110,106 @@
           ""
           string
             text.as-bytes.slice bstart blen
+  [^ctx byte index csize] > checked
+    if. > @
+      csize.eq 1
+      true
+      if.
+        csize.eq 2
+        ctx.two-ok
+          byte
+          ctx.text.as-bytes.slice >> b1
+            index.plus 1
+            1
+        if.
+          csize.eq 3
+          ctx.three-ok
+            byte
+            b1
+            ctx.text.as-bytes.slice >> b2
+              index.plus 2
+              1
+          ctx.four-ok
+            byte
+            b1
+            b2
+            ctx.text.as-bytes.slice
+              index.plus 3
+              1
+  eq. > [^ctx b] > cont
+    b.and C0-
+    80-
+  if. > [^ctx lead b1] > four-lead
+    lead.eq F0-
+    or.
+      eq.
+        b1.and F0-
+        90-
+      eq.
+        b1.and E0-
+        A0-
+    if.
+      lead.eq F4-
+      eq.
+        b1.and F0-
+        80-
+      and.
+        or.
+          lead.eq F1-
+          or.
+            lead.eq F2-
+            lead.eq F3-
+        ctx.cont b1
+  and. > [^ctx lead b1 b2 b3] > four-ok
+    and.
+      ctx.cont b2
+      ctx.cont b3
+    ctx.four-lead
+      lead
+      b1
   text.as-bytes.size >> size!
+  and. > [^ctx lead b1 b2] > three-ok
+    ctx.cont b2
+    if.
+      lead.eq E0-
+      eq.
+        b1.and E0-
+        A0-
+      if.
+        lead.eq ED-
+        eq.
+          b1.and E0-
+          80-
+        ctx.cont b1
+  and. > [^ctx lead b1] > two-ok
+    not.
+      eq.
+        lead.and FE-
+        C0-
+    ctx.cont b1
+  if. > [^ctx byte] > width
+    eq.
+      byte.and 80-
+      00-
+    1
+    if.
+      eq.
+        byte.and E0-
+        C0-
+      2
+      if.
+        eq.
+          byte.and F0-
+          E0-
+        3
+        if.
+          eq.
+            byte.and F8-
+            F0-
+          4
+          T
+            "Unknown byte format (%x), can't recognize character".printf
+              * byte
 
   eq. ++> can-slice-a-line-break-escape-sequence
     "\n".slice
