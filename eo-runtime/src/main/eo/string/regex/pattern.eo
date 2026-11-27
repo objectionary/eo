@@ -927,19 +927,28 @@
     eq.
       byte index
       5E-
-    regex.element
+    regex.first
       number
         index.plus 1
       opened
       bits
-      regex.none
       true
-    regex.element
+    regex.first
       index
       opened
       bits
-      regex.none
       false
+  [^regex index opened bits negated] > first
+    e.ok.if > @
+      regex.members
+        number
+          at.
+            regex.element index bits >> e
+        opened
+        bits
+        regex.added e regex.none
+        negated
+      e
   [^regex index opened bits items negated] > members
     if. > @
       eq.
@@ -957,13 +966,17 @@
           negated
           regex.flagged 10- bits
         --
-      regex.element
-        index
-        opened
-        bits
-        items
-        negated
-  [^regex index opened bits items negated] > element
+      e.ok.if
+        regex.members
+          number
+            at.
+              regex.element index bits >> e
+          opened
+          bits
+          regex.added e items
+          negated
+        e
+  [^regex index bits] > element
     if. > @
       eq.
         byte start >> b
@@ -985,21 +998,16 @@
                     1
               26-
           no start "Character class intersections are not supported"
-          e.ok.if
-            regex.members
-              number
-                at.
-                  regex.entry start bits >> e
-              opened
-              bits
-              e.preset.if
-                regex.cluster e.letter e.negated items
-                regex.range
-                  regex.beyond e.to
-                  regex.key e.from
-                  items
-              negated
-            e
+          regex.entry start bits
+  e.preset.if > [^regex e items] > added
+    regex.cluster
+      e.letter
+      e.negated
+      items
+    regex.range
+      regex.beyond e.to
+      regex.key e.from
+      items
   [^regex index mode] > entry
     s.ok.if > @
       s.preset.if
