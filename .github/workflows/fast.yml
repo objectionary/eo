@@ -130,7 +130,7 @@ jobs:
       # nothing to swallow, so a test that fails is reported as a failure and
       # not as a skip.
       #
-      # `EOscanfDiagnosticTest` is hand-written and no `.eo` file names it, so
+      # `EOstring$EOscanfDiagnosticTest` is hand-written and no `.eo` file names it, so
       # the walk above never picks it up, while both guards abort it in an
       # ordinary run: one dataization of a twenty-digit `%d` takes longer than
       # `eo.deadline` and passes about 800M through the allocator. It is named
@@ -139,7 +139,7 @@ jobs:
       - env:
           CLASSES: ${{ steps.eo.outputs.classes }}
         run: |
-          tests='EOscanfDiagnosticTest'
+          tests='EOstring$EOscanfDiagnosticTest'
           if [ -n "${CLASSES}" ]; then
             tests="${tests},${CLASSES}"
           fi
