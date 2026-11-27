@@ -29,7 +29,10 @@
 [^num b cant-divide] > div
   if. > @
     b.as-bytes.eq 00-00-00-00-00-00-00-00
-    cant-divide "i64 cannot be divided by zero"
+    cant-divide
+      "Can't divide %s by i64 zero".printf
+        *
+          string num.as-decimal
     if.
       and.
         num.as-bytes.eq 80-00-00-00-00-00-00-00
@@ -151,6 +154,15 @@
     2.as-i64.div
       0.as-i64
       i64 00-00-00-00-00-00-00-2A > [x]
+
+  eq. ++> can-recover-from-division-by-zero-after-reading-the-message
+    i64 00-00-00-00-00-00-00-2A
+    div.
+      i64 80-00-00-00-00-00-00-00
+      0.as-i64
+      seq * > [message]
+        message
+        i64 00-00-00-00-00-00-00-2A
 
   eq. ++> can-recover-from-min-divided-by-minus-one
     i64 00-00-00-00-00-00-00-2A

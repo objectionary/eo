@@ -5,6 +5,7 @@
 package org.eolang;
 
 import com.yegor256.Together;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,6 +14,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -22,6 +24,10 @@ import org.junit.jupiter.params.provider.ValueSource;
  * <p>A {@code printf} refusal is a terminator, and the message is its cause.
  * EO cannot read a cause, so the wording of {@code %d} and {@code %f}
  * refusals is checked here, by forcing the terminator.</p>
+ *
+ * <p>So is the reason of an {@code i64} or {@code u64} divided by zero with
+ * {@code cant-divide} left unbound, which names the exact dividend. Such a
+ * division may outlive {@code eo.deadline}, so it gets its own timeout.</p>
  *
  * @since 0.73.1
  */
@@ -255,6 +261,46 @@ final class PhTerminatorTest {
             Matchers.endsWith(
                 "Can't write a non-finite number as a fixed-point decimal"
             )
+        );
+    }
+
+    @Test
+    @Timeout(30L)
+    void namesTheExactSignedDividendDividedByZero() {
+        MatcherAssert.assertThat(
+            "the smallest i64 divided by zero is not named exactly in the reason",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Dataized(
+                    new PhApplication(
+                        new Data.ToPhi(
+                            new byte[]{(byte) 0x80, 0, 0, 0, 0, 0, 0, 0}
+                        ).take("as-i64").take("div").copy(),
+                        "b", new Data.ToPhi(new byte[8]).take("as-i64")
+                    )
+                ).take()
+            ).getMessage(),
+            Matchers.endsWith("; Can't divide -9223372036854775808 by i64 zero")
+        );
+    }
+
+    @Test
+    @Timeout(30L)
+    void namesTheExactUnsignedDividendDividedByZero() {
+        final byte[] max = new byte[8];
+        Arrays.fill(max, (byte) 0xFF);
+        MatcherAssert.assertThat(
+            "the largest u64 divided by zero is not named exactly in the reason",
+            Assertions.assertThrows(
+                ExFailure.class,
+                () -> new Dataized(
+                    new PhApplication(
+                        new Data.ToPhi(max).take("as-u64").take("div").copy(),
+                        "b", new Data.ToPhi(new byte[8]).take("as-u64")
+                    )
+                ).take()
+            ).getMessage(),
+            Matchers.endsWith("; Can't divide FF-FF-FF-FF-FF-FF-FF-FF by u64 zero")
         );
     }
 

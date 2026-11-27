@@ -3,6 +3,8 @@
 # sees a negative operand, and the quotient is corrected back afterwards.
 # When `b` is zero, `cant-divide` takes an error message.
 # When unbound, it terminates with that message.
+# The diagnostic spells the dividend as hexadecimal bytes, preserving
+# its exact value throughout the unsigned range.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -15,8 +17,8 @@
   if. > @
     d.as-bytes.eq 00-00-00-00-00-00-00-00
     cant-divide
-      "Can't divide %d by u64 zero".printf
-        * num.as-number
+      "Can't divide %x by u64 zero".printf
+        * num.as-bytes
     if.
       eq.
         d.as-bytes.and 80-00-00-00-00-00-00-00
@@ -70,6 +72,14 @@
     00-00-00-00-00-00-00-02.as-u64.div
       00-00-00-00-00-00-00-00.as-u64
       u64 00-00-00-00-00-00-00-2A > [x]
+
+  eq. ++> can-recover-from-division-by-zero-after-reading-the-message
+    u64 00-00-00-00-00-00-00-2A
+    FF-FF-FF-FF-FF-FF-FF-FF.as-u64.div
+      00-00-00-00-00-00-00-00.as-u64
+      seq * > [message]
+        message
+        u64 00-00-00-00-00-00-00-2A
 
   div. --> stops-on-division-by-zero
     00-00-00-00-00-00-00-02.as-u64
