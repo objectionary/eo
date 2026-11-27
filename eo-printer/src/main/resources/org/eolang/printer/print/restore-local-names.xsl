@@ -374,14 +374,16 @@
     <xsl:variable name="name" select="eo:own-name(..)"/>
     <xsl:variable name="parts" select="eo:receiver-handled(.., tokenize(., '\.'))"/>
     <xsl:variable name="binding" select="if (exists(key('cactus-declaration', $name)[2])) then eo:own-formation(..)/o[@name=$name] else ()"/>
-    <xsl:attribute name="base" select="string-join(
-      for $pos in 1 to count($parts) return
-      let $seg := $parts[$pos], $kept := key('kept-handle', $seg),
-      $target := if (exists($binding) and $seg = $name)
-        then ($kept intersect $binding)[$pos = index-of($parts, $name)[1]]
-        else $kept
-      return if (exists($target)) then string($target[1]/@local) else $seg,
-      '.')"/>
+    <xsl:variable name="doc" select="root(.)"/>
+    <xsl:variable name="restored" as="xs:string*">
+      <xsl:for-each select="$parts">
+        <xsl:variable name="own" select="position() = index-of($parts, $name)[1]"/>
+        <xsl:variable name="kept" select="key('kept-handle', ., $doc)"/>
+        <xsl:variable name="target" select="if (exists($binding) and . = $name) then ($kept intersect $binding)[$own] else $kept"/>
+        <xsl:sequence select="if (exists($target)) then string($target[1]/@local) else ."/>
+      </xsl:for-each>
+    </xsl:variable>
+    <xsl:attribute name="base" select="string-join($restored, '.')"/>
   </xsl:template>
   <!--
   Recursive formation: promote the handle to the visible name. A formation applied as a dispatch receiver (#5844) and a
