@@ -35,8 +35,7 @@
             -1
         slice.
           string >> after-slashes
-            if. >> after-slashes-bytes!
-              hier-part.starts-with "//" >> has-authority
+            has-authority.if >> after-slashes-bytes!
               slice.
                 string >> hier-part
                   if. >> hier-bytes!
@@ -52,9 +51,7 @@
                             -1
                         slice.
                           text.slice >> rest
-                            plus.
-                              scheme-end text (text.index-of ":") >> scheme-colon
-                              1
+                            scheme-colon.plus 1
                             text.length.minus
                               number (scheme-colon.plus 1)
                           0
@@ -71,33 +68,12 @@
           authority-path-idx
         after-slashes
       ""
-  [hp bracket-start] > colon-in
-    if. > @
-      hp.starts-with "["
-      if.
-        eq.
-          index-of. >> rel-colon
-            hp.slice
-              bracket-start
-              hp.length.minus
-                number bracket-start
-            ":"
-          -1
-        -1
-        rel-colon.plus bracket-start
-      hp.index-of ":"
   suffix > fragment
     rest
     hash-idx
   if. > host
     not. >> has-port
-      eq.
-        colon-in >> port-colon-idx
-          host-port
-          plus.
-            host-port.index-of "]"
-            1
-        -1
+      port-colon-idx.eq -1
     slice.
       string >> host-port
         if. >> host-port-bytes!
@@ -114,7 +90,8 @@
       0
       port-colon-idx
     host-port
-  has-authority.if > path
+  if. > path
+    hier-part.starts-with "//" >> has-authority
     if. > [s idx] >> from
       idx.eq -1
       ""
@@ -143,14 +120,6 @@
   prefix > scheme
     text
     scheme-colon
-  if. > [txt raw-colon] > scheme-end
-    or.
-      raw-colon.eq -1
-      not.
-        "/[A-Za-z][A-Za-z0-9+.-]*/".regex.compiled.matches
-          txt.slice 0 raw-colon
-    -1
-    raw-colon
   if. > [s idx] >> suffix
     idx.eq -1
     ""
@@ -162,6 +131,37 @@
   prefix > userinfo
     authority
     userinfo-at-idx
+  if. > [txt raw-colon] >>
+    or.
+      raw-colon.eq -1
+      not.
+        "/[A-Za-z][A-Za-z0-9+.-]*/".regex.compiled.matches
+          txt.slice 0 raw-colon
+    -1
+    raw-colon
+  | >> scheme-colon
+    text
+    text.index-of ":"
+  [hp bracket-start] >>
+    if. > @
+      hp.starts-with "["
+      if.
+        eq.
+          index-of. >> rel-colon
+            hp.slice
+              bracket-start
+              hp.length.minus
+                number bracket-start
+            ":"
+          -1
+        -1
+        rel-colon.plus bracket-start
+      hp.index-of ":"
+  | >> port-colon-idx
+    host-port
+    plus.
+      host-port.index-of "]"
+      1
 
   eq. ++> can-ignore-a-question-mark-that-appears-inside-the-fragment
     query.
