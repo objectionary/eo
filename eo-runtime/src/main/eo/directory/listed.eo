@@ -121,11 +121,9 @@
           opened.name
         *
 
-  ++> can-list-an-empty-directory
-    d.as-dir.listed.length.eq 0 > @
-    as-path. > d
-      made.
-        directory mktemp.tmpfile.deleted
+  eq. ++> can-list-an-empty-directory
+    length. (directory mktemp.tmpfile.deleted).made.as-path.as-dir.listed
+    0
 
   ++> can-list-names-in-the-order-of-their-bytes
     seq * > @

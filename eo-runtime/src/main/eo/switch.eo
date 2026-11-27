@@ -22,7 +22,6 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint invalid-name-notation
 +version 0.0.0
 
 [cases fallback] > switch
@@ -45,22 +44,14 @@
       *
       "recovered" > [x]
 
-  ++> can-switch-on-a-complex-case
-    eq. > @
-      switch *
-        *
-          ^.c1 > [^] >>
-          22
-        *
-          ^.c2 > [^] >>
-          0
-        *
-          ^.c3 > [^] >>
-          "true case"
-      "true case"
-    false > c1
-    "1".eq "2" > c2
-    true > c3
+  eq. ++> can-switch-on-a-complex-case
+    switch *
+      * false 22
+      *
+        "1".eq "2"
+        0
+      * true "true case"
+    "true case"
 
   eq. ++> can-switch-on-a-simple-case
     switch *

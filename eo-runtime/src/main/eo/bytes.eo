@@ -140,19 +140,13 @@
     --.concat --
     --
 
-  ++> can-concat-two-long-bytes
-    eq. > @
-      a.concat b
-      02-EF-D4-05-5E-78-3A-12-33-C1-B5-5E-71-55
-    02-EF-D4-05-5E-78-3A > a
-    12-33-C1-B5-5E-71-55 > b
+  eq. ++> can-concat-two-long-bytes
+    02-EF-D4-05-5E-78-3A.concat 12-33-C1-B5-5E-71-55
+    02-EF-D4-05-5E-78-3A-12-33-C1-B5-5E-71-55
 
-  ++> can-conjoin-two-long-bytes
-    eq. > @
-      a.and b
-      02-23-C0-05-5E-70-10
-    02-EF-D4-05-5E-78-3A > a
-    12-33-C1-B5-5E-71-55 > b
+  eq. ++> can-conjoin-two-long-bytes
+    02-EF-D4-05-5E-78-3A.and 12-33-C1-B5-5E-71-55
+    02-23-C0-05-5E-70-10
 
   eq. ++> can-count-the-size-of-a-slice
     size.

@@ -23,9 +23,9 @@ import java.util.List;
  * and so on.</li>
  * </ul>
  *
- * <p>The engine knows no names of its own: a program names them in its
- * {@code pom.xml}, as eo-runtime does, and leaves a list empty when it has
- * none of the kind.</p>
+ * <p>The engine knows no names of its own: the {@code infer} goal of the
+ * plugin gives it the names of eo-runtime, unless a program names its own
+ * in its {@code pom.xml}.</p>
  *
  * @since 0.76.0
  */

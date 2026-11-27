@@ -488,6 +488,71 @@ final class MjParseTest {
         );
     }
 
+    @Test
+    void keepsChecksByDefault(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "the unit tests must stay in the XMIR, unless they are asked to go",
+            MjParseTest.parsedWithChecks(new FakeMaven(temp)),
+            XhtmlMatchers.hasXPaths(
+                "/object/o[@name='main']/o[@name='p🌵keeps-it']",
+                "/object/o[@name='main']/o[@name='n🌵throws-it']"
+            )
+        );
+    }
+
+    @Test
+    void dropsChecksWhenAsked(@Mktmp final Path temp) throws IOException {
+        MatcherAssert.assertThat(
+            "the unit tests must not stay in the XMIR, since they were asked to go",
+            MjParseTest.parsedWithChecks(new FakeMaven(temp).with("parseTests", false)),
+            XhtmlMatchers.hasXPaths(
+                "/object/o[@name='main']/o[@name='φ']",
+                "/object/o[@name='main' and not(o[starts-with(@name, 'p🌵')])]",
+                "/object/o[@name='main' and not(o[starts-with(@name, 'n🌵')])]"
+            )
+        );
+    }
+
+    @Test
+    void doesNotTakeChecksFromCacheWhenTheyAreDropped(@Mktmp final Path temp)
+        throws IOException {
+        final File cache = temp.resolve("cache").toFile();
+        MjParseTest.parsedWithChecks(new FakeMaven(temp.resolve("first")).with("cache", cache));
+        MatcherAssert.assertThat(
+            "the XMIR with the unit tests, kept in the cache, must not serve a build without them",
+            MjParseTest.parsedWithChecks(
+                new FakeMaven(temp.resolve("second"))
+                    .with("cache", cache)
+                    .with("parseTests", false)
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object/o[@name='main' and not(o[starts-with(@name, 'p🌵')])]"
+            )
+        );
+    }
+
+    private static XMLDocument parsedWithChecks(final FakeMaven maven) throws IOException {
+        return new XMLDocument(
+            maven.withProgram(
+                "+package foo.x",
+                "",
+                "# The object with unit tests.",
+                "[] > main",
+                "  42 > @",
+                "",
+                "  # This unit test is true.",
+                "  [] +> keeps-it",
+                "    true > @",
+                "",
+                "  # This unit test throws.",
+                "  [] -> throws-it",
+                "    error \"oops\" > @"
+            ).execute(new PpParse()).result().get(
+                String.format("target/%s/foo/x/main.%s", maven.dirName("parse"), MjAssemble.XMIR)
+            )
+        );
+    }
+
     private static String cacheVersion(final String identifier) {
         return String.format(
             "%s-%s-%s",

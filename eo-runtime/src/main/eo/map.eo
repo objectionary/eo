@@ -16,7 +16,6 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint redundant-attachment
 +version 0.0.0
 
 [pairs] > map
@@ -130,13 +129,15 @@
       "two"
       2
 
-  ++> can-find-an-element-by-a-key
-    2.eq found.get > @
-    mp.found "two" > found
-    map * > mp
-      map.entry "one" 1
-      map.entry "two" 2
-      map.entry "three" 3
+  eq. ++> can-find-an-element-by-a-key
+    2
+    get.
+      found.
+        map *
+          map.entry "one" 1
+          map.entry "two" 2
+          map.entry "three" 3
+        "two"
 
   not. ++> can-find-no-element-by-an-absent-key
     exists.
@@ -148,13 +149,15 @@
 
   ++> can-find-the-value-of-each-key-with-colliding-hashes
     and. > @
-      1.eq first.get
-      2.eq second.get
-    mp.found "Aa" > first
+      1.eq
+        get.
+          mp.found "Aa"
+      2.eq
+        get.
+          mp.found "BB"
     map * > mp
       map.entry "Aa" 1
       map.entry "BB" 2
-    mp.found "BB" > second
 
   has. ++> can-have-an-element-with-a-key
     map *
@@ -175,28 +178,31 @@
         map.entry "two" 2
       "three"
 
-  ++> can-keep-both-keys-with-colliding-hashes
-    2.eq mp.size > @
-    map * > mp
-      map.entry "Aa" 1
-      map.entry "BB" 2
+  eq. ++> can-keep-both-keys-with-colliding-hashes
+    2
+    size.
+      map *
+        map.entry "Aa" 1
+        map.entry "BB" 2
 
-  ++> can-keep-the-last-value-of-a-duplicate-key
-    2.eq > @
-      get.
-        mp.found 1
-        42 > [x]
-    map * > mp
-      map.entry 1 1
-      map.entry 1 2
+  eq. ++> can-keep-the-last-value-of-a-duplicate-key
+    2
+    get.
+      found.
+        map *
+          map.entry 1 1
+          map.entry 1 2
+        1
+      42 > [x]
 
-  ++> can-rebuild-itself
-    2.eq mp.size > @
-    map * > mp
-      map.entry 1 1
-      map.entry 1 1
-      map.entry 2 1
-      map.entry 2 1
+  eq. ++> can-rebuild-itself
+    2
+    size.
+      map *
+        map.entry 1 1
+        map.entry 1 1
+        map.entry 2 1
+        map.entry 2 1
 
   ++> can-rebuild-itself-only-once
     1.eq > @
@@ -215,15 +221,15 @@
                 x.as-number.plus 1
               1
 
-  ++> can-recover-from-an-absent-key-among-two-entries
-    eq. > @
-      get.
-        mp.found "three"
-        42 > [x]
-      42
-    map * > mp
-      map.entry "one" 1
-      map.entry "two" 2
+  eq. ++> can-recover-from-an-absent-key-among-two-entries
+    get.
+      found.
+        map *
+          map.entry "one" 1
+          map.entry "two" 2
+        "three"
+      42 > [x]
+    42
 
   eq. ++> can-recover-from-an-absent-key-colliding-with-a-stored-one
     42
@@ -234,13 +240,14 @@
         "BB"
       42 > [x]
 
-  ++> can-recover-from-getting-a-missing-key
-    42.eq > @
-      get.
-        mp.found "absent"
-        42 > [x]
-    map * > mp
-      map.entry "one" 1
+  eq. ++> can-recover-from-getting-a-missing-key
+    42
+    get.
+      found.
+        map *
+          map.entry "one" 1
+        "absent"
+      42 > [x]
 
   ++> can-remove-an-element-by-a-key
     and. > @
@@ -307,8 +314,8 @@
         "two"
     1
 
-  --> stops-on-getting-a-missing-key
-    get. > @
-      mp.found "absent"
-    map * > mp
-      map.entry "one" 1
+  get. --> stops-on-getting-a-missing-key
+    found.
+      map *
+        map.entry "one" 1
+      "absent"

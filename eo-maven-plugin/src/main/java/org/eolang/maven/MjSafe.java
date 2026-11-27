@@ -344,6 +344,27 @@ abstract class MjSafe extends AbstractMojo {
     protected boolean discover;
 
     /**
+     * Shall the unit tests stay in the XMIR made by {@code parse}?
+     *
+     * <p>A unit test is an attribute made with {@code ++>}, {@code +>},
+     * {@code -->} or {@code ->}. When this is {@code false}, the
+     * {@code parse} goal (and {@code assemble}, which parses too) drops
+     * every such attribute from the XMIR it makes, so no later goal sees
+     * the tests. A tool that only reads the XMIR, and has no use for the
+     * tests, may turn it off.</p>
+     *
+     * @since 0.63.5
+     * @checkstyle MemberNameCheck (10 lines)
+     */
+    @Parameter(
+        alias = "parse.tests",
+        property = "eo.parse.tests",
+        required = true,
+        defaultValue = "true"
+    )
+    protected boolean parseTests = true;
+
+    /**
      * List of individual lints which must be skipped during the linting.
      *
      * @since 0.57
@@ -588,7 +609,8 @@ abstract class MjSafe extends AbstractMojo {
                 tojos,
                 this.target.toPath(),
                 this.sourcesDir.toPath(),
-                this.caching(Parsing.CACHE)
+                this.caching(Parsing.CACHE),
+                this.parseTests
             ),
             new Probing(tojos, this.objectionary(), !this.offline),
             new Pulling(

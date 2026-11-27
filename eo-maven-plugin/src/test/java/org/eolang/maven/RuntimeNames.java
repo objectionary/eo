@@ -11,10 +11,8 @@ import org.eolang.inference.Names;
 /**
  * The names of eo-runtime the engine of {@link Inferring} has to know.
  *
- * <p>The goal takes them from the {@code pom.xml} of eo-runtime and has no
- * defaults, so a test that runs the engine on its own gives them here, the
- * one place the tests of this module write them, besides the configuration
- * {@link FakeMaven} plays the {@code pom.xml} with.</p>
+ * <p>The goal has them as its defaults, but a test that runs the engine on
+ * its own, without the goal, gives them here.</p>
  *
  * @since 0.76.0
  */

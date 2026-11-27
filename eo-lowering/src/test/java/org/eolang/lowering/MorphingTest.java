@@ -587,7 +587,7 @@ final class MorphingTest {
 
     @Test
     void morphsTheWorldThePinnedPhinoFolds(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.165");
+        final Phino phino = new Phino("phino", "0.0.170");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -606,7 +606,7 @@ final class MorphingTest {
 
     @Test
     void writesTheMinutesThePinnedPhinoFolds(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.165");
+        final Phino phino = new Phino("phino", "0.0.170");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -628,7 +628,7 @@ final class MorphingTest {
     @Test
     void stopsAtTheThrowWithTheWholeMessageThePinnedPhinoKeeps(@Mktmp final Path temp)
         throws IOException {
-        final Phino phino = new Phino("phino", "0.0.165");
+        final Phino phino = new Phino("phino", "0.0.170");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -640,8 +640,11 @@ final class MorphingTest {
             Collections.singletonList(
                 Files.write(
                     Files.createDirectories(temp.resolve("sources")).resolve("broken.xmir"),
-                    new EoSyntax(String.format("[] > broken%n  T \"%s\" > @%n", message))
-                        .parsed().toString().getBytes(StandardCharsets.UTF_8)
+                    new Dealphaed(
+                        new EoSyntax(String.format("[] > broken%n  T \"%s\" > @%n", message))
+                            .parsed().toString(),
+                        new MapOf<>(new MapEntry<>("Φ.broken.φ.α0", "x"))
+                    ).value().getBytes(StandardCharsets.UTF_8)
                 )
             )
         ).exec(temp);
@@ -679,7 +682,7 @@ final class MorphingTest {
 
     @Test
     void answersTheAtomOfBytesThePinnedPhinoReaches(@Mktmp final Path temp) throws IOException {
-        final Phino phino = new Phino("phino", "0.0.165");
+        final Phino phino = new Phino("phino", "0.0.170");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -724,7 +727,7 @@ final class MorphingTest {
     @Test
     void firesTheRowOfAFormationThePinnedPhinoReaches(@Mktmp final Path temp)
         throws IOException {
-        final Phino phino = new Phino("phino", "0.0.165");
+        final Phino phino = new Phino("phino", "0.0.170");
         Assumptions.assumeTrue(
             MorphingTest.pinned(phino),
             "the pinned phino is not on this machine, so the world cannot be morphed here"
@@ -732,14 +735,20 @@ final class MorphingTest {
         final Path sources = Files.createDirectories(temp.resolve("1-planting"));
         Files.write(
             sources.resolve("twice.xmir"),
-            new EoSyntax(String.format("+package number%n%n[^] > twice%n  ^.plus ^ > @%n"))
-                .parsed().toString().getBytes(StandardCharsets.UTF_8)
+            new Dealphaed(
+                new EoSyntax(String.format("+package number%n%n[^] > twice%n  ^.plus ^ > @%n"))
+                    .parsed().toString(),
+                new MapOf<>(new MapEntry<>("Φ.number.twice.φ.α0", "v🌵b"))
+            ).value().getBytes(StandardCharsets.UTF_8)
         );
         Files.write(
             sources.resolve("both.xmir"),
-            new EoSyntax(
-                String.format("+package number%n%n[^ b] > both%n  ^.twice.plus b.twice > @%n")
-            ).parsed().toString().getBytes(StandardCharsets.UTF_8)
+            new Dealphaed(
+                new EoSyntax(
+                    String.format("+package number%n%n[^ b] > both%n  ^.twice.plus b.twice > @%n")
+                ).parsed().toString(),
+                new MapOf<>(new MapEntry<>("Φ.number.both.φ.α0", "v🌵b"))
+            ).value().getBytes(StandardCharsets.UTF_8)
         );
         MorphingTest.library(temp);
         new Planting(
@@ -812,8 +821,11 @@ final class MorphingTest {
     private void gap(final Path temp, final Phino phino) throws IOException {
         Files.write(
             Files.createDirectories(temp.resolve("1-planting")).resolve("gap.xmir"),
-            new EoSyntax(String.format("[a b] > gap%n  a.plus b > @%n")).parsed()
-                .toString().getBytes(StandardCharsets.UTF_8)
+            new Dealphaed(
+                new EoSyntax(String.format("[a b] > gap%n  a.plus b > @%n")).parsed()
+                    .toString(),
+                new MapOf<>(new MapEntry<>("Φ.gap.φ.α0", "v🌵b"))
+            ).value().getBytes(StandardCharsets.UTF_8)
         );
         MorphingTest.library(temp);
         new Planting(

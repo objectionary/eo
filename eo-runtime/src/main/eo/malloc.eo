@@ -229,17 +229,15 @@
       x.put 2556 > [x]
     2556
 
-  ++> can-put-into-a-block-made-by-for
-    mem.eq 10 > @
-    malloc.for > mem
+  eq. ++> can-put-into-a-block-made-by-for
+    malloc.for
       0
       x.put 10 > [x]
+    10
 
-  ++> can-put-over-the-previous-data
-    eq. > @
-      42.as-bytes.concat "orld!".as-bytes
-      mem
-    malloc.of > mem
+  eq. ++> can-put-over-the-previous-data
+    42.as-bytes.concat "orld!".as-bytes
+    malloc.of
       13
       seq * > [m]
         m.put "Hello, world!"
@@ -287,14 +285,14 @@
       m.size > [m]
     5
 
-  ++> can-rewrite-and-increment-itself
-    mem.eq 6 > @
-    malloc.of > mem
+  eq. ++> can-rewrite-and-increment-itself
+    malloc.of
       8
       seq * > [m]
         m.write 0 1
         m.put
           m.as-number.plus 5
+    6
 
   ++> can-write-and-read
     malloc.of > @
@@ -310,13 +308,13 @@
                 m.read 0 12
                 "Hello, Jeff!"
 
-  ++> can-write-into-a-block-made-by-of
-    mem.eq 10 > @
-    malloc.of > mem
+  eq. ++> can-write-into-a-block-made-by-of
+    malloc.of
       8
       seq * > [m]
         m.write 0 10
         m
+    10
 
   and. ++> can-write-into-two-allocated-blocks
     eq.
