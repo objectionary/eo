@@ -329,15 +329,6 @@
                 -->
                 <lint>long-live-object</lint>
                 <!--
-                @todo #9108:30min Stop skipping 'cyclomatic-complexity' here.
-                The lint counts every 'if', 'and', 'or', and 'while' as a
-                decision point and complains about seven formations, from
-                'file.touched' with twelve to 'number.power' with
-                twenty-five. Each of them has to be split into smaller
-                objects.
-                -->
-                <lint>cyclomatic-complexity</lint>
-                <!--
                 @todo #9108:30min Stop skipping 'unoptimizable-recursion' here.
                 Thirteen of its 24 reports, in 'u8' to 'u64', 'i8' to 'i64',
                 'buffer', 'set', 'map', 'path', and 'stdin', are methods that

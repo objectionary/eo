@@ -125,26 +125,29 @@
               as-bytes. >> result!
                 if.
                   location.driveless.size.eq 0
-                  if.
-                    location.drive.size.eq 0
+                  if. > [drive] >> drive-or-dot
+                    drive.size.eq 0
                     ".".as-bytes
-                    location.drive.as-bytes
+                    drive.as-bytes
+                  | location.drive
                   if.
                     core.size.eq 0
                     ".".as-bytes
                     if.
-                      and.
+                      and. > [loc body] >> bare
                         body.size.eq 0
-                        and. (location.drive.size.gt 0) location.is-absolute.not
+                        and. (loc.drive.size.gt 0) loc.is-absolute.not
+                      | location body
                       core.concat
                         ".".concat
                           if. >> closing
                             and.
-                              and.
-                                ubts.size.gt 0
+                              and. > [text separator] >> trailing
+                                text.size.gt 0
                                 eq.
-                                  ubts.slice (ubts.size.plus -1) 1
-                                  location.separator
+                                  text.slice (text.size.plus -1) 1
+                                  separator
+                              | ubts location.separator
                               not.
                                 and.
                                   core.size.gt 0
@@ -152,11 +155,10 @@
                                     slice.
                                       concat. >> core!
                                         location.drive.concat
-                                          location.is-absolute.if
-                                            location.unc.if
-                                              location.separator.concat location.separator
-                                              location.separator.as-bytes
+                                          loc.is-absolute.if > [loc] >> lead
+                                            loc.unc.if (loc.separator.concat loc.separator) loc.separator.as-bytes
                                             --
+                                          | location
                                         location.separator.joined >> body!
                                           reduced.
                                             location.driveless.split location.separator

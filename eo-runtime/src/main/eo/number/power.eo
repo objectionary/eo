@@ -45,9 +45,9 @@
               eq.
                 number num.as-bytes >> base
                 0
-              if.
+              if. > [bits expo odd] >> zeroed
                 and.
-                  num.as-bytes.eq 80-00-00-00-00-00-00-00
+                  bits.eq 80-00-00-00-00-00-00-00
                   odd
                 if.
                   expo.gt 0
@@ -57,77 +57,47 @@
                   expo.gt 0
                   0
                   pinf
+              |
+                num.as-bytes
+                expo
+                expo.is-integer.and (expo.div 2).is-integer.not >> odd
               expo.is-integer.if
-                if.
-                  answer.is-finite.and
-                    not.
-                      eq.
-                        if. >> answer
-                          expo.lt 0
-                          plus.
-                            1.div high >> rough
-                            div.
-                              minus.
-                                1.minus
-                                  number
-                                    slice.
-                                      joined >> check
-                                        paired rough 0
-                                        wide base expo.abs >> exact!
-                                      0
-                                      8
-                                number (check.slice 8 8)
-                              number (exact.slice 0 8) >> high
-                          high
-                        0
-                  answer
-                  if.
-                    expo.lt 0
-                    [^num factor n] >> ipow
-                      if. > @
-                        n.eq 0
-                        1
-                        if.
-                          is-integer. (n.div 2)
-                          times.
-                            number
-                              num.ipow factor (n.div 2) >> half!
-                            number half
-                          factor.times
-                            num.ipow factor (n.minus 1)
-                    | (1.div base) expo.abs
-                    ipow base expo.abs
-                if.
-                  base.gt 0
-                  [^num y] >> expon
-                    times. > @
-                      if.
-                        lt.
-                          number
-                            floor. >> k!
-                              plus.
-                                number
-                                  y >> arg!
-                                0.5
+                [^pw base expo] >> integral
+                  if. > @
+                    answer.is-finite.and
+                      not.
+                        eq.
+                          if. >> answer
+                            expo.lt 0
+                            plus.
+                              1.div high >> rough
+                              div.
+                                minus.
+                                  1.minus
+                                    number
+                                      slice.
+                                        joined >> check
+                                          paired rough 0
+                                          wide base expo.abs >> exact!
+                                        0
+                                        8
+                                  number (check.slice 8 8)
+                                number (exact.slice 0 8) >> high
+                            high
                           0
-                        1.div
-                          ipow e (number k).abs
-                        ipow e (number k).abs
-                      if. > [^num j] >> fraction
-                        j.gt 20
-                        1
-                        1.plus
-                          times.
-                            div.
-                              minus.
-                                number arg
-                                number k
-                              j
-                            num.fraction (j.plus 1)
-                      | 1
-                  | (expo.times base.ln)
+                    answer
+                    if.
+                      expo.lt 0
+                      ipow (1.div base) expo.abs
+                      ipow base expo.abs
+                | base expo
+                if. > [^pw base expo] >> fractional
+                  base.gt 0
+                  pw.expon
+                    expo.times base.ln
                   nan
-            if.
+                | base expo
+            if. > [base expo odd] >> infinite
               base.gt 0
               if.
                 expo.gt 0
@@ -135,12 +105,10 @@
                 0
               if.
                 expo.gt 0
-                if.
-                  expo.is-integer.and (expo.div 2).is-integer.not >> odd
-                  ninf
-                  pinf
+                odd.if ninf pinf
                 odd.if 0.neg 0
-          if.
+            | base expo odd
+          if. > [base expo] >> unbounded
             expo.gt 0
             if.
               base.abs.gt 1
@@ -156,6 +124,57 @@
                 base.abs.eq 1
                 nan
                 pinf
+          | base expo
+  [^num y] > expon
+    times. > @
+      if.
+        lt.
+          number
+            floor. >> k!
+              plus.
+                number
+                  y >> arg!
+                0.5
+          0
+        1.div
+          ipow
+            e
+            abs.
+              number k
+        ipow
+          e
+          abs.
+            number k
+      if. > [^num j] >> fraction
+        j.gt 20
+        1
+        1.plus
+          times.
+            div.
+              minus.
+                number arg
+                number k
+              j
+            num.fraction
+              j.plus 1
+      | 1
+  [^num factor n] >> ipow
+    if. > @
+      n.eq 0
+      1
+      if.
+        is-integer.
+          n.div 2
+        times.
+          number
+            num.ipow >> half!
+              factor
+              n.div 2
+          number half
+        factor.times
+          num.ipow
+            factor
+            n.minus 1
   [^num x y] >> joined
     paired > @
       hi

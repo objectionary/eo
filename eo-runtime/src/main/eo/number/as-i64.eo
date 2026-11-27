@@ -42,24 +42,50 @@
       "Can't convert number %s to i64 because it's out of i64 bounds".printf
         *
           string
-            if.
+            if. > [value exp negative written] >> shown
               exp.eq 1086
               negative.if
-                "-".as-bytes.concat
-                  digits >> written
-                    high
-                    times.
-                      mant.minus
-                        times.
-                          floor. >> high
-                            div.
-                              mantissa.as-i64.as-number >> mant
-                              2097152
-                          2097152
-                      2048
-                    --
+                "-".as-bytes.concat written
                 written
-              num.as-scientific
+              value.as-scientific
+            |
+              num
+              exp
+              negative
+              [^num upper lower acc] >> digits
+                if. > @
+                  and.
+                    upper.eq 0
+                    lower.eq 0
+                  acc
+                  num.digits
+                    number
+                      floor. (upper.div 10) >> upperq!
+                    number
+                      floor. ((number rem).div 10) >> lowerq!
+                    concat.
+                      as-char.
+                        plus.
+                          minus.
+                            number
+                              plus. >> rem!
+                                times.
+                                  upper.minus ((number upperq).times 10)
+                                  4294967296
+                                lower
+                            times. (number lowerq) 10
+                          48
+                      acc
+              |
+                high
+                times.
+                  minus.
+                    mantissa.as-i64.as-number >> mant
+                    times.
+                      floor. (mant.div 2097152) >> high
+                      2097152
+                  2048
+                --
     if.
       exp.lt 1023
       00-00-00-00-00-00-00-00.as-i64
@@ -75,36 +101,6 @@
                 exp.minus 1075
               mantissa.right
                 1075.minus exp
-  [^num upper lower acc] >> digits
-    if. > @
-      and.
-        upper.eq 0
-        lower.eq 0
-      acc
-      num.digits
-        number
-          floor. >> upperq!
-            upper.div 10
-        number
-          floor. >> lowerq!
-            div.
-              number rem
-              10
-        concat.
-          as-char.
-            plus.
-              minus.
-                number
-                  plus. >> rem!
-                    times.
-                      upper.minus ((number upperq).times 10)
-                      4294967296
-                    lower
-                times.
-                  number lowerq
-                  10
-              48
-          acc
 
   eq. ++> can-convert-a-fraction-below-one-to-zero
     0.5.as-i64.as-bytes

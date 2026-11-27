@@ -39,7 +39,7 @@
           places.is-integer.not.or
             places.gt 9007199254740991
     cant-print
-      num.is-finite.not.if
+      value.is-finite.not.if > [value huge places] >> complaint
         "Can't write a non-finite number as a fixed-point decimal"
         huge.if
           "Can't write a fixed-point decimal with a magnitude of 2^63 or larger"
@@ -47,6 +47,7 @@
             "Can't write a fixed-point decimal with %f fraction places".printf
               * places
             "Can't write a fixed-point decimal with a non-finite number of fraction places"
+      | num huge places
     if.
       num.as-bytes.eq 80-00-00-00-00-00-00-00
       "-".as-bytes.concat

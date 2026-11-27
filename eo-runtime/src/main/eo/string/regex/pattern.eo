@@ -481,27 +481,9 @@
           index.plus 1
         mode
   or. > [^regex b mode] > special
+    regex.opening b
     or.
-      b.eq 5B-
-      or.
-        b.eq 28-
-        or.
-          b.eq 29-
-          b.eq 7B-
-    or.
-      or.
-        b.eq 2A-
-        or.
-          b.eq 2B-
-          or.
-            b.eq 3F-
-            or.
-              b.eq 2E-
-              or.
-                b.eq 5E-
-                or.
-                  b.eq 24-
-                  b.eq 7C-
+      regex.metachar b
       and.
         regex.flagged 20- mode
         or.
@@ -585,18 +567,61 @@
             regex.sequence acc.node p.node
             --
         p
+  if. > [^regex q at] > bounded
+    q.eq 7B-
+    regex.braces
+      at.plus 1
+    if.
+      q.eq 2A-
+      regex.bounds
+        number
+          at.plus 1
+        0
+        number 7F-F0-00-00-00-00-00-00
+      if.
+        q.eq 2B-
+        regex.bounds
+          number
+            at.plus 1
+          1
+          number 7F-F0-00-00-00-00-00-00
+        regex.bounds
+          number
+            at.plus 1
+          0
+          1
+  or. > [b] > metachar
+    b.eq 2A-
+    or.
+      b.eq 2B-
+      or.
+        b.eq 3F-
+        or.
+          b.eq 2E-
+          or.
+            b.eq 5E-
+            or.
+              b.eq 24-
+              b.eq 7C-
+  or. > [b] > opening
+    b.eq 5B-
+    or.
+      b.eq 28-
+      or.
+        b.eq 29-
+        b.eq 7B-
+  or. > [q] > quantifier
+    q.eq 2A-
+    or.
+      q.eq 2B-
+      or.
+        q.eq 3F-
+        q.eq 7B-
   [^regex index opened bits] > piece
     a.ok.if > @
       if.
-        or.
-          eq.
-            byte qat >> q
-            2A-
-          or.
-            q.eq 2B-
-            or.
-              q.eq 3F-
-              q.eq 7B-
+        regex.quantifier
+          byte qat >> q
         b.ok.if
           regex.yes
             if.
@@ -612,28 +637,9 @@
                 1
               number
                 at.
-                  if. >> b
-                    q.eq 7B-
-                    regex.braces
-                      plus.
-                        regex.skip (number a.at) a.mode >> qat
-                        1
-                    if.
-                      q.eq 2A-
-                      regex.bounds
-                        number (qat.plus 1)
-                        0
-                        number 7F-F0-00-00-00-00-00-00
-                      if.
-                        q.eq 2B-
-                        regex.bounds
-                          number (qat.plus 1)
-                          1
-                          number 7F-F0-00-00-00-00-00-00
-                        regex.bounds
-                          number (qat.plus 1)
-                          0
-                          1
+                  regex.bounded >> b
+                    q
+                    regex.skip (number a.at) a.mode >> qat
             groups.
               regex.atom index opened bits >> a
             a.mode
@@ -1083,13 +1089,8 @@
               index.plus -1
             "Quoting inside a character class is not supported"
           if.
-            or.
-              eq.
-                e.or 20- >> l
-                64-
-              or.
-                l.eq 73-
-                l.eq 77-
+            regex.shorthand
+              e.or 20- >> l
             regex.named
               number
                 index.plus 1
@@ -1108,13 +1109,8 @@
                 g
   [^regex index opened bits] > escaped
     if. > @
-      or.
-        eq.
-          e.or 20- >> l
-          64-
-        or.
-          l.eq 73-
-          l.eq 77-
+      regex.shorthand
+        e.or 20- >> l
       regex.yes
         number
           index.plus 1
@@ -1361,10 +1357,11 @@
             regex.modifiers
               number
                 index.plus 1
-              on.if
-                bits.or bit
-                bits.and bit.not
+              regex.toggled bits bit on
               on
+  on.if > [bits bit on] > toggled
+    bits.or bit
+    bits.and bit.not
   [^regex from opened bits outer index] > closed
     r.ok.if > @
       if.
@@ -1836,66 +1833,20 @@
     unicode.if
       regex.lowered c
       c
-  [c] > lowered
+  [^regex c] > lowered
     if. > @
       3.gt c.size
       if.
         eq.
           c.slice 0 1 >> lead
           C3-
-        if.
-          and.
-            eq.
-              and.
-                c.slice 1 1 >> b
-                E0-
-              80-
-            not.
-              or.
-                b.eq 97-
-                b.eq 9F-
-          C3-.concat
-            b.or 20-
-          c
+        regex.lowered-latin c
         if.
           lead.eq CE-
-          if.
-            and.
-              eq.
-                b.and F0-
-                90-
-              not.
-                b.eq 90-
-            CE-.concat
-              b.or 20-
-            if.
-              or.
-                eq.
-                  b.and F8-
-                  A0-
-                eq.
-                  b.and FE-
-                  A8-
-              CF-.concat
-                or.
-                  b.and 0F-
-                  80-
-              c
+          regex.lowered-greek c
           if.
             lead.eq D0-
-            if.
-              eq.
-                b.and F0-
-                90-
-              D0-.concat
-                b.or 20-
-              if.
-                eq.
-                  b.and F0-
-                  A0-
-                D1-.concat
-                  b.and 8F-
-                c
+            regex.lowered-cyrillic c
             if.
               c.eq C4-B0
               69-
@@ -1903,6 +1854,66 @@
                 c.eq C5-B8
                 C3-BF
                 c
+      c
+  [^regex c] > lowered-cyrillic
+    if. > @
+      eq.
+        and.
+          c.slice 1 1 >> b
+          F0-
+        90-
+      D0-.concat
+        b.or 20-
+      if.
+        eq.
+          b.and F0-
+          A0-
+        D1-.concat
+          b.and 8F-
+        c
+  [^regex c] > lowered-greek
+    if. > @
+      and.
+        eq.
+          and.
+            c.slice 1 1 >> b
+            F0-
+          90-
+        not.
+          b.eq 90-
+      CE-.concat
+        b.or 20-
+      regex.lowered-greek-tail c
+  [^regex c] > lowered-greek-tail
+    if. > @
+      or.
+        eq.
+          and.
+            c.slice 1 1 >> b
+            F8-
+          A0-
+        eq.
+          b.and FE-
+          A8-
+      CF-.concat
+        or.
+          b.and 0F-
+          80-
+      c
+  [^regex c] > lowered-latin
+    if. > @
+      and.
+        eq.
+          and.
+            c.slice 1 1 >> b
+            E0-
+          80-
+        not.
+          or.
+            b.eq 97-
+            b.eq 9F-
+      C3-.concat
+        b.or 20-
       c
   [since index rest till] > mark
     since > from
@@ -1992,68 +2003,26 @@
         0
         at
         caps
-  [c] > raised
+  [^regex c] > raised
     if. > @
       3.gt c.size
       if.
         eq.
           c.slice 0 1 >> lead
           C3-
-        if.
-          and.
-            eq.
-              and.
-                c.slice 1 1 >> b
-                E0-
-              A0-
-            not.
-              b.eq B7-
-          C3-.concat
-            b.and DF-
-          if.
-            b.eq BF-
-            C5-B8
-            c
+        regex.raised-latin c
         if.
           lead.eq CE-
-          if.
-            and.
-              eq.
-                b.and F0-
-                B0-
-              not.
-                b.eq B0-
-            CE-.concat
-              b.and DF-
-            c
+          regex.raised-greek c
           if.
             lead.eq CF-
-            if.
-              b.eq 82-
-              CE-A3
-              if.
-                or.
-                  eq. (b.and F8-) 80-
-                  eq. (b.and FE-) 88-
-                CE-.concat
-                  or. (b.and 0F-) A0-
-                c
+            regex.raised-greek-tail c
             if.
               lead.eq D0-
-              if.
-                eq.
-                  b.and F0-
-                  B0-
-                D0-.concat
-                  b.and DF-
-                c
+              regex.raised-cyrillic c
               if.
                 lead.eq D1-
-                if.
-                  eq. (b.and F0-) 80-
-                  D0-.concat
-                    b.or 20-
-                  c
+                regex.raised-cyrillic-tail c
                 if.
                   c.eq C2-B5
                   CE-9C
@@ -2062,6 +2031,74 @@
                     49-
                     if. (c.eq C5-BF) 53- c
       c
+  [^regex c] > raised-cyrillic
+    if. > @
+      eq.
+        and.
+          c.slice 1 1 >> b
+          F0-
+        B0-
+      D0-.concat
+        b.and DF-
+      c
+  [^regex c] > raised-cyrillic-tail
+    if. > @
+      eq.
+        and.
+          c.slice 1 1 >> b
+          F0-
+        80-
+      D0-.concat
+        b.or 20-
+      c
+  [^regex c] > raised-greek
+    if. > @
+      and.
+        eq.
+          and.
+            c.slice 1 1 >> b
+            F0-
+          B0-
+        not.
+          b.eq B0-
+      CE-.concat
+        b.and DF-
+      c
+  [^regex c] > raised-greek-tail
+    if. > @
+      eq.
+        c.slice 1 1 >> b
+        82-
+      CE-A3
+      if.
+        or.
+          eq.
+            b.and F8-
+            80-
+          eq.
+            b.and FE-
+            88-
+        CE-.concat
+          or.
+            b.and 0F-
+            A0-
+        c
+  [^regex c] > raised-latin
+    if. > @
+      and.
+        eq.
+          and.
+            c.slice 1 1 >> b
+            E0-
+          A0-
+        not.
+          b.eq B7-
+      C3-.concat
+        b.and DF-
+      if.
+        b.eq BF-
+        C5-B8
+        c
   [high low rest] > range
     if. > [^set code] > has
       set.low.gt code
@@ -2139,7 +2176,12 @@
       | 0 0 > @
     text.size > size
     content > text
-  [s at unix] > terminal
+  or. > [l] > shorthand
+    l.eq 64-
+    or.
+      l.eq 73-
+      l.eq 77-
+  [^regex s at unix] > terminal
     if. > @
       1.gt
         s.size.plus >> n!
@@ -2163,14 +2205,8 @@
                 0D-.eq
                   s.text.slice (at.plus -1) 1
             or.
-              r.eq 0D-
-              or.
-                r.eq 0D-0A
-                or.
-                  r.eq C2-85
-                  or.
-                    r.eq E2-80-A8
-                    r.eq E2-80-A9
+              r.eq 0D-0A
+              regex.breaks r false
           false
   [] > unmarked
     false > some
