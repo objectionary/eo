@@ -84,13 +84,15 @@
     true.eq 42
 
   ++> can-compile-deeply-duplicated-names
-    true > @
+    eq. > @
+      long-object-name.long-object-name.long-object-name.long-object-name.long-object-name
+        42
+      42
     [] > long-object-name
       [] > long-object-name
         [] > long-object-name
           [] > long-object-name
-            [] > long-object-name
-              42 > x
+            I > long-object-name
 
   not. ++> can-conjoin-true-with-false
     true.and false
