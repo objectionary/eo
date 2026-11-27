@@ -335,3 +335,9 @@
     "0.2"
     string
       0.15.as-fixed 1
+
+  eq. ++> can-round-a-half-up
+    3
+    round.
+      1.as-fixed 2
+      2.5

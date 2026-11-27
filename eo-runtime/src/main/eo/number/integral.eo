@@ -106,6 +106,17 @@
         err
       0
 
+  eq. ++> can-integrate-a-square-over-one-subsection
+    9
+    subsection.
+      0.integral
+        x.times x > [x]
+        0
+        3
+        1
+      0
+      3
+
   ++> can-integrate-with-a-single-partition
     close-to > @
       as-number.

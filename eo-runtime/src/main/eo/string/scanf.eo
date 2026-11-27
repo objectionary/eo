@@ -523,3 +523,9 @@
   is-finite. ++> can-scan-a-value-below-the-double-maximum
     head.
       "%f".scanf "1.7976931348623156e308"
+
+  eq. ++> can-fold-digits-into-a-number
+    123
+    fold-digits.
+      "%d".scanf "1"
+      "123"

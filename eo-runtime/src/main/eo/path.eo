@@ -13,7 +13,7 @@
       string uri.as-bytes
     posix
       string uri.as-bytes
-  [^location sys uri] > impl
+  [^location sys uri] >> impl
     uri > @
     directory > as-dir
       file uri
@@ -257,7 +257,7 @@
                   x.size.gt 0 > [x]
         location.posix jpath
   [^location uri] > posix
-    location.impl > @
+    impl > @
       sys
       uri
     "/" > separator
@@ -269,7 +269,7 @@
     win32.separator
     posix.separator
   [^location uri] > win32
-    location.impl > @
+    impl > @
       sys
       sys.sanitized uri
     "\\" > separator
