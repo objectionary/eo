@@ -514,6 +514,48 @@
   rules winning (#7938).
   -->
   <!--
+  The formation helper that the based handle "$handle" applies, when that
+  handle is about to land on a method dispatch with its name spent (see
+  `eo:spent-name`), or the empty sequence. The parser hoists a handle written
+  inside another handle's receiver (`scan t &gt;&gt; found` under
+  `found.eq -1`, itself inside `not. &gt;&gt; has-port`) out to its own binding,
+  so the helper (`[x] &gt;&gt; scan`) and the handle stand apart, and the only
+  reference to the helper is the handle's own "@base". Such a handle carries a
+  name, so neither `eo:resolved-ref` nor the "applied-ref" key counts it as a
+  use, and the helper was left standing as an anonymous `[x] &gt;&gt;` while
+  the handle landed on the dispatch as a "vL_P" that nothing declares
+  (#10091). Once the handle lands, its name is gone and it is a plain
+  reference to the helper, so the helper lands with it: inlined in place of
+  a bare handle, or followed by a "| args" pipe for an applied one. A handle
+  that keeps its readable name never gets here: "inline-cactoos" pipes it
+  right under the helper instead (see `eo:pipe-helper` there). The
+  landing site is always a dispatch receiver, where a pipe never risks the
+  "|:N" of an argument slot (#5983). Only a helper that nothing else reads
+  qualifies, or it would be printed twice (#9166).
+  -->
+  <xsl:function name="eo:spent-helper" as="element()?">
+    <xsl:param name="handle" as="element()"/>
+    <xsl:variable name="name" select="substring-after($handle/@base, $eo:xi-dot)"/>
+    <xsl:choose>
+      <!-- Shape tests first, for the reason on "eo:hosted-binding" above. -->
+      <xsl:when test="not(starts-with($handle/@base, $eo:xi-dot) and $name != '' and not(contains($name, '.')) and starts-with($handle/@name, $eo:cactus-name) and empty($handle/@local) and empty($handle/@const) and eo:moniker-binding($handle))"/>
+      <xsl:otherwise>
+        <xsl:variable name="helper" select="key('moniker-binding', concat(generate-id($handle/..), ' ', $name), root($handle))[1]"/>
+        <xsl:variable name="host" select="eo:moniker-refs($handle)[1]"/>
+        <xsl:sequence select="if (exists($helper) and eo:abstract($helper) and empty($helper/@local) and exists($host) and eo:dispatch-seg($host) != '' and empty(eo:moniker-refs($helper)) and empty(eo:applied-refs($helper)) and count($handle/../o[@base = $handle/@base]) = 1) then $helper else ()"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:function>
+  <!--
+  Whether the formation "$attr" lands with a spent handle (see
+  `eo:spent-helper`), so its standalone binding must go.
+  -->
+  <xsl:function name="eo:spent-landed" as="xs:boolean">
+    <xsl:param name="attr" as="element()"/>
+    <xsl:variable name="base" select="concat($eo:xi-dot, $attr/@name)"/>
+    <xsl:sequence select="eo:abstract($attr) and starts-with($attr/@name, $eo:cactus-name) and empty($attr/@local) and (some $handle in $attr/../o[@base = $base] satisfies eo:spent-helper($handle) is $attr)"/>
+  </xsl:function>
+  <!--
   Replace the first hosting reference with the merged binding, always keeping
   the reference's positional `@as`. A bare reference becomes the binding
   inlined in place: the binding's other attributes and its children. An
@@ -642,6 +684,23 @@
           <xsl:with-param name="attrs" select="@*[name() != 'as' and name() != 'base']"/>
         </xsl:call-template>
       </xsl:when>
+      <xsl:when test="exists(eo:spent-helper(.)) and empty(o)">
+        <xsl:apply-templates select="eo:spent-helper(.)" mode="merged">
+          <xsl:with-param name="seen" select="($seen, .)"/>
+        </xsl:apply-templates>
+      </xsl:when>
+      <xsl:when test="exists(eo:spent-helper(.))">
+        <xsl:for-each select="eo:spent-helper(.)">
+          <xsl:copy>
+            <xsl:apply-templates select="node()|@*"/>
+          </xsl:copy>
+        </xsl:for-each>
+        <o>
+          <xsl:attribute name="pipe"/>
+          <xsl:attribute name="base" select="@base"/>
+          <xsl:apply-templates select="o"/>
+        </o>
+      </xsl:when>
       <xsl:otherwise>
         <o>
           <xsl:apply-templates select="@*[name() != 'as'][not(eo:spent-name(.))]|node()"/>
@@ -735,6 +794,7 @@
   -->
   <xsl:template match="o[eo:anonymous-pipe(.) and exists(eo:pipe-chain-from-binding(., ()))]" priority="3"/>
   <xsl:template match="o[eo:moniker-binding(.) and (exists(eo:moniker-refs(.)) or eo:applied-hosted(.))]" priority="3"/>
+  <xsl:template match="o[eo:spent-landed(.)]" priority="3"/>
   <xsl:template match="node()|@*">
     <xsl:copy>
       <xsl:apply-templates select="node()|@*"/>
