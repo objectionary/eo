@@ -45,29 +45,14 @@ final class MethodChain {
     }
 
     /**
-     * Whether this link is a fragile {@code ?.} dispatch.
+     * Emit this link's object and dispatch markers.
      *
-     * @return True for {@code ?.}, false for plain {@code .}
+     * @param sink Directives sink
+     * @param line Source line
+     * @param label Name of the link, or {@code null} when unnamed
      */
-    boolean fragile() {
-        return this.fragile;
-    }
-
-    /**
-     * Method name (no leading dot).
-     *
-     * @return Name
-     */
-    String name() {
-        return this.name;
-    }
-
-    /**
-     * Column of the leading dot.
-     *
-     * @return Dot column
-     */
-    int dot() {
-        return this.dot;
+    void emit(final Emit sink, final int line, final String label) {
+        sink.object(label, ".".concat(this.name), line, this.dot);
+        sink.method(this.fragile);
     }
 }
