@@ -546,12 +546,21 @@
   is deliberately not matched here: the inlining template relocates a fresh
   copy of the formation down to the reference's site, so the original binding
   is dropped by the drop template above rather than kept in place.
+  That relocation only runs for a reference the inlining template visits. A
+  reference that is itself an auto-named `&gt;&gt;` handle (`scan t &gt;&gt;
+  found`) is never visited there: the drop template above matches it first and
+  folds it into its own use site. When such a handle is not the formation's
+  immediate next sibling (another hoisted handle, such as `rest`, stands
+  between them), nothing relocates the formation, so it is kept here as well.
+  Otherwise the formation is dropped and the folded handle keeps a base that
+  points at nothing, printed as a dangling "vL_P" (#10088).
   -->
   <xsl:function name="eo:piped" as="xs:boolean">
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string"/>
     <xsl:variable name="next" select="$target/following-sibling::o[1]"/>
-    <xsl:sequence select="eo:abstract($target) and exists($next) and contains($next/@base, $auto-dot) and eo:resolved-name($next/@base) = $name and ($next/o or $next/@name)"/>
+    <xsl:variable name="handle" select="$target/following-sibling::o[starts-with(@name, $auto) and contains(@base, $auto-dot) and eo:resolved-name(@base) = $name][1]"/>
+    <xsl:sequence select="eo:abstract($target) and ((exists($next) and contains($next/@base, $auto-dot) and eo:resolved-name($next/@base) = $name and ($next/o or $next/@name)) or exists($handle))"/>
   </xsl:function>
   <!--
   Whether the single-use auto-named abstract formation `$target` is applied by a
