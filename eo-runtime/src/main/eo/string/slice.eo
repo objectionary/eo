@@ -211,6 +211,51 @@
             "Unknown byte format (%x), can't recognize character".printf
               * byte
 
+  cont. ++> can-accept-a-continuation-byte
+    "".slice
+      0
+      0
+    80-
+
+  four-ok. ++> can-accept-a-four-byte-character
+    "".slice
+      0
+      0
+    F0-
+    9F-
+    98-
+    80-
+
+  four-lead. ++> can-accept-a-four-byte-lead
+    "".slice
+      0
+      0
+    F0-
+    9F-
+
+  three-ok. ++> can-accept-a-three-byte-character
+    "".slice
+      0
+      0
+    E2-
+    82-
+    AC-
+
+  two-ok. ++> can-accept-a-two-byte-character
+    "".slice
+      0
+      0
+    C3-
+    A9-
+
+  checked. ++> can-check-a-two-byte-character
+    "é".slice
+      0
+      1
+    C3-
+    0
+    2
+
   eq. ++> can-slice-a-line-break-escape-sequence
     "\n".slice
       0
@@ -288,6 +333,12 @@
       1
       2
     "ри"
+
+  eq. ++> can-tell-the-width-of-a-three-byte-character
+    width.
+      "".slice 0 0
+      E2-
+    3
 
   slice. --> rejects-a-non-continuation-after-a-three-byte-lead-when-slicing
     string E1-80-41

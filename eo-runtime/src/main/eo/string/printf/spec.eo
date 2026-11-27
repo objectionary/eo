@@ -340,6 +340,16 @@
     "%25x".printf
       * 42.as-bytes
 
+  eq. ++> can-count-an-automatic-argument
+    counter.
+      spec.
+        "%s".printf
+          * "x"
+        0
+        0
+        "x"
+    1
+
   eq. ++> can-format-a-decimal-above-two-to-the-53rd
     "9007199254740992"
     "%d".printf
@@ -378,6 +388,16 @@
         "second"
         3
 
+  eq. ++> can-format-a-piece
+    piece.
+      spec.
+        "%s".printf
+          * "x"
+        0
+        0
+        "x"
+    "x".as-bytes
+
   eq. ++> can-format-a-precision-of-two-decimals
     "3.14"
     "%.2f".printf
@@ -407,6 +427,16 @@
     "first second second is after first"
     "%s %s %2$s is after %1$s".printf
       * "first" "second"
+
+  eq. ++> can-point-past-the-specifier
+    next.
+      spec.
+        "%s".printf
+          * "x"
+        0
+        0
+        "x"
+    2
 
   eq. ++> can-print-a-number-as-a-string
     "@E\u0000\u0000\u0000\u0000\u0000\u0000"
@@ -443,6 +473,16 @@
     "\u0000\u0000\u0000\u0000\u0000\u0000\u0000*"
     "%s".printf
       * 42.as-i64
+
+  eq. ++> can-read-a-positional-index
+    idx.
+      spec.
+        "%2$s".printf
+          * "a" "b"
+        0
+        0
+        "b"
+    1
 
   eq. ++> can-round-a-float-carrying-into-the-integer-part
     "1.000000"

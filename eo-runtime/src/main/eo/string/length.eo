@@ -150,6 +150,31 @@
         C0-
     text.cont b1
 
+  "".length.cont 80- ++> can-accept-a-continuation-byte
+
+  four-ok. ++> can-accept-a-four-byte-character
+    "".length
+    F0-
+    9F-
+    98-
+    80-
+
+  four-lead. ++> can-accept-a-four-byte-lead
+    "".length
+    F0-
+    9F-
+
+  three-ok. ++> can-accept-a-three-byte-character
+    "".length
+    E2-
+    82-
+    AC-
+
+  two-ok. ++> can-accept-a-two-byte-character
+    "".length
+    C3-
+    A9-
+
   " ".length.eq 1 ++> can-count-a-text-of-spaces-only
 
   ++> can-count-four-byte-characters

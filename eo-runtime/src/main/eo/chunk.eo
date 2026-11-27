@@ -80,6 +80,18 @@
     ? > offset /Q.number
     ? > data
 
+  eq. ++> can-copy-bytes-within-itself
+    malloc.of
+      4
+      seq * > [c]
+        c.write 0 01-02-00-00
+        c.copy
+          0
+          2
+          2
+        c.get
+    01-02-01-02
+
   eq. ++> can-get-what-was-put
     malloc.of
       8
@@ -87,6 +99,11 @@
         c.put 42
         c.get
     42.as-bytes
+
+  eq. ++> can-give-out-its-identifier
+    id.
+      chunk 7
+    7
 
   eq. ++> can-know-its-size
     malloc.of
@@ -129,3 +146,6 @@
       6
       c.write 0 "héllo" > [c]
     "héllo".as-bytes
+
+  valid. ++> can-tell-it-is-valid
+    chunk 7

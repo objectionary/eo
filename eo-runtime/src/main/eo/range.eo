@@ -108,3 +108,13 @@
             [] > next
               42 > nothing
         1
+
+  eq. ++> can-give-out-its-end
+    end.
+      range 3 10
+    10
+
+  eq. ++> can-give-out-its-start
+    start.
+      range 3 10
+    3

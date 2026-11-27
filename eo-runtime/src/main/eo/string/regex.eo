@@ -812,6 +812,10 @@
       next.
         "/^b/dm".regex.match "a\rb"
 
+  eq. ++> can-turn-a-flag-letter-into-a-bit
+    "/x/".regex.flag 69-
+    02-
+
   ++> can-walk-a-hundred-blocks-without-parsing-again
     eq. > @
       walked
@@ -825,6 +829,12 @@
         block.next
         count.plus 1
       count
+
+  eq. ++> can-word-a-syntax-error
+    "/x/".regex.worded
+      3
+      "oops"
+    "regex syntax is invalid: oops at offset 3 of the pattern"
 
   "/pattern".regex.compiled --> stops-on-a-missing-closing-slash
 

@@ -91,6 +91,12 @@
         * "Jeff"
     11
 
+  eq. ++> can-count-the-given-arguments
+    given.
+      "%s %s".printf
+        * 1 2
+    2
+
   eq. ++> can-format-a-computed-string
     "abcd"
     "%s".printf
@@ -119,6 +125,18 @@
     "Hey"
     "%s".printf
       * "Hey" "Jeff"
+
+  eq. ++> can-keep-the-raw-format
+    raw.
+      "a%sb".printf
+        * 1
+    "a%sb".as-bytes
+
+  eq. ++> can-measure-the-span-of-the-format
+    span.
+      "a%sb".printf
+        * 1
+    4
 
   eq. ++> can-preserve-an-escaped-bytes-format
     "%x"

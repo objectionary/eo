@@ -346,6 +346,15 @@
       true
     42
 
+  eq. ++> can-read-what-the-receiver-gives
+    as-bytes.
+      read.
+        as-input.
+          socket "127.0.0.1" 0
+          "hello".as-bytes > [size]
+        5
+    "hello".as-bytes
+
   ++> can-recover-from-binding-to-an-address-of-another-host
     os.is-windows.or > @
       as-bool.

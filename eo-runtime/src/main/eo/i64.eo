@@ -247,6 +247,8 @@
       i64 80-00-00-00-00-00-00-00
     -9223372036854775808
 
+  42.as-i64.as-i16.as-bytes.eq 00-2A ++> can-convert-to-an-i16
+
   234.as-i64.eq 234.as-i64.as-i32.as-i64 ++> can-convert-to-i32-and-back
 
   eq. ++> can-convert-to-i32-with-a-terminator-for-the-error

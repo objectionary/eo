@@ -127,6 +127,14 @@
       "two"
       2
 
+  eq. ++> can-construct-an-empty-map-from-no-entries
+    size.
+      ctor.
+        map
+          *
+        *
+    0
+
   eq. ++> can-find-an-element-by-a-key
     2
     get.

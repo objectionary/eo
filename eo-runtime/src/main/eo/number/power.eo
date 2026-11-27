@@ -342,6 +342,15 @@
     42.power 0
     1
 
+  lt. ++> can-raise-e-to-a-power
+    abs.
+      minus.
+        expon.
+          2.power 1
+          1
+        e
+    1.0e-9
+
   eq. ++> can-raise-four-to-five
     4.power 5
     1024
