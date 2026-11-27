@@ -475,6 +475,18 @@
             <xsl:apply-templates select="node()|@*"/>
           </xsl:copy>
         </xsl:when>
+        <!--
+        This handle names a helper formation that stands apart from it and
+        that nothing else reads, with no arguments of its own (see
+        `eo:landed-helper`): the helper lands here, under the name of the
+        handle, as `[] &gt;&gt; found` (#10093).
+        -->
+        <xsl:when test="exists(eo:landed-helper(.))">
+          <xsl:copy>
+            <xsl:apply-templates select="@*[name() != 'base']"/>
+            <xsl:apply-templates select="eo:landed-helper(.)/node()"/>
+          </xsl:copy>
+        </xsl:when>
         <xsl:otherwise>
           <xsl:copy>
             <xsl:apply-templates select="node()|@*"/>
@@ -575,6 +587,23 @@
     <xsl:sequence select="if (exists($helper) and eo:abstract($helper) and not($helper/following-sibling::o[1] is $handle) and not(eo:recursive($helper, $name)) and empty(eo:references($helper, $name)[not(. is $handle)]) and eo:kept-binding($handle, string($handle/@name))) then $helper else ()"/>
   </xsl:function>
   <!--
+  The formation helper that the kept auto-named handle "$handle" names
+  without applying it, when the two stand apart and nothing else reads the
+  helper, or the empty sequence. A bare handle (`scan &gt;&gt; found`, no
+  arguments) has nothing to put after a `|`, so `eo:pipe-helper` skips it,
+  and the helper was kept as the anonymous `[] &gt;&gt;` for a pipe that
+  never came, while the handle printed its use of it as a "vL_P" that
+  nothing declares (#10093). Such a handle is the helper under another name,
+  so the drop template above lands the helper's body on the handle, which
+  keeps its own name: `[] &gt;&gt; found`.
+  -->
+  <xsl:function name="eo:landed-helper" as="element()?">
+    <xsl:param name="handle" as="element()"/>
+    <xsl:variable name="name" select="if (exists($handle/@local) and empty($handle/o) and empty($handle/@const) and contains($handle/@base, $auto-dot) and not(contains(substring-after($handle/@base, $auto-dot), '.'))) then eo:resolved-name($handle/@base) else ''"/>
+    <xsl:variable name="helper" select="if ($name != '') then $handle/../o[@name = $name][1] else ()"/>
+    <xsl:sequence select="if (exists($helper) and eo:abstract($helper) and not($helper/following-sibling::o[1] is $handle) and not(eo:recursive($helper, $name)) and empty(eo:references($helper, $name)[not(. is $handle)]) and eo:kept-binding($handle, string($handle/@name))) then $helper else ()"/>
+  </xsl:function>
+  <!--
   Whether the auto-named abstract formation `$target` is immediately followed
   by a reference that uses it as the base of an application — a sibling
   resolving to `$name` that carries its own argument children or a
@@ -600,7 +629,7 @@
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string"/>
     <xsl:variable name="next" select="$target/following-sibling::o[1]"/>
-    <xsl:variable name="handle" select="$target/following-sibling::o[starts-with(@name, $auto) and contains(@base, $auto-dot) and eo:resolved-name(@base) = $name][1][empty(eo:pipe-helper(.))]"/>
+    <xsl:variable name="handle" select="$target/following-sibling::o[starts-with(@name, $auto) and contains(@base, $auto-dot) and eo:resolved-name(@base) = $name][1][empty(eo:pipe-helper(.)) and empty(eo:landed-helper(.))]"/>
     <xsl:sequence select="eo:abstract($target) and ((exists($next) and contains($next/@base, $auto-dot) and eo:resolved-name($next/@base) = $name and ($next/o or $next/@name)) or exists($handle))"/>
   </xsl:function>
   <!--

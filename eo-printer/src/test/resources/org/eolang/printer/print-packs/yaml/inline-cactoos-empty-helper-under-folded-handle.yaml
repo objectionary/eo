@@ -1,0 +1,29 @@
+# SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+# An empty `[] >> scan` helper, with no voids and no body, reached only by a
+# bare `scan >> found` handle, which is the single argument of a dispatch
+# inside another `>> has-port` handle (#10093). The printer used to keep
+# `scan` without a name and print `found` as a dangling `v8_2`.
+penalties:
+  INDENT: 3
+  BRACKET: 7
+  EXCESS: 1
+  WIDTH: 80
+  STEP: 2
+  SPACE: 7
+origin: |
+  [] > uri
+    if. > host
+      not. >> has-port
+        eq.
+          scan >> found
+    [] >> scan
+
+printed: |
+  [] > uri
+    if. > host
+      not. >> has-port
+        eq.
+          [] >> found
