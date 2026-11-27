@@ -1,6 +1,6 @@
 # Maximum `number` in the sequence, which must be a `tuple` or any `tuple`
-# decorator of `number` objects. An empty sequence has no maximum, so `cant-max`
-# is dataized with an explanatory message and stands in as the result.
+# decorator of `number` objects. An empty sequence has no maximum, so `fallback`
+# stands in as the result.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -9,9 +9,9 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^list cant-max] > maximum
+[^list fallback] > maximum
   list.is-empty.if > @
-    cant-max "cannot get the maximum number from an empty sequence"
+    fallback
     list.reduced
       ninf
       if. > [a x]
@@ -33,8 +33,7 @@
 
   eq. ++> can-recover-from-an-empty-list-when-taking-the-maximum
     42
-    tuple.empty.maximum
-      42 > [x]
+    tuple.empty.maximum 42
 
   eq. ++> can-take-a-maximum-of-one-item
     maximum.

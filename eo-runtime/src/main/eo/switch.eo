@@ -15,8 +15,8 @@
 # ```
 #
 # This object returns the value of the first true statement,
-# or invokes `fallback` with a descriptive message when `cases`
-# is empty or when every case condition is false.
+# or `fallback` when `cases` is empty or when every case
+# condition is false.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -27,11 +27,11 @@
 [cases fallback] > switch
   if. > @
     cases.length.eq 0
-    fallback "Switch cases are empty"
+    fallback
     [^switch rest] >> rec-case
       if. > @
         rest.length.eq 0
-        switch.fallback "No switch case matched"
+        switch.fallback
         if.
           true.eq rest.head.tail.head!
           rest.head.head
@@ -42,7 +42,7 @@
     "recovered"
     switch
       *
-      "recovered" > [x]
+      "recovered"
 
   eq. ++> can-switch-on-a-complex-case
     switch *
@@ -65,7 +65,7 @@
       *
         * false "false1"
         * false "false2"
-      "fallback" > [x]
+      "fallback"
 
   ++> can-switch-on-strings
     eq. > @

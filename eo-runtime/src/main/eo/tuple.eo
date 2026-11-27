@@ -8,7 +8,7 @@
 +version 0.0.0
 
 [prior last count] > tuple
-  [^list i fallback] > at
+  [^list i cant-get] > at
     if. > @
       or.
         not.
@@ -19,7 +19,7 @@
         or.
           0.gt index
           list.length.lte index
-      fallback
+      cant-get
         printf. >> failure
           if.
             index.floor.eq index
@@ -35,7 +35,7 @@
                   number i! >> idx
       if. > [^list tup] >> at-fast
         0.eq tup.length
-        list.fallback failure
+        list.cant-get failure
         if.
           eq.
             tup.length.plus -1

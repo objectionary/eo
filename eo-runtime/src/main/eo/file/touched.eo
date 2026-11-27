@@ -34,7 +34,8 @@
             os.is-windows.if win32.errno posix.errno
             os.is-windows.if win32.eexist posix.eexist
           not.
-            entry.is-symlink false >> linked
+            entry.is-symlink >> linked
+              false > [x]
       seq *
         if.
           descriptor.gte 0

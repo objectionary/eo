@@ -57,7 +57,7 @@
   [] > find-next-file /Q.win32.dir-return(Q.number,Q.string)
     ? > search /Q.number
   [] > ftime64-s /Q.win32.time-return(Q.number,Q.number,Q.number)
-  [] > get-file-attributes /Q.number
+  [] > get-file-attributes /Q.win32.status-return(Q.number,Q.string)
     ? > path /Q.string
   [] > getenv /Q.win32.getenv-return(Q.bool,Q.string)
     ? > name /Q.string

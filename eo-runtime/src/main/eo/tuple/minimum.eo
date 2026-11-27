@@ -1,6 +1,6 @@
 # Minimum `number` in the sequence, which must be a `tuple` or any `tuple`
-# decorator of `number` objects. An empty sequence has no minimum, so `cant-min`
-# is dataized with an explanatory message and stands in as the result.
+# decorator of `number` objects. An empty sequence has no minimum, so `fallback`
+# stands in as the result.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -9,9 +9,9 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^list cant-min] > minimum
+[^list fallback] > minimum
   list.is-empty.if > @
-    cant-min "cannot get the minimum number from an empty sequence"
+    fallback
     list.reduced
       pinf
       if. > [a x]
@@ -33,8 +33,7 @@
 
   eq. ++> can-recover-from-an-empty-list-when-taking-the-minimum
     42
-    tuple.empty.minimum
-      42 > [x]
+    tuple.empty.minimum 42
 
   eq. ++> can-take-a-minimum-of-one-item
     minimum.

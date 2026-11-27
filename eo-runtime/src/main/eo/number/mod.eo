@@ -1,7 +1,6 @@
 # Calculate MOD.
 # An operation that finds the remainder after dividing the number by `b`.
-# When `b` is zero, `cant-mod` takes an error message. When unbound,
-# it terminates with that message. Otherwise
+# When `b` is zero, the result is `nan`. Otherwise
 # the divisor is doubled until it reaches the dividend and then halved back
 # down, subtracting it from the dividend whenever it fits. Doubling and
 # halving a double are exact, and every subtraction happens while the
@@ -31,56 +30,53 @@
 +spdx SPDX-License-Identifier: MIT
 +version 0.0.0
 
-[^num b cant-mod] > mod
+[^num b] > mod
   if. > @
-    eq.
-      number b.as-bytes >> divisor
-      0
-    cant-mod "cannot calculate mod by zero"
-    dividend.is-finite.not.if
+    or.
+      eq.
+        number b.as-bytes >> divisor
+        0
+      dividend.is-finite.not
+    if.
+      num.as-bytes.size.eq 8
+      nan
+      T "the 'ρ' attribute must be a number"
+    divisor.is-finite.not.if
       if.
-        num.as-bytes.size.eq 8
-        nan
-        T "the 'ρ' attribute must be a number"
-      divisor.is-finite.not.if
+        b.as-bytes.size.eq 8
+        divisor.is-nan.if nan num
+        T "the 'b' attribute must be a number"
+      if.
+        num.as-bytes.eq 80-00-00-00-00-00-00-00
+        num
         if.
-          b.as-bytes.size.eq 8
-          divisor.is-nan.if nan num
-          T "the 'b' attribute must be a number"
-        if.
-          num.as-bytes.eq 80-00-00-00-00-00-00-00
-          num
-          if.
-            gte.
-              number num.as-bytes >> dividend
-              0
-            [^num] >> abs-mod
-              [^num chunk rest] >> shrink
+          gte.
+            number num.as-bytes >> dividend
+            0
+          [^num] >> abs-mod
+            [^num chunk rest] >> shrink
+              if. > @
+                chunk.lt divisor.abs
+                rest
+                num.shrink
+                  number (chunk.div 2)!
+                  number ((rest.gte chunk).if (rest.minus chunk) rest)!
+            | > @
+              [^num chunk] >> grow
                 if. > @
-                  chunk.lt divisor.abs
-                  rest
-                  num.shrink
-                    number (chunk.div 2)!
-                    number ((rest.gte chunk).if (rest.minus chunk) rest)!
-              | > @
-                [^num chunk] >> grow
-                  if. > @
-                    or.
-                      chunk.gte dividend.abs
-                      not.
-                        is-finite.
-                          number (chunk.plus chunk)! >> next
-                    chunk
-                    num.grow next
-                | divisor.abs
-                dividend.abs
-            abs-mod.neg
+                  or.
+                    chunk.gte dividend.abs
+                    not.
+                      is-finite.
+                        number (chunk.plus chunk)! >> next
+                  chunk
+                  num.grow next
+              | divisor.abs
+              dividend.abs
+          abs-mod.neg
 
-  eq. ++> can-recover-from-a-modulo-by-zero
-    42
-    5.mod
-      0
-      42 > [x]
+  is-nan. ++> can-return-nan-when-the-dividend-and-divisor-are-zero
+    0.mod 0
 
   is-nan. ++> can-return-nan-when-the-dividend-is-infinite
     pinf.mod 5
@@ -90,6 +86,12 @@
 
   is-nan. ++> can-return-nan-when-the-divisor-is-nan
     5.mod nan
+
+  is-nan. ++> can-return-nan-when-the-divisor-is-negative-zero
+    5.mod 0.neg
+
+  is-nan. ++> can-return-nan-when-the-divisor-is-zero
+    5.mod 0
 
   eq. ++> can-return-negative-zero-for-negative-zero-dividend-and-a-finite-divisor
     as-bytes.
@@ -188,12 +190,6 @@
     0.mod 5
     0
 
-  eq. ++> can-take-a-modulo-with-a-terminator-for-the-error
-    7.mod
-      3
-      T
-    1
-
   eq. ++> can-take-an-exact-modulo-of-a-large-dividend-by-thirteen
     10000000000000000.mod 13
     3
@@ -210,4 +206,6 @@
     9200000000000000000.mod 3
     2
 
-  5.mod 0 --> stops-on-a-modulo-by-zero
+  mod. --> stops-on-a-non-number-receiver-when-the-divisor-is-zero
+    number 01-02
+    0
