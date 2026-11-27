@@ -97,7 +97,7 @@
           if.
             state.prefix.length.eq 0
             state.accum
-            picked state.accum state.prefix
+            state.folder.picked state.accum state.prefix
           if.
             and.
               is-directory.
@@ -114,14 +114,14 @@
                   * state.prefix rest.head
               as-dir.
                 state.dir.as-path.resolved rest.head >> child
-            picked earlier sub
+            state.folder.picked earlier sub
       | dir.listed > @
     | > @
       *
       ""
       folder
-    if. > [^folder accum rel] >> picked
-      matched rel
+    if. > [^folder accum rel] > picked
+      folder.matched rel
       accum.with
         as-file.
           base.resolved rel
@@ -132,7 +132,7 @@
       "".joined
         * "\\" char
       char
-    [^folder text] >> matched
+    [^folder text] > matched
       as-bool. > @
         exists.
           next.
@@ -155,11 +155,6 @@
         "[^"
         escaped path.separator >> literal
         "]"
-    if. > [char] >> classified
-      "\\[&".contains char
-      "".joined
-        * "\\" char
-      char
     if. > [^folder from] >> closes
       from.gte folder.glob.length
       false
@@ -249,7 +244,12 @@
         if.
           char.eq "]"
           "]"
-          classified char
+          if. > [char] >> classified
+            "\\[&".contains char
+            "".joined
+              * "\\" char
+            char
+          | char
         opening.if
           negated.if "[^" "["
           slashed.if

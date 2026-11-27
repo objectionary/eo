@@ -156,19 +156,6 @@
                 base.abs.eq 1
                 nan
                 pinf
-  [^num a] >> halved
-    a.minus top > foot
-    spread.is-finite.if > top
-      minus.
-        a.times 134217729 >> spread
-        spread.minus a
-      times.
-        minus.
-          times. >> broad
-            a.div 268435456 >> shrunk
-            134217729
-          broad.minus shrunk
-        268435456
   [^num x y] >> joined
     paired > @
       hi
@@ -204,6 +191,19 @@
                 y.slice 0 8
             slip
           product
+    [^num a] >> halved
+      a.minus top > foot
+      spread.is-finite.if > top
+        minus.
+          a.times 134217729 >> spread
+          spread.minus a
+        times.
+          minus.
+            times. >> broad
+              a.div 268435456 >> shrunk
+              134217729
+            broad.minus shrunk
+          268435456
   hi.as-bytes.concat lo.as-bytes > [hi lo] >> paired
   [^num factor n] >> wide
     if. > @

@@ -113,7 +113,7 @@
                     recovered
                       seq *
                         req.pick.scope >> scoped!
-                          stream req.syscall opened.code
+                          req.pick.stream req.syscall opened.code
                         true
                       false
                     seq *
@@ -145,7 +145,7 @@
       not.
         as-bool.
           access.eq "a"
-    [^desc syscall descriptor] >> stream
+    [^desc syscall descriptor] > stream
       [^chan size] > read
         read. > @
           [^piece buffer] >> input-block

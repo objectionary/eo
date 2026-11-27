@@ -29,20 +29,20 @@
       len.eq index
       index
       if.
-        is-ws (b.slice index 1)!
+        or. > [c] >> is-ws
+          c.eq 20-
+          or.
+            c.eq 09-
+            or.
+              c.eq 0A-
+              or.
+                c.eq 0B-
+                or.
+                  c.eq 0C-
+                  c.eq 0D-
+        | (b.slice index 1)!
         text.first-non-ws-index (index.plus 1).as-number
         index
-  or. > [c] >> is-ws
-    c.eq 20-
-    or.
-      c.eq 09-
-      or.
-        c.eq 0A-
-        or.
-          c.eq 0B-
-          or.
-            c.eq 0C-
-            c.eq 0D-
 
   "\rvalue".trimmed-left.eq "value" ++> can-trim-a-leading-carriage-return
 

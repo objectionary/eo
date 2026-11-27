@@ -83,7 +83,17 @@
                       80-
                     00-
                   ctx.recidx
-                    increase index 1 true
+                    if. > [^owner index csize valid] >> increase
+                      gt. (index.plus csize) size
+                      T
+                        "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
+                          * csize index owner.ctx.text.as-bytes
+                      valid.if
+                        index.plus csize
+                        T
+                          "Malformed UTF-8 sequence (%x) at %d index".printf
+                            * (owner.ctx.text.as-bytes.slice index csize) index
+                    | index 1 true
                     accum.plus 1
                     result
                     cause
@@ -170,23 +180,6 @@
           ""
           string
             text.as-bytes.slice bstart blen
-  if. > [^ctx index csize valid] >> increase
-    gt.
-      index.plus csize
-      size
-    T
-      "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
-        *
-          csize
-          index
-          ctx.text.as-bytes
-    valid.if
-      index.plus csize
-      T
-        "Malformed UTF-8 sequence (%x) at %d index".printf
-          *
-            ctx.text.as-bytes.slice index csize
-            index
   text.as-bytes.size >> size!
 
   eq. ++> can-slice-a-line-break-escape-sequence

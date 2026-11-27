@@ -64,7 +64,6 @@
                 00-00-00-00-00-00-00-00
           i64 00-00-00-00-00-00-00-01
         i64 quotient
-  00-00-00-00-00-00-00-01.left i > [i] >> bit
   [^loop index remainder quot] >> looped
     if. > @
       index.lt 0
@@ -95,6 +94,7 @@
               dividend.right index
               00-00-00-00-00-00-00-01
           quot
+    00-00-00-00-00-00-00-01.left i > [i] >> bit
   as-bytes. >> subtrahend!
     plus.
       i64

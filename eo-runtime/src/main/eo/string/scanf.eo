@@ -41,176 +41,156 @@
 +spdx SPDX-License-Identifier: MIT
 +unlint sprintf-constant-args
 +unlint sprintf-without-formatters
-+unlint unsorted-named-attributes
 +version 0.0.0
 
 [^text read] > scanf
-  [^fmt text] >> as-float
-    if. > @
-      eq. >> negative
-        text.slice 0 1
-        "-"
-      times.
-        if. >> scaled
-          eq.
-            if. >> exponent
-              eq.
-                index-of. >> eloc
-                  replaced. >> esign
-                    if.
-                      negative.or ((text.slice 0 1).eq "+")
-                      text.slice 1 (text.length.minus 1)
-                      text
-                    "/[eE]/".regex
-                    "e"
-                  "e"
-                -1
-              0
-              [^exp txt] >> exp-value
-                if. > @
-                  eq.
-                    txt.slice 0 1
-                    "-"
-                  times.
-                    fold-digits >> folded
-                      if.
-                        ((txt.slice 0 1).eq "-").or
-                          eq. (txt.slice 0 1) "+"
-                        txt.slice 1 (txt.length.minus 1)
-                        txt
-                    -1
-                  folded
-              | (esign.slice (eloc.plus 1) (esign.length.minus (eloc.plus 1)))
-            0
-          if. >> magnitude
-            not.
-              eq.
-                index-of. >> dot
-                  if. >> mantissa
-                    eloc.eq -1
-                    esign
-                    esign.slice 0 eloc
-                  "."
-                -1
-            plus.
-              fold-digits
-                mantissa.slice 0 dot
-              div.
-                fold-digits
-                  mantissa.slice
-                    dot.plus 1
-                    mantissa.length.minus (dot.plus 1) >> places
-                10.power places
-            fold-digits mantissa
-          if.
-            exponent.gt 0
-            if. > [^fmt value power] >> raised
-              scalable value
-              if.
-                power.gt 200
-                fmt.raised
-                  value.times
-                    10.power 200
-                  power.minus 200
-                value.times
-                  10.power power
-              value
-            | magnitude exponent
-            if. > [^fmt value power] >> lowered
-              and.
-                power.gt 200
-                scalable value
-              fmt.lowered
-                value.div
-                  10.power 200
-                power.minus 200
-              value.div
-                10.power power
-            | magnitude (exponent.times -1)
-        -1
-      scaled
-    and. > [value] >> scalable
-      not.
-        value.eq 0
-      value.is-finite
-  [^fmt text] >> as-integer
-    if. > @
-      or.
-        gt.
-          length.
-            if. >> normalized
-              eq.
-                replaced. >> stripped
-                  if.
-                    negative.or
-                      eq.
+  [^fmt group acc] >> convert
+    matched.exists.not.if > @
+      *
+      if.
+        group.gt specifiers.length
+        acc
+        fmt.convert
+          group.plus 1
+          acc.with
+            [^host spec text] >> converted
+              if. > @
+                spec.eq "s"
+                text
+                if.
+                  spec.eq "d"
+                  [^fmt text] >> as-integer
+                    if. > @
+                      or.
+                        gt.
+                          length.
+                            if. >> normalized
+                              eq.
+                                replaced. >> stripped
+                                  if.
+                                    negative.or ((text.slice 0 1).eq "+")
+                                    text.slice 1 (text.length.minus 1)
+                                    text
+                                  "/^0+/".regex
+                                  ""
+                                ""
+                              "0"
+                              stripped
+                          19
+                        and.
+                          normalized.length.eq 19
+                          not.
+                            if.
+                              eq. (text.slice 0 1) "-" >> negative
+                              [a b] >> digits-lte
+                                if. > [^cmp index] >> rec
+                                  index.eq cmp.a.length
+                                  true
+                                  if.
+                                    (cmp.a.slice index 1).as-ascii.lt
+                                      as-ascii. (cmp.b.slice index 1)
+                                    true
+                                    if.
+                                      (cmp.a.slice index 1).as-ascii.gt
+                                        as-ascii. (cmp.b.slice index 1)
+                                      false
+                                      cmp.rec (index.plus 1)
+                                | 0 > @
+                              | normalized "9223372036854775808"
+                              digits-lte normalized "9223372036854775807"
+                      T
+                        "The number doesn't fit into long range for the '%%d' conversion".printf
+                          *
+                      negative.if
+                        times.
+                          fmt.host.fmt.fold-digits normalized >> folded
+                          -1
+                        folded
+                  | text
+                  [^owner text] >> as-float
+                    if. > @
+                      eq. >> negative
                         text.slice 0 1
-                        "+"
-                    text.slice 1 (text.length.minus 1)
-                    text
-                  "/^0+/".regex
-                  ""
-                ""
-              "0"
-              stripped
-          19
-        and.
-          normalized.length.eq 19
-          not.
-            if.
-              eq. >> negative
-                text.slice 0 1
-                "-"
-              [a b] >> digits-lte
-                if. > [^cmp index] >> rec
-                  index.eq cmp.a.length
-                  true
-                  if.
-                    (cmp.a.slice index 1).as-ascii.lt
-                      as-ascii.
-                        cmp.b.slice index 1
-                    true
-                    if.
-                      (cmp.a.slice index 1).as-ascii.gt
-                        as-ascii.
-                          cmp.b.slice index 1
-                      false
-                      cmp.rec (index.plus 1)
-                | 0 > @
-              | normalized "9223372036854775808"
-              digits-lte normalized "9223372036854775807"
-      T
-        "The number doesn't fit into long range for the '%%d' conversion".printf
-          *
-      negative.if
-        times.
-          fold-digits normalized >> folded
-          -1
-        folded
-  matched.exists.not.if > [^fmt group acc] >> convert
-    *
-    if.
-      group.gt specifiers.length
-      acc
-      fmt.convert
-        group.plus 1
-        acc.with
-          converted
-            specifiers.at
-              group.minus 1
-              T
-            matched.group group
+                        "-"
+                      times.
+                        if. >> scaled
+                          eq.
+                            if. >> exponent
+                              eq.
+                                index-of. >> eloc
+                                  replaced. >> esign
+                                    if.
+                                      negative.or ((text.slice 0 1).eq "+")
+                                      text.slice 1 (text.length.minus 1)
+                                      text
+                                    "/[eE]/".regex
+                                    "e"
+                                  "e"
+                                -1
+                              0
+                              [^exp txt] >> exp-value
+                                if. > @
+                                  eq. (txt.slice 0 1) "-"
+                                  times.
+                                    exp.owner.host.fmt.fold-digits >> folded
+                                      if.
+                                        ((txt.slice 0 1).eq "-").or
+                                          eq. (txt.slice 0 1) "+"
+                                        txt.slice 1 (txt.length.minus 1)
+                                        txt
+                                    -1
+                                  folded
+                              | (esign.slice (eloc.plus 1) (esign.length.minus (eloc.plus 1)))
+                            0
+                          if. >> magnitude
+                            not.
+                              eq.
+                                index-of. >> dot
+                                  if. >> mantissa
+                                    eloc.eq -1
+                                    esign
+                                    esign.slice 0 eloc
+                                  "."
+                                -1
+                            plus.
+                              owner.host.fmt.fold-digits (mantissa.slice 0 dot)
+                              div.
+                                owner.host.fmt.fold-digits
+                                  mantissa.slice
+                                    dot.plus 1
+                                    mantissa.length.minus (dot.plus 1) >> places
+                                10.power places
+                            owner.host.fmt.fold-digits mantissa
+                          if.
+                            exponent.gt 0
+                            if. > [^fmt value power] >> raised
+                              scalable value
+                              if.
+                                power.gt 200
+                                fmt.raised
+                                  value.times (10.power 200)
+                                  power.minus 200
+                                value.times (10.power power)
+                              value
+                            | magnitude exponent
+                            if. > [^fmt value power] >> lowered
+                              and.
+                                power.gt 200
+                                scalable value
+                              fmt.lowered
+                                value.div (10.power 200)
+                                power.minus 200
+                              value.div (10.power power)
+                            | magnitude (exponent.times -1)
+                        -1
+                      scaled
+                    (value.eq 0).not.and value.is-finite > [value] >> scalable
+                  | text
+            | (specifiers.at (group.minus 1) T) (matched.group group)
   | > @
     1
     *
-  if. > [^fmt spec text] >> converted
-    spec.eq "s"
-    text
-    if.
-      spec.eq "d"
-      as-integer text
-      as-float text
-  [text] >> fold-digits
+  [text] > fold-digits
     if. > [^digits index acc] >> rec
       index.eq digits.text.length
       acc
@@ -237,28 +217,6 @@
   tokens.at >> specifiers
     1
     T
-  if. > [ch] >> escaped
-    contains.
-      *
-        "\\"
-        "^"
-        "$"
-        "."
-        "|"
-        "?"
-        "*"
-        "+"
-        "("
-        ")"
-        "["
-        "]"
-        "{"
-        "}"
-        "/"
-      ch
-    "\\".chained
-      * ch
-    ch
   [^text position accumulated found pending] >> tokenize
     if. > @
       position.gte text.text.length
@@ -321,7 +279,29 @@
               position.plus 1
               accumulated.chained
                 *
-                  escaped ch
+                  if. > [ch] >> escaped
+                    contains.
+                      *
+                        "\\"
+                        "^"
+                        "$"
+                        "."
+                        "|"
+                        "?"
+                        "*"
+                        "+"
+                        "("
+                        ")"
+                        "["
+                        "]"
+                        "{"
+                        "}"
+                        "/"
+                      ch
+                    "\\".chained
+                      * ch
+                    ch
+                  | ch
               found
               false
   | >> tokens

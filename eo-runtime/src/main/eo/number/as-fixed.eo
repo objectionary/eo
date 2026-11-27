@@ -53,7 +53,7 @@
         [^num a] >> positive
           if. > @
             eq.
-              round >> digits
+              num.round >> digits
                 times.
                   a.minus a.floor
                   num.scale
@@ -80,7 +80,7 @@
             positive a
         | (num.times -1)
         positive num
-  [value] >> round
+  [value] > round
     if. > @
       gte.
         value.minus

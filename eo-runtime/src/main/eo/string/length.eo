@@ -46,7 +46,23 @@
             eq.
               lead.and E0-
               C0-
-            step
+            if. > [^owner idx csize valid accum] >> step
+              gt.
+                idx.plus csize
+                size
+              T
+                "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
+                  * csize idx owner.text.text.as-bytes
+              valid.if
+                owner.text.reclen
+                  idx.plus csize
+                  accum.plus 1
+                T
+                  "Malformed UTF-8 sequence (%x) at %d index".printf
+                    *
+                      owner.text.text.as-bytes.slice idx csize
+                      idx
+            |
               index
               2
               ((lead.and FE-).eq C0-).not.and
@@ -114,25 +130,6 @@
                   "Unknown byte format (%x), can't recognize character".printf
                     * lead
     | 0 0
-  if. > [^text idx csize valid accum] >> step
-    gt.
-      idx.plus csize
-      size
-    T
-      "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
-        *
-          csize
-          idx
-          text.text.as-bytes
-    valid.if
-      reclen
-        idx.plus csize
-        accum.plus 1
-      T
-        "Malformed UTF-8 sequence (%x) at %d index".printf
-          *
-            text.text.as-bytes.slice idx csize
-            idx
 
   " ".length.eq 1 ++> can-count-a-text-of-spaces-only
 

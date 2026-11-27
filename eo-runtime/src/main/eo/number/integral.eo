@@ -31,7 +31,7 @@
                 seq *
                   iter.sum.put
                     iter.sum.as-number.plus
-                      subsection
+                      iter.mem.subsection
                         iter.mem.a.plus (i.times step)
                         iter.mem.a.plus ((i.plus 1).times step)
                   true
@@ -40,7 +40,7 @@
             sum
           number ((mem.b.minus mem.a).div mem.n)! >> step
     T "the number of partitions must be a finite positive integer smaller than 2^53"
-  times. > [^calc a b] >> subsection
+  times. > [^calc a b] > subsection
     div.
       b.minus a
       6
