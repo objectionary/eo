@@ -318,40 +318,6 @@
             <configuration>
               <skipSourceLints>
                 <!--
-                @todo #6985:30min Stop skipping 'many-void-attributes' here.
-                The rule caps a formation at five voids to keep it callable,
-                but it counts 'ρ' among them, and 'string.regex.pattern.yes'
-                has five real ones. Writing the receiver down did not add an
-                argument, so the cap now bites any head honest enough to
-                declare what it already had. Remove this entry once
-                objectionary/lints#1299 leaves the receiver out of the count.
-                -->
-                <lint>many-void-attributes</lint>
-                <!--
-                @todo #9110:30min Stop skipping 'unit-test-is-not-verb' here.
-                The lint wants a test name to hold a verb in singular form.
-                The nine 'can-or' tests of 'bytes' are renamed to the
-                'can-apply-or' form of their 'and' siblings now. What keeps
-                this entry in place is the lint's own tagger: it tags valid
-                verbs like 'format', 'print', 'scan', or 'floor' as nouns,
-                and even the not-yet-released objectionary/lints#1551, which
-                accepts a noun tag after the 'can' modal, still leaves about
-                three dozen names rejected, because words absent from its
-                model come back tagged as punctuation. Turn this entry off
-                once objectionary/lints#1533 ships in a release and every
-                test name passes.
-                -->
-                <lint>unit-test-is-not-verb</lint>
-                <!--
-                'broad-scope' asks for a private attribute read by one sibling
-                to move inside it, which for a recursive head means computing
-                it again on every step: 'i64.div' hoists 'bit' and 'dividend'
-                out of 'looped' on purpose. Thirty-four of its forty-five
-                reports sit in 'string/regex.eo', whose objects share one
-                vocabulary across the whole parser, and #8654 holds the rest.
-                -->
-                <lint>broad-scope</lint>
-                <!--
                 @todo #9108:30min Stop skipping 'long-live-object' here.
                 The lint warns when more than five lines separate an attribute
                 from its last use in the same formation, and it does so 68
