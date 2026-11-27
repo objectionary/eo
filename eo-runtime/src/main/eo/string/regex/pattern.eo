@@ -805,7 +805,7 @@
           as-bytes.
             number
               at.
-                regex.scanned index bits -- >> r
+                regex.scanned index bits -- false >> r
           index.as-bytes
         regex.escaped
           number
@@ -844,14 +844,28 @@
             regex.plain bits r.text
             r.text
       r
-  [^regex index mode acc] > scanned
+  [^regex index mode acc quoting] > scanned
+    s.ok.if > @
+      s.done.if
+        regex.read index acc
+        regex.scanned
+          number
+            at.
+              quoting.if >> s
+                regex.inquoted index
+                regex.lexeme index mode
+          mode
+          acc.concat s.text
+          s.quoting
+      s
+  [^regex index mode] > lexeme
     if. > @
       or.
         eq.
           byte index >> b
           --
         regex.special b mode
-      regex.read index acc
+      regex.halted
       if.
         b.eq 5C-
         if.
@@ -866,44 +880,43 @@
             "Unescaped trailing backslash"
           if.
             e.eq 51-
-            regex.quoted
+            regex.moved
               number
                 index.plus 2
-              mode
-              acc
+              --
+              true
             if.
               e.eq 78-
               h.ok.if
-                regex.scanned
+                regex.moved
                   number
                     at.
                       regex.hexed >> h
                         number (index.plus 2)
-                  mode
-                  acc.concat h.text
+                  h.text
+                  false
                 h
               if.
                 eq.
                   regex.glyph e >> g
                   --
-                regex.read index acc
-                regex.scanned
+                regex.halted
+                regex.moved
                   number
                     index.plus 2
-                  mode
-                  acc.concat g
-        regex.scanned
+                  g
+                  false
+        regex.moved
           index.plus
             regex.width b >> w
-          mode
-          acc.concat
-            regex.raw.slice index w
-  [^regex index mode acc] > quoted
+          regex.raw.slice index w
+          false
+  [^regex index] > inquoted
     if. > @
       eq.
         byte index >> b
         --
-      regex.read index acc
+      regex.halted
       if.
         and.
           b.eq 5C-
@@ -912,17 +925,25 @@
               number
                 index.plus 1
             45-
-        regex.scanned
+        regex.moved
           number
             index.plus 2
-          mode
-          acc
-        regex.quoted
+          --
+          false
+        regex.moved
           index.plus
             regex.width b >> w
-          mode
-          acc.concat
-            regex.raw.slice index w
+          regex.raw.slice index w
+          true
+  [position content quotes] > moved
+    position > at
+    false > done
+    true > ok
+    quotes > quoting
+    content > text
+  [] > halted
+    true > done
+    true > ok
   if. > [^regex index opened bits] > bracket
     eq.
       byte index
