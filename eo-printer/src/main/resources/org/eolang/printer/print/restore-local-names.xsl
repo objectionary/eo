@@ -319,6 +319,7 @@
     <xsl:sequence select="not(eo:abstract($target)) and (let $height := eo:lint-height(eo:alias-end($target, ())) return some $ref in eo:references($target, $name) satisfies eo:lint-depth($ref) + count(tokenize(substring-after(eo:resolved-name($ref/@base), concat($name, '.')), '\.')[. != '']) + $height gt $eo:depth-limit)"/>
   </xsl:function>
   <xsl:key name="kept-handle" match="o[@local and (eo:recursive(., @name/string()) or @pipe)]" use="@name"/>
+  <xsl:key name="cactus-declaration" match="o[starts-with(@name, $auto)]" use="@name"/>
   <!--
   Whether some formation of this file names its receiver, "[^s …]"
   (R-3.4.13, #8227). Most files name none, so "eo:receiver-handled" below
@@ -365,14 +366,22 @@
   A "ρ" hop onto a receiver that carries a handle is put back first (see
   "eo:receiver-handled"); the handle it leaves is no cactus name, so the
   segment rewrite after it passes the handle through unchanged.
+
+  When a cactus name is shared, only its first occurrence can be an own read.
+  Use the actual declaration there and leave later dispatches of that name alone.
   -->
   <xsl:template match="@base">
-    <xsl:variable name="owner" select="eo:own-formation(..)"/>
     <xsl:variable name="name" select="eo:own-name(..)"/>
-    <xsl:variable name="base" select="string-join(eo:receiver-handled(.., tokenize(., '\.')), '.')"/>
-    <xsl:variable name="parts" select="tokenize($base, '\.')"/>
-    <xsl:variable name="local" select="string($owner/o[@name=$name][@local and (eo:recursive(., @name/string()) or @pipe)]/@local)"/>
-    <xsl:attribute name="base" select="if (empty($owner/o[@name=$name])) then string-join(for $seg in $parts return (if (key('kept-handle', $seg)) then string(key('kept-handle', $seg)[1]/@local) else $seg), '.') else if ($local = '') then $base else string-join(for $pos in 1 to count($parts) return if ($pos = index-of($parts, $name)[1]) then $local else $parts[$pos], '.')"/>
+    <xsl:variable name="parts" select="eo:receiver-handled(.., tokenize(., '\.'))"/>
+    <xsl:variable name="binding" select="if (exists(key('cactus-declaration', $name)[2])) then eo:own-formation(..)/o[@name=$name] else ()"/>
+    <xsl:attribute name="base" select="string-join(
+      for $pos in 1 to count($parts) return
+      let $seg := $parts[$pos], $kept := key('kept-handle', $seg),
+      $target := if (exists($binding) and $seg = $name)
+        then ($kept intersect $binding)[$pos = index-of($parts, $name)[1]]
+        else $kept
+      return if (exists($target)) then string($target[1]/@local) else $seg,
+      '.')"/>
   </xsl:template>
   <!--
   Recursive formation: promote the handle to the visible name. A formation applied as a dispatch receiver (#5844) and a

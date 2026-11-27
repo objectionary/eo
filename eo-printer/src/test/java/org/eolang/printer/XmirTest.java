@@ -50,7 +50,7 @@ final class XmirTest {
     @Test
     void restoresOnlyTheReferencedRecursiveHandle() {
         MatcherAssert.assertThat(
-            "the inner reference must keep its own cactus binding",
+            "restore unambiguous handles and keep the inner reference on its own binding",
             new Xsline(
                 new StClasspath("/org/eolang/printer/print/restore-local-names.xsl")
             ).pass(
@@ -59,14 +59,25 @@ final class XmirTest {
                         "",
                         "<object><o name='app'><o name='a🌵rec' local='rec'>",
                         "<o base='ξ.ρ.a🌵rec' name='φ'/></o>",
+                        "<o base='ξ.a🌵rec.a🌵rec' name='outer-repeat'/>",
                         "<o name='inner'><o base='Φ.number' name='a🌵rec' local='rec'>42</o>",
-                        "<o base='ξ.a🌵rec' name='result'/></o></o></object>"
+                        "<o base='ξ.a🌵rec' name='result'/>",
+                        "<o base='ξ.a🌵rec.a🌵kept' name='mixed'/></o>",
+                        "<o name='receiver'><o base='Φ.number' name='a🌵kept' local='kept' pipe=''>42</o>",
+                        "<o base='ξ.a🌵kept.a🌵kept' name='own-repeat'/></o>",
+                        "<o base='ξ.receiver.a🌵kept' name='single'/>",
+                        "<o base='ξ.receiver.a🌵kept.a🌵kept' name='repeat'/></o></object>"
                     )
                 )
             ),
             XhtmlMatchers.hasXPaths(
                 "/object/o[@name='app']/o[@name='rec']/o[@base='ξ.ρ.rec']",
-                "/object/o[@name='app']/o[@name='inner']/o[@name='result' and @base='ξ.a🌵rec']"
+                "/object/o/o[@name='outer-repeat' and @base='ξ.rec.a🌵rec']",
+                "/object/o[@name='app']/o[@name='inner']/o[@name='result' and @base='ξ.a🌵rec']",
+                "/object/o/o[@name='inner']/o[@name='mixed' and @base='ξ.a🌵rec.kept']",
+                "/object/o/o[@name='receiver']/o[@name='own-repeat' and @base='ξ.kept.kept']",
+                "/object/o/o[@name='single' and @base='ξ.receiver.kept']",
+                "/object/o/o[@name='repeat' and @base='ξ.receiver.kept.kept']"
             )
         );
     }
