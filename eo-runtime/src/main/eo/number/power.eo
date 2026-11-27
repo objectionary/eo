@@ -11,8 +11,13 @@
 # A negative exponent takes the `reciprocal` of the pair. Where the `answer`
 # overflows, comes to nan or to zero, the squaring is done in single doubles.
 # A fractional exponent of a positive base is taken as e raised to `b` times
-# the natural logarithm of the base. Zeros, infinities and nan follow the
-# same IEEE rules that Math.pow obeys.
+# the natural logarithm of the base. That power is split into e to the
+# nearest integer `k` and a Taylor `fraction` of what is left, and e to `k`
+# is taken in two halves with the fraction multiplied in between, so that
+# a power near the largest double or below the smallest normal one is not
+# lost to the e to 710 or its reciprocal that the whole of `k` would make
+# on the way (#10090). Zeros, infinities and nan follow the same IEEE rules
+# that Math.pow obeys.
 #
 # `expo` says that `b` is not a number itself, rather than letting the
 # first atom it reaches say it of its own attribute: the exponent of a
@@ -101,30 +106,32 @@
                   base.gt 0
                   [^num y] >> expon
                     times. > @
-                      if.
-                        lt.
+                      times.
+                        if. > [^num n] >> scaled
+                          n.lt 0
+                          1.div
+                            ipow e n.abs
+                          ipow e n.abs
+                        |
+                          number
+                            floor. ((number k).div 2) >> half!
+                        if. > [^num j] >> fraction
+                          j.gt 20
+                          1
+                          1.plus
+                            times.
+                              ((number arg).minus (number k)).div j
+                              num.fraction (j.plus 1)
+                        | 1
+                      scaled
+                        minus.
                           number
                             floor. >> k!
                               plus.
                                 number
                                   y >> arg!
                                 0.5
-                          0
-                        1.div
-                          ipow e (number k).abs
-                        ipow e (number k).abs
-                      if. > [^num j] >> fraction
-                        j.gt 20
-                        1
-                        1.plus
-                          times.
-                            div.
-                              minus.
-                                number arg
-                                number k
-                              j
-                            num.fraction (j.plus 1)
-                      | 1
+                          number half
                   | (expo.times base.ln)
                   nan
             if.
@@ -236,6 +243,10 @@
       -1.0e-200.power 3
     80-00-00-00-00-00-00-00
 
+  eq. ++> can-overflow-a-fraction-past-the-largest-double
+    2.power 1234.57
+    pinf
+
   eq. ++> can-overflow-a-tiny-float-raised-to-a-negative-integer
     1.0e-200.power -2
     pinf
@@ -243,6 +254,24 @@
   eq. ++> can-raise-a-float-to-zero
     42.5.power 0
     1
+
+  lt. ++> can-raise-a-fraction-below-the-smallest-normal-double
+    abs.
+      minus.
+        div.
+          0.5625.power 1234.57
+          3.226769111569705e-309
+        1
+    1.0e-6
+
+  lt. ++> can-raise-a-fraction-near-the-largest-double
+    abs.
+      minus.
+        div.
+          1.7768.power 1234.57
+          1.5713002074152402e308
+        1
+    1.0e-9
 
   lt. ++> can-raise-a-fraction-to-a-fraction
     abs.
