@@ -457,6 +457,24 @@
             </xsl:if>
           </xsl:copy>
         </xsl:when>
+        <!--
+        This handle applies a helper formation that stands apart from it and
+        that nothing else reads (see `eo:pipe-helper`): the helper moves here,
+        right above the handle, which becomes its `|` pipe (#10091).
+        -->
+        <xsl:when test="exists(eo:pipe-helper(.))">
+          <xsl:for-each select="eo:pipe-helper(.)">
+            <xsl:copy>
+              <xsl:apply-templates select="node()|@*"/>
+            </xsl:copy>
+          </xsl:for-each>
+          <xsl:copy>
+            <xsl:if test="not(@pipe)">
+              <xsl:attribute name="pipe"/>
+            </xsl:if>
+            <xsl:apply-templates select="node()|@*"/>
+          </xsl:copy>
+        </xsl:when>
         <xsl:otherwise>
           <xsl:copy>
             <xsl:apply-templates select="node()|@*"/>
@@ -534,6 +552,29 @@
     <xsl:sequence select="eo:dataized-const($target) and (some $ref in eo:references($target, $name) satisfies eo:host-drop($target, $ref) &gt; 0)"/>
   </xsl:function>
   <!--
+  The formation helper that the kept auto-named handle "$handle" applies and
+  that nothing else reads, when the two stand apart, or the empty sequence.
+  The parser hoists a handle written inside another binding
+  (`colon-in host-port 1 &gt;&gt; port-colon-idx` inside `not. &gt;&gt; has-port`)
+  out to its own binding, so the helper (`[hp start] &gt;&gt; colon-in`) and
+  the handle are no longer neighbours. A handle that keeps its readable name
+  (`@local`, read through a dispatch such as `port-colon-idx.eq -1`) is never
+  folded, so nothing relocated the helper: it was kept as the anonymous
+  `[hp start] &gt;&gt;` that only a `|` right below it can apply, and the
+  handle printed its use of it as a "vL_P" that nothing declares (#10091).
+  The drop template below moves the helper right above the handle instead
+  and makes the handle that `|` pipe, so it prints `| host-port 1 &gt;&gt;
+  port-colon-idx`, the spelling the printer reads back unchanged. A handle
+  without a readable name lands on its use and takes the helper with it in
+  "merge-monikers" (see `eo:spent-helper` there).
+  -->
+  <xsl:function name="eo:pipe-helper" as="element()?">
+    <xsl:param name="handle" as="element()"/>
+    <xsl:variable name="name" select="if (exists($handle/@local) and exists($handle/o) and empty($handle/@const) and contains($handle/@base, $auto-dot) and not(contains(substring-after($handle/@base, $auto-dot), '.'))) then eo:resolved-name($handle/@base) else ''"/>
+    <xsl:variable name="helper" select="if ($name != '') then $handle/../o[@name = $name][1] else ()"/>
+    <xsl:sequence select="if (exists($helper) and eo:abstract($helper) and not($helper/following-sibling::o[1] is $handle) and not(eo:recursive($helper, $name)) and empty(eo:references($helper, $name)[not(. is $handle)]) and eo:kept-binding($handle, string($handle/@name))) then $helper else ()"/>
+  </xsl:function>
+  <!--
   Whether the auto-named abstract formation `$target` is immediately followed
   by a reference that uses it as the base of an application — a sibling
   resolving to `$name` that carries its own argument children or a
@@ -559,7 +600,7 @@
     <xsl:param name="target" as="element()"/>
     <xsl:param name="name" as="xs:string"/>
     <xsl:variable name="next" select="$target/following-sibling::o[1]"/>
-    <xsl:variable name="handle" select="$target/following-sibling::o[starts-with(@name, $auto) and contains(@base, $auto-dot) and eo:resolved-name(@base) = $name][1]"/>
+    <xsl:variable name="handle" select="$target/following-sibling::o[starts-with(@name, $auto) and contains(@base, $auto-dot) and eo:resolved-name(@base) = $name][1][empty(eo:pipe-helper(.))]"/>
     <xsl:sequence select="eo:abstract($target) and ((exists($next) and contains($next/@base, $auto-dot) and eo:resolved-name($next/@base) = $name and ($next/o or $next/@name)) or exists($handle))"/>
   </xsl:function>
   <!--
