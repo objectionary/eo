@@ -458,6 +458,76 @@ final class XmirTest {
         );
     }
 
+    @Test
+    void preservesNestedConstHandleFromRuntime() throws IOException {
+        MatcherAssert.assertThat(
+            "the const handle must survive printing from a nested formation",
+            new Xmir(
+                new EoSyntax(
+                    String.join(
+                    System.lineSeparator(),
+                    "[^list index] > back",
+                    "  index.is-integer.if > @",
+                    "    if.",
+                    "      0.gt",
+                    "        number (list.length.minus index)! >> start",
+                    "      list",
+                    "      list.reducedi",
+                    "        *",
+                    "        if. > [^list accum item idx] >>",
+                    "          idx.gte start",
+                    "          accum.with item",
+                    "          accum",
+                    "    T \"Given index must be an integer\""
+                    )
+                ).parsed()
+            ).toEO(),
+            Matchers.allOf(
+                Matchers.containsString("! >> start"),
+                Matchers.containsString("idx.gte start")
+            )
+        );
+    }
+
+    @Test
+    void keepsConstReferenceOfItsOwner() {
+        MatcherAssert.assertThat(
+            "the outer const handle owns the explicit outer reference",
+            XmirTest.ownedMonikers(),
+            XhtmlMatchers.hasXPath("/targets[@const='outer-const']")
+        );
+    }
+
+    @Test
+    void keepsLocalReferenceOfItsOwner() {
+        MatcherAssert.assertThat(
+            "the outer local handle owns the explicit outer reference",
+            XmirTest.ownedMonikers(),
+            XhtmlMatchers.hasXPath("/targets[@local='outer-local']")
+        );
+    }
+
+    private static XML ownedMonikers() {
+        return new Xsline(
+            new StClasspath("/org/eolang/printer/print/owned-monikers.xsl")
+        ).pass(
+            new XMLDocument(
+                String.join(
+                    "",
+                    "<object><o name='outer'>",
+                    "<o base='Φ.number' name='a🌵const' local='outer-const' const='' pipe=''>42</o>",
+                    "<o base='Φ.number' name='a🌵local' local='outer-local' pipe=''>42</o>",
+                    "<o name='inner'>",
+                    "<o base='Φ.number' name='a🌵const' local='inner-const' const='' pipe=''>43</o>",
+                    "<o base='Φ.number' name='a🌵local' local='inner-local' pipe=''>43</o>",
+                    "<o base='ξ.ρ.a🌵const' name='constref'/>",
+                    "<o base='ξ.ρ.a🌵local' name='localref'/>",
+                    "</o></o></object>"
+                )
+            )
+        );
+    }
+
     private String printed(final Xtory xtory) {
         final String origin = (String) xtory.map().get("origin");
         final String expected;
