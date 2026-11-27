@@ -4,6 +4,7 @@
 * SPDX-License-Identifier: MIT
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:eo="https://www.eolang.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" exclude-result-prefixes="eo xs" id="entries" version="3.0">
+  <xsl:import href="/org/eolang/parser/_funcs.xsl"/>
   <!--
   Here we write the entries of the whole build: one object, "l🌵", holding an
   application of every formation that has a body to a symbol for each of its
@@ -398,8 +399,10 @@
   </xsl:template>
   <!-- A reference to a helper of a formation with a row ends in a 🌵 too. -->
   <xsl:template match="o[ancestor::o[eo:formation(.)][eo:rowed(.)]]/@base" mode="eo:rowing">
-    <xsl:variable name="helpers" select="ancestor::o[eo:formation(.)][eo:rowed(.)]/o/@name[starts-with(., 'a🌵')] ! string(.)"/>
-    <xsl:attribute name="base" select="string-join(tokenize(., '\.') ! (if (. = $helpers) then concat(., '🌵') else .), '.')"/>
+    <xsl:variable name="owner" select="eo:own-formation(..)"/>
+    <xsl:variable name="helper" select="let $name := eo:own-name(..) return string($owner[eo:rowed(.)]/o[@name=$name][starts-with(@name, 'a🌵')]/@name)"/>
+    <xsl:variable name="parts" select="tokenize(., '\.')"/>
+    <xsl:attribute name="base" select="string-join(for $pos in 1 to count($parts) return if ($helper != '' and $pos = index-of($parts, $helper)[1]) then concat($parts[$pos], '🌵') else $parts[$pos], '.')"/>
   </xsl:template>
   <xsl:template match="o[eo:formation(.)][eo:rowed(.)]/o[@name = 'φ']" mode="eo:rowing">
     <xsl:copy>

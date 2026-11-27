@@ -47,6 +47,88 @@ import org.junit.jupiter.params.ParameterizedTest;
  */
 final class XmirTest {
 
+    @Test
+    void restoresOnlyTheReferencedRecursiveHandle() {
+        MatcherAssert.assertThat(
+            "restore unambiguous handles and keep the inner reference on its own binding",
+            new Xsline(
+                new StClasspath("/org/eolang/printer/print/restore-local-names.xsl")
+            ).pass(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<object><o name='app'><o name='a🌵rec' local='rec'>",
+                        "<o base='ξ.ρ.a🌵rec' name='φ'/></o>",
+                        "<o base='ξ.a🌵rec.a🌵rec' name='outer-repeat'/>",
+                        "<o name='inner'><o base='Φ.number' name='a🌵rec' local='rec'>42</o>",
+                        "<o base='ξ.a🌵rec' name='result'/>",
+                        "<o base='ξ.a🌵rec.a🌵kept' name='mixed'/></o>",
+                        "<o name='receiver'><o base='Φ.number' name='a🌵kept' local='kept' pipe=''>42</o>",
+                        "<o base='ξ.a🌵kept.a🌵kept' name='own-repeat'/></o>",
+                        "<o base='ξ.receiver.a🌵kept' name='single'/>",
+                        "<o base='ξ.receiver.a🌵kept.a🌵kept' name='repeat'/></o></object>"
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object/o[@name='app']/o[@name='rec']/o[@base='ξ.ρ.rec']",
+                "/object/o/o[@name='outer-repeat' and @base='ξ.rec.a🌵rec']",
+                "/object/o[@name='app']/o[@name='inner']/o[@name='result' and @base='ξ.a🌵rec']",
+                "/object/o/o[@name='inner']/o[@name='mixed' and @base='ξ.a🌵rec.kept']",
+                "/object/o/o[@name='receiver']/o[@name='own-repeat' and @base='ξ.kept.kept']",
+                "/object/o/o[@name='single' and @base='ξ.receiver.kept']",
+                "/object/o/o[@name='repeat' and @base='ξ.receiver.kept.kept']"
+            )
+        );
+    }
+
+    @Test
+    void inlinesTheDeclarationOfTheReferencedOwner() {
+        MatcherAssert.assertThat(
+            "each same-named cactus reference must inline its own declaration",
+            new Xsline(
+                new StClasspath("/org/eolang/printer/print/inline-cactoos.xsl")
+            ).pass(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<object><o name='app'><o base='Φ.number' name='a🌵same'>42</o>",
+                        "<o base='ξ.a🌵same' name='outer-result'/>",
+                        "<o name='inner'><o base='Φ.number' name='a🌵same'>43</o>",
+                        "<o base='ξ.a🌵same' name='inner-result'/></o></o></object>"
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPaths(
+                "/object/o/o[@name='outer-result' and @base='Φ.number' and text()='42']",
+                "/object/o/o[@name='inner']/o[@name='inner-result' and @base='Φ.number' and text()='43']"
+            )
+        );
+    }
+
+    @Test
+    void doesNotInlineAReceiverInsteadOfACactusCandidate() {
+        MatcherAssert.assertThat(
+            "the receiver segment is not a cactus declaration",
+            new Xsline(
+                new StClasspath("/org/eolang/printer/print/inline-cactoos.xsl")
+            ).pass(
+                new XMLDocument(
+                    String.join(
+                        "",
+                        "<object><o name='app'><o base='Φ.number' name='a🌵same'>42</o>",
+                        "<o name='inner'><o base='Φ.string' name='receiver'>R</o>",
+                        "<o base='Φ.number' name='a🌵same'>43</o>",
+                        "<o base='ξ.receiver.a🌵same' name='result'/></o></o></object>"
+                    )
+                )
+            ),
+            XhtmlMatchers.hasXPath(
+                "/object/o/o[@name='inner']/o[@name='result' and @base='Φ.number']"
+            )
+        );
+    }
+
     @ParameterizedTest
     @ClasspathSource(value = "org/eolang/printer/print-packs/yaml", glob = "**.yaml")
     void printsToEo(final String pack) throws IOException {
