@@ -316,17 +316,6 @@
               <goal>unspile</goal>
             </goals>
             <configuration>
-              <skipSourceLints>
-                <!--
-                @todo #9788:30min Stop skipping 'anemic-getter' here. Since
-                voids are hidden behind 'v🌵', a getter like 'count > length'
-                in 'tuple' is the only way to read a void from outside, but
-                the lint calls it a redundant rename and asks to use the
-                hidden void directly, which nobody can write
-                (objectionary/lints#1624).
-                -->
-                <lint>anemic-getter</lint>
-              </skipSourceLints>
               <!--
               Objects with an optional fallback argument, like 'string.as-fixed'
               or 'win32', are applied with and without it on purpose, and the
