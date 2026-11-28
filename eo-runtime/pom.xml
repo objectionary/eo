@@ -318,17 +318,6 @@
             <configuration>
               <skipSourceLints>
                 <!--
-                @todo #9108:30min Stop skipping 'long-live-object' here.
-                The lint warns when more than five lines separate an attribute
-                from its last use in the same formation, and it does so 68
-                times in 27 files, twenty of them in 'net/uri.eo' and ten in
-                'number/sine.eo'. Each place is real, but moving the
-                attribute closer needs the formation to be split, not just
-                its lines to be reordered, because the printer puts a private
-                handle at its first use.
-                -->
-                <lint>long-live-object</lint>
-                <!--
                 @todo #9788:30min Stop skipping 'anemic-getter' here. Since
                 voids are hidden behind 'v🌵', a getter like 'count > length'
                 in 'tuple' is the only way to read a void from outside, but
