@@ -38,7 +38,7 @@ jobs:
       - uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
-          java-version: 26
+          java-version: 27
       # Restored, never saved: the `mvn` job saves this very key on master,
       # where every pull request can read it, while a cache saved here is
       # scoped to one pull request and pushes master's out of the quota.
