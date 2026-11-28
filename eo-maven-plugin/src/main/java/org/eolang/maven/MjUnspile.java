@@ -20,7 +20,7 @@ import org.apache.maven.plugins.annotations.Mojo;
     defaultPhase = LifecyclePhase.PREPARE_PACKAGE,
     threadSafe = true
 )
-public final class MjUnspile extends MjSafe {
+public final class MjUnspile extends MjOptions {
 
     /**
      * Ctor.
@@ -34,7 +34,7 @@ public final class MjUnspile extends MjSafe {
         new Unspiling(
             this.generated.toPath(),
             this.classes.toPath(),
-            this.keepBinaries
+            this.binaries().keeps()
         ).exec();
     }
 }

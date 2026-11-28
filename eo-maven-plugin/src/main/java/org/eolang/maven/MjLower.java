@@ -71,7 +71,7 @@ import org.eolang.lowering.Scope;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class MjLower extends MjSafe {
+public final class MjLower extends MjOptions {
 
     /**
      * Whether the goal is bypassed, lowering no formation at all.

@@ -73,7 +73,7 @@ import org.eolang.inference.Names;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class MjInfer extends MjSafe {
+public final class MjInfer extends MjOptions {
 
     /**
      * The canon of eo-runtime, taken when {@link #canon} is unset

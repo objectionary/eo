@@ -28,7 +28,7 @@ import org.apache.maven.plugins.annotations.Mojo;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class MjLint extends MjSafe {
+public final class MjLint extends MjOptions {
 
     /**
      * Ctor.

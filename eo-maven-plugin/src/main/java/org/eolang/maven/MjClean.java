@@ -21,7 +21,7 @@ import org.apache.maven.plugins.annotations.Mojo;
     defaultPhase = LifecyclePhase.CLEAN,
     threadSafe = true
 )
-public class MjClean extends MjSafe {
+public class MjClean extends MjOptions {
 
     /**
      * Ctor.

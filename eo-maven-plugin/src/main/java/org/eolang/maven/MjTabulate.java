@@ -44,7 +44,7 @@ import org.eolang.inference.Annotation;
     defaultPhase = LifecyclePhase.PROCESS_CLASSES,
     threadSafe = true
 )
-public final class MjTabulate extends MjSafe {
+public final class MjTabulate extends MjOptions {
 
     /**
      * Directory with XMIR sources to scan for atoms, falling back to the

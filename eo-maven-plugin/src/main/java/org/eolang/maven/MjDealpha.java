@@ -60,7 +60,7 @@ import org.apache.maven.plugins.annotations.Parameter;
     defaultPhase = LifecyclePhase.PROCESS_SOURCES,
     threadSafe = true
 )
-public final class MjDealpha extends MjSafe {
+public final class MjDealpha extends MjOptions {
 
     /**
      * The directory with the {@code answers.xml} that {@link MjInfer}

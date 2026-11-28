@@ -71,7 +71,7 @@ import org.eolang.parser.Utf8;
     defaultPhase = LifecyclePhase.VERIFY,
     threadSafe = true
 )
-public final class MjMeasure extends MjSafe {
+public final class MjMeasure extends MjOptions {
 
     /**
      * The raw {@code loc:line:pos} hits file {@code PhCoverage} appended to.
