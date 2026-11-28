@@ -28,8 +28,7 @@
 # and subtracting back splits a double into halves narrow enough that their
 # pairwise products round nowhere: `turns` into `top` and `foot`, `tau`
 # into `crown` and `stub`. The four partial products of those halves then
-# say what the single rounded `product` dropped, and `slip` is that
-# dropped part.
+# say what the single rounded `product` dropped.
 #
 # What the whole turns leave is carried in two doubles as well, rather than
 # folded into one. `coarse` is the magnitude less the rounded product,
@@ -65,7 +64,7 @@
 +package number
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.5
++version 0.63.6
 
 [^num] > sine
   if. > @
@@ -91,7 +90,7 @@
                           arg.abs >> magnitude
                           turns.times tau >> product
                         plus. >> fine
-                          plus. >> slip
+                          plus.
                             plus.
                               plus.
                                 minus.

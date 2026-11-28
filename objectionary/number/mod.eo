@@ -29,12 +29,12 @@
 +package number
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.5
++version 0.63.6
 
 [^num b cant-mod] > mod
   if. > @
     eq.
-      number b.as-bytes >> divisor
+      number b.as-bytes
       0
     cant-mod "cannot calculate mod by zero"
     dividend.is-finite.not.if
@@ -45,7 +45,11 @@
       divisor.is-finite.not.if
         if.
           b.as-bytes.size.eq 8
-          divisor.is-nan.if nan num
+          if.
+            is-nan.
+              number b.as-bytes >> divisor
+            nan
+            num
           T "the 'b' attribute must be a number"
         if.
           num.as-bytes.eq 80-00-00-00-00-00-00-00

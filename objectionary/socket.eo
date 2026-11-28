@@ -47,7 +47,7 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.5
++version 0.63.6
 
 [address port] > socket
   os.is-windows.if > @
@@ -55,11 +55,6 @@
       as-number. > addr
         sys.inet-addr >>!
           sock.address
-      as-i32. > addrint
-        if.
-          addr.gt 2147483647
-          addr.minus 4294967296
-          addr
       if. > [^sock descriptor] > closed-socket
         eq.
           sock.sys.close descriptor
@@ -124,16 +119,17 @@
                     ready.setup.host.sock.scoped-socket ready.setup.host.sock.sd > @
                     [^incoming scope cant-accept] > accept
                       if. > @
-                        eq.
-                          number (incoming.ready.setup.host.sock.sys.accept incoming.ready.setup.host.sock.sd incoming.ready.setup.host.sock.sockaddr incoming.ready.setup.host.sock.sockaddr.size)! >> client
-                          -1
-                        cant-accept
-                          "Failed to accept a connection on the socket #%d because %s".printf
-                            * incoming.ready.setup.host.sock.sd incoming.ready.setup.host.sock.sys.message
+                        not.
+                          eq.
+                            number (incoming.ready.setup.host.sock.sys.accept incoming.ready.setup.host.sock.sd incoming.ready.setup.host.sock.sockaddr incoming.ready.setup.host.sock.sockaddr.size)! >> client
+                            -1
                         incoming.ready.setup.host.sock.guarded
                           scope
                             incoming.ready.setup.host.sock.scoped-socket client
                           incoming.ready.setup.host.sock.closed-socket client
+                        cant-accept
+                          "Failed to accept a connection on the socket #%d because %s".printf
+                            * incoming.ready.setup.host.sock.sd incoming.ready.setup.host.sock.sys.message
           cant-listen
       if. > [^prep scope cant] > safe-socket
         not.
@@ -193,11 +189,15 @@
       sys.sockaddr-in > sockaddr
         sys.inet.as-i16
         sock.htons sock.checked-port
-        addrint
+        as-i32.
+          if.
+            addr.gt 2147483647
+            addr.minus 4294967296
+            addr
       kernel > sys
     |
       []
-        raw > @
+        win32 > @
         win32.accept > accept
         win32.bind > bind
         if. > cleanup
@@ -212,7 +212,6 @@
         win32.listen > listen
         "WSA error code %d".printf > message
           * win32.wsa-get-last-error
-        win32 > raw
         win32.recv > recv
         win32.send > send
         win32.socket > socket
@@ -220,7 +219,7 @@
           win32.wsa-startup win32.version >>!
     impl
       []
-        raw > @
+        posix > @
         posix.accept > accept
         posix.bind > bind
         true > cleanup
@@ -228,17 +227,15 @@
         posix.connect > connect
         posix.listen > listen
         posix.strerror posix.errno > message
-        posix > raw
         posix.recv > recv
         posix.send > send
         posix.socket > socket
         0 > startup
   [recv] > as-input
     [^stream size] > read
-      @. > @
-        read.
-          input-block --
-          size
+      read. > @
+        input-block --
+        size
       [^block buffer] > input-block
         buffer > @
         [^cursor size] > read
@@ -248,8 +245,7 @@
             cursor.block.input-block chunk
   [send] > as-output
     [^sink buffer] > write
-      @. > @
-        output-block.write buffer
+      output-block.write buffer > @
       [^block] > output-block
         true > @
         [^tail buffer] > write
@@ -350,6 +346,15 @@
       42
       true
     42
+
+  eq. ++> can-read-what-the-receiver-gives
+    as-bytes.
+      read.
+        as-input.
+          socket "127.0.0.1" 0
+          "hello".as-bytes > [size]
+        5
+    "hello".as-bytes
 
   ++> can-recover-from-binding-to-an-address-of-another-host
     os.is-windows.or > @

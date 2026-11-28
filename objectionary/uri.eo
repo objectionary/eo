@@ -21,147 +21,146 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint compound-name
-+version 0.63.5
++version 0.63.6
 
 [text] > uri
   text > @
   string > authority
-    has-authority.if >> authority-bytes!
+    slashed.if >>!
       if.
-        not. >> has-authority-path
+        not.
           eq.
-            after-slashes.index-of "/" >> authority-path-idx
+            beyond.index-of "/" >> slash
             -1
         slice.
-          string >> after-slashes
-            if. >> after-slashes-bytes!
-              hier-part.starts-with "//" >> has-authority
+          string >> beyond
+            slashed.if >>!
               slice.
-                string >> hier-part
-                  if. >> hier-bytes!
-                    not. >> has-query
+                string >> hierarchy
+                  if. >>!
+                    not.
                       eq.
-                        before-fragment.index-of "?" >> question-idx
+                        unhashed.index-of "?" >> question
                         -1
                     slice.
-                      if. >> before-fragment
-                        not. (hash-idx.eq -1) >> has-fragment
+                      if. >> unhashed
+                        not.
+                          eq.
+                            rest.index-of "#" >> hash
+                            -1
                         slice.
                           text.slice >> rest
-                            plus.
-                              if. >> scheme-colon
-                                or.
-                                  eq.
-                                    text.index-of ":" >> raw-colon
-                                    -1
-                                  not.
-                                    "/[A-Za-z][A-Za-z0-9+.-]*/".regex.compiled.matches
-                                      text.slice 0 raw-colon
-                                -1
-                                raw-colon
-                              1
+                            delimiter.plus 1
                             text.length.minus
-                              number (scheme-colon.plus 1)
+                              number (delimiter.plus 1)
                           0
-                          hash-idx
+                          hash
                         rest
                       0
-                      question-idx
-                    before-fragment
+                      question
+                    unhashed
                 2
-                hier-part.length.minus
+                hierarchy.length.minus
                   number 2
               ""
           0
-          authority-path-idx
-        after-slashes
+          slash
+        beyond
       ""
-  has-fragment.if > fragment
-    rest.slice
-      plus.
-        rest.index-of "#" >> hash-idx
-        1
-      rest.length.minus
-        number
-          hash-idx.plus 1
-    ""
+  suffix > fragment
+    rest
+    hash
   if. > host
-    not. >> has-port
-      eq.
-        if. >> port-colon-idx
-          host-port.starts-with "["
-          if.
+    not. >> ported
+      separator.eq -1
+    slice.
+      string >> endpoint
+        if. >>!
+          not.
             eq.
-              index-of. >> rel-colon
-                host-port.slice
-                  bracket-start
-                  host-port.length.minus
-                    number bracket-start
-                ":"
+              authority.last-index-of "@" >> marker
               -1
-            -1
-            rel-colon.plus
-              plus. >> bracket-start
-                index-of. >>
-                  string >> host-port
-                    if. >> host-port-bytes!
-                      not. >> has-userinfo
-                        eq.
-                          authority.last-index-of "@" >> userinfo-at-idx
-                          -1
-                      authority.slice
-                        userinfo-at-idx.plus 1
-                        authority.length.minus
-                          number (userinfo-at-idx.plus 1)
-                      authority
-                  "]"
-                1
-          host-port.index-of ":"
-        -1
-    host-port.slice
+          authority.slice
+            marker.plus 1
+            plus.
+              authority.length.minus marker
+              -1
+          authority
       0
-      port-colon-idx
-    host-port
-  has-authority.if > path
-    has-authority-path.if
-      after-slashes.slice
-        authority-path-idx
-        after-slashes.length.minus
-          number authority-path-idx
+      separator
+    endpoint
+  if. > path
+    hierarchy.starts-with "//" >> slashed
+    if. > [s idx] >> from
+      idx.eq -1
       ""
-    hier-part
-  has-port.if > port
-    if.
-      raw-port.is-digit.or
-        eq.
-          host-port.slice >> raw-port
-            port-colon-idx.plus 1
-            host-port.length.minus
-              number
-                port-colon-idx.plus 1
-          ""
-      raw-port
+      s.slice
+        idx
+        s.length.minus idx
+    | beyond slash
+    hierarchy
+  ported.if > port
+    if. > [raw] >> numeric
+      raw.is-digit.or
+        raw.eq ""
+      raw
       ""
+    | (endpoint.slice (separator.plus 1) (endpoint.length.minus (number (separator.plus 1))))
     ""
-  has-query.if > query
-    before-fragment.slice
-      question-idx.plus 1
-      before-fragment.length.minus
+  if. > [s idx] >> prefix
+    idx.eq -1
+    ""
+    s.slice
+      0
+      idx
+  suffix > query
+    unhashed
+    question
+  prefix > scheme
+    text
+    delimiter
+  if. > [s idx] >> suffix
+    idx.eq -1
+    ""
+    s.slice
+      idx.plus 1
+      s.length.minus
         number
-          question-idx.plus 1
-    ""
-  if. > scheme
-    scheme-colon.eq -1
-    ""
-    text.slice
-      0
-      scheme-colon
-  has-userinfo.if > userinfo
-    authority.slice
-      0
-      userinfo-at-idx
-    ""
+          idx.plus 1
+  prefix > userinfo
+    authority
+    authority.last-index-of "@"
+  if. > [txt colon] >>
+    or.
+      colon.eq -1
+      not.
+        "/[A-Za-z][A-Za-z0-9+.-]*/".regex.compiled.matches
+          txt.slice 0 colon
+    -1
+    colon
+  | >> delimiter
+    text
+    text.index-of ":"
+  [hp start] >>
+    if. > @
+      hp.starts-with "["
+      if.
+        eq.
+          index-of. >> offset
+            hp.slice
+              start
+              hp.length.minus
+                number start
+            ":"
+          -1
+        -1
+        offset.plus start
+      hp.index-of ":"
+  | >> separator
+    endpoint
+    plus.
+      endpoint.index-of "]"
+      1
 
   eq. ++> can-ignore-a-question-mark-that-appears-inside-the-fragment
     query.

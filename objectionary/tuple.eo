@@ -5,7 +5,7 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.5
++version 0.63.6
 
 [prior last count] > tuple
   [^list i fallback] > at
@@ -91,9 +91,11 @@
       "with"
 
   ++> can-be-a-bound-attribute-of-one-item
-    eq. > @
-      tup.at 0
-      100
+    and. > @
+      eq.
+        tup.at 0
+        100
+      tup.length.eq 1
     * 100 > tup
 
   ++> can-be-a-bound-attribute-of-two-items
@@ -109,7 +111,8 @@
       2
 
   ++> can-be-a-bound-attribute-when-empty
-    tup.length.eq 0 > @
+    tup.is-empty.and > @
+      tup.length.eq 0
     * > tup
 
   ++> can-build-a-tuple-fluently
@@ -176,11 +179,11 @@
       2
       3
 
-  ++> can-create-an-empty-tuple-with-a-number
-    eq. > @
-      a.at 0
-      3
-    tuple.empty.with 3 > a
+  eq. ++> can-create-an-empty-tuple-with-a-number
+    at.
+      tuple.empty.with 3
+      0
+    3
 
   eq. ++> can-equal-a-nested-tuple
     *
@@ -202,9 +205,7 @@
       2
       3
 
-  ++> can-get-the-length-of-an-empty-tuple
-    a.length.eq 0 > @
-    * > a
+  tuple.empty.length.eq 0 ++> can-get-the-length-of-an-empty-tuple
 
   tuple.empty.length.eq ++> can-get-the-length-of-an-empty-tuple-through-special-syntax
     0
@@ -272,6 +273,16 @@
     [items] > array
       items > elements
 
+  eq. ++> can-take-all-but-the-last-item-as-the-tail
+    tail.
+      *
+        1
+        2
+        3
+    *
+      1
+      2
+
   eq. ++> can-take-an-item-with-a-terminator-for-the-fallback
     "one"
     at.
@@ -282,27 +293,35 @@
       1
       T
 
-  ++> can-take-the-first-item-by-a-negative-index
-    eq. > @
-      array.at -5
-      0
-    * > array
-      0
-      1
-      2
-      3
-      4
+  eq. ++> can-take-the-first-item-by-a-negative-index
+    at.
+      *
+        0
+        1
+        2
+        3
+        4
+      -5
+    0
 
-  ++> can-take-the-last-item-by-a-negative-index
-    eq. > @
-      array.at -1
-      4
-    * > array
-      0
-      1
-      2
-      3
-      4
+  eq. ++> can-take-the-last-item-as-the-head
+    head.
+      *
+        1
+        2
+        3
+    3
+
+  eq. ++> can-take-the-last-item-by-a-negative-index
+    at.
+      *
+        0
+        1
+        2
+        3
+        4
+      -1
+    4
 
   not. ++> can-tell-it-does-not-equal-a-different-tuple
     eq.
@@ -323,14 +342,14 @@
       4
     20
 
-  --> stops-on-an-out-of-bounds-negative-index
-    array.at -6 > @
-    * > array
+  at. --> stops-on-an-out-of-bounds-negative-index
+    *
       0
       1
       2
       3
       4
+    -6
 
   tuple.empty.head --> stops-on-taking-the-head-of-an-empty-tuple
 

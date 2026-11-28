@@ -19,7 +19,7 @@
 +package directory
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.5
++version 0.63.6
 
 [^folder] > made
   folder.exists.if > @
@@ -90,10 +90,9 @@
     dir.exists.and dir.is-directory > @
     made. > dir
       as-dir.
-        parent.as-path.resolved "foo-inner/foo-deepest"
-    made. > parent
-      as-dir.
-        mktemp.tmpfile.deleted.as-path.resolved "foo-partial"
+        resolved.
+          as-path. (mktemp.tmpfile.deleted.as-path.resolved "foo-partial").as-dir.made
+          "foo-inner/foo-deepest"
 
   ++> can-make-nested-directories-with-missing-parents
     dir.exists.and dir.is-directory > @
@@ -103,8 +102,6 @@
 
   mktemp.tmpfile.as-path.as-dir.made --> rejects-a-path-occupied-by-a-regular-file
 
-  --> rejects-a-path-whose-parent-is-occupied-by-a-regular-file
-    made. > @
-      as-dir.
-        occupied.resolved "foo-child"
-    mktemp.tmpfile.as-path > occupied
+  made. --> rejects-a-path-whose-parent-is-occupied-by-a-regular-file
+    as-dir.
+      mktemp.tmpfile.as-path.resolved "foo-child"

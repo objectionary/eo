@@ -6,7 +6,7 @@
 +package file
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.5
++version 0.63.6
 
 [^entry] > deleted
   entry.exists.if > @
@@ -46,12 +46,10 @@
     mktemp.tmpfile.deleted.as-path > link
 
   ++> can-delete-a-directory
-    d.as-file.deleted.exists.not > @
-    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path.as-file.deleted.exists.not > @
 
   ++> can-delete-a-directory-twice
-    d.as-file.deleted.deleted.exists.not > @
-    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d
+    mktemp.tmpfile.deleted.as-path.as-dir.made.as-path.as-file.deleted.deleted.exists.not > @
 
   mktemp.tmpfile.deleted.deleted.exists.not ++> can-delete-a-file-twice
 
@@ -87,7 +85,8 @@
 
   --> stops-on-deleting-a-non-empty-directory
     seq * > @
-      child.as-file.touched
+      touched.
+        as-file.
+          d.resolved "child.txt"
       d.as-file.deleted
-    d.resolved "child.txt" > child
     mktemp.tmpfile.deleted.as-path.as-dir.made.as-path > d

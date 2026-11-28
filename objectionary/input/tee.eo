@@ -20,7 +20,7 @@
 +package input
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.5
++version 0.63.6
 
 [^source output] > tee
   [^tee size] > read
@@ -74,14 +74,14 @@
         [m1]
           malloc.of > @
             5
-            [^ m2] >>
-              seq * > @
-                read.
-                  tee.
-                    input (source.tee m2.to-output)
-                    ^.m1.to-output
-                  5
-                ^.m1.write 5 2A-
-                ^.m1
-              input 01-02-03-04-05.as-input > source
+            seq * > [^ m2] >>
+              read.
+                tee.
+                  input
+                    ^.source.tee m2.to-output
+                  ^.m1.to-output
+                5
+              ^.m1.write 5 2A-
+              ^.m1
+          input 01-02-03-04-05.as-input > source
       01-02-03-04-05-2A

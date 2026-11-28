@@ -5,7 +5,7 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.5
++version 0.63.6
 
 [bts] > i32
   if. > @
@@ -105,6 +105,8 @@
     -123.as-i64.as-i32
     -123.as-i64.as-i32.as-i16.as-i32
 
+  42.as-i32.as-number.eq 42 ++> can-convert-to-a-number
+
   eq. ++> can-convert-to-i16-and-back
     123.as-i64.as-i32
     123.as-i64.as-i32.as-i16.as-i32
@@ -147,6 +149,8 @@
   eq. ++> can-multiply-with-overflow
     2147483647.as-i64.as-i32.times 2.as-i64.as-i32
     -2.as-i64.as-i32
+
+  42.as-i32.neg.eq -42.as-i32 ++> can-negate-itself
 
   eq. ++> can-recover-from-an-out-of-bounds-conversion-to-i16
     i16 00-2A

@@ -24,30 +24,23 @@
 +package number
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.5
++version 0.63.6
 
 [^num b] > power
-  if. > @
-    eq.
-      if. >> expo
-        b.as-bytes.size.eq 8
-        number b.as-bytes
-        T "the 'b' attribute must be a number"
-      0
-    1
-    base.is-nan.if
-      nan
-      expo.is-nan.if
+  [^owner expo base] >>
+    if. > @
+      expo.eq 0
+      1
+      if.
+        base.is-nan.or expo.is-nan
         nan
         expo.is-finite.if
           base.is-finite.if
             if.
-              eq.
-                number num.as-bytes >> base
-                0
-              if.
+              base.eq 0
+              if. > [bits expo odd] >> zeroed
                 and.
-                  num.as-bytes.eq 80-00-00-00-00-00-00-00
+                  bits.eq 80-00-00-00-00-00-00-00
                   odd
                 if.
                   expo.gt 0
@@ -57,77 +50,44 @@
                   expo.gt 0
                   0
                   pinf
+              | base.as-bytes expo (expo.is-integer.and (expo.div 2).is-integer.not)
               expo.is-integer.if
-                if.
-                  answer.is-finite.and
-                    not.
-                      eq.
-                        if. >> answer
-                          expo.lt 0
-                          plus.
-                            1.div high >> rough
-                            div.
-                              minus.
-                                1.minus
-                                  number
-                                    slice.
-                                      joined >> check
-                                        paired rough 0
-                                        wide base expo.abs >> exact!
-                                      0
-                                      8
-                                number (check.slice 8 8)
-                              number (exact.slice 0 8) >> high
-                          high
-                        0
-                  answer
-                  if.
-                    expo.lt 0
-                    [^num factor n] >> ipow
-                      if. > @
-                        n.eq 0
-                        1
-                        if.
-                          is-integer. (n.div 2)
-                          times.
-                            number
-                              num.ipow factor (n.div 2) >> half!
-                            number half
-                          factor.times
-                            num.ipow factor (n.minus 1)
-                    | (1.div base) expo.abs
-                    ipow base expo.abs
-                if.
-                  base.gt 0
-                  [^num y] >> expon
-                    times. > @
-                      if.
-                        lt.
-                          number
-                            floor. >> k!
-                              plus.
-                                number
-                                  y >> arg!
-                                0.5
+                [^pw base expo] >> integral
+                  if. > @
+                    answer.is-finite.and
+                      not.
+                        eq.
+                          if. >> answer
+                            expo.lt 0
+                            plus.
+                              1.div high >> rough
+                              div.
+                                minus.
+                                  1.minus
+                                    number
+                                      slice.
+                                        joined >> check
+                                          paired rough 0
+                                          wide base expo.abs >> exact!
+                                        0
+                                        8
+                                  number (check.slice 8 8)
+                                number (exact.slice 0 8) >> high
+                            high
                           0
-                        1.div
-                          ipow e (number k).abs
-                        ipow e (number k).abs
-                      if. > [^num j] >> fraction
-                        j.gt 20
-                        1
-                        1.plus
-                          times.
-                            div.
-                              minus.
-                                number arg
-                                number k
-                              j
-                            num.fraction (j.plus 1)
-                      | 1
-                  | (expo.times base.ln)
+                    answer
+                    if.
+                      expo.lt 0
+                      ipow (1.div base) expo.abs
+                      ipow base expo.abs
+                | base expo
+                if. > [^pw base expo] >> fractional
+                  base.gt 0
+                  pw.owner.expon
+                    expo.times base.ln
                   nan
-            if.
+                | base expo
+            if. > [base expo odd] >> infinite
               base.gt 0
               if.
                 expo.gt 0
@@ -135,12 +95,10 @@
                 0
               if.
                 expo.gt 0
-                if.
-                  expo.is-integer.and (expo.div 2).is-integer.not >> odd
-                  ninf
-                  pinf
+                odd.if ninf pinf
                 odd.if 0.neg 0
-          if.
+            | base expo (expo.is-integer.and (expo.div 2).is-integer.not)
+          if. > [base expo] >> unbounded
             expo.gt 0
             if.
               base.abs.gt 1
@@ -156,19 +114,60 @@
                 base.abs.eq 1
                 nan
                 pinf
-  [^num a] >> halved
-    a.minus top > foot
-    spread.is-finite.if > top
-      minus.
-        a.times 134217729 >> spread
-        spread.minus a
-      times.
-        minus. >>
-          times. >> broad
-            a.div 268435456 >> shrunk
-            134217729
-          broad.minus shrunk
-        268435456
+          | base expo
+  | > @
+    if.
+      b.as-bytes.size.eq 8
+      number b.as-bytes
+      T "the 'b' attribute must be a number"
+    number num.as-bytes
+  [^num y] > expon
+    times. > @
+      if.
+        not.
+          lt.
+            number
+              floor. >> k!
+                plus.
+                  number
+                    y >> arg!
+                  0.5
+            0
+        ipow >> scale
+          e
+          abs.
+            number k
+        1.div scale
+      if. > [^num j] >> fraction
+        j.gt 20
+        1
+        1.plus
+          times.
+            div.
+              minus.
+                number arg
+                number k
+              j
+            num.fraction
+              j.plus 1
+      | 1
+  [^num factor n] >> ipow
+    if. > @
+      n.eq 0
+      1
+      if.
+        is-integer.
+          n.div 2
+        times.
+          number
+            num.ipow >> half!
+              factor
+              n.div 2
+          number half
+        factor.times
+          num.ipow
+            factor
+            n.minus 1
   [^num x y] >> joined
     paired > @
       hi
@@ -204,6 +203,19 @@
                 y.slice 0 8
             slip
           product
+    [^num a] >> halved
+      a.minus top > foot
+      spread.is-finite.if > top
+        minus.
+          a.times 134217729 >> spread
+          spread.minus a
+        times.
+          minus.
+            times. >> broad
+              a.div 268435456 >> shrunk
+              134217729
+            broad.minus shrunk
+          268435456
   hi.as-bytes.concat lo.as-bytes > [hi lo] >> paired
   [^num factor n] >> wide
     if. > @
@@ -322,6 +334,15 @@
   eq. ++> can-raise-an-integer-to-zero
     42.power 0
     1
+
+  lt. ++> can-raise-e-to-a-power
+    abs.
+      minus.
+        expon.
+          2.power 1
+          1
+        e
+    1.0e-9
 
   eq. ++> can-raise-four-to-five
     4.power 5

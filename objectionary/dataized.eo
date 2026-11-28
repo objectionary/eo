@@ -31,11 +31,11 @@
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
-+rt jvm org.eolang:eo-runtime:0.63.5
++rt jvm org.eolang:eo-runtime:0.63.6
 +rt node eo2js-runtime:0.0.0
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.5
++version 0.63.6
 
 [] > dataized /Q.bytes
   ? > target
@@ -72,10 +72,12 @@
           x.as-number.plus 1
 
   ++> can-dataize-a-nested-attribute
-    eq. > @
-      as-number.
-        dataized foo
-      5
+    and. > @
+      eq.
+        as-number.
+          dataized foo
+        5
+      foo.inner.five.eq 5
     [] > foo
       inner.five > @
       [] > inner

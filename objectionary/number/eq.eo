@@ -9,7 +9,7 @@
 +package number
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.5
++version 0.63.6
 
 [^num b] > eq
   if. > @
@@ -19,13 +19,11 @@
     num.is-nan.not
     and.
       or.
-        mine.eq
-          0.as-bytes >> pzero
-        mine.eq
-          -0.as-bytes >> nzero
+        other.eq 00-00-00-00-00-00-00-00
+        other.eq 80-00-00-00-00-00-00-00
       or.
-        other.eq pzero
-        other.eq nzero
+        mine.eq 00-00-00-00-00-00-00-00
+        mine.eq 80-00-00-00-00-00-00-00
 
   eq. ++> can-compare-two-numbers-through-the-package
     42.eq 42
@@ -47,6 +45,32 @@
     0.eq 0
     true
 
+  eq. ++> can-tell-a-float-does-not-equal-nan-or-infinities-under-load
+    and.
+      and.
+        and.
+          and.
+            and.
+              eq.
+                42.5.eq nan
+                false
+              eq.
+                42.5.eq pinf
+                false
+            eq.
+              42.5.eq ninf
+              false
+          eq.
+            42.5.eq nan
+            false
+        eq.
+          42.5.eq pinf
+          false
+      eq.
+        42.5.eq ninf
+        false
+    true
+
   eq. ++> can-tell-it-does-not-equal-a-different-integer
     not.
       123.eq 42
@@ -66,57 +90,6 @@
 
   not. ++> can-tell-it-does-not-equal-an-integer-when-positive-infinity
     pinf.eq 42
-
-  ++> can-tell-it-does-not-equal-nan-or-infinities-when-a-float-under-load
-    eq. > @
-      first.and again
-      true
-    and. > again
-      and.
-        and.
-          and.
-            and.
-              eq.
-                0.eq nan
-                false
-              eq.
-                0.eq pinf
-                false
-            eq.
-              0.eq ninf
-              false
-          eq.
-            42.5.eq nan
-            false
-        eq.
-          42.5.eq pinf
-          false
-      eq.
-        42.5.eq ninf
-        false
-    and. > first
-      and.
-        and.
-          and.
-            and.
-              eq.
-                0.eq nan
-                false
-              eq.
-                0.eq pinf
-                false
-            eq.
-              0.eq ninf
-              false
-          eq.
-            42.5.eq nan
-            false
-        eq.
-          42.5.eq pinf
-          false
-      eq.
-        42.5.eq ninf
-        false
 
   eq. ++> can-tell-it-does-not-equal-nan-or-infinities-when-an-integer
     and.
@@ -158,3 +131,29 @@
 
   not. ++> can-tell-it-does-not-equal-positive-infinity-when-negative-infinity
     ninf.eq pinf
+
+  eq. ++> can-tell-zero-does-not-equal-nan-or-infinities-under-load
+    and.
+      and.
+        and.
+          and.
+            and.
+              eq.
+                0.eq nan
+                false
+              eq.
+                0.eq pinf
+                false
+            eq.
+              0.eq ninf
+              false
+          eq.
+            0.eq nan
+            false
+        eq.
+          0.eq pinf
+          false
+      eq.
+        0.eq ninf
+        false
+    true

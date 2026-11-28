@@ -26,14 +26,13 @@
 +package bytes
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.5
++version 0.63.6
 
 [^data] > as-input
   [^source size] > read
-    @. > @
-      read.
-        input-block source.data --
-        size
+    read. > @
+      input-block source.data --
+      size
     [^piece data buffer] > input-block
       buffer > @
       number data.size! >> available

@@ -15,7 +15,7 @@
 +package number
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.5
++version 0.63.6
 
 [^num] > as-scientific
   num.is-finite.not.if > @
@@ -25,42 +25,44 @@
         num.lt 0
         "-infinity".as-bytes
         "infinity".as-bytes
-    if.
-      or.
-        eq.
-          as-fixed. >> mantissa!
-            div.
-              if. >> scaled
-                as-bool.
-                  and. >> tiny!
-                    num.abs.lt (1.div boost)
-                    not. (num.eq 0)
-                num.times
-                  number (10.power 300)! >> boost
-                num
-              10.power
-                number raw
-            6
-          "10.000000".as-bytes
-        as-bool.
-          mantissa.eq "-10.000000".as-bytes >> carried!
-      concat.
+    [^num scaled tiny] >> written
+      if. > @
+        or.
+          eq.
+            as-fixed. >> mantissa!
+              scaled.div
+                10.power
+                  number raw
+              6
+            "10.000000".as-bytes
+          as-bool.
+            mantissa.eq "-10.000000".as-bytes >> carried!
         concat.
-          carried.as-bool.if "-1.000000".as-bytes "1.000000".as-bytes >> normalized!
-          "e".as-bytes
-        as-decimal.
-          plus.
-            number
-              minus. >> exponent!
-                number
-                  rec-exponent scaled.abs 0 >> raw!
-                number
-                  tiny.as-bool.if 300 0 >> shift!
-            1
-      concat.
-        mantissa.concat "e".as-bytes
-        as-decimal.
-          number exponent
+          concat.
+            carried.as-bool.if "-1.000000".as-bytes "1.000000".as-bytes >> normalized!
+            "e".as-bytes
+          as-decimal.
+            plus.
+              number
+                minus. >> exponent!
+                  number
+                    rec-exponent scaled.abs 0 >> raw!
+                  number (tiny.as-bool.if 300 0)!
+              1
+        concat.
+          mantissa.concat "e".as-bytes
+          as-decimal.
+            number exponent
+    |
+      tiny.as-bool.if
+        num.times
+          number (10.power 300)! >> boost
+        num
+      and. >> tiny!
+        num.abs.lt
+          1.div boost
+        not.
+          num.eq 0
   if. > [^num m count] >> rec-exponent
     or.
       m.eq 0

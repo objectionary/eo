@@ -23,8 +23,7 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint unsorted-named-attributes
-+version 0.63.5
++version 0.63.6
 
 [file] > directory
   file > @
@@ -90,76 +89,7 @@
       "Directory %s does not exist, can't create temporary file".printf
         * folder.file
   [^folder glob] > walk
-    [^folder accum prefix dir] >> walked
-      [^state rest] >> stepped
-        if. > @
-          rest.length.eq 0
-          if.
-            state.prefix.length.eq 0
-            state.accum
-            picked state.accum state.prefix
-          if.
-            and.
-              is-directory.
-                child.as-file >> entry
-                false > [x]
-              not.
-                entry.is-symlink false
-            state.folder.walked
-              state.stepped rest.tail >> earlier
-              if. >> sub
-                state.prefix.length.eq 0
-                rest.head
-                path.separator.joined
-                  * state.prefix rest.head
-              as-dir.
-                state.dir.as-path.resolved rest.head >> child
-            picked earlier sub
-      | dir.listed > @
-    | > @
-      *
-      ""
-      folder
-    if. > [^folder accum rel] >> picked
-      matched rel
-      accum.with
-        as-file.
-          base.resolved rel
-      accum
     folder.as-path >> base
-    if. > [char] >> escaped
-      ".+()|^$[]\\".contains char
-      "".joined
-        * "\\" char
-      char
-    [^folder text] >> matched
-      as-bool. > @
-        exists.
-          next.
-            match.
-              compile.
-                regex.
-                  string
-                    as-bytes.
-                      "".joined
-                        *
-                          "/^"
-                          translated 0 "" false false
-                          "$/s"
-                T > [^folder x] >>
-                  "Can't parse '%s' as a glob pattern, %s".printf
-                    * folder.folder.glob x
-              text
-    "".joined >> single
-      *
-        "[^"
-        escaped path.separator >> literal
-        "]"
-    if. > [char] >> classified
-      "\\[&".contains char
-      "".joined
-        * "\\" char
-      char
     if. > [^folder from] >> closes
       from.gte folder.glob.length
       false
@@ -172,48 +102,12 @@
         true
         folder.closes
           from.plus 1
-    [^folder index acc braced classed] >> translated
-      if. > @
-        index.gte folder.glob.length
-        finished
-        folder.translated
-          index.plus advance
-          "".joined
-            * acc token
-          classed.if
-            braced
-            if.
-              char.eq "{"
-              true
-              if.
-                char.eq "}"
-                false
-                braced
-          within
-      slashed.if > advance
-        3
-        if.
-          double.or negated
-          2
-          1
-      if. > alternated
-        char.eq "{"
-        "("
-        if.
-          braced.and
-            char.eq "}"
-          ")"
-          if.
-            braced.and
-              char.eq ","
-            "|"
-            escaped char
-      if. > bracketed
-        char.eq "["
-        T
-          "Can't parse '%s' as a glob pattern, Missing ']'".printf
-            * folder.glob
-        alternated
+    if. > [char] >> escaped
+      ".+()|^$[]\\".contains char
+      "".joined
+        * "\\" char
+      char
+    [^folder index classed] > flags
       folder.glob.at index > char
       classed.not.and > double
         and.
@@ -223,11 +117,6 @@
               index.plus 1
               "" > [x]
             "*"
-      braced.if > finished
-        T
-          "Can't parse '%s' as a glob pattern, Missing '}'".printf
-            * folder.glob
-        acc
       opening.and > negated
         eq.
           folder.glob.at
@@ -245,36 +134,155 @@
             index.plus 2
             "" > [x]
           "/"
-      classed.if > token
-        if.
+    opening.if > [^folder char opening classed] > inside
+      true
+      if.
+        classed.and
           char.eq "]"
-          "]"
-          classified char
-        opening.if
-          negated.if "[^" "["
-          slashed.if
-            "".joined
-              * "(?:.*" literal ")?"
-            double.if
-              ".*"
-              if.
-                char.eq "*"
-                "".joined
-                  * single "*"
-                if.
-                  char.eq "?"
-                  single
-                  if.
-                    char.eq "/"
-                    literal
-                    bracketed
-      opening.if > within
+        false
+        classed
+    [^folder text] > matched
+      as-bool. > @
+        exists.
+          next.
+            match.
+              compile.
+                regex.
+                  string
+                    as-bytes.
+                      "".joined
+                        *
+                          "/^"
+                          translated 0 "" false false
+                          "$/s"
+                T > [^folder x] >>
+                  "Can't parse '%s' as a glob pattern, %s".printf
+                    * folder.folder.glob x
+              text
+    if. > [^folder accum rel] > picked
+      folder.matched rel
+      accum.with
+        as-file.
+          base.resolved rel
+      accum
+    if. > [^folder char braced] > plain
+      char.eq "["
+      T
+        "Can't parse '%s' as a glob pattern, Missing ']'".printf
+          * folder.glob
+      if.
+        char.eq "{"
+        "("
+        if.
+          braced.and
+            char.eq "}"
+          ")"
+          if.
+            braced.and
+              char.eq ","
+            "|"
+            escaped char
+    classed.if > [^folder char braced classed] > rebraced
+      braced
+      if.
+        char.eq "{"
         true
         if.
-          classed.and
-            char.eq "]"
+          char.eq "}"
           false
-          classed
+          braced
+    "".joined >> single
+      *
+        "[^"
+        escaped path.separator >> literal
+        "]"
+    f.slashed.if > [^folder f braced] > starred
+      "".joined
+        *
+          "(?:.*"
+          literal
+          ")?"
+      f.double.if
+        ".*"
+        folder.symbol f.char braced
+    f.slashed.if > [^folder f] > step
+      3
+      if.
+        f.double.or f.negated
+        2
+        1
+    if. > [^folder char braced] > symbol
+      char.eq "*"
+      "".joined
+        * single "*"
+      if.
+        char.eq "?"
+        single
+        if.
+          char.eq "/"
+          literal
+          folder.plain char braced
+    [^folder index acc braced classed] >> translated
+      if. > @
+        index.gte folder.glob.length
+        braced.if
+          T
+            "Can't parse '%s' as a glob pattern, Missing '}'".printf
+              * folder.glob
+          acc
+        folder.translated
+          index.plus
+            folder.step f
+          "".joined
+            *
+              acc
+              classed.if
+                if.
+                  f.char.eq "]"
+                  "]"
+                  if. > [char] >> classified
+                    "\\[&".contains char
+                    "".joined
+                      * "\\" char
+                    char
+                  |
+                    char.
+                      folder.flags index classed >> f
+                f.opening.if
+                  f.negated.if "[^" "["
+                  folder.starred f braced
+          folder.rebraced f.char braced classed
+          folder.inside f.char f.opening classed
+    [^folder dir prefix accum] >> walked
+      [^state rest] >> stepped
+        if. > @
+          rest.length.eq 0
+          if.
+            state.prefix.length.eq 0
+            state.accum
+            state.folder.picked state.accum state.prefix
+          if.
+            and.
+              is-directory.
+                child.as-file >> entry
+                false > [x]
+              not.
+                entry.is-symlink false
+            state.folder.walked
+              as-dir.
+                state.dir.as-path.resolved rest.head >> child
+              if. >> sub
+                state.prefix.length.eq 0
+                rest.head
+                path.separator.joined
+                  * state.prefix rest.head
+              state.stepped rest.tail >> earlier
+            state.folder.picked earlier sub
+      | dir.listed > @
+    | > @
+      folder
+      ""
+      *
 
   ++> can-create-a-regular-tmpfile
     seq * > @
@@ -289,10 +297,10 @@
       owned
       temp.deleted
       owned
-    called. > info
-      posix.stat temp.path
     os.is-windows.or > owned!
-      info.mode.eq 33152
+      eq.
+        mode. (posix.stat temp.path).called
+        33152
     mktemp.tmpfile > temp
 
   ++> can-create-an-empty-tmpfile
@@ -337,25 +345,24 @@
       gone
       parent.deleted
       gone
-    path.separator.joined > candidate
-      *
-        parent.path
-        "%d-%d-%d-%f".printf
-          *
-            42
-            8
-            1
-            0.5
-    parent.retried > created
-      parent.path
-      42
-      8
-      0.5
-    temp.exists.not.and next.exists.not > gone!
-    Q.file candidate > next
+    temp.exists.not.and > gone!
+      not.
+        exists.
+          Q.file
+            path.separator.joined
+              *
+                parent.path
+                "%d-%d-%d-%f".printf
+                  * 42 8 1 0.5
     mktemp.tmpfile.deleted.as-path.as-dir.made > parent
     Q.file > temp
-      string created.as-bytes
+      string
+        as-bytes.
+          parent.retried
+            parent.path
+            42
+            8
+            0.5
 
   is-directory. ++> can-recover-from-checking-an-absent-directory
     directory mktemp.tmpfile.deleted
@@ -365,46 +372,40 @@
     seq * > @
       collision.touched
       valid
-      actual.deleted
+      deleted.
+        Q.file
+          string created.as-bytes
       collision.deleted
       parent.deleted
       valid
-    Q.file > actual
-      string created.as-bytes
-    Q.file occupied > collision
+    Q.file > collision
+      path.separator.joined
+        *
+          parent.path
+          "%d-%d-%d-%f".printf
+            *
+              42
+              7
+              0
+              0.5
     parent.retried > created
       parent.path
       42
       7
       0.5
-    path.separator.joined > expected
-      *
-        parent.path
-        "%d-%d-%d-%f".printf
-          *
-            42
-            7
-            1
-            0.5
-    path.separator.joined > occupied
-      *
-        parent.path
-        "%d-%d-%d-%f".printf
-          *
-            42
-            7
-            0
-            0.5
     mktemp.tmpfile.deleted.as-path.as-dir.made > parent
-    created.as-bytes.eq expected.as-bytes > valid!
+    created.as-bytes.eq > valid!
+      as-bytes.
+        path.separator.joined
+          *
+            parent.path
+            "%d-%d-%d-%f".printf
+              * 42 7 1 0.5
 
-  ++> can-tell-that-a-deleted-directory-is-no-longer-a-directory
-    not. > @
-      d.deleted.is-directory
-        false > [x]
-    made. > d
-      as-dir.
-        mktemp.tmpfile.deleted.as-path.resolved "gone"
+  not. ++> can-tell-that-a-deleted-directory-is-no-longer-a-directory
+    is-directory.
+      deleted. (mktemp.tmpfile.deleted.as-path.resolved "gone").as-dir.made
+      false > [x]
 
   is-directory. ++> can-tell-that-a-directory-is-a-directory
     directory
@@ -450,23 +451,19 @@
       made.
         directory mktemp.tmpfile.deleted
 
-  ++> can-walk-an-empty-directory
-    eq. > @
-      length.
-        d.as-dir.walk "*.txt"
-      0
-    as-path. > d
-      made.
-        directory mktemp.tmpfile.deleted
+  eq. ++> can-walk-an-empty-directory
+    length.
+      walk.
+        as-dir. (directory mktemp.tmpfile.deleted).made.as-path
+        "*.txt"
+    0
 
-  ++> can-walk-an-empty-directory-with-a-glob-matching-an-empty-path
-    eq. > @
-      length.
-        d.as-dir.walk "*"
-      0
-    as-path. > d
-      made.
-        directory mktemp.tmpfile.deleted
+  eq. ++> can-walk-an-empty-directory-with-a-glob-matching-an-empty-path
+    length.
+      walk.
+        as-dir. (directory mktemp.tmpfile.deleted).made.as-path
+        "*"
+    0
 
   ++> can-walk-past-a-symbolic-link-to-its-own-parent
     os.is-windows.or > @

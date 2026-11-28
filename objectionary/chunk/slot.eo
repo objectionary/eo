@@ -5,14 +5,10 @@
 +package chunk
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.5
++version 0.63.6
 
 [^ start length] > slot
-  window > @
-    ^
-    start
-    length
-  [^ parent start length] > window
+  [^ parent start length] >> window
     get > @
     [^ source target count] > copy
       seq * > @
@@ -79,6 +75,10 @@
       T
         "Can't write %f bytes at slot offset %f, because the slot has length %f".printf
           * data.size offset ^.length
+  | > @
+    ^
+    start
+    length
 
   ++> can-compose-offsets-through-three-nested-slots
     eq. > @
@@ -118,14 +118,12 @@
           part.id.eq mem.id
         mem.slot 2 4 > part
 
-  ++> can-have-a-zero-length-slot
-    eq. > @
-      malloc.of
-        8
-        [mem]
-          empty.size > @
-          mem.slot 8 0 > empty
-      0
+  eq. ++> can-have-a-zero-length-slot
+    malloc.of
+      8
+      size. > [mem]
+        mem.slot 8 0
+    0
 
   ++> can-invalidate-nested-child-after-root-shrink
     not. > @
@@ -136,8 +134,10 @@
             child
             mem.resized 8
             child.valid
-          parent.slot 0 4 > child
-          mem.slot 4 8 > parent
+          slot. > child
+            mem.slot 4 8
+            0
+            4
 
   ++> can-isolate-neighbouring-slots
     eq. > @
@@ -205,26 +205,32 @@
         C3-1F-08 > [x]
     C3-1F-08
 
-  ++> can-reject-child-that-exceeds-its-direct-parent
-    not. > @
-      malloc.of
-        16
-        [mem]
-          child.valid > @
-          parent.slot 7 2 > child
-          mem.slot 0 8 > parent
+  not. ++> can-reject-child-that-exceeds-its-direct-parent
+    malloc.of
+      16
+      valid. > [mem]
+        slot.
+          mem.slot 0 8
+          7
+          2
 
-  ++> can-reject-invalid-slot-regions
-    malloc.of > @
-      8
-      [mem]
-        and. > @
-          fractional.valid.not.and negative.valid.not
-          infinite.valid.not.and overrun.valid.not
-        mem.slot 1 2.5 > fractional
-        mem.slot pinf 2 > infinite
-        mem.slot -1 2 > negative
-        mem.slot 7 2 > overrun
+  malloc.of ++> can-reject-invalid-slot-regions
+    8
+    and. > [mem]
+      and.
+        not.
+          valid.
+            mem.slot 1 2.5
+        not.
+          valid.
+            mem.slot -1 2
+      and.
+        not.
+          valid.
+            mem.slot pinf 2
+        not.
+          valid.
+            mem.slot 7 2
 
   malloc.of --> stops-on-resizing-a-slot
     8

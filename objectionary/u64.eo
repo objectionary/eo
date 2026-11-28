@@ -13,7 +13,7 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.5
++version 0.63.6
 
 [bts] > u64
   if. > @
@@ -124,6 +124,10 @@
   eq. ++> can-expose-valid-bytes
     00-00-00-00-00-00-00-2A.as-u64.as-bytes
     00-00-00-00-00-00-00-2A
+
+  eq. ++> can-flip-the-sign-bit
+    00-00-00-00-00-00-00-2A.as-u64.flip
+    80-00-00-00-00-00-00-2A
 
   eq. ++> can-multiply
     00-00-00-00-00-00-00-06.as-u64.times 00-00-00-00-00-00-00-07.as-u64

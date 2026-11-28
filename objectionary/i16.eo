@@ -5,7 +5,7 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.5
++version 0.63.6
 
 [bts] > i16
   if. > @
@@ -96,6 +96,8 @@
     50.as-i64.as-i32.as-i16
     50.as-i64.as-i32.as-i16
 
+  42.as-i16.as-number.eq 42 ++> can-convert-to-a-number
+
   ++> can-divide-by-one
     eq. > @
       dividend.div 1.as-i64.as-i32.as-i16
@@ -134,6 +136,8 @@
   eq. ++> can-multiply-with-overflow
     32767.as-i64.as-i32.as-i16.times 2.as-i64.as-i32.as-i16
     -2.as-i64.as-i32.as-i16
+
+  42.as-i16.neg.eq -42.as-i16 ++> can-negate-itself
 
   eq. ++> can-recover-from-division-by-zero
     i16 00-2A

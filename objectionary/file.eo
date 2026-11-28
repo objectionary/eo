@@ -4,13 +4,11 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint unsorted-named-attributes
-+version 0.63.5
++version 0.63.6
 
 [location] > file
   path > @
-  @. > as-path
-    Q.path path
+  Q.path path > as-path
   or. > [^entry] > exists
     eq.
       os.is-windows.if
@@ -58,20 +56,18 @@
         cant-check
   [^entry mode scope cant-open] > open
     if. > @
-      not.
-        or. >> known
-          existing.or
-            or. >> truncate
-              as-bool.
-                access.eq "w"
-              as-bool.
-                access.eq "w+"
-          or. >> appending
+      or. >> known
+        existing.or
+          or. >> truncate
             as-bool.
-              access.eq "a"
+              access.eq "w"
             as-bool.
-              access.eq "a+"
-      T "Wrong access mode. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
+              access.eq "w+"
+        or. >> appending
+          as-bool.
+            access.eq "a"
+          as-bool.
+            access.eq "a+"
       if.
         and.
           or. >> existing
@@ -110,18 +106,19 @@
                                 appending.if syscall.append 0
                               syscall.mode
                   if.
-                    recovered
-                      seq *
-                        req.pick.scope >> scoped!
-                          stream req.syscall opened.code
-                        true
-                      false
-                    seq *
-                      syscall.close opened.code
-                      true
+                    not.
+                      recovered
+                        seq *
+                          req.pick.scope >> scoped!
+                            req.pick.stream req.syscall opened.code
+                          true
+                        false
                     seq *
                       syscall.close opened.code
                       scoped
+                    seq *
+                      syscall.close opened.code
+                      true
                 kernel > syscall
               |
                 []
@@ -138,14 +135,15 @@
                   posix.read > read
                   posix.write > write
           entry
+      T "Wrong access mode. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
     and. >> readable
       not.
         as-bool.
-          access.eq "w"
+          mode.eq "w"
       not.
         as-bool.
-          access.eq "a"
-    [^desc syscall descriptor] >> stream
+          mode.eq "a"
+    [^desc syscall descriptor] > stream
       [^chan size] > read
         read. > @
           [^piece buffer] >> input-block
@@ -191,7 +189,7 @@
           buffer
     not. >> writable
       as-bool.
-        access.eq "r"
+        mode.eq "r"
   location > path
 
   eq. ++> can-append-data-to-a-file
@@ -346,12 +344,11 @@
           [^ m] >>
             seq * > @
               open.
-                file ^.source
+                file ^.temp.path
                 "r"
                 ^.m.put > [^ x] >>
                   x.read 13
               m
-    temp.path > source
     mktemp.tmpfile > temp
 
   ++> can-recover-from-checking-a-symbolic-link-of-an-absent-file

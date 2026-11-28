@@ -10,7 +10,7 @@
 #   []
 #     [num] > build
 #       num > @!
-#       build (@.plus 1) > next
+#       build (num.plus 1) > next
 #     build 1 > @
 #   10
 # ```
@@ -27,7 +27,7 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.5
++version 0.63.6
 
 [origin limit] > range
   if. > @
@@ -46,7 +46,15 @@
   origin > start
 
   ++> can-build-a-range-from-one-to-ten
-    rng.eq > @
+    eq. > @
+      range
+        []
+          build 1 > @
+          [^ i] > build
+            i > @
+            ^.build > next
+              1.plus i
+        10
       *
         1
         2
@@ -57,17 +65,17 @@
         7
         8
         9
-    range > rng
-      []
-        build 1 > @
-        [^ i] > build
-          i > @
-          ^.build > next
-            1.plus @
-      10
 
   ++> can-build-a-range-of-floats-from-one-to-five
-    rng.eq > @
+    eq. > @
+      range
+        []
+          x 1 > @
+          [^ i] > x
+            i > @
+            ^.x > next
+              0.5.plus i
+        5
       *
         1
         1.5
@@ -77,34 +85,36 @@
         3.5
         4
         4.5
-    range > rng
-      []
-        x 1 > @
-        [^ i] > x
-          i > @
-          ^.x > next
-            0.5.plus @
-      5
 
   ++> can-build-a-range-with-out-of-bounds-items
-    rng.eq > @
+    eq. > @
+      range
+        []
+          b 1 > @
+          [^ num] > b
+            num > @
+            ^.b > next
+              5.plus num
+        10
       * 1 6
-    range > rng
-      []
-        b 1 > @
-        [^ num] > b
-          num > @
-          ^.b > next
-            5.plus @
-      10
 
   ++> can-build-an-empty-range-from-wrong-items
-    rng.is-empty > @
-    range > rng
-      []
-        y 10 > @
-        [num] > y
-          num > @
-          [] > next
-            42 > nothing
-      1
+    is-empty. > @
+      range
+        []
+          y 10 > @
+          [num] > y
+            num > @
+            [] > next
+              42 > nothing
+        1
+
+  eq. ++> can-give-out-its-end
+    end.
+      range 3 10
+    10
+
+  eq. ++> can-give-out-its-start
+    start.
+      range 3 10
+    3

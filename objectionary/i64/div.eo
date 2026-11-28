@@ -23,8 +23,7 @@
 +package i64
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint compound-name
-+version 0.63.5
++version 0.63.6
 
 [^num b cant-divide] > div
   if. > @
@@ -64,24 +63,25 @@
                 00-00-00-00-00-00-00-00
           i64 00-00-00-00-00-00-00-01
         i64 quotient
-  00-00-00-00-00-00-00-01.left i > [i] >> bit
   [^loop index remainder quot] >> looped
     if. > @
       index.lt 0
       quot
       if.
         eq.
-          or. >> carry-out!
-            and. >> both-negative!
-              shifted.and 80-00-00-00-00-00-00-00 >> shifted-sign!
-              subtrahend.and 80-00-00-00-00-00-00-00 >> divisor-sign!
-            and. >> mixed-signs-with-nonneg-trial!
-              shifted-sign.xor divisor-sign >> signs-differ!
-              next-rem.xor 80-00-00-00-00-00-00-00 >> trial-nonnegative!
+          or.
+            and.
+              shifted.and subtrahend
+              80-00-00-00-00-00-00-00
+            and.
+              and.
+                shifted.xor subtrahend
+                80-00-00-00-00-00-00-00
+              trial.xor 80-00-00-00-00-00-00-00
           80-00-00-00-00-00-00-00
         loop.looped
           index.minus 1
-          as-bytes. >> next-rem!
+          as-bytes. >> trial!
             plus.
               i64 shifted
               i64 subtrahend
@@ -95,6 +95,7 @@
               dividend.right index
               00-00-00-00-00-00-00-01
           quot
+    00-00-00-00-00-00-00-01.left i > [i] >> bit
   as-bytes. >> subtrahend!
     plus.
       i64

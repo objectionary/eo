@@ -16,7 +16,7 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint no-attribute-formation
-+version 0.63.5
++version 0.63.6
 
 [] > mktemp
   directory > @
@@ -80,11 +80,9 @@
     mktemp.tmpfile > first
     mktemp.tmpfile > second
 
-  ++> can-keep-the-temp-directory-after-deleting-a-tmpfile
-    seq * > @
-      temp.deleted
-      mktemp.exists
-    mktemp.tmpfile > temp
+  seq * ++> can-keep-the-temp-directory-after-deleting-a-tmpfile
+    mktemp.tmpfile.deleted
+    mktemp.exists
 
   mktemp.is-directory ++> can-point-at-a-global-temp-directory
 

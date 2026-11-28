@@ -11,7 +11,7 @@
 +package string
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.5
++version 0.63.6
 
 [^text delimiter limit cant-split] > nsplit
   if. > @
@@ -24,7 +24,7 @@
         limit.is-integer.not
     cant-split
       if.
-        size.eq 0
+        delimiter.size.eq 0
         "The delimiter must not be empty"
         limit.is-finite.if
           "Invalid limit %f for nsplit, must be at least 1".printf

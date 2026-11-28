@@ -22,7 +22,7 @@
 +package directory
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.5
++version 0.63.6
 
 [^folder] > listed
   if. > @
@@ -121,11 +121,9 @@
           opened.name
         *
 
-  ++> can-list-an-empty-directory
-    d.as-dir.listed.length.eq 0 > @
-    as-path. > d
-      made.
-        directory mktemp.tmpfile.deleted
+  eq. ++> can-list-an-empty-directory
+    length. (directory mktemp.tmpfile.deleted).made.as-path.as-dir.listed
+    0
 
   ++> can-list-names-in-the-order-of-their-bytes
     seq * > @

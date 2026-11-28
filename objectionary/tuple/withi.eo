@@ -8,24 +8,24 @@
 +package tuple
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+version 0.63.5
++version 0.63.6
 
 [^list index item] > withi
   index.is-integer.if > @
     concat.
       with.
-        list.front bounded
+        list.front
+          if. >> bounded
+            0.gt index
+            0
+            if.
+              index.gt list.length
+              list.length
+              index
         item
       list.back
         list.length.minus bounded
     T "Given index must be an integer"
-  if. > bounded
-    0.gt index
-    0
-    if.
-      index.gt list.length
-      list.length
-      index
 
   eq. ++> can-clamp-a-negative-index-to-the-front-without-duplicating
     withi.
