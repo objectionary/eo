@@ -329,15 +329,6 @@
                 -->
                 <lint>long-live-object</lint>
                 <!--
-                @todo #9108:30min Stop skipping 'excessive-visibility' here.
-                The lint wants every method that no test refers to be made
-                private, and it complains 152 times. In 71 of them the
-                method is already private, as a constant made with '!'
-                (objectionary/lints#1526). The rest are methods like
-                'i64.as-i16', which other files use but no test touches.
-                -->
-                <lint>excessive-visibility</lint>
-                <!--
                 @todo #9788:30min Stop skipping 'anemic-getter' here. Since
                 voids are hidden behind 'v🌵', a getter like 'count > length'
                 in 'tuple' is the only way to read a void from outside, but
