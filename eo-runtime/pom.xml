@@ -317,9 +317,10 @@
             </goals>
             <configuration>
               <!--
-              Objects with an optional fallback argument, like 'string.as-fixed'
-              or 'win32', are applied with and without it on purpose, and the
-              lint reads every such pair as an inconsistency.
+              The tests of 'switch' and 'file.open' apply them with and without
+              their optional fallback on purpose. The lint should be suppressed
+              by '+unlint' in those two files, but lints rejects '+unlint'
+              of a WPA lint: https://github.com/objectionary/lints/issues/1885
               -->
               <skipProgramLints>
                 <lint>inconsistent-args</lint>
