@@ -2,13 +2,14 @@
 # `flags`, the object `string.regex.pattern`. Its receiver is the `regex`
 # it belongs to. Both the parser of the body and the matcher of a text
 # live here, together with the helpers they share, such as `any`,
-# `member`, or `sequence`. The helpers are public attributes, since most of
-# them are used by more than one other helper, and moving a private one into
-# its only user would nest the recursive parser deeper than the linter
-# allows. The tests that build a `pattern` directly live here, while the
-# tests that go through `compile` and `match` live in `regex.eo`. Only `flag`
-# and `worded` stay in `regex`, because `compile` needs them too, so
-# `pattern` reads them through its receiver.
+# `member`, or `sequence`. The helpers that two or more others use are
+# private. A helper with only one user stays public, since moving it into
+# that user would nest the recursive parser deeper than the linter allows,
+# and a test here calls it directly through a `pattern` instance, such as
+# `"/x/".regex.pattern "x".as-bytes --`. The tests that build a `pattern`
+# directly live here, while the tests that go through `compile` and `match`
+# live in `regex.eo`. Only `flag` and `worded` stay in `regex`, because
+# `compile` needs them too, so `pattern` reads them through its receiver.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
@@ -2285,3 +2286,693 @@
       match.
         "/x/".regex.pattern "h.LLO".as-bytes "i".as-bytes
         "hello"
+
+  matches. ++> can-compile-its-receiver-into-a-checked-pattern
+    compiled.
+      "/[0-9]+/".regex.pattern "x".as-bytes --
+    "42"
+
+  eq. ++> can-measure-its-body-in-bytes
+    size.
+      "/x/".regex.pattern "abc".as-bytes --
+    3
+
+  eq. ++> can-name-a-shorthand-class
+    letter.
+      named.
+        "/x/".regex.pattern "x".as-bytes --
+        4
+        64-
+        false
+    64-
+
+  eq. ++> can-hold-a-numeral-with-its-position
+    value.
+      numeral.
+        "/x/".regex.pattern "x".as-bytes --
+        3
+        42
+    42
+
+  eq. ++> can-hold-switched-modes
+    mode.
+      switched.
+        "/x/".regex.pattern "x".as-bytes --
+        5
+        02-
+    02-
+
+  eq. ++> can-read-a-hexadecimal-nibble
+    nibble.
+      "/x/".regex.pattern "x".as-bytes --
+      66-
+    15
+
+  eq. ++> can-turn-a-byte-offset-into-a-character-index
+    indexed.
+      "/x/".regex.pattern "éa".as-bytes --
+      2
+    1
+
+  special. ++> can-tell-a-hash-is-special-under-the-comments-flag
+    "/x/".regex.pattern
+      "x".as-bytes
+      --
+    23-
+    20-
+
+  eq. ++> can-limit-a-plus-quantifier
+    least.
+      bounded.
+        "/x/".regex.pattern "x".as-bytes --
+        2B-
+        3
+    1
+
+  metachar. ++> can-tell-a-dot-is-a-metachar
+    "/x/".regex.pattern
+      "x".as-bytes
+      --
+    2E-
+
+  opening. ++> can-tell-a-parenthesis-opens-a-construct
+    "/x/".regex.pattern
+      "x".as-bytes
+      --
+    28-
+
+  quantifier. ++> can-tell-a-question-mark-is-a-quantifier
+    "/x/".regex.pattern
+      "x".as-bytes
+      --
+    3F-
+
+  ++> can-repeat-a-node-lazily
+    eq. > @
+      end.
+        run.
+          repeat.
+            "/x/".regex.pattern "x".as-bytes --
+            1
+            2
+            5
+            literal.
+              "/x/".regex.pattern "x".as-bytes --
+              "a".as-bytes
+          subj.
+            match.
+              "/x/".regex.pattern "x".as-bytes --
+              "aaaa"
+          0
+          --
+          [at caps]
+            at > end
+            true > exists
+      2
+
+  ++> can-clip-the-head-of-a-text
+    eq. > @
+      end.
+        run.
+          clipped.
+            "/x/".regex.pattern "x".as-bytes --
+            00-
+            "abc".as-bytes
+            2
+          subj.
+            match.
+              "/x/".regex.pattern "x".as-bytes --
+              "abc"
+          0
+          --
+          [at caps]
+            at > end
+            true > exists
+      2
+
+  ++> can-keep-the-remnant-of-a-text
+    eq. > @
+      end.
+        run.
+          remnant.
+            "/x/".regex.pattern "x".as-bytes --
+            00-
+            "abc".as-bytes
+            2
+          subj.
+            match.
+              "/x/".regex.pattern "x".as-bytes --
+              "c"
+          0
+          --
+          [at caps]
+            at > end
+            true > exists
+      1
+
+  eq. ++> can-refuse-a-dangling-atom
+    reason.
+      atom.
+        "/x/".regex.pattern "*".as-bytes --
+        0
+        0
+        00-
+    "Dangling meta character '*'"
+
+  eq. ++> can-scan-a-literal-run-of-bytes
+    text.
+      braced.
+        "/x/".regex.pattern "ab".as-bytes --
+        0
+        0
+        00-
+    "ab".as-bytes
+
+  eq. ++> can-step-over-one-plain-byte
+    at.
+      lexeme.
+        "/x/".regex.pattern "ab".as-bytes --
+        0
+        00-
+    1
+
+  eq. ++> can-leave-a-quoted-run-at-its-end-mark
+    at.
+      inquoted.
+        "/x/".regex.pattern "a\\E".as-bytes --
+        1
+    3
+
+  eq. ++> can-parse-a-negated-bracket
+    at.
+      bracket.
+        "/x/".regex.pattern "^a]".as-bytes --
+        0
+        0
+        00-
+    3
+
+  eq. ++> can-parse-the-first-member-of-a-class
+    at.
+      first.
+        "/x/".regex.pattern "a]".as-bytes --
+        0
+        0
+        00-
+        false
+    2
+
+  eq. ++> can-parse-a-range-entry-of-a-class
+    to.
+      entry.
+        "/x/".regex.pattern "a-c".as-bytes --
+        0
+        00-
+    63-
+
+  eq. ++> can-refuse-a-reversed-range
+    reason.
+      ranged.
+        "/x/".regex.pattern "c-a".as-bytes --
+        entry.
+          "/x/".regex.pattern "c]".as-bytes --
+          0
+          00-
+        00-
+    "Illegal character range"
+
+  eq. ++> can-read-a-shorthand-inside-a-class
+    letter.
+      classed.
+        "/x/".regex.pattern "\\d".as-bytes --
+        1
+        00-
+    64-
+
+  eq. ++> can-refuse-a-unicode-property-escape
+    reason.
+      escaped.
+        "/x/".regex.pattern "\\p".as-bytes --
+        1
+        0
+        00-
+    "Unicode property classes are not supported"
+
+  eq. ++> can-refuse-a-back-reference
+    reason.
+      barred.
+        "/x/".regex.pattern "\\k".as-bytes --
+        1
+        6B-
+    "Back references are not supported"
+
+  eq. ++> can-refuse-a-look-ahead-group
+    reason.
+      group.
+        "/x/".regex.pattern "(?=a)".as-bytes --
+        1
+        0
+        00-
+    "Look-ahead groups are not supported"
+
+  eq. ++> can-parse-an-inline-modifier-group
+    at.
+      modified.
+        "/x/".regex.pattern "(?i)".as-bytes --
+        2
+        0
+        00-
+    4
+
+  eq. ++> can-toggle-a-mode-bit-on
+    toggled.
+      "/x/".regex.pattern "x".as-bytes --
+      02-
+      08-
+      true
+    0A-
+
+  eq. ++> can-parse-a-counted-closure
+    most.
+      braces.
+        "/x/".regex.pattern "{2,5}".as-bytes --
+        1
+    5
+
+  eq. ++> can-refuse-an-upper-bound-below-the-lower-one
+    reason.
+      capped.
+        "/x/".regex.pattern "3}".as-bytes --
+        0
+        5
+    "Illegal repetition range"
+
+  ++> can-run-the-any-node-over-a-two-byte-char
+    eq. > @
+      end.
+        run.
+          any.
+            "/x/".regex.pattern "x".as-bytes --
+            false
+            false
+          subj.
+            match.
+              "/x/".regex.pattern "x".as-bytes --
+              "éa"
+          0
+          --
+          [at caps]
+            at > end
+            true > exists
+      2
+
+  ++> can-refuse-to-begin-in-the-middle-of-a-line
+    not. > @
+      exists.
+        run.
+          begin.
+            "/x/".regex.pattern "x".as-bytes --
+            false
+            false
+          subj.
+            match.
+              "/x/".regex.pattern "x".as-bytes --
+              "ab"
+          1
+          --
+          [at caps]
+            at > end
+            true > exists
+
+  eq. ++> can-key-just-beyond-a-byte
+    beyond.
+      "/x/".regex.pattern "x".as-bytes --
+      30-
+    16.00390625
+
+  eq. ++> can-hold-a-block-with-its-end
+    end.
+      block.
+        "/x/".regex.pattern "x".as-bytes --
+        1
+        --
+        3
+    3
+
+  ++> can-run-a-border-node-between-a-word-and-a-blank
+    eq. > @
+      end.
+        run.
+          border.
+            "/x/".regex.pattern "x".as-bytes --
+            false
+          subj.
+            match.
+              "/x/".regex.pattern "x".as-bytes --
+              "a b"
+          1
+          --
+          [at caps]
+            at > end
+            true > exists
+      1
+
+  broken. ++> can-tell-a-line-is-broken-after-a-newline
+    "/x/".regex.pattern
+      "x".as-bytes
+      --
+    subj.
+      match.
+        "/x/".regex.pattern "x".as-bytes --
+        "a\nb"
+    2
+    false
+
+  ++> can-mark-a-captured-group
+    eq. > @
+      to.
+        marks.
+          run.
+            captured.
+              "/x/".regex.pattern "x".as-bytes --
+              literal.
+                "/x/".regex.pattern "x".as-bytes --
+                "a".as-bytes
+              1
+            subj.
+              match.
+                "/x/".regex.pattern "x".as-bytes --
+                "ab"
+            0
+            --
+            [at caps]
+              at > end
+              true > exists
+              caps > marks
+      1
+
+  ++> can-chain-the-digit-ranges
+    has. > @
+      chain.
+        "/x/".regex.pattern "x".as-bytes --
+        64-
+        []
+          false > [code] > has
+      20
+
+  ++> can-run-the-right-side-of-a-choice
+    eq. > @
+      end.
+        run.
+          choice.
+            "/x/".regex.pattern "x".as-bytes --
+            literal.
+              "/x/".regex.pattern "x".as-bytes --
+              "b".as-bytes
+            literal.
+              "/x/".regex.pattern "x".as-bytes --
+              "a".as-bytes
+          subj.
+            match.
+              "/x/".regex.pattern "x".as-bytes --
+              "a"
+          0
+          --
+          [at caps]
+            at > end
+            true > exists
+      1
+
+  eq. ++> can-turn-an-escape-letter-into-a-control-byte
+    control.
+      "/x/".regex.pattern "x".as-bytes --
+      6E-
+    0A-
+
+  eq. ++> can-encode-a-latin-code-point-in-two-bytes
+    encoded.
+      "/x/".regex.pattern "x".as-bytes --
+      233
+    C3-A9
+
+  ++> can-run-the-end-node-at-the-end-of-the-text
+    eq. > @
+      end.
+        run.
+          end.
+            "/x/".regex.pattern "x".as-bytes --
+            false
+            false
+          subj.
+            match.
+              "/x/".regex.pattern "x".as-bytes --
+              "ab"
+          2
+          --
+          [at caps]
+            at > end
+            true > exists
+      2
+
+  ++> can-exclude-the-digits-from-a-set
+    not. > @
+      has.
+        except.
+          "/x/".regex.pattern "x".as-bytes --
+          chain.
+            "/x/".regex.pattern "x".as-bytes --
+            64-
+            []
+              false > [code] > has
+          []
+            false > [code] > has
+        20
+
+  ++> can-run-a-folded-node-over-a-small-letter
+    eq. > @
+      end.
+        run.
+          folded.
+            "/x/".regex.pattern "x".as-bytes --
+            "A".as-bytes
+            false
+          subj.
+            match.
+              "/x/".regex.pattern "x".as-bytes --
+              "a"
+          0
+          --
+          [at caps]
+            at > end
+            true > exists
+      1
+
+  ++> can-run-a-greedy-node-as-far-as-it-goes
+    eq. > @
+      end.
+        run.
+          greedy.
+            "/x/".regex.pattern "x".as-bytes --
+            literal.
+              "/x/".regex.pattern "x".as-bytes --
+              "a".as-bytes
+            0
+            9
+          subj.
+            match.
+              "/x/".regex.pattern "x".as-bytes --
+              "aaab"
+          0
+          --
+          [at caps]
+            at > end
+            true > exists
+      3
+
+  ++> can-find-a-digit-in-a-cased-set
+    has-cased. > @
+      "/x/".regex.pattern "x".as-bytes --
+      chain.
+        "/x/".regex.pattern "x".as-bytes --
+        64-
+        []
+          false > [code] > has
+      "5".as-bytes
+
+  ++> can-run-a-lazy-node-as-short-as-it-can
+    eq. > @
+      end.
+        run.
+          lazy.
+            "/x/".regex.pattern "x".as-bytes --
+            literal.
+              "/x/".regex.pattern "x".as-bytes --
+              "a".as-bytes
+            1
+            9
+          subj.
+            match.
+              "/x/".regex.pattern "x".as-bytes --
+              "aaa"
+          0
+          --
+          [at caps]
+            at > end
+            true > exists
+      1
+
+  ++> can-run-a-literal-node-over-its-text
+    eq. > @
+      end.
+        run.
+          literal.
+            "/x/".regex.pattern "x".as-bytes --
+            "ab".as-bytes
+          subj.
+            match.
+              "/x/".regex.pattern "x".as-bytes --
+              "abc"
+          0
+          --
+          [at caps]
+            at > end
+            true > exists
+      2
+
+  eq. ++> can-lower-a-latin-capital
+    lowered.
+      "/x/".regex.pattern "x".as-bytes --
+      C3-89
+    C3-A9
+
+  eq. ++> can-lower-a-cyrillic-capital
+    lowered-cyrillic.
+      "/x/".regex.pattern "x".as-bytes --
+      D0-90
+    D0-B0
+
+  eq. ++> can-lower-a-greek-capital
+    lowered-greek.
+      "/x/".regex.pattern "x".as-bytes --
+      CE-91
+    CE-B1
+
+  eq. ++> can-lower-the-greek-capital-sigma
+    lowered-greek-tail.
+      "/x/".regex.pattern "x".as-bytes --
+      CE-A3
+    CF-83
+
+  eq. ++> can-lower-a-latin-capital-with-a-grave
+    lowered-latin.
+      "/x/".regex.pattern "x".as-bytes --
+      C3-80
+    C3-A0
+
+  eq. ++> can-hold-a-mark-with-its-end
+    to.
+      mark.
+        "/x/".regex.pattern "x".as-bytes --
+        1
+        2
+        --
+        5
+    5
+
+  numeric. ++> can-tell-a-seven-is-numeric
+    "/x/".regex.pattern
+      "x".as-bytes
+      --
+    37-
+
+  eq. ++> can-take-the-low-octet-of-a-number
+    octet.
+      "/x/".regex.pattern "x".as-bytes --
+      65
+    41-
+
+  ++> can-run-a-possessive-node-to-the-end-of-its-run
+    eq. > @
+      end.
+        run.
+          possessive.
+            "/x/".regex.pattern "x".as-bytes --
+            literal.
+              "/x/".regex.pattern "x".as-bytes --
+              "a".as-bytes
+            0
+            9
+          subj.
+            match.
+              "/x/".regex.pattern "x".as-bytes --
+              "aab"
+          0
+          --
+          [at caps]
+            at > end
+            true > exists
+      2
+
+  eq. ++> can-raise-a-latin-small-letter
+    raised.
+      "/x/".regex.pattern "x".as-bytes --
+      C3-A9
+    C3-89
+
+  eq. ++> can-raise-a-cyrillic-small-letter
+    raised-cyrillic.
+      "/x/".regex.pattern "x".as-bytes --
+      D0-B0
+    D0-90
+
+  eq. ++> can-raise-a-cyrillic-small-letter-from-the-tail
+    raised-cyrillic-tail.
+      "/x/".regex.pattern "x".as-bytes --
+      D1-80
+    D0-A0
+
+  eq. ++> can-raise-a-greek-small-letter
+    raised-greek.
+      "/x/".regex.pattern "x".as-bytes --
+      CE-B1
+    CE-91
+
+  eq. ++> can-raise-the-greek-small-sigma
+    raised-greek-tail.
+      "/x/".regex.pattern "x".as-bytes --
+      CF-83
+    CE-A3
+
+  eq. ++> can-raise-the-latin-small-y-with-a-diaeresis
+    raised-latin.
+      "/x/".regex.pattern "x".as-bytes --
+      C3-BF
+    C5-B8
+
+  starts. ++> can-tell-a-line-starts-after-a-newline
+    "/x/".regex.pattern
+      "x".as-bytes
+      --
+    subj.
+      match.
+        "/x/".regex.pattern "x".as-bytes --
+        "a\nb"
+    1
+    false
+
+  terminal. ++> can-tell-a-newline-terminates-the-text
+    "/x/".regex.pattern
+      "x".as-bytes
+      --
+    subj.
+      match.
+        "/x/".regex.pattern "x".as-bytes --
+        "ab\n"
+    2
+    false
+
+  word. ++> can-tell-an-underscore-is-a-word-byte
+    "/x/".regex.pattern
+      "x".as-bytes
+      --
+    5F-
