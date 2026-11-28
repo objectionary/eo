@@ -16,19 +16,12 @@
 # ```
 #
 # The object is immutable: it only reads parts of `text` and has no mutators.
-#
-# @todo #9108:30min Stop skipping 'long-live-object' here. The lint counts
-#  the pipe-applied 'scheme-colon' and 'port-colon-idx' in the order check,
-#  which 'unsorted-named-attributes' leaves out, and so reports 'host-port'
-#  in a sorted formation (objectionary/lints#1881). Remove the
-#  '+unlint long-live-object' meta once that issue is fixed.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint compound-name
-+unlint long-live-object
 +version 0.0.0
 
 [text] > uri

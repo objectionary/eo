@@ -42,17 +42,11 @@
 # given scope, closes client socket and returns `bytes` retrieved from scope dataization.
 # On failure at any of the described steps, the fallback of the corresponding operation is
 # applied to an error message. When unbound, it terminates with that message.
-#
-# @todo #9108:30min Stop skipping 'long-live-object' here. The lint reads the
-#  anonymous '>>!' handles of 'addr' and 'sd' by their synthetic names, finds
-#  the sorted 'impl' unsorted, and reports 'addr' (objectionary/lints#1880).
-#  Remove the '+unlint long-live-object' meta once that issue is fixed.
 
 +architect yegor256@gmail.com
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint long-live-object
 +version 0.0.0
 
 [address port] > socket
