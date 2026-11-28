@@ -13,3 +13,15 @@ Java test classes, such as `EOdirectoryEOtmpfileTest`,
   must never target EO objects.
 Java tests are only for Java code,
   such as atoms, the runtime, and the Maven plugin.
+
+## Lint skips in eo-runtime
+
+Never skip a lint in `eo-runtime/pom.xml`.
+The POM must have no `<skipSourceLints>` and no `<skipProgramLints>`,
+  not even for a single lint or for a short time.
+When a lint complains about an EO object in `eo-runtime`,
+  fix the EO code.
+When the complaint is a false positive,
+  report it to `objectionary/lints` for source lints,
+  or to `objectionary/wpa` for program lints,
+  and wait for a release with the fix.
