@@ -27,24 +27,17 @@
 +version 0.0.0
 
 [^num b] > power
-  if. > @
-    eq.
-      if. >> expo
-        b.as-bytes.size.eq 8
-        number b.as-bytes
-        T "the 'b' attribute must be a number"
-      0
-    1
-    base.is-nan.if
-      nan
-      expo.is-nan.if
+  [^owner expo base] >>
+    if. > @
+      expo.eq 0
+      1
+      if.
+        base.is-nan.or expo.is-nan
         nan
         expo.is-finite.if
           base.is-finite.if
             if.
-              eq.
-                number num.as-bytes >> base
-                0
+              base.eq 0
               if. > [bits expo odd] >> zeroed
                 and.
                   bits.eq 80-00-00-00-00-00-00-00
@@ -57,10 +50,7 @@
                   expo.gt 0
                   0
                   pinf
-              |
-                num.as-bytes
-                expo
-                expo.is-integer.and (expo.div 2).is-integer.not >> odd
+              | base.as-bytes expo (expo.is-integer.and (expo.div 2).is-integer.not)
               expo.is-integer.if
                 [^pw base expo] >> integral
                   if. > @
@@ -93,7 +83,7 @@
                 | base expo
                 if. > [^pw base expo] >> fractional
                   base.gt 0
-                  pw.expon
+                  pw.owner.expon
                     expo.times base.ln
                   nan
                 | base expo
@@ -107,7 +97,7 @@
                 expo.gt 0
                 odd.if ninf pinf
                 odd.if 0.neg 0
-            | base expo odd
+            | base expo (expo.is-integer.and (expo.div 2).is-integer.not)
           if. > [base expo] >> unbounded
             expo.gt 0
             if.
@@ -125,26 +115,29 @@
                 nan
                 pinf
           | base expo
+  | > @
+    if.
+      b.as-bytes.size.eq 8
+      number b.as-bytes
+      T "the 'b' attribute must be a number"
+    number num.as-bytes
   [^num y] > expon
     times. > @
       if.
-        lt.
-          number
-            floor. >> k!
-              plus.
-                number
-                  y >> arg!
-                0.5
-          0
-        1.div
-          ipow
-            e
-            abs.
-              number k
-        ipow
+        not.
+          lt.
+            number
+              floor. >> k!
+                plus.
+                  number
+                    y >> arg!
+                  0.5
+            0
+        ipow >> scale
           e
           abs.
             number k
+        1.div scale
       if. > [^num j] >> fraction
         j.gt 20
         1
