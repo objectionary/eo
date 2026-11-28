@@ -67,7 +67,7 @@
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>                      .execute(MjLower.<strong class="jxr_keyword">class</strong>),
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>                  <span class="jxr_string">"a binary that is not there must fail the build"</span>
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>              ).getCause().getCause().getMessage(),
-<a class="jxr_linenumber" name="L62" href="#L62">62</a>              Matchers.containsString(<span class="jxr_string">"0.0.165"</span>)
+<a class="jxr_linenumber" name="L62" href="#L62">62</a>              Matchers.containsString(<span class="jxr_string">"0.0.170"</span>)
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>          );
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>      }
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>  
@@ -381,7 +381,7 @@
 <a class="jxr_linenumber" name="L373" href="#L373">373</a>                     .execute(MjLower.<strong class="jxr_keyword">class</strong>),
 <a class="jxr_linenumber" name="L374" href="#L374">374</a>                 <span class="jxr_string">"a binary of another version must fail the build"</span>
 <a class="jxr_linenumber" name="L375" href="#L375">375</a>             ).getCause().getCause().getMessage(),
-<a class="jxr_linenumber" name="L376" href="#L376">376</a>             Matchers.stringContainsInOrder(<span class="jxr_string">"0.0.1"</span>, <span class="jxr_string">"0.0.165"</span>)
+<a class="jxr_linenumber" name="L376" href="#L376">376</a>             Matchers.stringContainsInOrder(<span class="jxr_string">"0.0.1"</span>, <span class="jxr_string">"0.0.170"</span>)
 <a class="jxr_linenumber" name="L377" href="#L377">377</a>         );
 <a class="jxr_linenumber" name="L378" href="#L378">378</a>     }
 <a class="jxr_linenumber" name="L379" href="#L379">379</a> 
@@ -401,7 +401,7 @@
 <a class="jxr_linenumber" name="L393" href="#L393">393</a> 
 <a class="jxr_linenumber" name="L394" href="#L394">394</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> String binary(<strong class="jxr_keyword">final</strong> Path temp, <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">int</strong> code, <strong class="jxr_keyword">final</strong> String protocol)
 <a class="jxr_linenumber" name="L395" href="#L395">395</a>         <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L396" href="#L396">396</a>         <strong class="jxr_keyword">return</strong> MjLowerTest.binary(temp, code, protocol, <span class="jxr_string">"0.0.165"</span>);
+<a class="jxr_linenumber" name="L396" href="#L396">396</a>         <strong class="jxr_keyword">return</strong> MjLowerTest.binary(temp, code, protocol, <span class="jxr_string">"0.0.170"</span>);
 <a class="jxr_linenumber" name="L397" href="#L397">397</a>     }
 <a class="jxr_linenumber" name="L398" href="#L398">398</a> 
 <a class="jxr_linenumber" name="L399" href="#L399">399</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> String binary(

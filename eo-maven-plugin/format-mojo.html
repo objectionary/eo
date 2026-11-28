@@ -68,11 +68,11 @@
                             </div>
                             <ul class="badges">
                                 <li>
-                                    <strong itemprop="version">0.63.5</strong>
+                                    <strong itemprop="version">0.63.6</strong>
                                 </li>
                                 <li>
-                                    <time itemprop="datePublished" datetime="2026-11-26">
-                                        26-Nov-2026
+                                    <time itemprop="datePublished" datetime="2026-11-28">
+                                        28-Nov-2026
                                     </time>
                                 </li>
                                 <li class="menu-button">menu</li>
@@ -83,7 +83,7 @@
                             <section><a id="eo.3Aformat"></a>
 <h1>eo:format</h1>
 <p><strong>Full name</strong>:</p>
-<p>org.eolang:eo-maven-plugin:0.63.5:format</p>
+<p>org.eolang:eo-maven-plugin:0.63.6:format</p>
 <p><strong>Description</strong>:</p>
 <p>Enforce the canonical layout of <code>.eo</code> sources.
 <p>This goal walks through all registered <code>.eo</code> sources (see <code>MjRegister</code><!-- no javadoc sites associated -->), reformats every one of them in memory by parsing it to XMIR and printing it back with <code>org.eolang.printer.Xmir.toEO()</code><!-- no javadoc sites associated --> until the text stops changing (the moniker merge of #5739 is not a single-pass fixpoint, so the canonical form is the fixpoint of parse-and-print), and compares that against what is on disk. In its default "check" mode, it prints a colored unified <code>Diff</code><!-- no javadoc sites associated --> for every file that diverges from the canonical form and fails the build. When <code>autofix</code><!-- no javadoc sites associated --> is turned on (via the <code>eo.format.autofix</code> property), it overwrites the divergent files with their canonical form instead of failing, much like <code>gofmt -w</code> or <code>spotless:apply</code>.</p>
