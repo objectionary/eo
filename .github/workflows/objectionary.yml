@@ -21,7 +21,7 @@ jobs:
       - uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
-          java-version: 26
+          java-version: 27
       - uses: actions/cache@v6
         with:
           path: ~/.m2/repository
