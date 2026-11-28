@@ -319,6 +319,10 @@
     "/é/iu".regex.compiled
     "É"
 
+  matches. ++> can-fold-the-capital-y-with-a-diaeresis-under-unicode-folding
+    "/ÿ/iu".regex.compiled
+    "Ÿ"
+
   matches. ++> can-fold-the-final-sigma-under-unicode-folding
     "/ς/iu".regex.compiled
     "Σ"

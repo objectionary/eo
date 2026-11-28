@@ -2120,7 +2120,9 @@
             E0-
           A0-
         not.
-          b.eq B7-
+          or.
+            b.eq B7-
+            b.eq BF-
       C3-.concat
         b.and DF-
       if.
