@@ -14,20 +14,20 @@
   i.is-integer.if > @
     if.
       or.
-        0.gt index
+        0.gt
+          if. >> index
+            0.gt i
+            list.length.plus i
+            i
         list.length.lte index
       T "Given index is out of tuple bounds"
       list.reducedi
         *
         if. > [^list a x i] >>
-          list.index.eq i
+          index.eq i
           a
           a.with x
     T "Given index must be an integer"
-  if. > index
-    0.gt i
-    list.length.plus i
-    i
 
   eq. ++> can-drop-an-item-by-index
     withouti.

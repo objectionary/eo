@@ -42,18 +42,19 @@
             win32.close
               code.
                 called. >> opened
-                  os.is-windows.if
+                  os.is-windows.if > [path linked] >> opening
                     win32.open
-                      entry.path
+                      path
                       plus. (win32.creat.plus win32.exclusive) win32.wronly
                       win32.mode
                     posix.open
-                      entry.path
+                      path
                       plus.
                         posix.creat.plus
                           linked.not.if posix.exclusive 0
                         posix.wronly
                       posix.mode
+                  | entry.path linked
             posix.close opened.code
           0
         entry

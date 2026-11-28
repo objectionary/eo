@@ -33,27 +33,29 @@
   if. > @
     num.is-finite.not.or
       or.
-        num.abs.gte 9.223372036854776e18 >> huge
+        num.abs.gte 9.223372036854776e18
         or.
           0.gt places
           places.is-integer.not.or
             places.gt 9007199254740991
     cant-print
-      num.is-finite.not.if
+      value.is-finite.not.if > [value places] >> complaint
         "Can't write a non-finite number as a fixed-point decimal"
-        huge.if
+        if.
+          value.abs.gte 9.223372036854776e18
           "Can't write a fixed-point decimal with a magnitude of 2^63 or larger"
           places.is-finite.if
             "Can't write a fixed-point decimal with %f fraction places".printf
               * places
             "Can't write a fixed-point decimal with a non-finite number of fraction places"
+      | num places
     if.
       num.as-bytes.eq 80-00-00-00-00-00-00-00
       "-".as-bytes.concat
         [^num a] >> positive
           if. > @
             eq.
-              round >> digits
+              num.round >> digits
                 times.
                   a.minus a.floor
                   num.scale
@@ -80,7 +82,7 @@
             positive a
         | (num.times -1)
         positive num
-  [value] >> round
+  [value] > round
     if. > @
       gte.
         value.minus
@@ -334,3 +336,9 @@
     "0.2"
     string
       0.15.as-fixed 1
+
+  eq. ++> can-round-a-half-up
+    3
+    round.
+      1.as-fixed 2
+      2.5

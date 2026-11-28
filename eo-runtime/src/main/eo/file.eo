@@ -9,8 +9,7 @@
 
 [location] > file
   path > @
-  @. > as-path
-    Q.path path
+  Q.path path > as-path
   or. > [^entry] > exists
     eq.
       os.is-windows.if
@@ -110,18 +109,19 @@
                                 appending.if syscall.append 0
                               syscall.mode
                   if.
-                    recovered
-                      seq *
-                        req.pick.scope >> scoped!
-                          stream req.syscall opened.code
-                        true
-                      false
-                    seq *
-                      syscall.close opened.code
-                      true
+                    not.
+                      recovered
+                        seq *
+                          req.pick.scope >> scoped!
+                            req.pick.stream req.syscall opened.code
+                          true
+                        false
                     seq *
                       syscall.close opened.code
                       scoped
+                    seq *
+                      syscall.close opened.code
+                      true
                 kernel > syscall
               |
                 []
@@ -141,11 +141,11 @@
     and. >> readable
       not.
         as-bool.
-          access.eq "w"
+          mode.eq "w"
       not.
         as-bool.
-          access.eq "a"
-    [^desc syscall descriptor] >> stream
+          mode.eq "a"
+    [^desc syscall descriptor] > stream
       [^chan size] > read
         read. > @
           [^piece buffer] >> input-block
@@ -191,7 +191,7 @@
           buffer
     not. >> writable
       as-bool.
-        access.eq "r"
+        mode.eq "r"
   location > path
 
   eq. ++> can-append-data-to-a-file

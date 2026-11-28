@@ -13,7 +13,7 @@
       string uri.as-bytes
     posix
       string uri.as-bytes
-  [^location sys uri] > impl
+  [^location sys uri] >> impl
     uri > @
     directory > as-dir
       file uri
@@ -125,60 +125,59 @@
               as-bytes. >> result!
                 if.
                   location.driveless.size.eq 0
-                  if.
-                    location.drive.size.eq 0
+                  if. > [drive] >> drive-or-dot
+                    drive.size.eq 0
                     ".".as-bytes
-                    location.drive.as-bytes
+                    drive.as-bytes
+                  | location.drive
                   if.
                     core.size.eq 0
                     ".".as-bytes
                     if.
-                      and.
+                      and. > [loc body] >> bare
                         body.size.eq 0
-                        and. (location.drive.size.gt 0) location.is-absolute.not
+                        and. (loc.drive.size.gt 0) loc.is-absolute.not
+                      | location body
                       core.concat
                         ".".concat
                           if. >> closing
                             and.
-                              and.
-                                ubts.size.gt 0
+                              and. > [text separator] >> trailing
+                                text.size.gt 0
                                 eq.
-                                  ubts.slice (ubts.size.plus -1) 1
-                                  location.separator
+                                  text.slice (text.size.plus -1) 1
+                                  separator
+                              | ubts location.separator
                               not.
-                                and.
-                                  core.size.gt 0
-                                  eq.
-                                    slice.
-                                      concat. >> core!
-                                        location.drive.concat
-                                          location.is-absolute.if
-                                            location.unc.if
-                                              location.separator.concat location.separator
-                                              location.separator.as-bytes
-                                            --
-                                        location.separator.joined >> body!
-                                          reduced.
-                                            location.driveless.split location.separator
-                                            *
-                                            if. > [^fold a x] >>
-                                              x.eq ".."
-                                              if.
-                                                and. (a.length.gt 0) (a.head.eq "..").not
-                                                if. (fold.location.unc.and (a.length.lte 2)) a a.tail
-                                                fold.location.is-absolute.not.if (a.with x) a
-                                              if.
-                                                fold.location.device.and
-                                                  (a.length.eq 0).and
-                                                    or. (x.eq ".") (x.eq "?")
-                                                a.with x
-                                                if.
-                                                  or. (x.eq ".") (x.eq "")
-                                                  a
-                                                  a.with x
-                                      core.size.plus -1
-                                      1
-                                    location.separator
+                                trailing
+                                  concat. >> core!
+                                    location.drive.concat
+                                      loc.is-absolute.if > [loc] >> lead
+                                        loc.unc.if
+                                          loc.separator.concat loc.separator
+                                          loc.separator.as-bytes
+                                        --
+                                      | location
+                                    location.separator.joined >> body!
+                                      reduced.
+                                        location.driveless.split location.separator
+                                        *
+                                        if. > [^fold a x] >>
+                                          x.eq ".."
+                                          if.
+                                            and. (a.length.gt 0) (a.head.eq "..").not
+                                            if. (fold.location.unc.and (a.length.lte 2)) a a.tail
+                                            fold.location.is-absolute.not.if (a.with x) a
+                                          if.
+                                            fold.location.device.and
+                                              (a.length.eq 0).and
+                                                or. (x.eq ".") (x.eq "?")
+                                            a.with x
+                                            if.
+                                              or. (x.eq ".") (x.eq "")
+                                              a
+                                              a.with x
+                                  location.separator
                             location.separator.as-bytes
                             --
                       core.concat closing
@@ -187,29 +186,32 @@
         location.location.impl
           location.sys
           string
-            if.
+            if. > [^owner valid] >> rebased
               valid.size.eq 0
-              location.uri.as-bytes
+              owner.location.uri.as-bytes
               if.
-                gt. (location.sys.drive valid).size 0
-                as-bytes.
-                  string (location.sys.sanitized other)! >> valid
+                gt. (owner.location.sys.drive valid).size 0
+                valid.as-bytes
                 if.
                   starts-with.
                     string valid
-                    string (location.separator.concat location.separator)
+                    string
+                      owner.location.separator.concat owner.location.separator
                   valid.as-bytes
                   if.
                     eq.
                       valid.slice 0 1
-                      location.separator
-                    location.unc.if
-                      location.share.concat valid
-                      location.drive.concat valid
+                      owner.location.separator
+                    owner.location.unc.if
+                      owner.location.share.concat valid
+                      owner.location.drive.concat valid
                     if.
-                      location.uri.size.eq 0
+                      owner.location.uri.size.eq 0
                       valid.as-bytes
-                      concat. (location.uri.concat location.separator) valid
+                      concat.
+                        owner.location.uri.concat owner.location.separator
+                        valid
+            | (string (location.sys.sanitized other)!)
     sys.separator > separator
     if. > share
       chunks.length.gt 3
@@ -255,7 +257,7 @@
                   x.size.gt 0 > [x]
         location.posix jpath
   [^location uri] > posix
-    location.impl > @
+    impl > @
       sys
       uri
     "/" > separator
@@ -267,7 +269,7 @@
     win32.separator
     posix.separator
   [^location uri] > win32
-    location.impl > @
+    impl > @
       sys
       sys.sanitized uri
     "\\" > separator

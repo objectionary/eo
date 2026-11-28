@@ -30,10 +30,9 @@
 
 [^data] > as-input
   [^source size] > read
-    @. > @
-      read.
-        input-block source.data --
-        size
+    read. > @
+      input-block source.data --
+      size
     [^piece data buffer] > input-block
       buffer > @
       number data.size! >> available

@@ -17,28 +17,20 @@
   num.as-number.div 00-20-00-00-00-00-00-00.as-i64.as-number > @
   [clock] > clocked
     random. > @
-      as-number.
+      as-number. > [t] >> folded
         plus.
           as-i64.
             and.
-              left.
-                clock.as-bytes >> tbytes
-                35
-              as-bytes.
-                minus.
-                  as-i64.
-                    left.
-                      00-00-00-00-00-00-00-01 >> one
-                      53
-                  00-00-00-00-00-00-00-01
+              t.left 35
+              00-1F-FF-FF-FF-FF-FF-FF
           plus.
             as-i64.
               and.
-                tbytes.left 17
-                as-bytes.
-                  minus. (one.left 35).as-i64 00-00-00-00-00-00-00-01
+                t.left 17
+                00-00-00-07-FF-FF-FF-FF
             as-i64.
-              tbytes.and ((one.left 17).as-i64.minus 00-00-00-00-00-00-00-01).as-bytes
+              t.and 00-00-00-00-00-01-FF-FF
+      | clock.as-bytes
   random. > next
     as-number.
       as-i64.
@@ -65,6 +57,8 @@
     eq.
       1.random.clocked 123.as-i64
       1.random.clocked 456.as-i64
+
+  0.random.pseudo.lt 1 ++> can-draw-a-clocked-number-below-one
 
   not. ++> can-reach-the-upper-half
     178609.random.next.lt 0.5

@@ -273,6 +273,16 @@
     [items] > array
       items > elements
 
+  eq. ++> can-take-all-but-the-last-item-as-the-tail
+    tail.
+      *
+        1
+        2
+        3
+    *
+      1
+      2
+
   eq. ++> can-take-an-item-with-a-terminator-for-the-fallback
     "one"
     at.
@@ -293,6 +303,14 @@
         4
       -5
     0
+
+  eq. ++> can-take-the-last-item-as-the-head
+    head.
+      *
+        1
+        2
+        3
+    3
 
   eq. ++> can-take-the-last-item-by-a-negative-index
     at.

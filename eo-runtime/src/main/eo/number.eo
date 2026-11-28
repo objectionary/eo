@@ -122,6 +122,10 @@
 
   42.as-bytes.eq 42 ++> can-compare-its-bytes-to-an-integer
 
+  42.as-i16.as-bytes.eq 00-2A ++> can-convert-to-an-i16
+
+  42.as-i32.as-bytes.eq 00-00-00-2A ++> can-convert-to-an-i32
+
   42.as-bytes.eq 42 ++> can-convert-to-bytes-and-back
 
   and. ++> can-dataize-known-literals

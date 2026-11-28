@@ -26,7 +26,7 @@
         [^chain num] >> build
           num > @
           chain.build > next
-            1.plus @
+            1.plus num
         | chain.span.start > @
       span.end
     T

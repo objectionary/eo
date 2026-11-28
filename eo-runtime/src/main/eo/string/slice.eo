@@ -24,170 +24,242 @@
 +package string
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint too-deep-object
 +version 0.0.0
 
 [^text start len] > slice
-  if. > @
-    or.
-      lt.
-        number start! >> nstart
-        0
-      nstart.is-integer.not
-    T
-      nstart.is-finite.if
-        "Start index must be a non-negative integer, but was %f".printf
-          * nstart
-        "Start index must be a non-negative integer, but was %s".printf
-          *
-            string nstart.as-scientific
-    if.
+  [^ctx nstart nlen] >>
+    if. > @
       or.
-        lt.
-          number len! >> nlen
-          0
-        nlen.is-integer.not
+        nstart.lt 0
+        nstart.is-integer.not
       T
-        nlen.is-finite.if
-          "Length to slice must be a non-negative integer, but was %f".printf
-            * nlen
-          "Length to slice must be a non-negative integer, but was %s".printf
+        nstart.is-finite.if
+          "Start index must be a non-negative integer, but was %f".printf
+            * nstart
+          "Start index must be a non-negative integer, but was %s".printf
             *
-              string nlen.as-scientific
-      seq *
-        number >> bstart
-          recidx >>!
-            0
-            0
-            nstart
-            "Start index (%s) is out of string bounds".printf
+              string nstart.as-scientific
+      if.
+        or.
+          nlen.lt 0
+          nlen.is-integer.not
+        T
+          nlen.is-finite.if
+            "Length to slice must be a non-negative integer, but was %f".printf
+              * nlen
+            "Length to slice must be a non-negative integer, but was %s".printf
               *
-                if. > [num] >> printed
-                  9.223372036854776e18.gt num
-                  "%d".printf
-                    * num
-                  string num.as-scientific
-                | nstart
-        minus. >> blen
-          [^ctx index accum result cause] >> recidx
-            if. > @
-              accum.eq result
-              index
-              if.
-                index.eq size
-                T cause
-                if.
-                  eq.
-                    and.
-                      ctx.text.as-bytes.slice index 1 >> byte
-                      80-
-                    00-
-                  ctx.recidx
-                    increase index 1 true
-                    accum.plus 1
-                    result
-                    cause
-                  if.
-                    eq. (byte.and E0-) C0-
-                    ctx.recidx
-                      increase
-                        index
-                        2
-                        ((byte.and FE-).eq C0-).not.and
-                          eq. (b1.and C0-) 80- >> b1cont
-                      accum.plus 1
-                      result
-                      cause
-                    if.
-                      eq. (byte.and F0-) E0-
-                      ctx.recidx
-                        increase
-                          index
-                          3
-                          and.
-                            eq. >> b2cont
-                              and.
-                                ctx.text.as-bytes.slice (index.plus 2) 1
-                                C0-
-                              80-
-                            if.
-                              byte.eq E0-
-                              eq.
-                                and.
-                                  ctx.text.as-bytes.slice (index.plus 1) 1 >> b1
-                                  E0-
-                                A0-
-                              if.
-                                byte.eq ED-
-                                eq. (b1.and E0-) 80-
-                                b1cont
-                        accum.plus 1
-                        result
-                        cause
-                      if.
-                        eq. (byte.and F8-) F0-
-                        ctx.recidx
-                          increase
-                            index
-                            4
-                            b2cont.and
-                              and.
-                                eq.
-                                  and.
-                                    ctx.text.as-bytes.slice (index.plus 3) 1
-                                    C0-
-                                  80-
-                                if.
-                                  byte.eq F0-
-                                  ((b1.and F0-).eq 90-).or
-                                    eq. (b1.and E0-) A0-
-                                  if.
-                                    byte.eq F4-
-                                    eq. (b1.and F0-) 80-
-                                    if.
-                                      or. >>
-                                        byte.eq F1- >> leadf1
-                                        or. (byte.eq F2-) (byte.eq F3-)
-                                      b1cont
-                                      false
-                          accum.plus 1
-                          result
-                          cause
-                        T
-                          "Unknown byte format (%x), can't recognize character".printf
-                            * byte
-          |
-            bstart
-            0
-            nlen
-            "Start index + length to slice (%s) is out of string bounds".printf
-              *
-                printed
-                  nstart.plus nlen
-          bstart
+                string nlen.as-scientific
+        [^owner bstart] >> ranged
+          seq * > @
+            minus. >> blen
+              recidx
+                bstart
+                0
+                owner.nlen
+                "Start index + length to slice (%s) is out of string bounds".printf
+                  *
+                    printed (owner.nstart.plus owner.nlen)
+              bstart
+            if.
+              owner.nlen.eq 0
+              ""
+              string
+                owner.ctx.text.as-bytes.slice bstart blen
+        |
+          number
+            recidx >>!
+              0
+              0
+              nstart
+              "Start index (%s) is out of string bounds".printf
+                *
+                  if. > [num] >> printed
+                    9.223372036854776e18.gt num
+                    "%d".printf
+                      * num
+                    string num.as-scientific
+                  | nstart
+  | > @
+    number start!
+    number len!
+  [^ctx byte index csize] > checked
+    if. > @
+      csize.eq 1
+      true
+      if.
+        csize.eq 2
+        ctx.two-ok
+          byte
+          ctx.text.as-bytes.slice >> b1
+            index.plus 1
+            1
         if.
-          nlen.eq 0
-          ""
-          string
-            text.as-bytes.slice bstart blen
-  if. > [^ctx index csize valid] >> increase
-    gt.
-      index.plus csize
-      size
-    T
-      "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
-        *
-          csize
-          index
-          ctx.text.as-bytes
-    valid.if
-      index.plus csize
-      T
-        "Malformed UTF-8 sequence (%x) at %d index".printf
-          *
-            ctx.text.as-bytes.slice index csize
+          csize.eq 3
+          ctx.three-ok
+            byte
+            b1
+            ctx.text.as-bytes.slice >> b2
+              index.plus 2
+              1
+          ctx.four-ok
+            byte
+            b1
+            b2
+            ctx.text.as-bytes.slice
+              index.plus 3
+              1
+  eq. > [^ctx b] > cont
+    b.and C0-
+    80-
+  if. > [^ctx lead b1] > four-lead
+    lead.eq F0-
+    or.
+      eq.
+        b1.and F0-
+        90-
+      eq.
+        b1.and E0-
+        A0-
+    if.
+      lead.eq F4-
+      eq.
+        b1.and F0-
+        80-
+      and.
+        or.
+          lead.eq F1-
+          or.
+            lead.eq F2-
+            lead.eq F3-
+        ctx.cont b1
+  and. > [^ctx lead b1 b2 b3] > four-ok
+    and.
+      ctx.cont b2
+      ctx.cont b3
+    ctx.four-lead
+      lead
+      b1
+  [^ctx index accum result cause] >> recidx
+    if. > @
+      accum.eq result
+      index
+      if.
+        index.eq size
+        T cause
+        ctx.recidx
+          if. > [^owner index csize valid] >> increase
+            gt.
+              index.plus csize
+              size
+            T
+              "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
+                * csize index owner.ctx.text.as-bytes
+            valid.if
+              index.plus csize
+              T
+                "Malformed UTF-8 sequence (%x) at %d index".printf
+                  *
+                    owner.ctx.text.as-bytes.slice index csize
+                    index
+          |
             index
+            ctx.width byte >> csize
+            ctx.checked
+              ctx.text.as-bytes.slice index 1 >> byte
+              index
+              csize
+          accum.plus 1
+          result
+          cause
   text.as-bytes.size >> size!
+  and. > [^ctx lead b1 b2] > three-ok
+    ctx.cont b2
+    if.
+      lead.eq E0-
+      eq.
+        b1.and E0-
+        A0-
+      if.
+        lead.eq ED-
+        eq.
+          b1.and E0-
+          80-
+        ctx.cont b1
+  and. > [^ctx lead b1] > two-ok
+    not.
+      eq.
+        lead.and FE-
+        C0-
+    ctx.cont b1
+  if. > [^ctx byte] > width
+    eq.
+      byte.and 80-
+      00-
+    1
+    if.
+      eq.
+        byte.and E0-
+        C0-
+      2
+      if.
+        eq.
+          byte.and F0-
+          E0-
+        3
+        if.
+          eq.
+            byte.and F8-
+            F0-
+          4
+          T
+            "Unknown byte format (%x), can't recognize character".printf
+              * byte
+
+  cont. ++> can-accept-a-continuation-byte
+    "".slice
+      0
+      0
+    80-
+
+  four-ok. ++> can-accept-a-four-byte-character
+    "".slice
+      0
+      0
+    F0-
+    9F-
+    98-
+    80-
+
+  four-lead. ++> can-accept-a-four-byte-lead
+    "".slice
+      0
+      0
+    F0-
+    9F-
+
+  three-ok. ++> can-accept-a-three-byte-character
+    "".slice
+      0
+      0
+    E2-
+    82-
+    AC-
+
+  two-ok. ++> can-accept-a-two-byte-character
+    "".slice
+      0
+      0
+    C3-
+    A9-
+
+  checked. ++> can-check-a-two-byte-character
+    "é".slice
+      0
+      1
+    C3-
+    0
+    2
 
   eq. ++> can-slice-a-line-break-escape-sequence
     "\n".slice
@@ -266,6 +338,12 @@
       1
       2
     "ри"
+
+  eq. ++> can-tell-the-width-of-a-three-byte-character
+    width.
+      "".slice 0 0
+      E2-
+    3
 
   slice. --> rejects-a-non-continuation-after-a-three-byte-lead-when-slicing
     string E1-80-41

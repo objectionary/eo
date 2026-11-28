@@ -25,25 +25,26 @@
         num.gte b.as-u64
         u64 00-00-00-00-00-00-00-01
         u64 00-00-00-00-00-00-00-00
-      if.
-        gte.
-          num.minus
-            times.
-              u64
-                left. >> q0
+      plus.
+        u64
+          left. >> q0
+            as-bytes.
+              div.
+                i64
+                  num.as-bytes.right 1
+                i64
                   as-bytes.
-                    div.
-                      i64 (num.as-bytes.right 1)
-                      i64
-                        as-bytes.
-                          b.as-u64 >> d
-                  1
-              b.as-u64
-          b.as-u64
-        plus.
-          u64 q0
+                    b.as-u64 >> d
+            1
+        if.
+          gte.
+            num.minus
+              times.
+                u64 q0
+                b.as-u64
+            b.as-u64
           u64 00-00-00-00-00-00-00-01
-        u64 q0
+          u64 00-00-00-00-00-00-00-00
 
   eq. ++> can-divide-a-small-value-by-a-larger-divisor
     00-00-00-00-00-00-00-0A.as-u64.div 80-00-00-00-00-00-00-00.as-u64

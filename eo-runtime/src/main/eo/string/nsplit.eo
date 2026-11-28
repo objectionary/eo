@@ -24,7 +24,7 @@
         limit.is-integer.not
     cant-split
       if.
-        size.eq 0
+        delimiter.size.eq 0
         "The delimiter must not be empty"
         limit.is-finite.if
           "Invalid limit %f for nsplit, must be at least 1".printf

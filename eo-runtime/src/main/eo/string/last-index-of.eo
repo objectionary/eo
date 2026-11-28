@@ -10,34 +10,29 @@
 
 [^text substring] > last-index-of
   if. > @
-    or.
-      or.
-        gt.
-          number part.size! >> size
-          tlen
-        and.
-          size.eq tlen
-          not.
-            eq.
-              substring >> part!
-              text >> txt!
-      eq.
+    and.
+      part.size.lte tlen
+      gte.
         number >> found
           rec-index-of >>!
             minus.
               number txt.size! >> tlen
-              size
-        -1
-    -1
+              size.
+                substring >> part!
+        0
     length.
       string
-        txt.slice 0 found
+        slice.
+          text >> txt!
+          0
+          found
+    -1
   [^text idx] >> rec-index-of
     if. > @
       0.eq idx
       if.
         eq. >> includes
-          txt.slice idx size
+          txt.slice idx part.size
           part
         idx
         -1

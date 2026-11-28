@@ -8,11 +8,7 @@
 +version 0.0.0
 
 [^ start length] > slot
-  window > @
-    ^
-    start
-    length
-  [^ parent start length] > window
+  [^ parent start length] >> window
     get > @
     [^ source target count] > copy
       seq * > @
@@ -79,6 +75,10 @@
       T
         "Can't write %f bytes at slot offset %f, because the slot has length %f".printf
           * data.size offset ^.length
+  | > @
+    ^
+    start
+    length
 
   ++> can-compose-offsets-through-three-nested-slots
     eq. > @

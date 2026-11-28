@@ -23,27 +23,25 @@
     if.
       pairs.length.eq 0
       *
-      @.
-        [^raw tup] >> rec-rebuild
-          if. > @
-            tup.length.eq 0
-            *
-            with.
-              filtered.
-                @.
-                  raw.rec-rebuild tup.tail
-                not. > [^step x] >>
-                  and.
-                    x.hash.eq hash
-                    x.kbts.eq kbts
-              [^step] >>
-                step.hash > hash
-                step.kbts > kbts
-                step.tup.head.key > key
-                step.tup.head.value > value
-          hash. >> hash!
-            tup.head.key.as-bytes >> kbts!
-        | pairs
+      [^raw tup] >> rec-rebuild
+        if. > @
+          tup.length.eq 0
+          *
+          with.
+            filtered.
+              raw.rec-rebuild tup.tail
+              not. > [^step x] >>
+                and.
+                  x.hash.eq hash
+                  x.kbts.eq kbts
+            [^step] >>
+              step.hash > hash
+              step.kbts > kbts
+              step.tup.head.key > key
+              step.tup.head.value > value
+        hash. >> hash!
+          tup.head.key.as-bytes >> kbts!
+      | pairs
   [entries] > ctor
     [^store key] > found
       if. > @
@@ -128,6 +126,14 @@
         map.entry "one" 1
       "two"
       2
+
+  eq. ++> can-construct-an-empty-map-from-no-entries
+    size.
+      ctor.
+        map
+          *
+        *
+    0
 
   eq. ++> can-find-an-element-by-a-key
     2
