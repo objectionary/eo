@@ -40,7 +40,6 @@
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
 +unlint sprintf-constant-args
-+unlint sprintf-without-formatters
 +version 0.0.0
 
 [^text read] > scanf
@@ -98,9 +97,7 @@
                                 | 0 > @
                               | normalized "9223372036854775808"
                               digits-lte normalized "9223372036854775807"
-                      T
-                        "The number doesn't fit into long range for the '%%d' conversion".printf
-                          *
+                      T "The number doesn't fit into long range for the '%d' conversion"
                       negative.if
                         times.
                           fmt.host.fmt.fold-digits normalized >> folded
@@ -442,11 +439,6 @@
   is-integer. --> stops-on-an-oversized-integer
     head.
       "%d".scanf "99999999999999999999"
-
-  eq. ++> can-format-the-oversized-integer-message-with-a-single-percent
-    "The number doesn't fit into long range for the '%%d' conversion".printf
-      *
-    "The number doesn't fit into long range for the '%d' conversion"
 
   gt. ++> can-scan-a-nineteen-digit-value-at-long-max
     head.

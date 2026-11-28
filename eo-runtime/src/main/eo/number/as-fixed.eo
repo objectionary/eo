@@ -26,7 +26,6 @@
 +package number
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint unsorted-named-attributes
 +version 0.0.0
 
 [^num places cant-print] > as-fixed
@@ -82,17 +81,6 @@
             positive a
         | (num.times -1)
         positive num
-  [value] > round
-    if. > @
-      gte.
-        value.minus
-          number
-            value.floor >> whole!
-        0.5
-      plus.
-        number whole
-        1
-      number whole
   if. > [^num p] >> pow10
     p.eq 0
     1
@@ -122,6 +110,17 @@
                 times. (value.div 10).floor 10
             48
         acc
+  [value] > round
+    if. > @
+      gte.
+        value.minus
+          number
+            value.floor >> whole!
+        0.5
+      plus.
+        number whole
+        1
+      number whole
   if. > [^num count acc] >> zeros
     count.eq 0
     acc

@@ -4,7 +4,6 @@
 +home https://github.com/objectionary/eo
 +spdx SPDX-FileCopyrightText: Copyright (c) 2016-2026 Objectionary.com
 +spdx SPDX-License-Identifier: MIT
-+unlint unsorted-named-attributes
 +version 0.0.0
 
 [location] > file
@@ -57,20 +56,18 @@
         cant-check
   [^entry mode scope cant-open] > open
     if. > @
-      not.
-        or. >> known
-          existing.or
-            or. >> truncate
-              as-bool.
-                access.eq "w"
-              as-bool.
-                access.eq "w+"
-          or. >> appending
+      or. >> known
+        existing.or
+          or. >> truncate
             as-bool.
-              access.eq "a"
+              access.eq "w"
             as-bool.
-              access.eq "a+"
-      T "Wrong access mode. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
+              access.eq "w+"
+        or. >> appending
+          as-bool.
+            access.eq "a"
+          as-bool.
+            access.eq "a+"
       if.
         and.
           or. >> existing
@@ -138,6 +135,7 @@
                   posix.read > read
                   posix.write > write
           entry
+      T "Wrong access mode. Only next modes are available: 'r', 'w', 'a', 'r+', 'w+', 'a+'"
     and. >> readable
       not.
         as-bool.
