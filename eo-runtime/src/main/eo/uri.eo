@@ -83,9 +83,9 @@
               -1
           authority.slice
             userinfo-at-idx.plus 1
-            authority.length.minus
-              number
-                userinfo-at-idx.plus 1
+            plus.
+              authority.length.minus userinfo-at-idx
+              -1
           authority
       0
       port-colon-idx
@@ -130,7 +130,7 @@
           idx.plus 1
   prefix > userinfo
     authority
-    userinfo-at-idx
+    authority.last-index-of "@"
   if. > [txt raw-colon] >>
     or.
       raw-colon.eq -1
