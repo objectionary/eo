@@ -109,18 +109,19 @@
                                 appending.if syscall.append 0
                               syscall.mode
                   if.
-                    recovered
-                      seq *
-                        req.pick.scope >> scoped!
-                          req.pick.stream req.syscall opened.code
-                        true
-                      false
-                    seq *
-                      syscall.close opened.code
-                      true
+                    not.
+                      recovered
+                        seq *
+                          req.pick.scope >> scoped!
+                            req.pick.stream req.syscall opened.code
+                          true
+                        false
                     seq *
                       syscall.close opened.code
                       scoped
+                    seq *
+                      syscall.close opened.code
+                      true
                 kernel > syscall
               |
                 []
@@ -140,10 +141,10 @@
     and. >> readable
       not.
         as-bool.
-          access.eq "w"
+          mode.eq "w"
       not.
         as-bool.
-          access.eq "a"
+          mode.eq "a"
     [^desc syscall descriptor] > stream
       [^chan size] > read
         read. > @
@@ -190,7 +191,7 @@
           buffer
     not. >> writable
       as-bool.
-        access.eq "r"
+        mode.eq "r"
   location > path
 
   eq. ++> can-append-data-to-a-file

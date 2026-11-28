@@ -35,69 +35,61 @@
         if.
           eq.
             and.
-              text.text.as-bytes.slice index 1 >> lead
+              text.text.as-bytes.slice index 1
               80-
             00-
           text.reclen
             index.plus 1
             accum.plus 1
-          if.
-            eq.
-              lead.and E0-
-              C0-
-            if. > [^owner idx csize valid accum] >> step
-              gt.
-                idx.plus csize
-                size
-              T
-                "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
-                  * csize idx owner.text.text.as-bytes
-              valid.if
-                owner.text.reclen
-                  idx.plus csize
-                  accum.plus 1
-                T
-                  "Malformed UTF-8 sequence (%x) at %d index".printf
-                    *
-                      owner.text.text.as-bytes.slice idx csize
-                      idx
-            |
-              index
-              2
-              text.two-ok
-                lead
-                text.text.as-bytes.slice >> b1
-                  index.plus 1
-                  1
-              accum
-            if.
+          [^owner index accum lead] >> wide
+            if. > @
               eq.
-                lead.and F0-
-                E0-
-              step
-                index
-                3
-                text.three-ok
-                  lead
-                  b1
-                  text.text.as-bytes.slice (index.plus 2) 1 >> b2
-                accum
+                lead.and E0-
+                C0-
+              if. > [^owner idx csize valid accum] >> step
+                gt.
+                  idx.plus csize
+                  size
+                T
+                  "Expected %d byte character at %d index, but there are not enough bytes for it: %x".printf
+                    * csize idx owner.owner.text.text.as-bytes
+                valid.if
+                  owner.owner.text.reclen
+                    idx.plus csize
+                    accum.plus 1
+                  T
+                    "Malformed UTF-8 sequence (%x) at %d index".printf
+                      *
+                        owner.owner.text.text.as-bytes.slice idx csize
+                        idx
+              | index 2 (owner.text.two-ok lead (owner.text.text.as-bytes.slice (index.plus 1) 1)) accum
               if.
                 eq.
-                  lead.and F8-
-                  F0-
+                  lead.and F0-
+                  E0-
                 step
                   index
-                  4
-                  text.four-ok
+                  3
+                  owner.text.three-ok
                     lead
-                    b1
-                    b2
-                    text.text.as-bytes.slice (index.plus 3) 1
+                    owner.text.text.as-bytes.slice (index.plus 1) 1
+                    owner.text.text.as-bytes.slice (index.plus 2) 1
                   accum
-                T
-                  "Unknown byte format (%x), can't recognize character".printf
-                    * lead
+                if.
+                  eq. (lead.and F8-) F0-
+                  step
+                    index
+                    4
+                    owner.text.four-ok
+                      lead
+                      owner.text.text.as-bytes.slice (index.plus 1) 1
+                      owner.text.text.as-bytes.slice (index.plus 2) 1
+                      owner.text.text.as-bytes.slice (index.plus 3) 1
+                    accum
+                  T
+                    "Unknown byte format (%x), can't recognize character".printf
+                      * lead
+          | index accum (text.text.as-bytes.slice index 1)
     | 0 0
   eq. > [^text b] > cont
     b.and C0-

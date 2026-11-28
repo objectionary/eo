@@ -119,16 +119,17 @@
                     ready.setup.host.sock.scoped-socket ready.setup.host.sock.sd > @
                     [^incoming scope cant-accept] > accept
                       if. > @
-                        eq.
-                          number (incoming.ready.setup.host.sock.sys.accept incoming.ready.setup.host.sock.sd incoming.ready.setup.host.sock.sockaddr incoming.ready.setup.host.sock.sockaddr.size)! >> client
-                          -1
-                        cant-accept
-                          "Failed to accept a connection on the socket #%d because %s".printf
-                            * incoming.ready.setup.host.sock.sd incoming.ready.setup.host.sock.sys.message
+                        not.
+                          eq.
+                            number (incoming.ready.setup.host.sock.sys.accept incoming.ready.setup.host.sock.sd incoming.ready.setup.host.sock.sockaddr incoming.ready.setup.host.sock.sockaddr.size)! >> client
+                            -1
                         incoming.ready.setup.host.sock.guarded
                           scope
                             incoming.ready.setup.host.sock.scoped-socket client
                           incoming.ready.setup.host.sock.closed-socket client
+                        cant-accept
+                          "Failed to accept a connection on the socket #%d because %s".printf
+                            * incoming.ready.setup.host.sock.sd incoming.ready.setup.host.sock.sys.message
           cant-listen
       if. > [^prep scope cant] > safe-socket
         not.

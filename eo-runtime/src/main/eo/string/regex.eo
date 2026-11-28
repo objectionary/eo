@@ -85,51 +85,51 @@
   [^regex cant-compile] > compile
     if. > @
       if.
-        gt.
-          raw.size >> size
-          0
+        regex.text.as-bytes.size.gt 0
         2F-.eq
-          slice.
-            regex.text.as-bytes >> raw
-            0
-            1
+          regex.text.as-bytes.slice 0 1
         false
-      if.
-        1.gt closes
-        cant-compile "regex is missing the closing slash"
-        if.
-          if. > [^regex index] >> legal
-            size.gt index
-            if.
-              --.eq
-                regex.regex.flag
-                  raw.slice index 1
-              false
-              regex.legal
-                index.plus 1
-            true
-          |
+      [^regex closes cant] >> parsed
+        if. > @
+          1.gt closes
+          cant "regex is missing the closing slash"
+          if.
+            not.
+              if. > [^regex index] >> legal
+                size.gt index
+                if.
+                  --.eq
+                    regex.regex.regex.flag
+                      raw.slice index 1
+                  false
+                  regex.legal
+                    index.plus 1
+                true
+              | (closes.plus 1)
+            cant
+              string
+                concat.
+                  "regex flags '".as-bytes.concat
+                    raw.slice >> flags
+                      closes.plus 1
+                      size.minus (closes.plus 1)
+                  "' must be a sequence of 'd', 'i', 'm', 's', 'u' and 'x'".as-bytes
+            checked.
+              regex.regex.pattern
+                raw.slice
+                  1
+                  closes.plus -1
+                flags
+              regex.cant > [^regex reason offset] >>
+                regex.regex.regex.worded offset reason
+      |
+        number
+          slashed >> last!
             plus.
-              number >> closes
-                slashed >> last!
-                  size.plus -1
-              1
-          checked.
-            regex.pattern
-              raw.slice
-                1
-                closes.plus -1
-              raw.slice >> flags
-                closes.plus 1
-                size.minus
-                  closes.plus 1
-            regex.cant-compile > [^regex reason offset] >>
-              regex.regex.worded offset reason
-          cant-compile
-            string
-              concat.
-                "regex flags '".as-bytes.concat flags
-                "' must be a sequence of 'd', 'i', 'm', 's', 'u' and 'x'".as-bytes
+              size. >> size
+                regex.text.as-bytes >> raw
+              -1
+        cant-compile
       cant-compile "regex is missing the opening slash"
     if. > [^regex index] >> slashed
       1.gt index

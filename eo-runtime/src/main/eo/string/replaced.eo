@@ -12,7 +12,7 @@
 
 [^text target replacement] > replaced
   matched.exists.not.if > @
-    string text! >> reinit
+    text
     block.exists.if > [^text block accum start] >> rec-replaced
       text.rec-replaced
         block.next
@@ -33,7 +33,8 @@
       --
       start.
         next. >> matched
-          target.match reinit
+          target.match
+            string text! >> reinit
 
   eq. ++> can-replace-a-nullable-pattern-like-java
     "abc".replaced
