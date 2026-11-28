@@ -317,15 +317,6 @@
             </goals>
             <configuration>
               <!--
-              The tests of 'switch' and 'file.open' apply them with and without
-              their optional fallback on purpose, which is valid partial
-              application, and the lint reads every such pair as an
-              inconsistency: https://github.com/objectionary/wpa/issues/146
-              -->
-              <skipProgramLints>
-                <lint>inconsistent-args</lint>
-              </skipProgramLints>
-              <!--
               A package is named here once its members reach their receiver
               through '^' instead of through a first void, since the two only
               work together: with the void still there the merged member never
