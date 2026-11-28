@@ -26,17 +26,17 @@ eo:
         ? > ^
         ? > b /Q.number
 xmir:
-  - "//o[@name='e2' and @base='Φ.number.twice.a🌵6-2🌵']"
+  - "//o[@name='e2' and @base='Φ.number.twice.a🌵inner🌵']"
 copies:
-  - "//o[@loc='Φ.number.twice']/o[@name='a🌵5-4🌵']"
-  - "//o[@loc='Φ.number.twice'][not(o[@name='a🌵5-4'])]"
-  - "//o[@loc='Φ.number.twice']/o[@name='body🌵']//o[@base='ξ.a🌵5-4🌵']"
-  - "//o[@loc='Φ.number.twice']/o[@name='body🌵'][not(.//o[@base='ξ.a🌵5-4'])]"
+  - "//o[@loc='Φ.number.twice']/o[@name='a🌵half🌵']"
+  - "//o[@loc='Φ.number.twice'][not(o[@name='a🌵half'])]"
+  - "//o[@loc='Φ.number.twice']/o[@name='body🌵']//o[@base='ξ.a🌵half🌵']"
+  - "//o[@loc='Φ.number.twice']/o[@name='body🌵'][not(.//o[@base='ξ.a🌵half'])]"
 voids:
   - "𝜎1\t1\tρ\tnumber"
 entries:
   - "1\tΦ.number.twice"
-  - "2\tΦ.number.twice.a🌵6-2"
+  - "2\tΦ.number.twice.a🌵inner"
 rows:
   - "L_number_twice\tΦ.number.twice\tΦ.number.twice\tρ:number"
 table:

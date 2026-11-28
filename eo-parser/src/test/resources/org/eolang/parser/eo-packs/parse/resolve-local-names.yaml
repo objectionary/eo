@@ -6,9 +6,9 @@ sheets:
   - /org/eolang/parser/parse/resolve-local-names.xsl
 asserts:
   - /object[not(errors)]
-  - /object[count(//o[@base='.a🌵2-2'])=2]
+  - /object[count(//o[@base='.a🌵fibo'])=2]
   - /object[count(//o[@base='.ρ']/o[@base='ξ'])=2]
-  - //o[@name='a🌵2-2' and @local='fibo']
+  - //o[@name='a🌵fibo' and @local='fibo']
 input: |
   [] > app
     [n] >> fibo

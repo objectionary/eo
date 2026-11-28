@@ -5,8 +5,8 @@
 sheets: []
 asserts:
   - /object[not(errors)]
-  - //o[@base='.as-bytes' and @name='a🌵2-2']/o[@base='Φ.dataized']/o[@base='Φ.foo' and @local='saved' and o[@base='Φ.tuple']]
-  - /object/o[@name='app']/o[@name='φ' and @base='ξ.a🌵2-2']
+  - //o[@base='.as-bytes' and @name='a🌵saved']/o[@base='Φ.dataized']/o[@base='Φ.foo' and @local='saved' and o[@base='Φ.tuple']]
+  - /object/o[@name='app']/o[@name='φ' and @base='ξ.a🌵saved']
 input: |
   [] > app
     foo * >>! saved
