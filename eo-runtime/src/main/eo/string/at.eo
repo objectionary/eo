@@ -24,9 +24,9 @@
           *
             string i.as-scientific
     if.
-      or.
-        0.gt index
-        gte.
+      and.
+        0.lte index
+        lt.
           number >> index
             if. >>!
               0.gt
@@ -36,6 +36,7 @@
                 idx
               idx
           len
+      text.slice index 1
       fallback
         i.is-finite.if
           "Given index %f is out of text bounds".printf
@@ -43,7 +44,6 @@
           "Given index %s is out of text bounds".printf
             *
               string i.as-scientific
-      text.slice index 1
 
   eq. ++> can-format-the-error-message-of-a-fractional-index-in-bounds
     "Index must be an integer, but was 1.500000"

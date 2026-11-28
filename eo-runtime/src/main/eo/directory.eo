@@ -90,7 +90,7 @@
       "Directory %s does not exist, can't create temporary file".printf
         * folder.file
   [^folder glob] > walk
-    [^folder accum prefix dir] >> walked
+    [^folder dir prefix accum] >> walked
       [^state rest] >> stepped
         if. > @
           rest.length.eq 0
@@ -106,20 +106,20 @@
               not.
                 entry.is-symlink false
             state.folder.walked
-              state.stepped rest.tail >> earlier
+              as-dir.
+                state.dir.as-path.resolved rest.head >> child
               if. >> sub
                 state.prefix.length.eq 0
                 rest.head
                 path.separator.joined
                   * state.prefix rest.head
-              as-dir.
-                state.dir.as-path.resolved rest.head >> child
+              state.stepped rest.tail >> earlier
             state.folder.picked earlier sub
       | dir.listed > @
     | > @
-      *
-      ""
       folder
+      ""
+      *
     if. > [^folder accum rel] > picked
       folder.matched rel
       accum.with

@@ -19,13 +19,11 @@
     num.is-nan.not
     and.
       or.
-        mine.eq
-          0.as-bytes >> pzero
-        mine.eq
-          -0.as-bytes >> nzero
+        other.eq 00-00-00-00-00-00-00-00
+        other.eq 80-00-00-00-00-00-00-00
       or.
-        other.eq pzero
-        other.eq nzero
+        mine.eq 00-00-00-00-00-00-00-00
+        mine.eq 80-00-00-00-00-00-00-00
 
   eq. ++> can-compare-two-numbers-through-the-package
     42.eq 42
